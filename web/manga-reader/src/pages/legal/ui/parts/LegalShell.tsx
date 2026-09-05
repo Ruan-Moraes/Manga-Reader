@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import useAppNavigate from '@shared/hook/useAppNavigate';
-import { FileText, Shield, Copyright, Mail } from 'lucide-react';
+import { AlertTriangle, FileText, Shield, Copyright, Mail } from 'lucide-react';
 import { PageContainer } from '@ui/PageContainer';
 import { Badge } from '@ui/Badge';
 import { cn } from '@shared/lib/cn';
@@ -97,6 +97,18 @@ export const LegalShell = ({ page, eyebrow, title, sub, updated, version, toc, c
                         {updated && <Badge variant="neutral">{t('shell.updated', { date: updated })}</Badge>}
                         {version && <Badge variant="neutral">{version}</Badge>}
                         <Badge variant="neutral">{t('shell.language')}</Badge>
+                    </div>
+
+                    <div
+                        role="note"
+                        aria-label={t('shell.draft.title')}
+                        className="mt-5 flex max-w-2xl gap-3 rounded-mr-sm border border-mr-danger-border bg-mr-danger-15 p-4"
+                    >
+                        <AlertTriangle aria-hidden="true" className="mt-0.5 size-5 shrink-0 text-mr-danger" />
+                        <div className="min-w-0">
+                            <p className="text-mr-small font-mr-extrabold text-mr-danger">{t('shell.draft.title')}</p>
+                            <p className="mt-1 text-mr-small text-mr-fg-muted">{t('shell.draft.description')}</p>
+                        </div>
                     </div>
 
                     {/* Doc tabs */}

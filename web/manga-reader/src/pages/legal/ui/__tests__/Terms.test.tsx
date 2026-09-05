@@ -15,6 +15,14 @@ describe('Terms', () => {
         expect(screen.getByRole('heading', { name: /termos de uso/i, level: 1 })).toBeInTheDocument();
     });
 
+    it('identifica o operador real e sinaliza que o conteúdo ainda é rascunho', () => {
+        renderWithProviders(<Terms />);
+
+        expect(screen.getByRole('note', { name: /documento em rascunho/i })).toBeInTheDocument();
+        expect(screen.getByText(/plataforma operada por Ruan Moraes/i)).toBeInTheDocument();
+        expect(screen.queryByText(/Manga Reader Tecnologia Ltda/i)).not.toBeInTheDocument();
+    });
+
     it('renders all 4 legal doc tabs', () => {
         renderWithProviders(<Terms />);
         // Exact name to avoid matching TOC item "Mudanças nestes termos"
@@ -42,8 +50,8 @@ describe('Terms', () => {
 
     it('renders version and date badges', () => {
         renderWithProviders(<Terms />);
-        expect(screen.getByText(/v1\.0/i)).toBeInTheDocument();
-        expect(screen.getByText(/01\/01\/2025/i)).toBeInTheDocument();
+        expect(screen.getByText(/^rascunho$/i)).toBeInTheDocument();
+        expect(screen.getByText(/03\/09\/2026/i)).toBeInTheDocument();
     });
 
     it('renders cross-links nav', () => {

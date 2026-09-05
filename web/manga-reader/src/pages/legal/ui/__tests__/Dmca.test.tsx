@@ -28,7 +28,8 @@ describe('Dmca', () => {
 
     it('renders agent contact info', () => {
         renderWithProviders(<Dmca />);
-        expect(screen.getAllByText(/dmca@manga-reader\.example\.com/i).length).toBeGreaterThan(0);
+        expect(screen.getAllByRole('link', { name: 'ruanmoraessantosbarbosa@gmail.com' }).length).toBeGreaterThan(0);
+        expect(screen.queryByText(/Av\. Paulista/i)).not.toBeInTheDocument();
     });
 
     it('renders warning aside', () => {

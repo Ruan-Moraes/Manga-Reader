@@ -56,6 +56,7 @@ export default function Privacy() {
     const dpoRows = t('privacy.sections.dpo.rows', {
         returnObjects: true,
     }) as Row[];
+    const privacyContact = dpoRows.find(row => row.value.includes('@'))?.value ?? '';
 
     return (
         <LegalShell page="privacy" title={t('privacy.title')} sub={t('privacy.sub')} updated={t('privacy.updated')} version={t('privacy.version')} toc={toc}>
@@ -126,7 +127,7 @@ export default function Privacy() {
                         i18nKey="privacy.sections.direitos.outro"
                         ns="legal"
                         components={{
-                            mail: <a href="mailto:dpo@manga-reader.example.com" className="text-mr-accent-fg underline hover:no-underline" />,
+                            mail: <a href={`mailto:${privacyContact}`} className="text-mr-accent-fg underline hover:no-underline" />,
                         }}
                     />
                 </p>

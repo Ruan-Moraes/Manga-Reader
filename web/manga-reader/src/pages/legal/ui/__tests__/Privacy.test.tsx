@@ -38,6 +38,15 @@ describe('Privacy', () => {
         expect(screen.getAllByRole('heading', { name: /quais dados coletamos/i }).length).toBeGreaterThan(0);
     });
 
+    it('publica somente o contato real de privacidade, sem endereço fictício', () => {
+        renderWithProviders(<Privacy />);
+
+        expect(screen.getByRole('note', { name: /documento em rascunho/i })).toBeInTheDocument();
+        expect(screen.getByRole('link', { name: 'ruanmoraessantosbarbosa@gmail.com' })).toHaveAttribute('href', 'mailto:ruanmoraessantosbarbosa@gmail.com');
+        expect(screen.queryByText(/Av\. Paulista/i)).not.toBeInTheDocument();
+        expect(screen.queryByText(/dpo@manga-reader\.example\.com/i)).not.toBeInTheDocument();
+    });
+
     it('renders cross-links to other docs', () => {
         renderWithProviders(<Privacy />);
         expect(screen.getByRole('navigation', { name: /outros documentos/i })).toBeInTheDocument();

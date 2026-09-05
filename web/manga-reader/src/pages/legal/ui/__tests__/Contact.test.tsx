@@ -88,10 +88,12 @@ describe('Contact', () => {
         expect(screen.getByLabelText(/^Nome/i)).toHaveValue('');
     }, 8000);
 
-    it('renders postal address section', () => {
+    it('renders the real operator contact without a fictitious postal address', () => {
         renderWithProviders(<Contact />);
-        expect(screen.getByText(/endereço postal/i)).toBeInTheDocument();
-        // Both postal entries contain "Av. Paulista"; just confirm section title is present
-        expect(screen.getAllByText(/Av\. Paulista/i).length).toBeGreaterThan(0);
+        expect(screen.getByRole('note', { name: /documento em rascunho/i })).toBeInTheDocument();
+        expect(screen.getByText(/contato do operador/i)).toBeInTheDocument();
+        expect(screen.getByText('Ruan Moraes')).toBeInTheDocument();
+        expect(screen.queryByText(/Av\. Paulista/i)).not.toBeInTheDocument();
+        expect(screen.queryByText(/Manga Reader Tecnologia Ltda/i)).not.toBeInTheDocument();
     });
 });

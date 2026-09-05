@@ -6,6 +6,10 @@
         "tabsAriaLabel": "Legal documents",
         "tocAriaLabel": "Table of contents",
         "tocHeading": "In this document",
+        "draft": {
+            "title": "Draft document",
+            "description": "This content has not yet undergone legal review and must not be treated as a binding document or published policy."
+        },
         "tabs": {
             "terms": "Terms",
             "privacy": "Privacy",
@@ -41,8 +45,8 @@
     "terms": {
         "title": "Terms of use",
         "sub": "The rules of conduct, the limits of the service, and your rights as a user of the platform.",
-        "updated": "01/01/2025",
-        "version": "v1.0",
+        "updated": "September 3, 2026",
+        "version": "Draft",
         "toc": {
             "aceite": "01. Acceptance and who we are",
             "conta": "02. Your account",
@@ -59,7 +63,7 @@
             "aceite": {
                 "title": "Acceptance and who we are",
                 "tldr": "By using Manga Reader, you agree to these terms. We are a platform for reading and discovering manga, manhwa and manhua.",
-                "p1": "These Terms of Use govern access to and use of Manga Reader, a platform operated by Manga Reader Tecnologia Ltda. (\"we\", \"our\" or \"Manga Reader\"), headquartered in Brazil.",
+                "p1": "These Terms of Use govern access to and use of Manga Reader, a platform operated in Brazil by Ruan Moraes, the individual responsible for the project (\"we\", \"our\" or \"Manga Reader\").",
                 "p2": "By creating an account, accessing or using any part of the service, you declare that you have read, understood and agree to be bound by these Terms and our Privacy Policy. If you do not agree with any part, do not use the service.",
                 "p3": "Manga Reader is a platform for reading, discovering and discussing Asian comics — manga, manhwa and manhua — made available by partner translation groups and the authors themselves."
             },
@@ -127,8 +131,8 @@
     "privacy": {
         "title": "Privacy Policy",
         "sub": "What we collect, why, and how you stay in control of what's yours.",
-        "updated": "01/01/2025",
-        "version": "v1.0",
+        "updated": "September 3, 2026",
+        "version": "Draft",
         "toc": {
             "tldr": "01. Quick summary",
             "coleta": "02. Data collected",
@@ -250,19 +254,15 @@
                 "p1": "Some of our service providers operate in other countries (US, EU). In such cases, we ensure that the data transfer occurs based on appropriate legal mechanisms, such as standard contractual clauses approved by data protection authorities."
             },
             "dpo": {
-                "title": "Data Protection Officer (DPO)",
+                "title": "Privacy contact",
                 "rows": [
                     {
                         "term": "Name",
-                        "value": "Manga Reader Data Protection Officer"
+                        "value": "Ruan Moraes"
                     },
                     {
                         "term": "Email",
-                        "value": "dpo@manga-reader.example.com"
-                    },
-                    {
-                        "term": "Address",
-                        "value": "Av. Paulista, 1000 — São Paulo/SP, 01310-100"
+                        "value": "ruanmoraessantosbarbosa@gmail.com"
                     }
                 ]
             }
@@ -276,8 +276,8 @@
     "dmca": {
         "title": "DMCA / Copyright",
         "sub": "Procedure for takedown requests due to copyright infringement and how to contact us.",
-        "updated": "01/01/2025",
-        "version": "v1.0",
+        "updated": "September 3, 2026",
+        "version": "Draft",
         "toc": {
             "oque-e": "01. What it is",
             "quem-pode": "02. Who can request takedown",
@@ -309,7 +309,7 @@
                 "title": "How to request takedown",
                 "lead": "Send your written notice to:",
                 "emailLabel": "Email:",
-                "emailAddress": "dmca@manga-reader.example.com",
+                "emailAddress": "ruanmoraessantosbarbosa@gmail.com",
                 "channelLabel": "Priority channel:",
                 "channelLinkText": "/legal/contact",
                 "outro": "Notices sent outside these channels may not be processed. We do not accept verbal requests or requests via social media."
@@ -353,23 +353,19 @@
                 "p2": "The definition of \"multiple\" takes into account the context, frequency and severity of each violation. A single serious violation may result in immediate termination."
             },
             "agente": {
-                "title": "Designated agent",
+                "title": "Copyright contact",
                 "rows": [
                     {
-                        "term": "Designated agent",
-                        "value": "Copyright Agent — Manga Reader"
+                        "term": "Responsible person",
+                        "value": "Ruan Moraes"
                     },
                     {
                         "term": "Email",
-                        "value": "dmca@manga-reader.example.com"
+                        "value": "ruanmoraessantosbarbosa@gmail.com"
                     },
                     {
                         "term": "Priority channel",
                         "value": "/legal/contact (type: DMCA)"
-                    },
-                    {
-                        "term": "Mailing address",
-                        "value": "Av. Paulista, 1000 — São Paulo/SP, 01310-100, Brazil"
                     }
                 ]
             }
@@ -383,7 +379,7 @@
     "contact": {
         "title": "Contact",
         "sub": "For each type of matter, a channel.",
-        "updated": "01/01/2025",
+        "updated": "September 3, 2026",
         "channelsTitle": "Direct channels",
         "channelAriaLabel": "Channel: {{name}}",
         "channels": {
@@ -391,42 +387,42 @@
                 "label": "GENERAL",
                 "title": "General support",
                 "desc": "Questions about account, reading and platform features.",
-                "email": "suporte@manga-reader.example.com",
+                "email": "ruanmoraessantosbarbosa@gmail.com",
                 "sla": "within 2 business days"
             },
             "content": {
                 "label": "CONTENT",
                 "title": "Content and publication",
                 "desc": "Requests to add works, issues with chapters.",
-                "email": "conteudo@manga-reader.example.com",
+                "email": "ruanmoraessantosbarbosa@gmail.com",
                 "sla": "within 3 business days"
             },
             "privacy": {
                 "label": "PRIVACY",
                 "title": "Privacy and LGPD",
                 "desc": "Export, correction or deletion of personal data.",
-                "email": "dpo@manga-reader.example.com",
+                "email": "ruanmoraessantosbarbosa@gmail.com",
                 "sla": "within 15 business days"
             },
             "dmca": {
                 "label": "DMCA",
                 "title": "Copyright",
                 "desc": "Takedown notices for copyright infringement.",
-                "email": "dmca@manga-reader.example.com",
+                "email": "ruanmoraessantosbarbosa@gmail.com",
                 "sla": "within 5 business days"
             },
             "billing": {
                 "label": "SUBSCRIPTION",
                 "title": "Billing and subscription",
                 "desc": "Payment issues, improper charges and cancellations.",
-                "email": "cobranca@manga-reader.example.com",
+                "email": "ruanmoraessantosbarbosa@gmail.com",
                 "sla": "within 1 business day"
             },
             "priority": {
                 "label": "PRIORITY",
                 "title": "Priority channel",
                 "desc": "Hacked account, illegal content or emergency situation.",
-                "email": "urgente@manga-reader.example.com",
+                "email": "ruanmoraessantosbarbosa@gmail.com",
                 "sla": "within 4 hours"
             }
         },
@@ -468,15 +464,15 @@
             }
         },
         "postal": {
-            "title": "Mailing address",
+            "title": "Operator contact",
             "rows": [
                 {
-                    "term": "Administrative headquarters",
-                    "value": "Manga Reader Tecnologia Ltda.\nAv. Paulista, 1000\nSão Paulo/SP — CEP 01310-100\nBrazil"
+                    "term": "Operator",
+                    "value": "Ruan Moraes"
                 },
                 {
-                    "term": "Data Protection Officer (DPO)",
-                    "value": "dpo@manga-reader.example.com\nAv. Paulista, 1000\nSão Paulo/SP — CEP 01310-100\nBrazil"
+                    "term": "Email",
+                    "value": "ruanmoraessantosbarbosa@gmail.com"
                 }
             ]
         }

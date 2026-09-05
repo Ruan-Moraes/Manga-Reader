@@ -127,9 +127,12 @@ teclado completa fora dos overlays.
 
 Termos de Uso / Privacidade / DMCA / Contato com placeholder. Estrutura/UI/i18n
 **prontas** (LegalShell + LegalSection + LegalCrossLinks, rotas registradas e
-alcançáveis, chaves em pt-BR/en-US/es-ES). Falta apenas o **texto legal
-vinculante**, que exige revisão jurídica — **não é tarefa de engenharia**.
-Bloqueia produção; não-bloqueante para desenvolvimento.
+alcançáveis, chaves em pt-BR/en-US/es-ES). Em 2026-09-03, a empresa, o endereço e
+os e-mails fictícios foram removidos; as páginas agora identificam Ruan Moraes
+como operador, publicam o contato real e exibem aviso explícito de rascunho.
+Falta o **texto legal vinculante**, a revisão jurídica e a publicação nas URLs
+canônicas de `app.mangareader.com` — **não é tarefa exclusivamente de
+engenharia**. Bloqueia produção; não-bloqueante para desenvolvimento.
 
 ---
 
