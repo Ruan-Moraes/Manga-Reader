@@ -1,5 +1,10 @@
+const mockImageRender = jest.fn();
+
 jest.mock('expo-image', () => {
-    const Image = () => null;
+    const Image = (props: unknown) => {
+        mockImageRender(props);
+        return null;
+    };
     Image.prefetch = jest.fn().mockResolvedValue(true);
     return { Image };
 });
@@ -46,5 +51,27 @@ describe('MOB-FEAT-005/AC-006/007/009 vertical logical viewport', () => {
         screen.rerender(renderViewport(2));
         fireEvent(screen.getByTestId('reader-page-p2'), 'layout', { nativeEvent: { layout: { x: 0, y: 720, width: 1200, height: 900 } } });
         expect(scrollTo).toHaveBeenLastCalledWith({ y: 720, animated: false });
+    });
+
+    it('altera somente a superfície ao trocar o fundo', () => {
+        const renderViewport = (background: 'DARK' | 'PAPER') => (
+            <ThemeProvider initialOverride="dark" waitForPlatform={false}>
+                <ReaderViewport
+                    pages={pages}
+                    settings={{ ...DEFAULT_USER_SETTINGS.reader, background, mode: 'VERTICAL' }}
+                    currentPage={1}
+                    onCurrentPageChange={jest.fn()}
+                />
+            </ThemeProvider>
+        );
+        mockImageRender.mockClear();
+        const screen = render(renderViewport('DARK'));
+        const initialImageRenders = mockImageRender.mock.calls.length;
+
+        screen.rerender(renderViewport('PAPER'));
+
+        expect(initialImageRenders).toBe(pages.length);
+        expect(mockImageRender).toHaveBeenCalledTimes(initialImageRenders);
+        expect(screen.getByTestId('reader-vertical').props.style).toEqual(expect.objectContaining({ backgroundColor: '#EFEDE5' }));
     });
 });
