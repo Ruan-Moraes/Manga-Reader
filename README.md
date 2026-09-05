@@ -107,6 +107,10 @@ acessível pelo dispositivo. Consulte [`mobile/README.md`](mobile/README.md).
 
 ## Testes e verificações
 
+Quem usa IntelliJ IDEA também pode executar os mesmos comandos pelas
+[configurações compartilhadas](.run/README.md), organizadas em `Backend / Tests`,
+`Frontend / Tests` e `Mobile / Tests`.
+
 ### API principal
 
 ```bash
