@@ -36,7 +36,8 @@ legal válida e capabilities habilitadas, nenhum byte de mídia é enviado.
 
 ## Verificações externas abertas
 
-- operador, contato e URLs legais públicos e verdadeiros;
+- publicação HTTPS e revisão jurídica de Termos/Privacidade nas URLs reservadas,
+  seguida de versão do disclosure e política do provider;
 - configuração cloud habilitada com disclosure correspondente;
 - upgrade SQLite v6→v7, SecureStore, recovery após process kill e leitor de tela
   em Android físico;

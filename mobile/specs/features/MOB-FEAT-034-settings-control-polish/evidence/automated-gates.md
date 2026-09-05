@@ -60,3 +60,20 @@ Data: 2026-08-24
   3 suítes, 42 testes e zero falhas.
 - A suíte completa passou com 95 suítes e 545 testes. TypeScript, ESLint,
   boundaries FSD e Prettier também passaram sem erro.
+
+## Revalidação do gesto no UI thread — 2026-09-05
+
+- `sharedUi.test.tsx` passou com 40 testes. A cobertura do AC-004 inclui as
+  margens geométricas, arraste para ambos os sentidos, prop atrasada, evento de
+  movimento tardio, cancelamento, toque no trilho, reinício de `translationX`
+  pelo Android e ponto terminal presente somente no `onEnd`.
+- `pnpm typecheck`, ESLint e Prettier dos arquivos alterados e `pnpm lint:fsd`
+  passaram sem erro.
+- `pnpm test:ci` passou integralmente: 95 suítes, 553 testes e zero falhas.
+  A execução emite avisos preexistentes de `act()` em testes de outros
+  componentes, sem falhas ou regressões.
+- `pnpm specs:check` executou os 23 testes internos com sucesso e validou esta
+  feature; a etapa global termina vermelha somente pelos checksums divergentes
+  de 22 reviews preexistentes (`MOB-FEAT-012..017`, `028..033`, `035..040` e
+  `042..045`). Não há divergência de registry, cobertura ou checksum para
+  `MOB-FEAT-034`.

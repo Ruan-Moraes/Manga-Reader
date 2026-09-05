@@ -24,7 +24,7 @@
 
 ## Checklist
 
-- [ ] TASK-001 — Atualizar termos/privacidade nos três locales e criar disclosure versionado derivado de capabilities; upload fecha sem URLs/operador/contato reais.
+- [ ] TASK-001 — Operador/contato definidos e placeholders de identidade removidos nos três locales; publicar/revisar Termos e Privacidade nas URLs reservadas e criar disclosure versionado. Upload permanece fechado até a conclusão.
 - [x] TASK-002 — Implementar SQLite v7 para consents/attempts, estados local/remoto separados e repository transacional com FKs/checks/upgrade v6→v7.
 - [x] TASK-003 — Criar capabilities e validação pré-upload, incluindo sete idiomas/42 pares, arquivo e consentimento.
 - [x] TASK-004 — Congelar OpenAPI `/v1`; manter HTTPS/timeout/limites/redirects em `shared/remote-gateway` e capabilities/parsers Zod nas entities, separados do Core client.
@@ -54,8 +54,9 @@
 ## Bloqueios de verificação
 
 - Billing, projeto Google Cloud e ações externas precisam de aprovação no ato.
-- Operador, contato e URLs legais reais fecham o disclosure; sem eles não existe
-  upload real.
+- Operador e contato estão definidos. Publicação HTTPS das URLs legais, revisão
+  jurídica, versão do disclosure e política do provider ainda bloqueiam upload
+  real.
 - `MOB-FEAT-018..021` permanecem bloqueadas até esta feature ser executada.
 
 ## Marco server-side — gateway primeiro

@@ -2,7 +2,7 @@
 
 Data: 2026-08-24
 
-- Implementação auditada: working-tree sha256:38172ac139f24be05ddf591a77830ea02b9586b8729bba5be6c131da60bffe58
+- Implementação auditada: working-tree sha256:165b3899fb4db6adc0ea16e02d8cd3d1aeb9e3c8465375590d9d5096cdfae49b
 - Status da feature: `implemented`
 
 ## Divergências

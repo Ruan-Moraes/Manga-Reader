@@ -38,3 +38,24 @@ Data: 2026-08-24
 
 Sem bloqueios visuais ou semânticos. Atende AC-001, AC-002, AC-003, AC-004,
 AC-005 e AC-006.
+
+## Revalidação Android — 2026-09-05
+
+### Ambiente
+
+- Emulador Android Pixel_10a com Expo Go do SDK 54 e bundle Metro limpo.
+- A tela de configurações foi aberta com a preferência de saturação restaurada
+  para 50% ao término da inspeção.
+
+### Matriz do AC-004
+
+| Cenário                  | No release                 | Após persistência | Resultado |
+| ------------------------ | -------------------------- | ----------------- | --------- |
+| 100% → 50%, direita/esq. | 50%                        | 50%               | pass      |
+| 0% → 50%, esquerda/dir.  | 50%                        | 50%               | pass      |
+| Extremos geométricos     | thumb íntegro no contêiner | n/a               | pass      |
+
+O valor exposto na árvore acessível e a posição visual permaneceram em 50%
+após uma nova inspeção alguns segundos depois do release; não houve salto para
+55%, 60% ou outro step. A confirmação no aparelho Android físico que reproduzia
+o defeito continua pendente antes de encerrar a feature como `implemented`.

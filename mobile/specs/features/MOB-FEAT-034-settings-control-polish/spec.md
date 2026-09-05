@@ -2,11 +2,11 @@
 id: MOB-FEAT-034
 type: feature
 title: Correção e acabamento fino dos controles de configurações
-status: implemented
+status: verification-pending
 implementation_gate: open
 blocked_by: [MOB-FEAT-033]
 created: 2026-08-24
-updated: 2026-09-01
+updated: 2026-09-05
 supersedes: []
 superseded_by: []
 ---
@@ -37,20 +37,22 @@ amostras de cor isoladas, gesto incorreto do slider e rodapé local repetitivo.
 - Cores formam uma faixa única de segmentos quadrados contíguos; somente as
   extremidades externas são arredondadas. A seleção usa apenas o check e o
   estado assistivo, sem borda destacada ao redor da amostra.
-- O `RangeSlider` compartilhado usa o controle nativo
-  `@react-native-community/slider` para capturar, movimentar e finalizar o
-  gesto; a camada compartilhada preserva somente a apresentação visual e a
-  semântica do componente.
+- O `RangeSlider` compartilhado implementa o gesto com `Gesture.Pan`/
+  `Gesture.Tap` e `react-native-reanimated`, sem depender do ciclo de eventos
+  do `@react-native-community/slider`. A posição do thumb e da trilha evolui
+  no UI thread; a API pública e a semântica ajustável permanecem as mesmas.
 - O rail reserva lateralmente o raio do thumb visual (12 px). Assim, seus
   centros nos limites mínimo e máximo permanecem dentro da área interativa e
   o thumb de 24 px não ultrapassa o contêiner. Toques nas margens continuam
   representando os limites.
 - Durante o gesto, o valor visual é otimista, limitado ao intervalo e
-  arredondado pelo `step`. No release, o último valor nativo é capturado uma
-  única vez, fica exibido até a confirmação do pai e é o único valor enviado
-  ao callback externo e à persistência. Props antigas e eventos tardios não
-  podem mover o thumb depois do release; a reconciliação visual só ocorre após
-  a confirmação do valor normalizado pelo pai.
+  arredondado pelo `step`. O pan ancora o offset entre dedo e thumb no início
+  do toque, pois o Android pode zerar `translationX` quando o gesto ativa. No
+  release, a coordenada terminal é calculada uma única vez no UI thread,
+  inclusive se não houve evento de movimento final; somente esse valor é
+  enviado ao callback externo e à persistência. Props antigas não podem mover
+  o thumb depois do release; a reconciliação visual só ocorre após a
+  confirmação do valor normalizado pelo pai.
 - Saturação, espaçamento e pré-carregamento compartilham o slider; seus
   intervalos permanecem equivalentes ao web (`0..100`, `0..32` e `0..10`).
 - Status locais ou já sincronizados não ocupam rodapé; erro, pending e syncing
@@ -64,6 +66,10 @@ amostras de cor isoladas, gesto incorreto do slider e rodapé local repetitivo.
   Após soltar, uma prop atrasada não pode deslocar o thumb do valor liberado
   para um valor adjacente; o valor somente reconcilia quando o pai confirma o
   mesmo valor normalizado.
+- Um `onUpdate` ausente ou coalescido antes do término não pode descartar a
+  última coordenada do dedo: `onEnd` precisa calcular e capturar o valor final.
+  Atualizações de movimento posteriores ao release e props anteriores não podem
+  alterar o callback nem a posição visual já capturada.
 - Labels longos e font scale de 200% não podem sobrepor switch, preview, check
   ou amostras.
 - Ao rolar, rótulos e opções não podem atravessar a safe area superior nem
@@ -147,6 +153,28 @@ integralmente.
 
 - Aprovador: Ruan Moraes
 - Data: 2026-09-01
-- Decisão: após a persistência do desvio no Android e a pesquisa técnica,
-  autorizada a substituição do gesto manual pelo controle nativo do Expo para
-  cumprir o AC-004, sem alterar a API pública ou as preferências.
+- Decisão histórica, supersedida em 2026-09-05: após a persistência do desvio
+  no Android e a pesquisa técnica, foi autorizada a substituição do gesto
+  manual pelo controle nativo do Expo para cumprir o AC-004, sem alterar a API
+  pública ou as preferências.
+
+### Correção do encerramento nativo
+
+- Data: 2026-09-04
+- Decisão supersedida: o término do gesto nativo não resolve de forma confiável
+  o ciclo Android/Expo; a implementação foi substituída pela decisão abaixo.
+
+### Substituição por gesto no UI thread
+
+- Data: 2026-09-05
+- Decisão: substituir o `NativeSlider` pelo padrão oficial de slider do
+  Reanimated com Gesture Handler. O `Pan` preserva a âncora do toque em
+  `onBegin`, calcula o ponto terminal em `onEnd` e cruza para o callback apenas
+  uma vez. O `Tap` mantém a seleção direta no trilho. A decisão elimina a
+  corrida conhecida do componente nativo não controlado no Android, mantendo
+  Expo SDK 54 e as dependências já instaladas.
+- Evidência externa: documentação do
+  [slider Reanimated](https://docs.swmansion.com/react-native-reanimated/examples/slider/),
+  do [Pan Gesture](https://docs.swmansion.com/react-native-gesture-handler/docs/2.x/gestures/pan-gesture/)
+  e o relato correspondente do
+  [react-native-slider #716](https://github.com/callstack/react-native-slider/issues/716).

@@ -272,6 +272,16 @@ shared/remote-gateway (HTTPS, timeout, limites e redirects; sem domínio)
 
 ## Contrato externo aprovado
 
+Estado legal provisório definido em 2026-09-03:
+
+- operador: Ruan Moraes, pessoa física responsável pelo projeto;
+- contato público: `ruanmoraessantosbarbosa@gmail.com`;
+- URLs canônicas pretendidas: `https://app.mangareader.com/legal/terms` e
+  `https://app.mangareader.com/legal/privacy`;
+- o domínio ainda não está publicado, os documentos permanecem em rascunho e a
+  versão/política do provider continuam vazias; consequentemente o gateway deve
+  responder `capabilities-unavailable` e não aceitar upload.
+
 - API HTTP `/v1` com capabilities, instalação/sessão anônima, submit multipart,
   consulta por idempotency key ou job ref, cancel e ACK; OpenAPI será a
   referência executável.
@@ -290,8 +300,8 @@ shared/remote-gateway (HTTPS, timeout, limites e redirects; sem domínio)
   configuração validada. Ausência ou invalidade fecha o serviço.
 
 Essas decisões abrem o gate de implementação. Deploy real continua condicionado
-a billing, credenciais, operador/contato e URLs legais válidos, aprovados quando
-as ações externas forem executadas.
+a billing, credenciais, publicação HTTPS das URLs legais, revisão jurídica,
+disclosure versionado e ações externas explicitamente aprovadas.
 
 ## Casos de erro
 

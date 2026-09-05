@@ -140,8 +140,10 @@ duplica resultado, processamento ou consumo.
 - **Validação:** fixtures autorizadas reproduzíveis por escrita/par prioritário,
   IDs preservados ponta a ponta, texto horizontal e vertical quando aplicável,
   resultado legível e original recuperável.
-- **Gates de execução real:** projeto Google Cloud/billing, operador/contato e
-  URLs legais públicos; benchmark mínimo continua gate de promoção de qualidade.
+- **Gates de execução real:** projeto Google Cloud/billing, publicação e revisão
+  das URLs legais reservadas, disclosure versionado e política do provider;
+  operador/contato já estão definidos e o benchmark mínimo continua gate de
+  promoção de qualidade.
 
 ### M4 — Incremental Multi-page Reader
 

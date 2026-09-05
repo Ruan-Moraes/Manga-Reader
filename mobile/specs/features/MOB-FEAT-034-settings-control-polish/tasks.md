@@ -1,7 +1,7 @@
 # Tasks — MOB-FEAT-034
 
 - Spec: `spec.md`
-- Status: `implemented`
+- Status: `verification-pending`
 - Gate: `open`
 
 ## Rastreabilidade
@@ -20,6 +20,6 @@
 - [x] TASK-001 — Reposicionar e estabilizar controles booleanos.
 - [x] TASK-002 — Reorganizar conteúdo dos cards com preview.
 - [x] TASK-003 — Implementar faixa contígua de amostras de cor.
-- [x] TASK-004 — Corrigir extremos, gesto nativo e estabilidade no release do slider.
+- [x] TASK-004 — Substituir o slider nativo pelo gesto compartilhado no UI thread; cobrir extremos, âncora Android, coordenada terminal e estabilidade após o release.
 - [x] TASK-005 — Ocultar estados locais/sincronizados não acionáveis.
-- [x] TASK-006 — Executar auditoria visual, testes e gates finais.
+- [ ] TASK-006 — Confirmar no aparelho Android físico o gesto compartilhado após a validação no emulador; os gates automatizados e a matriz do emulador já foram executados.
