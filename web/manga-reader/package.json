@@ -14,9 +14,9 @@
         "lint": "eslint . --ext .ts,.tsx",
         "lint:fsd": "steiger ./src",
         "format": "prettier --write .",
-        "test": "vitest run",
-        "test:watch": "vitest",
-        "test:coverage": "vitest run --coverage"
+        "test": "vitest run --pool=forks",
+        "test:watch": "vitest --pool=forks",
+        "test:coverage": "vitest run --pool=forks --coverage"
     },
     "dependencies": {
         "@dnd-kit/core": "^6.3.1",
