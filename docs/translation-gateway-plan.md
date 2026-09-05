@@ -230,6 +230,11 @@ leitor em loop.
 
 ## Privacidade, operação e gates
 
+- Operador definido para a fase atual: Ruan Moraes, pessoa física, com contato
+  público `ruanmoraessantosbarbosa@gmail.com`.
+- URLs canônicas reservadas: `https://app.mangareader.com/legal/terms` e
+  `https://app.mangareader.com/legal/privacy`; domínio, HTTPS e publicação ainda
+  são pendências, portanto não constituem políticas públicas vigentes.
 - Atualizar termos e privacidade web nos três locales antes do primeiro upload
   real, incluindo Google Cloud, transferência Brasil→EUA, finalidade, copyright,
   retenção e cancelamento.
@@ -237,8 +242,8 @@ leitor em loop.
   agregadas sem conteúdo podem permanecer.
 - Logs/eventos nunca incluem imagem, texto, filename, path/URI, token, URL
   assinada ou resposta bruta.
-- URLs legais HTTPS, operador e contato reais são configuração obrigatória;
-  ausência fecha o kill switch.
+- URLs legais publicadas em HTTPS, versão aprovada e política de treinamento do
+  provider são configuração obrigatória; ausência mantém o gateway fail-closed.
 - Play Integrity e proteção forte contra reinstalação ficam em M7; o alpha usa
   quota por instalação, limite global e rate limit conservador.
 - Qualidade permanece `verification-pending` até benchmark humano autorizado;

@@ -1,0 +1,17 @@
+# Valores públicos pretendidos. Este arquivo não habilita o gateway.
+project_id      = "replace-with-gcp-project-id"
+container_image = "replace-with-immutable-image-reference"
+gateway_enabled = false
+
+disclosure = {
+  # TODO: preencher somente após revisão jurídica e publicação das URLs.
+  version                  = ""
+  operator_name            = "Ruan Moraes"
+  operator_contact         = "ruanmoraessantosbarbosa@gmail.com"
+  # TODO: publicar estas rotas com HTTPS e acesso direto antes de usar o disclosure.
+  privacy_policy_url       = "https://app.mangareader.com/legal/privacy"
+  terms_url                = "https://app.mangareader.com/legal/terms"
+  # URL pública complementar (não integra o shape atual do disclosure):
+  # https://app.mangareader.com/legal/contact
+  provider_training_policy = ""
+}
