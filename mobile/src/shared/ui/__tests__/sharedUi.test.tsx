@@ -15,13 +15,127 @@ import { ListRow } from '../ListRow';
 import { NavigationHeader } from '../NavigationHeader';
 import { PageContainer } from '../PageContainer';
 import { ProgressSteps } from '../ProgressSteps';
-import { RANGE_SLIDER_THUMB_RADIUS, RANGE_SLIDER_THUMB_SIZE, RangeSlider, resolveRangeSliderValue } from '../RangeSlider';
+import { RANGE_SLIDER_THUMB_RADIUS, RANGE_SLIDER_THUMB_SIZE, RangeSlider, resolveRangeSliderThumbPosition, resolveRangeSliderValue } from '../RangeSlider';
 import { resolveSegmentedControlStacked, SegmentedControl } from '../SegmentedControl';
 import { resolveSelectSheetHeight, SelectField } from '../SelectField';
 import { Skeleton } from '../Skeleton';
 import { StatusMessage } from '../StatusMessage';
 import { SwatchPicker } from '../SwatchPicker';
 import { resolveSwitchRowStacked, SwitchRow } from '../SwitchRow';
+
+jest.mock('react-native-worklets', () => ({
+    scheduleOnRN: (callback: (...args: unknown[]) => void, ...args: unknown[]) => callback(...args),
+}));
+
+jest.mock('react-native-reanimated', () => {
+    const React = jest.requireActual('react');
+    const ReactNative = jest.requireActual('react-native');
+    const mockAnimatedView = React.forwardRef((mockProps: Record<string, unknown>, mockRef: unknown) =>
+        React.createElement(ReactNative.View, { ...mockProps, ref: mockRef }),
+    );
+
+    return {
+        __esModule: true,
+        default: { View: mockAnimatedView },
+        useAnimatedStyle: (mockFactory: () => Record<string, unknown>) => {
+            const mockStyle: Record<string, unknown> = {};
+            Object.keys(mockFactory()).forEach(mockKey => {
+                Object.defineProperty(mockStyle, mockKey, { enumerable: true, get: () => mockFactory()[mockKey] });
+            });
+            return mockStyle;
+        },
+        useSharedValue: (initialValue: unknown) => React.useRef({ value: initialValue }).current,
+    };
+});
+
+jest.mock('react-native-gesture-handler', () => {
+    type MockGestureEvent = { nativeEvent?: MockGestureEvent; success?: boolean; translationX?: number; x?: number };
+    type MockGestureCallback = (...args: unknown[]) => unknown;
+    type MockGesture = {
+        callbacks: Record<string, MockGestureCallback>;
+        kind: 'pan' | 'tap';
+        activeOffsetX: (value: number[]) => MockGesture;
+        averageTouches: (value: boolean) => MockGesture;
+        enabled: (value: boolean) => MockGesture;
+        failOffsetY: (value: number[]) => MockGesture;
+        maxDistance: (value: number) => MockGesture;
+        maxPointers: (value: number) => MockGesture;
+        onBegin: (callback: MockGestureCallback) => MockGesture;
+        onEnd: (callback: MockGestureCallback) => MockGesture;
+        onFinalize: (callback: MockGestureCallback) => MockGesture;
+        onStart: (callback: MockGestureCallback) => MockGesture;
+        onUpdate: (callback: MockGestureCallback) => MockGesture;
+        shouldCancelWhenOutside: (value: boolean) => MockGesture;
+        withTestId: (value: string) => MockGesture;
+    };
+    const React = jest.requireActual('react');
+    const createGesture = (kind: MockGesture['kind']): MockGesture => {
+        const callbacks: Record<string, MockGestureCallback> = {};
+        const gesture: MockGesture = {
+            callbacks,
+            kind,
+            activeOffsetX: () => gesture,
+            averageTouches: () => gesture,
+            enabled: () => gesture,
+            failOffsetY: () => gesture,
+            maxDistance: () => gesture,
+            maxPointers: () => gesture,
+            onBegin: callback => {
+                callbacks.begin = callback;
+                return gesture;
+            },
+            onEnd: callback => {
+                callbacks.end = callback;
+                return gesture;
+            },
+            onFinalize: callback => {
+                callbacks.finalize = callback;
+                return gesture;
+            },
+            onStart: callback => {
+                callbacks.start = callback;
+                return gesture;
+            },
+            onUpdate: callback => {
+                callbacks.update = callback;
+                return gesture;
+            },
+            shouldCancelWhenOutside: () => gesture,
+            withTestId: () => gesture,
+        };
+        return gesture;
+    };
+    const getEvent = (event: unknown): MockGestureEvent => {
+        if (typeof event !== 'object' || event === null) return {};
+        const gestureEvent = event as MockGestureEvent;
+        return gestureEvent.nativeEvent ?? gestureEvent;
+    };
+    const getSuccess = (event: unknown) => {
+        const gestureEvent = getEvent(event);
+        return gestureEvent.success ?? true;
+    };
+
+    return {
+        Gesture: {
+            Pan: () => createGesture('pan'),
+            Race: (...gestures: MockGesture[]) => ({ gestures }),
+            Tap: () => createGesture('tap'),
+        },
+        GestureDetector: ({ children, gesture }: { children: unknown; gesture: MockGesture | { gestures: MockGesture[] } }) => {
+            const gestures = 'gestures' in gesture ? gesture.gestures : [gesture];
+            const pan = gestures.find(candidate => candidate.kind === 'pan');
+            const tap = gestures.find(candidate => candidate.kind === 'tap');
+            return React.cloneElement(children, {
+                onRangeSliderPanBegin: (event: unknown) => pan?.callbacks.begin?.(getEvent(event)),
+                onRangeSliderPanEnd: (event: unknown) => pan?.callbacks.end?.(getEvent(event), getSuccess(event)),
+                onRangeSliderPanFinalize: (event: unknown) => pan?.callbacks.finalize?.(getEvent(event), getSuccess(event)),
+                onRangeSliderPanStart: (event: unknown) => pan?.callbacks.start?.(getEvent(event)),
+                onRangeSliderPanUpdate: (event: unknown) => pan?.callbacks.update?.(getEvent(event)),
+                onRangeSliderTapEnd: (event: unknown) => tap?.callbacks.end?.(getEvent(event), getSuccess(event)),
+            });
+        },
+    };
+});
 
 function withTheme(node: React.ReactNode) {
     return render(
@@ -165,6 +279,41 @@ describe('shared ui', () => {
         expect(StyleSheet.flatten(view.getByTestId('swatch-picker-group').props.style)).toEqual(expect.objectContaining({ alignSelf: 'stretch' }));
         fireEvent.press(view.getByRole('radio', { name: 'BLACK' }));
         expect(onChange).toHaveBeenCalledWith('BLACK');
+    });
+
+    it('mantém a última escolha otimista enquanto atualizações controladas anteriores chegam', () => {
+        const onChange = jest.fn();
+        const options = ['WHITE', 'SEPIA', 'BLACK'] as const;
+        const picker = (value: (typeof options)[number]) => (
+            <SwatchPicker
+                label="Fundo"
+                value={value}
+                options={options}
+                optionLabel={option => option}
+                optionColor={option => ({ WHITE: '#FFFFFF', SEPIA: '#E6D2A6', BLACK: '#000000' })[option]}
+                onChange={onChange}
+            />
+        );
+        const themedPicker = (value: (typeof options)[number]) => (
+            <SafeAreaProvider initialMetrics={{ frame: { x: 0, y: 0, width: 390, height: 844 }, insets: { top: 47, right: 0, bottom: 34, left: 0 } }}>
+                <ThemeProvider initialOverride="dark" waitForPlatform={false}>
+                    {picker(value)}
+                </ThemeProvider>
+            </SafeAreaProvider>
+        );
+        const view = render(themedPicker('SEPIA'));
+
+        fireEvent.press(view.getByRole('radio', { name: 'WHITE' }));
+        fireEvent.press(view.getByRole('radio', { name: 'BLACK' }));
+        view.rerender(themedPicker('WHITE'));
+
+        expect(view.getByRole('radio', { name: 'BLACK' }).props.accessibilityState.selected).toBe(true);
+
+        view.rerender(themedPicker('BLACK'));
+
+        expect(view.getByRole('radio', { name: 'BLACK' }).props.accessibilityState.selected).toBe(true);
+        expect(onChange).toHaveBeenNthCalledWith(1, 'WHITE');
+        expect(onChange).toHaveBeenNthCalledWith(2, 'BLACK');
     });
 
     it('mantém título e descrição ao lado do preview no card de escolha', () => {
@@ -618,7 +767,8 @@ describe('shared ui', () => {
     it.each([
         { expectedLeft: 0, value: 0 },
         { expectedLeft: 176, value: 100 },
-    ])('mantém o thumb dentro da área interativa no extremo $value', ({ expectedLeft, value }) => {
+    ])('mantém o thumb dentro do contêiner no extremo $value', ({ expectedLeft, value }) => {
+        const thumbCenter = resolveRangeSliderThumbPosition(value, 200, 0, 100, RANGE_SLIDER_THUMB_RADIUS);
         const view = withTheme(
             <RangeSlider
                 decrementLabel="Diminuir saturação"
@@ -630,58 +780,188 @@ describe('shared ui', () => {
                 value={value}
             />,
         );
-        const slider = view.getByTestId('range-slider-native');
 
         act(() => {
-            fireEvent(slider, 'layout', { nativeEvent: { layout: { width: 200 } } });
+            fireEvent(view.getByTestId('range-slider-track'), 'layout', { nativeEvent: { layout: { width: 200 } } });
         });
 
         const thumbStyle = StyleSheet.flatten(view.UNSAFE_getByProps({ testID: 'range-slider-thumb' }).props.style);
         const railStyle = StyleSheet.flatten(view.getByTestId('range-slider-rail').props.style);
-        expect(thumbStyle).toEqual(expect.objectContaining({ height: RANGE_SLIDER_THUMB_SIZE, left: expectedLeft, width: RANGE_SLIDER_THUMB_SIZE }));
-        expect(thumbStyle.left + thumbStyle.width).toBeLessThanOrEqual(200);
+        expect(thumbCenter - RANGE_SLIDER_THUMB_RADIUS).toBe(expectedLeft);
+        expect(thumbCenter + RANGE_SLIDER_THUMB_RADIUS).toBeLessThanOrEqual(200);
+        expect(thumbStyle).toEqual(expect.objectContaining({ height: RANGE_SLIDER_THUMB_SIZE, left: 0, width: RANGE_SLIDER_THUMB_SIZE }));
         expect(railStyle.marginHorizontal).toBe(RANGE_SLIDER_THUMB_RADIUS);
     });
 
     it.each([
-        { releasedValue: 60, value: 50 },
-        { releasedValue: 40, value: 50 },
-    ])('MOB-FEAT-034 AC-004 mantém o valor $releasedValue liberado enquanto aguarda a confirmação do pai', ({ releasedValue, value }) => {
+        { controlledValue: 100, direction: 'da direita para a esquerda', startX: 188, translationX: -88 },
+        { controlledValue: 0, direction: 'da esquerda para a direita', startX: 12, translationX: 88 },
+    ])(
+        'MOB-FEAT-034 AC-004 fixa o release $direction apesar de prop antiga e evento tardio',
+        ({ controlledValue, direction: _direction, startX, translationX }) => {
+            const onChange = jest.fn();
+            const renderSlider = (value: number) => (
+                <SafeAreaProvider initialMetrics={{ frame: { x: 0, y: 0, width: 390, height: 844 }, insets: { top: 47, right: 0, bottom: 34, left: 0 } }}>
+                    <ThemeProvider initialOverride="dark" waitForPlatform={false}>
+                        <RangeSlider
+                            decrementLabel="Diminuir saturação"
+                            incrementLabel="Aumentar saturação"
+                            label="Saturação"
+                            maximum={100}
+                            minimum={0}
+                            onChange={onChange}
+                            step={5}
+                            value={value}
+                        />
+                    </ThemeProvider>
+                </SafeAreaProvider>
+            );
+            const view = render(renderSlider(controlledValue));
+            const slider = view.getByTestId('range-slider-track');
+
+            act(() => {
+                fireEvent(slider, 'layout', { nativeEvent: { layout: { width: 200 } } });
+                fireEvent(slider, 'rangeSliderPanBegin', { x: startX });
+                fireEvent(slider, 'rangeSliderPanStart', { x: startX, translationX: 0 });
+                fireEvent(slider, 'rangeSliderPanUpdate', { x: startX + translationX });
+            });
+            expect(onChange).not.toHaveBeenCalled();
+
+            act(() => fireEvent(slider, 'rangeSliderPanEnd', { success: true, x: startX + translationX }));
+            expect(onChange).toHaveBeenCalledTimes(1);
+            expect(onChange).toHaveBeenCalledWith(50);
+            expect(view.getByRole('adjustable', { name: 'Saturação' }).props.accessibilityValue.now).toBe(50);
+
+            act(() => view.rerender(renderSlider(controlledValue)));
+            expect(view.getByRole('adjustable', { name: 'Saturação' }).props.accessibilityValue.now).toBe(50);
+
+            act(() => fireEvent(view.getByTestId('range-slider-track'), 'rangeSliderPanUpdate', { x: startX + 120 }));
+            expect(onChange).toHaveBeenCalledTimes(1);
+            expect(view.getByRole('adjustable', { name: 'Saturação' }).props.accessibilityValue.now).toBe(50);
+
+            act(() => view.rerender(renderSlider(50)));
+            expect(view.getByRole('adjustable', { name: 'Saturação' }).props.accessibilityValue.now).toBe(50);
+        },
+    );
+
+    it.each([
+        { beginX: 188, controlledValue: 100, direction: 'da direita para a esquerda', finalX: 100.2, startX: 174.9, translationX: -74.7 },
+        { beginX: 12, controlledValue: 0, direction: 'da esquerda para a direita', finalX: 99.8, startX: 25.1, translationX: 74.7 },
+    ])(
+        'MOB-FEAT-034 AC-004 preserva o offset $direction quando o Android zera translationX ao ativar o pan',
+        ({ beginX, controlledValue, direction: _direction, finalX, startX, translationX }) => {
+            const onChange = jest.fn();
+            const view = withTheme(
+                <RangeSlider
+                    decrementLabel="Diminuir saturação"
+                    incrementLabel="Aumentar saturação"
+                    label="Saturação"
+                    maximum={100}
+                    minimum={0}
+                    onChange={onChange}
+                    step={5}
+                    value={controlledValue}
+                />,
+            );
+            const slider = view.getByTestId('range-slider-track');
+
+            act(() => {
+                fireEvent(slider, 'layout', { nativeEvent: { layout: { width: 200 } } });
+                fireEvent(slider, 'rangeSliderPanBegin', { x: beginX });
+                fireEvent(slider, 'rangeSliderPanStart', { x: startX, translationX: 0 });
+                fireEvent(slider, 'rangeSliderPanUpdate', { translationX, x: finalX });
+                fireEvent(slider, 'rangeSliderPanEnd', { success: true, x: finalX });
+            });
+
+            expect(onChange).toHaveBeenCalledTimes(1);
+            expect(onChange).toHaveBeenCalledWith(50);
+            expect(view.getByRole('adjustable', { name: 'Saturação' }).props.accessibilityValue.now).toBe(50);
+        },
+    );
+
+    it.each([
+        { controlledValue: 100, endX: 100, startX: 188 },
+        { controlledValue: 0, endX: 100, startX: 12 },
+    ])('captura o ponto terminal $controlledValue→50 mesmo sem onUpdate final', ({ controlledValue, endX, startX }) => {
         const onChange = jest.fn();
-        const renderSlider = (controlledValue: number) => (
-            <SafeAreaProvider initialMetrics={{ frame: { x: 0, y: 0, width: 390, height: 844 }, insets: { top: 47, right: 0, bottom: 34, left: 0 } }}>
-                <ThemeProvider initialOverride="dark" waitForPlatform={false}>
-                    <RangeSlider
-                        decrementLabel="Diminuir saturação"
-                        incrementLabel="Aumentar saturação"
-                        label="Saturação"
-                        maximum={100}
-                        minimum={0}
-                        onChange={onChange}
-                        step={5}
-                        value={controlledValue}
-                    />
-                </ThemeProvider>
-            </SafeAreaProvider>
+        const view = withTheme(
+            <RangeSlider
+                decrementLabel="Diminuir saturação"
+                incrementLabel="Aumentar saturação"
+                label="Saturação"
+                maximum={100}
+                minimum={0}
+                onChange={onChange}
+                step={5}
+                value={controlledValue}
+            />,
         );
-        const view = render(renderSlider(value));
-        const slider = view.getByTestId('range-slider-native');
+        const slider = view.getByTestId('range-slider-track');
 
         act(() => {
-            fireEvent(slider, 'slidingStart', value);
-            fireEvent(slider, 'valueChange', releasedValue);
-            fireEvent(slider, 'slidingComplete', releasedValue);
+            fireEvent(slider, 'layout', { nativeEvent: { layout: { width: 200 } } });
+            fireEvent(slider, 'rangeSliderPanBegin', { x: startX });
+            fireEvent(slider, 'rangeSliderPanStart', { x: startX, translationX: 0 });
+            fireEvent(slider, 'rangeSliderPanEnd', { success: true, x: endX });
         });
 
         expect(onChange).toHaveBeenCalledTimes(1);
-        expect(onChange).toHaveBeenCalledWith(releasedValue);
-        expect(view.getByTestId('range-slider-native').props.accessibilityValue.now).toBe(releasedValue);
+        expect(onChange).toHaveBeenCalledWith(50);
+        expect(view.getByRole('adjustable', { name: 'Saturação' }).props.accessibilityValue.now).toBe(50);
+    });
 
-        act(() => view.rerender(renderSlider(value)));
-        expect(view.getByTestId('range-slider-native').props.accessibilityValue.now).toBe(releasedValue);
+    it('restaura o valor controlado ao cancelar um pan sem persistir', () => {
+        const onChange = jest.fn();
+        const view = withTheme(
+            <RangeSlider
+                decrementLabel="Diminuir saturação"
+                incrementLabel="Aumentar saturação"
+                label="Saturação"
+                maximum={100}
+                minimum={0}
+                onChange={onChange}
+                step={5}
+                value={100}
+            />,
+        );
+        const slider = view.getByTestId('range-slider-track');
 
-        act(() => view.rerender(renderSlider(releasedValue)));
-        expect(view.getByTestId('range-slider-native').props.accessibilityValue.now).toBe(releasedValue);
+        act(() => {
+            fireEvent(slider, 'layout', { nativeEvent: { layout: { width: 200 } } });
+            fireEvent(slider, 'rangeSliderPanBegin', { x: 188 });
+            fireEvent(slider, 'rangeSliderPanStart', { x: 188, translationX: 0 });
+            fireEvent(slider, 'rangeSliderPanUpdate', { x: 100 });
+            fireEvent(slider, 'rangeSliderPanFinalize', { success: false });
+        });
+
+        expect(onChange).not.toHaveBeenCalled();
+        expect(view.getByRole('adjustable', { name: 'Saturação' }).props.accessibilityValue.now).toBe(100);
+    });
+
+    it('mapeia um toque no trilho para o valor final e emite uma única mudança', () => {
+        const onChange = jest.fn();
+        const view = withTheme(
+            <RangeSlider
+                decrementLabel="Diminuir saturação"
+                incrementLabel="Aumentar saturação"
+                label="Saturação"
+                maximum={100}
+                minimum={0}
+                onChange={onChange}
+                step={5}
+                value={0}
+            />,
+        );
+        const slider = view.getByTestId('range-slider-track');
+
+        act(() => {
+            fireEvent(slider, 'layout', { nativeEvent: { layout: { width: 200 } } });
+            fireEvent(slider, 'rangeSliderTapEnd', { success: true, x: 100 });
+        });
+
+        expect(onChange).toHaveBeenCalledTimes(1);
+        expect(onChange).toHaveBeenCalledWith(50);
+        expect(view.getByRole('adjustable', { name: 'Saturação' }).props.accessibilityValue.now).toBe(50);
     });
 
     it.each([

@@ -46,7 +46,7 @@ export function SwatchPicker<T extends string>({
         const previousValue = previousValueRef.current;
         previousValueRef.current = value;
 
-        if (pendingOptionRef.current === value || (pendingOptionRef.current !== null && value !== previousValue)) {
+        if (pendingOptionRef.current === value) {
             pendingOptionRef.current = null;
             setOptimisticOption(null);
             return;
