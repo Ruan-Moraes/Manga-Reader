@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Job Orphan Cleaner (8082)" type="MavenRunConfiguration" factoryName="Maven" folderName="Jobs">
+  <configuration default="false" name="Job Orphan Cleaner (8082)" type="MavenRunConfiguration" factoryName="Maven" folderName="Backend / Jobs">
     <MavenSettings>
       <option name="myGeneralSettings" />
       <option name="myRunnerSettings" />
@@ -10,6 +10,8 @@
           </option>
           <option name="goals">
             <list>
+              <option value="-pl" />
+              <option value="apps/jobs/orphan-cleaner" />
               <option value="spring-boot:run" />
             </list>
           </option>
@@ -18,7 +20,7 @@
             <map />
           </option>
           <option name="resolveToWorkspace" value="false" />
-          <option name="workingDirPath" value="$PROJECT_DIR$/api/jobs/orphan-cleaner" />
+          <option name="workingDirPath" value="$PROJECT_DIR$/api" />
         </MavenRunnerParameters>
       </option>
     </MavenSettings>

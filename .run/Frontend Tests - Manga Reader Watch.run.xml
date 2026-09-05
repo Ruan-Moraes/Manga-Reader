@@ -1,0 +1,11 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Frontend Tests - Manga Reader Watch" type="js.build_tools.npm" folderName="Frontend / Tests">
+    <package-json value="$PROJECT_DIR$/web/manga-reader/package.json" />
+    <command value="run" />
+    <scripts><script value="test:watch" /></scripts>
+    <node-interpreter value="project" />
+    <package-manager value="pnpm" />
+    <envs />
+    <method v="2" />
+  </configuration>
+</component>

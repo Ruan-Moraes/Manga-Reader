@@ -1,24 +1,14 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="API Core (8080)" type="MavenRunConfiguration" factoryName="Maven" folderName="Backend">
+  <configuration default="false" name="Backend Tests - All" type="MavenRunConfiguration" factoryName="Maven" folderName="Backend / Tests">
     <MavenSettings>
       <option name="myGeneralSettings" />
       <option name="myRunnerSettings" />
       <option name="myRunnerParameters">
         <MavenRunnerParameters>
-          <option name="profiles">
-            <set />
-          </option>
-          <option name="goals">
-            <list>
-              <option value="-pl" />
-              <option value="apps/core" />
-              <option value="spring-boot:run" />
-            </list>
-          </option>
+          <option name="profiles"><set /></option>
+          <option name="goals"><list><option value="test" /></list></option>
           <option name="pomFileName" value="pom.xml" />
-          <option name="profilesMap">
-            <map />
-          </option>
+          <option name="profilesMap"><map /></option>
           <option name="resolveToWorkspace" value="false" />
           <option name="workingDirPath" value="$PROJECT_DIR$/api" />
         </MavenRunnerParameters>
