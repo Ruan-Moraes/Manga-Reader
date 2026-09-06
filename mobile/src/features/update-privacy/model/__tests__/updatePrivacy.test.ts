@@ -1,8 +1,8 @@
 import { QueryClient } from '@tanstack/react-query';
 import AxiosMockAdapter from 'axios-mock-adapter';
 
-import { usePrivacySettingsStore } from '@/src/entities/user';
-import { api } from '@/src/shared/api';
+import { usePrivacySettingsStore } from '@/entities/user';
+import { api } from '@/shared/api';
 
 import {
     changeHistoryVisibility,

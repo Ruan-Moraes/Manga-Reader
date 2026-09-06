@@ -1,8 +1,8 @@
 import { Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-import { useTheme } from '@/src/shared/theme';
-import { FONTS } from '@/src/shared/theme';
+import { useTheme } from '@/shared/theme';
+import { FONTS } from '@/shared/theme';
 
 function passwordStrength(pw: string, tokens: { danger: string; warn: string; success: string; tertiary: string }) {
     if (!pw) return { score: 0, label: '', tone: tokens.tertiary };

@@ -5,9 +5,9 @@ import { scrollTo } from 'react-native-reanimated';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { scheduleOnRN } from 'react-native-worklets';
 
-import { type LocalMediaImportDraft, PENDING_MEDIA_VALIDATION } from '@/src/entities/local-media-import';
-import i18n from '@/src/shared/i18n';
-import { ThemeProvider } from '@/src/shared/theme';
+import { type LocalMediaImportDraft, PENDING_MEDIA_VALIDATION } from '@/entities/local-media-import';
+import i18n from '@/shared/i18n';
+import { ThemeProvider } from '@/shared/theme';
 
 import { REVIEW_DRAG_LONG_PRESS_MS } from '../../config/reviewLayout';
 import type { ReviewLocalMediaImportController, ReviewLocalMediaImportOutcome } from '../../model/reviewLocalMediaImport';
@@ -340,10 +340,11 @@ describe('MOB-FEAT-043 page organization redesign', () => {
         fireDrag(handle, 'gestureUpdate', { absoluteY: 200, translationX: 200, translationY: 0 });
         await act(async () => fireDrag(handle, 'gestureFinalize', { event: {}, success: true }));
         finishMotion();
+        await waitFor(() => expect(reviewer.reload).toHaveBeenCalledTimes(1));
+        finishMotion();
         const overlayStyle = StyleSheet.flatten(screen.getByTestId('review-drag-overlay', { includeHiddenElements: true }).props.style);
         expect(overlayStyle.transform[0].translateX).toBe(0);
         expect(reviewer.reorderItems).toHaveBeenCalledTimes(1);
-        expect(reviewer.reload).toHaveBeenCalledTimes(1);
         mockRejectLanding = false;
         finishMotion();
         expect(screen.queryByTestId('review-drag-overlay', { includeHiddenElements: true })).toBeNull();

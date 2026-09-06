@@ -2,13 +2,13 @@ import { Text, View } from 'react-native';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 
-import { useSessionStore } from '@/src/entities/session';
-import { usePrivacySettingsStore } from '@/src/entities/user';
-import { resolveSettingsAccess, SETTINGS_SECTIONS } from '@/src/features/navigate-settings';
-import { PrivacyControlsPanel } from '@/src/features/update-privacy';
-import { navigateBackOrReplace, ROUTES } from '@/src/shared/navigation';
-import { useTheme } from '@/src/shared/theme';
-import { Button, ScreenScaffold } from '@/src/shared/ui';
+import { useSessionStore } from '@/entities/session';
+import { usePrivacySettingsStore } from '@/entities/user';
+import { resolveSettingsAccess, SETTINGS_SECTIONS } from '@/features/navigate-settings';
+import { PrivacyControlsPanel } from '@/features/update-privacy';
+import { navigateBackOrReplace, ROUTES } from '@/shared/navigation';
+import { useTheme } from '@/shared/theme';
+import { Button, ScreenScaffold } from '@/shared/ui';
 
 export function SettingsPrivacyPage() {
     const { t } = useTranslation('settingsNavigation');

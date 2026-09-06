@@ -10,9 +10,9 @@ import {
 } from '@expo-google-fonts/nunito-sans';
 import { useTranslation } from 'react-i18next';
 
-import { useSettingsStore } from '@/src/features/manage-settings';
-import i18n from '@/src/shared/i18n';
-import { StartupFeedback } from '@/src/shared/ui';
+import { useSettingsStore } from '@/features/manage-settings';
+import i18n from '@/shared/i18n';
+import { StartupFeedback } from '@/shared/ui';
 
 export function SettingsGate({ children }: PropsWithChildren) {
     const { t } = useTranslation('launcher');

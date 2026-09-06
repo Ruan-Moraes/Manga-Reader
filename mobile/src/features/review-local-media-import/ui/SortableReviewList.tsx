@@ -3,8 +3,8 @@ import { type CellRendererProps, FlatList, Platform, useWindowDimensions, View }
 import { GestureDetector } from 'react-native-gesture-handler';
 import Reanimated, { useAnimatedStyle } from 'react-native-reanimated';
 
-import type { LocalMediaImportItem } from '@/src/entities/local-media-import';
-import { useTheme } from '@/src/shared/theme';
+import type { LocalMediaImportItem } from '@/entities/local-media-import';
+import { useTheme } from '@/shared/theme';
 
 import type { ReviewViewMode } from '../config/reviewLayout';
 import { resolveReviewColumnCount, resolveReviewRowPitch } from '../model/reviewSortGeometry';

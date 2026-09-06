@@ -1,7 +1,7 @@
 import { QueryClient, QueryObserver } from '@tanstack/react-query';
 import AxiosMockAdapter from 'axios-mock-adapter';
 
-import { api } from '@/src/shared/api';
+import { api } from '@/shared/api';
 
 import {
     moveContentLanguage,

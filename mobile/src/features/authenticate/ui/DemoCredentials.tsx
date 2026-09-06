@@ -1,8 +1,8 @@
 import { Platform, Text, TouchableOpacity, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-import { useTheme } from '@/src/shared/theme';
-import { FONTS } from '@/src/shared/theme';
+import { useTheme } from '@/shared/theme';
+import { FONTS } from '@/shared/theme';
 
 import { DEMO_CREDS } from '../config/demoCredentials';
 

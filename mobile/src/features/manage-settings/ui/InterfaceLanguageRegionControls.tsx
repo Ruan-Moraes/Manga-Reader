@@ -1,8 +1,8 @@
 import { useTranslation } from 'react-i18next';
 
-import { SUPPORTED_LANGUAGES } from '@/src/shared/i18n';
-import { DATE_FORMATS, SUPPORTED_TIMEZONES } from '@/src/shared/locale';
-import { AppText, ChoiceCards, FormSection, SectionStack, SegmentedControl, SelectField } from '@/src/shared/ui';
+import { SUPPORTED_LANGUAGES } from '@/shared/i18n';
+import { DATE_FORMATS, SUPPORTED_TIMEZONES } from '@/shared/locale';
+import { AppText, ChoiceCards, FormSection, SectionStack, SegmentedControl, SelectField } from '@/shared/ui';
 
 import { useSettingsStore } from '../model/settingsStore';
 

@@ -1,5 +1,5 @@
-import { type LocalMediaImportDraft, PENDING_MEDIA_VALIDATION } from '@/src/entities/local-media-import';
-import { MEDIA_VALIDATION_POLICY_VERSION } from '@/src/shared/media-inspection';
+import { type LocalMediaImportDraft, PENDING_MEDIA_VALIDATION } from '@/entities/local-media-import';
+import { MEDIA_VALIDATION_POLICY_VERSION } from '@/shared/media-inspection';
 
 import { availableTranslationFlowStep, visibleTranslationFlowStep } from '../translationFlow';
 

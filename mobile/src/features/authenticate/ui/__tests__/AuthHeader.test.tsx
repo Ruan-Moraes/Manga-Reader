@@ -2,8 +2,8 @@ import { StyleSheet, View } from 'react-native';
 import { Image } from 'expo-image';
 import { act, render } from '@testing-library/react-native';
 
-import i18n from '@/src/shared/i18n';
-import { ThemeProvider } from '@/src/shared/theme';
+import i18n from '@/shared/i18n';
+import { ThemeProvider } from '@/shared/theme';
 
 import { AuthHeader } from '../AuthHeader';
 

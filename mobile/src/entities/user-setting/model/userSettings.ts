@@ -5,16 +5,16 @@ import {
     normalizeDateFormat,
     normalizeTimezone,
     type SupportedTimezone,
-} from '@/src/shared/locale';
-import type { DensityPreference, FontSizePreference, ThemePreference } from '@/src/shared/theme';
+} from '@/shared/locale';
+import type { DensityPreference, FontSizePreference, ThemePreference } from '@/shared/theme';
 
 export type ReadingDirection = 'LTR' | 'RTL' | 'WEBTOON';
 export type ReadingMode = 'VERTICAL' | 'PAGED' | 'DOUBLE';
 export type ReadingFit = 'WIDTH' | 'HEIGHT' | 'ORIGINAL';
 export type ImageQuality = 'AUTO' | 'LOW' | 'MEDIUM' | 'HIGH' | 'ORIGINAL';
 export type ReaderBackground = 'BLACK' | 'DARK' | 'PAPER' | 'LIGHT' | 'WHITE';
-export type { DateFormatPreference, SupportedTimezone } from '@/src/shared/locale';
-export type { DensityPreference, FontSizePreference, ThemePreference } from '@/src/shared/theme';
+export type { DateFormatPreference, SupportedTimezone } from '@/shared/locale';
+export type { DensityPreference, FontSizePreference, ThemePreference } from '@/shared/theme';
 export type SyncStatus = 'local' | 'syncing' | 'synced' | 'error';
 
 export interface ReaderSettings {

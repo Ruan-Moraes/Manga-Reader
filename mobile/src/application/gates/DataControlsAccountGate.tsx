@@ -1,7 +1,7 @@
 import { type PropsWithChildren, useEffect } from 'react';
 
-import { useSessionStore } from '@/src/entities/session';
-import { clearDataControlTemporaries } from '@/src/features/data-controls';
+import { useSessionStore } from '@/entities/session';
+import { clearDataControlTemporaries } from '@/features/data-controls';
 
 export function DataControlsAccountGate({ children }: PropsWithChildren) {
     const identityEpoch = useSessionStore(state => state.identityEpoch);

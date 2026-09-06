@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 
-import { navigateBackOrReplace, ROUTES } from '@/src/shared/navigation';
-import { EmptyState, ScreenScaffold } from '@/src/shared/ui';
+import { navigateBackOrReplace, ROUTES } from '@/shared/navigation';
+import { EmptyState, ScreenScaffold } from '@/shared/ui';
 
 export function ModalPage() {
     const { t } = useTranslation('common');

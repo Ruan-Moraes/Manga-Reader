@@ -1,5 +1,5 @@
-import type { ReaderSettings } from '@/src/entities/user-setting';
-import { ReaderSettingsControls } from '@/src/features/configure-chapter-reader';
+import type { ReaderSettings } from '@/entities/user-setting';
+import { ReaderSettingsControls } from '@/features/configure-chapter-reader';
 
 interface Props {
     value: ReaderSettings;

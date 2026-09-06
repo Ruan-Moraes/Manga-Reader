@@ -3,9 +3,9 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { act, render, waitFor } from '@testing-library/react-native';
 import AxiosMockAdapter from 'axios-mock-adapter';
 
-import { useSessionStore } from '@/src/entities/session';
-import { usePrivacySettingsStore } from '@/src/entities/user';
-import { api } from '@/src/shared/api';
+import { useSessionStore } from '@/entities/session';
+import { usePrivacySettingsStore } from '@/entities/user';
+import { api } from '@/shared/api';
 
 import { PrivacyAccountGate } from '../PrivacyAccountGate';
 

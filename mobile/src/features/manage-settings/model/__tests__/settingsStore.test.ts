@@ -1,9 +1,9 @@
 import * as SecureStore from 'expo-secure-store';
 import AxiosMockAdapter from 'axios-mock-adapter';
 
-import { DEFAULT_USER_SETTINGS } from '@/src/entities/user-setting';
-import { api } from '@/src/shared/api';
-import i18n, { DEFAULT_LANGUAGE } from '@/src/shared/i18n';
+import { DEFAULT_USER_SETTINGS } from '@/entities/user-setting';
+import { api } from '@/shared/api';
+import i18n, { DEFAULT_LANGUAGE } from '@/shared/i18n';
 
 import { resetSettingsRuntimeForTests, useSettingsStore } from '../settingsStore';
 

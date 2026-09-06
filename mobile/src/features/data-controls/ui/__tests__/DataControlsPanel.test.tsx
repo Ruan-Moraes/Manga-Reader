@@ -2,8 +2,8 @@ import { Alert } from 'react-native';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react-native';
 
-import { useSessionStore } from '@/src/entities/session';
-import { ThemeProvider } from '@/src/shared/theme';
+import { useSessionStore } from '@/entities/session';
+import { ThemeProvider } from '@/shared/theme';
 
 import { DataControlsPanel } from '../DataControlsPanel';
 

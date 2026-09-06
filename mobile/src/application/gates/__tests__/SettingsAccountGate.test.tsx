@@ -1,9 +1,9 @@
 import { Text } from 'react-native';
 import { act, render, screen, waitFor } from '@testing-library/react-native';
 
-import { useSessionStore } from '@/src/entities/session';
-import { useSettingsStore } from '@/src/features/manage-settings';
-import { ThemeProvider } from '@/src/shared/theme';
+import { useSessionStore } from '@/entities/session';
+import { useSettingsStore } from '@/features/manage-settings';
+import { ThemeProvider } from '@/shared/theme';
 
 import { SettingsAccountBoundary, SettingsAccountGate } from '../SettingsAccountGate';
 

@@ -2,13 +2,13 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react-nativ
 import AxiosMockAdapter from 'axios-mock-adapter';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
-import { type LocalMediaImportDraft, PENDING_MEDIA_VALIDATION } from '@/src/entities/local-media-import';
-import type { CreateTranslationProjectController } from '@/src/features/create-translation-project';
-import { type LocalMediaImportController, LocalMediaImportError } from '@/src/features/import-local-media';
-import type { ReviewLocalMediaImportController } from '@/src/features/review-local-media-import';
-import type { ValidateLocalMediaController } from '@/src/features/validate-local-media';
-import { api } from '@/src/shared/api';
-import i18n from '@/src/shared/i18n';
+import { type LocalMediaImportDraft, PENDING_MEDIA_VALIDATION } from '@/entities/local-media-import';
+import type { CreateTranslationProjectController } from '@/features/create-translation-project';
+import { type LocalMediaImportController, LocalMediaImportError } from '@/features/import-local-media';
+import type { ReviewLocalMediaImportController } from '@/features/review-local-media-import';
+import type { ValidateLocalMediaController } from '@/features/validate-local-media';
+import { api } from '@/shared/api';
+import i18n from '@/shared/i18n';
 
 import { OfflineTranslationPage } from '../OfflineTranslationPage';
 

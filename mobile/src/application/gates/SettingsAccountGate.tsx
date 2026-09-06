@@ -1,9 +1,9 @@
 import { type PropsWithChildren, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { useSessionStore } from '@/src/entities/session';
-import { useSettingsStore } from '@/src/features/manage-settings';
-import { StartupFeedback } from '@/src/shared/ui';
+import { useSessionStore } from '@/entities/session';
+import { useSettingsStore } from '@/features/manage-settings';
+import { StartupFeedback } from '@/shared/ui';
 
 interface SettingsAccountBoundaryProps extends PropsWithChildren {
     identityEpoch: number;

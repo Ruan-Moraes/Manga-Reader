@@ -2,10 +2,10 @@ import { useMemo, useState } from 'react';
 import { View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-import { appMetadata, type ExternalLinkKey, externalLinks } from '@/src/shared/config';
-import { navigateBackOrReplace, ROUTES } from '@/src/shared/navigation';
-import { useTheme } from '@/src/shared/theme';
-import { AppText, Button, FormSection, Icon, type IconName, ListRow, ScreenScaffold, SectionStack } from '@/src/shared/ui';
+import { appMetadata, type ExternalLinkKey, externalLinks } from '@/shared/config';
+import { navigateBackOrReplace, ROUTES } from '@/shared/navigation';
+import { useTheme } from '@/shared/theme';
+import { AppText, Button, FormSection, Icon, type IconName, ListRow, ScreenScaffold, SectionStack } from '@/shared/ui';
 
 const LINK_ICONS: Record<ExternalLinkKey, IconName> = {
     privacy: 'shield-checkmark-outline',

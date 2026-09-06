@@ -1,8 +1,8 @@
 import * as SecureStore from 'expo-secure-store';
 import { z } from 'zod';
 
-import type { RemoteGatewayTransport } from '@/src/shared/remote-gateway';
-import { registerLocalDataParticipant } from '@/src/shared/storage';
+import type { RemoteGatewayTransport } from '@/shared/remote-gateway';
+import { registerLocalDataParticipant } from '@/shared/storage';
 
 const INSTALLATION_KEY = 'mr_remote_gateway_installation_v1';
 

@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 
-import { type ContentLanguageChain, deriveGuestContentLanguages, normalizeContentLanguages } from '@/src/entities/content-language-preference';
-import type { SupportedLanguage } from '@/src/shared/i18n';
+import { type ContentLanguageChain, deriveGuestContentLanguages, normalizeContentLanguages } from '@/entities/content-language-preference';
+import type { SupportedLanguage } from '@/shared/i18n';
 
 export type ContentLanguagesHydrationStatus = 'guest' | 'loading' | 'ready' | 'error';
 export type ContentLanguagesSyncStatus = 'idle' | 'syncing' | 'error';

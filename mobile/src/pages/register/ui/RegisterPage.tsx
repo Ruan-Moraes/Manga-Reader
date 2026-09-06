@@ -2,10 +2,10 @@ import { useState } from 'react';
 import { Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-import { AuthCheckbox, AuthFooter, AuthHeader, MRIcon, signUp, StrengthMeter } from '@/src/features/authenticate';
-import { navigateBackOrReplace, ROUTES } from '@/src/shared/navigation';
-import { FONTS, useTheme } from '@/src/shared/theme';
-import { Button, IconButton, Input, NavigationHeader, PageContainer } from '@/src/shared/ui';
+import { AuthCheckbox, AuthFooter, AuthHeader, MRIcon, signUp, StrengthMeter } from '@/features/authenticate';
+import { navigateBackOrReplace, ROUTES } from '@/shared/navigation';
+import { FONTS, useTheme } from '@/shared/theme';
+import { Button, IconButton, Input, NavigationHeader, PageContainer } from '@/shared/ui';
 
 export function RegisterPage() {
     const { spacing, tokens, typography } = useTheme();

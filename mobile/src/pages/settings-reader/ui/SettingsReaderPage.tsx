@@ -1,10 +1,10 @@
 import { useTranslation } from 'react-i18next';
 
-import { normalizeReaderSettings } from '@/src/features/configure-chapter-reader';
-import { SettingsSyncStatus, useSettingsStore } from '@/src/features/manage-settings';
-import { navigateBackOrReplace, ROUTES } from '@/src/shared/navigation';
-import { ScreenScaffold } from '@/src/shared/ui';
-import { ReaderPreferencesSection } from '@/src/widgets/chapter-reader';
+import { normalizeReaderSettings } from '@/features/configure-chapter-reader';
+import { SettingsSyncStatus, useSettingsStore } from '@/features/manage-settings';
+import { navigateBackOrReplace, ROUTES } from '@/shared/navigation';
+import { ScreenScaffold } from '@/shared/ui';
+import { ReaderPreferencesSection } from '@/widgets/chapter-reader';
 
 export function SettingsReaderPage() {
     const { t } = useTranslation('settingsNavigation');

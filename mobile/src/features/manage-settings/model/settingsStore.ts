@@ -8,10 +8,10 @@ import {
     type SyncStatus,
     themePreferenceToColorScheme,
     type UserSettings,
-} from '@/src/entities/user-setting';
-import i18n, { DEFAULT_LANGUAGE, isSupportedLanguage, type SupportedLanguage } from '@/src/shared/i18n';
-import { readJson, secureKeyValueStorage, writeJson } from '@/src/shared/storage';
-import type { ColorScheme } from '@/src/shared/theme';
+} from '@/entities/user-setting';
+import i18n, { DEFAULT_LANGUAGE, isSupportedLanguage, type SupportedLanguage } from '@/shared/i18n';
+import { readJson, secureKeyValueStorage, writeJson } from '@/shared/storage';
+import type { ColorScheme } from '@/shared/theme';
 
 import { updateMySettings } from '../api/manageSettingsApi';
 import { applyUserSettingsPaths, diffUserSettings, isUserSettingsPath, mergeUserSettingsPaths, type UserSettingsPath } from './deviceSettings';

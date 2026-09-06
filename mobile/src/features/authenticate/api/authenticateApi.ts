@@ -1,6 +1,6 @@
-import type { User, UserRole } from '@/src/entities/user';
-import { api, tokenStorage } from '@/src/shared/api';
-import type { ApiResponse } from '@/src/shared/model';
+import type { User, UserRole } from '@/entities/user';
+import { api, tokenStorage } from '@/shared/api';
+import type { ApiResponse } from '@/shared/model';
 
 export interface SignInRequest {
     email: string;

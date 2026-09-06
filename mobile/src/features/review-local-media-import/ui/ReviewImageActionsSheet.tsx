@@ -4,8 +4,8 @@ import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaInsetsContext } from 'react-native-safe-area-context';
 
-import { useTheme } from '@/src/shared/theme';
-import { AppText, Button, IconButton } from '@/src/shared/ui';
+import { useTheme } from '@/shared/theme';
+import { AppText, Button, IconButton } from '@/shared/ui';
 
 interface Props {
     visible: boolean;

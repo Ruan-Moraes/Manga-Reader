@@ -5,10 +5,10 @@ import {
     type LocalMediaImportRepository,
     localMediaImportRepository,
     type MediaValidationFields,
-} from '@/src/entities/local-media-import';
-import { appPrivateBatchFiles, type PrivateBatchFiles } from '@/src/shared/files';
-import { inspectLocalImage, MEDIA_VALIDATION_POLICY_VERSION, type MediaInspectionResult } from '@/src/shared/media-inspection';
-import { type LocalMediaPicker, systemLocalMediaPicker } from '@/src/shared/media-picker';
+} from '@/entities/local-media-import';
+import { appPrivateBatchFiles, type PrivateBatchFiles } from '@/shared/files';
+import { inspectLocalImage, MEDIA_VALIDATION_POLICY_VERSION, type MediaInspectionResult } from '@/shared/media-inspection';
+import { type LocalMediaPicker, systemLocalMediaPicker } from '@/shared/media-picker';
 
 export type ValidateLocalMediaErrorCode = 'prerequisite-required' | 'stale-draft' | 'storage-unavailable' | 'picker-unavailable' | 'invalid-selection';
 
@@ -95,29 +95,25 @@ export function createValidateLocalMediaController(overrides: Partial<Dependenci
                 if (!draft.items.length || draft.confirmedAt === null || draft.languagesConfirmedAt === null) {
                     throw new ValidateLocalMediaError('prerequisite-required');
                 }
-                let current = draft;
+                // Own the snapshot so per-page commits do not clone or hydrate the entire batch.
+                const current = { ...draft, items: draft.items.map(item => ({ ...item })) };
                 const pending = current.items.filter(item => options.force || !isCurrent(item));
                 options.onProgress?.({ completed: 0, total: pending.length });
-                for (const [index, selected] of pending.entries()) {
-                    const item = current.items.find(candidate => candidate.id === selected.id);
-                    if (!item) throw new ValidateLocalMediaError('stale-draft');
+                for (const [index, item] of pending.entries()) {
                     const uri = dependencies.files.fileUri(LOCAL_MEDIA_IMPORT_NAMESPACE, current.id, item.localFilename);
                     const result = await dependencies.inspect(uri, item.byteSize).catch(() => {
                         throw new ValidateLocalMediaError('storage-unavailable');
                     });
                     const updatedAt = Math.max(dependencies.now(), current.updatedAt + 1);
+                    const validation = validationFields(result, updatedAt);
                     try {
-                        current = await dependencies.repository.updateMediaValidation(
-                            current.id,
-                            item.id,
-                            validationFields(result, updatedAt),
-                            updatedAt,
-                            current.updatedAt,
-                        );
+                        await dependencies.repository.updateMediaValidation(current.id, item.id, validation, updatedAt, current.updatedAt);
                     } catch (error) {
                         const code = error instanceof Error && error.message === 'localMediaImport.staleDraft' ? 'stale-draft' : 'storage-unavailable';
                         throw new ValidateLocalMediaError(code);
                     }
+                    Object.assign(item, validation);
+                    current.updatedAt = updatedAt;
                     options.onProgress?.({ completed: index + 1, total: pending.length });
                 }
                 return current;

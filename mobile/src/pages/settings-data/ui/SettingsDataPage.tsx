@@ -1,9 +1,9 @@
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 
-import { DataControlsPanel } from '@/src/features/data-controls';
-import { navigateBackOrReplace, ROUTES } from '@/src/shared/navigation';
-import { ScreenScaffold } from '@/src/shared/ui';
+import { DataControlsPanel } from '@/features/data-controls';
+import { navigateBackOrReplace, ROUTES } from '@/shared/navigation';
+import { ScreenScaffold } from '@/shared/ui';
 
 export function SettingsDataPage() {
     const { t } = useTranslation('settingsNavigation');

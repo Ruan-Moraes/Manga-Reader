@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-import type { PrivacyPatch } from '@/src/entities/user';
+import type { PrivacyPatch } from '@/entities/user';
 
 interface PrivacyMutationState {
     error: string | null;

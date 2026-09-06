@@ -2,17 +2,17 @@ import { View } from 'react-native';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 
-import { useSessionStore } from '@/src/entities/session';
-import { usePrivacySettingsStore } from '@/src/entities/user';
-import { useDataControlsStore } from '@/src/features/data-controls';
-import { useContentLanguagesStore } from '@/src/features/manage-content-languages';
-import { useSettingsStore } from '@/src/features/manage-settings';
-import { resolveSettingsAccess, SETTINGS_SECTIONS, type SettingsGroup, type SettingsSectionId } from '@/src/features/navigate-settings';
-import { usePrivacyMutationStore } from '@/src/features/update-privacy';
-import { navigateBackOrReplace, ROUTES } from '@/src/shared/navigation';
-import { useTheme } from '@/src/shared/theme';
-import { AppText, type IconName, NavigationHeader, PageContainer } from '@/src/shared/ui';
-import { SettingsGroupCard, SettingsIndex, type SettingsIndexItem, SettingsSections } from '@/src/widgets/settings-index';
+import { useSessionStore } from '@/entities/session';
+import { usePrivacySettingsStore } from '@/entities/user';
+import { useDataControlsStore } from '@/features/data-controls';
+import { useContentLanguagesStore } from '@/features/manage-content-languages';
+import { useSettingsStore } from '@/features/manage-settings';
+import { resolveSettingsAccess, SETTINGS_SECTIONS, type SettingsGroup, type SettingsSectionId } from '@/features/navigate-settings';
+import { usePrivacyMutationStore } from '@/features/update-privacy';
+import { navigateBackOrReplace, ROUTES } from '@/shared/navigation';
+import { useTheme } from '@/shared/theme';
+import { AppText, type IconName, NavigationHeader, PageContainer } from '@/shared/ui';
+import { SettingsGroupCard, SettingsIndex, type SettingsIndexItem, SettingsSections } from '@/widgets/settings-index';
 
 type VisibleStatus = 'local' | 'pending' | 'syncing' | 'synced' | 'error';
 

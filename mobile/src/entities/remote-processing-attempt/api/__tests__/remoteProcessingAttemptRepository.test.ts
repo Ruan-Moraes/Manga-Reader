@@ -1,4 +1,4 @@
-import type { AppDatabase, SqlExecutor } from '@/src/shared/storage';
+import type { AppDatabase, SqlExecutor } from '@/shared/storage';
 
 import { CREATE_REMOTE_PROCESSING_SCHEMA, createSqliteRemoteProcessingAttemptRepository } from '../remoteProcessingAttemptRepository';
 

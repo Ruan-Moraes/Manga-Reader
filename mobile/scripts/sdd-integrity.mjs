@@ -11,13 +11,7 @@ function listFiles(root) {
 }
 
 export function implementationChecksum(mobileRoot) {
-    const files = [
-        resolve(mobileRoot, 'app'),
-        resolve(mobileRoot, 'assets'),
-        resolve(mobileRoot, 'scripts'),
-        resolve(mobileRoot, 'specs'),
-        resolve(mobileRoot, 'src'),
-    ]
+    const files = [resolve(mobileRoot, 'assets'), resolve(mobileRoot, 'docs'), resolve(mobileRoot, 'scripts'), resolve(mobileRoot, 'src')]
         .flatMap(listFiles)
         .filter(path => !path.endsWith('/review.md') && !path.endsWith('/drift-audit.md'))
         .concat(

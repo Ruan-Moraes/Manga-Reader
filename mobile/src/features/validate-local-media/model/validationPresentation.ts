@@ -1,4 +1,4 @@
-import type { LocalMediaImportItem, MediaValidationErrorCode } from '@/src/entities/local-media-import';
+import type { LocalMediaImportItem, MediaValidationErrorCode } from '@/entities/local-media-import';
 
 export type ValidationIssueOrigin = 'local' | 'processing';
 export type ProcessingValidationIssueCode = 'WHITE_OUTLINE' | 'TRANSPARENT_BACKGROUND_FAILED';

@@ -4,10 +4,10 @@ import {
     type RemoteProcessingAttemptRepository,
     remoteProcessingAttemptRepository,
     type RemoteProcessingErrorCode,
-} from '@/src/entities/remote-processing-attempt';
-import { getRemoteProcessingCapabilities } from '@/src/entities/remote-processing-capability';
-import { type RemoteProcessingIdentity, remoteProcessingIdentity } from '@/src/entities/remote-processing-identity';
-import { createRemoteGatewayTransport, type RemoteGatewayTransport } from '@/src/shared/remote-gateway';
+} from '@/entities/remote-processing-attempt';
+import { getRemoteProcessingCapabilities } from '@/entities/remote-processing-capability';
+import { type RemoteProcessingIdentity, remoteProcessingIdentity } from '@/entities/remote-processing-identity';
+import { createRemoteGatewayTransport, type RemoteGatewayTransport } from '@/shared/remote-gateway';
 
 export interface CancelRemoteProcessingResult {
     attempt: RemoteProcessingAttempt;

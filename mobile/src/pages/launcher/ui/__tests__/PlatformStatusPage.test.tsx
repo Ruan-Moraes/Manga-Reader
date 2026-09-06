@@ -2,10 +2,10 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react-nativ
 import AxiosMockAdapter from 'axios-mock-adapter';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
-import { useSessionStore } from '@/src/entities/session';
-import { DEFAULT_USER_SETTINGS } from '@/src/entities/user-setting';
-import { useSettingsStore } from '@/src/features/manage-settings';
-import { api } from '@/src/shared/api';
+import { useSessionStore } from '@/entities/session';
+import { DEFAULT_USER_SETTINGS } from '@/entities/user-setting';
+import { useSettingsStore } from '@/features/manage-settings';
+import { api } from '@/shared/api';
 
 import { PlatformStatusPage } from '../PlatformStatusPage';
 

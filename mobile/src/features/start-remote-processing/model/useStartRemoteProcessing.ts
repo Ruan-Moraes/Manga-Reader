@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
 import { AppState } from 'react-native';
 
-import { isAmbiguousRemoteAttempt } from '@/src/entities/remote-processing-attempt';
-import { getCurrentLanguage } from '@/src/shared/i18n';
+import { isAmbiguousRemoteAttempt } from '@/entities/remote-processing-attempt';
+import { getCurrentLanguage } from '@/shared/i18n';
 
 import { type RemoteProcessingSnapshot, type StartRemoteProcessingController, startRemoteProcessingController } from './startRemoteProcessing';
 

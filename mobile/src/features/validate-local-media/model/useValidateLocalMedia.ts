@@ -1,6 +1,6 @@
 import { useCallback, useRef, useState } from 'react';
 
-import type { LocalMediaImportDraft } from '@/src/entities/local-media-import';
+import type { LocalMediaImportDraft } from '@/entities/local-media-import';
 
 import {
     type ValidateLocalMediaController,

@@ -3,10 +3,10 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { act, render, screen, waitFor } from '@testing-library/react-native';
 import AxiosMockAdapter from 'axios-mock-adapter';
 
-import { useSessionStore } from '@/src/entities/session';
-import { useContentLanguagesStore } from '@/src/features/manage-content-languages';
-import { useSettingsStore } from '@/src/features/manage-settings';
-import { api } from '@/src/shared/api';
+import { useSessionStore } from '@/entities/session';
+import { useContentLanguagesStore } from '@/features/manage-content-languages';
+import { useSettingsStore } from '@/features/manage-settings';
+import { api } from '@/shared/api';
 
 import { ContentLanguagesAccountGate, ContentLanguagesIdentityBoundary } from '../ContentLanguagesAccountGate';
 
@@ -85,9 +85,7 @@ describe('MOB-FEAT-004 ContentLanguagesAccountGate', () => {
         expect(useContentLanguagesStore.getState()).toMatchObject({ confirmed: null, effective: ['en-US', 'pt-BR'] });
 
         useContentLanguagesStore.getState().beginAccount(4, 'en-US');
-        const { hydrateContentLanguages } = jest.requireActual(
-            '@/src/features/manage-content-languages',
-        ) as typeof import('@/src/features/manage-content-languages');
+        const { hydrateContentLanguages } = jest.requireActual('@/features/manage-content-languages') as typeof import('@/features/manage-content-languages');
         await hydrateContentLanguages(4);
         expect(useContentLanguagesStore.getState().confirmed).toEqual(['es-ES', 'pt-BR']);
     });

@@ -1,8 +1,8 @@
 import { type PropsWithChildren, useCallback, useEffect } from 'react';
 import { AppState } from 'react-native';
 
-import { remoteProcessingAttemptRepository } from '@/src/entities/remote-processing-attempt';
-import { startRemoteProcessingController } from '@/src/features/start-remote-processing';
+import { remoteProcessingAttemptRepository } from '@/entities/remote-processing-attempt';
+import { startRemoteProcessingController } from '@/features/start-remote-processing';
 
 export function RemoteProcessingRecoveryGate({ children }: PropsWithChildren) {
     const recover = useCallback(async () => {

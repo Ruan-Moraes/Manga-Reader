@@ -1,5 +1,5 @@
-import { sessionTransitions, useSessionStore } from '@/src/entities/session';
-import type { User } from '@/src/entities/user';
+import { sessionTransitions, useSessionStore } from '@/entities/session';
+import type { User } from '@/entities/user';
 
 import { authenticateApi, type PasswordResetRequestResponse, type SignInRequest, type SignUpRequest } from '../api/authenticateApi';
 

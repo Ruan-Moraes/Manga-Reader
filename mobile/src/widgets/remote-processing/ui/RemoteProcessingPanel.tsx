@@ -2,11 +2,11 @@ import { useState } from 'react';
 import { View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-import { type CancelRemoteProcessingController, cancelRemoteProcessingController } from '@/src/features/cancel-remote-processing';
-import { type StartRemoteProcessingController, useStartRemoteProcessing } from '@/src/features/start-remote-processing';
-import { externalLinks } from '@/src/shared/config';
-import { useTheme } from '@/src/shared/theme';
-import { AppDialog, AppText, Button, Card, StatusMessage } from '@/src/shared/ui';
+import { type CancelRemoteProcessingController, cancelRemoteProcessingController } from '@/features/cancel-remote-processing';
+import { type StartRemoteProcessingController, useStartRemoteProcessing } from '@/features/start-remote-processing';
+import { externalLinks } from '@/shared/config';
+import { useTheme } from '@/shared/theme';
+import { AppDialog, AppText, Button, Card, StatusMessage } from '@/shared/ui';
 
 interface Props {
     startController?: StartRemoteProcessingController;

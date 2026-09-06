@@ -1,7 +1,7 @@
 import { type ReactNode, useState } from 'react';
 import { TextInput, type TextInputProps, View } from 'react-native';
 
-import { FONTS, useTheme } from '@/src/shared/theme';
+import { FONTS, useTheme } from '@/shared/theme';
 
 import { AppText } from './AppText';
 

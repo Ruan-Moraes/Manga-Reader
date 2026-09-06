@@ -161,7 +161,8 @@ export function ThemeProvider({
         setOverrideState(initialOverride);
     }, [initialOverride]);
 
-    const colorScheme = resolveColorScheme(override === 'dark' ? 'DARK' : override === 'light' ? 'LIGHT' : 'SYSTEM', systemScheme);
+    const supportedSystemScheme = systemScheme === 'dark' || systemScheme === 'light' ? systemScheme : null;
+    const colorScheme = resolveColorScheme(override === 'dark' ? 'DARK' : override === 'light' ? 'LIGHT' : 'SYSTEM', supportedSystemScheme);
     const effectiveReduceMotion = resolveEffectiveReduceMotion(reduceMotion, systemReduceMotion);
     const effectiveHighContrast = resolveEffectiveHighContrast(highContrast, systemHighTextContrast || systemDarkerColors);
     const tokens = resolveThemeTokens(colorScheme, effectiveHighContrast, { dark: darkTokens, light: lightTokens });

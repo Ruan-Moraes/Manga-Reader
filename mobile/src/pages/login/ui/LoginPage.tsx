@@ -3,10 +3,10 @@ import { View } from 'react-native';
 import { router, useGlobalSearchParams } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 
-import { AuthFooter, AuthHeader, DemoCredentials, MRIcon, signIn } from '@/src/features/authenticate';
-import { navigateBackOrReplace, ROUTES } from '@/src/shared/navigation';
-import { useTheme } from '@/src/shared/theme';
-import { Button, IconButton, Input, NavigationHeader, PageContainer } from '@/src/shared/ui';
+import { AuthFooter, AuthHeader, DemoCredentials, MRIcon, signIn } from '@/features/authenticate';
+import { navigateBackOrReplace, ROUTES } from '@/shared/navigation';
+import { useTheme } from '@/shared/theme';
+import { Button, IconButton, Input, NavigationHeader, PageContainer } from '@/shared/ui';
 
 export function LoginPage() {
     const params = useGlobalSearchParams<{ returnTo?: string | string[] }>();

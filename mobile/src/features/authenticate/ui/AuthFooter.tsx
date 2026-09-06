@@ -1,7 +1,7 @@
 import { Pressable, Text, View } from 'react-native';
 
-import { useTheme } from '@/src/shared/theme';
-import { FONTS } from '@/src/shared/theme';
+import { useTheme } from '@/shared/theme';
+import { FONTS } from '@/shared/theme';
 
 interface Props {
     prompt: string;

@@ -4,25 +4,25 @@ import {
     type RemoteProcessingAttemptRepository,
     remoteProcessingAttemptRepository,
     type RemoteProcessingErrorCode,
-} from '@/src/entities/remote-processing-attempt';
+} from '@/entities/remote-processing-attempt';
 import {
     capabilitiesAreUsable,
     capabilityAcceptsMedia,
     capabilitySupportsPair,
     getRemoteProcessingCapabilities,
     type RemoteProcessingCapabilities,
-} from '@/src/entities/remote-processing-capability';
-import { type RemoteProcessingIdentity, remoteProcessingIdentity } from '@/src/entities/remote-processing-identity';
+} from '@/entities/remote-processing-capability';
+import { type RemoteProcessingIdentity, remoteProcessingIdentity } from '@/entities/remote-processing-identity';
 import {
     TRANSLATION_PROJECT_NAMESPACE,
     type TranslationProject,
     type TranslationProjectRepository,
     translationProjectRepository,
-} from '@/src/entities/translation-project';
-import { appPrivateBatchFiles, type PrivateBatchFiles } from '@/src/shared/files';
-import { type SupportedLanguage } from '@/src/shared/i18n';
-import { randomUuid } from '@/src/shared/lib';
-import { createRemoteGatewayTransport, type RemoteGatewayTransport, RemoteGatewayTransportError } from '@/src/shared/remote-gateway';
+} from '@/entities/translation-project';
+import { appPrivateBatchFiles, type PrivateBatchFiles } from '@/shared/files';
+import { type SupportedLanguage } from '@/shared/i18n';
+import { randomUuid } from '@/shared/lib';
+import { createRemoteGatewayTransport, type RemoteGatewayTransport, RemoteGatewayTransportError } from '@/shared/remote-gateway';
 
 export interface RemoteProcessingSnapshot {
     project: TranslationProject | null;

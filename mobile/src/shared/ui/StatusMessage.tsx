@@ -1,7 +1,7 @@
 import { ActivityIndicator, View } from 'react-native';
 import type { ReactNode } from 'react';
 
-import { useTheme } from '@/src/shared/theme';
+import { useTheme } from '@/shared/theme';
 
 import { AppText } from './AppText';
 import { Button } from './Button';

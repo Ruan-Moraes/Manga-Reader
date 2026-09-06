@@ -3,9 +3,9 @@ import {
     type LocalMediaImportRepository,
     type NewLocalMediaImportItem,
     PENDING_MEDIA_VALIDATION,
-} from '@/src/entities/local-media-import';
-import type { PrivateBatchFiles, PrivateFileInput } from '@/src/shared/files';
-import type { LocalMediaPicker, LocalMediaPickerResult } from '@/src/shared/media-picker';
+} from '@/entities/local-media-import';
+import type { PrivateBatchFiles, PrivateFileInput } from '@/shared/files';
+import type { LocalMediaPicker, LocalMediaPickerResult } from '@/shared/media-picker';
 
 import { createReviewLocalMediaImportController, possibleDuplicateItemIds, ReviewLocalMediaImportError } from '../reviewLocalMediaImport';
 

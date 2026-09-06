@@ -1,4 +1,4 @@
-import type { ChapterPage } from '@/src/entities/chapter';
+import type { ChapterPage } from '@/entities/chapter';
 
 import { buildReaderItems, clampLogicalPage, effectiveReaderMode, logicalItemIndex } from '../../index';
 

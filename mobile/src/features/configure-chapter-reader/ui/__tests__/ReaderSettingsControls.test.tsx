@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { StyleSheet, Switch } from 'react-native';
 import { act, fireEvent, render } from '@testing-library/react-native';
 
-import { DEFAULT_USER_SETTINGS } from '@/src/entities/user-setting';
-import { ThemeProvider } from '@/src/shared/theme';
+import { DEFAULT_USER_SETTINGS } from '@/entities/user-setting';
+import { ThemeProvider } from '@/shared/theme';
 
 import { ReaderSettingsControls } from '../ReaderSettingsControls';
 

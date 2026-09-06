@@ -14,20 +14,20 @@ function listRuntimeFiles(root) {
 }
 
 function parseLayerAndSlice(path) {
-    const match = path.match(/^(?:src\/(shared|entities|features|widgets|pages|application)|(?:(app)))(?:\/([^/]+))?/);
+    const match = path.match(/^src\/(shared|entities|features|widgets|pages|application|app)(?:\/([^/]+))?/);
     if (!match) return null;
-    const layer = match[1] ?? match[2];
-    const segment = match[3];
+    const layer = match[1];
+    const segment = match[2];
     return { layer, slice: ['application', 'shared', 'app'].includes(layer) ? layer : (segment ?? layer) };
 }
 
 function resolveImportPath(mobileRoot, sourcePath, importPath) {
-    if (importPath.startsWith('@/src/')) return importPath.replace('@/', '');
+    if (importPath.startsWith('@/')) return `src/${importPath.slice(2)}`;
     if (!importPath.startsWith('.')) return null;
     return relative(mobileRoot, resolve(dirname(resolve(mobileRoot, sourcePath)), importPath)).replaceAll('\\', '/');
 }
 
-export function validateFsdBoundaries({ mobileRoot, files = [resolve(mobileRoot, 'src'), resolve(mobileRoot, 'app')].flatMap(listRuntimeFiles) }) {
+export function validateFsdBoundaries({ mobileRoot, files = listRuntimeFiles(resolve(mobileRoot, 'src')) }) {
     const errors = [];
 
     for (const absolutePath of files) {
@@ -56,8 +56,8 @@ export function validateFsdBoundaries({ mobileRoot, files = [resolve(mobileRoot,
             }
 
             if (CANONICAL_SLICED_LAYERS.has(target.layer) && (source.layer !== target.layer || source.slice !== target.slice)) {
-                const publicPath = `@/src/${target.layer}/${target.slice}`;
-                const normalizedPublicPath = publicPath.replace('@/', '');
+                const publicPath = `@/${target.layer}/${target.slice}`;
+                const normalizedPublicPath = `src/${target.layer}/${target.slice}`;
                 const entityCrossReference =
                     source.layer === 'entities' && target.layer === 'entities' && targetPath === `${normalizedPublicPath}/@x/${source.slice}`;
                 const targetsPublicApi = targetPath === normalizedPublicPath || targetPath === `${normalizedPublicPath}/index`;

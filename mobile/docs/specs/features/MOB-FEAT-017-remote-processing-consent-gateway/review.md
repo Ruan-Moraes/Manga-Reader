@@ -1,0 +1,79 @@
+# Review — MOB-FEAT-017
+
+- Spec revisada: `spec.md`
+- Implementação/revisão: working-tree sha256:9df90bc58827359dd921a48f537f3c111a755991b5615f70601e493896b0f41e
+- Gate na entrada do planejamento: `open`
+- Dependência verificada: `MOB-FEAT-016` executada e `verification-pending`
+- Verdict: `verification-pending`
+
+## Findings
+
+Nenhum finding bloqueante permanece no código do gateway ou do slice mobile.
+O contrato server-side, quotas, outbox e Terraform foram validados; no mobile,
+schema v7, transporte, identidade, consentimento, submissão, recovery,
+cancelamento e UI trilíngue possuem testes dirigidos e boundaries FSD verdes.
+
+A feature permanece fail-closed. Operador e contato reais foram definidos e a
+identidade fictícia das páginas web foi removida, mas a promoção para
+`implemented` ainda exige publicação/revisão das URLs legais reservadas,
+disclosure versionado, política do provider, configuração cloud correspondente,
+scan do AAB e verificação de SQLite/SecureStore/recovery e leitor de tela em
+Android físico.
+
+## Critérios e evidências
+
+| Critério | Implementado | Evidência verificada                                                                  | Resultado |
+| -------- | ------------ | ------------------------------------------------------------------------------------- | --------- |
+| AC-001   | parcial      | operador/contato reais e UI completos; publicação, revisão, versão e policy pendentes | pending   |
+| AC-002   | sim          | consent por projeto+versão+locale, recusa neutra e round-trip SQLite                  | pass      |
+| AC-003   | sim          | testes provam pré-condições e attempt durável antes do transporte de mídia            | pass      |
+| AC-004   | sim          | OpenAPI, Zod, HTTPS, timeout, limites, redirect e traversal hostil                    | pass      |
+| AC-005   | parcial      | Argon2/sessão opaca no gateway e SecureStore/bearer em memória; AAB aberto            | pending   |
+| AC-006   | sim          | chave persistida, duplo toque, timeout, replay e outbox atômica                       | pass      |
+| AC-007   | sim          | receipt e attempt/página/projeto transitam atomicamente; rejeição preserva DRAFT      | pass      |
+| AC-008   | sim          | SUBMITTING/UNKNOWN persistem e reconciliam por job/chave sem nova identidade          | pass      |
+| AC-009   | sim          | cancelamento distingue UNKNOWN, CANCEL_PENDING e confirmação terminal                 | pass      |
+| AC-010   | parcial      | payload/log allowlist e cleanup testados; política pública/cloud ainda abertos        | pending   |
+| AC-011   | parcial      | RNTL trilíngue e sem falso sucesso; leitor de tela Android ainda aberto               | pending   |
+| AC-012   | sim          | somente a primeira página é submetida e não há OCR/provider/Core no client            | pass      |
+
+## Gates
+
+| Comando                                        | Resultado                                                              |
+| ---------------------------------------------- | ---------------------------------------------------------------------- |
+| gateway `./mvnw test`                          | pass — 53 testes                                                       |
+| reactor `./mvnw test`                          | pass — 7 módulos                                                       |
+| PostgreSQL Testcontainers                      | pass — 8 testes de integração                                          |
+| `terraform fmt -check -recursive` / `validate` | pass                                                                   |
+| `pnpm typecheck`                               | pass                                                                   |
+| testes dirigidos MOB-FEAT-017                  | pass — 8 suítes, 36 testes                                             |
+| ESLint dirigido                                | pass                                                                   |
+| `pnpm lint:fsd`                                | pass                                                                   |
+| suíte mobile completa                          | pass — 95 suítes, 545 testes                                           |
+| `pnpm lint` / `pnpm format:check`              | pass                                                                   |
+| `pnpm specs:check`                             | pass após remoção do pattern obsoleto e renovação global dos checksums |
+
+## Mudanças fora da spec
+
+Nenhuma mudança funcional intencional fora do gateway e do fluxo remoto mobile.
+O worktree contém alterações paralelas preexistentes; elas foram preservadas. A
+manutenção global posterior corrigiu o slider e os gates sem ampliar o escopo de
+processamento remoto.
+
+## Conclusão
+
+O código planejado está implementado e verificado em ambiente automatizado. O
+runtime continua deliberadamente desabilitado/fail-closed, e as quatro
+verificações externas acima mantêm o status `verification-pending`.
+
+Rebase documental de performance (2026-09-05): checksum global atualizado pela inclusão da auditoria e da MOB-DEC-007; runtime preservado por comparação SHA-256. Não representa nova verificação física nem alteração de verdict.
+
+Rodada de performance 2026-09-06: C04 / MOB-PERF-004 corrigido dentro do contrato existente, com testes de regressão. [Evidência](../../../active/performance-evidence/corrections-2026-09-06/review.md). Verificação nativa permanece aberta; nenhuma nova evidência física é atribuída a esta alteração.
+
+Rebase C01/C03/C04 (2026-09-06): checksum global atualizado após correções de numeração do leitor, persistência da validação e limite de resposta. Escopo e validações em [review de performance](../../../active/performance-evidence/corrections-2026-09-06/review.md). Não representa nova verificação física das demais features.
+
+Rebase C02/C05 (2026-09-06): checksum global atualizado após virtualização do leitor e download de exportação para arquivo. [Escopo e validação](../../../active/performance-evidence/corrections-c02-c05-2026-09-06/review.md). Não representa nova verificação física das demais features.
+
+Consolidação documental (2026-09-06): checksum global atualizado após reconciliar o estado de performance; runtime e verdict preservados. [Registro](../../../active/performance-evidence/consolidation-2026-09-06/review.md). Sem nova validação física.
+
+Preparação de commit (2026-09-06): rebase global após excluir scripts avulsos de ensaio, listagens Git e metadados do sistema dos arquivos versionados, conforme solicitação humana. Resultados históricos preservados; runtime e verdict inalterados.

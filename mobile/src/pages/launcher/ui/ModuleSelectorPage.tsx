@@ -1,10 +1,10 @@
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 
-import { useSessionStore } from '@/src/entities/session';
-import { useSettingsStore } from '@/src/features/manage-settings';
-import { ROUTES } from '@/src/shared/navigation';
-import { PageContainer } from '@/src/shared/ui';
+import { useSessionStore } from '@/entities/session';
+import { useSettingsStore } from '@/features/manage-settings';
+import { ROUTES } from '@/shared/navigation';
+import { PageContainer } from '@/shared/ui';
 
 import type { AppModuleId } from '../model/modules';
 import { ModuleSelector } from './ModuleSelector';

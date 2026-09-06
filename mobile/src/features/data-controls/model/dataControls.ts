@@ -1,10 +1,10 @@
 import type { QueryClient } from '@tanstack/react-query';
 
-import type { RegenerableCacheAdapter } from '@/src/shared/cache';
-import { imageCache } from '@/src/shared/cache';
-import type { JsonExportAdapter } from '@/src/shared/files';
-import { jsonExport, measureControlledStorage } from '@/src/shared/files';
-import { clearLocalData, type LocalDataSummary } from '@/src/shared/storage';
+import type { RegenerableCacheAdapter } from '@/shared/cache';
+import { imageCache } from '@/shared/cache';
+import type { JsonExportAdapter } from '@/shared/files';
+import { jsonExport, measureControlledStorage } from '@/shared/files';
+import { clearLocalData, type LocalDataSummary } from '@/shared/storage';
 
 import { clearMyTrackedHistory, exportMyData } from '../api/dataControlsApi';
 
@@ -40,7 +40,7 @@ export interface DataControlDependencies {
     queryClient: Pick<QueryClient, 'clear' | 'invalidateQueries' | 'refetchQueries' | 'removeQueries'>;
     images?: RegenerableCacheAdapter;
     exports?: JsonExportAdapter;
-    getExport?: () => Promise<unknown>;
+    downloadExport?: (uri: string, signal: AbortSignal) => Promise<void>;
     deleteHistory?: () => Promise<void>;
 }
 
@@ -72,8 +72,7 @@ export async function clearApplicationCache(confirmed: boolean, dependencies: Da
 export async function shareAccountExport(authenticated: boolean, dependencies: DataControlDependencies, date?: Date): Promise<DataControlResult> {
     if (!authenticated) return 'unavailable';
 
-    const data = await (dependencies.getExport ?? exportMyData)();
-    const result = await (dependencies.exports ?? jsonExport).share(data, date);
+    const result = await (dependencies.exports ?? jsonExport).share(dependencies.downloadExport ?? exportMyData, date);
     return result.status === 'cancelled' ? 'cancelled' : 'completed';
 }
 

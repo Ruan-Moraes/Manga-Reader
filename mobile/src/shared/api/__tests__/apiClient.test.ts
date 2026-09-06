@@ -2,7 +2,7 @@ import * as SecureStore from 'expo-secure-store';
 import axios from 'axios';
 import AxiosMockAdapter from 'axios-mock-adapter';
 
-import i18n, { DEFAULT_LANGUAGE } from '@/src/shared/i18n';
+import i18n, { DEFAULT_LANGUAGE } from '@/shared/i18n';
 
 import { api } from '../apiClient';
 import { subscribeAuthExpired } from '../authExpired';

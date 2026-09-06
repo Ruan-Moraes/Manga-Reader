@@ -3,12 +3,12 @@ import { View } from 'react-native';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 
-import { useSessionStore } from '@/src/entities/session';
-import { loadCurrentUser, signOut } from '@/src/features/authenticate';
-import { useSettingsStore } from '@/src/features/manage-settings';
-import { navigateBackOrReplace, ROUTES } from '@/src/shared/navigation';
-import { useTheme } from '@/src/shared/theme';
-import { AppText, Button, Card, NavigationHeader, PageContainer, StatusMessage } from '@/src/shared/ui';
+import { useSessionStore } from '@/entities/session';
+import { loadCurrentUser, signOut } from '@/features/authenticate';
+import { useSettingsStore } from '@/features/manage-settings';
+import { navigateBackOrReplace, ROUTES } from '@/shared/navigation';
+import { useTheme } from '@/shared/theme';
+import { AppText, Button, Card, NavigationHeader, PageContainer, StatusMessage } from '@/shared/ui';
 
 export function PlatformStatusPage() {
     const { t } = useTranslation('launcher');

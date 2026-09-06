@@ -1,6 +1,6 @@
 import type { QueryClient, QueryKey } from '@tanstack/react-query';
 
-import { type HistoryVisibility, type PrivacyPatch, type PrivacySettings, usePrivacySettingsStore, validatePrivacyPatch } from '@/src/entities/user';
+import { type HistoryVisibility, type PrivacyPatch, type PrivacySettings, usePrivacySettingsStore, validatePrivacyPatch } from '@/entities/user';
 
 import { patchMyPrivacy } from '../api/privacyApi';
 import { privacyMutationTransitions, usePrivacyMutationStore } from './privacyMutationStore';

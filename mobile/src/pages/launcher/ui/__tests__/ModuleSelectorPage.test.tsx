@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
-import { useSessionStore } from '@/src/entities/session';
+import { useSessionStore } from '@/entities/session';
 
 import { ModuleSelectorPage } from '../ModuleSelectorPage';
 

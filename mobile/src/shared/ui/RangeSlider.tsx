@@ -4,7 +4,7 @@ import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, { useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
 import { scheduleOnRN } from 'react-native-worklets';
 
-import { useTheme } from '@/src/shared/theme';
+import { useTheme } from '@/shared/theme';
 
 import { AppText } from './AppText';
 

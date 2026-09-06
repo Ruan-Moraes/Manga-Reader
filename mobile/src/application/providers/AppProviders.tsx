@@ -4,12 +4,12 @@ import { StatusBar } from 'expo-status-bar';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
-import { registerLocalMediaImportDataParticipant } from '@/src/entities/local-media-import';
-import { registerRemoteProcessingIdentityDataParticipant } from '@/src/entities/remote-processing-identity';
-import { registerTranslationProjectDataParticipant } from '@/src/entities/translation-project';
-import { themePreferenceToColorScheme } from '@/src/entities/user-setting';
-import { useSettingsStore } from '@/src/features/manage-settings';
-import { ThemeProvider, useTheme } from '@/src/shared/theme';
+import { registerLocalMediaImportDataParticipant } from '@/entities/local-media-import';
+import { registerRemoteProcessingIdentityDataParticipant } from '@/entities/remote-processing-identity';
+import { registerTranslationProjectDataParticipant } from '@/entities/translation-project';
+import { themePreferenceToColorScheme } from '@/entities/user-setting';
+import { useSettingsStore } from '@/features/manage-settings';
+import { ThemeProvider, useTheme } from '@/shared/theme';
 
 import { RemoteProcessingRecoveryGate } from '../gates';
 import { QueryProvider } from './QueryProvider';

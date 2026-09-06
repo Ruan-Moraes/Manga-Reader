@@ -1,7 +1,6 @@
 import * as ImagePicker from 'expo-image-picker';
 
-import appConfig from '@/app.json';
-
+import appConfig from '../../../../app.json';
 import { LOCAL_IMAGE_PICKER_OPTIONS, systemLocalMediaPicker } from '../mediaPicker';
 
 jest.mock('expo-image-picker', () => ({

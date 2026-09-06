@@ -1,5 +1,5 @@
-import { api } from '@/src/shared/api';
-import type { ApiResponse } from '@/src/shared/model';
+import { api } from '@/shared/api';
+import type { ApiResponse } from '@/shared/model';
 
 import { normalizeReadingProgress, type ReadingProgress, reportInvalidReadingProgress } from '../model/readingProgress';
 

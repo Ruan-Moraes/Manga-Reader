@@ -1,8 +1,8 @@
-import { api, tokenStorage } from '@/src/shared/api';
+import { api, tokenStorage } from '@/shared/api';
 
 import { authenticateApi } from '../authenticateApi';
 
-jest.mock('@/src/shared/api', () => ({
+jest.mock('@/shared/api', () => ({
     api: { get: jest.fn(), post: jest.fn() },
     tokenStorage: { getRefresh: jest.fn() },
 }));

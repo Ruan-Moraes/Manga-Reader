@@ -1,8 +1,8 @@
 import { View } from 'react-native';
 import type { PropsWithChildren, ReactNode } from 'react';
 
-import { useTheme } from '@/src/shared/theme';
-import { AppText, SectionStack } from '@/src/shared/ui';
+import { useTheme } from '@/shared/theme';
+import { AppText, SectionStack } from '@/shared/ui';
 
 export function SettingsSections({ children }: PropsWithChildren) {
     return <SectionStack testID="settings-sections">{children}</SectionStack>;

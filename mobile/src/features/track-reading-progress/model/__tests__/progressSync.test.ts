@@ -1,6 +1,6 @@
 import AxiosMockAdapter from 'axios-mock-adapter';
 
-import { api } from '@/src/shared/api';
+import { api } from '@/shared/api';
 
 import { createProgressSnapshot, isReadingProgressValidForChapter, ProgressSynchronizer, resolveResumeChoice } from '../../index';
 

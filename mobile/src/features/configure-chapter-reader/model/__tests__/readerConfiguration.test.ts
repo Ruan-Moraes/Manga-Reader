@@ -1,4 +1,4 @@
-import { DEFAULT_USER_SETTINGS } from '@/src/entities/user-setting';
+import { DEFAULT_USER_SETTINGS } from '@/entities/user-setting';
 
 import { normalizeReaderSettings, selectableQualities } from '../../index';
 

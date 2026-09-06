@@ -2,8 +2,8 @@ import { type ReactNode, useLayoutEffect } from 'react';
 import { type ListRenderItemInfo, StyleSheet, type View } from 'react-native';
 import Reanimated, { type AnimatedRef, Easing, useAnimatedRef, useAnimatedStyle, withTiming } from 'react-native-reanimated';
 
-import type { LocalMediaImportItem } from '@/src/entities/local-media-import';
-import { useTheme } from '@/src/shared/theme';
+import type { LocalMediaImportItem } from '@/entities/local-media-import';
+import { useTheme } from '@/shared/theme';
 
 import { REVIEW_DRAG_PHASE, REVIEW_DROP_INDICATOR_WIDTH, REVIEW_ITEM_SHIFT_MS } from '../config/reviewLayout';
 import { projectReviewIndex, resolveReviewSlot } from '../model/reviewSortGeometry';
@@ -111,7 +111,7 @@ export function SortableReviewItem({
                 onRowHeightChange?.(measuredPitch);
             }}
             style={[
-                overlay ? StyleSheet.absoluteFillObject : undefined,
+                overlay ? StyleSheet.absoluteFill : undefined,
                 { bottom: undefined, right: undefined, width: itemWidth, shadowColor: tokens.text, shadowOffset: { width: 0, height: 8 }, shadowRadius: 12 },
                 animatedStyle,
             ]}

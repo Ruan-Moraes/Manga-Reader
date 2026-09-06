@@ -1,4 +1,4 @@
-import { usePrivacySettingsStore } from '@/src/entities/user';
+import { usePrivacySettingsStore } from '@/entities/user';
 
 import { getMyPrivacy } from '../api/privacyApi';
 

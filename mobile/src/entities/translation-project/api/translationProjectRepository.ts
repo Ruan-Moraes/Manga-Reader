@@ -1,12 +1,12 @@
-import { isTranslationLanguageCode } from '@/src/entities/local-media-import/@x/translation-project';
+import { isTranslationLanguageCode } from '@/entities/local-media-import/@x/translation-project';
 import {
     canTransitionTranslationState,
     isTerminalTranslationState,
     isTranslationState,
     type TranslationPage,
     type TranslationState,
-} from '@/src/entities/translation-page/@x/translation-project';
-import { appPrivateBatchFiles } from '@/src/shared/files';
+} from '@/entities/translation-page/@x/translation-project';
+import { appPrivateBatchFiles } from '@/shared/files';
 import {
     advanceAppSchemaVersion,
     type AppDatabase,
@@ -14,7 +14,7 @@ import {
     registerLocalDataParticipant,
     runAppDatabaseMigration,
     type SqlExecutor,
-} from '@/src/shared/storage';
+} from '@/shared/storage';
 
 import type { NewTranslationProject, TranslationProject } from '../model/translationProject';
 

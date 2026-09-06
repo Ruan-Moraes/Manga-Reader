@@ -1,8 +1,8 @@
 import AxiosMockAdapter from 'axios-mock-adapter';
 
-import { useContentLanguagesStore } from '@/src/features/manage-content-languages';
-import { api } from '@/src/shared/api';
-import i18n from '@/src/shared/i18n';
+import { useContentLanguagesStore } from '@/features/manage-content-languages';
+import { api } from '@/shared/api';
+import i18n from '@/shared/i18n';
 
 describe('MOB-FEAT-003/AC-010 locale and content preferences', () => {
     const apiMock = new AxiosMockAdapter(api);

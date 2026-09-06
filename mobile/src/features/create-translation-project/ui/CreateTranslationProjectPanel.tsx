@@ -2,11 +2,11 @@ import { useEffect } from 'react';
 import { View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-import { isMediaValidationReady, type LocalMediaImportDraft } from '@/src/entities/local-media-import';
-import type { TranslationProject } from '@/src/entities/translation-project';
-import { MEDIA_VALIDATION_POLICY_VERSION } from '@/src/shared/media-inspection';
-import { useTheme } from '@/src/shared/theme';
-import { AppText, Button } from '@/src/shared/ui';
+import { isMediaValidationReady, type LocalMediaImportDraft } from '@/entities/local-media-import';
+import type { TranslationProject } from '@/entities/translation-project';
+import { MEDIA_VALIDATION_POLICY_VERSION } from '@/shared/media-inspection';
+import { useTheme } from '@/shared/theme';
+import { AppText, Button } from '@/shared/ui';
 
 import type { CreateTranslationProjectController } from '../model/createTranslationProject';
 import { useCreateTranslationProject } from '../model/useCreateTranslationProject';

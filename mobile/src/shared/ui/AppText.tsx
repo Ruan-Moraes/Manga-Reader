@@ -1,6 +1,6 @@
 import { Text, type TextProps } from 'react-native';
 
-import { type TypographyStyleRole, useTheme } from '@/src/shared/theme';
+import { type TypographyStyleRole, useTheme } from '@/shared/theme';
 
 type Tone = 'default' | 'muted' | 'subtle' | 'accent' | 'danger' | 'success' | 'inverse';
 

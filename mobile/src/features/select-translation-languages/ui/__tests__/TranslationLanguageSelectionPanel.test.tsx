@@ -1,8 +1,8 @@
 import { Modal } from 'react-native';
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react-native';
 
-import { type LocalMediaImportDraft, PENDING_MEDIA_VALIDATION } from '@/src/entities/local-media-import';
-import i18n from '@/src/shared/i18n';
+import { type LocalMediaImportDraft, PENDING_MEDIA_VALIDATION } from '@/entities/local-media-import';
+import i18n from '@/shared/i18n';
 
 import type { SelectTranslationLanguagesController } from '../../model/selectTranslationLanguages';
 import { SelectTranslationLanguagesError } from '../../model/selectTranslationLanguages';

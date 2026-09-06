@@ -1,12 +1,12 @@
 import { Text } from 'react-native';
 import { act, render, screen, waitFor } from '@testing-library/react-native';
 
-import { useSessionStore } from '@/src/entities/session';
-import { clearDataControlTemporaries } from '@/src/features/data-controls';
+import { useSessionStore } from '@/entities/session';
+import { clearDataControlTemporaries } from '@/features/data-controls';
 
 import { DataControlsAccountGate } from '../DataControlsAccountGate';
 
-jest.mock('@/src/features/data-controls', () => ({ clearDataControlTemporaries: jest.fn().mockResolvedValue(undefined) }));
+jest.mock('@/features/data-controls', () => ({ clearDataControlTemporaries: jest.fn().mockResolvedValue(undefined) }));
 
 describe('MOB-FEAT-007 DataControlsAccountGate', () => {
     it('remove temporários ao iniciar e trocar a identidade', async () => {

@@ -1,5 +1,6 @@
-import type { ChapterPage } from '@/src/entities/chapter';
-import { darkTokens, lightTokens, type ThemeTokens } from '@/src/shared/theme';
+import type { ChapterPage } from '@/entities/chapter';
+import type { ReaderSettings } from '@/entities/user-setting';
+import { darkTokens, lightTokens, type ThemeTokens } from '@/shared/theme';
 
 export const READER_SCREEN_OPTIONS = { headerShown: false } as const;
 
@@ -7,6 +8,23 @@ export interface ReaderPageLayout {
     id: string;
     y: number;
     height: number;
+}
+
+export function verticalPageLayouts(
+    pages: readonly ChapterPage[],
+    fit: ReaderSettings['fit'],
+    width: number,
+    height: number,
+    gap: number,
+    minimumHeights: Readonly<Record<string, number>> = {},
+): ReaderPageLayout[] {
+    let y = 0;
+    return pages.map(page => {
+        const pageHeight = fit === 'WIDTH' ? (width * page.height) / page.width : fit === 'HEIGHT' ? height : page.height;
+        const layout = { id: page.id, y, height: Math.max(pageHeight, minimumHeights[page.id] ?? 0) };
+        y += layout.height + gap;
+        return layout;
+    });
 }
 
 export function pageOffset(layouts: readonly ReaderPageLayout[], pageId: string): number | null {

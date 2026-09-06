@@ -3,17 +3,17 @@ import { Text, View } from 'react-native';
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 
-import { chapterReaderQueryOptions, getImageVariantCapabilities } from '@/src/entities/chapter';
-import { getReadingProgress, type ReadingProgress, readingProgressQueryKeys, reportInvalidReadingProgress } from '@/src/entities/reading-progress';
-import { useSessionStore } from '@/src/entities/session';
-import { normalizeReaderSettings } from '@/src/features/configure-chapter-reader';
-import { useSettingsStore } from '@/src/features/manage-settings';
-import { clampLogicalPage } from '@/src/features/navigate-chapter-reader';
-import { createProgressSnapshot, isReadingProgressValidForChapter, ProgressSynchronizer, resolveResumeChoice } from '@/src/features/track-reading-progress';
-import { navigateBackOrReplace, ROUTES } from '@/src/shared/navigation';
-import { useTheme } from '@/src/shared/theme';
-import { Button, EmptyState, NavigationHeader, PageContainer } from '@/src/shared/ui';
-import { ChapterReader } from '@/src/widgets/chapter-reader';
+import { chapterReaderQueryOptions, getImageVariantCapabilities } from '@/entities/chapter';
+import { getReadingProgress, type ReadingProgress, readingProgressQueryKeys, reportInvalidReadingProgress } from '@/entities/reading-progress';
+import { useSessionStore } from '@/entities/session';
+import { normalizeReaderSettings } from '@/features/configure-chapter-reader';
+import { useSettingsStore } from '@/features/manage-settings';
+import { clampLogicalPage } from '@/features/navigate-chapter-reader';
+import { createProgressSnapshot, isReadingProgressValidForChapter, ProgressSynchronizer, resolveResumeChoice } from '@/features/track-reading-progress';
+import { navigateBackOrReplace, ROUTES } from '@/shared/navigation';
+import { useTheme } from '@/shared/theme';
+import { Button, EmptyState, NavigationHeader, PageContainer } from '@/shared/ui';
+import { ChapterReader } from '@/widgets/chapter-reader';
 
 interface Props {
     titleId: string;

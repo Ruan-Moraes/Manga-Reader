@@ -1,9 +1,9 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { act, render, waitFor } from '@testing-library/react-native';
 
-import { DEFAULT_USER_SETTINGS } from '@/src/entities/user-setting';
-import { resetSettingsRuntimeForTests, useSettingsStore } from '@/src/features/manage-settings';
-import { DEFAULT_LANGUAGE } from '@/src/shared/i18n';
+import { DEFAULT_USER_SETTINGS } from '@/entities/user-setting';
+import { resetSettingsRuntimeForTests, useSettingsStore } from '@/features/manage-settings';
+import { DEFAULT_LANGUAGE } from '@/shared/i18n';
 
 import { LocaleQueryInvalidator } from '../LocaleQueryInvalidator';
 

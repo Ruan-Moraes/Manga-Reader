@@ -1,6 +1,6 @@
 import { ActivityIndicator, Text, View } from 'react-native';
 
-import { FONTS, useTheme } from '@/src/shared/theme';
+import { FONTS, useTheme } from '@/shared/theme';
 
 export function StartupFeedback({ label }: { label: string }) {
     const { spacing, tokens, typography } = useTheme();

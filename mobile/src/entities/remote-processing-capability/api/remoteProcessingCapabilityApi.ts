@@ -1,4 +1,4 @@
-import type { RemoteGatewayTransport } from '@/src/shared/remote-gateway';
+import type { RemoteGatewayTransport } from '@/shared/remote-gateway';
 
 import { type RemoteProcessingCapabilities, remoteProcessingCapabilitiesSchema } from '../model/remoteProcessingCapability';
 

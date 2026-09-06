@@ -1,6 +1,6 @@
-import { normalizePrivacySettings, type PrivacyPatch, type PrivacySettings } from '@/src/entities/user';
-import { api } from '@/src/shared/api';
-import type { ApiResponse } from '@/src/shared/model';
+import { normalizePrivacySettings, type PrivacyPatch, type PrivacySettings } from '@/entities/user';
+import { api } from '@/shared/api';
+import type { ApiResponse } from '@/shared/model';
 
 export async function patchMyPrivacy(patch: PrivacyPatch, signal?: AbortSignal): Promise<PrivacySettings> {
     const response = await api.patch<ApiResponse<unknown>>('/users/me/privacy', patch, { signal });

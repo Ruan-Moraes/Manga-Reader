@@ -1,8 +1,8 @@
-import { tokenStorage } from '@/src/shared/api';
+import { tokenStorage } from '@/shared/api';
 
 import { sessionTransitions, useSessionStore } from '../session';
 
-jest.mock('@/src/shared/api', () => ({
+jest.mock('@/shared/api', () => ({
     tokenStorage: {
         clear: jest.fn(),
         getAccess: jest.fn(),

@@ -1,5 +1,5 @@
-import type { ChapterPage } from '@/src/entities/chapter';
-import type { ReadingDirection, ReadingMode } from '@/src/entities/user-setting';
+import type { ChapterPage } from '@/entities/chapter';
+import type { ReadingDirection, ReadingMode } from '@/entities/user-setting';
 
 export type ReaderItem = readonly ChapterPage[];
 

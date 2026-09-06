@@ -1,0 +1,2744 @@
+[
+    {
+        "path": "src/app/(auth)/_layout.tsx",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/app/(auth)/forgot.tsx",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/app/(auth)/login.tsx",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/app/(auth)/register.tsx",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/app/+html.tsx",
+        "matches": [
+            {
+                "line": 1,
+                "text": "import { ScrollViewStyleReset } from 'expo-router/html';"
+            },
+            {
+                "line": 17,
+                "text": "Disable body scrolling on web. This makes ScrollView components work closer to how they do on native."
+            },
+            {
+                "line": 20,
+                "text": "<ScrollViewStyleReset />"
+            }
+        ],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/app/+not-found.tsx",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/app/_layout.tsx",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/app/index.tsx",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/app/modal.tsx",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/app/offline-translation.tsx",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/app/platform/(tabs)/_layout.tsx",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/app/platform/(tabs)/forum.tsx",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/app/platform/(tabs)/index.tsx",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/app/platform/(tabs)/library.tsx",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/app/platform/(tabs)/profile.tsx",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/app/platform/_layout.tsx",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/app/platform/status.tsx",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/app/reader/[titleId]/[number].tsx",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/app/reader/_layout.tsx",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/app/settings/_layout.tsx",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/app/settings/about.tsx",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/app/settings/appearance.tsx",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/app/settings/content-languages.tsx",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/app/settings/data.tsx",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/app/settings/index.tsx",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/app/settings/locale.tsx",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/app/settings/privacy.tsx",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/app/settings/reader.tsx",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/application/RootApplication.tsx",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/application/gates/ContentLanguagesAccountGate.tsx",
+        "matches": [
+            {
+                "line": 1,
+                "text": "import { type PropsWithChildren, useEffect } from 'react';"
+            },
+            {
+                "line": 2,
+                "text": "import { useQueryClient } from '@tanstack/react-query';"
+            },
+            {
+                "line": 23,
+                "text": "const contentIdentityEpoch = useContentLanguagesStore(state => state.identityEpoch);"
+            },
+            {
+                "line": 30,
+                "text": "const isAuthenticated = useSessionStore(state => state.isAuthenticated);"
+            },
+            {
+                "line": 31,
+                "text": "const identityEpoch = useSessionStore(state => state.identityEpoch);"
+            },
+            {
+                "line": 32,
+                "text": "const language = useSettingsStore(state => state.language);"
+            },
+            {
+                "line": 33,
+                "text": "const queryClient = useQueryClient();"
+            },
+            {
+                "line": 35,
+                "text": "useEffect(() => {"
+            },
+            {
+                "line": 50,
+                "text": "useEffect(() => {"
+            }
+        ],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/application/gates/DataControlsAccountGate.tsx",
+        "matches": [
+            {
+                "line": 1,
+                "text": "import { type PropsWithChildren, useEffect } from 'react';"
+            },
+            {
+                "line": 7,
+                "text": "const identityEpoch = useSessionStore(state => state.identityEpoch);"
+            },
+            {
+                "line": 9,
+                "text": "useEffect(() => {"
+            }
+        ],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/application/gates/LocaleQueryInvalidator.tsx",
+        "matches": [
+            {
+                "line": 1,
+                "text": "import { useEffect, useRef } from 'react';"
+            },
+            {
+                "line": 2,
+                "text": "import { useQueryClient } from '@tanstack/react-query';"
+            },
+            {
+                "line": 7,
+                "text": "const queryClient = useQueryClient();"
+            },
+            {
+                "line": 8,
+                "text": "const language = useSettingsStore(state => state.language);"
+            },
+            {
+                "line": 11,
+                "text": "useEffect(() => {"
+            }
+        ],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/application/gates/PrivacyAccountGate.tsx",
+        "matches": [
+            {
+                "line": 1,
+                "text": "import { type PropsWithChildren, useEffect } from 'react';"
+            },
+            {
+                "line": 2,
+                "text": "import { useQueryClient } from '@tanstack/react-query';"
+            },
+            {
+                "line": 9,
+                "text": "const isAuthenticated = useSessionStore(state => state.isAuthenticated);"
+            },
+            {
+                "line": 10,
+                "text": "const identityEpoch = useSessionStore(state => state.identityEpoch);"
+            },
+            {
+                "line": 11,
+                "text": "const queryClient = useQueryClient();"
+            },
+            {
+                "line": 13,
+                "text": "useEffect(() => {"
+            }
+        ],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/application/gates/RemoteProcessingRecoveryGate.tsx",
+        "matches": [
+            {
+                "line": 1,
+                "text": "import { type PropsWithChildren, useCallback, useEffect } from 'react';"
+            },
+            {
+                "line": 15,
+                "text": "useEffect(() => {"
+            },
+            {
+                "line": 17,
+                "text": "const subscription = AppState.addEventListener('change', state => {"
+            }
+        ],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/application/gates/SessionGate.tsx",
+        "matches": [
+            {
+                "line": 1,
+                "text": "import { type PropsWithChildren, useEffect, useRef, useState } from 'react';"
+            },
+            {
+                "line": 12,
+                "text": "const isAuthenticated = useSessionStore(state => state.isAuthenticated);"
+            },
+            {
+                "line": 13,
+                "text": "const identityEpoch = useSessionStore(state => state.identityEpoch);"
+            },
+            {
+                "line": 21,
+                "text": "useEffect(() => {"
+            },
+            {
+                "line": 25,
+                "text": "useEffect("
+            },
+            {
+                "line": 33,
+                "text": "useEffect(() => {"
+            }
+        ],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/application/gates/SettingsAccountGate.tsx",
+        "matches": [
+            {
+                "line": 1,
+                "text": "import { type PropsWithChildren, useEffect } from 'react';"
+            },
+            {
+                "line": 14,
+                "text": "const activeIdentityEpoch = useSettingsStore(state => state.activeIdentityEpoch);"
+            },
+            {
+                "line": 15,
+                "text": "const pendingVersion = useSettingsStore(state => state.pendingVersion);"
+            },
+            {
+                "line": 16,
+                "text": "const syncStatus = useSettingsStore(state => state.syncStatus);"
+            },
+            {
+                "line": 31,
+                "text": "const isAuthenticated = useSessionStore(state => state.isAuthenticated);"
+            },
+            {
+                "line": 32,
+                "text": "const identityEpoch = useSessionStore(state => state.identityEpoch);"
+            },
+            {
+                "line": 33,
+                "text": "const activateAccount = useSettingsStore(state => state.activateAccount);"
+            },
+            {
+                "line": 34,
+                "text": "const deactivateAccount = useSettingsStore(state => state.deactivateAccount);"
+            },
+            {
+                "line": 35,
+                "text": "const flush = useSettingsStore(state => state.flush);"
+            },
+            {
+                "line": 37,
+                "text": "useEffect(() => {"
+            },
+            {
+                "line": 45,
+                "text": "useEffect("
+            }
+        ],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/application/gates/SettingsGate.tsx",
+        "matches": [
+            {
+                "line": 1,
+                "text": "import { type PropsWithChildren, useEffect } from 'react';"
+            },
+            {
+                "line": 26,
+                "text": "const hydrateSettings = useSettingsStore(state => state.hydrate);"
+            },
+            {
+                "line": 27,
+                "text": "const isSettingsHydrated = useSettingsStore(state => state.isHydrated);"
+            },
+            {
+                "line": 28,
+                "text": "const language = useSettingsStore(state => state.language);"
+            },
+            {
+                "line": 30,
+                "text": "useEffect(() => {"
+            },
+            {
+                "line": 34,
+                "text": "useEffect(() => {"
+            },
+            {
+                "line": 38,
+                "text": "useEffect(() => {"
+            },
+            {
+                "line": 44,
+                "text": "useEffect(() => {"
+            }
+        ],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/application/gates/index.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/application/index.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/application/navigation/RootNavigator.tsx",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/application/navigation/index.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/application/providers/AppProviders.tsx",
+        "matches": [
+            {
+                "line": 1,
+                "text": "import { type PropsWithChildren, useEffect } from 'react';"
+            },
+            {
+                "line": 20,
+                "text": "useEffect(() => {"
+            },
+            {
+                "line": 35,
+                "text": "const appearance = useSettingsStore(state => state.settings.appearance);"
+            },
+            {
+                "line": 36,
+                "text": "const accessibility = useSettingsStore(state => state.settings.accessibility);"
+            },
+            {
+                "line": 37,
+                "text": "const setThemeOverride = useSettingsStore(state => state.setThemeOverride);"
+            },
+            {
+                "line": 39,
+                "text": "useEffect(() => {"
+            }
+        ],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/application/providers/QueryProvider.tsx",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/application/providers/index.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/entities/chapter/api/chapterApi.ts",
+        "matches": [
+            {
+                "line": 15,
+                "text": "queryFn: ({ signal }: { signal: AbortSignal }) => getChapterForReader(titleId, number, signal),"
+            }
+        ],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/entities/chapter/index.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/entities/chapter/model/chapter.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/entities/content-language-preference/api/contentLanguagePreferenceApi.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/entities/content-language-preference/index.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/entities/content-language-preference/model/contentLanguagePreference.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/entities/local-media-import/@x/translation-project.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/entities/local-media-import/api/localMediaImportRepository.ts",
+        "matches": [
+            {
+                "line": 144,
+                "text": "let columns = await database.getAllAsync<TableColumnRow>('PRAGMA table_info(local_media_import_drafts)', []);"
+            },
+            {
+                "line": 147,
+                "text": "columns = await database.getAllAsync<TableColumnRow>('PRAGMA table_info(local_media_import_drafts)', []);"
+            },
+            {
+                "line": 193,
+                "text": "const violations = await database.getAllAsync<unknown>('PRAGMA foreign_key_check', []);"
+            },
+            {
+                "line": 202,
+                "text": "const itemColumns = await database.getAllAsync<TableColumnRow>('PRAGMA table_info(local_media_import_items)', []);"
+            },
+            {
+                "line": 241,
+                "text": "const violations = await database.getAllAsync<unknown>('PRAGMA foreign_key_check', []);"
+            },
+            {
+                "line": 316,
+                "text": "const violations = await database.getAllAsync<unknown>('PRAGMA foreign_key_check', []);"
+            },
+            {
+                "line": 341,
+                "text": "const items = await executor.getAllAsync<ItemRow>("
+            },
+            {
+                "line": 397,
+                "text": "await db.withExclusiveTransactionAsync(async transaction => {"
+            },
+            {
+                "line": 438,
+                "text": "await db.withExclusiveTransactionAsync(async transaction => {"
+            },
+            {
+                "line": 477,
+                "text": "await db.withExclusiveTransactionAsync(async transaction => {"
+            },
+            {
+                "line": 499,
+                "text": "await db.withExclusiveTransactionAsync(async transaction => {"
+            },
+            {
+                "line": 523,
+                "text": "await db.withExclusiveTransactionAsync(async transaction => {"
+            },
+            {
+                "line": 546,
+                "text": "await db.withExclusiveTransactionAsync(async transaction => {"
+            },
+            {
+                "line": 563,
+                "text": "await db.withExclusiveTransactionAsync(async transaction => {"
+            },
+            {
+                "line": 581,
+                "text": "await db.withExclusiveTransactionAsync(async transaction => {"
+            },
+            {
+                "line": 599,
+                "text": "await db.withExclusiveTransactionAsync(async transaction => {"
+            },
+            {
+                "line": 627,
+                "text": "const rows = await (await database()).getAllAsync<{ id: string }>('SELECT id FROM local_media_import_drafts', []);"
+            },
+            {
+                "line": 641,
+                "text": "await db.withExclusiveTransactionAsync(async transaction => {"
+            }
+        ],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/entities/local-media-import/index.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/entities/local-media-import/model/localMediaImport.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/entities/reading-progress/api/readingProgressApi.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/entities/reading-progress/index.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/entities/reading-progress/model/readingProgress.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/entities/remote-processing-attempt/api/remoteProcessingAttemptRepository.ts",
+        "matches": [
+            {
+                "line": 168,
+                "text": "await db.withExclusiveTransactionAsync(async transaction => {"
+            },
+            {
+                "line": 214,
+                "text": "await db.withExclusiveTransactionAsync(async transaction => {"
+            },
+            {
+                "line": 281,
+                "text": ").getAllAsync<AttemptRow>("
+            },
+            {
+                "line": 317,
+                "text": "await db.withExclusiveTransactionAsync(async transaction => {"
+            },
+            {
+                "line": 374,
+                "text": "await db.withExclusiveTransactionAsync(async transaction => {"
+            }
+        ],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/entities/remote-processing-attempt/index.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/entities/remote-processing-attempt/model/remoteProcessingAttempt.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/entities/remote-processing-capability/api/remoteProcessingCapabilityApi.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/entities/remote-processing-capability/index.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/entities/remote-processing-capability/model/remoteProcessingCapability.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/entities/remote-processing-identity/index.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/entities/remote-processing-identity/model/remoteProcessingIdentity.ts",
+        "matches": [
+            {
+                "line": 34,
+                "text": "const parsed = storedInstallationSchema.safeParse(JSON.parse(stored) as unknown);"
+            },
+            {
+                "line": 47,
+                "text": "await storage.setItemAsync(INSTALLATION_KEY, JSON.stringify(installation));"
+            }
+        ],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/entities/session/index.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/entities/session/model/session.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/entities/translation-page/@x/translation-project.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/entities/translation-page/index.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/entities/translation-page/model/translationPage.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/entities/translation-project/@x/remote-processing-attempt.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/entities/translation-project/api/translationProjectRepository.ts",
+        "matches": [
+            {
+                "line": 144,
+                "text": "const pages = await executor.getAllAsync<PageRow>("
+            },
+            {
+                "line": 212,
+                "text": "const columns = await database.getAllAsync<TableColumnRow>('PRAGMA table_info(translation_projects)', []);"
+            },
+            {
+                "line": 273,
+                "text": "const violations = await database.getAllAsync<unknown>('PRAGMA foreign_key_check', []);"
+            },
+            {
+                "line": 308,
+                "text": "await db.withExclusiveTransactionAsync(async transaction => {"
+            },
+            {
+                "line": 377,
+                "text": "await db.withExclusiveTransactionAsync(async transaction => {"
+            },
+            {
+                "line": 399,
+                "text": "await db.withExclusiveTransactionAsync(async transaction => {"
+            },
+            {
+                "line": 429,
+                "text": "const rows = await (await database()).getAllAsync<{ id: string }>('SELECT id FROM translation_projects', []);"
+            }
+        ],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/entities/translation-project/index.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/entities/translation-project/model/translationProject.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/entities/user/@x/session.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/entities/user/index.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/entities/user/lib/adultContentPolicy.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/entities/user/model/privacy.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/entities/user/model/privacyStore.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/entities/user/model/user.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/entities/user/ui/SensitiveContentGuard.tsx",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/entities/user-setting/api/userSettingsApi.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/entities/user-setting/index.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/entities/user-setting/model/userSettings.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/features/authenticate/api/authenticateApi.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/features/authenticate/config/demoCredentials.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/features/authenticate/index.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/features/authenticate/model/authenticate.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/features/authenticate/ui/AuthCheckbox.tsx",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/features/authenticate/ui/AuthFooter.tsx",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/features/authenticate/ui/AuthHeader.tsx",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/features/authenticate/ui/DemoCredentials.tsx",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/features/authenticate/ui/MRIcon.tsx",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/features/authenticate/ui/StrengthMeter.tsx",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/features/authenticate/ui/index.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/features/cancel-remote-processing/index.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/features/cancel-remote-processing/model/cancelRemoteProcessing.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/features/configure-chapter-reader/index.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/features/configure-chapter-reader/model/readerConfiguration.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/features/configure-chapter-reader/ui/ReaderSettingsControls.tsx",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/features/create-translation-project/index.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/features/create-translation-project/model/createTranslationProject.ts",
+        "matches": [
+            {
+                "line": 95,
+                "text": "await Promise.all([dependencies.drafts.initialize(), dependencies.projects.initialize()]);"
+            }
+        ],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/features/create-translation-project/model/useCreateTranslationProject.ts",
+        "matches": [
+            {
+                "line": 1,
+                "text": "import { useCallback, useEffect, useState } from 'react';"
+            },
+            {
+                "line": 19,
+                "text": "useEffect(() => {"
+            }
+        ],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/features/create-translation-project/ui/CreateTranslationProjectPanel.tsx",
+        "matches": [
+            {
+                "line": 1,
+                "text": "import { useEffect } from 'react';"
+            },
+            {
+                "line": 27,
+                "text": "useEffect(() => {"
+            }
+        ],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/features/data-controls/api/dataControlsApi.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/features/data-controls/index.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/features/data-controls/model/dataControls.ts",
+        "matches": [
+            {
+                "line": 61,
+                "text": "const results = await Promise.allSettled([images.clear(), exports.clearTemporaryFiles()]);"
+            },
+            {
+                "line": 63,
+                "text": "const queryRefetch = await Promise.allSettled([dependencies.queryClient.refetchQueries({ type: 'active' })]);"
+            },
+            {
+                "line": 90,
+                "text": "const invalidations = await Promise.allSettled("
+            },
+            {
+                "line": 94,
+                "text": "const recoveries = await Promise.allSettled("
+            }
+        ],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/features/data-controls/model/dataControlsStore.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/features/data-controls/ui/DataControlsPanel.tsx",
+        "matches": [
+            {
+                "line": 1,
+                "text": "import { useEffect, useState } from 'react';"
+            },
+            {
+                "line": 3,
+                "text": "import { useQueryClient } from '@tanstack/react-query';"
+            },
+            {
+                "line": 37,
+                "text": "const queryClient = useQueryClient();"
+            },
+            {
+                "line": 38,
+                "text": "const isAuthenticated = useSessionStore(state => state.isAuthenticated);"
+            },
+            {
+                "line": 39,
+                "text": "const { busyAction, errorKey, failedCategories, run } = useDataControlsStore();"
+            },
+            {
+                "line": 45,
+                "text": "useEffect(() => {"
+            },
+            {
+                "line": 59,
+                "text": "useEffect(() => {"
+            }
+        ],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/features/import-local-media/index.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/features/import-local-media/model/importLocalMedia.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/features/import-local-media/model/useLocalMediaImport.ts",
+        "matches": [
+            {
+                "line": 1,
+                "text": "import { useCallback, useEffect, useState } from 'react';"
+            },
+            {
+                "line": 55,
+                "text": "useEffect(() => {"
+            }
+        ],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/features/import-local-media/ui/ImportLocalMediaPanel.tsx",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/features/manage-content-languages/api/manageContentLanguagesApi.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/features/manage-content-languages/index.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/features/manage-content-languages/model/contentLanguagesHydration.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/features/manage-content-languages/model/contentLanguagesStore.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/features/manage-content-languages/model/manageContentLanguages.ts",
+        "matches": [
+            {
+                "line": 25,
+                "text": "const results = await Promise.allSettled(queryKeys.map(queryKey => queryClient.invalidateQueries({ queryKey, exact: false }, { throwOnError: true })));"
+            }
+        ],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/features/manage-content-languages/ui/ContentLanguagesEditor.tsx",
+        "matches": [
+            {
+                "line": 2,
+                "text": "import { useQueryClient } from '@tanstack/react-query';"
+            },
+            {
+                "line": 20,
+                "text": "const queryClient = useQueryClient();"
+            },
+            {
+                "line": 23,
+                "text": "const state = useContentLanguagesStore();"
+            }
+        ],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/features/manage-settings/api/manageSettingsApi.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/features/manage-settings/index.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/features/manage-settings/model/deviceSettings.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/features/manage-settings/model/settingsStore.ts",
+        "matches": [
+            {
+                "line": 89,
+                "text": "let syncTimer: ReturnType<typeof setTimeout> | null = null;"
+            },
+            {
+                "line": 99,
+                "text": "const timeout = setTimeout(() => reject(new Error('Settings storage timeout')), timeoutMs);"
+            },
+            {
+                "line": 146,
+                "text": "const [legacyTheme, legacyLanguage] = await Promise.all([secureKeyValueStorage.get(LEGACY_THEME_KEY), secureKeyValueStorage.get(LEGACY_LANGUAGE_KEY)]);"
+            },
+            {
+                "line": 161,
+                "text": "await Promise.all([secureKeyValueStorage.remove(LEGACY_THEME_KEY), secureKeyValueStorage.remove(LEGACY_LANGUAGE_KEY)]);"
+            },
+            {
+                "line": 197,
+                "text": "syncTimer = setTimeout(() => {"
+            }
+        ],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/features/manage-settings/ui/AppearanceAccessibilityControls.tsx",
+        "matches": [
+            {
+                "line": 48,
+                "text": "const appearance = useSettingsStore(state => state.settings.appearance);"
+            },
+            {
+                "line": 49,
+                "text": "const accessibility = useSettingsStore(state => state.settings.accessibility);"
+            },
+            {
+                "line": 50,
+                "text": "const syncError = useSettingsStore(state => state.syncError);"
+            },
+            {
+                "line": 51,
+                "text": "const updateSettings = useSettingsStore(state => state.updateSettings);"
+            },
+            {
+                "line": 52,
+                "text": "const retry = useSettingsStore(state => state.retry);"
+            }
+        ],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/features/manage-settings/ui/InterfaceLanguageRegionControls.tsx",
+        "matches": [
+            {
+                "line": 11,
+                "text": "const language = useSettingsStore(state => state.language);"
+            },
+            {
+                "line": 12,
+                "text": "const locale = useSettingsStore(state => state.settings.locale);"
+            },
+            {
+                "line": 13,
+                "text": "const setLanguage = useSettingsStore(state => state.setLanguage);"
+            },
+            {
+                "line": 14,
+                "text": "const updateSettings = useSettingsStore(state => state.updateSettings);"
+            }
+        ],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/features/manage-settings/ui/SettingsSyncStatus.tsx",
+        "matches": [
+            {
+                "line": 12,
+                "text": "const activeIdentityEpoch = useSettingsStore(state => state.activeIdentityEpoch);"
+            },
+            {
+                "line": 13,
+                "text": "const pendingGroup = useSettingsStore(state => state.pendingGroup);"
+            },
+            {
+                "line": 14,
+                "text": "const pendingVersion = useSettingsStore(state => state.pendingVersion);"
+            },
+            {
+                "line": 15,
+                "text": "const syncStatus = useSettingsStore(state => state.syncStatus);"
+            },
+            {
+                "line": 16,
+                "text": "const retry = useSettingsStore(state => state.retry);"
+            }
+        ],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/features/navigate-chapter-reader/index.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/features/navigate-chapter-reader/model/navigation.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/features/navigate-settings/index.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/features/navigate-settings/model/settingsNavigation.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/features/review-local-media-import/config/reviewLayout.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/features/review-local-media-import/index.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/features/review-local-media-import/model/reviewLocalMediaImport.ts",
+        "matches": [
+            {
+                "line": 120,
+                "text": "await Promise.all(promotedFilenames.map(filename => dependencies.files.removeFile(LOCAL_MEDIA_IMPORT_NAMESPACE, draft.id, filename)));"
+            }
+        ],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/features/review-local-media-import/model/reviewSortGeometry.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/features/review-local-media-import/model/useReviewLocalMediaImport.ts",
+        "matches": [
+            {
+                "line": 1,
+                "text": "import { useCallback, useEffect, useRef, useState } from 'react';"
+            },
+            {
+                "line": 26,
+                "text": "useEffect(() => {"
+            }
+        ],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/features/review-local-media-import/model/useReviewPanGesture.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/features/review-local-media-import/model/useSortableReviewDrag.ts",
+        "matches": [
+            {
+                "line": 1,
+                "text": "import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react';"
+            },
+            {
+                "line": 2,
+                "text": "import { AppState, type FlatList, type LayoutChangeEvent, View } from 'react-native';"
+            },
+            {
+                "line": 59,
+                "text": "const listRef = useAnimatedRef<FlatList<LocalMediaImportItem>>();"
+            },
+            {
+                "line": 377,
+                "text": "useLayoutEffect(() => {"
+            },
+            {
+                "line": 382,
+                "text": "useLayoutEffect(() => {"
+            },
+            {
+                "line": 413,
+                "text": "useLayoutEffect(() => {"
+            },
+            {
+                "line": 415,
+                "text": "const subscription = AppState.addEventListener('change', state => {"
+            }
+        ],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/features/review-local-media-import/ui/LocalMediaReviewPanel.tsx",
+        "matches": [
+            {
+                "line": 1,
+                "text": "import { type ReactNode, useEffect, useRef, useState } from 'react';"
+            },
+            {
+                "line": 52,
+                "text": "useEffect(() => {"
+            }
+        ],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/features/review-local-media-import/ui/ReviewImageActionsSheet.tsx",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/features/review-local-media-import/ui/ReviewImageCard.tsx",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/features/review-local-media-import/ui/SortableReviewItem.tsx",
+        "matches": [
+            {
+                "line": 1,
+                "text": "import { type ReactNode, useLayoutEffect } from 'react';"
+            },
+            {
+                "line": 47,
+                "text": "useLayoutEffect(() => {"
+            }
+        ],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/features/review-local-media-import/ui/SortableReviewList.tsx",
+        "matches": [
+            {
+                "line": 2,
+                "text": "import { type CellRendererProps, FlatList, Platform, useWindowDimensions, View } from 'react-native';"
+            },
+            {
+                "line": 15,
+                "text": "const AnimatedReviewFlatList = Reanimated.createAnimatedComponent(FlatList<LocalMediaImportItem>);"
+            },
+            {
+                "line": 45,
+                "text": "// iOS stacks FlatList rows as siblings, so the active row must rise with its item."
+            },
+            {
+                "line": 65,
+                "text": "<AnimatedReviewFlatList"
+            },
+            {
+                "line": 90,
+                "text": "// FlatList's render window remains bounded even with native clipping disabled."
+            }
+        ],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/features/select-translation-languages/index.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/features/select-translation-languages/model/selectTranslationLanguages.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/features/select-translation-languages/model/useSelectTranslationLanguages.ts",
+        "matches": [
+            {
+                "line": 1,
+                "text": "import { useCallback, useEffect, useRef, useState } from 'react';"
+            },
+            {
+                "line": 35,
+                "text": "useEffect(() => {"
+            }
+        ],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/features/select-translation-languages/ui/TranslationLanguageSelectionPanel.tsx",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/features/start-remote-processing/index.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/features/start-remote-processing/model/startRemoteProcessing.ts",
+        "matches": [
+            {
+                "line": 115,
+                "text": "await Promise.all([dependencies.projects.initialize(), dependencies.attempts.initialize()]);"
+            }
+        ],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/features/start-remote-processing/model/useStartRemoteProcessing.ts",
+        "matches": [
+            {
+                "line": 1,
+                "text": "import { useCallback, useEffect, useState } from 'react';"
+            },
+            {
+                "line": 16,
+                "text": "useEffect(() => {"
+            },
+            {
+                "line": 59,
+                "text": "useEffect(() => {"
+            },
+            {
+                "line": 60,
+                "text": "const subscription = AppState.addEventListener('change', next => {"
+            }
+        ],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/features/track-reading-progress/api/trackReadingProgressApi.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/features/track-reading-progress/index.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/features/track-reading-progress/model/progressSync.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/features/track-reading-progress/model/resume.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/features/update-privacy/api/privacyApi.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/features/update-privacy/index.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/features/update-privacy/model/privacyHydration.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/features/update-privacy/model/privacyMutationStore.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/features/update-privacy/model/updatePrivacy.ts",
+        "matches": [
+            {
+                "line": 46,
+                "text": "INVALIDATIONS[field].forEach(queryKey => unique.set(JSON.stringify(queryKey), queryKey)),"
+            },
+            {
+                "line": 48,
+                "text": "const results = await Promise.allSettled([...unique.values()].map(queryKey => queryClient.invalidateQueries({ queryKey, exact: false })));"
+            },
+            {
+                "line": 116,
+                "text": "const results = await Promise.allSettled(failed.queryKeys.map(queryKey => queryClient.invalidateQueries({ queryKey, exact: false })));"
+            },
+            {
+                "line": 140,
+                "text": ".forEach(key => keys.set(JSON.stringify(key), key));"
+            }
+        ],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/features/update-privacy/ui/PrivacyControlsPanel.tsx",
+        "matches": [
+            {
+                "line": 2,
+                "text": "import { useQueryClient } from '@tanstack/react-query';"
+            },
+            {
+                "line": 20,
+                "text": "const queryClient = useQueryClient();"
+            },
+            {
+                "line": 21,
+                "text": "const current = usePrivacySettingsStore(state => state.current);"
+            },
+            {
+                "line": 22,
+                "text": "const hydrationError = usePrivacySettingsStore(state => state.error);"
+            },
+            {
+                "line": 23,
+                "text": "const error = usePrivacyMutationStore(state => state.error);"
+            },
+            {
+                "line": 24,
+                "text": "const invalidationError = usePrivacyMutationStore(state => state.invalidationError);"
+            }
+        ],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/features/validate-local-media/index.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/features/validate-local-media/model/useValidateLocalMedia.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/features/validate-local-media/model/validateLocalMedia.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/features/validate-local-media/model/validationPresentation.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/features/validate-local-media/ui/LocalMediaValidationPanel.tsx",
+        "matches": [
+            {
+                "line": 1,
+                "text": "import { useEffect, useRef, useState } from 'react';"
+            },
+            {
+                "line": 2,
+                "text": "import { ActivityIndicator, FlatList, Pressable, View } from 'react-native';"
+            },
+            {
+                "line": 163,
+                "text": "const listRef = useRef<FlatList<LocalMediaImportItem>>(null);"
+            },
+            {
+                "line": 180,
+                "text": "useEffect(() => {"
+            },
+            {
+                "line": 258,
+                "text": "<FlatList"
+            }
+        ],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/pages/forgot/index.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/pages/forgot/ui/ForgotPage.tsx",
+        "matches": [
+            {
+                "line": 1,
+                "text": "import { useEffect, useRef, useState } from 'react';"
+            },
+            {
+                "line": 24,
+                "text": "const tick = useRef<ReturnType<typeof setInterval> | null>(null);"
+            },
+            {
+                "line": 26,
+                "text": "useEffect("
+            },
+            {
+                "line": 36,
+                "text": "tick.current = setInterval(() => {"
+            }
+        ],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/pages/forum/index.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/pages/forum/ui/ForumPage.tsx",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/pages/home/index.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/pages/home/ui/HomePage.tsx",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/pages/launcher/index.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/pages/launcher/model/modules.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/pages/launcher/ui/AppModuleCard.tsx",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/pages/launcher/ui/EditorialHero.tsx",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/pages/launcher/ui/ModuleSelector.tsx",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/pages/launcher/ui/ModuleSelectorPage.tsx",
+        "matches": [
+            {
+                "line": 15,
+                "text": "const authenticated = useSessionStore(state => state.isAuthenticated);"
+            },
+            {
+                "line": 16,
+                "text": "const localError = useSettingsStore(state => state.localError);"
+            },
+            {
+                "line": 17,
+                "text": "const retryLocalHydration = useSettingsStore(state => state.retryLocalHydration);"
+            }
+        ],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/pages/launcher/ui/PlatformStatusPage.tsx",
+        "matches": [
+            {
+                "line": 1,
+                "text": "import { useCallback, useEffect, useState } from 'react';"
+            },
+            {
+                "line": 16,
+                "text": "const user = useSessionStore(state => state.user);"
+            },
+            {
+                "line": 17,
+                "text": "const identityEpoch = useSessionStore(state => state.identityEpoch);"
+            },
+            {
+                "line": 18,
+                "text": "const syncStatus = useSettingsStore(state => state.syncStatus);"
+            },
+            {
+                "line": 19,
+                "text": "const retry = useSettingsStore(state => state.retry);"
+            },
+            {
+                "line": 33,
+                "text": "useEffect(() => {"
+            }
+        ],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/pages/library/index.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/pages/library/ui/LibraryPage.tsx",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/pages/login/index.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/pages/login/ui/LoginPage.tsx",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/pages/modal/index.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/pages/modal/ui/ModalPage.tsx",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/pages/not-found/index.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/pages/not-found/ui/NotFoundPage.tsx",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/pages/offline-translation/index.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/pages/offline-translation/model/translationFlow.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/pages/offline-translation/ui/OfflineTranslationPage.tsx",
+        "matches": [
+            {
+                "line": 1,
+                "text": "import { useCallback, useEffect, useMemo, useState } from 'react';"
+            },
+            {
+                "line": 45,
+                "text": "useEffect(() => {"
+            }
+        ],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/pages/profile/index.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/pages/profile/ui/ProfilePage.tsx",
+        "matches": [
+            {
+                "line": 13,
+                "text": "const user = useSessionStore(state => state.user);"
+            }
+        ],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/pages/reader/index.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/pages/reader/ui/ReaderPage.tsx",
+        "matches": [
+            {
+                "line": 1,
+                "text": "import { useEffect, useRef, useState } from 'react';"
+            },
+            {
+                "line": 3,
+                "text": "import { useQuery } from '@tanstack/react-query';"
+            },
+            {
+                "line": 31,
+                "text": "const settings = useSettingsStore(state => state.settings);"
+            },
+            {
+                "line": 32,
+                "text": "const updateSettings = useSettingsStore(state => state.updateSettings);"
+            },
+            {
+                "line": 44,
+                "text": "const chapterQuery = useQuery(chapterReaderQueryOptions(titleId, chapterNumber));"
+            },
+            {
+                "line": 45,
+                "text": "const progressQuery = useQuery({"
+            },
+            {
+                "line": 47,
+                "text": "queryFn: ({ signal }) => getReadingProgress(titleId, signal),"
+            },
+            {
+                "line": 53,
+                "text": "useEffect(() => {"
+            },
+            {
+                "line": 58,
+                "text": "useEffect(() => {"
+            },
+            {
+                "line": 67,
+                "text": "useEffect(() => {"
+            },
+            {
+                "line": 82,
+                "text": "useEffect(() => {"
+            },
+            {
+                "line": 90,
+                "text": "useEffect(() => {"
+            },
+            {
+                "line": 95,
+                "text": "const timeout = setTimeout(() => {"
+            },
+            {
+                "line": 217,
+                "text": "const { identityEpoch, isAuthenticated } = useSessionStore();"
+            }
+        ],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/pages/register/index.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/pages/register/ui/RegisterPage.tsx",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/pages/settings-about/index.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/pages/settings-about/ui/SettingsAboutPage.tsx",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/pages/settings-appearance/index.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/pages/settings-appearance/ui/SettingsAppearancePage.tsx",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/pages/settings-content-languages/index.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/pages/settings-content-languages/ui/SettingsContentLanguagesPage.tsx",
+        "matches": [
+            {
+                "line": 15,
+                "text": "const isAuthenticated = useSessionStore(state => state.isAuthenticated);"
+            },
+            {
+                "line": 16,
+                "text": "const identityEpoch = useSessionStore(state => state.identityEpoch);"
+            },
+            {
+                "line": 17,
+                "text": "const contentIdentityEpoch = useContentLanguagesStore(state => state.identityEpoch);"
+            }
+        ],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/pages/settings-data/index.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/pages/settings-data/ui/SettingsDataPage.tsx",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/pages/settings-index/index.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/pages/settings-index/ui/SettingsIndexPage.tsx",
+        "matches": [
+            {
+                "line": 36,
+                "text": "const isAuthenticated = useSessionStore(state => state.isAuthenticated);"
+            },
+            {
+                "line": 37,
+                "text": "const settings = useSettingsStore();"
+            },
+            {
+                "line": 38,
+                "text": "const content = useContentLanguagesStore();"
+            },
+            {
+                "line": 39,
+                "text": "const privacy = usePrivacySettingsStore();"
+            },
+            {
+                "line": 40,
+                "text": "const privacyMutation = usePrivacyMutationStore();"
+            },
+            {
+                "line": 41,
+                "text": "const data = useDataControlsStore();"
+            }
+        ],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/pages/settings-locale/index.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/pages/settings-locale/ui/SettingsLocalePage.tsx",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/pages/settings-privacy/index.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/pages/settings-privacy/ui/SettingsPrivacyPage.tsx",
+        "matches": [
+            {
+                "line": 16,
+                "text": "const isAuthenticated = useSessionStore(state => state.isAuthenticated);"
+            },
+            {
+                "line": 17,
+                "text": "const identityEpoch = useSessionStore(state => state.identityEpoch);"
+            },
+            {
+                "line": 18,
+                "text": "const privacyIdentityEpoch = usePrivacySettingsStore(state => state.identityEpoch);"
+            }
+        ],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/pages/settings-reader/index.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/pages/settings-reader/ui/SettingsReaderPage.tsx",
+        "matches": [
+            {
+                "line": 12,
+                "text": "const value = useSettingsStore(state => state.settings.reader);"
+            },
+            {
+                "line": 14,
+                "text": "const updateSettings = useSettingsStore(state => state.updateSettings);"
+            }
+        ],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/shared/api/apiClient.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/shared/api/authExpired.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/shared/api/index.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/shared/api/tokenStorage.ts",
+        "matches": [
+            {
+                "line": 18,
+                "text": "const parsed = JSON.parse(stored) as Partial<StoredTokens>;"
+            },
+            {
+                "line": 27,
+                "text": "const [accessToken, refreshToken] = await Promise.all(["
+            },
+            {
+                "line": 39,
+                "text": "await SecureStore.setItemAsync(STORAGE_KEYS.TOKENS, JSON.stringify({ accessToken: access, refreshToken: refresh }));"
+            },
+            {
+                "line": 40,
+                "text": "await Promise.allSettled([SecureStore.deleteItemAsync(STORAGE_KEYS.ACCESS_TOKEN), SecureStore.deleteItemAsync(STORAGE_KEYS.REFRESH_TOKEN)]);"
+            },
+            {
+                "line": 43,
+                "text": "const results = await Promise.allSettled(["
+            }
+        ],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/shared/cache/appCache.ts",
+        "matches": [
+            {
+                "line": 9,
+                "text": "const [memoryCleared, diskCleared] = await Promise.all([Image.clearMemoryCache(), Image.clearDiskCache()]);"
+            }
+        ],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/shared/cache/index.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/shared/config/appMetadata.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/shared/config/externalLinks.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/shared/config/index.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/shared/files/index.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/shared/files/jsonExport.ts",
+        "matches": [
+            {
+                "line": 27,
+                "text": "await FileSystem.writeAsStringAsync(uri, JSON.stringify(data, null, 2));"
+            },
+            {
+                "line": 51,
+                "text": "const infos = await Promise.all(entries.map(entry => FileSystem.getInfoAsync(`${EXPORT_DIRECTORY}${entry}`)));"
+            }
+        ],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/shared/files/privateBatchFiles.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/shared/hook/index.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/shared/hook/useDebounce.ts",
+        "matches": [
+            {
+                "line": 1,
+                "text": "import { useEffect, useState } from 'react';"
+            },
+            {
+                "line": 5,
+                "text": "useEffect(() => {"
+            },
+            {
+                "line": 6,
+                "text": "const t = setTimeout(() => setDebounced(value), delay);"
+            }
+        ],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/shared/i18n/index.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/shared/i18n/locales/en-US/auth.json",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/shared/i18n/locales/en-US/common.json",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/shared/i18n/locales/en-US/launcher.json",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/shared/i18n/locales/en-US/reader.json",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/shared/i18n/locales/en-US/remoteProcessing.json",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/shared/i18n/locales/en-US/settingsNavigation.json",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/shared/i18n/locales/es-ES/auth.json",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/shared/i18n/locales/es-ES/common.json",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/shared/i18n/locales/es-ES/launcher.json",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/shared/i18n/locales/es-ES/reader.json",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/shared/i18n/locales/es-ES/remoteProcessing.json",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/shared/i18n/locales/es-ES/settingsNavigation.json",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/shared/i18n/locales/pt-BR/auth.json",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/shared/i18n/locales/pt-BR/common.json",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/shared/i18n/locales/pt-BR/launcher.json",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/shared/i18n/locales/pt-BR/reader.json",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/shared/i18n/locales/pt-BR/remoteProcessing.json",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/shared/i18n/locales/pt-BR/settingsNavigation.json",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/shared/lib/index.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/shared/lib/randomUuid.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/shared/locale/formatters.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/shared/locale/index.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/shared/media-inspection/index.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/shared/media-inspection/mediaInspection.ts",
+        "matches": [
+            {
+                "line": 114,
+                "text": "return handle.readBytes(length);"
+            }
+        ],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/shared/media-picker/index.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/shared/media-picker/mediaPicker.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/shared/model/api.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/shared/model/index.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/shared/navigation/back.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/shared/navigation/index.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/shared/navigation/routes.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/shared/remote-gateway/index.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/shared/remote-gateway/remoteGatewayTransport.ts",
+        "matches": [
+            {
+                "line": 62,
+                "text": "const timer = setTimeout(() => {"
+            },
+            {
+                "line": 67,
+                "text": "external?.addEventListener('abort', abort, { once: true });"
+            },
+            {
+                "line": 83,
+                "text": "const text = await response.text();"
+            },
+            {
+                "line": 87,
+                "text": "return { status: response.status, headers: response.headers, body: JSON.parse(text) as unknown };"
+            },
+            {
+                "line": 134,
+                "text": "body: request.body === undefined ? undefined : JSON.stringify(request.body),"
+            }
+        ],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/shared/storage/appDatabase.ts",
+        "matches": [
+            {
+                "line": 7,
+                "text": "getAllAsync<T>(source: string, params?: SQLiteBindParams): Promise<T[]>;"
+            },
+            {
+                "line": 11,
+                "text": "withExclusiveTransactionAsync(task: (transaction: SqlExecutor) => Promise<void>): Promise<void>;"
+            }
+        ],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/shared/storage/index.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/shared/storage/keyValueStorage.ts",
+        "matches": [
+            {
+                "line": 20,
+                "text": "return JSON.parse(value) as T;"
+            },
+            {
+                "line": 24,
+                "text": "await storage.set(key, JSON.stringify(value));"
+            }
+        ],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/shared/storage/localDataRegistry.ts",
+        "matches": [
+            {
+                "line": 22,
+                "text": "const measured = await Promise.all("
+            },
+            {
+                "line": 33,
+                "text": "await Promise.all("
+            }
+        ],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/shared/theme/ThemeProvider.tsx",
+        "matches": [
+            {
+                "line": 1,
+                "text": "import { createContext, useContext, useEffect, useMemo, useState } from 'react';"
+            },
+            {
+                "line": 77,
+                "text": "const timeout = setTimeout(() => finish(false), PLATFORM_ACCESSIBILITY_TIMEOUT_MS);"
+            },
+            {
+                "line": 116,
+                "text": "useEffect(() => {"
+            },
+            {
+                "line": 137,
+                "text": "void Promise.all([resolveWithTimeout(reduceMotion), resolveWithTimeout(highTextContrast), resolveWithTimeout(darkerColors)]).then("
+            },
+            {
+                "line": 148,
+                "text": "const reduceMotionSubscription = AccessibilityInfo.addEventListener('reduceMotionChanged', setSystemReduceMotion);"
+            },
+            {
+                "line": 149,
+                "text": "const highTextContrastSubscription = AccessibilityInfo.addEventListener('highTextContrastChanged', setSystemHighTextContrast);"
+            },
+            {
+                "line": 150,
+                "text": "const darkerColorsSubscription = AccessibilityInfo.addEventListener('darkerSystemColorsChanged', setSystemDarkerColors);"
+            },
+            {
+                "line": 160,
+                "text": "useEffect(() => {"
+            }
+        ],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/shared/theme/appearance.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/shared/theme/fonts.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/shared/theme/index.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/shared/theme/responsive.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/shared/theme/tokens.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/shared/ui/AppDialog.tsx",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/shared/ui/AppText.tsx",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/shared/ui/Avatar.tsx",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/shared/ui/BackButton.tsx",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/shared/ui/Button.tsx",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/shared/ui/Card.tsx",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/shared/ui/ChoiceCards.tsx",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/shared/ui/ChoiceGroup.tsx",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/shared/ui/EmptyState.tsx",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/shared/ui/FormSection.tsx",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/shared/ui/Icon.tsx",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/shared/ui/IconButton.tsx",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/shared/ui/Input.tsx",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/shared/ui/ListRow.tsx",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/shared/ui/MediaPreviewSheet.tsx",
+        "matches": [
+            {
+                "line": 1,
+                "text": "import { type ReactNode, useEffect, useState } from 'react';"
+            },
+            {
+                "line": 52,
+                "text": "useEffect(() => {"
+            }
+        ],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/shared/ui/NavigationHeader.tsx",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/shared/ui/PageContainer.tsx",
+        "matches": [
+            {
+                "line": 2,
+                "text": "import { KeyboardAvoidingView, Platform, ScrollView, View } from 'react-native';"
+            },
+            {
+                "line": 37,
+                "text": "<ScrollView"
+            },
+            {
+                "line": 45,
+                "text": "</ScrollView>"
+            }
+        ],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/shared/ui/ProgressSteps.tsx",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/shared/ui/RangeSlider.tsx",
+        "matches": [
+            {
+                "line": 1,
+                "text": "import { useCallback, useEffect, useMemo, useRef, useState } from 'react';"
+            },
+            {
+                "line": 190,
+                "text": "useEffect(() => {"
+            }
+        ],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/shared/ui/ScreenScaffold.tsx",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/shared/ui/Section.tsx",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/shared/ui/SectionStack.tsx",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/shared/ui/SegmentedControl.tsx",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/shared/ui/SelectField.tsx",
+        "matches": [
+            {
+                "line": 1,
+                "text": "import { useContext, useEffect, useRef, useState } from 'react';"
+            },
+            {
+                "line": 2,
+                "text": "import { AccessibilityInfo, Modal, Platform, Pressable, ScrollView, useWindowDimensions, View } from 'react-native';"
+            },
+            {
+                "line": 99,
+                "text": "useEffect(() => {"
+            },
+            {
+                "line": 306,
+                "text": "<ScrollView"
+            },
+            {
+                "line": 401,
+                "text": "</ScrollView>"
+            }
+        ],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/shared/ui/Skeleton.tsx",
+        "matches": [
+            {
+                "line": 1,
+                "text": "import { useEffect, useRef } from 'react';"
+            },
+            {
+                "line": 17,
+                "text": "useEffect(() => {"
+            }
+        ],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/shared/ui/StartupFeedback.tsx",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/shared/ui/StatusMessage.tsx",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/shared/ui/StepperControl.tsx",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/shared/ui/StickyActionBar.tsx",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/shared/ui/SwatchPicker.tsx",
+        "matches": [
+            {
+                "line": 1,
+                "text": "import { useEffect, useRef, useState } from 'react';"
+            },
+            {
+                "line": 40,
+                "text": "const cancelPreviewTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);"
+            },
+            {
+                "line": 45,
+                "text": "useEffect(() => {"
+            },
+            {
+                "line": 58,
+                "text": "useEffect("
+            },
+            {
+                "line": 80,
+                "text": "cancelPreviewTimerRef.current = setTimeout(() => {"
+            }
+        ],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/shared/ui/SwitchRow.tsx",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/shared/ui/index.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/widgets/chapter-reader/index.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/widgets/chapter-reader/model/viewport.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/widgets/chapter-reader/ui/ChapterReader.tsx",
+        "matches": [
+            {
+                "line": 1,
+                "text": "import { ScrollView, View } from 'react-native';"
+            },
+            {
+                "line": 89,
+                "text": "<ScrollView"
+            },
+            {
+                "line": 123,
+                "text": "</ScrollView>"
+            }
+        ],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/widgets/chapter-reader/ui/ReaderPreferencesSection.tsx",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/widgets/chapter-reader/ui/ReaderViewport.tsx",
+        "matches": [
+            {
+                "line": 1,
+                "text": "import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';"
+            },
+            {
+                "line": 2,
+                "text": "import { type LayoutChangeEvent, ScrollView, useWindowDimensions, View } from 'react-native';"
+            },
+            {
+                "line": 87,
+                "text": "const scrollRef = useRef<ScrollView>(null);"
+            },
+            {
+                "line": 102,
+                "text": "useEffect(() => {"
+            },
+            {
+                "line": 106,
+                "text": "useEffect(() => {"
+            },
+            {
+                "line": 108,
+                "text": "if (urls.length) void Image.prefetch(urls).catch(() => undefined);"
+            },
+            {
+                "line": 155,
+                "text": "<ScrollView"
+            },
+            {
+                "line": 168,
+                "text": "</ScrollView>"
+            }
+        ],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/widgets/remote-processing/index.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/widgets/remote-processing/ui/RemoteProcessingPanel.tsx",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/widgets/settings-index/index.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/widgets/settings-index/model/types.ts",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/widgets/settings-index/ui/SettingsIndex.tsx",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    },
+    {
+        "path": "src/widgets/settings-index/ui/SettingsSections.tsx",
+        "matches": [],
+        "meaning": "candidate index only; matches are not defects"
+    }
+]

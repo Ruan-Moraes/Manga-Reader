@@ -1,6 +1,6 @@
-import { type LocalMediaImportDraft, type LocalMediaImportRepository, PENDING_MEDIA_VALIDATION } from '@/src/entities/local-media-import';
-import type { PrivateBatchFiles, PrivateFileInput, StoredPrivateFile } from '@/src/shared/files';
-import type { LocalMediaPicker, LocalMediaPickerResult } from '@/src/shared/media-picker';
+import { type LocalMediaImportDraft, type LocalMediaImportRepository, PENDING_MEDIA_VALIDATION } from '@/entities/local-media-import';
+import type { PrivateBatchFiles, PrivateFileInput, StoredPrivateFile } from '@/shared/files';
+import type { LocalMediaPicker, LocalMediaPickerResult } from '@/shared/media-picker';
 
 import { createLocalMediaImportController, LocalMediaImportError } from '../importLocalMedia';
 

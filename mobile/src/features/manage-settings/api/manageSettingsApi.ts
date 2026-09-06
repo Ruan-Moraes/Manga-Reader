@@ -1,7 +1,7 @@
-import type { UserSettings } from '@/src/entities/user-setting';
-import { normalizeUserSettings } from '@/src/entities/user-setting';
-import { api } from '@/src/shared/api';
-import type { ApiResponse } from '@/src/shared/model';
+import type { UserSettings } from '@/entities/user-setting';
+import { normalizeUserSettings } from '@/entities/user-setting';
+import { api } from '@/shared/api';
+import type { ApiResponse } from '@/shared/model';
 
 export async function updateMySettings(settings: UserSettings, signal?: AbortSignal): Promise<UserSettings> {
     const response = await api.patch<ApiResponse<unknown>>('/users/me/settings', settings, { signal });

@@ -1,5 +1,5 @@
-import { isMediaValidationReady, type LocalMediaImportDraft } from '@/src/entities/local-media-import';
-import { MEDIA_VALIDATION_POLICY_VERSION } from '@/src/shared/media-inspection';
+import { isMediaValidationReady, type LocalMediaImportDraft } from '@/entities/local-media-import';
+import { MEDIA_VALIDATION_POLICY_VERSION } from '@/shared/media-inspection';
 
 export const TRANSLATION_FLOW_STEPS = ['import', 'organize', 'languages', 'validate', 'review'] as const;
 export type TranslationFlowStep = (typeof TRANSLATION_FLOW_STEPS)[number];

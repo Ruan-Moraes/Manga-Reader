@@ -1,8 +1,8 @@
 import { Text, View } from 'react-native';
 import { Image } from 'expo-image';
 
-import { useTheme } from '@/src/shared/theme';
-import { FONTS } from '@/src/shared/theme';
+import { useTheme } from '@/shared/theme';
+import { FONTS } from '@/shared/theme';
 
 interface Props {
     src?: string | null;

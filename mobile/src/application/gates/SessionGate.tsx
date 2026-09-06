@@ -2,11 +2,11 @@ import { type PropsWithChildren, useEffect, useRef, useState } from 'react';
 import { useGlobalSearchParams, useRouter, useSegments } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 
-import { useSessionStore } from '@/src/entities/session';
-import { clearExpiredSession, restoreSession } from '@/src/features/authenticate';
-import { subscribeAuthExpired } from '@/src/shared/api';
-import { parseAuthReturnRoute, ROUTES } from '@/src/shared/navigation';
-import { StartupFeedback } from '@/src/shared/ui';
+import { useSessionStore } from '@/entities/session';
+import { clearExpiredSession, restoreSession } from '@/features/authenticate';
+import { subscribeAuthExpired } from '@/shared/api';
+import { parseAuthReturnRoute, ROUTES } from '@/shared/navigation';
+import { StartupFeedback } from '@/shared/ui';
 
 export function SessionGate({ children }: PropsWithChildren) {
     const isAuthenticated = useSessionStore(state => state.isAuthenticated);

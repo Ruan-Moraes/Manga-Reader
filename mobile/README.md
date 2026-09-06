@@ -1,15 +1,15 @@
 # Manga Reader Mobile — `mobile/`
 
-Aplicativo React Native com Expo SDK 54 e Expo Router. O app inicia em um
+Aplicativo React Native com Expo SDK 57 e Expo Router. O app inicia em um
 launcher público; a plataforma autenticada permanece em construção e suas tabs
 de conteúdo não são expostas.
 
 Este README é a referência técnica do módulo. Os contratos comportamentais e o
-workflow de desenvolvimento ficam em [`specs/`](specs/README.md), sob os
+workflow de desenvolvimento ficam em [`docs/specs/`](docs/specs/README.md), sob os
 guardrails de [`AGENTS.md`](AGENTS.md).
 
 O baseline brownfield possui paridade arquivo→spec verificada por
-[`specs/coverage.json`](specs/coverage.json). Código existente é descrito por
+[`docs/specs/coverage.json`](docs/specs/coverage.json). Código existente é descrito por
 `OBS-*`; mudanças futuras continuam exigindo Target Spec aprovada com `AC-*`.
 Código executado com verificação real pendente usa `verification-pending` e não é
 apresentado como concluído.
@@ -23,7 +23,7 @@ Implementado:
 - revisão virtualizada do draft em Grade minimalista ou Lista, preview ampliado privado, adição/remoção, ordenação persistente por arraste na imagem, aviso de possível duplicata e confirmação local;
 - seleção independente e persistente entre sete idiomas e 42 pares direcionais,
   com chinês simplificado e tradicional separados;
-- validação local sequencial de JPEG, PNG e WebP estáticos pelos bytes reais, com galeria virtualizada, resumo do lote, correção localizada por página, limites defensivos, retry seletivo e profiling Android físico concluído;
+- validação local sequencial de JPEG, PNG e WebP estáticos pelos bytes reais, com galeria virtualizada, resumo do lote, correção localizada por página, limites defensivos, retry seletivo e profiling Android histórico; revalidação física da otimização de persistência pendente;
 - preparação local de projeto privado com páginas ordenadas, snapshot validado,
   SQLite v6, estados canônicos e restauração determinística (verificação física
   final pendente);
@@ -59,9 +59,9 @@ Ainda não implementado:
 
 | Área                     | Tecnologia                              |
 | ------------------------ | --------------------------------------- |
-| Framework                | Expo 54, React Native 0.81 e React 19   |
-| Navegação                | Expo Router 6                           |
-| Linguagem                | TypeScript 5.9                          |
+| Framework                | Expo 57, React Native 0.86 e React 19.2 |
+| Navegação                | Expo Router 57                          |
+| Linguagem                | TypeScript 6.0                          |
 | Estado global            | Zustand 5                               |
 | Server state             | TanStack Query 5                        |
 | HTTP                     | Axios                                   |
@@ -74,7 +74,6 @@ Ainda não implementado:
 | Seleção de imagens       | Expo ImagePicker / picker do sistema    |
 | Imagens e fontes         | Expo Image + Nunito Sans                |
 | Ordenação por gesto      | Reanimated + Worklets + Gesture Handler |
-| Slider nativo            | React Native Community Slider           |
 
 Bibliotecas planejadas para fases futuras não são listadas como dependências
 atuais.
@@ -84,14 +83,8 @@ atuais.
 ```text
 mobile/
 ├── .agents/skills/        # papéis reutilizáveis do workflow SDD
-├── app/                  # arquivos de rota do Expo Router; cascas finas
-│   ├── (auth)/
-│   ├── platform/          # status conectado e tabs futuras bloqueadas
-│   ├── index.tsx          # seletor público
-│   ├── offline-translation.tsx
-│   ├── _layout.tsx
-│   └── modal.tsx
 ├── src/
+│   ├── app/              # cascas de rota do Expo Router
 │   ├── application/      # app layer local: providers, gates e navegação
 │   ├── pages/            # telas completas
 │   ├── widgets/          # blocos compostos
@@ -99,8 +92,7 @@ mobile/
 │   ├── entities/         # sessão, settings, capítulos e drafts de mídia local
 │   └── shared/           # api, navegação técnica, tema, i18n e UI genérica
 ├── assets/
-├── docs/
-├── specs/                # baselines, Target Specs, decisões e registry
+├── docs/                 # specs, decisões, planos, referências e legado
 ├── app.json
 └── package.json
 ```
@@ -111,11 +103,15 @@ O app segue as dependências do FSD:
 application -> pages -> widgets -> features -> entities -> shared
 ```
 
-`src/application` representa a app layer porque `app/` é reservado pelo Expo
-Router. Não são permitidos imports cruzados entre slices do mesmo nível; entities
+`src/application` representa a app layer lógica; `src/app` é reservado às
+cascas de rota do Expo Router. Não são permitidos imports cruzados entre slices do mesmo nível; entities
 usam `@x` somente para cross-reference tipada explícita.
 
 ## Instalação e execução
+
+Requisitos recomendados para o SDK 57: Node.js 22.13 ou superior, Xcode 26.4 ou
+superior para iOS e JDK 17 para Android. O projeto mira iOS 16.4+ e Android 7+
+(API 24, compile/target SDK 36).
 
 ```bash
 cd mobile
@@ -161,9 +157,9 @@ inválida fecha o upload e nunca ativa fallback direto para provider. Consulte o
 - falha no refresh limpa os tokens e notifica o gate de autenticação;
 - o mobile envia o refresh token no body, comportamento aceito pela API.
 
-As telas usam como referência visual os protótipos estáticos em
-[`docs/auth-design-reference/README.md`](docs/auth-design-reference/README.md).
-Esses arquivos não são dependências de runtime.
+As telas de autenticação seguem os contratos e evidências registrados no
+[registry SDD](docs/specs/registry.md); protótipos externos não são dependências
+de runtime deste repositório.
 
 ## Tema
 
@@ -217,9 +213,9 @@ ou outra evidência adequada na Target Spec.
 
 Antes de alterar comportamento:
 
-1. consultar [`specs/registry.md`](specs/registry.md);
-2. confirmar a cobertura do arquivo em [`specs/coverage.json`](specs/coverage.json) e aplicar Reverse Spec se a área ainda não estiver documentada;
-3. criar uma Target Spec `draft` em `specs/features/`;
+1. consultar [`docs/specs/registry.md`](docs/specs/registry.md);
+2. confirmar a cobertura do arquivo em [`docs/specs/coverage.json`](docs/specs/coverage.json) e aplicar Reverse Spec se a área ainda não estiver documentada;
+3. criar uma Target Spec `draft` em `docs/specs/features/`;
 4. obter aprovação humana antes de tasks ou código;
 5. implementar, testar, revisar e auditar drift seguindo `AGENTS.md`.
 
@@ -253,8 +249,15 @@ aprovada.
 
 - [README principal](../README.md)
 - [Guardrails SDD](AGENTS.md)
-- [Workflow e contratos SDD](specs/README.md)
-- [Registry de specs](specs/registry.md)
+- [Índice da documentação mobile](docs/README.md)
+- [Workflow e contratos SDD](docs/specs/README.md)
+- [Registry de specs](docs/specs/registry.md)
 - [Workspace web](../web/README.md)
 - [Layout FSD](../docs/source-layout.md)
 - [Guia de i18n](../docs/i18n-guide.md)
+
+## Performance
+
+Antes e depois de mudanças de runtime, consultar a [referência normativa](docs/decisions/MOB-DEC-007-mobile-performance.md) e a [skill mobile-performance](.agents/skills/mobile-performance/SKILL.md). O [relatório consolidado](docs/active/performance-audit.md) distingue correções implementadas, diagnóstico histórico e medições pendentes; o [plano de remediação](docs/plans/performance-remediation.md) não substitui os gates SDD.
+
+Correções C01–C05 implementadas com testes; memória/frames e integração nativa de exportação seguem em validação. Ver [estado consolidado e evidências](docs/active/performance-audit.md).

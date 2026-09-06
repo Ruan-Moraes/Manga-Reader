@@ -1,6 +1,6 @@
-import { type LocalMediaImportDraft, type LocalMediaImportRepository, PENDING_MEDIA_VALIDATION } from '@/src/entities/local-media-import';
-import type { TranslationProject, TranslationProjectRepository } from '@/src/entities/translation-project';
-import type { PrivateBatchFiles } from '@/src/shared/files';
+import { type LocalMediaImportDraft, type LocalMediaImportRepository, PENDING_MEDIA_VALIDATION } from '@/entities/local-media-import';
+import type { TranslationProject, TranslationProjectRepository } from '@/entities/translation-project';
+import type { PrivateBatchFiles } from '@/shared/files';
 
 import { createTranslationProjectController, CreateTranslationProjectError } from '../createTranslationProject';
 

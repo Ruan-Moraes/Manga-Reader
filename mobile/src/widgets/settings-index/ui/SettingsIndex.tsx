@@ -1,7 +1,7 @@
 import { View } from 'react-native';
 
-import { useTheme } from '@/src/shared/theme';
-import { Icon, ListRow } from '@/src/shared/ui';
+import { useTheme } from '@/shared/theme';
+import { Icon, ListRow } from '@/shared/ui';
 
 import type { SettingsIndexItem } from '../model/types';
 

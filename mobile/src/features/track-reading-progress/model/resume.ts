@@ -1,4 +1,4 @@
-import type { ReadingProgress } from '@/src/entities/reading-progress';
+import type { ReadingProgress } from '@/entities/reading-progress';
 
 export interface ResumeChoice {
     kind: 'requested' | 'choose';

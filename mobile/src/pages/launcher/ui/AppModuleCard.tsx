@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { Pressable, View } from 'react-native';
 
-import { useTheme } from '@/src/shared/theme';
-import { AppText, Icon } from '@/src/shared/ui';
+import { useTheme } from '@/shared/theme';
+import { AppText, Icon } from '@/shared/ui';
 
 import type { AppModuleDescriptor } from '../model/modules';
 

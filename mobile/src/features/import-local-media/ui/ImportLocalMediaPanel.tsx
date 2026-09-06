@@ -2,9 +2,9 @@ import { useState } from 'react';
 import { ActivityIndicator, Pressable, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-import type { LocalMediaImportDraft } from '@/src/entities/local-media-import';
-import { useTheme } from '@/src/shared/theme';
-import { AppText, Button, Card, Icon } from '@/src/shared/ui';
+import type { LocalMediaImportDraft } from '@/entities/local-media-import';
+import { useTheme } from '@/shared/theme';
+import { AppText, Button, Card, Icon } from '@/shared/ui';
 
 import { type LocalMediaImportController } from '../model/importLocalMedia';
 import { useLocalMediaImport } from '../model/useLocalMediaImport';

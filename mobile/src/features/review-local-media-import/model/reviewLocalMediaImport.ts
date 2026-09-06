@@ -6,9 +6,9 @@ import {
     localMediaImportRepository,
     type NewLocalMediaImportItem,
     PENDING_MEDIA_VALIDATION,
-} from '@/src/entities/local-media-import';
-import { appPrivateBatchFiles, type PrivateBatchFiles } from '@/src/shared/files';
-import { type LocalMediaPicker, type LocalMediaPickerResult, systemLocalMediaPicker } from '@/src/shared/media-picker';
+} from '@/entities/local-media-import';
+import { appPrivateBatchFiles, type PrivateBatchFiles } from '@/shared/files';
+import { type LocalMediaPicker, type LocalMediaPickerResult, systemLocalMediaPicker } from '@/shared/media-picker';
 
 export type ReviewLocalMediaImportErrorCode = 'picker-unavailable' | 'invalid-selection' | 'storage-unavailable';
 

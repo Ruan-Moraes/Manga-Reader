@@ -4,8 +4,8 @@ import { Image } from 'expo-image';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 
-import { useTheme } from '@/src/shared/theme';
-import { AppText } from '@/src/shared/ui';
+import { useTheme } from '@/shared/theme';
+import { AppText } from '@/shared/ui';
 
 import { REVIEW_CARD_BORDER_WIDTH, REVIEW_IMAGE_ASPECT_RATIO, REVIEW_LIST_THUMBNAIL_WIDTH, type ReviewViewMode } from '../config/reviewLayout';
 

@@ -2,9 +2,9 @@ import { View } from 'react-native';
 import { useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 
-import { SUPPORTED_CONTENT_LANGUAGES } from '@/src/entities/content-language-preference';
-import { useTheme } from '@/src/shared/theme';
-import { AppText, Button, FormSection, Icon, IconButton, type IconName, SectionStack, StatusMessage } from '@/src/shared/ui';
+import { SUPPORTED_CONTENT_LANGUAGES } from '@/entities/content-language-preference';
+import { useTheme } from '@/shared/theme';
+import { AppText, Button, FormSection, Icon, IconButton, type IconName, SectionStack, StatusMessage } from '@/shared/ui';
 
 import { hydrateContentLanguages } from '../model/contentLanguagesHydration';
 import { useContentLanguagesStore } from '../model/contentLanguagesStore';

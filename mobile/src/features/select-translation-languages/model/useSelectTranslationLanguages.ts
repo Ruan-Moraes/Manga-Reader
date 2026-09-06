@@ -5,7 +5,7 @@ import {
     type LocalMediaImportDraft,
     type TranslationLanguageCode,
     type TranslationLanguagePair,
-} from '@/src/entities/local-media-import';
+} from '@/entities/local-media-import';
 
 import {
     type SelectTranslationLanguagesController,

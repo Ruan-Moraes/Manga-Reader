@@ -4,9 +4,9 @@ import * as SplashScreen from 'expo-splash-screen';
 import { act, render, screen, waitFor } from '@testing-library/react-native';
 import { useTranslation } from 'react-i18next';
 
-import { DEFAULT_USER_SETTINGS } from '@/src/entities/user-setting';
-import { resetSettingsRuntimeForTests, useSettingsStore } from '@/src/features/manage-settings';
-import i18n, { DEFAULT_LANGUAGE } from '@/src/shared/i18n';
+import { DEFAULT_USER_SETTINGS } from '@/entities/user-setting';
+import { resetSettingsRuntimeForTests, useSettingsStore } from '@/features/manage-settings';
+import i18n, { DEFAULT_LANGUAGE } from '@/shared/i18n';
 
 import { SettingsGate } from '../SettingsGate';
 

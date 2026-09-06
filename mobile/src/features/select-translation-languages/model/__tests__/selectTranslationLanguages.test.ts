@@ -3,7 +3,7 @@ import {
     type LocalMediaImportRepository,
     PENDING_MEDIA_VALIDATION,
     type TranslationLanguagePair,
-} from '@/src/entities/local-media-import';
+} from '@/entities/local-media-import';
 
 import { createSelectTranslationLanguagesController, SelectTranslationLanguagesError } from '../selectTranslationLanguages';
 

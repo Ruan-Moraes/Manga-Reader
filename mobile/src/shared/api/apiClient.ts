@@ -1,6 +1,6 @@
 import axios, { AxiosError, type InternalAxiosRequestConfig } from 'axios';
 
-import { getCurrentLanguage } from '@/src/shared/i18n';
+import { getCurrentLanguage } from '@/shared/i18n';
 
 import { notifyAuthExpired } from './authExpired';
 import { tokenStorage } from './tokenStorage';

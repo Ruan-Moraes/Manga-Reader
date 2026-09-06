@@ -1,9 +1,9 @@
 import { View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-import type { AppearanceSettings, DensityPreference, FontSizePreference, ThemePreference } from '@/src/entities/user-setting';
-import { darkTokens, lightTokens, useTheme } from '@/src/shared/theme';
-import { ChoiceCards, FormSection, SectionStack, SegmentedControl, StatusMessage, SwitchRow } from '@/src/shared/ui';
+import type { AppearanceSettings, DensityPreference, FontSizePreference, ThemePreference } from '@/entities/user-setting';
+import { darkTokens, lightTokens, useTheme } from '@/shared/theme';
+import { ChoiceCards, FormSection, SectionStack, SegmentedControl, StatusMessage, SwitchRow } from '@/shared/ui';
 
 import { useSettingsStore } from '../model/settingsStore';
 

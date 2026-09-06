@@ -1,4 +1,4 @@
-import { Icon, type IconName as SharedIconName } from '@/src/shared/ui';
+import { Icon, type IconName as SharedIconName } from '@/shared/ui';
 
 type IconName = 'mail' | 'lock' | 'eye' | 'eye-off' | 'check' | 'user' | 'arrow-left' | 'send' | 'alert';
 

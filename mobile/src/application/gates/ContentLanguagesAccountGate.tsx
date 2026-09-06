@@ -2,17 +2,17 @@ import { type PropsWithChildren, useEffect } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 
-import { deriveGuestContentLanguages } from '@/src/entities/content-language-preference';
-import { useSessionStore } from '@/src/entities/session';
+import { deriveGuestContentLanguages } from '@/entities/content-language-preference';
+import { useSessionStore } from '@/entities/session';
 import {
     contentLanguageQueryKeys,
     hydrateContentLanguages,
     resetContentLanguagesHydration,
     resetContentLanguagesMutationRuntime,
     useContentLanguagesStore,
-} from '@/src/features/manage-content-languages';
-import { useSettingsStore } from '@/src/features/manage-settings';
-import { StartupFeedback } from '@/src/shared/ui';
+} from '@/features/manage-content-languages';
+import { useSettingsStore } from '@/features/manage-settings';
+import { StartupFeedback } from '@/shared/ui';
 
 interface IdentityBoundaryProps extends PropsWithChildren {
     identityEpoch: number;

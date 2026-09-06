@@ -1,12 +1,12 @@
 import { ScrollView, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-import type { Chapter, ImageVariantCapabilities } from '@/src/entities/chapter';
-import type { ReaderSettings } from '@/src/entities/user-setting';
-import { ReaderSettingsControls } from '@/src/features/configure-chapter-reader';
-import type { ProgressSyncState } from '@/src/features/track-reading-progress';
-import { useTheme } from '@/src/shared/theme';
-import { AppText, BackButton, IconButton, StatusMessage } from '@/src/shared/ui';
+import type { Chapter, ImageVariantCapabilities } from '@/entities/chapter';
+import type { ReaderSettings } from '@/entities/user-setting';
+import { ReaderSettingsControls } from '@/features/configure-chapter-reader';
+import type { ProgressSyncState } from '@/features/track-reading-progress';
+import { useTheme } from '@/shared/theme';
+import { AppText, BackButton, IconButton, StatusMessage } from '@/shared/ui';
 
 import { ReaderViewport } from './ReaderViewport';
 

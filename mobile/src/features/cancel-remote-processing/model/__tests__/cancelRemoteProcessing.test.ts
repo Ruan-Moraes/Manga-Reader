@@ -1,6 +1,6 @@
-import type { RemoteProcessingAttempt, RemoteProcessingAttemptRepository } from '@/src/entities/remote-processing-attempt';
-import type { RemoteProcessingIdentity } from '@/src/entities/remote-processing-identity';
-import type { RemoteGatewayTransport } from '@/src/shared/remote-gateway';
+import type { RemoteProcessingAttempt, RemoteProcessingAttemptRepository } from '@/entities/remote-processing-attempt';
+import type { RemoteProcessingIdentity } from '@/entities/remote-processing-identity';
+import type { RemoteGatewayTransport } from '@/shared/remote-gateway';
 
 import { createCancelRemoteProcessingController } from '../cancelRemoteProcessing';
 

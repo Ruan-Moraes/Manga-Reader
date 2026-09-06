@@ -1,4 +1,4 @@
-import type { IconName } from '@/src/shared/ui';
+import type { IconName } from '@/shared/ui';
 
 export interface SettingsIndexItem {
     id: string;

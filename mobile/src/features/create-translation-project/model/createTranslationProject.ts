@@ -4,16 +4,16 @@ import {
     type LocalMediaImportDraft,
     type LocalMediaImportRepository,
     localMediaImportRepository,
-} from '@/src/entities/local-media-import';
+} from '@/entities/local-media-import';
 import {
     type NewTranslationProject,
     TRANSLATION_PROJECT_NAMESPACE,
     type TranslationProject,
     type TranslationProjectRepository,
     translationProjectRepository,
-} from '@/src/entities/translation-project';
-import { appPrivateBatchFiles, type PrivateBatchFiles } from '@/src/shared/files';
-import { MEDIA_VALIDATION_POLICY_VERSION } from '@/src/shared/media-inspection';
+} from '@/entities/translation-project';
+import { appPrivateBatchFiles, type PrivateBatchFiles } from '@/shared/files';
+import { MEDIA_VALIDATION_POLICY_VERSION } from '@/shared/media-inspection';
 
 export type CreateTranslationProjectErrorCode = 'prerequisite-required' | 'stale-draft' | 'file-copy-failed' | 'storage-unavailable' | 'project-conflict';
 

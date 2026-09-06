@@ -12,10 +12,12 @@ const log = (...messages) => process.stdout.write(`${messages.join(' ')}\n`);
 const logError = (...messages) => process.stderr.write(`${messages.join(' ')}\n`);
 
 const mobileRoot = resolve(fileURLToPath(new URL('..', import.meta.url)));
-const specsRoot = resolve(mobileRoot, 'specs');
+const docsRoot = resolve(mobileRoot, 'docs');
+const specsRoot = resolve(docsRoot, 'specs');
+const decisionsRoot = resolve(docsRoot, 'decisions');
 const registryPath = resolve(specsRoot, 'registry.md');
 const coveragePath = resolve(specsRoot, 'coverage.json');
-const reconciliationPath = resolve(specsRoot, 'BASELINE-RECONCILIATION-REPORT.md');
+const reconciliationPath = resolve(docsRoot, 'active', 'sdd-baseline-reconciliation.md');
 const commitExists = sha => {
     try {
         execFileSync('git', ['cat-file', '-e', `${sha}^{commit}`], { cwd: resolve(mobileRoot, '..'), stdio: 'ignore' });
@@ -154,7 +156,7 @@ function parseArtifact(path) {
 
 const artifactPaths = [
     ...listFiles(resolve(specsRoot, 'baseline'), path => /MOB-BASE-\d+.*\.md$/.test(path)),
-    ...listFiles(resolve(specsRoot, 'decisions'), path => /MOB-DEC-\d+.*\.md$/.test(path)),
+    ...listFiles(decisionsRoot, path => /MOB-DEC-\d+.*\.md$/.test(path)),
     ...listFiles(resolve(specsRoot, 'features'), path => path.endsWith('/spec.md')),
 ];
 
@@ -177,7 +179,7 @@ validateFeatureGates({
 });
 
 if (!existsSync(reconciliationPath)) {
-    errors.push('specs/BASELINE-RECONCILIATION-REPORT.md: relatório ausente');
+    errors.push('docs/active/sdd-baseline-reconciliation.md: relatório ausente');
 } else {
     const reconciliation = readFileSync(reconciliationPath, 'utf8');
     const observedBaselines = artifacts.filter(item => item.metadata.type === 'baseline' && item.metadata.status === 'observed');
@@ -215,7 +217,7 @@ try {
     coverageManifest = JSON.parse(readFileSync(coveragePath, 'utf8'));
     coverageSummary = validateCoverage({ mobileRoot, coverage: coverageManifest, artifactsById: byId, errors });
 } catch (error) {
-    errors.push(`specs/coverage.json: não foi possível ler o manifesto (${error.message})`);
+    errors.push(`docs/specs/coverage.json: não foi possível ler o manifesto (${error.message})`);
 }
 
 const registry = readFileSync(registryPath, 'utf8');

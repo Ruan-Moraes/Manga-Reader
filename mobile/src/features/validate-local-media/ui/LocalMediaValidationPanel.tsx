@@ -4,10 +4,10 @@ import { Image } from 'expo-image';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 
-import { isMediaValidationReady, type LocalMediaImportDraft, type LocalMediaImportItem } from '@/src/entities/local-media-import';
-import { MEDIA_VALIDATION_POLICY_VERSION } from '@/src/shared/media-inspection';
-import { useResponsiveLayout, useTheme } from '@/src/shared/theme';
-import { AppText, Button, Card, MediaPreviewSheet, SegmentedControl } from '@/src/shared/ui';
+import { isMediaValidationReady, type LocalMediaImportDraft, type LocalMediaImportItem } from '@/entities/local-media-import';
+import { MEDIA_VALIDATION_POLICY_VERSION } from '@/shared/media-inspection';
+import { useResponsiveLayout, useTheme } from '@/shared/theme';
+import { AppText, Button, Card, MediaPreviewSheet, SegmentedControl } from '@/shared/ui';
 
 import { useValidateLocalMedia } from '../model/useValidateLocalMedia';
 import { type ValidateLocalMediaController, validateLocalMediaController } from '../model/validateLocalMedia';

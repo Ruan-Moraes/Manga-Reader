@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 
-import type { User } from '@/src/entities/user/@x/session';
-import { tokenStorage } from '@/src/shared/api';
+import type { User } from '@/entities/user/@x/session';
+import { tokenStorage } from '@/shared/api';
 
 export interface SessionTokens {
     accessToken: string;

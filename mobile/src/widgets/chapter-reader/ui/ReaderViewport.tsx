@@ -1,15 +1,15 @@
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { type LayoutChangeEvent, ScrollView, useWindowDimensions, View } from 'react-native';
+import { FlatList, type LayoutChangeEvent, useWindowDimensions, View } from 'react-native';
 import { Image } from 'expo-image';
 import { useTranslation } from 'react-i18next';
 
-import type { ChapterPage } from '@/src/entities/chapter';
-import type { ReaderSettings } from '@/src/entities/user-setting';
-import { buildReaderItems, effectiveReaderMode, logicalItemIndex } from '@/src/features/navigate-chapter-reader';
-import { useTheme } from '@/src/shared/theme';
-import { StatusMessage } from '@/src/shared/ui';
+import type { ChapterPage } from '@/entities/chapter';
+import type { ReaderSettings } from '@/entities/user-setting';
+import { buildReaderItems, effectiveReaderMode, logicalItemIndex } from '@/features/navigate-chapter-reader';
+import { useTheme } from '@/shared/theme';
+import { StatusMessage } from '@/shared/ui';
 
-import { adjacentPages, pageAtOffset, pageOffset, readerBackgroundColor, type ReaderPageLayout } from '../model/viewport';
+import { adjacentPages, pageAtOffset, readerBackgroundColor, verticalPageLayouts } from '../model/viewport';
 
 interface Props {
     pages: readonly ChapterPage[];
@@ -32,7 +32,8 @@ interface ReaderPageProps {
     failureGap: number;
     onRetry: (pageId: string) => void;
     onImageError: (pageId: string) => void;
-    onLayout: (pageId: string, event: LayoutChangeEvent) => void;
+    rowHeight?: number;
+    onFailureLayout: (pageId: string, event: LayoutChangeEvent) => void;
 }
 
 const ReaderPage = memo(function ReaderPage({
@@ -49,7 +50,8 @@ const ReaderPage = memo(function ReaderPage({
     failureGap,
     onRetry,
     onImageError,
-    onLayout,
+    rowHeight,
+    onFailureLayout,
 }: ReaderPageProps) {
     const { t } = useTranslation('reader');
     const imageFit =
@@ -60,9 +62,13 @@ const ReaderPage = memo(function ReaderPage({
               : { width: page.width, height: page.height };
 
     return (
-        <View testID={`reader-page-${page.id}`} onLayout={event => onLayout(page.id, event)} style={{ alignItems: 'center' }}>
+        <View testID={`reader-page-${page.id}`} style={{ alignItems: 'center', height: rowHeight }}>
             {failed ? (
-                <View style={{ minHeight: Math.min(height, 320), alignItems: 'center', justifyContent: 'center', gap: failureGap }}>
+                <View
+                    testID={`reader-page-error-${page.id}`}
+                    onLayout={event => onFailureLayout(page.id, event)}
+                    style={{ minHeight: Math.min(height, 320), alignItems: 'center', justifyContent: 'center', gap: failureGap }}
+                >
                     <StatusMessage actionLabel={t('actions.retry')} title={t('errors.image')} onAction={() => onRetry(page.id)} tone="danger" />
                 </View>
             ) : (
@@ -84,20 +90,25 @@ const ReaderPage = memo(function ReaderPage({
 export function ReaderViewport({ pages, settings, currentPage, onCurrentPageChange }: Props) {
     const { width, height } = useWindowDimensions();
     const { spacing, tokens } = useTheme();
-    const scrollRef = useRef<ScrollView>(null);
-    const layoutsRef = useRef(new Map<string, ReaderPageLayout>());
+    const scrollRef = useRef<FlatList<ChapterPage>>(null);
+    const [failureHeights, setFailureHeights] = useState<Record<string, number>>({});
     const [failedPages, setFailedPages] = useState<Set<string>>(new Set());
     const [retryVersions, setRetryVersions] = useState<Record<string, number>>({});
     const mode = effectiveReaderMode(settings.mode, settings.direction);
     const items = useMemo(() => buildReaderItems(pages, settings.mode, settings.direction), [pages, settings.direction, settings.mode]);
+    const pageNumbers = useMemo(() => new Map(pages.map((page, index) => [page.id, index + 1])), [pages]);
+    const layouts = useMemo(
+        () => verticalPageLayouts(pages, settings.fit, width, height, settings.gap, failureHeights),
+        [pages, settings.fit, width, height, settings.gap, failureHeights],
+    );
     const currentId = pages[currentPage - 1]?.id ?? pages[0]?.id;
     const itemIndex = currentId ? logicalItemIndex(items, currentId) : 0;
 
     const restoreLogicalPage = useCallback(() => {
         if (!currentId) return;
-        const y = pageOffset([...layoutsRef.current.values()], currentId);
-        if (y !== null) scrollRef.current?.scrollTo({ y, animated: false });
-    }, [currentId]);
+        const layout = layouts[(pageNumbers.get(currentId) ?? 1) - 1];
+        if (layout) scrollRef.current?.scrollToOffset({ offset: layout.y, animated: false });
+    }, [currentId, layouts, pageNumbers]);
 
     useEffect(() => {
         restoreLogicalPage();
@@ -114,6 +125,11 @@ export function ReaderViewport({ pages, settings, currentPage, onCurrentPageChan
             next.delete(pageId);
             return next;
         });
+        setFailureHeights(current => {
+            const next = { ...current };
+            delete next[pageId];
+            return next;
+        });
         setRetryVersions(current => ({ ...current, [pageId]: (current[pageId] ?? 0) + 1 }));
     }, []);
 
@@ -121,20 +137,16 @@ export function ReaderViewport({ pages, settings, currentPage, onCurrentPageChan
         setFailedPages(current => new Set(current).add(pageId));
     }, []);
 
-    const recordPageLayout = useCallback(
-        (pageId: string, event: LayoutChangeEvent) => {
-            const { height: pageHeight, y } = event.nativeEvent.layout;
-            layoutsRef.current.set(pageId, { id: pageId, y, height: pageHeight });
-            if (pageId === currentId) restoreLogicalPage();
-        },
-        [currentId, restoreLogicalPage],
-    );
+    const recordFailureLayout = useCallback((pageId: string, event: LayoutChangeEvent) => {
+        const measured = event.nativeEvent.layout.height;
+        setFailureHeights(current => (current[pageId] === measured ? current : { ...current, [pageId]: measured }));
+    }, []);
 
     const renderPage = (page: ChapterPage) => (
         <ReaderPage
             key={page.id}
             page={page}
-            pageNumber={pages.indexOf(page) + 1}
+            pageNumber={pageNumbers.get(page.id) ?? 1}
             totalPages={pages.length}
             failed={failedPages.has(page.id)}
             retryVersion={retryVersions[page.id] ?? 0}
@@ -146,26 +158,36 @@ export function ReaderViewport({ pages, settings, currentPage, onCurrentPageChan
             failureGap={spacing.md}
             onRetry={retryPage}
             onImageError={markPageAsFailed}
-            onLayout={recordPageLayout}
+            onFailureLayout={recordFailureLayout}
+            rowHeight={mode === 'VERTICAL' ? layouts[(pageNumbers.get(page.id) ?? 1) - 1]?.height : undefined}
         />
     );
 
     if (mode === 'VERTICAL') {
         return (
-            <ScrollView
+            <FlatList
+                key={`${width}:${height}:${settings.fit}:${settings.gap}:${Object.entries(failureHeights).join()}`}
                 ref={scrollRef}
                 testID="reader-vertical"
                 style={{ flex: 1, backgroundColor: readerBackgroundColor(settings.background, tokens) }}
-                contentContainerStyle={{ gap: settings.gap }}
+                data={pages}
+                renderItem={({ item }) => renderPage(item)}
+                keyExtractor={page => page.id}
+                extraData={{ failedPages, retryVersions, settings, width, height }}
+                initialNumToRender={3}
+                maxToRenderPerBatch={3}
+                windowSize={5}
+                removeClippedSubviews={false}
+                initialScrollIndex={Math.max(0, Math.min(pages.length - 1, currentPage - 1))}
+                getItemLayout={(_, index) => ({ length: layouts[index].height, offset: layouts[index].y, index })}
+                ItemSeparatorComponent={() => <View style={{ height: settings.gap }} />}
                 onContentSizeChange={restoreLogicalPage}
                 onMomentumScrollEnd={event => {
-                    const id = pageAtOffset([...layoutsRef.current.values()], event.nativeEvent.contentOffset.y);
-                    const page = id ? pages.findIndex(candidate => candidate.id === id) + 1 : 1;
+                    const id = pageAtOffset(layouts, event.nativeEvent.contentOffset.y);
+                    const page = id ? (pageNumbers.get(id) ?? 1) : 1;
                     onCurrentPageChange(Math.min(pages.length, Math.max(1, page)));
                 }}
-            >
-                {items.flat().map(renderPage)}
-            </ScrollView>
+            />
         );
     }
 

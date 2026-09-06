@@ -1,4 +1,4 @@
-import i18n from '@/src/shared/i18n';
+import i18n from '@/shared/i18n';
 
 import {
     DEFAULT_DATE_FORMAT,

@@ -1,3 +1,5 @@
+import { fetch as expoFetch } from 'expo/fetch';
+
 const DEFAULT_TIMEOUT_MS = 15_000;
 const DEFAULT_MAX_RESPONSE_BYTES = 64 * 1024;
 
@@ -77,16 +79,34 @@ function requestSignal(external: AbortSignal | undefined, timeoutMs: number): { 
 }
 
 async function parseResponse(response: Response, origin: URL, maxResponseBytes: number): Promise<RemoteGatewayResponse> {
-    if (response.url && new URL(response.url).origin !== origin.origin) throw new RemoteGatewayTransportError('redirect');
-    const declaredLength = Number(response.headers.get('content-length'));
-    if (Number.isFinite(declaredLength) && declaredLength > maxResponseBytes) throw new RemoteGatewayTransportError('response-too-large');
-    const text = await response.text();
-    if (new TextEncoder().encode(text).length > maxResponseBytes) throw new RemoteGatewayTransportError('response-too-large');
-    if (!text) return { status: response.status, headers: response.headers, body: null };
+    const reader = response.body?.getReader();
+    let consumed = false;
     try {
-        return { status: response.status, headers: response.headers, body: JSON.parse(text) as unknown };
-    } catch {
-        throw new RemoteGatewayTransportError('invalid-response');
+        if (response.url && new URL(response.url).origin !== origin.origin) throw new RemoteGatewayTransportError('redirect');
+        const declaredLength = Number(response.headers.get('content-length'));
+        if (Number.isFinite(declaredLength) && declaredLength > maxResponseBytes) throw new RemoteGatewayTransportError('response-too-large');
+        if (!reader) return { status: response.status, headers: response.headers, body: null };
+
+        const bytes = new Uint8Array(maxResponseBytes);
+        let length = 0;
+        while (true) {
+            const chunk = await reader.read();
+            if (chunk.done) break;
+            if (chunk.value.byteLength > maxResponseBytes - length) throw new RemoteGatewayTransportError('response-too-large');
+            bytes.set(chunk.value, length);
+            length += chunk.value.byteLength;
+        }
+        consumed = true;
+        if (length === 0) return { status: response.status, headers: response.headers, body: null };
+        try {
+            return { status: response.status, headers: response.headers, body: JSON.parse(new TextDecoder().decode(bytes.subarray(0, length))) as unknown };
+        } catch {
+            throw new RemoteGatewayTransportError('invalid-response');
+        }
+    } finally {
+        // Do not let a transport-specific cancellation promise hide the original error.
+        if (reader && !consumed) void reader.cancel().catch(() => undefined);
+        reader?.releaseLock();
     }
 }
 
@@ -101,7 +121,7 @@ export function createRemoteGatewayTransport(
     const origin = validatedOrigin(options.origin ?? process.env.EXPO_PUBLIC_TRANSLATION_GATEWAY_URL);
     const timeoutMs = options.timeoutMs ?? DEFAULT_TIMEOUT_MS;
     const maxResponseBytes = options.maxResponseBytes ?? DEFAULT_MAX_RESPONSE_BYTES;
-    const fetcher = options.fetcher ?? fetch;
+    const fetcher = options.fetcher ?? expoFetch;
 
     const execute = async (path: string, init: RequestInit, externalSignal?: AbortSignal) => {
         const controlled = requestSignal(externalSignal, timeoutMs);

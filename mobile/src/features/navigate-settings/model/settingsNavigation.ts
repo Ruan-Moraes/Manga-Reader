@@ -1,4 +1,4 @@
-import { parseSettingsAuthReturnRoute, ROUTES, type SettingsAuthReturnRoute, type SettingsRoute } from '@/src/shared/navigation';
+import { parseSettingsAuthReturnRoute, ROUTES, type SettingsAuthReturnRoute, type SettingsRoute } from '@/shared/navigation';
 
 export const SETTINGS_SECTION_IDS = [
     'appearance-accessibility',

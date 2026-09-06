@@ -1,5 +1,5 @@
-import { type TranslationProjectRepository, translationProjectRepository } from '@/src/entities/translation-project/@x/remote-processing-attempt';
-import { advanceAppSchemaVersion, type AppDatabase, openAppDatabase, runAppDatabaseMigration, type SqlExecutor } from '@/src/shared/storage';
+import { type TranslationProjectRepository, translationProjectRepository } from '@/entities/translation-project/@x/remote-processing-attempt';
+import { advanceAppSchemaVersion, type AppDatabase, openAppDatabase, runAppDatabaseMigration, type SqlExecutor } from '@/shared/storage';
 
 import {
     isRemoteAttemptStatus,

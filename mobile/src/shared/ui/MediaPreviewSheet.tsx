@@ -5,7 +5,7 @@ import { StatusBar } from 'expo-status-bar';
 import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { useTheme } from '@/src/shared/theme';
+import { useTheme } from '@/shared/theme';
 
 import { AppText } from './AppText';
 import { Button } from './Button';
@@ -56,7 +56,7 @@ export function MediaPreviewSheet({
     return (
         <Modal testID={testID} visible={visible} animationType="slide" presentationStyle="pageSheet" onRequestClose={onClose}>
             <SafeAreaView style={{ backgroundColor: tokens.bg, flex: 1 }}>
-                <StatusBar animated backgroundColor={tokens.bg} hidden={false} style={colorScheme === 'dark' ? 'light' : 'dark'} translucent={false} />
+                <StatusBar animated hidden={false} style={colorScheme === 'dark' ? 'light' : 'dark'} />
                 <View style={{ flex: 1, gap: spacing.md, padding: spacing.lg }}>
                     <View testID={headerTestID} style={{ alignItems: 'center', flexDirection: 'row', gap: spacing.sm }}>
                         <View style={{ flex: 1 }}>

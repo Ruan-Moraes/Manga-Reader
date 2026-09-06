@@ -1,9 +1,9 @@
 import { type PropsWithChildren, useEffect } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 
-import { useSessionStore } from '@/src/entities/session';
-import { usePrivacySettingsStore } from '@/src/entities/user';
-import { hydratePrivacy, privacySessionQueryKeys, resetPrivacyHydration, resetPrivacyMutationRuntime } from '@/src/features/update-privacy';
+import { useSessionStore } from '@/entities/session';
+import { usePrivacySettingsStore } from '@/entities/user';
+import { hydratePrivacy, privacySessionQueryKeys, resetPrivacyHydration, resetPrivacyMutationRuntime } from '@/features/update-privacy';
 
 export function PrivacyAccountGate({ children }: PropsWithChildren) {
     const isAuthenticated = useSessionStore(state => state.isAuthenticated);

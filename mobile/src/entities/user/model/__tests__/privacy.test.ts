@@ -6,7 +6,7 @@ import {
     InvalidPrivacySettingsError,
     LIBRARY_VISIBILITY_OPTIONS,
     normalizePrivacySettings,
-} from '@/src/entities/user';
+} from '@/entities/user';
 
 const privacy = {
     commentVisibility: 'PUBLIC',

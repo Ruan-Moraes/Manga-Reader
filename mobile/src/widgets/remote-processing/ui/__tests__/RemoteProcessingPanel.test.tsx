@@ -1,9 +1,9 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react-native';
 
-import type { RemoteProcessingCapabilities } from '@/src/entities/remote-processing-capability';
-import type { TranslationProject } from '@/src/entities/translation-project';
-import type { StartRemoteProcessingController } from '@/src/features/start-remote-processing';
-import i18n from '@/src/shared/i18n';
+import type { RemoteProcessingCapabilities } from '@/entities/remote-processing-capability';
+import type { TranslationProject } from '@/entities/translation-project';
+import type { StartRemoteProcessingController } from '@/features/start-remote-processing';
+import i18n from '@/shared/i18n';
 
 import { RemoteProcessingPanel } from '../RemoteProcessingPanel';
 

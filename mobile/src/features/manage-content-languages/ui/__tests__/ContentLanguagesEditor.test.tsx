@@ -2,8 +2,8 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react-native';
 import AxiosMockAdapter from 'axios-mock-adapter';
 
-import { api } from '@/src/shared/api';
-import { ThemeProvider } from '@/src/shared/theme';
+import { api } from '@/shared/api';
+import { ThemeProvider } from '@/shared/theme';
 
 import { ContentLanguagesEditor, useContentLanguagesStore } from '../../index';
 

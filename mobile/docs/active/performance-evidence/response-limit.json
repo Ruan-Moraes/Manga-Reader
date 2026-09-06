@@ -1,0 +1,47 @@
+{
+    "kind": "isolated-behavior-not-native-benchmark",
+    "node": "v22.23.1",
+    "sourcePath": "src/shared/remote-gateway/remoteGatewayTransport.ts",
+    "sourceSha256": "fd77344a545097ae245b90b0b88a84ba01a8ebfdb637a474fdb1bbd3ea77c14f",
+    "fixture": "ASCII x repeated 65537 times; just above existing 65536 response limit; fetch mock only",
+    "samples": [
+        {
+            "declared": false,
+            "fixtureBytes": 65537,
+            "textReads": 1,
+            "error": "response-too-large"
+        },
+        {
+            "declared": false,
+            "fixtureBytes": 65537,
+            "textReads": 1,
+            "error": "response-too-large"
+        },
+        {
+            "declared": false,
+            "fixtureBytes": 65537,
+            "textReads": 1,
+            "error": "response-too-large"
+        },
+        {
+            "declared": false,
+            "fixtureBytes": 65537,
+            "textReads": 1,
+            "error": "response-too-large"
+        },
+        {
+            "declared": false,
+            "fixtureBytes": 65537,
+            "textReads": 1,
+            "error": "response-too-large"
+        }
+    ],
+    "textReadsMedian": 1,
+    "textReadsRange": [1, 1],
+    "control": {
+        "declared": true,
+        "fixtureBytes": 65537,
+        "textReads": 0,
+        "error": "response-too-large"
+    }
+}

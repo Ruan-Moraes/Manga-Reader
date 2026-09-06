@@ -1,7 +1,7 @@
 import * as SecureStore from 'expo-secure-store';
 import { QueryClient, QueryObserver } from '@tanstack/react-query';
 
-import { useSessionStore } from '@/src/entities/session';
+import { useSessionStore } from '@/entities/session';
 
 import {
     clearApplicationCache,
@@ -25,7 +25,7 @@ const dependencies = () => ({
         share: jest.fn().mockResolvedValue({ status: 'shared' as const, filename: 'export.json' }),
         clearTemporaryFiles: jest.fn().mockResolvedValue(undefined),
     },
-    getExport: jest.fn().mockResolvedValue({ account: 'private' }),
+    downloadExport: jest.fn().mockResolvedValue(undefined),
     deleteHistory: jest.fn().mockResolvedValue(undefined),
 });
 
@@ -97,14 +97,14 @@ describe('MOB-FEAT-007 data controls', () => {
 
         await expect(shareAccountExport(false, deps)).resolves.toBe('unavailable');
         await expect(clearTrackedHistory(false, true, deps)).resolves.toBe('unavailable');
-        expect(deps.getExport).not.toHaveBeenCalled();
+        expect(deps.downloadExport).not.toHaveBeenCalled();
         expect(deps.deleteHistory).not.toHaveBeenCalled();
     });
 
     it('compartilha exportação autenticada sem persistência própria', async () => {
         const deps = dependencies();
         await expect(shareAccountExport(true, deps, new Date('2026-08-08'))).resolves.toBe('completed');
-        expect(deps.exports.share).toHaveBeenCalledWith({ account: 'private' }, new Date('2026-08-08'));
+        expect(deps.exports.share).toHaveBeenCalledWith(deps.downloadExport, new Date('2026-08-08'));
     });
 
     it('expõe limpeza preventiva dos temporários em transições de identidade', async () => {

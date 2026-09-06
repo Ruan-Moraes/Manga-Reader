@@ -1,7 +1,7 @@
 import { Text } from 'react-native';
 import { fireEvent, render, screen } from '@testing-library/react-native';
 
-import { SensitiveContentGuard } from '@/src/entities/user';
+import { SensitiveContentGuard } from '@/entities/user';
 
 describe('MOB-FEAT-006 SensitiveContentGuard', () => {
     it('oculta HIDE, mostra SHOW e exige revelação explícita em BLUR', () => {

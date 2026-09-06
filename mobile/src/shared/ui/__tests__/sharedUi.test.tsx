@@ -2,7 +2,7 @@ import { AccessibilityInfo, Animated, Modal, ScrollView, StyleSheet, Switch, Vie
 import { act, fireEvent, render, within } from '@testing-library/react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
-import { ThemeProvider } from '@/src/shared/theme';
+import { ThemeProvider } from '@/shared/theme';
 
 import { BackButton } from '../BackButton';
 import { Button } from '../Button';

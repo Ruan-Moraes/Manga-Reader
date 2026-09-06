@@ -2,8 +2,8 @@ import { Text } from 'react-native';
 import * as SecureStore from 'expo-secure-store';
 import { act, render, screen, waitFor } from '@testing-library/react-native';
 
-import { useSessionStore } from '@/src/entities/session';
-import { notifyAuthExpired } from '@/src/shared/api';
+import { useSessionStore } from '@/entities/session';
+import { notifyAuthExpired } from '@/shared/api';
 
 import { SessionGate } from '../SessionGate';
 

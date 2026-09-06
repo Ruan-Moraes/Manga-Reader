@@ -1,8 +1,8 @@
 import { Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-import { useTheme } from '@/src/shared/theme';
-import { Button } from '@/src/shared/ui';
+import { useTheme } from '@/shared/theme';
+import { Button } from '@/shared/ui';
 
 import { type SettingsSyncGroup, useSettingsStore } from '../model/settingsStore';
 

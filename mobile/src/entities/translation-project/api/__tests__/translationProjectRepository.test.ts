@@ -1,4 +1,4 @@
-import type { AppDatabase, SqlExecutor } from '@/src/shared/storage';
+import type { AppDatabase, SqlExecutor } from '@/shared/storage';
 
 import type { NewTranslationProject } from '../../model/translationProject';
 import { createSqliteTranslationProjectRepository } from '../translationProjectRepository';

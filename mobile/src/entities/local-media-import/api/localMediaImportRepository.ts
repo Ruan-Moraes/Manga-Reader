@@ -1,4 +1,4 @@
-import { appPrivateBatchFiles } from '@/src/shared/files';
+import { appPrivateBatchFiles } from '@/shared/files';
 import {
     advanceAppSchemaVersion,
     type AppDatabase,
@@ -6,7 +6,7 @@ import {
     registerLocalDataParticipant,
     runAppDatabaseMigration,
     type SqlExecutor,
-} from '@/src/shared/storage';
+} from '@/shared/storage';
 
 import {
     isTranslationLanguageCode,
@@ -126,13 +126,7 @@ export interface LocalMediaImportRepository {
     confirm(draftId: string, confirmedAt: number): Promise<LocalMediaImportDraft>;
     updateLanguages(draftId: string, pair: TranslationLanguagePair, updatedAt: number, expectedUpdatedAt: number): Promise<LocalMediaImportDraft>;
     confirmLanguages(draftId: string, confirmedAt: number, expectedUpdatedAt: number): Promise<LocalMediaImportDraft>;
-    updateMediaValidation(
-        draftId: string,
-        itemId: string,
-        validation: MediaValidationFields,
-        updatedAt: number,
-        expectedUpdatedAt: number,
-    ): Promise<LocalMediaImportDraft>;
+    updateMediaValidation(draftId: string, itemId: string, validation: MediaValidationFields, updatedAt: number, expectedUpdatedAt: number): Promise<void>;
     getReferencedDraftIds(): Promise<Set<string>>;
     measureBytes(): Promise<number>;
     clear(): Promise<void>;
@@ -595,11 +589,18 @@ export function createSqliteLocalMediaImportRepository(openDatabase: () => Promi
         },
         async updateMediaValidation(draftId, itemId, validation, updatedAt, expectedUpdatedAt) {
             const db = await database();
-            let result: LocalMediaImportDraft | null = null;
             await db.withExclusiveTransactionAsync(async transaction => {
-                const current = await requireDraft(transaction, draftId);
-                if (current.updatedAt !== expectedUpdatedAt) throw new Error('localMediaImport.staleDraft');
-                if (!current.items.some(item => item.id === itemId)) throw new Error('localMediaImport.itemNotFound');
+                const current = await transaction.getFirstAsync<{ updated_at: number }>(
+                    "SELECT updated_at FROM local_media_import_drafts WHERE slot = 'active' AND id = ? LIMIT 1",
+                    [draftId],
+                );
+                if (!current) throw new Error('localMediaImport.draftNotFound');
+                if (current.updated_at !== expectedUpdatedAt) throw new Error('localMediaImport.staleDraft');
+                const item = await transaction.getFirstAsync<{ id: string }>('SELECT id FROM local_media_import_items WHERE draft_id = ? AND id = ? LIMIT 1', [
+                    draftId,
+                    itemId,
+                ]);
+                if (!item) throw new Error('localMediaImport.itemNotFound');
                 await transaction.runAsync(
                     `UPDATE local_media_import_items SET
                         media_validation_status = ?, media_validation_error = ?, detected_mime_type = ?,
@@ -618,10 +619,7 @@ export function createSqliteLocalMediaImportRepository(openDatabase: () => Promi
                     ],
                 );
                 await transaction.runAsync('UPDATE local_media_import_drafts SET updated_at = ? WHERE id = ?', [updatedAt, draftId]);
-                result = await requireDraft(transaction, draftId);
             });
-            if (!result) throw new Error('localMediaImport.itemNotFound');
-            return result;
         },
         async getReferencedDraftIds() {
             const rows = await (await database()).getAllAsync<{ id: string }>('SELECT id FROM local_media_import_drafts', []);

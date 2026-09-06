@@ -3,18 +3,18 @@ import { View } from 'react-native';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 
-import { isMediaValidationReady, type LocalMediaImportDraft } from '@/src/entities/local-media-import';
-import type { TranslationProject } from '@/src/entities/translation-project';
-import { type CreateTranslationProjectController, CreateTranslationProjectPanel } from '@/src/features/create-translation-project';
-import { ImportLocalMediaPanel, type LocalMediaImportController } from '@/src/features/import-local-media';
-import { LocalMediaReviewPanel, type ReviewLocalMediaImportController } from '@/src/features/review-local-media-import';
-import { type SelectTranslationLanguagesController, TranslationLanguageSelectionPanel } from '@/src/features/select-translation-languages';
-import { LocalMediaValidationItemStatus, LocalMediaValidationPanel, type ValidateLocalMediaController } from '@/src/features/validate-local-media';
-import { MEDIA_VALIDATION_POLICY_VERSION } from '@/src/shared/media-inspection';
-import { ROUTES } from '@/src/shared/navigation';
-import { useTheme } from '@/src/shared/theme';
-import { AppText, Card, IconButton, ProgressSteps, ScreenScaffold } from '@/src/shared/ui';
-import { RemoteProcessingPanel } from '@/src/widgets/remote-processing';
+import { isMediaValidationReady, type LocalMediaImportDraft } from '@/entities/local-media-import';
+import type { TranslationProject } from '@/entities/translation-project';
+import { type CreateTranslationProjectController, CreateTranslationProjectPanel } from '@/features/create-translation-project';
+import { ImportLocalMediaPanel, type LocalMediaImportController } from '@/features/import-local-media';
+import { LocalMediaReviewPanel, type ReviewLocalMediaImportController } from '@/features/review-local-media-import';
+import { type SelectTranslationLanguagesController, TranslationLanguageSelectionPanel } from '@/features/select-translation-languages';
+import { LocalMediaValidationItemStatus, LocalMediaValidationPanel, type ValidateLocalMediaController } from '@/features/validate-local-media';
+import { MEDIA_VALIDATION_POLICY_VERSION } from '@/shared/media-inspection';
+import { ROUTES } from '@/shared/navigation';
+import { useTheme } from '@/shared/theme';
+import { AppText, Card, IconButton, ProgressSteps, ScreenScaffold } from '@/shared/ui';
+import { RemoteProcessingPanel } from '@/widgets/remote-processing';
 
 import { availableTranslationFlowStep, TRANSLATION_FLOW_STEPS, type TranslationFlowStep, visibleTranslationFlowStep } from '../model/translationFlow';
 

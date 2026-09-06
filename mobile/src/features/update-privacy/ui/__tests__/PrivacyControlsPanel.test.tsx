@@ -3,9 +3,9 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { fireEvent, render, screen, waitFor, within } from '@testing-library/react-native';
 import AxiosMockAdapter from 'axios-mock-adapter';
 
-import { usePrivacySettingsStore } from '@/src/entities/user';
-import { api } from '@/src/shared/api';
-import { ThemeProvider } from '@/src/shared/theme';
+import { usePrivacySettingsStore } from '@/entities/user';
+import { api } from '@/shared/api';
+import { ThemeProvider } from '@/shared/theme';
 
 import { resetPrivacyMutationRuntime } from '../../index';
 import { PrivacyControlsPanel } from '../PrivacyControlsPanel';

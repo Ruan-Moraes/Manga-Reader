@@ -14,7 +14,7 @@ const artifact = {
 function fixture({ extraFiles = [], mutate } = {}) {
     const root = mkdtempSync(resolve(tmpdir(), 'mobile-spec-coverage-'));
 
-    const files = ['app/index.tsx', 'src/example.ts', 'README.md', ...extraFiles];
+    const files = ['src/app/index.tsx', 'src/example.ts', 'README.md', ...extraFiles];
 
     for (const file of files) {
         mkdirSync(resolve(root, file, '..'), { recursive: true });
@@ -27,7 +27,7 @@ function fixture({ extraFiles = [], mutate } = {}) {
         patterns: [],
         entries: [
             {
-                path: 'app/index.tsx',
+                path: 'src/app/index.tsx',
                 category: 'behavior',
                 specs: ['MOB-BASE-001'],
                 observations: ['MOB-BASE-001/OBS-001'],
@@ -71,9 +71,9 @@ test('rejeita arquivo runtime novo sem mapa individual', () => {
 });
 
 test('rejeita caminho obsoleto', () => {
-    const { errors } = fixture({ mutate: coverage => coverage.entries.push({ ...coverage.entries[0], path: 'app/missing.tsx' }) });
+    const { errors } = fixture({ mutate: coverage => coverage.entries.push({ ...coverage.entries[0], path: 'src/app/missing.tsx' }) });
 
-    assert.ok(errors.some(error => error.includes('app/missing.tsx: caminho mapeado inexistente')));
+    assert.ok(errors.some(error => error.includes('src/app/missing.tsx: caminho mapeado inexistente')));
 });
 
 test('rejeita spec ou observação desconhecida', () => {

@@ -1,9 +1,9 @@
 import { View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-import { type LocalMediaImportDraft, TRANSLATION_LANGUAGE_CODES, type TranslationLanguageCode } from '@/src/entities/local-media-import';
-import { useTheme } from '@/src/shared/theme';
-import { AppText, Button, Icon, SelectField } from '@/src/shared/ui';
+import { type LocalMediaImportDraft, TRANSLATION_LANGUAGE_CODES, type TranslationLanguageCode } from '@/entities/local-media-import';
+import { useTheme } from '@/shared/theme';
+import { AppText, Button, Icon, SelectField } from '@/shared/ui';
 
 import type { SelectTranslationLanguagesController } from '../model/selectTranslationLanguages';
 import { useSelectTranslationLanguages } from '../model/useSelectTranslationLanguages';

@@ -19,7 +19,7 @@ também itens resolvidos, decisões aceitas e medições históricas.
 | Produção e infraestrutura | DT-03 (CI/CD), DT-09 (conteúdo legal), DT-21 (validação da migração em staging), DT-59 (notas operacionais de refresh token) e DT-73 (lock distribuído do trending) |
 | Produto e governança | DT-44 (funcionalidades adiadas, inclusive armazenamento/upload de mídia), DT-48 (resíduos do perfil) e DT-74 (default de analytics comportamental) |
 | Arquitetura e persistência | DT-50 (resíduos da unificação de comentários), DT-52 (escrita cross-DB não atômica), DT-67 (sessões analytics multiaba/offline), DT-69 (outbox de eventos) e DT-70 (invalidação imediata de access tokens) |
-| Performance e escala | DT-71 (exportação de dados sem streaming) e DT-72 (filtro adulto da biblioteca em memória) |
+| Performance e escala | DT-71 (exportação de dados sem streaming) e DT-72 (filtro adulto da biblioteca em memória) e DT-75 (performance mobile) |
 | Interface | DT-58 (tokens e portais de elementos flutuantes) |
 
 O estado registrado no título de cada `DT-NN` prevalece sobre medições e
@@ -1581,6 +1581,16 @@ testado por região e trilha auditável quando a base exigir consentimento.
 
 **Prioridade:** Alta antes de produção. **Complexidade:** depende de produto/legal.
 **Risco:** Alto regulatório.
+
+---
+
+### DT-75: Performance mobile — correções implementadas, validações e hipóteses pendentes
+
+**Estado:** aberto. As cinco correções C01–C05 / MOB-PERF-001…005 foram implementadas com testes em 2026-09-06. Faltam validação comparativa nativa e investigação das seis hipóteses MOB-PERF-006…011; não há degradação nativa quantificada nem aceite final de performance.
+
+Fonte detalhada única: [relatório consolidado mobile](../mobile/docs/active/performance-audit.md), com diagnóstico histórico e links para as duas rodadas. O [plano](../mobile/docs/plans/performance-remediation.md) organiza medições B01–B06, investigações I01–I06, dependências e critérios de aceite.
+
+**Prioridade:** P2 provisória para mecanismos confirmados; hipóteses exigem investigação. **Conclusão:** somente após evidência funcional e comparativa por item, respeitando SDD; não implementar backend por este registro.
 
 ---
 

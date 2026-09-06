@@ -1,9 +1,9 @@
 import { useTranslation } from 'react-i18next';
 
-import type { ImageVariantCapabilities } from '@/src/entities/chapter';
-import type { ImageQuality, ReaderBackground, ReaderSettings, ReadingDirection, ReadingFit, ReadingMode } from '@/src/entities/user-setting';
-import { darkTokens, lightTokens } from '@/src/shared/theme';
-import { ChoiceCards, FormSection, type IconName, RangeSlider, SectionStack, SegmentedControl, SelectField, SwatchPicker, SwitchRow } from '@/src/shared/ui';
+import type { ImageVariantCapabilities } from '@/entities/chapter';
+import type { ImageQuality, ReaderBackground, ReaderSettings, ReadingDirection, ReadingFit, ReadingMode } from '@/entities/user-setting';
+import { darkTokens, lightTokens } from '@/shared/theme';
+import { ChoiceCards, FormSection, type IconName, RangeSlider, SectionStack, SegmentedControl, SelectField, SwatchPicker, SwitchRow } from '@/shared/ui';
 
 import { selectableQualities } from '../model/readerConfiguration';
 

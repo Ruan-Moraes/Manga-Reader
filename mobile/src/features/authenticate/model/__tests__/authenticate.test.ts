@@ -1,9 +1,9 @@
-import { sessionTransitions, useSessionStore } from '@/src/entities/session';
+import { sessionTransitions, useSessionStore } from '@/entities/session';
 
 import { authenticateApi } from '../../api/authenticateApi';
 import { clearExpiredSession, loadCurrentUser, restoreSession, signIn, signOut, signUp } from '../authenticate';
 
-jest.mock('@/src/entities/session', () => ({
+jest.mock('@/entities/session', () => ({
     sessionTransitions: {
         clear: jest.fn(),
         restore: jest.fn(),

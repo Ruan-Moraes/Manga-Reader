@@ -59,16 +59,16 @@ test('checksum cobre recursos e configuração, mas não é autorreferente às e
     const root = mkdtempSync(resolve(tmpdir(), 'mobile-sdd-'));
     mkdirSync(resolve(root, 'src'), { recursive: true });
     mkdirSync(resolve(root, 'assets'), { recursive: true });
-    mkdirSync(resolve(root, 'specs', 'feature'), { recursive: true });
+    mkdirSync(resolve(root, 'docs', 'specs', 'feature'), { recursive: true });
     writeFileSync(resolve(root, 'src', 'app.ts'), 'export const app = true;');
     writeFileSync(resolve(root, 'assets', 'label.json'), '{"label":"one"}');
     writeFileSync(resolve(root, 'package.json'), '{"name":"fixture"}');
-    writeFileSync(resolve(root, 'specs', 'feature', 'review.md'), 'checksum antigo');
-    writeFileSync(resolve(root, 'specs', 'feature', 'drift-audit.md'), 'checksum antigo');
+    writeFileSync(resolve(root, 'docs', 'specs', 'feature', 'review.md'), 'checksum antigo');
+    writeFileSync(resolve(root, 'docs', 'specs', 'feature', 'drift-audit.md'), 'checksum antigo');
     const initial = implementationChecksum(root);
 
-    writeFileSync(resolve(root, 'specs', 'feature', 'review.md'), 'checksum novo');
-    writeFileSync(resolve(root, 'specs', 'feature', 'drift-audit.md'), 'checksum novo');
+    writeFileSync(resolve(root, 'docs', 'specs', 'feature', 'review.md'), 'checksum novo');
+    writeFileSync(resolve(root, 'docs', 'specs', 'feature', 'drift-audit.md'), 'checksum novo');
     assert.equal(implementationChecksum(root), initial);
     writeFileSync(resolve(root, 'assets', 'label.json'), '{"label":"two"}');
     assert.notEqual(implementationChecksum(root), initial);

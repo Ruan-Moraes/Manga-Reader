@@ -4,7 +4,7 @@ import {
     type LocalMediaImportRepository,
     localMediaImportRepository,
     type TranslationLanguagePair,
-} from '@/src/entities/local-media-import';
+} from '@/entities/local-media-import';
 
 export type SelectTranslationLanguagesErrorCode = 'same-language' | 'review-required' | 'stale-draft' | 'storage-unavailable';
 

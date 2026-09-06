@@ -4,12 +4,13 @@ Este diretório usa Spec-Driven Development (SDD). O escopo deste contrato é so
 
 ## Fontes de verdade
 
-- Target Specs normativas: `specs/features/`
-- Baselines observados: `specs/baseline/`
-- Decisões: `specs/decisions/`
-- Índice obrigatório: `specs/registry.md`
-- Mapa obrigatório código → contrato: `specs/coverage.json`
-- Processo e status: `specs/README.md`
+- Target Specs normativas: `docs/specs/features/`
+- Baselines observados: `docs/specs/baseline/`
+- Decisões: `docs/decisions/`
+- Índice obrigatório: `docs/specs/registry.md`
+- Mapa obrigatório código → contrato: `docs/specs/coverage.json`
+- Processo e status: `docs/specs/README.md`
+- Taxonomia documental: `docs/README.md`
 
 Baseline descreve o código atual; não é intenção futura. Feature nova ou mudança comportamental exige Target Spec `approved` por uma pessoa antes de tasks ou código.
 
@@ -32,7 +33,7 @@ Antes de criar uma Target Spec, a paridade brownfield deve estar verde: zero arq
 - Bug com spec correta é código divergente; corrigir com teste de regressão.
 - Mudança de intenção é spec divergente; voltar ao Spec Architect e à aprovação humana.
 - Código sem spec é comportamento não documentado; aplicar Reverse Spec antes de alterá-lo.
-- Todo arquivo em `app/` e `src/` deve possuir entrada individual em `specs/coverage.json`; patterns são permitidos somente para suporte não-runtime.
+- Todo arquivo em `src/` deve possuir entrada individual em `docs/specs/coverage.json`; patterns são permitidos somente para suporte não-runtime.
 - Entradas `behavior` e `evidence` devem apontar para `MOB-BASE-###/OBS-###` ou, após aprovação, `MOB-FEAT-###/AC-###` existente.
 - Testes, configs, scripts, assets e governança devem ser classificados sem serem promovidos artificialmente a comportamento do produto.
 - Review é obrigatório. Tasks e código não podem preencher lacunas da spec.
@@ -42,7 +43,7 @@ Antes de criar uma Target Spec, a paridade brownfield deve estar verde: zero arq
 - O gate bloqueado só pode ser aberto quando todas as Target Specs em `blocked_by` estiverem `implemented` ou `verification-pending`; dependências inexistentes, próprias ou circulares são inválidas.
 - Capacidade visível sem implementação real, como controle sem efeito ou dependência funcional inexistente, deve permanecer bloqueada. Não criar UI fictícia para contornar o gate.
 - Preservar FSD, APIs públicas dos slices, tokens de tema e i18n nos três idiomas.
-- `src/application` é a app layer local por `MOB-DEC-004`; `app/` contém cascas Expo Router. Providers/gates/root navigation ficam em `src/application`, e rotas técnicas em `shared/navigation`.
+- `src/application` é a app layer lógica local e `src/app` é a raiz física de cascas Expo Router, conforme `MOB-DEC-005`. Providers/gates/root navigation ficam em `src/application`, e rotas técnicas em `shared/navigation`.
 - Não aplicar este workflow a `api/` ou `web/` nesta migração.
 
 ## Skills SDD
@@ -56,3 +57,7 @@ Antes de criar uma Target Spec, a paridade brownfield deve estar verde: zero arq
 - `sdd-drift-auditor`: detectar divergências entre specs e código.
 
 Antes de concluir, executar `pnpm check` dentro de `mobile/`.
+
+## Performance obrigatória
+
+Consultar [mobile-performance](.agents/skills/mobile-performance/SKILL.md) antes de novas funcionalidades ou alterações de componentes/fluxos, durante reviews/refatorações, após implementar e em investigações de lentidão ou consumo crescente. Aplicar a [MOB-DEC-007](docs/decisions/MOB-DEC-007-mobile-performance.md) proporcionalmente ao impacto, preservando os gates SDD.

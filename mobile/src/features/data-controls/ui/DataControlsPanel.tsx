@@ -3,12 +3,12 @@ import { Alert, View } from 'react-native';
 import { useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 
-import { useSessionStore } from '@/src/entities/session';
-import { type StorageMeasurementAdapter, temporaryExportStorageMeasurement } from '@/src/shared/files';
-import { formatByteSize } from '@/src/shared/locale';
-import { type LocalDataSummary, measureLocalData } from '@/src/shared/storage';
-import { useTheme } from '@/src/shared/theme';
-import { AppText, FormSection, Icon, type IconName, ListRow, SectionStack, StatusMessage } from '@/src/shared/ui';
+import { useSessionStore } from '@/entities/session';
+import { type StorageMeasurementAdapter, temporaryExportStorageMeasurement } from '@/shared/files';
+import { formatByteSize } from '@/shared/locale';
+import { type LocalDataSummary, measureLocalData } from '@/shared/storage';
+import { useTheme } from '@/shared/theme';
+import { AppText, FormSection, Icon, type IconName, ListRow, SectionStack, StatusMessage } from '@/shared/ui';
 
 import {
     clearApplicationCache,

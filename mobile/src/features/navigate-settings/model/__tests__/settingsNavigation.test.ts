@@ -1,4 +1,4 @@
-import { ROUTES } from '@/src/shared/navigation';
+import { ROUTES } from '@/shared/navigation';
 
 import { resolveSettingsAccess, resolveSettingsReturnTo, SETTINGS_SECTION_IDS, SETTINGS_SECTIONS } from '../../index';
 

@@ -1,4 +1,4 @@
-import { getCurrentLanguage, normalizeInterfaceLanguage, type SupportedLanguage } from '@/src/shared/i18n';
+import { getCurrentLanguage, normalizeInterfaceLanguage, type SupportedLanguage } from '@/shared/i18n';
 
 export const DATE_FORMATS = ['D_MON', 'D_M', 'MON_D'] as const;
 export type DateFormatPreference = (typeof DATE_FORMATS)[number];

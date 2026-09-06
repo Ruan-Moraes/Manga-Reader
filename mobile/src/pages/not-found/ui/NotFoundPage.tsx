@@ -2,9 +2,9 @@ import { View } from 'react-native';
 import { Stack } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 
-import { navigateBackOrReplace, ROUTES } from '@/src/shared/navigation';
-import { useTheme } from '@/src/shared/theme';
-import { AppText, Button, ScreenScaffold } from '@/src/shared/ui';
+import { navigateBackOrReplace, ROUTES } from '@/shared/navigation';
+import { useTheme } from '@/shared/theme';
+import { AppText, Button, ScreenScaffold } from '@/shared/ui';
 
 export function NotFoundPage() {
     const { t } = useTranslation('common');

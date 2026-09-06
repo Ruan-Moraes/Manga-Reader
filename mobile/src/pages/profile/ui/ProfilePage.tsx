@@ -2,12 +2,12 @@ import { Text, View } from 'react-native';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 
-import { useSessionStore } from '@/src/entities/session';
-import { signOut } from '@/src/features/authenticate';
-import { navigateBackOrReplace, ROUTES } from '@/src/shared/navigation';
-import { useTheme } from '@/src/shared/theme';
-import { AppText, Button, NavigationHeader, PageContainer } from '@/src/shared/ui';
-import { SettingsIndex, SettingsSections } from '@/src/widgets/settings-index';
+import { useSessionStore } from '@/entities/session';
+import { signOut } from '@/features/authenticate';
+import { navigateBackOrReplace, ROUTES } from '@/shared/navigation';
+import { useTheme } from '@/shared/theme';
+import { AppText, Button, NavigationHeader, PageContainer } from '@/shared/ui';
+import { SettingsIndex, SettingsSections } from '@/widgets/settings-index';
 
 export function ProfilePage() {
     const user = useSessionStore(state => state.user);

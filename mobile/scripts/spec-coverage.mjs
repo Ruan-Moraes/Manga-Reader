@@ -115,7 +115,7 @@ function validateMapping(mapping, artifactsById, errors) {
 }
 
 export function validateCoverage({ mobileRoot, coverage, artifactsById, errors }) {
-    if (coverage.version !== 1) errors.push(`specs/coverage.json: versão '${coverage.version}' não suportada`);
+    if (coverage.version !== 1) errors.push(`docs/specs/coverage.json: versão '${coverage.version}' não suportada`);
 
     const files = listFiles(mobileRoot);
 
@@ -147,7 +147,7 @@ export function validateCoverage({ mobileRoot, coverage, artifactsById, errors }
     for (const pattern of patterns) {
         pattern.pattern = normalize(pattern.pattern);
 
-        if (pattern.pattern.startsWith('app/') || pattern.pattern.startsWith('src/')) {
+        if (pattern.pattern.startsWith('src/')) {
             errors.push(`${pattern.pattern}: padrões amplos são proibidos para código runtime`);
         }
 
@@ -169,8 +169,8 @@ export function validateCoverage({ mobileRoot, coverage, artifactsById, errors }
 
         if (matches.length > 1) errors.push(`${path}: arquivo possui múltiplas classificações`);
 
-        if ((path.startsWith('app/') || path.startsWith('src/')) && !exact.has(path)) {
-            errors.push(`${path}: código de app/src exige mapeamento individual`);
+        if (path.startsWith('src/') && !exact.has(path)) {
+            errors.push(`${path}: código de src exige mapeamento individual`);
         }
     }
 

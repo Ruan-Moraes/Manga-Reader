@@ -1,7 +1,7 @@
-import { type LocalMediaImportDraft, type LocalMediaImportRepository, PENDING_MEDIA_VALIDATION } from '@/src/entities/local-media-import';
-import type { PrivateBatchFiles } from '@/src/shared/files';
-import type { MediaInspectionResult } from '@/src/shared/media-inspection';
-import type { LocalMediaPicker } from '@/src/shared/media-picker';
+import { type LocalMediaImportDraft, type LocalMediaImportRepository, PENDING_MEDIA_VALIDATION } from '@/entities/local-media-import';
+import type { PrivateBatchFiles } from '@/shared/files';
+import type { MediaInspectionResult } from '@/shared/media-inspection';
+import type { LocalMediaPicker } from '@/shared/media-picker';
 
 import { createValidateLocalMediaController, ValidateLocalMediaError } from '../validateLocalMedia';
 
@@ -39,7 +39,6 @@ function setup(results: MediaInspectionResult[]) {
                 updatedAt,
                 items: active.items.map(item => (item.id === itemId ? { ...item, ...validation } : item)),
             };
-            return active;
         }),
     } as unknown as LocalMediaImportRepository;
     const files = { fileUri: (_namespace: string, draftId: string, filename: string) => `file://${draftId}/${filename}` } as PrivateBatchFiles;
@@ -143,5 +142,32 @@ describe('MOB-FEAT-015 media validation controller', () => {
         );
         expect(files.removeFile).toHaveBeenCalledWith('local-media-imports', 'draft-1', 'two');
         expect(next.items[0]).toEqual(current.items[0]);
+    });
+});
+
+describe('MOB-PERF-003 validation snapshot ownership', () => {
+    it('keeps the input immutable and matches independently persisted results', async () => {
+        const fixture = setup([
+            { status: 'valid', mimeType: 'image/png', width: 100, height: 200 },
+            { status: 'invalid', error: 'EMPTY_FILE' },
+        ]);
+        const input = fixture.active();
+        input.items.forEach(Object.freeze);
+        Object.freeze(input.items);
+        Object.freeze(input);
+        const output = await fixture.controller.validate(input);
+        expect(output).toEqual(await fixture.repository.getActive());
+        expect(input.items.every(item => item.mediaValidationStatus === 'PENDING')).toBe(true);
+        expect(input.updatedAt).toBe(10);
+    });
+
+    it('retains the first committed result when inspection fails on the next item', async () => {
+        const fixture = setup([{ status: 'valid', mimeType: 'image/png', width: 100, height: 200 }]);
+        fixture.inspect.mockImplementationOnce(async () => ({ status: 'valid', mimeType: 'image/png', width: 100, height: 200 }));
+        fixture.inspect.mockImplementationOnce(async () => {
+            throw new Error('file unavailable');
+        });
+        await expect(fixture.controller.validate(fixture.active())).rejects.toMatchObject({ code: 'storage-unavailable' });
+        expect((await fixture.controller.reload())?.items.map(item => item.mediaValidationStatus)).toEqual(['VALID', 'PENDING']);
     });
 });

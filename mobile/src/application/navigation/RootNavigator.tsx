@@ -1,7 +1,7 @@
 import { Stack } from 'expo-router';
 
-import { useTheme } from '@/src/shared/theme';
-import { READER_SCREEN_OPTIONS } from '@/src/widgets/chapter-reader';
+import { useTheme } from '@/shared/theme';
+import { READER_SCREEN_OPTIONS } from '@/widgets/chapter-reader';
 
 export function RootNavigator() {
     const { decorativeMotionEnabled, tokens } = useTheme();

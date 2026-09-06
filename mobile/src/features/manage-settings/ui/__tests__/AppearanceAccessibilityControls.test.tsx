@@ -2,9 +2,9 @@ import { StyleSheet, Text, View } from 'react-native';
 import * as SecureStore from 'expo-secure-store';
 import { act, fireEvent, render, waitFor, within } from '@testing-library/react-native';
 
-import { DEFAULT_USER_SETTINGS, themePreferenceToColorScheme } from '@/src/entities/user-setting';
-import i18n, { DEFAULT_LANGUAGE } from '@/src/shared/i18n';
-import { ThemeProvider, useTheme } from '@/src/shared/theme';
+import { DEFAULT_USER_SETTINGS, themePreferenceToColorScheme } from '@/entities/user-setting';
+import i18n, { DEFAULT_LANGUAGE } from '@/shared/i18n';
+import { ThemeProvider, useTheme } from '@/shared/theme';
 
 import { resetSettingsRuntimeForTests, useSettingsStore } from '../../model/settingsStore';
 import { AppearanceAccessibilityControls } from '../AppearanceAccessibilityControls';

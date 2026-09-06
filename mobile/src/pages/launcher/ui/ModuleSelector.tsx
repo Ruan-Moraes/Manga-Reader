@@ -1,8 +1,8 @@
 import { View } from 'react-native';
 import { Image } from 'expo-image';
 
-import { useResponsiveLayout, useTheme } from '@/src/shared/theme';
-import { AppText, IconButton, StatusMessage } from '@/src/shared/ui';
+import { useResponsiveLayout, useTheme } from '@/shared/theme';
+import { AppText, IconButton, StatusMessage } from '@/shared/ui';
 
 import { APP_MODULES, type AppModuleId } from '../model/modules';
 import { AppModuleCard } from './AppModuleCard';

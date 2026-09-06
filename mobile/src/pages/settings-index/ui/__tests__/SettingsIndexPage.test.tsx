@@ -1,13 +1,13 @@
 import { render, screen } from '@testing-library/react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
-import { useSessionStore } from '@/src/entities/session';
-import { usePrivacySettingsStore } from '@/src/entities/user';
-import { useDataControlsStore } from '@/src/features/data-controls';
-import { useContentLanguagesStore } from '@/src/features/manage-content-languages';
-import { useSettingsStore } from '@/src/features/manage-settings';
-import i18n from '@/src/shared/i18n';
-import { ThemeProvider } from '@/src/shared/theme';
+import { useSessionStore } from '@/entities/session';
+import { usePrivacySettingsStore } from '@/entities/user';
+import { useDataControlsStore } from '@/features/data-controls';
+import { useContentLanguagesStore } from '@/features/manage-content-languages';
+import { useSettingsStore } from '@/features/manage-settings';
+import i18n from '@/shared/i18n';
+import { ThemeProvider } from '@/shared/theme';
 
 import { SettingsIndexPage } from '../SettingsIndexPage';
 

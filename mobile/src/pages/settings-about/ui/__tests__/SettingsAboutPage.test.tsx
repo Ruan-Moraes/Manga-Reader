@@ -1,17 +1,17 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
-import { ThemeProvider } from '@/src/shared/theme';
+import { ThemeProvider } from '@/shared/theme';
 
 import { SettingsAboutPage } from '../SettingsAboutPage';
 
-import '@/src/shared/i18n';
+import '@/shared/i18n';
 
 let mockMetadata: { version?: string; build?: string } = {};
 let mockLinks: Record<string, string> = {};
 const mockOpen = jest.fn();
 
-jest.mock('@/src/shared/config', () => ({
+jest.mock('@/shared/config', () => ({
     appMetadata: { read: () => mockMetadata },
     externalLinks: { read: () => mockLinks, open: (url: string) => mockOpen(url) },
 }));

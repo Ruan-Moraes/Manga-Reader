@@ -68,7 +68,7 @@ describe('MOB-BASE-003 i18n', () => {
 
     it('mantém ao menos um consumidor real para cada namespace registrado', () => {
         const mobileRoot = path.resolve(__dirname, '../../../..');
-        const sources = [...sourceFiles(path.join(mobileRoot, 'src')), ...sourceFiles(path.join(mobileRoot, 'app'))].map(file => fs.readFileSync(file, 'utf8'));
+        const sources = sourceFiles(path.join(mobileRoot, 'src')).map(file => fs.readFileSync(file, 'utf8'));
 
         for (const namespace of NAMESPACES) {
             expect(sources.some(source => source.includes(`useTranslation('${namespace}')`) || source.includes(`useTranslation("${namespace}")`))).toBe(true);

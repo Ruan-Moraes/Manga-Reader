@@ -1,7 +1,7 @@
 import { ReactNode, useState } from 'react';
 import { ActivityIndicator, Pressable, type PressableProps, View } from 'react-native';
 
-import { useTheme } from '@/src/shared/theme';
+import { useTheme } from '@/shared/theme';
 
 import { AppText } from './AppText';
 

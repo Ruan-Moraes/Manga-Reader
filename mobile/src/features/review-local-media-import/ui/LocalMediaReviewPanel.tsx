@@ -3,9 +3,9 @@ import { View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 
-import type { LocalMediaImportDraft, LocalMediaImportItem } from '@/src/entities/local-media-import';
-import { useResponsiveLayout, useTheme } from '@/src/shared/theme';
-import { AppText, Button, MediaPreviewSheet, SegmentedControl } from '@/src/shared/ui';
+import type { LocalMediaImportDraft, LocalMediaImportItem } from '@/entities/local-media-import';
+import { useResponsiveLayout, useTheme } from '@/shared/theme';
+import { AppText, Button, MediaPreviewSheet, SegmentedControl } from '@/shared/ui';
 
 import type { ReviewViewMode } from '../config/reviewLayout';
 import { possibleDuplicateItemIds, type ReviewLocalMediaImportController, reviewLocalMediaImportController } from '../model/reviewLocalMediaImport';

@@ -1,9 +1,9 @@
 import { fireEvent, render } from '@testing-library/react-native';
 
-import type { Chapter } from '@/src/entities/chapter';
-import { DEFAULT_USER_SETTINGS } from '@/src/entities/user-setting';
-import i18n from '@/src/shared/i18n';
-import { ThemeProvider } from '@/src/shared/theme';
+import type { Chapter } from '@/entities/chapter';
+import { DEFAULT_USER_SETTINGS } from '@/entities/user-setting';
+import i18n from '@/shared/i18n';
+import { ThemeProvider } from '@/shared/theme';
 
 import { ChapterReader } from '../ChapterReader';
 

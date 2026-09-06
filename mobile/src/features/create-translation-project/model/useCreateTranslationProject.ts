@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 
-import type { LocalMediaImportDraft } from '@/src/entities/local-media-import';
-import type { TranslationProject } from '@/src/entities/translation-project';
+import type { LocalMediaImportDraft } from '@/entities/local-media-import';
+import type { TranslationProject } from '@/entities/translation-project';
 
 import {
     type CreateTranslationProjectController,

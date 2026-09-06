@@ -1,6 +1,6 @@
 import { render } from '@testing-library/react-native';
 
-import { useTheme } from '@/src/shared/theme';
+import { useTheme } from '@/shared/theme';
 
 import { RootNavigator } from '../RootNavigator';
 
@@ -9,7 +9,7 @@ jest.mock('expo-router', () => {
     Stack.Screen = jest.fn(() => null);
     return { Stack };
 });
-jest.mock('@/src/shared/theme', () => ({ useTheme: jest.fn() }));
+jest.mock('@/shared/theme', () => ({ useTheme: jest.fn() }));
 
 const stack = jest.requireMock('expo-router').Stack as jest.Mock;
 

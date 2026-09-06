@@ -4,17 +4,17 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react-nativ
 import AxiosMockAdapter from 'axios-mock-adapter';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
-import { useSessionStore } from '@/src/entities/session';
-import { usePrivacySettingsStore } from '@/src/entities/user';
-import { DEFAULT_USER_SETTINGS } from '@/src/entities/user-setting';
-import { useContentLanguagesStore } from '@/src/features/manage-content-languages';
-import { useSettingsStore } from '@/src/features/manage-settings';
-import { usePrivacyMutationStore } from '@/src/features/update-privacy';
-import { SettingsIndexPage } from '@/src/pages/settings-index';
-import { api } from '@/src/shared/api';
-import i18n from '@/src/shared/i18n';
-import { ROUTES } from '@/src/shared/navigation';
-import { ThemeProvider } from '@/src/shared/theme';
+import { useSessionStore } from '@/entities/session';
+import { usePrivacySettingsStore } from '@/entities/user';
+import { DEFAULT_USER_SETTINGS } from '@/entities/user-setting';
+import { useContentLanguagesStore } from '@/features/manage-content-languages';
+import { useSettingsStore } from '@/features/manage-settings';
+import { usePrivacyMutationStore } from '@/features/update-privacy';
+import { SettingsIndexPage } from '@/pages/settings-index';
+import { api } from '@/shared/api';
+import i18n from '@/shared/i18n';
+import { ROUTES } from '@/shared/navigation';
+import { ThemeProvider } from '@/shared/theme';
 
 import { ProfilePage } from '../../../profile';
 import { SettingsAboutPage } from '../../../settings-about';

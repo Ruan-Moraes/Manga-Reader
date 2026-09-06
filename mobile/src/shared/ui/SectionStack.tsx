@@ -1,7 +1,7 @@
 import { View } from 'react-native';
 import type { PropsWithChildren } from 'react';
 
-import { useTheme } from '@/src/shared/theme';
+import { useTheme } from '@/shared/theme';
 
 interface SectionStackProps extends PropsWithChildren {
     testID?: string;

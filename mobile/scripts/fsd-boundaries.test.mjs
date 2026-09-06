@@ -18,14 +18,14 @@ function fixture(files) {
 }
 
 test('aceita fluxo descendente e API pública', () => {
-    assert.deepEqual(fixture({ 'src/pages/home/ui/Home.tsx': "import { User } from '@/src/entities/user';\n" }), []);
+    assert.deepEqual(fixture({ 'src/pages/home/ui/Home.tsx': "import { User } from '@/entities/user';\n" }), []);
 });
 
 test('rejeita inversão, import horizontal e deep import', () => {
     const errors = fixture({
-        'src/entities/user/model/user.ts': "import { signIn } from '@/src/features/authenticate';\n",
-        'src/features/one/model/one.ts': "import { two } from '@/src/features/two';\n",
-        'src/pages/home/ui/Home.tsx': "import { User } from '@/src/entities/user/model/user';\n",
+        'src/entities/user/model/user.ts': "import { signIn } from '@/features/authenticate';\n",
+        'src/features/one/model/one.ts': "import { two } from '@/features/two';\n",
+        'src/pages/home/ui/Home.tsx': "import { User } from '@/entities/user/model/user';\n",
     });
     assert.ok(errors.some(error => error.includes('import invertido')));
     assert.ok(errors.some(error => error.includes('import horizontal')));
@@ -33,11 +33,15 @@ test('rejeita inversão, import horizontal e deep import', () => {
 });
 
 test('inclui src/application como camada app local', () => {
-    assert.deepEqual(fixture({ 'src/application/Root.tsx': "import { HomePage } from '@/src/pages/home';\n" }), []);
+    assert.deepEqual(fixture({ 'src/application/Root.tsx': "import { HomePage } from '@/pages/home';\n" }), []);
+});
+
+test('inclui src/app como casca de rota da camada superior', () => {
+    assert.deepEqual(fixture({ 'src/app/index.tsx': "import { RootApplication } from '@/application';\n" }), []);
 });
 
 test('aceita cross-reference explícita entre entities', () => {
-    assert.deepEqual(fixture({ 'src/entities/session/model/session.ts': "import type { User } from '@/src/entities/user/@x/session';\n" }), []);
+    assert.deepEqual(fixture({ 'src/entities/session/model/session.ts': "import type { User } from '@/entities/user/@x/session';\n" }), []);
 });
 
 test('aplica as mesmas regras a imports relativos e arquivos de teste', () => {

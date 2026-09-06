@@ -1,8 +1,8 @@
 import { useTranslation } from 'react-i18next';
 
-import { AppearanceAccessibilityControls, SettingsSyncStatus } from '@/src/features/manage-settings';
-import { navigateBackOrReplace, ROUTES } from '@/src/shared/navigation';
-import { ScreenScaffold } from '@/src/shared/ui';
+import { AppearanceAccessibilityControls, SettingsSyncStatus } from '@/features/manage-settings';
+import { navigateBackOrReplace, ROUTES } from '@/shared/navigation';
+import { ScreenScaffold } from '@/shared/ui';
 
 export function SettingsAppearancePage() {
     const { t } = useTranslation('settingsNavigation');

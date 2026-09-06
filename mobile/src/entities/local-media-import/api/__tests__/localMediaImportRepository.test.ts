@@ -1,4 +1,4 @@
-import type { AppDatabase, SqlExecutor } from '@/src/shared/storage';
+import type { AppDatabase, SqlExecutor } from '@/shared/storage';
 
 import { isValidTranslationLanguagePair, PENDING_MEDIA_VALIDATION, TRANSLATION_LANGUAGE_CODES } from '../../model/localMediaImport';
 import { createSqliteLocalMediaImportRepository } from '../localMediaImportRepository';
@@ -187,7 +187,12 @@ function databaseFixture(
             }
             return {};
         },
-        getFirstAsync: async <T>(source: string) => {
+        getFirstAsync: async <T>(source: string, params = []) => {
+            statements.push(source);
+            if (source.includes('FROM local_media_import_items') && !source.includes('SUM(byte_size)')) {
+                const [draftId, itemId] = params as unknown[];
+                return (rows.items.find(item => item.draft_id === draftId && item.id === itemId) ?? null) as T | null;
+            }
             if (source === 'PRAGMA user_version') return { user_version: userVersion } as T;
             if (source.includes('sqlite_master') && source.includes('local_media_import_drafts')) {
                 const languageCheck = hasV6LanguageSchema ? "'ja', 'en', 'es', 'ko', 'zh-Hans', 'zh-Hant', 'pt-BR'" : "'ja', 'en', 'es', 'ko', 'zh', 'pt-BR'";
@@ -383,7 +388,8 @@ describe('MOB-FEAT-012/013 SQLite local import repository', () => {
                 11,
                 10,
             ),
-        ).resolves.toMatchObject({
+        ).resolves.toBeUndefined();
+        await expect(repository.getActive()).resolves.toMatchObject({
             confirmedAt: 9,
             languagesConfirmedAt: 9,
             items: [
@@ -548,5 +554,48 @@ describe('MOB-FEAT-012/013 SQLite local import repository', () => {
         await expect(repository.getActive()).resolves.toMatchObject({ id: 'draft-1' });
         await expect(repository.consumeActive('draft-1', 10)).resolves.toBeUndefined();
         await expect(repository.getActive()).resolves.toBeNull();
+    });
+});
+
+describe('MOB-PERF-003 validation write cost and conflict guards', () => {
+    const valid = {
+        mediaValidationStatus: 'VALID' as const,
+        mediaValidationError: null,
+        detectedMimeType: 'image/png' as const,
+        widthPx: 100,
+        heightPx: 200,
+        validatedAt: 11,
+        validationPolicyVersion: 1,
+    };
+
+    it.each([10, 67, 200])('does not hydrate the %i-item collection per result', async count => {
+        const fixture = databaseFixture();
+        const repository = createSqliteLocalMediaImportRepository(async () => fixture.database);
+        const input = {
+            ...draft(),
+            items: Array.from({ length: count }, (_, index) => ({ ...draft().items[0], id: `item-${index}`, localFilename: `item-${index}`, position: index })),
+        };
+        await repository.replaceActive(input);
+        fixture.statements.length = 0;
+        for (let index = 0; index < count; index++) {
+            await repository.updateMediaValidation(input.id, `item-${index}`, valid, 11 + index, 10 + index);
+        }
+        const collectionReads = fixture.statements.filter(sql => /FROM local_media_import_items/.test(sql) && !/WHERE draft_id = \? AND id = \?/.test(sql));
+        expect(collectionReads).toHaveLength(0);
+        const persisted = await repository.getActive();
+        expect(persisted?.items).toHaveLength(count);
+        expect(persisted?.items.every(item => item.mediaValidationStatus === 'VALID')).toBe(true);
+    });
+
+    it('rejects stale versions and missing items without writing a result', async () => {
+        const fixture = databaseFixture();
+        const repository = createSqliteLocalMediaImportRepository(async () => fixture.database);
+        await repository.replaceActive(draft());
+        await expect(repository.updateMediaValidation('draft-1', 'item-1', valid, 11, 9)).rejects.toThrow('localMediaImport.staleDraft');
+        await expect(repository.updateMediaValidation('draft-1', 'missing', valid, 11, 10)).rejects.toThrow('localMediaImport.itemNotFound');
+        expect(fixture.rows.draft?.updated_at).toBe(10);
+        expect(fixture.rows.items.every(item => item.media_validation_status === 'PENDING')).toBe(true);
+        fixture.rows.draft = null;
+        await expect(repository.updateMediaValidation('draft-1', 'item-1', valid, 11, 10)).rejects.toThrow('localMediaImport.draftNotFound');
     });
 });

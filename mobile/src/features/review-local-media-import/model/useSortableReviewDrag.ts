@@ -13,7 +13,7 @@ import {
 } from 'react-native-reanimated';
 import { scheduleOnRN, scheduleOnUI } from 'react-native-worklets';
 
-import type { LocalMediaImportItem } from '@/src/entities/local-media-import';
+import type { LocalMediaImportItem } from '@/entities/local-media-import';
 
 import { REVIEW_AUTO_SCROLL_ACCELERATION_MS, REVIEW_DRAG_LIFT_MS, REVIEW_DRAG_PHASE, REVIEW_DRAG_SETTLE_MS, type ReviewViewMode } from '../config/reviewLayout';
 import {

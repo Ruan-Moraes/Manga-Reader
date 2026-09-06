@@ -1,7 +1,7 @@
 import { View } from 'react-native';
 import { Image } from 'expo-image';
 
-import { useTheme } from '@/src/shared/theme';
+import { useTheme } from '@/shared/theme';
 
 const LAUNCHER_HERO = require('../../../../assets/images/launcher-hero.png');
 const LAUNCHER_HERO_LIGHT = require('../../../../assets/images/launcher-hero-light.png');

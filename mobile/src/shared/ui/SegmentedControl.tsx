@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Pressable, View } from 'react-native';
 
-import { useResponsiveLayout, useTheme } from '@/src/shared/theme';
+import { useResponsiveLayout, useTheme } from '@/shared/theme';
 
 import { AppText } from './AppText';
 import { Icon } from './Icon';

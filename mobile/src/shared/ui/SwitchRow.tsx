@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Pressable, Switch, View } from 'react-native';
 
-import { useTheme } from '@/src/shared/theme';
+import { useTheme } from '@/shared/theme';
 
 import { AppText } from './AppText';
 

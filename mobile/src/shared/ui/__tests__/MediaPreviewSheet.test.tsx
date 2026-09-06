@@ -2,7 +2,7 @@ import { View } from 'react-native';
 import { fireEvent, render, screen } from '@testing-library/react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
-import { lightTokens, ThemeProvider } from '@/src/shared/theme';
+import { ThemeProvider } from '@/shared/theme';
 
 import { MediaPreviewSheet } from '../MediaPreviewSheet';
 
@@ -54,9 +54,7 @@ describe('MediaPreviewSheet', () => {
         expect(screen.getByTestId('details')).toBeOnTheScreen();
         expect(screen.getByTestId('actions')).toBeOnTheScreen();
         expect(screen.queryByText(/file:\/\//)).toBeNull();
-        expect(mockStatusBar).toHaveBeenLastCalledWith(
-            expect.objectContaining({ backgroundColor: lightTokens.bg, hidden: false, style: 'dark', translucent: false }),
-        );
+        expect(mockStatusBar).toHaveBeenLastCalledWith({ animated: true, hidden: false, style: 'dark' });
     });
 
     it('closes from the header and footer actions', () => {

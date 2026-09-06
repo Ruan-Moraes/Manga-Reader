@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Pressable, type PressableProps } from 'react-native';
 
-import { useTheme } from '@/src/shared/theme';
+import { useTheme } from '@/shared/theme';
 
 import { Icon } from './Icon';
 

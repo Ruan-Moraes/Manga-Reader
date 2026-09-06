@@ -9,9 +9,9 @@ import {
     LIBRARY_VISIBILITY_OPTIONS,
     SensitiveContentGuard,
     usePrivacySettingsStore,
-} from '@/src/entities/user';
-import { useTheme } from '@/src/shared/theme';
-import { AppText, ChoiceCards, FormSection, SectionStack, SegmentedControl, StatusMessage, SwitchRow } from '@/src/shared/ui';
+} from '@/entities/user';
+import { useTheme } from '@/shared/theme';
+import { AppText, ChoiceCards, FormSection, SectionStack, SegmentedControl, StatusMessage, SwitchRow } from '@/shared/ui';
 
 import { usePrivacyMutationStore } from '../model/privacyMutationStore';
 import { changeHistoryVisibility, retryPrivacyConsumers, retryPrivacyUpdate, updatePrivacy } from '../model/updatePrivacy';

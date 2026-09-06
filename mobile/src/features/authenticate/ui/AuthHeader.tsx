@@ -2,8 +2,8 @@ import { Text, View } from 'react-native';
 import { Image } from 'expo-image';
 import { useTranslation } from 'react-i18next';
 
-import { useTheme } from '@/src/shared/theme';
-import { FONTS } from '@/src/shared/theme';
+import { useTheme } from '@/shared/theme';
+import { FONTS } from '@/shared/theme';
 
 const LOGIN_HERO = require('../../../../assets/images/login-hero.png');
 const LOGIN_HERO_LIGHT = require('../../../../assets/images/login-hero-light.png');

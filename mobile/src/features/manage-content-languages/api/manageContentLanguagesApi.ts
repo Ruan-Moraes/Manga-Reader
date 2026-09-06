@@ -1,6 +1,6 @@
-import { type ContentLanguageChain, normalizeContentLanguages } from '@/src/entities/content-language-preference';
-import { api } from '@/src/shared/api';
-import type { ApiResponse } from '@/src/shared/model';
+import { type ContentLanguageChain, normalizeContentLanguages } from '@/entities/content-language-preference';
+import { api } from '@/shared/api';
+import type { ApiResponse } from '@/shared/model';
 
 interface ContentLocalesEnvelope {
     contentLocales?: unknown;

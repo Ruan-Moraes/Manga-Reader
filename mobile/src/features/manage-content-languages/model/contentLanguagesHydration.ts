@@ -1,4 +1,4 @@
-import { getMyContentLanguages } from '@/src/entities/content-language-preference';
+import { getMyContentLanguages } from '@/entities/content-language-preference';
 
 import { useContentLanguagesStore } from './contentLanguagesStore';
 

@@ -1,4 +1,4 @@
-import type { UserSettings } from '@/src/entities/user-setting';
+import type { UserSettings } from '@/entities/user-setting';
 
 export const USER_SETTINGS_PATHS = [
     'reader.direction',

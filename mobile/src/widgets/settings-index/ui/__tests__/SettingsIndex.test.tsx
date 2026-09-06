@@ -1,7 +1,7 @@
 import { StyleSheet, View } from 'react-native';
 import { fireEvent, render, screen } from '@testing-library/react-native';
 
-import { ThemeProvider } from '@/src/shared/theme';
+import { ThemeProvider } from '@/shared/theme';
 
 import { SettingsIndex } from '../SettingsIndex';
 import { SettingsSections } from '../SettingsSections';

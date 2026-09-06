@@ -1,8 +1,8 @@
 import { View } from 'react-native';
 import type { ReactNode } from 'react';
 
-import { useTheme } from '@/src/shared/theme';
-import { useResponsiveLayout } from '@/src/shared/theme';
+import { useTheme } from '@/shared/theme';
+import { useResponsiveLayout } from '@/shared/theme';
 
 import { AppText } from './AppText';
 import { NavigationHeader } from './NavigationHeader';

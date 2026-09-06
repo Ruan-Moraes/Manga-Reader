@@ -1,4 +1,4 @@
-import type { SupportedLanguage } from '@/src/shared/i18n';
+import type { SupportedLanguage } from '@/shared/i18n';
 
 export const SUPPORTED_CONTENT_LANGUAGES = ['pt-BR', 'en-US', 'es-ES'] as const;
 

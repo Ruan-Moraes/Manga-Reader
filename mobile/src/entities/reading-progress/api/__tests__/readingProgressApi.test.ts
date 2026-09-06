@@ -1,6 +1,6 @@
 import AxiosMockAdapter from 'axios-mock-adapter';
 
-import { api } from '@/src/shared/api';
+import { api } from '@/shared/api';
 
 import { getReadingProgress, readingProgressQueryKeys, subscribeReadingProgressDiagnostics } from '../../index';
 

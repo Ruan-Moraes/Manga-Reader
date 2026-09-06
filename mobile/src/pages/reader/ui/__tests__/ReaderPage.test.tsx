@@ -10,13 +10,13 @@ import { act, fireEvent, render, waitFor } from '@testing-library/react-native';
 import AxiosMockAdapter from 'axios-mock-adapter';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
-import { subscribeReadingProgressDiagnostics } from '@/src/entities/reading-progress';
-import { useSessionStore } from '@/src/entities/session';
-import { DEFAULT_USER_SETTINGS } from '@/src/entities/user-setting';
-import { resetSettingsRuntimeForTests, useSettingsStore } from '@/src/features/manage-settings';
-import { api } from '@/src/shared/api';
-import i18n from '@/src/shared/i18n';
-import { ThemeProvider } from '@/src/shared/theme';
+import { subscribeReadingProgressDiagnostics } from '@/entities/reading-progress';
+import { useSessionStore } from '@/entities/session';
+import { DEFAULT_USER_SETTINGS } from '@/entities/user-setting';
+import { resetSettingsRuntimeForTests, useSettingsStore } from '@/features/manage-settings';
+import { api } from '@/shared/api';
+import i18n from '@/shared/i18n';
+import { ThemeProvider } from '@/shared/theme';
 
 import { ReaderPage } from '../ReaderPage';
 

@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { Animated, ViewStyle } from 'react-native';
 
-import { useTheme } from '@/src/shared/theme';
+import { useTheme } from '@/shared/theme';
 
 interface Props {
     width?: number | `${number}%`;

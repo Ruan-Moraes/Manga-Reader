@@ -7,7 +7,7 @@ import {
     moveContentLanguage as reorderContentLanguage,
     normalizeContentLanguages,
     removeContentLanguage as excludeContentLanguage,
-} from '@/src/entities/content-language-preference';
+} from '@/entities/content-language-preference';
 
 import { patchMyContentLanguages } from '../api/manageContentLanguagesApi';
 import { useContentLanguagesStore } from './contentLanguagesStore';
