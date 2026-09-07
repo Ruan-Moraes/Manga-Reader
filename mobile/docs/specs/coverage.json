@@ -341,7 +341,7 @@
             "rationale": "Referência técnica do módulo."
         },
         {
-            "path": "scripts/fsd-boundaries.test.mjs",
+            "path": "scripts/tests/fsd-boundaries.test.mjs",
             "category": "evidence",
             "specs": ["MOB-FEAT-002", "MOB-FEAT-011"],
             "observations": ["MOB-FEAT-002/AC-014", "MOB-FEAT-011/AC-011"]

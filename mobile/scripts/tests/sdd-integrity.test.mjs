@@ -4,7 +4,7 @@ import { tmpdir } from 'node:os';
 import { resolve } from 'node:path';
 import test from 'node:test';
 
-import { implementationChecksum, validateFeatureIntegrity, validateReconciliationSummary } from './sdd-integrity.mjs';
+import { implementationChecksum, validateFeatureIntegrity, validateReconciliationSummary } from '../lib/sdd-integrity.mjs';
 
 const checksum = 'a'.repeat(64);
 const artifact = status => ({

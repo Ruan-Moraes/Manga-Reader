@@ -35,7 +35,7 @@ O Steiger continua validando as camadas canônicas. Um validador local obrigató
 
 ## Relações
 
-- Rege `src/application`, `app/_layout.tsx`, `steiger.config.ts` e `scripts/validate-fsd.mjs`.
+- Rege `src/application`, `app/_layout.tsx`, `steiger.config.ts` e `scripts/checks/validate-fsd.mjs`.
 - Decisão aceita por autorização humana explícita em 2026-08-09.
 - Superseded por `MOB-DEC-005` após o Expo Router passar a suportar a raiz
   `src/app`; a separação de responsabilidades de `src/application` foi mantida.

@@ -9,13 +9,13 @@
         "web": "expo start --web",
         "test": "jest --watch",
         "test:ci": "jest --ci --runInBand",
-        "specs:check": "node --test scripts/spec-coverage.test.mjs scripts/feature-gates.test.mjs scripts/sdd-integrity.test.mjs && node scripts/validate-specs.mjs && node scripts/check-doc-links.mjs",
+        "specs:check": "node --test scripts/tests/spec-coverage.test.mjs scripts/tests/feature-gates.test.mjs scripts/tests/sdd-integrity.test.mjs && node scripts/checks/validate-specs.mjs && node scripts/checks/check-doc-links.mjs",
         "format": "prettier --write .",
         "format:check": "prettier --check .",
         "typecheck": "tsc --noEmit",
         "lint": "eslint .",
         "lint:fix": "eslint . --fix",
-        "lint:fsd": "node --test scripts/fsd-boundaries.test.mjs && CHOKIDAR_USEPOLLING=1 steiger ./src && node scripts/validate-fsd.mjs",
+        "lint:fsd": "node --test scripts/tests/fsd-boundaries.test.mjs && CHOKIDAR_USEPOLLING=1 steiger ./src && node scripts/checks/validate-fsd.mjs",
         "check": "pnpm specs:check && pnpm typecheck && pnpm lint && pnpm lint:fsd && pnpm format:check && pnpm test:ci"
     },
     "dependencies": {

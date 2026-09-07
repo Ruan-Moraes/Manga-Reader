@@ -4,7 +4,7 @@ import { tmpdir } from 'node:os';
 import { resolve } from 'node:path';
 import test from 'node:test';
 
-import { validateFsdBoundaries } from './fsd-boundaries.mjs';
+import { validateFsdBoundaries } from '../lib/fsd-boundaries.mjs';
 
 function fixture(files) {
     const root = mkdtempSync(resolve(tmpdir(), 'mobile-fsd-'));

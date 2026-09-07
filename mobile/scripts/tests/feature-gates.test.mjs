@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 
-import { validateFeatureGates } from './feature-gates.mjs';
+import { validateFeatureGates } from '../lib/feature-gates.mjs';
 
 const feature = (id, { gate = 'open', blockedBy = [], status = 'draft', tasks = false } = {}) => ({
     metadata: { id, type: 'feature', status, implementation_gate: gate, blocked_by: blockedBy },

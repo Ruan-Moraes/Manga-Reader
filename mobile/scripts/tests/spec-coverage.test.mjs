@@ -4,7 +4,7 @@ import { tmpdir } from 'node:os';
 import { resolve } from 'node:path';
 import test from 'node:test';
 
-import { validateCoverage } from './spec-coverage.mjs';
+import { validateCoverage } from '../lib/spec-coverage.mjs';
 
 const artifact = {
     content: '### OBS-001 — Exemplo\n',

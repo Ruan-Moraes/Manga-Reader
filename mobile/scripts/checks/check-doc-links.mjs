@@ -3,7 +3,7 @@ import { dirname, resolve } from 'node:path';
 import process from 'node:process';
 import { fileURLToPath, URL } from 'node:url';
 
-const mobileRoot = resolve(fileURLToPath(new URL('..', import.meta.url)));
+const mobileRoot = resolve(fileURLToPath(new URL('../..', import.meta.url)));
 const skipped = new Set(['.expo', '.git', 'coverage', 'node_modules']);
 
 function markdownFiles(directory) {

@@ -37,5 +37,5 @@ O validador rejeita `implemented` com task aberta, `verification-pending` sem ta
 
 ## Relações
 
-- Rege `docs/specs/README.md`, `docs/specs/_templates/`, `scripts/validate-specs.mjs` e todas as Target Specs.
+- Rege `docs/specs/README.md`, `docs/specs/_templates/`, `scripts/checks/validate-specs.mjs` e todas as Target Specs.
 - Decisão aceita por autorização humana explícita em 2026-08-09.

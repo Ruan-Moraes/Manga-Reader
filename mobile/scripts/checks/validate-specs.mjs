@@ -4,14 +4,14 @@ import { relative, resolve } from 'node:path';
 import process from 'node:process';
 import { fileURLToPath, URL } from 'node:url';
 
-import { validateCoverage } from './spec-coverage.mjs';
-import { validateFeatureGates } from './feature-gates.mjs';
-import { implementationChecksum, validateFeatureIntegrity, validateReconciliationSummary } from './sdd-integrity.mjs';
+import { validateCoverage } from '../lib/spec-coverage.mjs';
+import { validateFeatureGates } from '../lib/feature-gates.mjs';
+import { implementationChecksum, validateFeatureIntegrity, validateReconciliationSummary } from '../lib/sdd-integrity.mjs';
 
 const log = (...messages) => process.stdout.write(`${messages.join(' ')}\n`);
 const logError = (...messages) => process.stderr.write(`${messages.join(' ')}\n`);
 
-const mobileRoot = resolve(fileURLToPath(new URL('..', import.meta.url)));
+const mobileRoot = resolve(fileURLToPath(new URL('../..', import.meta.url)));
 const docsRoot = resolve(mobileRoot, 'docs');
 const specsRoot = resolve(docsRoot, 'specs');
 const decisionsRoot = resolve(docsRoot, 'decisions');

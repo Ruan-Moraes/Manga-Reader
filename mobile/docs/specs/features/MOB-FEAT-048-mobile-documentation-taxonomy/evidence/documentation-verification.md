@@ -16,5 +16,5 @@
   `docs/active`.
 - `coverage.json` classifica cada grupo da taxonomia e mantém entradas exatas
   para evidências.
-- `scripts/check-doc-links.mjs` verifica links relativos de todos os Markdown do
+- `scripts/checks/check-doc-links.mjs` verifica links relativos de todos os Markdown do
   módulo e integra `pnpm specs:check`.

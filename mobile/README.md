@@ -93,6 +93,10 @@ mobile/
 │   └── shared/           # api, navegação técnica, tema, i18n e UI genérica
 ├── assets/
 ├── docs/                 # specs, decisões, planos, referências e legado
+├── scripts/
+│   ├── checks/           # executáveis dos gates de validação
+│   ├── lib/              # validadores reutilizáveis pelos checks e testes
+│   └── tests/            # testes Node dos validadores
 ├── app.json
 └── package.json
 ```

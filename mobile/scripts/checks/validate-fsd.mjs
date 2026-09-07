@@ -2,9 +2,9 @@ import { resolve } from 'node:path';
 import process from 'node:process';
 import { fileURLToPath, URL } from 'node:url';
 
-import { validateFsdBoundaries } from './fsd-boundaries.mjs';
+import { validateFsdBoundaries } from '../lib/fsd-boundaries.mjs';
 
-const mobileRoot = resolve(fileURLToPath(new URL('..', import.meta.url)));
+const mobileRoot = resolve(fileURLToPath(new URL('../..', import.meta.url)));
 const errors = validateFsdBoundaries({ mobileRoot });
 
 if (errors.length) {
