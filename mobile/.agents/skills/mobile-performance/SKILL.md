@@ -1,6 +1,6 @@
 ---
 name: mobile-performance
-description: Analise e preserve performance no Manga Reader mobile antes de novas funcionalidades ou alterações de componentes e fluxos, durante reviews e refatorações, após implementar e ao investigar lentidão, travamentos ou consumo crescente. Use somente no mobile; ajuste a profundidade ao impacto real da tarefa.
+description: Analise e preserve performance no Toonlira mobile antes de novas funcionalidades ou alterações de componentes e fluxos, durante reviews e refatorações, após implementar e ao investigar lentidão, travamentos ou consumo crescente. Use somente no mobile; ajuste a profundidade ao impacto real da tarefa.
 ---
 
 # Performance mobile

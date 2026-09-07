@@ -1,6 +1,6 @@
 ---
 name: sdd-executor
-description: Implementa Target Specs aprovadas do Manga Reader Mobile seguindo tasks rastreáveis, FSD, tema, i18n e testes. Use somente quando spec e registry estiverem approved, tasks existirem e o pedido autorizar implementação.
+description: Implementa Target Specs aprovadas do Toonlira Mobile seguindo tasks rastreáveis, FSD, tema, i18n e testes. Use somente quando spec e registry estiverem approved, tasks existirem e o pedido autorizar implementação.
 ---
 
 # SDD Executor

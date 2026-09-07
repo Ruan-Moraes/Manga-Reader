@@ -1,5 +1,5 @@
 import { http, HttpResponse } from 'msw';
-import type { SubscriptionPlan } from '@manga-reader/types';
+import type { SubscriptionPlan } from '@toonlira/types';
 
 export const MOCK_PLANS: SubscriptionPlan[] = [
     {

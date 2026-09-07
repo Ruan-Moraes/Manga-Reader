@@ -1,9 +1,9 @@
 # Drift audit — MOB-FEAT-015
 
-Data: 2026-08-15
+Data: 2026-09-06
 
-- Implementação auditada: working-tree sha256:9df90bc58827359dd921a48f537f3c111a755991b5615f70601e493896b0f41e
-- Status da feature: `verification-pending`
+- Implementação auditada: working-tree sha256:cb2e5226cae5289175f02ef3243e0e048890a91e89ff1da21764db1ee89ab84e
+- Status da feature: `implemented`
 
 ## Divergências
 
@@ -17,7 +17,7 @@ falsos `CORRUPTED` observados na primeira execução.
 - arquivos runtime descobertos: 0
 - caminhos obsoletos: 0
 - violações de gate: 0
-- verificações abertas: 1
+- verificações abertas: 0
 
 ## Escopo auditado
 
@@ -36,10 +36,11 @@ Rebase documental de performance (2026-09-05): checksum global atualizado pela i
 
 ## Atualização C03 — 2026-09-06
 
-A seção histórica acima descreve a execução anterior. Agora há uma verificação
-aberta: TASK-014 para AC-008. Requisitos e schema preservados; apenas
-projeções de leitura, retorno interno do comando e snapshot do controller mudaram.
-Sem novos arquivos runtime ou critérios. Verificação física ainda não repetida.
+A seção histórica acima descreve a execução anterior. TASK-014 para AC-008 foi
+concluída e atestada por Ruan Moraes em Android físico. Requisitos e schema foram
+preservados; apenas projeções de leitura, retorno interno do comando e snapshot
+do controller mudaram. Sem novos arquivos runtime, critérios ou divergências
+reportadas.
 
 Rebase C01/C03/C04 (2026-09-06): checksum global atualizado após correções de numeração do leitor, persistência da validação e limite de resposta. Escopo e validações em [review de performance](../../../active/performance-evidence/corrections-2026-09-06/review.md). Não representa nova verificação física das demais features.
 
@@ -48,3 +49,7 @@ Rebase C02/C05 (2026-09-06): checksum global atualizado após virtualização do
 Consolidação documental (2026-09-06): checksum global atualizado após reconciliar o estado de performance; runtime e verdict preservados. [Registro](../../../active/performance-evidence/consolidation-2026-09-06/review.md). Sem nova validação física.
 
 Preparação de commit (2026-09-06): rebase global após excluir scripts avulsos de ensaio, listagens Git e metadados do sistema dos arquivos versionados, conforme solicitação humana. Resultados históricos preservados; runtime e verdict inalterados.
+
+Encerramento físico (2026-09-06): TASK-014/AC-008 concluída por ateste de Ruan
+Moraes, sem divergência reportada. Evidência em
+[`evidence/android-physical-revalidation-2026-09-06.md`](evidence/android-physical-revalidation-2026-09-06.md).

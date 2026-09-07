@@ -15,7 +15,7 @@ superseded_by: []
 
 ## Objetivo
 
-Padronizar todas as superfícies atualmente implementadas do Manga Reader Mobile
+Padronizar todas as superfícies atualmente implementadas do Toonlira Mobile
 com uma identidade editorial premium, simples e acessível, usando o amarelo da
 marca com moderação, neutros quentes, hierarquia tipográfica clara, controles
 arredondados e componentes compartilhados consistentes nos temas claro e escuro.

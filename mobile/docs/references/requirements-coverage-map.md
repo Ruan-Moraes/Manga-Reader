@@ -7,7 +7,7 @@
 ## Fontes consideradas
 
 Foram considerados integralmente os documentos `01` a `10` do pacote
-`manga-reader-mobile-requisitos-completos`, além de `mobile/AGENTS.md`, specs,
+`toonlira-mobile-requisitos-completos`, além de `mobile/AGENTS.md`, specs,
 decisions, baselines, registry, coverage, código em `mobile/app` e `mobile/src`, e
 contratos relevantes de `/api` e `/web` usados apenas como contexto.
 

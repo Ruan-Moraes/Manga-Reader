@@ -1,6 +1,6 @@
 ---
 name: sdd-auditor
-description: Audita a prontidão e a cobertura do Spec-Driven Development no Manga Reader Mobile. Use ao avaliar registry, baselines, Target Specs, decisões, rastreabilidade, gates, skills ou capacidade de iniciar uma feature sem inventar requisitos.
+description: Audita a prontidão e a cobertura do Spec-Driven Development no Toonlira Mobile. Use ao avaliar registry, baselines, Target Specs, decisões, rastreabilidade, gates, skills ou capacidade de iniciar uma feature sem inventar requisitos.
 ---
 
 # SDD Auditor

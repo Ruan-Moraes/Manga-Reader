@@ -2,7 +2,7 @@ import { randomUUID } from 'expo-crypto';
 import * as FileSystem from 'expo-file-system/legacy';
 import * as Sharing from 'expo-sharing';
 
-const EXPORT_DIRECTORY = `${FileSystem.cacheDirectory ?? ''}manga-reader-exports/`;
+const EXPORT_DIRECTORY = `${FileSystem.cacheDirectory ?? ''}toonlira-exports/`;
 
 export interface JsonExportResult {
     status: 'shared' | 'cancelled';
@@ -14,7 +14,7 @@ export interface JsonExportAdapter {
     clearTemporaryFiles(): Promise<void>;
 }
 
-const filenameFor = (date: Date): string => `manga-reader-data-export-${date.toISOString().slice(0, 10)}.json`;
+const filenameFor = (date: Date): string => `toonlira-data-export-${date.toISOString().slice(0, 10)}.json`;
 
 const activeDownloads = new Map<AbortController, Promise<void>>();
 

@@ -72,7 +72,7 @@ gateway:
     metadata-retention-days: 7
   storage:
     mode: ${GATEWAY_STORAGE_MODE:local}
-    local-directory: ${GATEWAY_LOCAL_STORAGE_DIR:${java.io.tmpdir}/manga-reader-translation-gateway}
+    local-directory: ${GATEWAY_LOCAL_STORAGE_DIR:${java.io.tmpdir}/toonlira-translation-gateway}
     bucket: ${GATEWAY_STORAGE_BUCKET:}
   dispatch:
     mode: ${GATEWAY_DISPATCH_MODE:disabled}

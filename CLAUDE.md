@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-**Manga Reader** — plataforma para leitura de mangás, manhwas e manhuas. Monorepo com Spring Boot (backend) e React (frontend).
+**Toonlira** — plataforma para leitura de mangás, manhwas e manhuas. Monorepo com Spring Boot (backend) e React (frontend).
 
 ## Build & Run
 
@@ -15,15 +15,15 @@
 ./mvnw -pl apps/core spring-boot:run                 # Iniciar core (Docker Compose sobe automaticamente)
 ```
 
-### Frontend (`/web/manga-reader/`)
+### Frontend (`/web/toonlira/`)
 
-pnpm workspace (raiz `web/`). Rodar por workspace com `--filter manga-reader`
-ou `cd web/manga-reader` + `npx`:
+pnpm workspace (raiz `web/`). Rodar por workspace com `--filter toonlira`
+ou `cd web/toonlira` + `npx`:
 
 ```bash
-pnpm --filter manga-reader dev          # Dev server :5173 (proxy API → :8080)
-pnpm --filter manga-reader build        # TypeScript check + production build
-pnpm --filter manga-reader lint:fsd     # Boundary lint (steiger) — gate que importa, verde
+pnpm --filter toonlira dev          # Dev server :5173 (proxy API → :8080)
+pnpm --filter toonlira build        # TypeScript check + production build
+pnpm --filter toonlira lint:fsd     # Boundary lint (steiger) — gate que importa, verde
 npx tsc -b                              # Type-check gate (rodar dentro do app; --noEmit puro é vácuo: tsconfig raiz tem files:[])
 npx vitest run --pool=forks             # Suíte completa (--pool=forks obrigatório neste sandbox)
 ```
@@ -72,7 +72,7 @@ inline para manter este arquivo curto — **ler o doc relevante antes de mexer n
   **obrigatório antes** de entity/migration/coluna/FK/enum; usar junto da skill
   `database-design`. Escolha dual-DB, BCNF, jsonb×tabela, tipos/constraints, Flyway.
 - **Clean Code & estilo** → [`docs/clean-code.md`](docs/clean-code.md) — naming,
-  imports (preferir `import`/`import static`), Tailwind (tokens `mr-*`), mobile-first,
+  imports (preferir `import`/`import static`), Tailwind (tokens `ui-*`), mobile-first,
   i18n obrigatório em telas novas.
 - **Testes** → [`docs/testing.md`](docs/testing.md) — workflow TDD-like, anotações por
   camada, cobertura exigida por tipo de mudança, exemplos e limitações conhecidas
@@ -103,7 +103,7 @@ Regras principais: fundação (tema, i18n, estado global) antes de qualquer tela
 Antes de considerar qualquer tarefa concluída:
 
 1. `mvn test` passa com **0 failures, 0 errors**
-2. `cd web/manga-reader && npx tsc -b` compila com **0 errors**
+2. `cd web/toonlira && npx tsc -b` compila com **0 errors**
 3. Todo requisito novo/alterado tem teste correspondente
 4. Nenhum teste existente foi quebrado ou deletado sem justificativa
 5. Commits pequenos e focados com mensagens claras

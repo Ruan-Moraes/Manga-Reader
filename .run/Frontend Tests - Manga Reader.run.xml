@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Frontend Tests - Manga Reader" type="js.build_tools.npm" folderName="Frontend / Tests">
-    <package-json value="$PROJECT_DIR$/web/manga-reader/package.json" />
+  <configuration default="false" name="Frontend Tests - Toonlira" type="js.build_tools.npm" folderName="Frontend / Tests">
+    <package-json value="$PROJECT_DIR$/web/toonlira/package.json" />
     <command value="run" />
     <scripts><script value="test" /></scripts>
     <node-interpreter value="project" />

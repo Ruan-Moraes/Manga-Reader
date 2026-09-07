@@ -1,4 +1,4 @@
-# Manga Reader
+# Toonlira
 
 Plataforma para leitura de mangás, manhwas e manhuas, com catálogo, leitor,
 biblioteca, avaliações, notícias, grupos, fórum, eventos, assinaturas e loja.
@@ -20,7 +20,7 @@ Visão detalhada: [`docs/architecture.md`](docs/architecture.md).
 ## Estrutura do repositório
 
 ```text
-Manga-Reader/
+Toonlira/
 ├── api/
 │   ├── apps/
 │   │   ├── core/                     # API principal — porta 8080
@@ -32,7 +32,7 @@ Manga-Reader/
 │   ├── libs/testing-support/          # Utilitários internos de testes
 │   └── docker-compose.prod.yml       # Base da stack de produção
 ├── web/
-│   ├── manga-reader/                 # Aplicação React principal
+│   ├── toonlira/                 # Aplicação React principal
 │   ├── landing-page/                 # Landing page
 │   ├── packages/                     # Pacotes compartilhados
 │   └── scripts/                      # Ferramentas do workspace
@@ -122,7 +122,7 @@ cd api
 ### Web
 
 ```bash
-cd web/manga-reader
+cd web/toonlira
 npx tsc -b
 npm run lint:fsd
 npx vitest run --pool=forks

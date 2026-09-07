@@ -1,4 +1,4 @@
-import type { SubscriptionPlan } from '@manga-reader/types';
+import type { SubscriptionPlan } from '@toonlira/types';
 
 let idCounter = 0;
 

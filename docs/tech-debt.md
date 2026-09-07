@@ -1,4 +1,4 @@
-# Manga Reader — Dívidas Técnicas
+# Toonlira — Dívidas Técnicas
 
 > Última revisão documental: 19 de julho de 2026.
 >
@@ -108,10 +108,10 @@ verde, registradas abaixo). 864 testes.
   (cobre `SideMenu`, que o encapsula) e `AdminModal`. `Modal` usa `<dialog>` nativo
   (trap + restauração nativos no browser). Bug a11y corrigido: `Drawer` usava
   `<aside role="dialog">` (proibido por `aria-allowed-role`) → trocado por `<div>`.
-- **Focus ring**: utilitário único `@utility mr-focus-ring` (`styles/index.css`),
+- **Focus ring**: utilitário único `@utility ui-focus-ring` (`styles/index.css`),
   substituindo os triplos `focus-visible:outline-*` ad-hoc com offset inconsistente
   (1/2/nenhum) nas primitivas do DS (Button, Switch, MangaCard, Logo, NavBar, Stars,
-  footer). Token `--mr-focus-ring` já existia + regra global `*:focus-visible`.
+  footer). Token `--ui-focus-ring` já existia + regra global `*:focus-visible`.
 - **Testes a11y**: `jest-axe` instalado, matcher `toHaveNoViolations` em
   `src/test/setup.ts`, helper `src/test/helpers/axe.ts` (desliga regra `region`
   para renders isolados sem o shell completo). Smoke tests em HelpCenter,
@@ -131,7 +131,7 @@ alcançáveis, chaves em pt-BR/en-US/es-ES). Em 2026-09-03, a empresa, o endere�
 os e-mails fictícios foram removidos; as páginas agora identificam Ruan Moraes
 como operador, publicam o contato real e exibem aviso explícito de rascunho.
 Falta o **texto legal vinculante**, a revisão jurídica e a publicação nas URLs
-canônicas de `app.mangareader.com` — **não é tarefa exclusivamente de
+canônicas de `app.toonlira.com` — **não é tarefa exclusivamente de
 engenharia**. Bloqueia produção; não-bloqueante para desenvolvimento.
 
 ---
@@ -253,7 +253,7 @@ desvios same-layer aceitos: layout shells + design showcase).
 
 ### DT-25: Auditoria frontend — FSD / SRP / dead-code (mapeamento 2026-05-30)
 
-Varredura manual+heurística de `frontend-apps/manga-reader/src` (~720 arquivos). **Só documentação — nada corrigido aqui.** Escopo: violações FSD além do que o steiger pega (verde), responsabilidade excessiva, código morto/obsoleto.
+Varredura manual+heurística de `frontend-apps/toonlira/src` (~720 arquivos). **Só documentação — nada corrigido aqui.** Escopo: violações FSD além do que o steiger pega (verde), responsabilidade excessiva, código morto/obsoleto.
 
 #### 25.1 — Código morto / obsoleto
 - ✅ **Feito**: `entities/comment/model/useCommentEditor.tsx` removido (0 consumidores; substituído por `useCommentRichEditor`).
@@ -355,7 +355,7 @@ parametrizado por `VITE_BASE_URL` (`src/shared/constant/WEB_BASE_URL.ts`,
 usam a constante.
 
 **Resíduo — ✅ Stale (2026-05-30)**: varredura não encontra mais strings
-`'/Manga-Reader/...'` hardcoded. O wrapper `useAppNavigate()`
+`'/Toonlira/...'` hardcoded. O wrapper `useAppNavigate()`
 (`shared/hook/useAppNavigate.ts`) prefixa `WEB_BASE_URL` automaticamente em paths
 absolutos; call-sites usam paths limpos (`/forum`, `/titles/{id}`). Nada a migrar.
 
@@ -442,7 +442,7 @@ Lado-código resolvido; resíduo só-infra documentado acima.
 |----|--------|-----------|
 | DT-01 | `@Transactional` em use cases | 5 JPA anotados (2026-05-16) + 14 Mongo com `@Transactional("mongoTransactionManager")`; replica set + `MongoTransactionManager` + JPA `@Primary` (2026-05-17) |
 | DT-16 | `npm run build` quebrado (tsc -b) | 64 erros TS pré-existentes corrigidos (LocalizedString factories, paths admin.types, fixtures de service); build limpo, 92 chunks |
-| DT-13 (resíduo) | call-sites basename hardcoded | ~50 strings `/Manga-Reader/...` migradas para `WEB_BASE_URL` em 35 arquivos |
+| DT-13 (resíduo) | call-sites basename hardcoded | ~50 strings `/Toonlira/...` migradas para `WEB_BASE_URL` em 35 arquivos |
 | DT-04 | UserController injetava repository ports | Criado `GetUserViewHistoryUseCase`; content-locales reusa `GetUserProfileUseCase`; ports removidos do controller; testes atualizados + teste de application novo |
 | DT-05 | Sem Error Boundaries | **Stale** — `ErrorBoundary` + `RouteErrorFallback` já existiam e estão integrados em `main.tsx` |
 | DT-06 | Validação de forms insuficiente | `react-hook-form` + `zod` + `@hookform/resolvers`; `buildLoginSchema`/`buildSignUpSchema` com mensagens i18n; `Login`/`SignUp` migrados (demais forms = resíduo de baixa prioridade) |
@@ -471,7 +471,7 @@ Lado-código resolvido; resíduo só-infra documentado acima.
 
 ## Auditoria FSD Frontend (2026-05-31)
 
-Varredura pasta-a-pasta do frontend (`frontend-apps/manga-reader/src`) por dívida
+Varredura pasta-a-pasta do frontend (`frontend-apps/toonlira/src`) por dívida
 **semântica/acoplamento** — invisível ao `lint:fsd` (steiger), que está verde.
 Remediação **leva-a-leva por camada** (shared→entities→features→widgets→pages→app).
 
@@ -1117,7 +1117,7 @@ Dívidas novas encontradas:
 ### DT-53: Suíte de componentes do frontend quebrada no baseline (jest-dom × Vitest 4) — **Resolvido (2026-07-02)**
 
 **Causa-raiz**: o workspace resolvia **duas majors de vitest** (landing 3.2.4 /
-manga-reader 4.1.4) e a entry `@testing-library/jest-dom/vitest` faz `import 'vitest'`
+toonlira 4.1.4) e a entry `@testing-library/jest-dom/vitest` faz `import 'vitest'`
 sem declará-lo como dependência — no layout do pnpm o `expect.extend` caía no expect
 do vitest 3 enquanto os testes usavam o do vitest 4 → `Invalid Chai property` em 425
 testes (medição 2026-07-02).
@@ -1177,7 +1177,7 @@ pré-`api/`. Removido localmente (`rm -rf backend/`); sem efeito no git.
 
 ### DT-56: `web/packages/assets` sem `package.json` — **Resolvido (2026-07-02)**
 
-Promovido a `@manga-reader/assets` (`package.json` privado, sem scripts) — o glob
+Promovido a `@toonlira/assets` (`package.json` privado, sem scripts) — o glob
 `packages/*` do workspace agora o resolve. Os apps continuam consumindo via
 `publicDir` relativo nos `vite.config.ts` (sem mudança de código); lockfile
 atualizado com o novo importer.
@@ -1208,8 +1208,8 @@ produção. O único comportamento ainda pendente é upload binário, coberto po
 ### DT-58: Flutuantes fora do admin ainda sem tokens de camada / portal
 
 **Contexto (2026-07-06).** A padronização dos modais admin centralizou as
-camadas visuais na escala única `--z-mr-*` (`@theme` em `styles/index.css`;
-a escala legada `:root --mr-z-*` foi removida) e resolveu o problema de
+camadas visuais na escala única `--z-ui-*` (`@theme` em `styles/index.css`;
+a escala legada `:root --ui-z-*` foi removida) e resolveu o problema de
 dropdowns atrás do `<dialog>` portalando conteúdo flutuante para dentro do
 próprio dialog via `FloatingPortalContext` (`shared/ui/FloatingPortalContext.tsx`).
 `Select`, `DropdownMenu`, `TagSelectInput` (react-select, `menuPortalTarget`)
@@ -1223,7 +1223,7 @@ blast radius):**
   quando for usado dentro de modais.
 - z-index numéricos hardcoded fora do admin: NavBar/NavSearch/NavMegaMenu,
   `ChapterDropdown` (inline `zIndex: 20`), páginas de evento — rotear para
-  utilitários `z-mr-*`.
+  utilitários `z-ui-*`.
 
 **Prioridade:** Baixa (nenhum bug visível hoje; é consistência de tokens).
 
@@ -1294,7 +1294,7 @@ mas a integração não termina em todos os consumidores:
 - qualidade de imagem, preload, formato de data e timezone são salvos/recuperados sem
   efeito funcional encontrado;
 - `autoMarkRead=false` não impede a conclusão automática na última página;
-- LIGHT é aceito pela API/DB, mas `applySystemPreferences` aplica `mr-theme-dark`;
+- LIGHT é aceito pela API/DB, mas `applySystemPreferences` aplica `ui-theme-dark`;
 - o leitor mantém `reader:prefs`, enquanto o sync autenticado usa
   `mr.settings.v1`/React Query na página de configurações.
 

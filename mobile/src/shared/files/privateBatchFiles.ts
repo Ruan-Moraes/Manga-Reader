@@ -30,7 +30,7 @@ function assertSafeSegment(segment: string): void {
 
 function documentRoot(): string {
     if (!FileSystem.documentDirectory) throw new Error('privateFiles.unavailable');
-    return `${FileSystem.documentDirectory}manga-reader-private/`;
+    return `${FileSystem.documentDirectory}toonlira-private/`;
 }
 
 function namespaceRoot(namespace: string): string {

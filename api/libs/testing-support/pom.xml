@@ -4,13 +4,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>com.mangareader</groupId>
-        <artifactId>manga-reader-services</artifactId>
+        <groupId>com.toonlira</groupId>
+        <artifactId>toonlira-services</artifactId>
         <version>0.0.1-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
     <artifactId>testing-support</artifactId>
-    <name>Manga Reader Testing Support</name>
+    <name>Toonlira Testing Support</name>
     <description>Utilitários compartilhados exclusivamente pelos testes de integração dos serviços.</description>
     <properties>
         <java.version>23</java.version>

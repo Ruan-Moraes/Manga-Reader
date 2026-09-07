@@ -9,15 +9,15 @@
         <version>3.4.3</version>
         <relativePath/>
     </parent>
-    <groupId>com.mangareader</groupId>
-    <artifactId>manga-reader-services</artifactId>
+    <groupId>com.toonlira</groupId>
+    <artifactId>toonlira-services</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <name>Manga Reader Services</name>
+    <name>Toonlira Services</name>
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>com.mangareader</groupId>
+                <groupId>com.toonlira</groupId>
                 <artifactId>testing-support</artifactId>
                 <version>${project.version}</version>
             </dependency>

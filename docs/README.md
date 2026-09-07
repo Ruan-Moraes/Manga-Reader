@@ -1,4 +1,4 @@
-# Documentação do Manga Reader
+# Documentação do Toonlira
 
 Este diretório concentra os guias normativos e os documentos de apoio do
 projeto. O README da raiz apresenta a visão geral; os READMEs de cada módulo
@@ -49,7 +49,7 @@ contêm instruções operacionais específicas.
 - [`../api/README.md`](../api/README.md): backend e jobs.
 - [`../api/apps/core/README.md`](../api/apps/core/README.md): API principal.
 - [`../web/README.md`](../web/README.md): workspace frontend.
-- [`../web/manga-reader/README.md`](../web/manga-reader/README.md): aplicação web principal.
+- [`../web/toonlira/README.md`](../web/toonlira/README.md): aplicação web principal.
 - [`../web/landing-page/README.md`](../web/landing-page/README.md): landing page.
 - [`../mobile/README.md`](../mobile/README.md): aplicativo mobile.
 

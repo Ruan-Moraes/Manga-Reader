@@ -137,9 +137,3 @@ coverage/
 *.tfstate
 *.tfstate.*
 .terraform.tfstate.lock.info
-
-/frontend-apps/design_handoff_header_redesign/
-/frontend-apps/Manga Reader Design System/
-/frontend-apps/design_handoff_footer_redesign/
-/web/manga-reader/Manga Reader Design System/
-/web/landing-page/landing/

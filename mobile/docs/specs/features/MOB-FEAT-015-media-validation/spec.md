@@ -2,11 +2,11 @@
 id: MOB-FEAT-015
 type: feature
 title: Validação de mídia local
-status: verification-pending
+status: implemented
 implementation_gate: open
 blocked_by: [MOB-FEAT-012, MOB-FEAT-013, MOB-FEAT-014]
 created: 2026-08-14
-updated: 2026-08-15
+updated: 2026-09-06
 supersedes: []
 superseded_by: []
 ---

@@ -9,7 +9,7 @@
         <root level="INFO">
             <appender-ref ref="CONSOLE"/>
         </root>
-        <logger name="com.mangareader" level="DEBUG"/>
+        <logger name="com.toonlira" level="DEBUG"/>
         <logger name="org.mongodb.driver.cluster" level="WARN"/>
         <!-- SQL visível em dev/staging (format_sql=true). Nunca em prod. -->
         <logger name="org.hibernate.SQL" level="DEBUG"/>
@@ -21,10 +21,10 @@
             <encoder class="ch.qos.logback.classic.encoder.JsonEncoder"/>
         </appender>
         <appender name="JSON_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-            <file>${LOG_DIR}/manga-reader.log</file>
+            <file>${LOG_DIR}/toonlira.log</file>
             <encoder class="ch.qos.logback.classic.encoder.JsonEncoder"/>
             <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-                <fileNamePattern>${LOG_DIR}/manga-reader-%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+                <fileNamePattern>${LOG_DIR}/toonlira-%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
                 <maxFileSize>50MB</maxFileSize>
                 <maxHistory>30</maxHistory>
                 <totalSizeCap>1GB</totalSizeCap>
@@ -34,7 +34,7 @@
             <appender-ref ref="JSON_CONSOLE"/>
             <appender-ref ref="JSON_FILE"/>
         </root>
-        <logger name="com.mangareader" level="INFO"/>
+        <logger name="com.toonlira" level="INFO"/>
         <logger name="org.hibernate.SQL" level="WARN"/>
         <logger name="org.mongodb.driver.cluster" level="WARN"/>
     </springProfile>

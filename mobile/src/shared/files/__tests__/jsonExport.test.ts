@@ -20,7 +20,7 @@ describe('MOB-FEAT-007 JSON export', () => {
         jest.mocked(FileSystem.makeDirectoryAsync).mockResolvedValue(undefined);
         jest.mocked(FileSystem.writeAsStringAsync).mockResolvedValue(undefined);
         jest.mocked(FileSystem.deleteAsync).mockResolvedValue(undefined);
-        jest.mocked(FileSystem.getInfoAsync).mockResolvedValue({ exists: false, isDirectory: false, uri: 'file:///cache/manga-reader-exports/' });
+        jest.mocked(FileSystem.getInfoAsync).mockResolvedValue({ exists: false, isDirectory: false, uri: 'file:///cache/toonlira-exports/' });
         jest.mocked(FileSystem.readDirectoryAsync).mockResolvedValue([]);
         jest.mocked(Sharing.isAvailableAsync).mockResolvedValue(true);
         jest.mocked(Sharing.shareAsync).mockResolvedValue(undefined);
@@ -30,14 +30,14 @@ describe('MOB-FEAT-007 JSON export', () => {
         const download = jest.fn().mockResolvedValue(undefined);
         await expect(jsonExport.share(download, new Date('2026-08-08T12:00:00Z'))).resolves.toEqual({
             status: 'shared',
-            filename: 'manga-reader-data-export-2026-08-08.json',
+            filename: 'toonlira-data-export-2026-08-08.json',
         });
 
-        expect(download).toHaveBeenCalledWith('file:///cache/manga-reader-exports/operation/manga-reader-data-export-2026-08-08.json', expect.any(AbortSignal));
+        expect(download).toHaveBeenCalledWith('file:///cache/toonlira-exports/operation/toonlira-data-export-2026-08-08.json', expect.any(AbortSignal));
         expect(FileSystem.writeAsStringAsync).not.toHaveBeenCalled();
-        expect(FileSystem.deleteAsync).toHaveBeenCalledWith('file:///cache/manga-reader-exports/operation/', { idempotent: true });
+        expect(FileSystem.deleteAsync).toHaveBeenCalledWith('file:///cache/toonlira-exports/operation/', { idempotent: true });
         expect(Sharing.shareAsync).toHaveBeenCalledWith(expect.stringContaining('2026-08-08.json'), {
-            dialogTitle: 'manga-reader-data-export-2026-08-08.json',
+            dialogTitle: 'toonlira-data-export-2026-08-08.json',
             mimeType: 'application/json',
             UTI: 'public.json',
         });
@@ -71,7 +71,7 @@ describe('MOB-FEAT-007 JSON export', () => {
         await jsonExport.clearTemporaryFiles();
         await expect(sharing).resolves.toMatchObject({ status: 'cancelled' });
         expect(Sharing.shareAsync).not.toHaveBeenCalled();
-        expect(FileSystem.deleteAsync).toHaveBeenCalledWith('file:///cache/manga-reader-exports/', { idempotent: true });
+        expect(FileSystem.deleteAsync).toHaveBeenCalledWith('file:///cache/toonlira-exports/', { idempotent: true });
     });
 
     it('remove download parcial e permite nova tentativa após falha', async () => {
@@ -111,14 +111,14 @@ describe('MOB-FEAT-007 JSON export', () => {
 
     it('conta arquivos em diretórios isolados sem contar metadados do diretório', async () => {
         jest.mocked(FileSystem.getInfoAsync)
-            .mockResolvedValueOnce({ exists: true, isDirectory: true, modificationTime: 0, size: 4096, uri: 'file:///cache/manga-reader-exports/' })
-            .mockResolvedValueOnce({ exists: true, isDirectory: true, modificationTime: 0, size: 4096, uri: 'file:///cache/manga-reader-exports/operation' })
+            .mockResolvedValueOnce({ exists: true, isDirectory: true, modificationTime: 0, size: 4096, uri: 'file:///cache/toonlira-exports/' })
+            .mockResolvedValueOnce({ exists: true, isDirectory: true, modificationTime: 0, size: 4096, uri: 'file:///cache/toonlira-exports/operation' })
             .mockResolvedValueOnce({
                 exists: true,
                 isDirectory: false,
                 modificationTime: 0,
                 size: 1024,
-                uri: 'file:///cache/manga-reader-exports/operation/data.json',
+                uri: 'file:///cache/toonlira-exports/operation/data.json',
             });
         jest.mocked(FileSystem.readDirectoryAsync).mockResolvedValueOnce(['operation']).mockResolvedValueOnce(['data.json']);
         await expect(temporaryExportStorageMeasurement.measure()).resolves.toEqual({ usedBytes: 1024, scope: 'temporary-exports' });
@@ -129,17 +129,17 @@ describe('MOB-FEAT-007 JSON export', () => {
     });
 
     it('expõe bytes e escopo quando um adaptador nativo confiável existe', async () => {
-        await expect(measureControlledStorage({ measure: async () => ({ usedBytes: 4096, scope: 'cache do Manga Reader' }) })).resolves.toEqual({
+        await expect(measureControlledStorage({ measure: async () => ({ usedBytes: 4096, scope: 'cache do Toonlira' }) })).resolves.toEqual({
             usedBytes: 4096,
-            scope: 'cache do Manga Reader',
+            scope: 'cache do Toonlira',
         });
     });
 
     it('mede somente os arquivos temporários controlados pelo app', async () => {
         jest.mocked(FileSystem.getInfoAsync)
-            .mockResolvedValueOnce({ exists: true, isDirectory: true, modificationTime: 0, size: 0, uri: 'file:///cache/manga-reader-exports/' })
-            .mockResolvedValueOnce({ exists: true, isDirectory: false, modificationTime: 0, size: 1024, uri: 'file:///cache/manga-reader-exports/a.json' })
-            .mockResolvedValueOnce({ exists: true, isDirectory: false, modificationTime: 0, size: 2048, uri: 'file:///cache/manga-reader-exports/b.json' });
+            .mockResolvedValueOnce({ exists: true, isDirectory: true, modificationTime: 0, size: 0, uri: 'file:///cache/toonlira-exports/' })
+            .mockResolvedValueOnce({ exists: true, isDirectory: false, modificationTime: 0, size: 1024, uri: 'file:///cache/toonlira-exports/a.json' })
+            .mockResolvedValueOnce({ exists: true, isDirectory: false, modificationTime: 0, size: 2048, uri: 'file:///cache/toonlira-exports/b.json' });
         jest.mocked(FileSystem.readDirectoryAsync).mockResolvedValue(['a.json', 'b.json']);
 
         await expect(measureControlledStorage(temporaryExportStorageMeasurement)).resolves.toEqual({

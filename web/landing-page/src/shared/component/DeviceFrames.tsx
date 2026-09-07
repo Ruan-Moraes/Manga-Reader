@@ -8,9 +8,9 @@ type FrameStyle = CSSProperties & {
 
 export function BrowserFrame({
     children,
-    url = 'app.mangareader.com',
+    url = 'app.toonlira.com',
     className = '',
-    label = 'Manga Reader no navegador',
+    label = 'Toonlira no navegador',
 }: {
     children: ReactNode;
     url?: string;
@@ -45,7 +45,7 @@ export function PhoneFrame({
     children,
     w = 230,
     className = '',
-    label = 'Manga Reader no celular',
+    label = 'Toonlira no celular',
 }: {
     children: ReactNode;
     w?: number;

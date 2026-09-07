@@ -10,8 +10,9 @@
 
 - M0 e M1 estão validados: SDD brownfield, tema, i18n, settings, FSD e launcher
   público possuem contratos e gates verificáveis.
-- O fluxo guest-first já importa, persiste, revisa, ordena, valida e confirma
-  mídia por `MOB-FEAT-012..016`; o gateway remoto é o próximo handoff aprovado.
+- O fluxo guest-first já importa, persiste, revisa, ordena, valida, confirma
+  mídia e restaura o projeto por `MOB-FEAT-012..016`; o gateway remoto é o
+  próximo handoff em verificação.
 - O leitor de capítulos publicados (`MOB-FEAT-005`) está em
   `verification-pending`; ele pode fornecer primitivas técnicas, mas não modela
   projetos privados de tradução nem páginas em processamento.
@@ -25,7 +26,7 @@
 | Maior gap                  | A cadeia `mídia local → OCR → tradução → renderização → estado por página → persistência` não existe.                             |
 | Primeiro milestone ativo   | M2 — Guest Entry + Local Import.                                                                                                  |
 | Primeiro vertical slice    | Uma imagem autorizada → validar → usar idioma de origem escolhido → traduzir ao destino escolhido → renderizar → abrir no leitor. |
-| Próximo handoff executável | `MOB-FEAT-017` gateway/consentimento, aprovado com gate aberto.                                                                   |
+| Próximo handoff executável | concluir os gates externos e nativos de `MOB-FEAT-017` gateway/consentimento.                                                     |
 | Caminho crítico do MVP     | Importar → revisar/ordenar → escolher idioma → processar incrementalmente → ler → retry → biblioteca → continuar offline.         |
 | Caminho crítico da Play    | MVP persistente → privacidade/permissões → custo/telemetria → AAB → testes físicos/fechados → Data Safety/listing → go/no-go.     |
 
@@ -114,8 +115,8 @@ duplica resultado, processamento ou consumo.
 
 ### M2 — Guest Entry + Local Import
 
-- **Prioridade/status:** P0, `VALIDATED` (import/review/idiomas/validação
-  entregues; projeto/página segue em verificação física isolada no M3).
+- **Prioridade/status:** P0, `VALIDATED` (import/review/idiomas/validação e
+  restauração física de projeto entregues).
 - **Objetivo:** guest seleciona, revisa, remove, reordena e confirma mídia sem
   login.
 - **Specs planejadas:** `MOB-FEAT-012..015`.
@@ -222,8 +223,8 @@ duplica resultado, processamento ou consumo.
 | MOB-FEAT-013 | Import Review and Ordering            | Preview, adicionar/remover, reorder, duplicidade como aviso e confirmação.      | 012           | implemented; gate open          |
 | MOB-FEAT-014 | Translation Language Selection        | Sete idiomas, 42 pares e revisão de `zh` legado.                                | 013           | implemented; gate open          |
 | MOB-FEAT-015 | Media Validation                      | Formato real, integridade, limites seguros e falha localizada.                  | 012, 013, 014 | implemented; gate open          |
-| MOB-FEAT-016 | Translation Project and Page State    | Projeto privado e máquina de estados persistível.                               | 013, 014, 015 | verification-pending; gate open |
-| MOB-FEAT-017 | Remote Processing Consent and Gateway | Consentimento, sessão anônima, adapter, timeout, cancelamento e idempotência.   | 016           | approved; gate open             |
+| MOB-FEAT-016 | Translation Project and Page State    | Projeto privado e máquina de estados persistível.                               | 013, 014, 015 | implemented; gate open          |
+| MOB-FEAT-017 | Remote Processing Consent and Gateway | Consentimento, sessão anônima, adapter, timeout, cancelamento e idempotência.   | 016           | verification-pending; gate open |
 | MOB-FEAT-018 | Multilingual OCR and Regions          | Vision OCR por origem, regiões, coordenadas, IDs e ordem.                       | 017           | approved; gate blocked          |
 | MOB-FEAT-019 | Contextual Language-pair Translation  | Translation LLM contextual e vínculo região→resultado.                          | 018           | approved; gate blocked          |
 | MOB-FEAT-020 | Visual Translation Rendering          | Caixa limpa determinística, fallback e original preservado.                     | 019           | approved; gate blocked          |

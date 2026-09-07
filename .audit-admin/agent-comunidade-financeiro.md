@@ -40,7 +40,7 @@ Como não havia backend de navegador disponível, não foi possível abrir rotas
 
 Nenhuma captura de tela da aplicação foi produzida, pois não houve conexão com navegador. O diretório reservado permanece em:
 
-`/Users/ruan/Documents/Projetos/Manga-Reader/.audit-admin/evidence/comunidade-financeiro/`
+`/Users/ruan/Documents/Projetos/Toonlira/.audit-admin/evidence/comunidade-financeiro/`
 
 ## Registros de teste
 

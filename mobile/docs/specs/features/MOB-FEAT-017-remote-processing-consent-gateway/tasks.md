@@ -3,7 +3,7 @@
 - Spec: `spec.md`
 - Status: `verification-pending`
 - Gate: `open`
-- Dependência executada: `MOB-FEAT-016` (`verification-pending`)
+- Dependência implementada: `MOB-FEAT-016`
 
 ## Rastreabilidade
 

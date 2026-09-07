@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next';
+import { brand } from '@toonlira/brand';
 
 import BrandWordmark from '@/shared/component/BrandWordmark';
 import Icon from '@/shared/component/Icon';
@@ -101,7 +102,7 @@ export default function Footer() {
             </div>
             <div className="mx-auto mt-10 flex w-full max-w-[1240px] flex-wrap items-center justify-between gap-4 border-t border-border px-[clamp(20px,4vw,32px)] pt-[22px] text-[0.8125rem] text-tertiary min-[940px]:max-[1327px]:pr-[120px]">
                 <span>
-                    © {new Date().getFullYear()} Manga Reader.{' '}
+                    © {new Date().getFullYear()} {brand.name}.{' '}
                     {t('footer.rights')}
                 </span>
                 <button

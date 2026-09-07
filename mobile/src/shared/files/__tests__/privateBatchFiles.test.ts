@@ -48,8 +48,8 @@ describe('MOB-FEAT-012 private batch files', () => {
 
         await appPrivateBatchFiles.promoteBatch('local-imports', 'draft-1');
         expect(FileSystem.moveAsync).toHaveBeenCalledWith({
-            from: 'file:///documents/manga-reader-private/local-imports/.staging/draft-1/',
-            to: 'file:///documents/manga-reader-private/local-imports/draft-1/',
+            from: 'file:///documents/toonlira-private/local-imports/.staging/draft-1/',
+            to: 'file:///documents/toonlira-private/local-imports/draft-1/',
         });
     });
 
@@ -57,23 +57,23 @@ describe('MOB-FEAT-012 private batch files', () => {
         jest.mocked(FileSystem.copyAsync).mockRejectedValueOnce(new Error('content://private/path'));
 
         await expect(appPrivateBatchFiles.stageBatch('local-imports', 'draft-1', [{ sourceUri: 'content://one', filename: 'item-1' }])).rejects.toThrow();
-        expect(FileSystem.deleteAsync).toHaveBeenLastCalledWith('file:///documents/manga-reader-private/local-imports/.staging/draft-1/', { idempotent: true });
+        expect(FileSystem.deleteAsync).toHaveBeenLastCalledWith('file:///documents/toonlira-private/local-imports/.staging/draft-1/', { idempotent: true });
     });
 
     it('promotes additions into an existing batch and removes a single private file', async () => {
         await appPrivateBatchFiles.promoteStagedFiles('local-imports', 'add-1', 'draft-1', ['item-3', 'item-4']);
 
         expect(FileSystem.moveAsync).toHaveBeenNthCalledWith(1, {
-            from: 'file:///documents/manga-reader-private/local-imports/.staging/add-1/item-3',
-            to: 'file:///documents/manga-reader-private/local-imports/draft-1/item-3',
+            from: 'file:///documents/toonlira-private/local-imports/.staging/add-1/item-3',
+            to: 'file:///documents/toonlira-private/local-imports/draft-1/item-3',
         });
         expect(FileSystem.moveAsync).toHaveBeenNthCalledWith(2, {
-            from: 'file:///documents/manga-reader-private/local-imports/.staging/add-1/item-4',
-            to: 'file:///documents/manga-reader-private/local-imports/draft-1/item-4',
+            from: 'file:///documents/toonlira-private/local-imports/.staging/add-1/item-4',
+            to: 'file:///documents/toonlira-private/local-imports/draft-1/item-4',
         });
 
         await appPrivateBatchFiles.removeFile('local-imports', 'draft-1', 'item-3');
-        expect(FileSystem.deleteAsync).toHaveBeenCalledWith('file:///documents/manga-reader-private/local-imports/draft-1/item-3', { idempotent: true });
+        expect(FileSystem.deleteAsync).toHaveBeenCalledWith('file:///documents/toonlira-private/local-imports/draft-1/item-3', { idempotent: true });
     });
 
     it('reconciles staging and batches not referenced by metadata', async () => {
@@ -88,9 +88,9 @@ describe('MOB-FEAT-012 private batch files', () => {
 
         await appPrivateBatchFiles.reconcile('local-imports', new Set(['active']));
 
-        expect(FileSystem.deleteAsync).toHaveBeenCalledWith('file:///documents/manga-reader-private/local-imports/.staging/', { idempotent: true });
-        expect(FileSystem.deleteAsync).toHaveBeenCalledWith('file:///documents/manga-reader-private/local-imports/orphan/', { idempotent: true });
-        expect(FileSystem.deleteAsync).not.toHaveBeenCalledWith('file:///documents/manga-reader-private/local-imports/active/', expect.anything());
+        expect(FileSystem.deleteAsync).toHaveBeenCalledWith('file:///documents/toonlira-private/local-imports/.staging/', { idempotent: true });
+        expect(FileSystem.deleteAsync).toHaveBeenCalledWith('file:///documents/toonlira-private/local-imports/orphan/', { idempotent: true });
+        expect(FileSystem.deleteAsync).not.toHaveBeenCalledWith('file:///documents/toonlira-private/local-imports/active/', expect.anything());
     });
 
     it('removes orphan files inside an active batch without touching referenced images', async () => {
@@ -105,7 +105,7 @@ describe('MOB-FEAT-012 private batch files', () => {
 
         await appPrivateBatchFiles.reconcileBatch('local-imports', 'draft-1', new Set(['item-1', 'item-2']));
 
-        expect(FileSystem.deleteAsync).toHaveBeenCalledWith('file:///documents/manga-reader-private/local-imports/draft-1/orphan', { idempotent: true });
-        expect(FileSystem.deleteAsync).not.toHaveBeenCalledWith('file:///documents/manga-reader-private/local-imports/draft-1/item-1', expect.anything());
+        expect(FileSystem.deleteAsync).toHaveBeenCalledWith('file:///documents/toonlira-private/local-imports/draft-1/orphan', { idempotent: true });
+        expect(FileSystem.deleteAsync).not.toHaveBeenCalledWith('file:///documents/toonlira-private/local-imports/draft-1/item-1', expect.anything());
     });
 });

@@ -1,6 +1,7 @@
 import { initReactI18next } from 'react-i18next';
 import i18n from 'i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
+import { brand } from '@toonlira/brand';
 
 import ptBR from './locales/pt-BR/translation.json';
 import enUS from './locales/en-US/translation.json';
@@ -18,6 +19,7 @@ i18n.use(LanguageDetector)
         supportedLngs: ['pt-BR', 'en-US', 'es-ES'],
         interpolation: {
             escapeValue: false,
+            defaultVariables: { brandName: brand.name },
         },
         detection: {
             order: ['localStorage', 'navigator'],

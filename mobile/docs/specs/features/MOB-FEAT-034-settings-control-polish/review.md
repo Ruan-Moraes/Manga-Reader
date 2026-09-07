@@ -1,7 +1,7 @@
 # Review — MOB-FEAT-034
 
 - Spec revisada: `spec.md`
-- Implementação/revisão: working-tree sha256:9df90bc58827359dd921a48f537f3c111a755991b5615f70601e493896b0f41e
+- Implementação/revisão: working-tree sha256:cb2e5226cae5289175f02ef3243e0e048890a91e89ff1da21764db1ee89ab84e
 - Gate na entrada do planejamento: `open`
 - Dependência verificada: `MOB-FEAT-033`
 - Verdict: `verification-pending`

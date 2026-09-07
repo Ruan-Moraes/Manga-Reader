@@ -11,8 +11,9 @@ export default function BrandWordmark({ size = 'md' }: { size?: 'sm' | 'md' }) {
                 className={`shrink-0 rounded object-contain ${isSmall ? 'size-[25px]' : 'size-[27px]'}`}
             />
             <span>
-                Manga <span className="text-accent-fg">Reader</span>
+                {brand.name}
             </span>
         </span>
     );
 }
+import { brand } from '@toonlira/brand';

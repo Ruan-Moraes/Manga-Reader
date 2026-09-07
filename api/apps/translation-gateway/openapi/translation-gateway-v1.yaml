@@ -1,13 +1,13 @@
 openapi: 3.1.0
 info:
-  title: Manga Reader Translation Gateway
+  title: Toonlira Translation Gateway
   version: 1.0.0
   description: >-
     Contrato do gateway privado e assíncrono usado pelo aplicativo mobile.
     A versão v1 aceita somente a primeira página de um projeto e não expõe
     credenciais, detalhes de provider ou identificadores locais do aparelho.
 servers:
-  - url: https://translation-api.mangareader.app
+  - url: https://translation-api.toonlira.app
     description: Origem de produção configurável; o cliente falha fechado para origens não autorizadas.
 tags:
   - name: Capabilities

@@ -1,6 +1,6 @@
 # Architecture
 
-Padrões arquiteturais do Manga-Reader. Ler antes de criar controller, use case
+Padrões arquiteturais do Toonlira. Ler antes de criar controller, use case
 ou mapper, alterar domínios, persistência poliglota, jobs, i18n ou contratos de
 resposta da API. Referenciado por `AGENTS.md` e `CLAUDE.md`.
 
@@ -74,7 +74,7 @@ Módulo Spring Boot **separado** do monolito (`api/apps/core`), porta 8081. É o
 
 - **Por quê**: nota/contagem eram divergentes — listagens liam `Title.ratingAverage/ratingCount` (nunca atualizados; o "job periódico" do javadoc não existia) e o detalhe lia agregação `AVG/COUNT` ao vivo. Agora há fonte única denormalizada, sem agregação pesada por request.
 - **Recompute (2 gatilhos)**: (1) consome `RatingEvent` (`rating.*`: submit/update/delete) do RabbitMQ (exchange `manga.events`, fila própria `manga.rating.aggregate`, routing `rating.#`) e recalcula o título; (2) job `@Scheduled` de reconciliação (rede de segurança). Mongock `V001` faz backfill a partir das avaliações (`V002` renomeou as coleções p/ `reviews`/`reviews_aggregate`).
-- **Contrato de evento**: `RatingEvent` replicado no **mesmo FQN** `com.mangareader.application.shared.event.RatingEvent`; consumer usa `TypePrecedence.INFERRED` (robusto a divergência de FQN). Sem jar compartilhado entre os apps.
+- **Contrato de evento**: `RatingEvent` replicado no **mesmo FQN** `com.toonlira.application.shared.event.RatingEvent`; consumer usa `TypePrecedence.INFERRED` (robusto a divergência de FQN). Sem jar compartilhado entre os apps.
 - **Monolito**: apenas **publica** os eventos (já fazia) e **lê** o agregado via `TitleRatingAggregateReadPort` (`findByTitleIdIn` em lote, sem N+1). `GetRatingAverageUseCase`/`GetRatingDistributionUseCase` e `TitleMapper`/`AdminTitleMapper` consomem o agregado — **nenhuma** agregação `AVG/COUNT` durante a renderização. O `RatingEventConsumer` e a fila de recalc do monolito foram removidos (recompute migrou para o serviço).
 
 ### Job de Tendências (`api/apps/jobs/trending-aggregator`)
@@ -236,7 +236,7 @@ o seam para S3/Cloudinary/R2, mas nenhum upload binário é simulado antes desse
 ### Capítulos admin — ports & gateways HTTP
 
 O gerenciamento de capítulos isola os contratos por **ports** no frontend, em
-`web/manga-reader/src/entities/chapter/`:
+`web/toonlira/src/entities/chapter/`:
 
 - `model/admin/` — domínio puro: types (`AdminChapter`, `ChapterPage`,
   `ChapterMetrics`), máquina de status (`draft/processing/scheduled/published/

@@ -64,7 +64,7 @@ describe('ThemeSwitcher', () => {
         await user.click(screen.getByRole('button', { name: /Alterar tema/ }));
         await user.click(screen.getByRole('menuitemradio', { name: 'Claro' }));
 
-        expect(document.documentElement).toHaveClass('mr-theme-light');
+        expect(document.documentElement).toHaveClass('ui-theme-light');
         expect(
             JSON.parse(localStorage.getItem(SETTINGS_STORAGE_KEY) ?? '{}')
                 .appearance.theme,

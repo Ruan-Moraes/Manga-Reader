@@ -27,7 +27,7 @@ describe('Gift', () => {
 
         await user.click(screen.getByText(/Resgatar código/i));
 
-        expect(screen.getByPlaceholderText(/MR-/i)).toBeInTheDocument();
+        expect(screen.getByPlaceholderText(/TL-/i)).toBeInTheDocument();
     });
 
     it('renders code input on redeem tab', async () => {
@@ -41,7 +41,7 @@ describe('Gift', () => {
 
         await user.click(screen.getByText(/Resgatar código/i));
 
-        const input = screen.getByPlaceholderText(/MR-/i);
+        const input = screen.getByPlaceholderText(/TL-/i);
 
         expect(input).toHaveAttribute('type', 'text');
     });

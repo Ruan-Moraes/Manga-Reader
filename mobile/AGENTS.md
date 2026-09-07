@@ -1,4 +1,4 @@
-# AGENTS.md — Manga Reader Mobile
+# AGENTS.md — Toonlira Mobile
 
 Este diretório usa Spec-Driven Development (SDD). O escopo deste contrato é somente `mobile/`.
 

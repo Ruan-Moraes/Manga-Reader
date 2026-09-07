@@ -1,4 +1,4 @@
-import type { ApiResponse, PublicStats } from '@manga-reader/types';
+import type { ApiResponse, PublicStats } from '@toonlira/types';
 
 import httpClient from '@/shared/service/httpClient';
 

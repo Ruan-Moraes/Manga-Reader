@@ -1,17 +1,17 @@
 services:
   postgres:
     image: postgres:17-alpine
-    container_name: mangareader-postgres
+    container_name: toonlira-postgres
     ports:
       - "5432:5432"
     environment:
-      POSTGRES_DB: mangareader
+      POSTGRES_DB: toonlira
       POSTGRES_USER: manga
       POSTGRES_PASSWORD: manga_secret
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U manga -d mangareader"]
+      test: ["CMD-SHELL", "pg_isready -U manga -d toonlira"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -23,11 +23,11 @@ services:
           cpus: "1.0"
   mongodb:
     image: mongo:8.0.26
-    container_name: mangareader-mongodb
+    container_name: toonlira-mongodb
     ports:
       - "27017:27017"
     environment:
-      MONGO_INITDB_DATABASE: mangareader
+      MONGO_INITDB_DATABASE: toonlira
       # Workaround para SERVER-121912: TCMalloc do Mongo 8.x colide com o
       # suporte a RSEQ do kernel Linux 6.19+, causando crash no boot. Sem
       # patch oficial ainda; força o caminho compatível de RSEQ do glibc.
@@ -59,7 +59,7 @@ services:
           cpus: "1.0"
   rabbitmq:
     image: rabbitmq:4-management-alpine
-    container_name: mangareader-rabbitmq
+    container_name: toonlira-rabbitmq
     ports:
       - "5672:5672"
       - "15672:15672"
@@ -81,7 +81,7 @@ services:
           cpus: "0.5"
   neo4j:
     image: neo4j:5.26-community
-    container_name: mangareader-neo4j
+    container_name: toonlira-neo4j
     ports:
       - "7687:7687"
       - "7474:7474"
@@ -106,7 +106,7 @@ services:
           cpus: "1.0"
   redis:
     image: redis:7-alpine
-    container_name: mangareader-redis
+    container_name: toonlira-redis
     ports:
       - "6379:6379"
     command: redis-server --maxmemory 128mb --maxmemory-policy allkeys-lru

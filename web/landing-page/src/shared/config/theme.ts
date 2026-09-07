@@ -5,9 +5,9 @@ export const THEME_STORAGE_EVENT = 'mr.landing.theme.updated';
 
 const DEFAULT_THEME: ThemePreference = 'SYSTEM';
 const THEME_CLASSES = [
-    'mr-theme-system',
-    'mr-theme-dark',
-    'mr-theme-light',
+    'ui-theme-system',
+    'ui-theme-dark',
+    'ui-theme-light',
 ] as const;
 const VALID_THEMES = new Set<ThemePreference>(['SYSTEM', 'DARK', 'LIGHT']);
 
@@ -52,7 +52,7 @@ export function applyThemePreference(theme: ThemePreference): void {
     if (typeof document === 'undefined') return;
 
     document.documentElement.classList.remove(...THEME_CLASSES);
-    document.documentElement.classList.add(`mr-theme-${theme.toLowerCase()}`);
+    document.documentElement.classList.add(`ui-theme-${theme.toLowerCase()}`);
 }
 
 export function initializeThemePreference(): ThemePreference {

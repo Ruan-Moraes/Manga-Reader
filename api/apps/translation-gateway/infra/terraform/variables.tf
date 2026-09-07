@@ -22,7 +22,7 @@ variable "gateway_enabled" {
 
 variable "gateway_key" {
   type    = string
-  default = "manga-reader-alpha"
+  default = "toonlira-alpha"
 }
 
 variable "worker_url" {

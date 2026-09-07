@@ -6,7 +6,7 @@ status: verification-pending
 implementation_gate: open
 blocked_by: [MOB-FEAT-016]
 created: 2026-08-15
-updated: 2026-09-03
+updated: 2026-09-06
 supersedes: []
 superseded_by: []
 ---
@@ -23,7 +23,7 @@ mobile e sem expor segredo de provider no aplicativo.
 
 ## Contexto e contratos relacionados
 
-- Depende de `MOB-FEAT-016`, hoje `verification-pending`, que fornece projeto,
+- Depende de `MOB-FEAT-016`, agora `implemented`, que fornece projeto,
   páginas, originais privados, estados canônicos e transições persistíveis.
 - Atende RF-PRV-001..005, RF-THD-001..004 e RF-RET-001..003 e controla parte de
   RF-TRN-001..004 apenas na fronteira de submissão; o significado de OCR/regiões
@@ -55,7 +55,7 @@ mobile e sem expor segredo de provider no aplicativo.
     - que internet é obrigatória e o processamento não ocorre integralmente no
       aparelho;
     - categorias de dados/metadados enviados;
-    - Manga Reader/Google Cloud, gateway no Brasil, OCR/tradução nos EUA,
+    - Toonlira/Google Cloud, gateway no Brasil, OCR/tradução nos EUA,
       retenção e política de treinamento conforme os contratos vigentes;
     - limite de cancelamento/exclusão depois que o processamento começar;
     - link para política/termos vigentes.
@@ -276,8 +276,8 @@ Estado legal provisório definido em 2026-09-03:
 
 - operador: Ruan Moraes, pessoa física responsável pelo projeto;
 - contato público: `ruanmoraessantosbarbosa@gmail.com`;
-- URLs canônicas pretendidas: `https://app.mangareader.com/legal/terms` e
-  `https://app.mangareader.com/legal/privacy`;
+- URLs canônicas pretendidas: `https://app.toonlira.com/legal/terms` e
+  `https://app.toonlira.com/legal/privacy`;
 - o domínio ainda não está publicado, os documentos permanecem em rascunho e a
   versão/política do provider continuam vazias; consequentemente o gateway deve
   responder `capabilities-unavailable` e não aceitar upload.

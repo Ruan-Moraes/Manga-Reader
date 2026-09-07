@@ -2,11 +2,11 @@
 id: MOB-FEAT-016
 type: feature
 title: Estado do projeto e das páginas de tradução
-status: verification-pending
+status: implemented
 implementation_gate: open
 blocked_by: [MOB-FEAT-013, MOB-FEAT-014, MOB-FEAT-015]
 created: 2026-08-15
-updated: 2026-08-15
+updated: 2026-09-06
 supersedes: []
 superseded_by: []
 ---

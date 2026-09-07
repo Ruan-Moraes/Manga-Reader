@@ -1,10 +1,10 @@
 # Review — MOB-FEAT-015
 
 - Spec revisada: `spec.md`
-- Implementação/revisão: working-tree sha256:9df90bc58827359dd921a48f537f3c111a755991b5615f70601e493896b0f41e
+- Implementação/revisão: working-tree sha256:cb2e5226cae5289175f02ef3243e0e048890a91e89ff1da21764db1ee89ab84e
 - Gate na entrada do planejamento: `open`
 - Dependências verificadas: `MOB-FEAT-012`, `MOB-FEAT-013` e `MOB-FEAT-014` implementadas
-- Verdict: `verification-pending`
+- Verdict: `approved`
 
 ## Findings
 
@@ -70,8 +70,9 @@ Rebase documental de performance (2026-09-05): checksum global atualizado pela i
 
 Caminho de persistência otimizado sem mudar requisitos ou schema. Testes funcionais
 e ensaio SQLite Node cobrem preservação/rollback; [review da rodada](../../../active/performance-evidence/corrections-2026-09-06/review.md).
-Verificação física reaberta em TASK-014. Conclusões anteriores são históricas;
-o verdict atual é verification-pending até repetir AC-008 no dispositivo.
+A matriz física de TASK-014/AC-008 foi repetida e atestada por Ruan Moraes em
+2026-09-06, cobrindo o fluxo de importação e validação após a alteração de
+persistência, sem regressão reportada. O verdict atual é `approved`.
 
 Rebase C01/C03/C04 (2026-09-06): checksum global atualizado após correções de numeração do leitor, persistência da validação e limite de resposta. Escopo e validações em [review de performance](../../../active/performance-evidence/corrections-2026-09-06/review.md). Não representa nova verificação física das demais features.
 
@@ -80,3 +81,9 @@ Rebase C02/C05 (2026-09-06): checksum global atualizado após virtualização do
 Consolidação documental (2026-09-06): checksum global atualizado após reconciliar o estado de performance; runtime e verdict preservados. [Registro](../../../active/performance-evidence/consolidation-2026-09-06/review.md). Sem nova validação física.
 
 Preparação de commit (2026-09-06): rebase global após excluir scripts avulsos de ensaio, listagens Git e metadados do sistema dos arquivos versionados, conforme solicitação humana. Resultados históricos preservados; runtime e verdict inalterados.
+
+## Encerramento físico — 2026-09-06
+
+Ruan Moraes atestou a conclusão da matriz física reaberta por C03. TASK-014 foi
+encerrada e o verdict final voltou a `approved`. O registro detalhado está em
+[`evidence/android-physical-revalidation-2026-09-06.md`](evidence/android-physical-revalidation-2026-09-06.md).

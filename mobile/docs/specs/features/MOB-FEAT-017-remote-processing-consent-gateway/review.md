@@ -1,9 +1,9 @@
 # Review — MOB-FEAT-017
 
 - Spec revisada: `spec.md`
-- Implementação/revisão: working-tree sha256:9df90bc58827359dd921a48f537f3c111a755991b5615f70601e493896b0f41e
+- Implementação/revisão: working-tree sha256:cb2e5226cae5289175f02ef3243e0e048890a91e89ff1da21764db1ee89ab84e
 - Gate na entrada do planejamento: `open`
-- Dependência verificada: `MOB-FEAT-016` executada e `verification-pending`
+- Dependência verificada: `MOB-FEAT-016` implementada
 - Verdict: `verification-pending`
 
 ## Findings
@@ -77,3 +77,12 @@ Rebase C02/C05 (2026-09-06): checksum global atualizado após virtualização do
 Consolidação documental (2026-09-06): checksum global atualizado após reconciliar o estado de performance; runtime e verdict preservados. [Registro](../../../active/performance-evidence/consolidation-2026-09-06/review.md). Sem nova validação física.
 
 Preparação de commit (2026-09-06): rebase global após excluir scripts avulsos de ensaio, listagens Git e metadados do sistema dos arquivos versionados, conforme solicitação humana. Resultados históricos preservados; runtime e verdict inalterados.
+
+## Continuação — 2026-09-06
+
+A dependência `MOB-FEAT-016` foi promovida para `implemented`. A auditoria dos
+slices confirmou a ordem FSD `shared → entities → features → widgets → pages →
+application`, APIs públicas e ausência de deep imports externos. As URLs legais
+reservadas responderam com falha de handshake TLS e ainda não constituem
+publicação HTTPS válida. O verdict permanece `verification-pending` pelos gates
+externos e nativos já registrados.

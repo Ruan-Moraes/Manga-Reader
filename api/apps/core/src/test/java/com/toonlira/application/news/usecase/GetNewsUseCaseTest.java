@@ -1,0 +1,75 @@
+package com.toonlira.application.news.usecase;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
+
+import java.util.List;
+import java.time.Clock;
+import java.time.Instant;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+
+import com.toonlira.application.news.port.NewsRepositoryPort;
+import com.toonlira.domain.news.entity.NewsItem;
+import com.toonlira.domain.news.valueobject.NewsCategory;
+
+@ExtendWith(MockitoExtension.class)
+@DisplayName("GetNewsUseCase")
+class GetNewsUseCaseTest {
+
+    @Mock
+    private NewsRepositoryPort newsRepository;
+    @Mock private Clock clock;
+
+    @InjectMocks
+    private GetNewsUseCase getNewsUseCase;
+
+    @Test
+    @DisplayName("Deve retornar página com notícias")
+    void deveRetornarPaginaComNoticias() {
+        // Arrange
+        Pageable pageable = PageRequest.of(0, 20);
+        List<NewsItem> items = List.of(
+                NewsItem.builder().title(com.toonlira.shared.domain.i18n.LocalizedString.ofDefault("Novo manga anunciado")).category(NewsCategory.LANCAMENTOS).build(),
+                NewsItem.builder().title(com.toonlira.shared.domain.i18n.LocalizedString.ofDefault("Evento de anime 2026")).category(NewsCategory.EVENTOS).build()
+        );
+        Page<NewsItem> page = new PageImpl<>(items, pageable, 2);
+        Instant now = Instant.parse("2026-07-11T12:00:00Z");
+        when(clock.instant()).thenReturn(now);
+        when(newsRepository.findPublished(null, null, null, now, pageable)).thenReturn(page);
+
+        // Act
+        Page<NewsItem> result = getNewsUseCase.execute(pageable);
+
+        // Assert
+        assertThat(result.getContent()).hasSize(2);
+        assertThat(result.getTotalElements()).isEqualTo(2);
+    }
+
+    @Test
+    @DisplayName("Deve retornar página vazia quando não há notícias")
+    void deveRetornarPaginaVazia() {
+        // Arrange
+        Pageable pageable = PageRequest.of(0, 20);
+        Page<NewsItem> emptyPage = new PageImpl<>(List.of(), pageable, 0);
+        Instant now = Instant.parse("2026-07-11T12:00:00Z");
+        when(clock.instant()).thenReturn(now);
+        when(newsRepository.findPublished(null, null, null, now, pageable)).thenReturn(emptyPage);
+
+        // Act
+        Page<NewsItem> result = getNewsUseCase.execute(pageable);
+
+        // Assert
+        assertThat(result.getContent()).isEmpty();
+        assertThat(result.getTotalElements()).isZero();
+    }
+}

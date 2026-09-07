@@ -5,14 +5,14 @@
                              https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>com.mangareader</groupId>
-        <artifactId>manga-reader-services</artifactId>
+        <groupId>com.toonlira</groupId>
+        <artifactId>toonlira-services</artifactId>
         <version>0.0.1-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
-    <artifactId>manga-reader-backend</artifactId>
-    <name>Manga Reader Backend</name>
-    <description>Backend API for the Manga Reader platform</description>
+    <artifactId>toonlira-backend</artifactId>
+    <name>Toonlira Backend</name>
+    <description>Backend API for the Toonlira platform</description>
     <properties>
         <!-- 1.21.4 corrige negociação com Docker Engine 29 (API mínima 1.40). -->
         <testcontainers.version>1.21.4</testcontainers.version>
@@ -29,7 +29,7 @@
     </properties>
     <dependencies>
         <dependency>
-            <groupId>com.mangareader</groupId>
+            <groupId>com.toonlira</groupId>
             <artifactId>testing-support</artifactId>
             <scope>test</scope>
         </dependency>
@@ -270,9 +270,9 @@
                 <configuration>
                     <excludes>
                         <!-- Excluir geração automática, configs e seed data -->
-                        <exclude>com/mangareader/infrastructure/seed/**</exclude>
-                        <exclude>com/mangareader/shared/config/**</exclude>
-                        <exclude>com/mangareader/MangaReaderApplication.class</exclude>
+                        <exclude>com/toonlira/infrastructure/seed/**</exclude>
+                        <exclude>com/toonlira/shared/config/**</exclude>
+                        <exclude>com/toonlira/ToonliraApplication.class</exclude>
                     </excludes>
                 </configuration>
             </plugin>
@@ -307,12 +307,12 @@
                         </dependencies>
                         <configuration>
                             <targetClasses>
-                                <param>com.mangareader.domain.*</param>
-                                <param>com.mangareader.application.*</param>
+                                <param>com.toonlira.domain.*</param>
+                                <param>com.toonlira.application.*</param>
                             </targetClasses>
                             <targetTests>
-                                <param>com.mangareader.domain.*</param>
-                                <param>com.mangareader.application.*</param>
+                                <param>com.toonlira.domain.*</param>
+                                <param>com.toonlira.application.*</param>
                             </targetTests>
                             <outputFormats>
                                 <param>HTML</param>

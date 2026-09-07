@@ -7,7 +7,7 @@ disclosure versionado e worker.
 
 O arquivo [`terraform.tfvars.example`](terraform.tfvars.example) documenta o
 operador e o contato reais e reserva as URLs canônicas de
-`app.mangareader.com`. Ele mantém versão e política do provider vazias de
+`app.toonlira.com`. Ele mantém versão e política do provider vazias de
 propósito: enquanto DNS, HTTPS, conteúdo vinculante e revisão jurídica estiverem
 pendentes, `/v1/capabilities` deve continuar fail-closed. Copiar o exemplo não é
 autorização para `plan` ou `apply`.

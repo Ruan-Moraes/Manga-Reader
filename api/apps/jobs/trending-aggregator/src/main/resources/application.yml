@@ -5,15 +5,15 @@ spring:
     name: trending-aggregator
   docker.compose.enabled: false
   datasource:
-    url: jdbc:postgresql://localhost:5432/mangareader
+    url: jdbc:postgresql://localhost:5432/toonlira
     username: manga
     password: manga_secret
   data.mongodb:
-    uri: mongodb://localhost:27017/mangareader
+    uri: mongodb://localhost:27017/toonlira
     auto-index-creation: false
 mongock:
   enabled: true
-  migration-scan-package: com.mangareader.trending.infrastructure.migration
+  migration-scan-package: com.toonlira.trending.infrastructure.migration
   transactional: false
 management.endpoints.web.exposure.include: health,info,metrics
 trending:

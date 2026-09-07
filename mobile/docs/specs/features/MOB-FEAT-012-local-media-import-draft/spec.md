@@ -17,7 +17,7 @@ superseded_by: []
 
 Permitir que uma pessoa, inclusive guest, escolha explicitamente uma ou várias
 imagens pelo seletor do sistema e forme um rascunho privado durável no aparelho,
-sem depender da Manga Reader Platform, de login ou de acesso permanente à
+sem depender da Toonlira Platform, de login ou de acesso permanente à
 galeria.
 
 ## Contexto e contratos relacionados

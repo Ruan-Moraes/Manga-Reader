@@ -899,8 +899,8 @@ AUD-003, AUD-009, AUD-010 e AUD-017 dependem de tipos/constraints repetidos em J
 | `git merge-base HEAD main` | `8a1eef2c...`; confirmou que `main` não é a base adequada para as mudanças correntes |
 | `git diff --check HEAD` | encontrou somente whitespace em relatórios Markdown preexistentes no diff; nenhum código funcional afetado |
 | varredura de TODO/logs/credenciais adicionados | 1 TODO de apresentação; nenhum segredo real ou log temporário confirmado |
-| `cd web/manga-reader && npx tsc -b` | passou com 0 erros |
-| `cd web/manga-reader && npx vitest run --pool=forks` | passou: 185 arquivos, 1.202 testes |
+| `cd web/toonlira && npx tsc -b` | passou com 0 erros |
+| `cd web/toonlira && npx vitest run --pool=forks` | passou: 185 arquivos, 1.202 testes |
 | `pnpm lint:fsd` dentro do sandbox | bloqueado por `EMFILE: too many open files, watch`, inclusive após elevar `ulimit` |
 | `pnpm lint:fsd` fora do sandbox | passou: `No problems found!` |
 | `cd api/core && ./mvnw test` dentro do sandbox | compilou, mas Docker socket e attach Byte Buddy foram bloqueados; 1.090 erros ambientais |

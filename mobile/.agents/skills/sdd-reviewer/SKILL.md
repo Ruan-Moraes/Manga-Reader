@@ -1,6 +1,6 @@
 ---
 name: sdd-reviewer
-description: Revisa implementação, testes e tasks do Manga Reader Mobile contra uma Target Spec aprovada. Use após execução, antes de considerar uma feature concluída, ou quando for necessário emitir review rastreável com findings e verdict.
+description: Revisa implementação, testes e tasks do Toonlira Mobile contra uma Target Spec aprovada. Use após execução, antes de considerar uma feature concluída, ou quando for necessário emitir review rastreável com findings e verdict.
 ---
 
 # SDD Reviewer

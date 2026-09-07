@@ -2,12 +2,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <parent><groupId>com.mangareader</groupId><artifactId>manga-reader-services</artifactId><version>0.0.1-SNAPSHOT</version><relativePath>../../../pom.xml</relativePath></parent>
+    <parent><groupId>com.toonlira</groupId><artifactId>toonlira-services</artifactId><version>0.0.1-SNAPSHOT</version><relativePath>../../../pom.xml</relativePath></parent>
     <artifactId>trending-aggregator</artifactId>
-    <name>Manga Reader Trending Aggregator</name>
+    <name>Toonlira Trending Aggregator</name>
     <properties><java.version>23</java.version><mongock.version>5.5.0</mongock.version><testcontainers.version>1.21.4</testcontainers.version></properties>
     <dependencies>
-        <dependency><groupId>com.mangareader</groupId><artifactId>testing-support</artifactId><scope>test</scope></dependency>
+        <dependency><groupId>com.toonlira</groupId><artifactId>testing-support</artifactId><scope>test</scope></dependency>
         <dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-web</artifactId></dependency>
         <dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-validation</artifactId></dependency>
         <dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-actuator</artifactId></dependency>

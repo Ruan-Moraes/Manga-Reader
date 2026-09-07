@@ -1,6 +1,6 @@
 ---
 name: sdd-task-planner
-description: Deriva tasks implementáveis e rastreáveis de Target Specs aprovadas do Manga Reader Mobile. Use quando uma spec em mobile/specs/features estiver humanamente approved e precisar de plano de código, testes, gates e ordem de execução sem acrescentar requisitos.
+description: Deriva tasks implementáveis e rastreáveis de Target Specs aprovadas do Toonlira Mobile. Use quando uma spec em mobile/specs/features estiver humanamente approved e precisar de plano de código, testes, gates e ordem de execução sem acrescentar requisitos.
 ---
 
 # SDD Task Planner

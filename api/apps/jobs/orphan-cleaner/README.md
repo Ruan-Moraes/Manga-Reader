@@ -18,7 +18,7 @@ Reader. Roda fora da API principal e cobre duas formas de divergência no *dual-
 
 ### 1. Contadores desnormalizados
 
-Vários agregados do Manga Reader mantêm **contadores desnormalizados** para evitar
+Vários agregados do Toonlira mantêm **contadores desnormalizados** para evitar
 `COUNT(*)` em toda leitura (ex.: total de obras de um grupo, inscritos de um evento,
 respostas de um tópico, votos de um comentário). Esses contadores são mantidos por
 **incremento** pelos use cases da API principal (`+1` no add, `-1` no remove) e divergem ao
@@ -133,10 +133,10 @@ opcional no diretório de execução também é carregado como properties.
 | Propriedade                       | Env                          | Default                                         |
 |-----------------------------------|------------------------------|-------------------------------------------------|
 | `server.port`                     | `SERVER_PORT`                | `8082`                                          |
-| `spring.datasource.url`           | `SPRING_DATASOURCE_URL`      | `jdbc:postgresql://localhost:5432/mangareader`  |
+| `spring.datasource.url`           | `SPRING_DATASOURCE_URL`      | `jdbc:postgresql://localhost:5432/toonlira`  |
 | `spring.datasource.username`      | `SPRING_DATASOURCE_USERNAME` | `manga`                                         |
 | `spring.datasource.password`      | `SPRING_DATASOURCE_PASSWORD` | `manga_secret`                                  |
-| `spring.data.mongodb.uri`         | `SPRING_DATA_MONGODB_URI`    | `mongodb://localhost:27017/mangareader`         |
+| `spring.data.mongodb.uri`         | `SPRING_DATA_MONGODB_URI`    | `mongodb://localhost:27017/toonlira`         |
 | `reconciler.reconciliation.cron`  | `RECONCILER_RECONCILIATION_CRON` | `0 0 * * * *` (contadores, de hora em hora) |
 | `reconciler.orphan.cron`          | `RECONCILER_ORPHAN_CRON`     | `0 30 3 * * *` (órfãos, diária às 03:30)        |
 | `reconciler.admin.token`          | `RECONCILER_ADMIN_TOKEN`     | *(vazio → endpoint manual desativado)*          |

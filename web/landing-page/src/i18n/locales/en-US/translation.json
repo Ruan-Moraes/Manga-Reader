@@ -37,8 +37,8 @@
         "floatNew": "New chapter",
         "floatSync": "Synced",
         "floatContinue": "Continue reading",
-        "previewLabel": "Manga Reader library preview in the browser",
-        "phonePreviewLabel": "Manga Reader reading preview on a phone"
+        "previewLabel": "Toonlira library preview in the browser",
+        "phonePreviewLabel": "Toonlira reading preview on a phone"
     },
     "demo": {
         "eyebrow": "See how it works",
@@ -213,7 +213,7 @@
         ],
         "giveCta": "Create gift code",
         "redeemLabel": "Enter the gift code",
-        "redeemPlaceholder": "EX: MR-XXXX-XXXX",
+        "redeemPlaceholder": "EX: TL-XXXX-XXXX",
         "redeemCta": "Redeem code",
         "redeemHint": "The code has 12 characters and was sent by whoever gifted you."
     },

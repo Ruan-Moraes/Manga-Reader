@@ -16,7 +16,7 @@ let schemaVersionQueue: Promise<void> = Promise.resolve();
 let schemaMigrationQueue: Promise<void> = Promise.resolve();
 
 export async function openAppDatabase(): Promise<AppDatabase> {
-    databasePromise ??= openDatabaseAsync('manga-reader-local.db');
+    databasePromise ??= openDatabaseAsync('toonlira-local.db');
     return (await databasePromise) as AppDatabase;
 }
 

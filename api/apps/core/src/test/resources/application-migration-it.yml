@@ -19,10 +19,10 @@ spring:
     mongodb:
       auto-index-creation: false
 mongock:
-  migration-scan-package: com.mangareader.infrastructure.persistence.mongo.migration
+  migration-scan-package: com.toonlira.infrastructure.persistence.mongo.migration
   transactional: false
 logging:
   level:
     root: WARN
-    com.mangareader: DEBUG
+    com.toonlira: DEBUG
     io.mongock: INFO

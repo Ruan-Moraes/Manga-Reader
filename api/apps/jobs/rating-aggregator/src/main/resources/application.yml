@@ -23,7 +23,7 @@ spring:
       enabled: false
   data:
     mongodb:
-      uri: mongodb://localhost:27017/mangareader
+      uri: mongodb://localhost:27017/toonlira
       auto-index-creation: false
   rabbitmq:
     host: localhost
@@ -31,7 +31,7 @@ spring:
     username: manga
     password: manga_secret
 mongock:
-  migration-scan-package: com.mangareader.aggregator.infrastructure.migration
+  migration-scan-package: com.toonlira.aggregator.infrastructure.migration
   transactional: false
 management:
   endpoints:

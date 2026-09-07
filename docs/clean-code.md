@@ -54,19 +54,19 @@ naming, imports, Tailwind, mobile-first, i18n. Referenciado por `CLAUDE.md`.
 - Breakpoints customizados: `mobile-sm` (320px), `mobile-md` (375px), `mobile-lg` (425px)
 
 ### Styling — Tailwind por Padrão
-- Estilizar com **classes Tailwind** (tokens `mr-*` definidos em `src/styles/index.css`,
-  ex.: `bg-mr-secondary`, `text-mr-accent`, `border-mr-separator`, `rounded-mr-xs`,
-  `font-mr-bold`). `style={{}}` inline é **proibido para valores estáticos**.
+- Estilizar com **classes Tailwind** (tokens `ui-*` definidos em `src/styles/index.css`,
+  ex.: `bg-ui-secondary`, `text-ui-accent`, `border-ui-separator`, `rounded-ui-xs`,
+  `font-ui-bold`). `style={{}}` inline é **proibido para valores estáticos**.
 - Inline (`style={{}}`) permitido **apenas** para valores dinâmicos calculados em
   runtime (ex.: posição/altura derivada de medição, cor vinda de dado). A mesma regra
   vale para web e mobile.
-- Cores, spacing e radii: usar tokens do tema (`--mr-*` / `@theme` em `index.css`),
+- Cores, spacing e radii: usar tokens do tema (`--ui-*` / `@theme` em `index.css`),
   **não** hex solto. Se faltar um token, criar um novo em vez de inline.
 - `cn` (`@shared/lib/cn`) é só `clsx` (sem tailwind-merge): **não** sobreponha duas
   utilitárias para a mesma propriedade (ex.: `h-10` + `h-full`) esperando override;
   use uma variante de classe dedicada.
 - Variáveis dinâmicas que viram classe condicional: passar a classe inteira no
-  ramo (`checked ? 'left-[22px] bg-mr-primary' : 'left-0.5 bg-mr-gray-300'`), nunca
+  ramo (`checked ? 'left-[22px] bg-ui-primary' : 'left-0.5 bg-ui-gray-300'`), nunca
   interpolar valor dentro do nome da classe.
 
 ### Internationalization (i18n) — Obrigatório em Novas Telas

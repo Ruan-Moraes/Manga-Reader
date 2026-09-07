@@ -17,8 +17,10 @@ verificações físicas e investigação das seis hipóteses MOB-PERF-006…011.
 
 O gate da segunda rodada registrou `pnpm check` com 95 suítes e 588 testes passando.
 Contagens SQL em Node e testes Jest comprovam mecanismos e comportamento, sem medir
-FPS, memória nativa ou latência do aplicativo. As features 005/007/015/017 mantêm
-verificação aberta conforme seus contratos SDD; DT-75 permanece aberta.
+FPS, memória nativa ou latência do aplicativo. As features 005/007/017 mantêm
+verificação aberta conforme seus contratos SDD; a revalidação funcional Android
+da feature 015 foi concluída, enquanto as medições comparativas B01/B03 permanecem
+abertas. DT-75 permanece aberta.
 
 O [plano de remediação](../plans/performance-remediation.md) organiza o trabalho
 restante. Os reviews de cada rodada guardam mudanças, hashes, testes, riscos e

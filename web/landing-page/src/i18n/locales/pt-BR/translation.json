@@ -37,8 +37,8 @@
         "floatNew": "Capítulo novo",
         "floatSync": "Sincronizado",
         "floatContinue": "Continuar lendo",
-        "previewLabel": "Prévia da biblioteca do Manga Reader no navegador",
-        "phonePreviewLabel": "Prévia do leitor do Manga Reader no celular"
+        "previewLabel": "Prévia da biblioteca do Toonlira no navegador",
+        "phonePreviewLabel": "Prévia do leitor do Toonlira no celular"
     },
     "demo": {
         "eyebrow": "Veja como funciona",
@@ -220,7 +220,7 @@
         ],
         "giveCta": "Criar gift code",
         "redeemLabel": "Digite o código do presente",
-        "redeemPlaceholder": "EX: MR-XXXX-XXXX",
+        "redeemPlaceholder": "EX: TL-XXXX-XXXX",
         "redeemCta": "Resgatar código",
         "redeemHint": "O código tem 12 caracteres e foi enviado por quem te presenteou."
     },

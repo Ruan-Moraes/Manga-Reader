@@ -1,0 +1,12 @@
+{
+  "name": "Toonlira",
+  "shortName": "Toonlira",
+  "slug": "toonlira",
+  "description": "Sua plataforma para ler mangás, manhwas e manhuas.",
+  "tagline": "Leia sem limites.",
+  "publicUrl": "https://toonlira.com",
+  "apiUrl": "https://api.toonlira.com",
+  "supportEmail": "support@toonlira.com",
+  "adminEmail": "admin@toonlira.com",
+  "emailIdentity": "Toonlira"
+}

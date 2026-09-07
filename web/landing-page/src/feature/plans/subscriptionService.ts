@@ -6,7 +6,7 @@ import type {
     RedeemGiftCodeRequest,
     Subscription,
     SubscriptionPlan,
-} from '@manga-reader/types';
+} from '@toonlira/types';
 
 import httpClient from '@/shared/service/httpClient';
 

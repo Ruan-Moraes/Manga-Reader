@@ -1,6 +1,6 @@
 ---
 name: sdd-reverse-spec
-description: Extrai Baseline Specs do código brownfield do Manga Reader Mobile sem inferir intenção futura. Use ao tocar comportamento mobile ainda sem spec, documentar uma capacidade existente, registrar integração atual com a Core ou separar observação, conflito e desconhecido.
+description: Extrai Baseline Specs do código brownfield do Toonlira Mobile sem inferir intenção futura. Use ao tocar comportamento mobile ainda sem spec, documentar uma capacidade existente, registrar integração atual com a Core ou separar observação, conflito e desconhecido.
 ---
 
 # SDD Reverse Spec

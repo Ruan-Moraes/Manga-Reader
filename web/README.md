@@ -6,11 +6,11 @@ Workspace pnpm com duas aplicações React e pacotes privados compartilhados.
 
 ```text
 web/
-├── manga-reader/       # aplicação principal React + Vite + FSD
+├── toonlira/       # aplicação principal React + Vite + FSD
 ├── landing-page/       # landing page React + Vite
 ├── packages/
 │   ├── assets/         # ícones e manifestos servidos pelo Vite
-│   ├── design-tokens/  # @manga-reader/design-tokens
+│   ├── design-tokens/  # @toonlira/design-tokens
 │   ├── tsconfig/       # configurações TypeScript compartilhadas
 │   └── types/          # contratos TypeScript compartilhados
 ├── scripts/            # auditoria de chaves i18n
@@ -44,7 +44,7 @@ desenvolvimento.
 ```bash
 pnpm build:app          # aplicação principal
 pnpm build:landing      # landing page
-pnpm test:app           # testes do manga-reader
+pnpm test:app           # testes do toonlira
 pnpm test:landing       # testes da landing page
 
 pnpm i18n:clean         # relatório dry-run das duas aplicações
@@ -59,7 +59,7 @@ No ambiente de sandbox do projeto, execute a suíte principal explicitamente
 com forks:
 
 ```bash
-pnpm --filter manga-reader exec vitest run --pool=forks
+pnpm --filter toonlira exec vitest run --pool=forks
 ```
 
 O script agregado `pnpm build` existe no manifest, mas atualmente falha porque
@@ -68,12 +68,12 @@ orquestrador seja corrigido, use `build:app` e `build:landing` separadamente.
 
 ## Aplicações
 
-### Manga Reader
+### Toonlira
 
 Aplicação principal com Feature-Sliced Design, roteamento, autenticação,
 catálogo, leitor e áreas de comunidade/administração.
 
-Consulte [`manga-reader/README.md`](manga-reader/README.md) para variáveis,
+Consulte [`toonlira/README.md`](toonlira/README.md) para variáveis,
 estrutura, execução e gates.
 
 ### Landing page
@@ -85,10 +85,10 @@ Consulte [`landing-page/README.md`](landing-page/README.md).
 
 ## Pacotes compartilhados
 
-- `@manga-reader/design-tokens`: tokens visuais e preset Tailwind.
-- `@manga-reader/types`: contratos TypeScript usados entre os apps.
-- `@manga-reader/tsconfig`: bases de configuração TypeScript.
-- `@manga-reader/assets`: metadados do workspace; os arquivos são consumidos
+- `@toonlira/design-tokens`: tokens visuais e preset Tailwind.
+- `@toonlira/types`: contratos TypeScript usados entre os apps.
+- `@toonlira/tsconfig`: bases de configuração TypeScript.
+- `@toonlira/assets`: metadados do workspace; os arquivos são consumidos
   como `publicDir` nos `vite.config.ts`, não por imports JavaScript.
 
 Diretórios locais de design/handoff ignorados pelo Git não são dependências de

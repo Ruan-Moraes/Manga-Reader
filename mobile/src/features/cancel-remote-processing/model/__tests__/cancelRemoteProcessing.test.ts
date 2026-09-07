@@ -38,9 +38,9 @@ const capabilities = {
     disclosure: {
         version: 'v1',
         operatorName: 'MR',
-        operatorContact: 'privacy@mangareader.app',
-        privacyPolicyUrl: 'https://mangareader.app/privacy',
-        termsUrl: 'https://mangareader.app/terms',
+        operatorContact: 'privacy@toonlira.com',
+        privacyPolicyUrl: 'https://toonlira.com/privacy',
+        termsUrl: 'https://toonlira.com/terms',
         gatewayRegion: 'southamerica-east1',
         processingRegions: ['us'],
         originalRetentionSeconds: 1,

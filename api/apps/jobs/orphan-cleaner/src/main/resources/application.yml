@@ -22,12 +22,12 @@ spring:
     compose:
       enabled: false
   datasource:
-    url: jdbc:postgresql://localhost:5432/mangareader
+    url: jdbc:postgresql://localhost:5432/toonlira
     username: manga
     password: manga_secret
   data:
     mongodb:
-      uri: mongodb://localhost:27017/mangareader
+      uri: mongodb://localhost:27017/toonlira
       auto-index-creation: false
 management:
   endpoints:

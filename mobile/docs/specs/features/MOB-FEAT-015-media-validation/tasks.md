@@ -1,7 +1,7 @@
 # Tasks — MOB-FEAT-015
 
 - Spec: `spec.md`
-- Status da spec no planejamento: `approved`
+- Status da spec no planejamento: `implemented`
 - Gate no planejamento: `open`
 - Dependências implementadas: `MOB-FEAT-012`, `MOB-FEAT-013`, `MOB-FEAT-014`
 
@@ -56,4 +56,4 @@
 ## Revalidação C03 — 2026-09-06
 
 - [x] TASK-013 — C03: Reduzir reidratação preservando AC-004/006/011; testes de imutabilidade, conflito, reload e rollback SQL.
-- [ ] TASK-014 — Repetir matriz física de TASK-008/AC-008 após alteração de persistência: lote, responsividade, retry, restart e memória. Evidência histórica não substitui esta revalidação.
+- [x] TASK-014 — Repetir matriz física de TASK-008/AC-008 após alteração de persistência: lote, responsividade, retry, restart e memória. Evidência atestada por Ruan Moraes em 2026-09-06.

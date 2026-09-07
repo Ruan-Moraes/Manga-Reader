@@ -1,6 +1,6 @@
 # Landing page — `web/landing-page`
 
-Aplicação React de apresentação do Manga Reader. É um app Vite independente da
+Aplicação React de apresentação do Toonlira. É um app Vite independente da
 SPA principal e usa uma estrutura simples por seções, adequada a uma página
 única de marketing.
 
@@ -16,7 +16,7 @@ src/
 └── test/       # setup e mocks
 ```
 
-A landing consome `@manga-reader/types` pelo workspace pnpm. Os tokens visuais
+A landing consome `@toonlira/types` pelo workspace pnpm. Os tokens visuais
 específicos da experiência de marketing ficam centralizados em `src/style/index.css`,
 sem dependência não utilizada do pacote de design tokens. Os ícones são servidos a partir de
 `../packages/assets/icons` pelo `publicDir` do Vite.
@@ -89,5 +89,5 @@ pnpm i18n:clean:landing
 ## Links relacionados
 
 - [Workspace web](../README.md)
-- [Aplicação principal](../manga-reader/README.md)
+- [Aplicação principal](../toonlira/README.md)
 - [README do projeto](../../README.md)

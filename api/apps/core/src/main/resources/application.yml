@@ -7,8 +7,10 @@
 server:
   port: 8080
 spring:
+  config:
+    import: optional:classpath:brand.generated.yml
   application:
-    name: manga-reader
+    name: toonlira
   autoconfigure:
     exclude:
       - org.springframework.boot.autoconfigure.data.web.SpringDataWebAutoConfiguration
@@ -41,7 +43,7 @@ spring:
       transactional-lock: false
   data:
     mongodb:
-      uri: mongodb://localhost:27017/mangareader
+      uri: mongodb://localhost:27017/toonlira
       auto-index-creation: false
     redis:
       host: localhost
@@ -76,7 +78,7 @@ spring:
     deserialization:
       fail-on-unknown-properties: false
 mongock:
-  migration-scan-package: com.mangareader.infrastructure.persistence.mongo.migration
+  migration-scan-package: com.toonlira.infrastructure.persistence.mongo.migration
   transactional: false
 management:
   endpoints:
@@ -106,12 +108,11 @@ springdoc:
     tags-sorter: alpha
   default-produces-media-type: application/json
 app:
-  name: Manga Reader
   version: 0.0.1-SNAPSHOT
   cors:
     allowed-origins: http://localhost:5173
   jwt:
-    secret: ${JWT_SECRET:manga-reader-dev-secret-key-that-is-at-least-256-bits-long-for-hs256}
+    secret: ${JWT_SECRET:toonlira-dev-secret-key-that-is-at-least-256-bits-long-for-hs256}
     access-token-expiration: ${JWT_ACCESS_TOKEN_EXPIRATION:900000}      # 15 minutos
     refresh-token-expiration: ${JWT_REFRESH_TOKEN_EXPIRATION:604800000}  # 7 dias
     password-reset-expiration: ${JWT_PASSWORD_RESET_EXPIRATION:1800000} # 30 minutos
@@ -132,9 +133,9 @@ app:
       - ${RATE_LIMIT_TRUSTED_PROXY_IPV4:127.0.0.1}
       - ${RATE_LIMIT_TRUSTED_PROXY_IPV6:::1}
   mail:
-    from: noreply@mangareader.dev
+    from: ${app.brand.support-email}
     base-url: http://localhost:5173
-    admin-email: admin@mangareader.dev
+    admin-email: ${app.brand.admin-email}
   behavior-analytics:
     retention-days: ${BEHAVIOR_ANALYTICS_RETENTION_DAYS:180}
     title-view-seconds: ${BEHAVIOR_ANALYTICS_TITLE_VIEW_SECONDS:15}

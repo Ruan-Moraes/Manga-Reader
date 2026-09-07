@@ -56,11 +56,11 @@
     text-rendering: optimizeLegibility;
 }
 
-html.mr-theme-dark {
+html.ui-theme-dark {
     color-scheme: dark;
 }
 
-html.mr-theme-light {
+html.ui-theme-light {
     color-scheme: light;
     --color-primary: #f7f7f4;
     --color-primary-90: rgb(247 247 244 / 0.9);
@@ -93,12 +93,12 @@ html.mr-theme-light {
     --shadow-menu: 0 24px 64px rgb(22 22 22 / 20%);
 }
 
-html.mr-theme-system {
+html.ui-theme-system {
     color-scheme: dark light;
 }
 
 @media (prefers-color-scheme: light) {
-    html.mr-theme-system {
+    html.ui-theme-system {
         --color-primary: #f7f7f4;
         --color-primary-90: rgb(247 247 244 / 0.9);
         --color-secondary: #ffffff;

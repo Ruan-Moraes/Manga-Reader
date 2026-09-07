@@ -1,6 +1,8 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 
+import { brand } from '../config/brand.generated';
+
 import enUSAuth from './locales/en-US/auth.json';
 import enUSCommon from './locales/en-US/common.json';
 import enUSLauncher from './locales/en-US/launcher.json';
@@ -63,6 +65,7 @@ i18n.use(initReactI18next).init({
     interpolation: {
         // React already escapes values
         escapeValue: false,
+        defaultVariables: { brandName: brand.name },
     },
     compatibilityJSON: 'v4',
 });

@@ -51,6 +51,6 @@ app:
   cors:
     allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:5173}
   mail:
-    from: ${MAIL_FROM:noreply@mangareader.com}
-    base-url: ${APP_BASE_URL:https://mangareader.com}
-    admin-email: ${MAIL_ADMIN:admin@mangareader.com}
+    from: ${MAIL_FROM:noreply@toonlira.com}
+    base-url: ${APP_BASE_URL:https://toonlira.com}
+    admin-email: ${MAIL_ADMIN:admin@toonlira.com}

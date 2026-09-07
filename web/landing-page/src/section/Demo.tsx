@@ -32,28 +32,28 @@ export default function Demo() {
             label: t('demo.tabs.library'),
             icon: 'library',
             screen: 'LibraryScreen',
-            url: 'app.mangareader.com/biblioteca',
+            url: 'app.toonlira.com/biblioteca',
         },
         {
             id: 'title',
             label: t('demo.tabs.title'),
             icon: 'eye',
             screen: 'TitleScreen',
-            url: 'app.mangareader.com/obra/frieren',
+            url: 'app.toonlira.com/obra/frieren',
         },
         {
             id: 'reader',
             label: t('demo.tabs.reader'),
             icon: 'play',
             screen: 'ReaderScreen',
-            url: 'app.mangareader.com/ler/frieren-140',
+            url: 'app.toonlira.com/ler/frieren-140',
         },
         {
             id: 'profile',
             label: t('demo.tabs.profile'),
             icon: 'user',
             screen: 'ProfileScreen',
-            url: 'app.mangareader.com/perfil',
+            url: 'app.toonlira.com/perfil',
         },
     ];
     const current = tabs.find(tab => tab.id === active) ?? tabs[0];

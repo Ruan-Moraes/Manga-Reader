@@ -1,0 +1,154 @@
+package com.toonlira.application.group.usecase;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+import java.util.Optional;
+import java.util.UUID;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import com.toonlira.application.group.port.GroupRepositoryPort;
+import com.toonlira.application.shared.port.EventPublisherPort;
+import com.toonlira.application.user.port.UserRepositoryPort;
+import com.toonlira.domain.group.entity.Group;
+import com.toonlira.domain.group.entity.GroupUser;
+import com.toonlira.domain.group.valueobject.GroupRole;
+import com.toonlira.domain.group.valueobject.GroupUserType;
+import com.toonlira.domain.user.entity.User;
+import com.toonlira.shared.application.i18n.LocaleResolutionService;
+import com.toonlira.shared.exception.BusinessRuleException;
+import com.toonlira.shared.exception.ResourceNotFoundException;
+import com.toonlira.mock.user.UserMock;
+
+@ExtendWith(MockitoExtension.class)
+@DisplayName("SupportGroupUseCase")
+class SupportGroupUseCaseTest {
+
+    @Mock
+    private GroupRepositoryPort groupRepository;
+
+    @Mock
+    private UserRepositoryPort userRepository;
+
+    @Mock
+    private EventPublisherPort eventPublisher;
+
+    @Mock
+    private LocaleResolutionService localeResolver;
+
+    @InjectMocks
+    private SupportGroupUseCase supportGroupUseCase;
+
+    private final UUID GROUP_ID = UUID.randomUUID();
+    private final UUID USER_ID = UUID.randomUUID();
+    private final UUID LEADER_ID = UUID.randomUUID();
+
+    private Group buildGroup() {
+        User leader = UserMock.withId(LEADER_ID);
+        Group group = Group.builder()
+                .id(GROUP_ID)
+                .name(com.toonlira.shared.domain.i18n.LocalizedString.ofDefault("Scan Test"))
+                .username("scan-test")
+                .groupUsers(new ArrayList<>())
+                .build();
+        group.getGroupUsers().add(
+                GroupUser.builder().group(group).user(leader).type(GroupUserType.MEMBER).role(GroupRole.LIDER).build()
+        );
+        return group;
+    }
+
+    private User buildUser() {
+        return UserMock.withId(USER_ID);
+    }
+
+    @Nested
+    @DisplayName("Apoio com sucesso")
+    class Sucesso {
+
+        @Test
+        @DisplayName("Deve adicionar usuário como apoiador do grupo e emitir evento de atividade")
+        void deveAdicionarApoiador() {
+            Group group = buildGroup();
+            when(groupRepository.findByIdWithUsers(GROUP_ID)).thenReturn(Optional.of(group));
+            when(userRepository.findById(USER_ID)).thenReturn(Optional.of(buildUser()));
+            when(groupRepository.save(any(Group.class))).thenAnswer(inv -> inv.getArgument(0));
+            when(localeResolver.resolve(group.getName())).thenReturn("Scan Test");
+
+            Group result = supportGroupUseCase.execute(GROUP_ID, USER_ID);
+
+            assertThat(result.getGroupUsers()).hasSize(2);
+            GroupUser supporter = result.getGroupUsers().get(1);
+            assertThat(supporter.getType()).isEqualTo(GroupUserType.SUPPORTER);
+            assertThat(supporter.getRole()).isNull();
+            assertThat(supporter.getUser().getId()).isEqualTo(USER_ID);
+
+            org.mockito.Mockito.verify(eventPublisher).publish(
+                    org.mockito.ArgumentMatchers.eq("activity.user-followed"), any());
+        }
+    }
+
+    @Nested
+    @DisplayName("Cenários de erro")
+    class Erro {
+
+        @Test
+        @DisplayName("Deve lançar ResourceNotFoundException quando grupo não existe")
+        void deveLancarExcecaoQuandoGrupoNaoExiste() {
+            when(groupRepository.findByIdWithUsers(GROUP_ID)).thenReturn(Optional.empty());
+
+            assertThatThrownBy(() -> supportGroupUseCase.execute(GROUP_ID, USER_ID))
+                    .isInstanceOf(ResourceNotFoundException.class)
+                    .hasMessageContaining("Group");
+        }
+
+        @Test
+        @DisplayName("Deve lançar ResourceNotFoundException quando usuário não existe")
+        void deveLancarExcecaoQuandoUsuarioNaoExiste() {
+            Group group = buildGroup();
+            when(groupRepository.findByIdWithUsers(GROUP_ID)).thenReturn(Optional.of(group));
+            when(userRepository.findById(USER_ID)).thenReturn(Optional.empty());
+
+            assertThatThrownBy(() -> supportGroupUseCase.execute(GROUP_ID, USER_ID))
+                    .isInstanceOf(ResourceNotFoundException.class)
+                    .hasMessageContaining("User");
+        }
+
+        @Test
+        @DisplayName("Deve lançar BusinessRuleException 409 quando usuário já possui vínculo")
+        void deveLancarExcecaoQuandoJaTemVinculo() {
+            Group group = buildGroup();
+            User user = buildUser();
+            group.getGroupUsers().add(
+                    GroupUser.builder().group(group).user(user).type(GroupUserType.SUPPORTER).build()
+            );
+            when(groupRepository.findByIdWithUsers(GROUP_ID)).thenReturn(Optional.of(group));
+            when(userRepository.findById(USER_ID)).thenReturn(Optional.of(user));
+
+            assertThatThrownBy(() -> supportGroupUseCase.execute(GROUP_ID, USER_ID))
+                    .isInstanceOf(BusinessRuleException.class)
+                    .satisfies(ex -> assertThat(((BusinessRuleException) ex).getStatusCode()).isEqualTo(409));
+        }
+
+        @Test
+        @DisplayName("Deve lançar BusinessRuleException 409 quando usuário já é membro do grupo")
+        void deveLancarExcecaoQuandoJaEMembro() {
+            Group group = buildGroup();
+            when(groupRepository.findByIdWithUsers(GROUP_ID)).thenReturn(Optional.of(group));
+            when(userRepository.findById(LEADER_ID)).thenReturn(Optional.of(UserMock.withId(LEADER_ID)));
+
+            assertThatThrownBy(() -> supportGroupUseCase.execute(GROUP_ID, LEADER_ID))
+                    .isInstanceOf(BusinessRuleException.class)
+                    .satisfies(ex -> assertThat(((BusinessRuleException) ex).getStatusCode()).isEqualTo(409));
+        }
+    }
+}

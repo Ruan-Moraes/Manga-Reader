@@ -1,5 +1,5 @@
 # ==============================================================================
-# Manga Reader — Test Profile
+# Toonlira — Test Profile
 # ==============================================================================
 # Configuração para testes automatizados.
 # Usa H2 in-memory para JPA (sem precisar de Docker/Testcontainers).
@@ -41,7 +41,7 @@ spring:
 
   data:
     mongodb:
-      uri: mongodb://localhost:27017/mangareader-test
+      uri: mongodb://localhost:27017/toonlira-test
 
   # Driver Neo4j é lazy — contexto de teste sobe sem servidor (DT-48);
   # o Neo4jSchemaInitializer tem @Profile("!test").
@@ -54,7 +54,7 @@ spring:
 logging:
   level:
     root: WARN
-    com.mangareader: DEBUG
+    com.toonlira: DEBUG
 
 app:
   # O contexto de integração compartilha IP entre muitas requests. Limites

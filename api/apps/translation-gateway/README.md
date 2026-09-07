@@ -84,15 +84,15 @@ registra os valores públicos já definidos, sem habilitar o serviço:
 
 - operador: `Ruan Moraes`, pessoa física responsável pelo projeto;
 - contato: `ruanmoraessantosbarbosa@gmail.com`;
-- termos: `https://app.mangareader.com/legal/terms`;
-- privacidade: `https://app.mangareader.com/legal/privacy`;
-- contato complementar: `https://app.mangareader.com/legal/contact`.
+- termos: `https://app.toonlira.com/legal/terms`;
+- privacidade: `https://app.toonlira.com/legal/privacy`;
+- contato complementar: `https://app.toonlira.com/legal/contact`.
 
 As URLs são canônicas pretendidas, mas ainda não estão publicadas. Por isso,
 `GATEWAY_DISCLOSURE_VERSION` e `GATEWAY_PROVIDER_TRAINING_POLICY` permanecem
 vazios no exemplo e o runtime continua fail-closed. Antes de preenchê-los:
 
-1. controlar o DNS de `app.mangareader.com` e publicar com certificado HTTPS
+1. controlar o DNS de `app.toonlira.com` e publicar com certificado HTTPS
    válido;
 2. garantir que Termos, Privacidade e Contato respondam `200` sem autenticação,
    inclusive em acesso direto às rotas;

@@ -1,6 +1,6 @@
 ---
 name: sdd-spec-architect
-description: Cria e mantém Target Specs testáveis para novas capacidades ou mudanças comportamentais do Manga Reader Mobile. Use quando o usuário pedir uma feature, mudança de produto, correção que altera a intenção, resolução de conflito baseline-target ou nova especificação em mobile/specs/features.
+description: Cria e mantém Target Specs testáveis para novas capacidades ou mudanças comportamentais do Toonlira Mobile. Use quando o usuário pedir uma feature, mudança de produto, correção que altera a intenção, resolução de conflito baseline-target ou nova especificação em mobile/specs/features.
 ---
 
 # SDD Spec Architect

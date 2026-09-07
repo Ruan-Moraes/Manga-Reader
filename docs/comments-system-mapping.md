@@ -1,7 +1,7 @@
 # Mapeamento do Sistema de Comentários — Frontend
 
 > Gerado em: 2026-06-20  
-> Escopo: `web/manga-reader/src`
+> Escopo: `web/toonlira/src`
 
 ---
 
@@ -225,7 +225,7 @@ entities/user/ui/profile/ProfileCommentsSection.tsx
 | **Sort** | `CommentSortContext` (likes/dislikes/newest/oldest) | Não existe |
 | **Moderação** | `isHighlighted`, badges membro/mod | `op` boolean simples |
 | **Layout UI** | `ThreadPost` → `PostShell` → `PostHeader` + `ActionBar` | aside customizado com classes `reader-comments` |
-| **CSS** | Tailwind + tokens `mr-*` | `reader.css` classes customizadas |
+| **CSS** | Tailwind + tokens `ui-*` | `reader.css` classes customizadas |
 | **i18n** | namespace `comment` | namespace `manga` |
 | **Auth guard** | `requireAuth()` | Não verificado |
 | **Inline markers** | Não implementado (existe no sistema B como mock) | `InlineCommentMarker` com dados MOCK |

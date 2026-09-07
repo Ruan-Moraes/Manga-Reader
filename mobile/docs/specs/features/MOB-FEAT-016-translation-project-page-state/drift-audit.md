@@ -1,14 +1,14 @@
 # Drift audit — MOB-FEAT-016
 
-Data: 2026-08-15
+Data: 2026-09-06
 
-- Implementação auditada: working-tree sha256:9df90bc58827359dd921a48f537f3c111a755991b5615f70601e493896b0f41e
-- Status da feature: `verification-pending`
+- Implementação auditada: working-tree sha256:cb2e5226cae5289175f02ef3243e0e048890a91e89ff1da21764db1ee89ab84e
+- Status da feature: `implemented`
 
 ## Divergências
 
-Nenhuma divergência normativa. TASK-012 permanece aberta exclusivamente para a
-confirmação de persistência/reabertura em Android físico.
+Nenhuma divergência normativa. A persistência/reabertura em Android físico foi
+confirmada por Ruan Moraes em 2026-09-06 e TASK-012 foi encerrada.
 
 ## Contadores
 
@@ -17,7 +17,7 @@ confirmação de persistência/reabertura em Android físico.
 - arquivos runtime descobertos: 0
 - caminhos obsoletos: 0
 - violações de gate: 0
-- verificações abertas: 1
+- verificações abertas: 0
 
 ## Escopo auditado
 
@@ -41,3 +41,7 @@ Rebase C02/C05 (2026-09-06): checksum global atualizado após virtualização do
 Consolidação documental (2026-09-06): checksum global atualizado após reconciliar o estado de performance; runtime e verdict preservados. [Registro](../../../active/performance-evidence/consolidation-2026-09-06/review.md). Sem nova validação física.
 
 Preparação de commit (2026-09-06): rebase global após excluir scripts avulsos de ensaio, listagens Git e metadados do sistema dos arquivos versionados, conforme solicitação humana. Resultados históricos preservados; runtime e verdict inalterados.
+
+Encerramento físico (2026-09-06): TASK-012/AC-009 concluída por ateste de Ruan
+Moraes, sem divergência reportada. Evidência em
+[`evidence/android-physical-restoration-2026-09-06.md`](evidence/android-physical-restoration-2026-09-06.md).

@@ -44,7 +44,7 @@ export function ModuleSelector({ authenticated, copy, onOpenModule, onOpenSettin
             <View style={{ alignItems: 'center', flexDirection: 'row' }}>
                 <Image source={LOGO} style={{ borderRadius: radii.sm, height: 34, width: 34 }} contentFit="cover" />
                 <AppText variant="title" style={{ flex: 1, marginLeft: spacing.sm }}>
-                    Manga Reader
+                    Toonlira
                 </AppText>
                 <IconButton accessibilityLabel={copy.settings} icon="ellipsis-horizontal" onPress={onOpenSettings} />
             </View>

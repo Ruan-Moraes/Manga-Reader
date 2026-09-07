@@ -1,6 +1,6 @@
 # Spec-Driven Development no Mobile
 
-Este diretório é o contrato comportamental do Manga Reader Mobile. O README do módulo continua sendo referência técnica; comportamento observado e intenção futura ficam separados aqui.
+Este diretório é o contrato comportamental do Toonlira Mobile. O README do módulo continua sendo referência técnica; comportamento observado e intenção futura ficam separados aqui.
 
 ## Artefatos
 

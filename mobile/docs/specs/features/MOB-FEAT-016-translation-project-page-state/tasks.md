@@ -1,7 +1,7 @@
 # Tasks — MOB-FEAT-016
 
 - Spec: `spec.md`
-- Status da spec no planejamento: `approved`
+- Status da spec no planejamento: `implemented`
 - Gate no planejamento: `open`
 - Dependências implementadas: `MOB-FEAT-013`, `MOB-FEAT-014`, `MOB-FEAT-015`
 
@@ -35,7 +35,7 @@
 - [x] TASK-009 — Restaurar projeto/páginas e reconciliar arquivos sem rede/login.
 - [x] TASK-010 — Integrar CTA/resumo honesto, acessível e trilíngue à page.
 - [x] TASK-011 — Registrar participante local e provar isolamento/privacidade.
-- [ ] TASK-012 — Atualizar SDD/coverage, executar testes, review e drift audit.
+- [x] TASK-012 — Atualizar SDD/coverage, executar testes, review e drift audit.
 
 ## Ordem de execução
 
@@ -48,6 +48,7 @@
 ## Riscos e bloqueios
 
 - O gate está aberto e a implementação foi aprovada em 2026-08-15.
-- TASK-012 permanece aberta somente para confirmar em Android físico a criação,
-  o encerramento forçado e a restauração do resumo persistido.
+- A criação do projeto, o encerramento forçado e a restauração do resumo
+  persistido foram validados em Android físico e atestados por Ruan Moraes em
+  2026-09-06.
 - Nenhuma task pode introduzir rede, OCR, tradução, renderização ou leitor.

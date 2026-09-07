@@ -1,8 +1,8 @@
 # Drift audit — MOB-FEAT-017
 
-Data: 2026-09-03
+Data: 2026-09-06
 
-- Implementação auditada: working-tree sha256:9df90bc58827359dd921a48f537f3c111a755991b5615f70601e493896b0f41e
+- Implementação auditada: working-tree sha256:cb2e5226cae5289175f02ef3243e0e048890a91e89ff1da21764db1ee89ab84e
 - Status da feature: `verification-pending`
 
 ## Divergências
@@ -42,3 +42,8 @@ Rebase C02/C05 (2026-09-06): checksum global atualizado após virtualização do
 Consolidação documental (2026-09-06): checksum global atualizado após reconciliar o estado de performance; runtime e verdict preservados. [Registro](../../../active/performance-evidence/consolidation-2026-09-06/review.md). Sem nova validação física.
 
 Preparação de commit (2026-09-06): rebase global após excluir scripts avulsos de ensaio, listagens Git e metadados do sistema dos arquivos versionados, conforme solicitação humana. Resultados históricos preservados; runtime e verdict inalterados.
+
+Continuação (2026-09-06): `MOB-FEAT-016` está implementada e não bloqueia mais
+esta feature. A auditoria FSD não encontrou deep import ou inversão entre os
+slices do processamento remoto. A publicação legal continua indisponível por
+HTTPS válido; os quatro gates externos/nativos permanecem abertos.

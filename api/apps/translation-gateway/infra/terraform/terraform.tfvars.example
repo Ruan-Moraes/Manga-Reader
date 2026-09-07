@@ -9,9 +9,9 @@ disclosure = {
   operator_name            = "Ruan Moraes"
   operator_contact         = "ruanmoraessantosbarbosa@gmail.com"
   # TODO: publicar estas rotas com HTTPS e acesso direto antes de usar o disclosure.
-  privacy_policy_url       = "https://app.mangareader.com/legal/privacy"
-  terms_url                = "https://app.mangareader.com/legal/terms"
+  privacy_policy_url       = "https://toonlira.com/legal/privacy"
+  terms_url                = "https://toonlira.com/legal/terms"
   # URL pública complementar (não integra o shape atual do disclosure):
-  # https://app.mangareader.com/legal/contact
+  # https://toonlira.com/legal/contact
   provider_training_policy = ""
 }

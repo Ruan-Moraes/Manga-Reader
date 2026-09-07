@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 
-import type { SubscriptionPeriod } from '@manga-reader/types';
+import type { SubscriptionPeriod } from '@toonlira/types';
 
 import Button from '@/shared/component/Button';
 import Icon from '@/shared/component/Icon';

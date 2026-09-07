@@ -2,7 +2,7 @@ import plugin from 'tailwindcss/plugin';
 
 import { colors, screens, boxShadow, textShadow, animation, keyframes } from './index.js';
 
-const mangaReaderPreset = {
+const toonliraPreset = {
     theme: {
         extend: {
             screens,
@@ -30,4 +30,4 @@ const mangaReaderPreset = {
     ],
 };
 
-export default mangaReaderPreset;
+export default toonliraPreset;

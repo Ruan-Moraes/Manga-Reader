@@ -1,6 +1,6 @@
 # Rating Aggregator — `api/apps/jobs/rating-aggregator`
 
-Serviço dedicado de **agregação de avaliações** da plataforma Manga Reader. Roda fora
+Serviço dedicado de **agregação de avaliações** da plataforma Toonlira. Roda fora
 da API principal: mantém a coleção `reviews_aggregate` sempre atualizada por dois
 caminhos — **eventos em tempo real** (RabbitMQ) e **job de reconciliação periódica**
 (rede de segurança contra eventos perdidos).
@@ -112,7 +112,7 @@ opcional no diretório de execução também é carregado como properties.
 | Propriedade                      | Env                          | Default                                 |
 |----------------------------------|------------------------------|-----------------------------------------|
 | `server.port`                    | `SERVER_PORT`                | `8081`                                  |
-| `spring.data.mongodb.uri`        | `SPRING_DATA_MONGODB_URI`    | `mongodb://localhost:27017/mangareader` |
+| `spring.data.mongodb.uri`        | `SPRING_DATA_MONGODB_URI`    | `mongodb://localhost:27017/toonlira` |
 | `spring.rabbitmq.host`           | `SPRING_RABBITMQ_HOST`       | `localhost`                             |
 | `spring.rabbitmq.port`           | `SPRING_RABBITMQ_PORT`       | `5672`                                  |
 | `spring.rabbitmq.username`       | `SPRING_RABBITMQ_USERNAME`   | `manga`                                 |

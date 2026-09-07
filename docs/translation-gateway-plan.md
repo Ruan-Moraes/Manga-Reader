@@ -232,8 +232,8 @@ leitor em loop.
 
 - Operador definido para a fase atual: Ruan Moraes, pessoa física, com contato
   público `ruanmoraessantosbarbosa@gmail.com`.
-- URLs canônicas reservadas: `https://app.mangareader.com/legal/terms` e
-  `https://app.mangareader.com/legal/privacy`; domínio, HTTPS e publicação ainda
+- URLs canônicas reservadas: `https://app.toonlira.com/legal/terms` e
+  `https://app.toonlira.com/legal/privacy`; domínio, HTTPS e publicação ainda
   são pendências, portanto não constituem políticas públicas vigentes.
 - Atualizar termos e privacidade web nos três locales antes do primeiro upload
   real, incluindo Google Cloud, transferência Brasil→EUA, finalidade, copyright,

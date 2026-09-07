@@ -22,7 +22,7 @@ describe('theme preference', () => {
 
     it('uses the system theme by default', () => {
         expect(readThemePreference()).toBe('SYSTEM');
-        expect(document.documentElement).toHaveClass('mr-theme-system');
+        expect(document.documentElement).toHaveClass('ui-theme-system');
     });
 
     it('reads the portal theme contract', () => {
@@ -32,7 +32,7 @@ describe('theme preference', () => {
         );
 
         expect(initializeThemePreference()).toBe('LIGHT');
-        expect(document.documentElement).toHaveClass('mr-theme-light');
+        expect(document.documentElement).toHaveClass('ui-theme-light');
     });
 
     it('preserves every unrelated portal setting when writing the theme', () => {
@@ -60,7 +60,7 @@ describe('theme preference', () => {
         localStorage.setItem(SETTINGS_STORAGE_KEY, '{invalid');
 
         expect(initializeThemePreference()).toBe('SYSTEM');
-        expect(document.documentElement).toHaveClass('mr-theme-system');
+        expect(document.documentElement).toHaveClass('ui-theme-system');
     });
 
     it('falls back to system when the stored preference is unsupported', () => {
@@ -70,7 +70,7 @@ describe('theme preference', () => {
         );
 
         expect(initializeThemePreference()).toBe('SYSTEM');
-        expect(document.documentElement).toHaveClass('mr-theme-system');
+        expect(document.documentElement).toHaveClass('ui-theme-system');
     });
 
     it('keeps the selected theme in memory when storage is unavailable', () => {
@@ -80,19 +80,19 @@ describe('theme preference', () => {
 
         setThemePreference('DARK');
 
-        expect(document.documentElement).toHaveClass('mr-theme-dark');
+        expect(document.documentElement).toHaveClass('ui-theme-dark');
     });
 
     it('keeps exactly one theme class applied', () => {
         document.documentElement.className =
-            'other-class mr-theme-system mr-theme-light';
+            'other-class ui-theme-system ui-theme-light';
 
         applyThemePreference('DARK');
 
         expect(document.documentElement).toHaveClass('other-class');
-        expect(document.documentElement).toHaveClass('mr-theme-dark');
-        expect(document.documentElement).not.toHaveClass('mr-theme-system');
-        expect(document.documentElement).not.toHaveClass('mr-theme-light');
+        expect(document.documentElement).toHaveClass('ui-theme-dark');
+        expect(document.documentElement).not.toHaveClass('ui-theme-system');
+        expect(document.documentElement).not.toHaveClass('ui-theme-light');
     });
 
     it('applies theme changes received from another tab', () => {
@@ -107,7 +107,7 @@ describe('theme preference', () => {
             new StorageEvent('storage', { key: SETTINGS_STORAGE_KEY }),
         );
 
-        expect(document.documentElement).toHaveClass('mr-theme-light');
+        expect(document.documentElement).toHaveClass('ui-theme-light');
         expect(listener).toHaveBeenCalledOnce();
         unsubscribe();
     });

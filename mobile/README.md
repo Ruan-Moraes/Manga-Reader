@@ -1,4 +1,4 @@
-# Manga Reader Mobile — `mobile/`
+# Toonlira Mobile — `mobile/`
 
 Aplicativo React Native com Expo SDK 57 e Expo Router. O app inicia em um
 launcher público; a plataforma autenticada permanece em construção e suas tabs
@@ -23,10 +23,10 @@ Implementado:
 - revisão virtualizada do draft em Grade minimalista ou Lista, preview ampliado privado, adição/remoção, ordenação persistente por arraste na imagem, aviso de possível duplicata e confirmação local;
 - seleção independente e persistente entre sete idiomas e 42 pares direcionais,
   com chinês simplificado e tradicional separados;
-- validação local sequencial de JPEG, PNG e WebP estáticos pelos bytes reais, com galeria virtualizada, resumo do lote, correção localizada por página, limites defensivos, retry seletivo e profiling Android histórico; revalidação física da otimização de persistência pendente;
+- validação local sequencial de JPEG, PNG e WebP estáticos pelos bytes reais, com galeria virtualizada, resumo do lote, correção localizada por página, limites defensivos, retry seletivo e revalidação física da otimização de persistência concluída;
 - preparação local de projeto privado com páginas ordenadas, snapshot validado,
-  SQLite v6, estados canônicos e restauração determinística (verificação física
-  final pendente);
+  SQLite v6, estados canônicos e restauração determinística validada em Android
+  físico;
 - fundação do processamento remoto com SQLite v7, capabilities validadas,
   consentimento contextual trilíngue, identidade anônima no SecureStore,
   submissão idempotente da primeira página, retomada e cancelamento; o upload
@@ -168,7 +168,7 @@ de runtime deste repositório.
 `settingsStore`.
 
 Componentes reutilizáveis devem consumir os tokens. As classes NativeWind
-baseadas em cores `mr-*` ainda não alternam automaticamente com o tema; até que
+baseadas em cores `ui-*` ainda não alternam automaticamente com o tema; até que
 o dark mode do Tailwind seja integrado ao provider, prefira `useTheme()` para
 cores que precisam reagir ao toggle.
 

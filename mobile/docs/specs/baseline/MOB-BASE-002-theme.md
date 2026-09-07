@@ -43,7 +43,7 @@ Mudança de `initialOverride` atualiza o estado interno. `setOverride` também c
 
 ## Desconhecidos
 
-- Classes NativeWind `mr-*` não estão ligadas ao provider para alternância automática.
+- Classes NativeWind `ui-*` não estão ligadas ao provider para alternância automática.
 
 ## Conflitos com intenção futura
 

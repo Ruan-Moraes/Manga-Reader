@@ -5,13 +5,13 @@
                              https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>com.mangareader</groupId>
-        <artifactId>manga-reader-services</artifactId>
+        <groupId>com.toonlira</groupId>
+        <artifactId>toonlira-services</artifactId>
         <version>0.0.1-SNAPSHOT</version>
         <relativePath>../../../pom.xml</relativePath>
     </parent>
     <artifactId>orphan-cleaner</artifactId>
-    <name>Manga Reader Orphan Cleaner</name>
+    <name>Toonlira Orphan Cleaner</name>
     <description>Serviço dedicado de redes de segurança entre Postgres e Mongo:
         (1) reconciliação dos contadores desnormalizados (bulk SET = COUNT idempotente,
         de hora em hora) — groups.total_titles, events.participants, forum_topics.replyCount
@@ -27,7 +27,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.mangareader</groupId>
+            <groupId>com.toonlira</groupId>
             <artifactId>testing-support</artifactId>
             <scope>test</scope>
         </dependency>

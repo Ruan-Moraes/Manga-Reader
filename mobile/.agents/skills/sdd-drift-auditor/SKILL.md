@@ -1,6 +1,6 @@
 ---
 name: sdd-drift-auditor
-description: Detecta drift entre código, Baseline Specs, Target Specs, decisões, tasks e reviews do Manga Reader Mobile. Use em auditorias periódicas, após mudanças grandes, quando comportamento e documentação parecem divergir ou antes de iniciar uma feature em área brownfield.
+description: Detecta drift entre código, Baseline Specs, Target Specs, decisões, tasks e reviews do Toonlira Mobile. Use em auditorias periódicas, após mudanças grandes, quando comportamento e documentação parecem divergir ou antes de iniciar uma feature em área brownfield.
 ---
 
 # SDD Drift Auditor

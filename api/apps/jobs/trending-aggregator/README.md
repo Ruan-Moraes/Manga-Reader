@@ -53,10 +53,10 @@ sobrescritas por variáveis de ambiente via relaxed binding.
 | Propriedade | Variável | Padrão |
 |---|---|---|
 | `server.port` | `SERVER_PORT` | `8083` |
-| `spring.datasource.url` | `SPRING_DATASOURCE_URL` | `jdbc:postgresql://localhost:5432/mangareader` |
+| `spring.datasource.url` | `SPRING_DATASOURCE_URL` | `jdbc:postgresql://localhost:5432/toonlira` |
 | `spring.datasource.username` | `SPRING_DATASOURCE_USERNAME` | `manga` |
 | `spring.datasource.password` | `SPRING_DATASOURCE_PASSWORD` | `manga_secret` |
-| `spring.data.mongodb.uri` | `SPRING_DATA_MONGODB_URI` | `mongodb://localhost:27017/mangareader` |
+| `spring.data.mongodb.uri` | `SPRING_DATA_MONGODB_URI` | `mongodb://localhost:27017/toonlira` |
 | `trending.schedule.cron` | `TRENDING_SCHEDULE_CRON` | `0 15 3 * * *` |
 | `trending.zone` | `TRENDING_ZONE` | `America/Sao_Paulo` |
 | `trending.retention-days` | `TRENDING_RETENTION_DAYS` | `90` |

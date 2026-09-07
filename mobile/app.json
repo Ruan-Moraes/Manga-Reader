@@ -1,16 +1,18 @@
 {
     "expo": {
-        "name": "mobile",
-        "slug": "mobile",
+        "name": "Toonlira",
+        "slug": "toonlira",
         "version": "1.0.0",
         "orientation": "default",
         "icon": "./assets/images/icon.png",
-        "scheme": "mobile",
+        "scheme": "toonlira",
         "userInterfaceStyle": "automatic",
         "ios": {
+            "bundleIdentifier": "com.toonlira.app",
             "supportsTablet": true
         },
         "android": {
+            "package": "com.toonlira.app",
             "blockedPermissions": [
                 "android.permission.CAMERA",
                 "android.permission.RECORD_AUDIO",
@@ -52,7 +54,7 @@
                 {
                     "cameraPermission": false,
                     "microphonePermission": false,
-                    "photosPermission": "Select only the images you want to import into Manga Reader."
+                    "photosPermission": "Select only the images you want to import into Toonlira."
                 }
             ],
             "expo-sqlite"

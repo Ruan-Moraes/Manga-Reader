@@ -1,7 +1,7 @@
 # API principal — `api/apps/core`
 
 Aplicação Spring Boot responsável pelos endpoints REST e pelas escritas de
-negócio do Manga Reader. Usa Clean Architecture, persistência poliglota e
+negócio do Toonlira. Usa Clean Architecture, persistência poliglota e
 publica eventos para os jobs auxiliares.
 
 ## Responsabilidades

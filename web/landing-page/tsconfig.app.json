@@ -1,9 +1,11 @@
 {
-  "extends": "@manga-reader/tsconfig/app.json",
+  "extends": "../packages/tsconfig/app.json",
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["src/*"],
+      "@toonlira/brand": ["../packages/brand/src/index.ts"],
+      "@toonlira/types": ["../packages/types/src/index.ts"]
     },
     "tsBuildInfoFile": "./tsconfig.app.tsbuildinfo",
     "outDir": "./dist"
