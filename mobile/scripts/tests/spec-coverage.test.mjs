@@ -18,6 +18,7 @@ function fixture({ extraFiles = [], mutate } = {}) {
 
     for (const file of files) {
         mkdirSync(resolve(root, file, '..'), { recursive: true });
+
         writeFileSync(resolve(root, file), 'fixture');
     }
 

@@ -9,6 +9,7 @@ const errors = validateFsdBoundaries({ mobileRoot });
 
 if (errors.length) {
     process.stderr.write(`FSD boundary validation failed:\n\n${errors.map(error => `- ${error}`).join('\n')}\n`);
+
     process.exitCode = 1;
 } else {
     process.stdout.write('FSD boundary validation passed.\n');

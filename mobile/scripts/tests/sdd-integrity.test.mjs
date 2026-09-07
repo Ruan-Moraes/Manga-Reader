@@ -7,18 +7,23 @@ import test from 'node:test';
 import { implementationChecksum, validateFeatureIntegrity, validateReconciliationSummary } from '../lib/sdd-integrity.mjs';
 
 const checksum = 'a'.repeat(64);
+
 const artifact = status => ({
     metadata: { id: 'MOB-FEAT-001', status },
     content: '### AC-001 — Um\n\n### AC-002 — Dois\n',
 });
+
 const tasks = open =>
     `| Critério | Tasks | Evidência |\n| --- | --- | --- |\n| AC-001 | TASK-001 | teste |\n| AC-002 | TASK-002 | teste |\n\n- [${open ? ' ' : 'x'}] TASK-001 — executar`;
+
 const review = verdict =>
     `- Implementação/revisão: working-tree sha256:${checksum}\n- Verdict: \`${verdict}\`\n\n| Critério | Resultado |\n| --- | --- |\n| AC-001 | pass |\n| AC-002 | pass |`;
+
 const evidence = new Set(['MOB-FEAT-001/AC-001', 'MOB-FEAT-001/AC-002']);
 
 function validate(status, overrides = {}) {
     const errors = [];
+
     validateFeatureIntegrity({
         artifact: artifact(status),
         tasksContent: tasks(status === 'verification-pending'),
@@ -29,6 +34,7 @@ function validate(status, overrides = {}) {
         errors,
         ...overrides,
     });
+
     return errors;
 }
 
@@ -57,6 +63,7 @@ test('rejeita AC sem evidência, linha única, drift, verdict ou checksum', () =
 
 test('checksum cobre recursos e configuração, mas não é autorreferente às evidências que o registram', () => {
     const root = mkdtempSync(resolve(tmpdir(), 'mobile-sdd-'));
+
     mkdirSync(resolve(root, 'src'), { recursive: true });
     mkdirSync(resolve(root, 'assets'), { recursive: true });
     mkdirSync(resolve(root, 'docs', 'specs', 'feature'), { recursive: true });
@@ -65,21 +72,27 @@ test('checksum cobre recursos e configuração, mas não é autorreferente às e
     writeFileSync(resolve(root, 'package.json'), '{"name":"fixture"}');
     writeFileSync(resolve(root, 'docs', 'specs', 'feature', 'review.md'), 'checksum antigo');
     writeFileSync(resolve(root, 'docs', 'specs', 'feature', 'drift-audit.md'), 'checksum antigo');
+
     const initial = implementationChecksum(root);
 
     writeFileSync(resolve(root, 'docs', 'specs', 'feature', 'review.md'), 'checksum novo');
     writeFileSync(resolve(root, 'docs', 'specs', 'feature', 'drift-audit.md'), 'checksum novo');
     assert.equal(implementationChecksum(root), initial);
     writeFileSync(resolve(root, 'assets', 'label.json'), '{"label":"two"}');
+
     assert.notEqual(implementationChecksum(root), initial);
 });
 
 test('valida supersession corrente e contadores derivados da reconciliação', () => {
     const content = `| Baselines observados | 1 |\n| Verdicts \`match\` | 1 |\n| Verdicts \`mismatch\` | 0 |\n| Verdicts \`undocumented\` | 0 |\n\n## MOB-BASE-001\n| OBS-001 | x | \`match\` | — |`;
+
     const errors = [];
+
     validateReconciliationSummary({ content, observedBaselineIds: ['MOB-BASE-001'], errors });
+
     assert.deepEqual(errors, []);
 
     validateReconciliationSummary({ content: `${content}\n## MOB-BASE-007\n`, observedBaselineIds: ['MOB-BASE-001'], errors });
+
     assert.ok(errors.some(error => error.includes('não atual')));
 });

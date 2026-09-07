@@ -1,4 +1,5 @@
 const ALLOWED_GATES = new Set(['open', 'blocked']);
+
 const SATISFIED_DEPENDENCY_STATUSES = new Set(['implemented', 'verification-pending']);
 
 export function validateFeatureGates({ artifacts, errors, tasksExist = () => false }) {

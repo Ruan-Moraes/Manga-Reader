@@ -8,12 +8,17 @@ import { validateFsdBoundaries } from '../lib/fsd-boundaries.mjs';
 
 function fixture(files) {
     const root = mkdtempSync(resolve(tmpdir(), 'mobile-fsd-'));
+
     const paths = Object.entries(files).map(([path, content]) => {
         const absolute = resolve(root, path);
+
         mkdirSync(resolve(absolute, '..'), { recursive: true });
+
         writeFileSync(absolute, content);
+
         return absolute;
     });
+
     return validateFsdBoundaries({ mobileRoot: root, files: paths });
 }
 
@@ -27,6 +32,7 @@ test('rejeita inversão, import horizontal e deep import', () => {
         'src/features/one/model/one.ts': "import { two } from '@/features/two';\n",
         'src/pages/home/ui/Home.tsx': "import { User } from '@/entities/user/model/user';\n",
     });
+
     assert.ok(errors.some(error => error.includes('import invertido')));
     assert.ok(errors.some(error => error.includes('import horizontal')));
     assert.ok(errors.some(error => error.includes('deep import')));
@@ -49,5 +55,6 @@ test('aplica as mesmas regras a imports relativos e arquivos de teste', () => {
         'src/features/one/model/__tests__/one.test.ts': "import { two } from '../../../two';\n",
         'src/features/two/index.ts': 'export const two = 2;\n',
     });
+
     assert.ok(errors.some(error => error.includes('import horizontal')));
 });

@@ -9,6 +9,7 @@
     "build:landing": "pnpm --filter landing-page build",
     "test": "pnpm -r test",
     "test:app": "pnpm --filter toonlira test",
+    "test:brand": "node --test ../scripts/tests/brand.test.mjs",
     "brand:generate": "node ../scripts/brand.mjs generate",
     "brand:check": "node ../scripts/brand.mjs generate --check",
     "rebrand:check": "node ../scripts/brand.mjs rebrand --check",

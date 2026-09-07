@@ -18,9 +18,11 @@ const decisionsRoot = resolve(docsRoot, 'decisions');
 const registryPath = resolve(specsRoot, 'registry.md');
 const coveragePath = resolve(specsRoot, 'coverage.json');
 const reconciliationPath = resolve(docsRoot, 'active', 'sdd-baseline-reconciliation.md');
+
 const commitExists = sha => {
     try {
         execFileSync('git', ['cat-file', '-e', `${sha}^{commit}`], { cwd: resolve(mobileRoot, '..'), stdio: 'ignore' });
+
         return true;
     } catch {
         return false;
@@ -182,6 +184,7 @@ if (!existsSync(reconciliationPath)) {
     errors.push('docs/active/sdd-baseline-reconciliation.md: relatório ausente');
 } else {
     const reconciliation = readFileSync(reconciliationPath, 'utf8');
+
     const observedBaselines = artifacts.filter(item => item.metadata.type === 'baseline' && item.metadata.status === 'observed');
 
     validateReconciliationSummary({
@@ -192,15 +195,18 @@ if (!existsSync(reconciliationPath)) {
 
     for (const artifact of observedBaselines) {
         const section = reconciliation.match(new RegExp(`^## ${artifact.metadata.id}\\b([\\s\\S]*?)(?=^## |\\Z)`, 'm'))?.[1] ?? '';
+
         const observations = [...artifact.content.matchAll(/^### (OBS-\d{3})\b/gm)].map(match => match[1]);
 
         if (!section) {
             errors.push(`${artifact.metadata.id}: seção ausente no relatório de reconciliação`);
+
             continue;
         }
 
         for (const observation of observations) {
             const rows = section.split('\n').filter(line => new RegExp(`^\\|\\s*${observation}\\s*\\|`).test(line));
+
             if (rows.length !== 1) {
                 errors.push(`${artifact.metadata.id}/${observation}: relatório exige exatamente uma linha de reconciliação`);
             } else if (!rows[0].includes('| `match` |')) {
@@ -215,6 +221,7 @@ let coverageManifest = { entries: [], patterns: [] };
 
 try {
     coverageManifest = JSON.parse(readFileSync(coveragePath, 'utf8'));
+
     coverageSummary = validateCoverage({ mobileRoot, coverage: coverageManifest, artifactsById: byId, errors });
 } catch (error) {
     errors.push(`docs/specs/coverage.json: não foi possível ler o manifesto (${error.message})`);
@@ -352,7 +359,9 @@ for (const artifact of artifacts) {
             .filter(mapping => mapping.category === 'evidence')
             .flatMap(mapping => mapping.observations ?? []),
     );
+
     const driftPath = resolve(featureDirectory, 'drift-audit.md');
+
     validateFeatureIntegrity({
         artifact,
         tasksContent: existsSync(tasksPath) ? readFileSync(tasksPath, 'utf8') : null,
