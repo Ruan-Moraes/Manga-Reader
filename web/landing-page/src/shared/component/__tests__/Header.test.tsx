@@ -13,7 +13,7 @@ describe('Header', () => {
             </TestProviders>,
         );
 
-        expect(screen.getByText('Reader')).toBeInTheDocument();
+        expect(screen.getByText('Toonlira')).toBeInTheDocument();
     });
 
     it('renders navigation links', () => {
