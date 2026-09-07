@@ -1,0 +1,4 @@
+interface:
+    display_name: 'SDD Reviewer'
+    short_description: 'Revisa spec, código, cobertura e evidências'
+    default_prompt: 'Use $sdd-reviewer para revisar gate, implementação e cobertura mobile contra a Target Spec.'

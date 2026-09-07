@@ -1,4 +1,4 @@
-import type { PublicStats } from '@manga-reader/types';
+import type { PublicStats } from '@toonlira/types';
 
 export function buildStats(overrides: Partial<PublicStats> = {}): PublicStats {
     return {

@@ -1,0 +1,112 @@
+{
+    "index": {
+        "title": "Ajustes",
+        "eyebrow": "Preferencias",
+        "editorialTitle": "A tu manera.",
+        "subtitle": "Ajusta lectura, idioma, privacidad y datos sin perder tu ritmo."
+    },
+    "groups": {
+        "app": {
+            "title": "Aplicación",
+            "description": "Apariencia, accesibilidad, idioma y región."
+        },
+        "reading": {
+            "title": "Lectura",
+            "description": "Define cómo se ajustan y avanzan las páginas."
+        },
+        "device": {
+            "title": "Dispositivo",
+            "description": "Gestiona el almacenamiento y consulta información de la app."
+        },
+        "account": {
+            "title": "Cuenta",
+            "description": "Preferencias sincronizadas y protegidas por tu cuenta."
+        }
+    },
+    "sections": {
+        "appearance": {
+            "title": "Apariencia y accesibilidad",
+            "editorialTitle": "Una lectura que descansa la vista.",
+            "description": "Tema, texto, densidad, movimiento y contraste."
+        },
+        "locale": {
+            "title": "Idioma y región",
+            "editorialTitle": "Tu idioma, tu contexto.",
+            "description": "Idioma de la interfaz, fechas y zona horaria."
+        },
+        "contentLanguages": {
+            "title": "Idiomas del contenido",
+            "editorialTitle": "Prioridad para lo que entiendes.",
+            "description": "Elige y ordena tus idiomas preferidos para el contenido."
+        },
+        "reader": {
+            "title": "Lector",
+            "editorialTitle": "Cada página al ritmo adecuado.",
+            "description": "Modo de lectura, dirección, ajuste y presentación de las páginas."
+        },
+        "privacy": {
+            "title": "Privacidad",
+            "editorialTitle": "Controla lo que permanece visible.",
+            "description": "Visibilidad, seguimiento y contenido sensible."
+        },
+        "data": {
+            "title": "Datos y almacenamiento",
+            "editorialTitle": "Tus datos bajo control.",
+            "description": "Caché, exportación e historial de la cuenta."
+        },
+        "about": {
+            "title": "Acerca de",
+            "editorialTitle": "La aplicación, sin misterio.",
+            "description": "Versión de la app y enlaces oficiales disponibles."
+        }
+    },
+    "access": {
+        "loginRequired": "Inicio de sesión necesario",
+        "hint": "Inicia sesión para acceder a este ajuste. Después volverás aquí."
+    },
+    "sync": {
+        "local": "Guardado en este dispositivo",
+        "pending": "Cambio pendiente",
+        "syncing": "Sincronizando",
+        "synced": "Sincronizado",
+        "error": "No se pudo sincronizar. Tu cambio sigue guardado en este dispositivo.",
+        "retry": "Intentar sincronizar de nuevo"
+    },
+    "about": {
+        "title": "Acerca de",
+        "version": "Versión",
+        "build": "Compilación",
+        "appSection": {
+            "title": "Aplicación",
+            "description": "Información de la instalación actual."
+        },
+        "linksSection": {
+            "title": "Enlaces oficiales",
+            "description": "Ayuda, documentos y código del proyecto."
+        },
+        "links": {
+            "support": "Soporte",
+            "terms": "Términos de uso",
+            "privacy": "Política de privacidad",
+            "project": "Proyecto"
+        },
+        "linkDescriptions": {
+            "support": "Encuentra ayuda para usar la aplicación.",
+            "terms": "Consulta las condiciones de uso de la plataforma.",
+            "privacy": "Descubre cómo se tratan tus datos.",
+            "project": "Conoce el código y el desarrollo del proyecto."
+        },
+        "openError": "No se pudo abrir este enlace.",
+        "retry": "Intentar abrir de nuevo"
+    },
+    "actions": {
+        "open": "Abrir {{section}}",
+        "back": "Volver",
+        "login": "Iniciar sesión",
+        "settings": "Abrir ajustes",
+        "backToModules": "Volver a los módulos"
+    },
+    "errors": {
+        "externalLink": "No se pudo abrir el enlace externo. Inténtalo de nuevo."
+    }
+}

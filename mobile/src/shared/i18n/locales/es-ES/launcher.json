@@ -1,0 +1,277 @@
+{
+    "startup": {
+        "settings": "Cargando tus preferencias…",
+        "session": "Comprobando la sesión…",
+        "error": "No se pudieron cargar las preferencias guardadas. La aplicación está usando valores seguros por ahora.",
+        "retry": "Intentar cargar de nuevo"
+    },
+    "selector": {
+        "eyebrow": "LECTURA SIN RUIDO",
+        "title": "Tus capítulos, a tu ritmo.",
+        "subtitle": "Prepara las páginas en tu dispositivo y continúa exactamente donde lo dejaste.",
+        "settings": "Configuración del dispositivo"
+    },
+    "platform": {
+        "title": "Plataforma de lectura",
+        "description": "Accede a tu cuenta y sigue el desarrollo de la biblioteca.",
+        "status": "En construcción",
+        "loginAction": "Iniciar sesión en la plataforma",
+        "connectedAction": "Ver estado conectado",
+        "connectedTitle": "Cuenta conectada",
+        "connectedDescription": "Tu sesión está activa. La plataforma de lectura aún está en construcción.",
+        "sessionAccount": "Sesión autenticada",
+        "accountLoading": "Cargando los datos de la cuenta…",
+        "accountError": "No se pudieron cargar los datos de la cuenta.",
+        "accountRetry": "Intentar cargar la cuenta de nuevo",
+        "constructionTitle": "Estamos preparando la plataforma",
+        "constructionDescription": "El catálogo, la lectura, los comentarios y las valoraciones solo se publicarán cuando estén completos.",
+        "logout": "Cerrar sesión"
+    },
+    "offline": {
+        "title": "Traducir capítulo",
+        "description": "Importa y prepara tus páginas",
+        "status": "Local-first",
+        "action": "Traducir desde el dispositivo",
+        "pageTitle": "Traducir capítulo",
+        "flow": {
+            "label": "Progreso de la preparación",
+            "steps": {
+                "import": "Importar",
+                "organize": "Organizar",
+                "languages": "Idiomas",
+                "validate": "Validar",
+                "review": "Revisar"
+            },
+            "back": "Etapa anterior",
+            "reviewTitle": "Revisa antes de preparar",
+            "reviewDescription": "Comprueba las páginas, los idiomas y la validación. El procesamiento todavía no comenzará.",
+            "pages": "Páginas",
+            "languagePair": "Idiomas",
+            "validation": "Validación",
+            "validationReady": "Todas las páginas válidas",
+            "intro": {
+                "import": {
+                    "eyebrow": "SELECCIONAR IMÁGENES",
+                    "title": "Cada imagen es una página.",
+                    "description": "Elige todas las páginas del capítulo. Podrás ajustar su orden después."
+                },
+                "organize": {
+                    "eyebrow": "ORGANIZAR PÁGINAS",
+                    "title": "Define el orden de lectura.",
+                    "description": "La secuencia siguiente será el orden del capítulo."
+                },
+                "languages": {
+                    "eyebrow": "IDIOMAS DE TRADUCCIÓN",
+                    "title": "¿Cómo quieres leer?",
+                    "description": "Elige el idioma de las páginas y el idioma final del capítulo."
+                },
+                "validate": {
+                    "eyebrow": "VALIDAR IMÁGENES",
+                    "title": "Todo está listo.",
+                    "pendingTitle": "Vamos a comprobar tus imágenes.",
+                    "readyTitle": "Tus imágenes están listas.",
+                    "issueTitle_one": "1 imagen necesita atención.",
+                    "issueTitle_other": "{{count}} imágenes necesitan atención.",
+                    "description": "Comprobamos los archivos para que la preparación no se detenga."
+                },
+                "review": {
+                    "eyebrow": "REVISAR Y PREPARAR",
+                    "title": "¿Listo para preparar?",
+                    "description": "Revisa los detalles antes de crear el proyecto en el dispositivo."
+                }
+            }
+        },
+        "import": {
+            "title": "Elige tus páginas",
+            "description": "Selecciona una o varias imágenes con el selector seguro del sistema.",
+            "formats": "JPG, PNG o WEBP · selección múltiple",
+            "loading": "Cargando el borrador local…",
+            "selectAction": "Seleccionar imágenes",
+            "replaceAction": "Reemplazar selección",
+            "continueAction": "Continuar",
+            "readyTitle": "Selección guardada en este dispositivo",
+            "readyDescription": "Revisa las páginas a continuación antes de confirmar el lote.",
+            "selectedCount_one": "{{count}} imagen importada",
+            "selectedCount_other": "{{count}} imágenes importadas",
+            "privacyNote": "Solo se copian las imágenes que eliges. La aplicación no examina tu galería.",
+            "errorTitle": "No se pudo importar",
+            "retry": "Intentar de nuevo",
+            "errors": {
+                "picker-unavailable": "El selector de imágenes no está disponible. Inténtalo de nuevo.",
+                "invalid-selection": "El selector no devolvió una imagen válida.",
+                "storage-unavailable": "No se pudieron guardar las imágenes en el almacenamiento privado."
+            }
+        },
+        "review": {
+            "title": "Revisa tus páginas",
+            "description_one": "Revisa y organiza {{count}} página antes de confirmar.",
+            "description_other": "Revisa y organiza {{count}} páginas antes de confirmar.",
+            "page": "Página {{page}} de {{total}}",
+            "thumbnail": "Miniatura de la página {{page}} de {{total}}",
+            "openPreview": "Ampliar la página {{page}} de {{total}}",
+            "openActions": "Abrir opciones de la página {{page}} de {{total}}",
+            "actionsTitle": "Página {{page}} de {{total}}",
+            "previewAction": "Ver imagen",
+            "closeActions": "Cerrar opciones",
+            "drag": "Arrastra la página {{page}} para reordenar",
+            "previewTitle": "Viendo la página {{page}} de {{total}}",
+            "previewImage": "Imagen ampliada de la página {{page}} de {{total}}",
+            "closePreview": "Cerrar",
+            "imageError": "No se pudo abrir la imagen de la página {{page}}.",
+            "possibleDuplicate": "Posible duplicado",
+            "moveEarlier": "Mover la página {{page}} hacia antes",
+            "moveLater": "Mover la página {{page}} hacia después",
+            "remove": "Eliminar la página {{page}}",
+            "removeAction": "Eliminar",
+            "viewLabel": "Modo de visualización",
+            "viewGrid": "Cuadrícula",
+            "viewScroll": "Lista",
+            "viewList": "Lista",
+            "dragHint": "Mantén pulsada una imagen y arrástrala para reordenar",
+            "add": "Añadir imágenes",
+            "confirm": "Confirmar orden",
+            "confirmedAction": "Orden confirmado",
+            "editing": "Revisa el orden y confirma cuando esté listo.",
+            "confirmedTitle": "Lote revisado",
+            "confirmedDescription": "El orden está guardado en este dispositivo. Elige abajo los idiomas de traducción.",
+            "errorTitle": "No se pudo actualizar el lote",
+            "retry": "Intentar de nuevo",
+            "errors": {
+                "picker-unavailable": "El selector de imágenes no está disponible. Inténtalo de nuevo.",
+                "invalid-selection": "El selector no devolvió una imagen válida.",
+                "storage-unavailable": "No se pudo guardar el cambio. Se restauró el último estado seguro."
+            }
+        },
+        "languages": {
+            "title": "Elige los idiomas",
+            "description": "La selección inicial es una sugerencia. La app aún no ha analizado las imágenes.",
+            "source": "Idioma de origen",
+            "target": "Idioma de destino",
+            "recommended": "Recomendado",
+            "options": {
+                "ja": "Japonés",
+                "en": "Inglés",
+                "es": "Español",
+                "ko": "Coreano",
+                "zh-Hans": "Chino simplificado",
+                "zh-Hant": "Chino tradicional",
+                "pt-BR": "Portugués (Brasil)"
+            },
+            "confirm": "Confirmar idiomas",
+            "confirmedAction": "Idiomas confirmados",
+            "confirmedTitle": "Idiomas guardados",
+            "confirmedDescription": "El origen y el destino están guardados en este dispositivo. El procesamiento aún no comenzó.",
+            "retry": "Intentar de nuevo",
+            "errors": {
+                "same-language": "El origen y el destino deben ser diferentes.",
+                "review-required": "Confirma de nuevo el orden de las páginas antes de elegir los idiomas.",
+                "stale-draft": "El lote cambió en otra acción. Se restauró el último estado guardado.",
+                "storage-unavailable": "No se pudieron guardar los idiomas. Se restauró el último estado seguro."
+            }
+        },
+        "validation": {
+            "title": "Validar páginas",
+            "description": "Comprueba el formato real, la integridad y las dimensiones de las copias privadas antes del procesamiento.",
+            "validCount": "{{valid}} de {{total}} válidas",
+            "invalidCount": "{{count}} con un problema",
+            "pageStatus": "Página {{page}}: {{status}}",
+            "status": { "PENDING": "pendiente", "VALID": "válida", "INVALID": "inválida" },
+            "badges": { "PENDING": "Validando", "VALID": "Lista", "INVALID": "Acción necesaria" },
+            "summaryReady": "{{valid}} de {{total}} listas",
+            "summaryIssues": "{{valid}} listas · {{invalid}} con problema",
+            "pendingCount_one": "1 página espera validación",
+            "pendingCount_other": "{{count}} páginas esperan validación",
+            "issueAlert_one": "Corrige la página destacada para continuar.",
+            "issueAlert_other": "Corrige las {{count}} páginas destacadas para continuar.",
+            "filterLabel": "Filtrar páginas",
+            "filterIssues": "Con problema ({{count}})",
+            "filterAll": "Todas ({{count}})",
+            "pageNumber": "Pág. {{page}}",
+            "thumbnailLabel": "Página {{page}} de {{total}}. {{status}}.",
+            "openIssueHint": "Abre el problema y las acciones de esta página.",
+            "openPreviewHint": "Abre una vista ampliada de la imagen.",
+            "replace": "Sustituir archivo",
+            "replacePageLabel": "Sustituir el archivo de la página {{page}}",
+            "noIssues": "Ninguna página tiene problemas.",
+            "fixIssues_one": "Corregir 1 imagen",
+            "fixIssues_other": "Corregir {{count}} imágenes",
+            "continue": "Continuar a revisión",
+            "detailEyebrow": "PÁGINA {{page}}",
+            "detailIssueTitle": "Esta imagen necesita atención",
+            "detailPreviewTitle": "Ver imagen",
+            "close": "Cerrar",
+            "previewUnavailable": "Vista previa no disponible",
+            "previewLabel": "Vista previa de la página {{page}}",
+            "issueOrigin": { "local": "Origen: archivo enviado · comprobado en este dispositivo", "processing": "Origen: resultado del procesamiento" },
+            "issueMessages": {
+                "MISSING_FILE": "El archivo de esta página ya no está disponible.",
+                "EMPTY_FILE": "El archivo está vacío y no se puede procesar.",
+                "FILE_CHANGED": "El archivo cambió después de importarlo.",
+                "UNSUPPORTED_FORMAT": "Usa una imagen JPG, PNG o WebP estática.",
+                "CORRUPTED": "No fue posible abrir esta imagen de forma segura.",
+                "DIMENSIONS_UNSAFE": "El tamaño o las dimensiones superan el límite seguro.",
+                "WHITE_OUTLINE": "El procesamiento encontró contornos blancos en la imagen.",
+                "TRANSPARENT_BACKGROUND_FAILED": "No se pudo generar el fondo transparente."
+            },
+            "technicalDetails": {
+                "WHITE_OUTLINE": "Sustitúyela por una versión sin bordes blancos alrededor del contenido.",
+                "TRANSPARENT_BACKGROUND_FAILED": "Sustitúyela por una imagen con fondo uniforme y bordes bien definidos."
+            },
+            "progress": "Validando {{completed}} de {{total}}…",
+            "action": "Validar imágenes",
+            "retryInvalid": "Reintentar páginas inválidas",
+            "retry": "Intentar de nuevo",
+            "validatedAction": "Imágenes validadas",
+            "ready": "Las páginas están listas para la siguiente etapa.",
+            "itemErrors": {
+                "MISSING_FILE": "archivo ausente",
+                "EMPTY_FILE": "archivo vacío",
+                "FILE_CHANGED": "archivo modificado",
+                "UNSUPPORTED_FORMAT": "formato no compatible",
+                "CORRUPTED": "archivo dañado",
+                "DIMENSIONS_UNSAFE": "tamaño o dimensiones fuera del límite"
+            },
+            "errors": {
+                "prerequisite-required": "Confirma el orden y los idiomas antes de validar.",
+                "stale-draft": "El lote cambió. Se restauró el último estado guardado.",
+                "storage-unavailable": "La validación no pudo continuar. Se conservaron los resultados guardados.",
+                "picker-unavailable": "No fue posible abrir tus imágenes. Inténtalo de nuevo.",
+                "invalid-selection": "Selecciona exactamente una imagen para sustituir esta página."
+            }
+        },
+        "project": {
+            "loading": "Cargando el proyecto local…",
+            "action": "Preparar proyecto",
+            "preparedTitle": "Proyecto preparado en el dispositivo",
+            "preparedDescription": "Las páginas están protegidas localmente. El procesamiento aún no comenzó.",
+            "summary_one": "{{count}} página · {{source}} → {{target}} · {{status}}",
+            "summary_other": "{{count}} páginas · {{source}} → {{target}} · {{status}}",
+            "status": {
+                "DRAFT": "preparado",
+                "QUEUED": "en cola",
+                "PROCESSING": "procesando",
+                "READY": "listo",
+                "FAILED": "con error",
+                "CANCELLED": "cancelado"
+            },
+            "errors": {
+                "prerequisite-required": "Confirma y valida todas las páginas antes de preparar el proyecto.",
+                "stale-draft": "El lote cambió. Se conservó el último estado seguro.",
+                "file-copy-failed": "No fue posible proteger todos los archivos del proyecto.",
+                "storage-unavailable": "No fue posible guardar el proyecto en este dispositivo.",
+                "project-conflict": "Ya existe un proyecto diferente con esta identidad. Tus datos fueron preservados."
+            }
+        }
+    },
+    "navigation": {
+        "selector": "Módulos",
+        "backToSelector": "Volver a los módulos"
+    },
+    "sync": {
+        "local": "Preferencias guardadas en este dispositivo",
+        "syncing": "Sincronizando preferencias…",
+        "synced": "Preferencias sincronizadas",
+        "error": "Hay preferencias pendientes de sincronización",
+        "retry": "Intentar sincronizar de nuevo"
+    }
+}

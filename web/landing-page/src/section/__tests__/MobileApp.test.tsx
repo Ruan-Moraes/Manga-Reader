@@ -13,7 +13,9 @@ describe('MobileApp', () => {
         );
 
         expect(
-            screen.getByText('Leia onde estiver. No iPhone, Android ou navegador.'),
+            screen.getByText(
+                'Leia onde estiver. No iPhone, Android ou navegador.',
+            ),
         ).toBeInTheDocument();
         expect(screen.getByText('Leitura offline')).toBeInTheDocument();
     });

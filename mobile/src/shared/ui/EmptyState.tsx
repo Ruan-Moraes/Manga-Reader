@@ -1,8 +1,9 @@
 import { ReactNode } from 'react';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 
-import { useTheme } from '@/src/shared/theme';
-import { FONTS } from '@/src/shared/theme';
+import { useTheme } from '@/shared/theme';
+
+import { AppText } from './AppText';
 
 interface Props {
     title: string;
@@ -12,23 +13,17 @@ interface Props {
 }
 
 export function EmptyState({ title, description, action, icon }: Props) {
-    const { tokens } = useTheme();
+    const { spacing } = useTheme();
     return (
-        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', padding: 32, gap: 12 }}>
+        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', padding: spacing.xl, gap: spacing.md }}>
             {icon}
-            <Text style={{ fontFamily: FONTS.bold, fontSize: 18, color: tokens.text, textAlign: 'center' }}>{title}</Text>
+            <AppText variant="section" style={{ textAlign: 'center' }}>
+                {title}
+            </AppText>
             {description && (
-                <Text
-                    style={{
-                        fontFamily: FONTS.regular,
-                        fontSize: 14,
-                        color: tokens.subtle,
-                        textAlign: 'center',
-                        lineHeight: 20,
-                    }}
-                >
+                <AppText variant="body" tone="subtle" style={{ textAlign: 'center' }}>
                     {description}
-                </Text>
+                </AppText>
             )}
             {action}
         </View>

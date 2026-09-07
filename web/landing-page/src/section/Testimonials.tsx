@@ -1,76 +1,54 @@
 import { useTranslation } from 'react-i18next';
-
 import { RatingStars } from '@/shared/component/Icon';
-import { Section, SectionTitle } from '@/shared/component/Primitives';
+import MarketingSection, {
+    SectionHeading,
+} from '@/shared/component/MarketingSection';
 import Reveal from '@/shared/component/Reveal';
-
 import { TESTIMONIALS_META, type TestimonialText } from '@/shared/data/landing';
 
 export default function Testimonials() {
-    const { t } = useTranslation();
-
-    const items = t('testimonials.items', { returnObjects: true }) as TestimonialText[];
-
+    const { t, i18n } = useTranslation();
+    const locale = i18n.resolvedLanguage ?? i18n.language;
+    const items = t('testimonials.items', {
+        returnObjects: true,
+    }) as TestimonialText[];
     return (
-        <Section id="testimonials">
-            <SectionTitle eyebrow={t('testimonials.eyebrow')} title={t('testimonials.title')} />
-            <div
-                className="lp-test-grid"
-                style={{
-                    marginTop: 48,
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 260px), 1fr))',
-                    gap: 18,
-                }}
-            >
-                {items.map((it, i) => {
-                    const meta = TESTIMONIALS_META[i];
-
+        <MarketingSection key={locale} id="testimonials">
+            <SectionHeading
+                eyebrow={t('testimonials.eyebrow')}
+                title={t('testimonials.title')}
+            />
+            <div className="mt-10 grid grid-cols-1 gap-4 min-[560px]:grid-cols-2 min-[560px]:gap-[18px] lg:grid-cols-4">
+                {items.map((item, index) => {
+                    const meta = TESTIMONIALS_META[index];
                     return (
-                        <Reveal key={i} delay={(i % 4) * 70}>
-                            <div
-                                style={{
-                                    height: '100%',
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    padding: 22,
-                                    borderRadius: 8,
-                                    background: 'var(--color-secondary)',
-                                    border: '1px solid #444',
-                                }}
-                            >
+                        <Reveal key={item.name} delay={index * 60}>
+                            <article className="flex h-full flex-col rounded-[14px] border border-border bg-card p-[22px]">
                                 <RatingStars value={meta.rating} size={15} />
-                                <p style={{ margin: '14px 0 18px', flex: 1, fontSize: 14, color: '#fff', lineHeight: 1.6, fontStyle: 'italic' }}>
-                                    “{it.text}”
-                                </p>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                                    <div
-                                        style={{
-                                            width: 40,
-                                            height: 40,
-                                            borderRadius: 2,
-                                            background: meta.color,
-                                            color: '#161616',
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: 'center',
-                                            fontWeight: 800,
-                                            fontSize: 14,
-                                            flexShrink: 0,
-                                        }}
+                                <blockquote className="m-[14px_0_20px] flex-1 text-[0.875rem] italic leading-[1.7] text-copy">
+                                    “{item.text}”
+                                </blockquote>
+                                <footer className="flex items-center gap-3">
+                                    <span
+                                        className="inline-flex size-[42px] shrink-0 items-center justify-center rounded-[9px] text-[0.875rem] font-black text-on-accent"
+                                        style={{ backgroundColor: meta.color }}
                                     >
                                         {meta.initials}
+                                    </span>
+                                    <div className="grid gap-[3px]">
+                                        <strong className="text-[0.875rem] text-fg">
+                                            {item.name}
+                                        </strong>
+                                        <span className="text-xs text-tertiary">
+                                            {item.role}
+                                        </span>
                                     </div>
-                                    <div>
-                                        <div style={{ fontSize: 14, fontWeight: 700, color: '#fff', letterSpacing: '.0625rem' }}>{it.name}</div>
-                                        <div style={{ fontSize: 12, color: '#727273' }}>{it.role}</div>
-                                    </div>
-                                </div>
-                            </div>
+                                </footer>
+                            </article>
                         </Reveal>
                     );
                 })}
             </div>
-        </Section>
+        </MarketingSection>
     );
 }

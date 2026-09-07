@@ -1,0 +1,57 @@
+{
+    "title": "Procesamiento remoto",
+    "description": "Envía solo la primera página para iniciar la prueba de procesamiento.",
+    "actions": {
+        "start": "Iniciar procesamiento",
+        "check": "Comprobar envío",
+        "cancel": "Cancelar procesamiento",
+        "retry": "Intentar de nuevo"
+    },
+    "status": {
+        "CREATED": "Preparando el envío",
+        "SUBMITTING": "Enviando página",
+        "ACCEPTED": "Página aceptada por el gateway",
+        "REJECTED": "El gateway rechazó el envío",
+        "UNKNOWN": "Confirmando el envío",
+        "FAILED": "No se pudo enviar",
+        "CANCEL_PENDING": "Cancelación pendiente",
+        "CANCELLED": "Procesamiento cancelado"
+    },
+    "remoteStatus": {
+        "QUEUED": "En cola, sin estimación de finalización.",
+        "OCR": "El procesamiento remoto ya comenzó.",
+        "TRANSLATING": "El procesamiento remoto ya comenzó.",
+        "RENDERING": "El procesamiento remoto ya comenzó.",
+        "READY": "El gateway informa que el resultado está listo; la lectura se implementará más adelante.",
+        "FAILED": "El procesamiento remoto falló.",
+        "CANCEL_PENDING": "El gateway todavía está confirmando la cancelación.",
+        "CANCELLED": "El gateway confirmó la cancelación.",
+        "RESULT_EXPIRED": "El resultado remoto caducó."
+    },
+    "errors": {
+        "consent-required": "Revisa y acepta la información antes del envío.",
+        "unsupported-pair": "Este par de idiomas no está disponible para procesamiento remoto.",
+        "capabilities-unavailable": "El procesamiento remoto no está disponible o está desactivado.",
+        "network-required": "Conéctate a internet para usar el procesamiento remoto.",
+        "submission-unknown": "Aún no se puede confirmar si se recibió la página.",
+        "gateway-rejected": "El gateway rechazó la página sin cambiar el proyecto local.",
+        "cancellation-pending": "La solicitud se envió, pero la cancelación aún no está confirmada.",
+        "cancellation-unavailable": "El procesamiento comenzó, terminó o ya no se puede cancelar.",
+        "storage-unavailable": "No se pudo guardar el estado seguro en este dispositivo."
+    },
+    "disclosure": {
+        "title": "¿Autorizar el envío de la primera página?",
+        "description": "La página {{page}} se enviará para reconocer texto, traducirlo y preparar una imagen traducida.",
+        "network": "Se requiere internet. El procesamiento no ocurre completamente en este dispositivo.",
+        "data": "Se envían los bytes de la imagen, MIME, dimensiones, idiomas e identificadores opacos del intento. No se envían nombre, ruta, cuenta ni diálogo.",
+        "operator": "Operación: {{operator}} ({{contact}}), usando servicios de Google Cloud.",
+        "regions": "El gateway y los datos temporales permanecen en {{gateway}}; OCR y traducción pueden ocurrir en {{processing}}.",
+        "retention": "El original y el resultado se conservan hasta {{originalMinutes}} y {{resultMinutes}} minutos; metadatos saneados hasta {{metadataDays}} días.",
+        "training": "Política de entrenamiento del proveedor: {{policy}}",
+        "cancellation": "Después de iniciar el procesamiento, la cancelación y eliminación pueden no ser inmediatas o posibles.",
+        "privacy": "Abrir política de privacidad",
+        "terms": "Abrir términos",
+        "accept": "Aceptar y enviar",
+        "decline": "Ahora no"
+    }
+}

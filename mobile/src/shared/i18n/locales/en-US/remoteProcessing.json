@@ -1,0 +1,57 @@
+{
+    "title": "Remote processing",
+    "description": "Send only the first page to start the processing proof.",
+    "actions": {
+        "start": "Start processing",
+        "check": "Check submission",
+        "cancel": "Cancel processing",
+        "retry": "Try again"
+    },
+    "status": {
+        "CREATED": "Preparing submission",
+        "SUBMITTING": "Sending page",
+        "ACCEPTED": "Page accepted by the gateway",
+        "REJECTED": "The gateway rejected the submission",
+        "UNKNOWN": "Confirming submission",
+        "FAILED": "Unable to submit",
+        "CANCEL_PENDING": "Cancellation pending",
+        "CANCELLED": "Processing cancelled"
+    },
+    "remoteStatus": {
+        "QUEUED": "Queued, with no estimated completion time.",
+        "OCR": "Remote processing has started.",
+        "TRANSLATING": "Remote processing has started.",
+        "RENDERING": "Remote processing has started.",
+        "READY": "The gateway reports that the result is ready; reading will be implemented later.",
+        "FAILED": "Remote processing failed.",
+        "CANCEL_PENDING": "The gateway is still confirming cancellation.",
+        "CANCELLED": "The gateway confirmed cancellation.",
+        "RESULT_EXPIRED": "The remote result expired."
+    },
+    "errors": {
+        "consent-required": "Review and accept the information before submission.",
+        "unsupported-pair": "This language pair is not available for remote processing.",
+        "capabilities-unavailable": "Remote processing is unavailable or disabled.",
+        "network-required": "Connect to the internet to use remote processing.",
+        "submission-unknown": "It is not yet possible to confirm whether the page was received.",
+        "gateway-rejected": "The gateway rejected the page without changing the local project.",
+        "cancellation-pending": "The request was sent, but cancellation is not confirmed yet.",
+        "cancellation-unavailable": "Processing has started, finished, or can no longer be cancelled.",
+        "storage-unavailable": "The safe state could not be saved on this device."
+    },
+    "disclosure": {
+        "title": "Allow sending the first page?",
+        "description": "Page {{page}} will be sent to recognize text, translate it, and prepare a translated image.",
+        "network": "Internet is required. Processing does not happen entirely on this device.",
+        "data": "Image bytes, MIME type, dimensions, languages, and opaque attempt identifiers are sent. Filename, path, account, and dialogue are not sent.",
+        "operator": "Operated by {{operator}} ({{contact}}), using Google Cloud services.",
+        "regions": "The gateway and temporary data stay in {{gateway}}; OCR and translation may occur in {{processing}}.",
+        "retention": "The original and result are retained for up to {{originalMinutes}} and {{resultMinutes}} minutes; sanitized metadata for up to {{metadataDays}} days.",
+        "training": "Provider training policy: {{policy}}",
+        "cancellation": "After processing starts, cancellation and deletion may not be immediate or possible.",
+        "privacy": "Open privacy policy",
+        "terms": "Open terms",
+        "accept": "Accept and send",
+        "decline": "Not now"
+    }
+}

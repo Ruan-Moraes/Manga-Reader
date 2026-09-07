@@ -1,0 +1,681 @@
+openapi: 3.1.0
+info:
+  title: Toonlira Translation Gateway
+  version: 1.0.0
+  description: >-
+    Contrato do gateway privado e assíncrono usado pelo aplicativo mobile.
+    A versão v1 aceita somente a primeira página de um projeto e não expõe
+    credenciais, detalhes de provider ou identificadores locais do aparelho.
+servers:
+  - url: https://translation-api.toonlira.app
+    description: Origem de produção configurável; o cliente falha fechado para origens não autorizadas.
+tags:
+  - name: Capabilities
+  - name: Anonymous identity
+  - name: Page jobs
+paths:
+  /v1/capabilities:
+    get:
+      tags: [Capabilities]
+      operationId: getCapabilities
+      summary: Obtém capacidades, limites, disclosure e estado operacional vigentes
+      security: []
+      responses:
+        "200":
+          description: Configuração completa e versionada
+          headers:
+            ETag:
+              description: Identidade da configuração para revalidação condicional
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Capabilities"
+        "304":
+          description: A configuração publicada não mudou desde o ETag enviado
+        "503":
+          $ref: "#/components/responses/ServiceUnavailable"
+
+  /v1/anonymous/installations:
+    post:
+      tags: [Anonymous identity]
+      operationId: createAnonymousInstallation
+      summary: Cria uma identidade anônima e entrega a credencial longa uma única vez
+      security: []
+      x-log-policy: metadata-only
+      responses:
+        "201":
+          description: Instalação criada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AnonymousInstallationCreated"
+        "429":
+          $ref: "#/components/responses/RateLimited"
+        "503":
+          $ref: "#/components/responses/ServiceUnavailable"
+
+  /v1/anonymous/sessions:
+    post:
+      tags: [Anonymous identity]
+      operationId: createAnonymousSession
+      summary: Troca a credencial longa por um bearer curto e revogável
+      security:
+        - installationCredential: []
+      x-log-policy: never-log-authorization
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AnonymousSessionRequest"
+      responses:
+        "201":
+          description: Sessão curta criada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AnonymousSessionCreated"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "429":
+          $ref: "#/components/responses/RateLimited"
+        "503":
+          $ref: "#/components/responses/ServiceUnavailable"
+
+  /v1/page-jobs:
+    post:
+      tags: [Page jobs]
+      operationId: submitPage
+      summary: Reserva idempotentemente o processamento remoto de uma página
+      security:
+        - anonymousSession: []
+      x-log-policy: metadata-allowlist-no-body
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: "#/components/schemas/PageSubmission"
+            encoding:
+              page:
+                contentType: image/jpeg, image/png, image/webp
+      responses:
+        "202":
+          description: Submissão aceita e persistida; dispatch assíncrono registrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PageJobEnvelope"
+        "400":
+          $ref: "#/components/responses/InvalidRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "409":
+          $ref: "#/components/responses/Conflict"
+        "413":
+          $ref: "#/components/responses/PayloadTooLarge"
+        "415":
+          $ref: "#/components/responses/UnsupportedMediaType"
+        "429":
+          $ref: "#/components/responses/RateLimited"
+        "503":
+          $ref: "#/components/responses/ServiceUnavailable"
+
+  /v1/page-jobs/by-idempotency/{idempotencyKey}:
+    get:
+      tags: [Page jobs]
+      operationId: getSubmissionByIdempotencyKey
+      summary: Reconcilia uma submissão cujo receipt pode ter sido perdido
+      description: >-
+        A busca é escopada à instalação autenticada. Um 404 confirma que o
+        gateway não possui job para a chave e permite replay com a mesma chave.
+      security:
+        - anonymousSession: []
+      x-log-policy: metadata-only
+      parameters:
+        - name: idempotencyKey
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Job existente para a chave
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PageJobEnvelope"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/JobNotFound"
+        "503":
+          $ref: "#/components/responses/ServiceUnavailable"
+
+  /v1/page-jobs/{jobRef}:
+    get:
+      tags: [Page jobs]
+      operationId: getSubmission
+      summary: Obtém o último estado confirmado do job
+      security:
+        - anonymousSession: []
+      x-log-policy: metadata-only
+      parameters:
+        - $ref: "#/components/parameters/JobRef"
+      responses:
+        "200":
+          description: Estado confirmado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PageJobEnvelope"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/JobNotFound"
+        "503":
+          $ref: "#/components/responses/ServiceUnavailable"
+
+  /v1/page-jobs/{jobRef}/cancel:
+    post:
+      tags: [Page jobs]
+      operationId: cancelSubmission
+      summary: Solicita cancelamento idempotente sem afirmar conclusão antecipada
+      security:
+        - anonymousSession: []
+      x-log-policy: metadata-only
+      parameters:
+        - $ref: "#/components/parameters/JobRef"
+      responses:
+        "200":
+          description: Estado terminal já conhecido
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PageJobEnvelope"
+        "202":
+          description: Pedido de cancelamento persistido
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PageJobEnvelope"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/JobNotFound"
+        "409":
+          $ref: "#/components/responses/Conflict"
+        "503":
+          $ref: "#/components/responses/ServiceUnavailable"
+
+  /v1/page-jobs/{jobRef}/ack:
+    post:
+      tags: [Page jobs]
+      operationId: acknowledgeResult
+      summary: Confirma persistência local do resultado e agenda limpeza remota
+      description: A operação é definida em v1, mas só será consumida após MOB-FEAT-018..021.
+      security:
+        - anonymousSession: []
+      x-log-policy: metadata-only
+      parameters:
+        - $ref: "#/components/parameters/JobRef"
+      responses:
+        "202":
+          description: ACK registrado idempotentemente
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/JobNotFound"
+        "409":
+          $ref: "#/components/responses/Conflict"
+        "503":
+          $ref: "#/components/responses/ServiceUnavailable"
+
+components:
+  securitySchemes:
+    installationCredential:
+      type: http
+      scheme: bearer
+      bearerFormat: opaque-installation-credential
+      description: Credencial longa entregue uma única vez e nunca registrada em logs.
+    anonymousSession:
+      type: http
+      scheme: bearer
+      bearerFormat: short-lived-token
+      description: Bearer curto sem vínculo com a conta da plataforma.
+
+  parameters:
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: true
+      description: UUID persistido no aparelho antes de qualquer byte de mídia sair.
+      schema:
+        type: string
+        format: uuid
+    JobRef:
+      name: jobRef
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+
+  responses:
+    InvalidRequest:
+      description: Request inválido ou pré-condição ausente
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/GatewayProblem"
+    Unauthorized:
+      description: Credencial ausente, inválida ou expirada
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/GatewayProblem"
+    Forbidden:
+      description: Instalação revogada ou job não pertence à instalação
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/GatewayProblem"
+    JobNotFound:
+      description: Job não encontrado no escopo da instalação autenticada
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/GatewayProblem"
+    Conflict:
+      description: Estado ou versão incompatível com a operação solicitada
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/GatewayProblem"
+    PayloadTooLarge:
+      description: Mídia excede os limites publicados nas capabilities
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/GatewayProblem"
+    UnsupportedMediaType:
+      description: MIME real não suportado
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/GatewayProblem"
+    RateLimited:
+      description: Quota por instalação, global ou rate limit atingido
+      headers:
+        Retry-After:
+          schema:
+            type: integer
+            minimum: 1
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/GatewayProblem"
+    ServiceUnavailable:
+      description: Kill switch ativo, configuração inválida ou dependência indisponível
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/GatewayProblem"
+
+  schemas:
+    TranslationLanguage:
+      type: string
+      enum: [ja, en, es, ko, zh-Hans, zh-Hant, pt-BR]
+
+    RemoteJobStatus:
+      type: string
+      enum:
+        [
+          QUEUED,
+          OCR,
+          TRANSLATING,
+          RENDERING,
+          READY,
+          FAILED,
+          CANCEL_PENDING,
+          CANCELLED,
+          RESULT_EXPIRED,
+        ]
+
+    GatewayErrorCode:
+      type: string
+      enum:
+        - invalid-request
+        - invalid-contract-version
+        - consent-required
+        - unsupported-pair
+        - unsupported-media-type
+        - payload-too-large
+        - capabilities-unavailable
+        - gateway-disabled
+        - unauthorized
+        - installation-revoked
+        - quota-exceeded
+        - job-not-found
+        - job-state-conflict
+        - cancellation-unavailable
+        - storage-unavailable
+        - dispatch-unavailable
+        - internal-error
+
+    LanguagePair:
+      type: object
+      additionalProperties: false
+      required: [source, target]
+      properties:
+        source:
+          $ref: "#/components/schemas/TranslationLanguage"
+        target:
+          $ref: "#/components/schemas/TranslationLanguage"
+
+    MediaLimits:
+      type: object
+      additionalProperties: false
+      required: [mimeTypes, maxBytes, maxWidthPx, maxHeightPx, maxPixels]
+      properties:
+        mimeTypes:
+          type: array
+          minItems: 1
+          uniqueItems: true
+          items:
+            type: string
+            enum: [image/jpeg, image/png, image/webp]
+        maxBytes:
+          type: integer
+          format: int64
+          minimum: 1
+        maxWidthPx:
+          type: integer
+          minimum: 1
+        maxHeightPx:
+          type: integer
+          minimum: 1
+        maxPixels:
+          type: integer
+          format: int64
+          minimum: 1
+
+    LegalDisclosure:
+      type: object
+      additionalProperties: false
+      required:
+        - version
+        - operatorName
+        - operatorContact
+        - privacyPolicyUrl
+        - termsUrl
+        - gatewayRegion
+        - processingRegions
+        - originalRetentionSeconds
+        - resultRetentionSeconds
+        - metadataRetentionDays
+        - providerTrainingPolicy
+      properties:
+        version:
+          type: string
+          minLength: 1
+          maxLength: 64
+        operatorName:
+          type: string
+          minLength: 1
+          maxLength: 160
+        operatorContact:
+          type: string
+          format: email
+        privacyPolicyUrl:
+          type: string
+          format: uri
+          pattern: "^https://"
+        termsUrl:
+          type: string
+          format: uri
+          pattern: "^https://"
+        gatewayRegion:
+          type: string
+          const: southamerica-east1
+        processingRegions:
+          type: array
+          minItems: 1
+          uniqueItems: true
+          items:
+            type: string
+            enum: [us, us-central1]
+        originalRetentionSeconds:
+          type: integer
+          minimum: 1
+          maximum: 3600
+        resultRetentionSeconds:
+          type: integer
+          minimum: 1
+          maximum: 3600
+        metadataRetentionDays:
+          type: integer
+          minimum: 1
+          maximum: 7
+        providerTrainingPolicy:
+          type: string
+          minLength: 1
+          maxLength: 500
+
+    Capabilities:
+      type: object
+      additionalProperties: false
+      required:
+        - contractVersion
+        - gatewayKey
+        - generatedAt
+        - validUntil
+        - enabled
+        - supportedLanguages
+        - supportedPairs
+        - mediaLimits
+        - dailyInstallationQuota
+        - dailyGlobalQuota
+        - disclosure
+      properties:
+        contractVersion:
+          type: string
+          const: "1.0"
+        gatewayKey:
+          type: string
+          pattern: "^[a-z0-9][a-z0-9-]{1,62}$"
+        generatedAt:
+          type: string
+          format: date-time
+        validUntil:
+          type: string
+          format: date-time
+        enabled:
+          type: boolean
+        supportedLanguages:
+          type: array
+          minItems: 2
+          uniqueItems: true
+          items:
+            $ref: "#/components/schemas/TranslationLanguage"
+        supportedPairs:
+          type: array
+          minItems: 1
+          uniqueItems: true
+          items:
+            $ref: "#/components/schemas/LanguagePair"
+        mediaLimits:
+          $ref: "#/components/schemas/MediaLimits"
+        dailyInstallationQuota:
+          type: integer
+          const: 20
+        dailyGlobalQuota:
+          type: integer
+          const: 100
+        disclosure:
+          $ref: "#/components/schemas/LegalDisclosure"
+
+    AnonymousInstallationCreated:
+      type: object
+      additionalProperties: false
+      required: [contractVersion, installationRef, credential, createdAt]
+      properties:
+        contractVersion:
+          type: string
+          const: "1.0"
+        installationRef:
+          type: string
+          format: uuid
+        credential:
+          type: string
+          minLength: 32
+          maxLength: 512
+          readOnly: true
+        createdAt:
+          type: string
+          format: date-time
+
+    AnonymousSessionRequest:
+      type: object
+      additionalProperties: false
+      required: [installationRef]
+      properties:
+        installationRef:
+          type: string
+          format: uuid
+
+    AnonymousSessionCreated:
+      type: object
+      additionalProperties: false
+      required: [contractVersion, accessToken, expiresAt]
+      properties:
+        contractVersion:
+          type: string
+          const: "1.0"
+        accessToken:
+          type: string
+          minLength: 32
+          maxLength: 4096
+          readOnly: true
+        expiresAt:
+          type: string
+          format: date-time
+
+    PageSubmission:
+      type: object
+      additionalProperties: false
+      required:
+        - page
+        - mimeType
+        - byteSize
+        - widthPx
+        - heightPx
+        - sourceLanguage
+        - targetLanguage
+        - disclosureVersion
+        - attemptRef
+      properties:
+        page:
+          type: string
+          format: binary
+        mimeType:
+          type: string
+          enum: [image/jpeg, image/png, image/webp]
+        byteSize:
+          type: integer
+          format: int64
+          minimum: 1
+        widthPx:
+          type: integer
+          minimum: 1
+        heightPx:
+          type: integer
+          minimum: 1
+        sourceLanguage:
+          $ref: "#/components/schemas/TranslationLanguage"
+        targetLanguage:
+          $ref: "#/components/schemas/TranslationLanguage"
+        disclosureVersion:
+          type: string
+          minLength: 1
+          maxLength: 64
+        attemptRef:
+          type: string
+          format: uuid
+          description: Identificador opaco; não é ID local de projeto ou página.
+
+    PageJobEnvelope:
+      type: object
+      additionalProperties: false
+      required: [contractVersion, jobRef, status, serverTime]
+      properties:
+        contractVersion:
+          type: string
+          const: "1.0"
+        jobRef:
+          type: string
+          format: uuid
+        status:
+          $ref: "#/components/schemas/RemoteJobStatus"
+        serverTime:
+          type: string
+          format: date-time
+        error:
+          oneOf:
+            - $ref: "#/components/schemas/JobError"
+            - type: "null"
+
+    JobError:
+      type: object
+      additionalProperties: false
+      required: [code]
+      properties:
+        code:
+          $ref: "#/components/schemas/GatewayErrorCode"
+        retryable:
+          type: boolean
+          default: false
+
+    GatewayProblem:
+      type: object
+      additionalProperties: false
+      required: [type, title, status, code, contractVersion, correlationRef]
+      properties:
+        type:
+          type: string
+          format: uri
+        title:
+          type: string
+          maxLength: 160
+        status:
+          type: integer
+          minimum: 400
+          maximum: 599
+        code:
+          $ref: "#/components/schemas/GatewayErrorCode"
+        contractVersion:
+          type: string
+          const: "1.0"
+        correlationRef:
+          type: string
+          format: uuid
+        retryable:
+          type: boolean
+          default: false

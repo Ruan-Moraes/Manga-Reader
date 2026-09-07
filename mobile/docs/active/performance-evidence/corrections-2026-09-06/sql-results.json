@@ -1,0 +1,213 @@
+{
+    "environment": {
+        "node": "v22.23.1",
+        "sqlite": "node:sqlite; memory only; not Expo SQLite"
+    },
+    "baselineSha256": "d731292fea6be7043699558cd52664278d222409c5328cbfc117841db79e4c68",
+    "currentSha256": "f87944b217415de2b9094f9d24f0ff62cede910eafdb6f090c7c74d7bf4acc20",
+    "fixture": "generated synthetic rows; no image decode; counts exclude setup and final reload",
+    "rollbackAndGuards": "pass",
+    "results": [
+        {
+            "count": 10,
+            "before": [
+                {
+                    "count": 10,
+                    "readCalls": 40,
+                    "rowsMaterialized": 220,
+                    "queryPlan": ["SEARCH local_media_import_items USING INDEX sqlite_autoindex_local_media_import_items_1 (id=?)"]
+                },
+                {
+                    "count": 10,
+                    "readCalls": 40,
+                    "rowsMaterialized": 220,
+                    "queryPlan": ["SEARCH local_media_import_items USING INDEX sqlite_autoindex_local_media_import_items_1 (id=?)"]
+                },
+                {
+                    "count": 10,
+                    "readCalls": 40,
+                    "rowsMaterialized": 220,
+                    "queryPlan": ["SEARCH local_media_import_items USING INDEX sqlite_autoindex_local_media_import_items_1 (id=?)"]
+                },
+                {
+                    "count": 10,
+                    "readCalls": 40,
+                    "rowsMaterialized": 220,
+                    "queryPlan": ["SEARCH local_media_import_items USING INDEX sqlite_autoindex_local_media_import_items_1 (id=?)"]
+                },
+                {
+                    "count": 10,
+                    "readCalls": 40,
+                    "rowsMaterialized": 220,
+                    "queryPlan": ["SEARCH local_media_import_items USING INDEX sqlite_autoindex_local_media_import_items_1 (id=?)"]
+                }
+            ],
+            "after": [
+                {
+                    "count": 10,
+                    "readCalls": 20,
+                    "rowsMaterialized": 20,
+                    "queryPlan": ["SEARCH local_media_import_items USING INDEX sqlite_autoindex_local_media_import_items_1 (id=?)"]
+                },
+                {
+                    "count": 10,
+                    "readCalls": 20,
+                    "rowsMaterialized": 20,
+                    "queryPlan": ["SEARCH local_media_import_items USING INDEX sqlite_autoindex_local_media_import_items_1 (id=?)"]
+                },
+                {
+                    "count": 10,
+                    "readCalls": 20,
+                    "rowsMaterialized": 20,
+                    "queryPlan": ["SEARCH local_media_import_items USING INDEX sqlite_autoindex_local_media_import_items_1 (id=?)"]
+                },
+                {
+                    "count": 10,
+                    "readCalls": 20,
+                    "rowsMaterialized": 20,
+                    "queryPlan": ["SEARCH local_media_import_items USING INDEX sqlite_autoindex_local_media_import_items_1 (id=?)"]
+                },
+                {
+                    "count": 10,
+                    "readCalls": 20,
+                    "rowsMaterialized": 20,
+                    "queryPlan": ["SEARCH local_media_import_items USING INDEX sqlite_autoindex_local_media_import_items_1 (id=?)"]
+                }
+            ]
+        },
+        {
+            "count": 67,
+            "before": [
+                {
+                    "count": 67,
+                    "readCalls": 268,
+                    "rowsMaterialized": 9112,
+                    "queryPlan": ["SEARCH local_media_import_items USING INDEX sqlite_autoindex_local_media_import_items_1 (id=?)"]
+                },
+                {
+                    "count": 67,
+                    "readCalls": 268,
+                    "rowsMaterialized": 9112,
+                    "queryPlan": ["SEARCH local_media_import_items USING INDEX sqlite_autoindex_local_media_import_items_1 (id=?)"]
+                },
+                {
+                    "count": 67,
+                    "readCalls": 268,
+                    "rowsMaterialized": 9112,
+                    "queryPlan": ["SEARCH local_media_import_items USING INDEX sqlite_autoindex_local_media_import_items_1 (id=?)"]
+                },
+                {
+                    "count": 67,
+                    "readCalls": 268,
+                    "rowsMaterialized": 9112,
+                    "queryPlan": ["SEARCH local_media_import_items USING INDEX sqlite_autoindex_local_media_import_items_1 (id=?)"]
+                },
+                {
+                    "count": 67,
+                    "readCalls": 268,
+                    "rowsMaterialized": 9112,
+                    "queryPlan": ["SEARCH local_media_import_items USING INDEX sqlite_autoindex_local_media_import_items_1 (id=?)"]
+                }
+            ],
+            "after": [
+                {
+                    "count": 67,
+                    "readCalls": 134,
+                    "rowsMaterialized": 134,
+                    "queryPlan": ["SEARCH local_media_import_items USING INDEX sqlite_autoindex_local_media_import_items_1 (id=?)"]
+                },
+                {
+                    "count": 67,
+                    "readCalls": 134,
+                    "rowsMaterialized": 134,
+                    "queryPlan": ["SEARCH local_media_import_items USING INDEX sqlite_autoindex_local_media_import_items_1 (id=?)"]
+                },
+                {
+                    "count": 67,
+                    "readCalls": 134,
+                    "rowsMaterialized": 134,
+                    "queryPlan": ["SEARCH local_media_import_items USING INDEX sqlite_autoindex_local_media_import_items_1 (id=?)"]
+                },
+                {
+                    "count": 67,
+                    "readCalls": 134,
+                    "rowsMaterialized": 134,
+                    "queryPlan": ["SEARCH local_media_import_items USING INDEX sqlite_autoindex_local_media_import_items_1 (id=?)"]
+                },
+                {
+                    "count": 67,
+                    "readCalls": 134,
+                    "rowsMaterialized": 134,
+                    "queryPlan": ["SEARCH local_media_import_items USING INDEX sqlite_autoindex_local_media_import_items_1 (id=?)"]
+                }
+            ]
+        },
+        {
+            "count": 200,
+            "before": [
+                {
+                    "count": 200,
+                    "readCalls": 800,
+                    "rowsMaterialized": 80400,
+                    "queryPlan": ["SEARCH local_media_import_items USING INDEX sqlite_autoindex_local_media_import_items_1 (id=?)"]
+                },
+                {
+                    "count": 200,
+                    "readCalls": 800,
+                    "rowsMaterialized": 80400,
+                    "queryPlan": ["SEARCH local_media_import_items USING INDEX sqlite_autoindex_local_media_import_items_1 (id=?)"]
+                },
+                {
+                    "count": 200,
+                    "readCalls": 800,
+                    "rowsMaterialized": 80400,
+                    "queryPlan": ["SEARCH local_media_import_items USING INDEX sqlite_autoindex_local_media_import_items_1 (id=?)"]
+                },
+                {
+                    "count": 200,
+                    "readCalls": 800,
+                    "rowsMaterialized": 80400,
+                    "queryPlan": ["SEARCH local_media_import_items USING INDEX sqlite_autoindex_local_media_import_items_1 (id=?)"]
+                },
+                {
+                    "count": 200,
+                    "readCalls": 800,
+                    "rowsMaterialized": 80400,
+                    "queryPlan": ["SEARCH local_media_import_items USING INDEX sqlite_autoindex_local_media_import_items_1 (id=?)"]
+                }
+            ],
+            "after": [
+                {
+                    "count": 200,
+                    "readCalls": 400,
+                    "rowsMaterialized": 400,
+                    "queryPlan": ["SEARCH local_media_import_items USING INDEX sqlite_autoindex_local_media_import_items_1 (id=?)"]
+                },
+                {
+                    "count": 200,
+                    "readCalls": 400,
+                    "rowsMaterialized": 400,
+                    "queryPlan": ["SEARCH local_media_import_items USING INDEX sqlite_autoindex_local_media_import_items_1 (id=?)"]
+                },
+                {
+                    "count": 200,
+                    "readCalls": 400,
+                    "rowsMaterialized": 400,
+                    "queryPlan": ["SEARCH local_media_import_items USING INDEX sqlite_autoindex_local_media_import_items_1 (id=?)"]
+                },
+                {
+                    "count": 200,
+                    "readCalls": 400,
+                    "rowsMaterialized": 400,
+                    "queryPlan": ["SEARCH local_media_import_items USING INDEX sqlite_autoindex_local_media_import_items_1 (id=?)"]
+                },
+                {
+                    "count": 200,
+                    "readCalls": 400,
+                    "rowsMaterialized": 400,
+                    "queryPlan": ["SEARCH local_media_import_items USING INDEX sqlite_autoindex_local_media_import_items_1 (id=?)"]
+                }
+            ]
+        }
+    ]
+}

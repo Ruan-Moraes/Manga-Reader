@@ -1,8 +1,8 @@
 import { Text, View } from 'react-native';
 import { Image } from 'expo-image';
 
-import { useTheme } from '@/src/shared/theme';
-import { FONTS } from '@/src/shared/theme';
+import { useTheme } from '@/shared/theme';
+import { FONTS } from '@/shared/theme';
 
 interface Props {
     src?: string | null;
@@ -31,7 +31,7 @@ export function Avatar({ src, name, size = 40 }: Props) {
                 justifyContent: 'center',
             }}
         >
-            <Text style={{ fontFamily: FONTS.bold, fontSize: size * 0.35, color: tokens.bg }}>{initials}</Text>
+            <Text style={{ fontFamily: FONTS.bold, fontSize: size * 0.35, color: tokens.onAccent }}>{initials}</Text>
         </View>
     );
 }

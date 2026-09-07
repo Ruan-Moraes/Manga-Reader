@@ -1,0 +1,4 @@
+interface:
+    display_name: 'SDD Task Planner'
+    short_description: 'Deriva tasks rastreáveis de specs aprovadas'
+    default_prompt: 'Use $sdd-task-planner para gerar tasks de uma Target Spec mobile aprovada, com gate aberto.'

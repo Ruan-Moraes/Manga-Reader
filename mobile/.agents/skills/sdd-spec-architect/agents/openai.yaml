@@ -1,0 +1,4 @@
+interface:
+    display_name: 'SDD Spec Architect'
+    short_description: 'Cria Target Specs claras e testáveis'
+    default_prompt: 'Use $sdd-spec-architect para criar uma Target Spec draft mobile e declarar seu gate e dependências.'

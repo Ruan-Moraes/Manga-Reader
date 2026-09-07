@@ -1,16 +1,25 @@
 {
     "expo": {
-        "name": "mobile",
-        "slug": "mobile",
+        "name": "Toonlira",
+        "slug": "toonlira",
         "version": "1.0.0",
-        "orientation": "portrait",
+        "orientation": "default",
         "icon": "./assets/images/icon.png",
-        "scheme": "mobile",
+        "scheme": "toonlira",
         "userInterfaceStyle": "automatic",
         "ios": {
+            "bundleIdentifier": "com.toonlira.app",
             "supportsTablet": true
         },
         "android": {
+            "package": "com.toonlira.app",
+            "blockedPermissions": [
+                "android.permission.CAMERA",
+                "android.permission.RECORD_AUDIO",
+                "android.permission.READ_MEDIA_IMAGES",
+                "android.permission.READ_EXTERNAL_STORAGE",
+                "android.permission.WRITE_EXTERNAL_STORAGE"
+            ],
             "adaptiveIcon": {
                 "backgroundColor": "#E6F4FE",
                 "foregroundImage": "./assets/images/android-icon-foreground.png",
@@ -39,7 +48,16 @@
             ],
             "expo-font",
             "expo-secure-store",
-            "expo-web-browser"
+            "expo-web-browser",
+            [
+                "expo-image-picker",
+                {
+                    "cameraPermission": false,
+                    "microphonePermission": false,
+                    "photosPermission": "Select only the images you want to import into Toonlira."
+                }
+            ],
+            "expo-sqlite"
         ],
         "experiments": {
             "typedRoutes": true

@@ -1,0 +1,13 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Landing Dev (5174)" type="js.build_tools.npm" folderName="Frontend">
+    <package-json value="$PROJECT_DIR$/web/package.json" />
+    <command value="run" />
+    <scripts>
+      <script value="dev:landing" />
+    </scripts>
+    <node-interpreter value="project" />
+    <package-manager value="pnpm" />
+    <envs />
+    <method v="2" />
+  </configuration>
+</component>

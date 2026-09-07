@@ -1,0 +1,25 @@
+{
+    "date": "2026-09-06",
+    "head": "d29e3cfaf71e53e6ec8a5a21f0a2d0f2c7ad7955",
+    "scope": "C02/C05 local working tree; includes pre-existing changes",
+    "files": {
+        "src/widgets/chapter-reader/ui/ReaderViewport.tsx": "eae85b803a79dd91a1d96ed52e2f8da3300bfabe2e181a6d328b85e5fdd85267",
+        "src/widgets/chapter-reader/model/viewport.ts": "9b14dc39d98a9c931b8f4d72eee3e2f4121aa6cbad778cda837a93f0fe03edbb",
+        "src/widgets/chapter-reader/ui/__tests__/ReaderViewport.test.tsx": "a075e9e0980ad4de7cdc41ac2e3f8785f6712c41b728872e57790ed9d5f0b381",
+        "src/widgets/chapter-reader/model/__tests__/viewport.test.ts": "1e6490671c8d41f9f0dc5fcb6d23902bc338e434e982849dfc06da893ac38896",
+        "src/shared/api/fileDownloadAdapter.ts": "34a34ba799a25c8ccfd52d03b911be9f41c132a03b1fbaad21844b7afb43ce61",
+        "src/shared/api/index.ts": "587dae0feae844a3da65eb74d27b521e06c3b8e84d0fcba931adcd84ede4ad4e",
+        "src/shared/files/jsonExport.ts": "804db767e55a850edf7acf02b0af07664f7d35cd7c297845777157be63c61115",
+        "src/shared/files/__tests__/jsonExport.test.ts": "b45e38bb438c030973ca15375caa6f79f223c30fff6a11c669a8fa4f8d55f3b1",
+        "src/features/data-controls/api/dataControlsApi.ts": "c14e1baecdea785490be6bf2a1811c2bee74cd6ca80453cb9e220dc8e07e74e0",
+        "src/features/data-controls/api/__tests__/dataControlsApi.test.ts": "3da5453ce0441d3d48f1ea45a4dd54d5f8edd19bd2d815c82cf75899458fb692",
+        "src/features/data-controls/model/dataControls.ts": "9bc7381b7fe4be10c26e052d0c765da0edb80402453f0d2c7bf0d411546a70de",
+        "src/features/data-controls/model/__tests__/dataControls.test.ts": "fe0b962247838ac81ce1b73204a1bce277f26071eb1957daef88bd916c8ad03f",
+        "package.json": "ba72a67ebfa5f1c005ce8f7bec8697985996b9e1aa79f31c72c08f7872a52c71",
+        "pnpm-lock.yaml": "a52e7d97008d813b1b32114032932d43ae9c30808eec33bdd76a4ac4b4f1059e",
+        "app.json": "0d9829fbb71e1a235c8c4a27a896fb35fba047de404961e1aa8b382317aaa6a5",
+        "node_modules/expo-file-system/src/legacy/FileSystem.ts": "46b2c457480345d91b2c7bab27fa83ca2b3b13351798c3759c38c5da3b94bb7f",
+        "node_modules/expo-file-system/android/src/main/java/expo/modules/filesystem/legacy/FileSystemLegacyModule.kt": "7f9f446ccaf708492b3b9c5bc3be12b690e51d3c14ad0c3ee1d3aa001e78c925",
+        "node_modules/expo-file-system/ios/Legacy/EXSessionTasks/EXSessionDownloadTaskDelegate.m": "5d33ac4bfa3a839390dee1f986666945c3a31fc12d6e82da069585cb28cc5c0a"
+    }
+}

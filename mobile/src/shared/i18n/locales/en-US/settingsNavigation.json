@@ -1,0 +1,112 @@
+{
+    "index": {
+        "title": "Settings",
+        "eyebrow": "Preferences",
+        "editorialTitle": "Made for you.",
+        "subtitle": "Tune reading, language, privacy, and data without losing your flow."
+    },
+    "groups": {
+        "app": {
+            "title": "App",
+            "description": "Appearance, accessibility, language, and region."
+        },
+        "reading": {
+            "title": "Reading",
+            "description": "Choose how pages fit and move across the screen."
+        },
+        "device": {
+            "title": "Device",
+            "description": "Manage storage and view app information."
+        },
+        "account": {
+            "title": "Account",
+            "description": "Preferences synced and protected by your account."
+        }
+    },
+    "sections": {
+        "appearance": {
+            "title": "Appearance and accessibility",
+            "editorialTitle": "Reading that is easy on the eyes.",
+            "description": "Theme, text, density, motion, and contrast."
+        },
+        "locale": {
+            "title": "Language and region",
+            "editorialTitle": "Your language, your context.",
+            "description": "Interface language, dates, and time zone."
+        },
+        "contentLanguages": {
+            "title": "Content languages",
+            "editorialTitle": "Prioritize what you understand.",
+            "description": "Choose and order your preferred content languages."
+        },
+        "reader": {
+            "title": "Reader",
+            "editorialTitle": "Every page at the right pace.",
+            "description": "Reading mode, direction, fit, and page presentation."
+        },
+        "privacy": {
+            "title": "Privacy",
+            "editorialTitle": "Control what stays visible.",
+            "description": "Visibility, tracking, and sensitive content."
+        },
+        "data": {
+            "title": "Data and storage",
+            "editorialTitle": "Your data under control.",
+            "description": "Cache, export, and account history."
+        },
+        "about": {
+            "title": "About",
+            "editorialTitle": "The app, without mystery.",
+            "description": "App version and available official links."
+        }
+    },
+    "access": {
+        "loginRequired": "Login required",
+        "hint": "Sign in to access this setting. You will return here after login."
+    },
+    "sync": {
+        "local": "Saved on this device",
+        "pending": "Change pending",
+        "syncing": "Syncing",
+        "synced": "Synced",
+        "error": "Unable to sync. Your change remains saved on this device.",
+        "retry": "Try syncing again"
+    },
+    "about": {
+        "title": "About",
+        "version": "Version",
+        "build": "Build",
+        "appSection": {
+            "title": "Application",
+            "description": "Information about this installation."
+        },
+        "linksSection": {
+            "title": "Official links",
+            "description": "Help, documents, and project code."
+        },
+        "links": {
+            "support": "Support",
+            "terms": "Terms of use",
+            "privacy": "Privacy policy",
+            "project": "Project"
+        },
+        "linkDescriptions": {
+            "support": "Find help for using the application.",
+            "terms": "Read the platform terms of use.",
+            "privacy": "Learn how your data is handled.",
+            "project": "Explore the project's code and development."
+        },
+        "openError": "Unable to open this link.",
+        "retry": "Try opening again"
+    },
+    "actions": {
+        "open": "Open {{section}}",
+        "back": "Back",
+        "login": "Sign in",
+        "settings": "Open settings",
+        "backToModules": "Back to modules"
+    },
+    "errors": {
+        "externalLink": "Unable to open the external link. Try again."
+    }
+}

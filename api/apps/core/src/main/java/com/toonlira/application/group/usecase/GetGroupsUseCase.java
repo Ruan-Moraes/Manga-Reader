@@ -1,0 +1,44 @@
+package com.toonlira.application.group.usecase;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.toonlira.application.group.port.GroupRepositoryPort;
+import com.toonlira.domain.group.entity.Group;
+import com.toonlira.shared.domain.SearchText;
+
+import lombok.RequiredArgsConstructor;
+
+/**
+ * Retorna todos os grupos de tradução.
+ */
+@Service
+@RequiredArgsConstructor
+public class GetGroupsUseCase {
+    private final GroupRepositoryPort groupRepository;
+
+    @Transactional(readOnly = true)
+    public Page<Group> execute(Pageable pageable) {
+        Page<Group> page = groupRepository.findAllWithUsers(pageable);
+
+        page.getContent().forEach(group -> {
+            group.getTranslatedWorks().size();
+        });
+
+        return page;
+    }
+
+    @Transactional(readOnly = true)
+    public Page<Group> execute(String query, Pageable pageable) {
+        if (query == null || query.isBlank()) return execute(pageable);
+
+        Page<Group> page = groupRepository.searchCatalog(SearchText.normalize(query), pageable);
+        page.getContent().forEach(group -> {
+            group.getGroupUsers().size();
+            group.getTranslatedWorks().size();
+        });
+        return page;
+    }
+}

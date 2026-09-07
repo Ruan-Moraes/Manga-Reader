@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { I18nextProvider } from 'react-i18next';
 
 import i18n from './i18n/config';
+import { initializeThemePreference } from './shared/config/theme';
 
 import App from './App';
 
@@ -21,6 +22,8 @@ const queryClient = new QueryClient({
 const root = document.getElementById('root');
 
 if (!root) throw new Error('Root element not found');
+
+initializeThemePreference();
 
 createRoot(root).render(
     <StrictMode>

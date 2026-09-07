@@ -1,0 +1,12 @@
+package com.toonlira.presentation.admin.dto;
+
+import jakarta.validation.constraints.NotBlank;
+
+/**
+ * Requisição para atualização de status de pagamento.
+ */
+public record UpdatePaymentStatusRequest(
+        @NotBlank(message = "{validation.status.required}")
+        String status
+) {
+}

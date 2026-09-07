@@ -1,12 +1,14 @@
-import { Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
+
+import { navigateBackOrReplace, ROUTES } from '@/shared/navigation';
+import { EmptyState, ScreenScaffold } from '@/shared/ui';
 
 export function ModalPage() {
     const { t } = useTranslation('common');
 
     return (
-        <View className="flex-1 items-center justify-center">
-            <Text className="text-xl font-bold text-gray-900">{t('modal.title')}</Text>
-        </View>
+        <ScreenScaffold compact backLabel={t('navigation.dismiss')} onBack={() => navigateBackOrReplace(ROUTES.ROOT)} title={t('modal.title')}>
+            <EmptyState title={t('modal.title')} />
+        </ScreenScaffold>
     );
 }

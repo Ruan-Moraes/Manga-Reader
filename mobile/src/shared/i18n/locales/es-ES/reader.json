@@ -1,0 +1,89 @@
+{
+    "actions": {
+        "controlsHint": "Abre o cierra los controles y preferencias del lector",
+        "exit": "Salir del lector",
+        "hideControls": "Ocultar controles",
+        "nextPage": "Página siguiente",
+        "previousPage": "Página anterior",
+        "retry": "Intentar de nuevo",
+        "retryImage": "Intentar cargar la página {{page}} de nuevo",
+        "retryProgress": "Intentar sincronizar el progreso de nuevo",
+        "retryProgressHydration": "Intentar cargar el progreso de nuevo",
+        "showControls": "Mostrar controles"
+    },
+    "controls": { "decrease": "Disminuir {{label}}", "increase": "Aumentar {{label}}" },
+    "errors": {
+        "image": "No se pudo cargar esta página.",
+        "progress": "El progreso está pendiente. Toca para intentarlo de nuevo.",
+        "progressHydration": "No se pudo cargar tu progreso. La lectura sigue disponible."
+    },
+    "options": {
+        "AUTO": "Automática",
+        "BLACK": "Negro",
+        "DARK": "Oscuro",
+        "DOUBLE": "Doble",
+        "HEIGHT": "Altura",
+        "HIGH": "Alta",
+        "LIGHT": "Claro",
+        "LOW": "Baja",
+        "LTR": "Izquierda a derecha",
+        "MEDIUM": "Media",
+        "ORIGINAL": "Original",
+        "PAGED": "Paginado",
+        "PAPER": "Papel",
+        "RTL": "Derecha a izquierda",
+        "VERTICAL": "Vertical",
+        "WEBTOON": "Webtoon",
+        "WHITE": "Blanco",
+        "WIDTH": "Ancho"
+    },
+    "resume": {
+        "continue": "Continuar lectura",
+        "description": "Tu progreso más reciente está en el capítulo {{chapter}}, página {{page}}.",
+        "requested": "Abrir capítulo solicitado",
+        "title": "¿Continuar donde lo dejaste?"
+    },
+    "settings": {
+        "autoMarkRead": "Marcar automáticamente como leído",
+        "background": "Fondo",
+        "closeSelection": "Cerrar selección",
+        "descriptions": {
+            "autoMarkRead": "Actualiza el progreso al completar la página.",
+            "gap": "Espacio visual entre páginas en el flujo vertical.",
+            "mode": {
+                "DOUBLE": "Dos páginas lado a lado.",
+                "PAGED": "Una página a la vez.",
+                "VERTICAL": "Flujo continuo para lectura por desplazamiento."
+            },
+            "preload": "Cantidad de páginas preparadas alrededor de la actual.",
+            "quality": {
+                "AUTO": "Equilibra nitidez y uso de datos.",
+                "HIGH": "Prioriza nitidez con mayor uso de datos.",
+                "LOW": "Prioriza ahorro de datos y carga más rápida.",
+                "MEDIUM": "Mantiene buena nitidez con uso moderado de datos.",
+                "ORIGINAL": "Conserva la resolución original de la página."
+            },
+            "saturation": "Ajusta la intensidad de color de las páginas."
+        },
+        "direction": "Dirección",
+        "fit": "Ajuste",
+        "gap": "Espaciado",
+        "mode": "Modo",
+        "preload": "Precarga",
+        "quality": "Calidad",
+        "saturation": "Saturación",
+        "sections": {
+            "behavior": { "description": "Espaciado, precarga y actualización del progreso.", "title": "Comportamiento" },
+            "image": { "description": "Calidad, fondo y tratamiento visual de las páginas.", "title": "Imagen" },
+            "navigation": { "description": "Cómo avanzan las páginas y ocupan la pantalla.", "title": "Navegación" }
+        },
+        "values": { "pages": "{{value}} páginas", "percent": "{{value}}%", "pixels": "{{value}} px" }
+    },
+    "states": {
+        "error": "No se pudo cargar el capítulo.",
+        "loading": "Cargando capítulo…",
+        "safeExit": "Puedes intentarlo de nuevo o volver con seguridad.",
+        "unavailable": "Este capítulo no tiene páginas disponibles."
+    },
+    "viewport": { "page": "Página {{page}} de {{total}}" }
+}

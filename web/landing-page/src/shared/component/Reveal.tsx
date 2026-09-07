@@ -17,6 +17,11 @@ interface RevealProps {
     className?: string;
 }
 
+type RevealStyle = CSSProperties & {
+    '--reveal-delay'?: string;
+    '--reveal-y'?: string;
+};
+
 /**
  * Wrapper de entrada (fade + slide) ao entrar na viewport.
  * Elementos acima da dobra aparecem imediatamente; respeita prefers-reduced-motion.
@@ -79,14 +84,12 @@ export default function Reveal({
         as,
         {
             ref,
-            className,
+            className: `translate-y-[var(--reveal-y)] opacity-0 transition-[opacity,translate] duration-600 ease-out [transition-delay:var(--reveal-delay)] [will-change:opacity,translate] motion-reduce:translate-y-0 motion-reduce:!opacity-100 ${shown ? '!translate-y-0 !opacity-100' : ''} ${className ?? ''}`,
             style: {
                 ...style,
-                opacity: shown ? 1 : 0,
-                transform: shown ? 'none' : `translateY(${y}px)`,
-                transition: `opacity .6s ease ${delay}ms, transform .6s ease ${delay}ms`,
-                willChange: 'opacity, transform',
-            },
+                '--reveal-delay': `${delay}ms`,
+                '--reveal-y': `${y}px`,
+            } as RevealStyle,
         },
         children,
     );

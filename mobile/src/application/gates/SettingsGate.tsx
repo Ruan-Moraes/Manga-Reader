@@ -8,11 +8,14 @@ import {
     NunitoSans_800ExtraBold,
     NunitoSans_800ExtraBold_Italic,
 } from '@expo-google-fonts/nunito-sans';
+import { useTranslation } from 'react-i18next';
 
-import i18n from '@/src/shared/i18n';
-import { useSettingsStore } from '@/src/shared/store';
+import { useSettingsStore } from '@/features/manage-settings';
+import i18n from '@/shared/i18n';
+import { StartupFeedback } from '@/shared/ui';
 
 export function SettingsGate({ children }: PropsWithChildren) {
+    const { t } = useTranslation('launcher');
     const [fontsLoaded, fontError] = useFonts({
         NunitoSans_400Regular,
         NunitoSans_700Bold,
@@ -44,7 +47,7 @@ export function SettingsGate({ children }: PropsWithChildren) {
         }
     }, [fontsLoaded, isSettingsHydrated]);
 
-    if (!fontsLoaded || !isSettingsHydrated) return null;
+    if (!fontsLoaded || !isSettingsHydrated) return <StartupFeedback label={t('startup.settings')} />;
 
     return children;
 }

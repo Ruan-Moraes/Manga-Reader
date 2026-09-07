@@ -1,20 +1,25 @@
 import { Stack } from 'expo-router';
 
-import { useTheme } from '@/src/shared/theme';
+import { useTheme } from '@/shared/theme';
+import { READER_SCREEN_OPTIONS } from '@/widgets/chapter-reader';
 
 export function RootNavigator() {
-    const { tokens } = useTheme();
+    const { decorativeMotionEnabled, tokens } = useTheme();
 
     return (
         <Stack
             screenOptions={{
                 headerShown: false,
                 contentStyle: { backgroundColor: tokens.bg },
-                animation: 'fade',
+                animation: decorativeMotionEnabled ? 'fade' : 'none',
             }}
         >
-            <Stack.Screen name="(tabs)" />
+            <Stack.Screen name="index" />
             <Stack.Screen name="(auth)" />
+            <Stack.Screen name="offline-translation" />
+            <Stack.Screen name="platform" />
+            <Stack.Screen name="reader" options={READER_SCREEN_OPTIONS} />
+            <Stack.Screen name="settings" />
             <Stack.Screen name="+not-found" />
         </Stack>
     );

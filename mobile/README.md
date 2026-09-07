@@ -1,242 +1,267 @@
-# Manga Reader — Mobile App
+# Toonlira Mobile — `mobile/`
 
-React Native + Expo. Segue a **mesma arquitetura FSD** do frontend web (`/web/manga-reader/`).
+Aplicativo React Native com Expo SDK 57 e Expo Router. O app inicia em um
+launcher público; a plataforma autenticada permanece em construção e suas tabs
+de conteúdo não são expostas.
 
-> **Leia este documento antes de qualquer implementação.** Ele é a fonte de verdade para decisões arquiteturais do app mobile.
+Este README é a referência técnica do módulo. Os contratos comportamentais e o
+workflow de desenvolvimento ficam em [`docs/specs/`](docs/specs/README.md), sob os
+guardrails de [`AGENTS.md`](AGENTS.md).
 
-**Estado atual:** Fase 0 (fundação — tema, i18n, stores, providers) implementada; Fase 1 (Auth) em andamento — rotas `(auth)/login`, `(auth)/register`, `(auth)/forgot` e tabs base (`index`, `library`, `forum`, `profile`) existem; telas das tabs ainda são placeholders.
+O baseline brownfield possui paridade arquivo→spec verificada por
+[`docs/specs/coverage.json`](docs/specs/coverage.json). Código existente é descrito por
+`OBS-*`; mudanças futuras continuam exigindo Target Spec aprovada com `AC-*`.
+Código executado com verificação real pendente usa `verification-pending` e não é
+apresentado como concluído.
 
----
+## Estado atual
 
-## Stack
+Implementado:
 
-| Camada        | Tecnologia                                                               |
-| ------------- | ------------------------------------------------------------------------ |
-| Framework     | React Native + Expo SDK (latest)                                         |
-| Linguagem     | TypeScript                                                               |
-| Navegação     | Expo Router (file-based, deep links nativos)                             |
-| Estado global | Zustand                                                                  |
-| Server state  | TanStack Query v5                                                        |
-| HTTP          | Axios + interceptors (auth, refresh token)                               |
-| Forms         | React Hook Form + Zod                                                    |
-| UI            | NativeWind (Tailwind para RN)                                            |
-| Tema          | `@shopify/restyle` ou design tokens via NativeWind — escuro/claro nativo |
-| i18n          | `i18next` + `react-i18next` (pt-BR, en-US, es-ES)                        |
-| Auth storage  | Expo SecureStore (JWT)                                                   |
-| Imagens       | Expo Image (cache nativo)                                                |
-| Leitor        | FlashList horizontal + pré-fetch de páginas                              |
-| Notificações  | Expo Notifications                                                       |
-| OTA updates   | Expo Updates                                                             |
+- seletor público entre plataforma e tradução local-first;
+- importação guest-first de uma ou várias imagens pelo seletor do sistema;
+- revisão virtualizada do draft em Grade minimalista ou Lista, preview ampliado privado, adição/remoção, ordenação persistente por arraste na imagem, aviso de possível duplicata e confirmação local;
+- seleção independente e persistente entre sete idiomas e 42 pares direcionais,
+  com chinês simplificado e tradicional separados;
+- validação local sequencial de JPEG, PNG e WebP estáticos pelos bytes reais, com galeria virtualizada, resumo do lote, correção localizada por página, limites defensivos, retry seletivo e revalidação física da otimização de persistência concluída;
+- preparação local de projeto privado com páginas ordenadas, snapshot validado,
+  SQLite v6, estados canônicos e restauração determinística validada em Android
+  físico;
+- fundação do processamento remoto com SQLite v7, capabilities validadas,
+  consentimento contextual trilíngue, identidade anônima no SecureStore,
+  submissão idempotente da primeira página, retomada e cancelamento; o upload
+  permanece fail-closed enquanto o gateway estiver desabilitado;
+- migração SQLite v1/v2/v3→v4 preservando drafts, itens, ordem, idiomas e resultados por página;
+- draft ativo durável com metadados em SQLite e arquivos no diretório privado do app;
+- cancelamento, substituição atômica, recuperação do resultado pendente Android e erros localizados, sem tradução simulada;
+- status autenticado da plataforma, sem expor tabs incompletas;
+- rotas de login, cadastro e recuperação de senha com retorno interno seguro;
+- leitor público de capítulos com modos vertical, paginado e duplo, preferências e progresso autenticado;
+- tema claro/escuro com tokens e preferência do sistema;
+- i18n em `pt-BR`, `en-US` e `es-ES`;
+- preferências locais v2 com merge seletivo na autenticação;
+- stores Zustand de sessão (`entities/session`) e configurações;
+- cliente Axios com access token, refresh single-flight e `Accept-Language`;
+- armazenamento de tokens no Expo SecureStore;
+- TanStack Query e componentes básicos reutilizáveis;
+- testes automatizados para os riscos centrais de fundação, auth e navegação.
 
----
+Ainda não implementado:
 
-## Fundação — obrigatória antes de qualquer tela
+- OCR, tradução, renderização e leitor de projetos locais
+  (`MOB-FEAT-018..021` já possuem specs aprovadas);
+- catálogo, detalhes de obras e biblioteca real;
+- fórum, perfil e outras tabs com dados;
+- testes E2E;
+- notificações, cache offline e build/release com EAS.
 
-Estas estruturas **devem ser implementadas no primeiro commit**, antes de qualquer feature ou tela. A ausência delas na web gerou dívida técnica que foi sendo corrigida em cada canto — o mobile não repete isso.
+## Stack instalada
 
-### 1. Tema escuro/claro
+| Área                     | Tecnologia                              |
+| ------------------------ | --------------------------------------- |
+| Framework                | Expo 57, React Native 0.86 e React 19.2 |
+| Navegação                | Expo Router 57                          |
+| Linguagem                | TypeScript 6.0                          |
+| Estado global            | Zustand 5                               |
+| Server state             | TanStack Query 5                        |
+| HTTP                     | Axios                                   |
+| Formulários              | React Hook Form + Zod                   |
+| Estilos                  | NativeWind 4 + Tailwind CSS 3           |
+| i18n                     | i18next + react-i18next                 |
+| Armazenamento sensível   | Expo SecureStore                        |
+| Dados locais relacionais | Expo SQLite                             |
+| Arquivos privados        | Expo FileSystem                         |
+| Seleção de imagens       | Expo ImagePicker / picker do sistema    |
+| Imagens e fontes         | Expo Image + Nunito Sans                |
+| Ordenação por gesto      | Reanimated + Worklets + Gesture Handler |
 
-- Design tokens centralizados (cores, espaçamentos, tipografia) desde o início
-- Nenhum valor de cor hardcoded em componente — sempre via token
-- Suporte a `colorScheme` do sistema operacional + override manual pelo usuário
-- Estrutura:
-    ```
-    src/shared/theme/
-    ├── tokens.ts          # cores, espaços, tipografia por tema
-    ├── ThemeProvider.tsx  # contexto global de tema
-    └── useTheme.ts        # hook de acesso ao tema atual
-    ```
+Bibliotecas planejadas para fases futuras não são listadas como dependências
+atuais.
 
-### 2. i18n
+## Estrutura
 
-- Configurado antes do primeiro texto na UI
-- Namespaces idênticos ao web: `common`, `auth`, `manga`, `comment`, `user`, etc.
-- Estrutura:
-    ```
-    src/shared/i18n/
-    ├── index.ts           # inicialização do i18next
-    └── locales/
-        ├── pt-BR/
-        ├── en-US/
-        └── es-ES/
-    ```
-- Nenhuma string visível hardcoded em componente — sempre via `t()`
-- Respeitar header `Accept-Language` nas requests HTTP (alinhado ao backend)
-
-### 3. Estado global de configurações
-
-- Zustand store centralizado para preferências do usuário (tema, idioma, prefs do leitor, etc.)
-- Persistência via Expo SecureStore ou AsyncStorage (dados não sensíveis)
-- Estrutura:
-    ```
-    src/shared/store/
-    ├── settingsStore.ts   # tema, idioma, prefs do leitor
-    └── sessionStore.ts    # usuário autenticado, tokens
-    ```
-
----
-
-## Arquitetura — FSD (Feature Sliced Design)
-
-**Mesma arquitetura do web** (`/web/manga-reader/src/`). Qualquer divergência deve ser documentada aqui com justificativa antes de ser implementada.
-
-```
+```text
 mobile/
-├── app/                  # Expo Router — rotas file-based ((auth)/, (tabs)/, modal, +not-found)
-│                         #   arquivos aqui são CASCA fina: importam a tela de src/pages
-└── src/
-    ├── application/      # Camada app do FSD: providers (tema, query, i18n), navigation, gates
-    │                     #   (ignorada no steiger — ver steiger.config.ts)
-    ├── pages/            # Telas completas (composição de widgets/features)
-    ├── widgets/          # Blocos compostos de UI — criar quando necessário
-    ├── features/         # Interações do usuário (auth, comment CRUD, rating)
-    ├── entities/         # Modelos de domínio + UI de exibição — criar quando necessário
-    └── shared/           # Utilitários, UI atoms, constantes, serviços HTTP
-        ├── ui/           # Componentes reutilizáveis (Button, Input, Card, etc.)
-        ├── api/          # Axios instance + interceptors
-        ├── theme/        # Tokens de tema + ThemeProvider + fontes
-        ├── i18n/         # Setup i18n + locales
-        ├── store/        # Zustand stores globais (settingsStore, sessionStore)
-        ├── hook/         # Hooks cross-feature
-        ├── model/        # Tipos compartilhados
-        └── constant/     # ROUTES, API_URLS, QUERY_KEYS
+├── .agents/skills/        # papéis reutilizáveis do workflow SDD
+├── src/
+│   ├── app/              # cascas de rota do Expo Router
+│   ├── application/      # app layer local: providers, gates e navegação
+│   ├── pages/            # telas completas
+│   ├── widgets/          # blocos compostos
+│   ├── features/         # ações, inclusive autenticação e importação local
+│   ├── entities/         # sessão, settings, capítulos e drafts de mídia local
+│   └── shared/           # api, navegação técnica, tema, i18n e UI genérica
+├── assets/
+├── docs/                 # specs, decisões, planos, referências e legado
+├── scripts/
+│   ├── checks/           # executáveis dos gates de validação
+│   ├── lib/              # validadores reutilizáveis pelos checks e testes
+│   └── tests/            # testes Node dos validadores
+├── app.json
+└── package.json
 ```
 
-### Regras de boundary (igual ao web)
+O app segue as dependências do FSD:
 
-- `shared` não importa de nenhuma outra camada
-- `entities` importa apenas de `shared`
-- `features` importa de `entities` e `shared`
-- `widgets` importa de `features`, `entities` e `shared`
-- `pages` importa de `widgets`, `features`, `entities` e `shared`
-- Sem imports cruzados entre features ou entre pages
+```text
+application -> pages -> widgets -> features -> entities -> shared
+```
 
-### Componentes reutilizáveis
+`src/application` representa a app layer lógica; `src/app` é reservado às
+cascas de rota do Expo Router. Não são permitidos imports cruzados entre slices do mesmo nível; entities
+usam `@x` somente para cross-reference tipada explícita.
 
-Toda UI que aparece em mais de um lugar **vai para `shared/ui`**, não fica duplicada por tela. Isso garante padronização visual e facilita manutenção.
+## Instalação e execução
 
-Exemplos que devem existir em `shared/ui` desde o início:
-
-- `Button`, `IconButton`
-- `Input`, `SearchBar`
-- `Card`, `Avatar`
-- `Badge`, `Chip`
-- `Skeleton` (loading state)
-- `EmptyState`
-- `PageContainer` (wrapper de tela com safe area)
-
----
-
-## Paridade com o web
-
-Tudo que existe no web **deve existir no mobile**, adaptado para a plataforma. Exceções devem ser listadas aqui com justificativa.
-
-### Adaptações confirmadas
-
-| Feature web                             | Comportamento mobile              |
-| --------------------------------------- | --------------------------------- |
-| Sidebar/Drawer de comentários do leitor | Bottom sheet ou painel deslizável |
-| Modal de avaliação                      | Bottom sheet nativo               |
-| Navbar horizontal                       | Tab bar inferior (padrão mobile)  |
-| Hover states                            | Não se aplica — remover           |
-| Tooltip                                 | Substituir por long press + popup |
-
-### Pendente de análise (reportar ao usuário antes de implementar)
-
-- [ ] Editor Markdown nos comentários (EasyMDE não existe no RN)
-- [ ] Upload de imagem em comentários (avaliar Expo ImagePicker)
-- [ ] Dashboard admin (provavelmente não vai para o mobile nesta fase)
-- [ ] Design handoff / protótipos (verificar se assets web são reutilizáveis)
-
-### TODOs técnicos conhecidos
-
-- [ ] **NativeWind dark mode**: telas que usam classes Tailwind (`bg-mr-bg`, `text-mr-text`, etc.) estão com cores fixas no `tailwind.config.js`. Para que essas classes respeitem o tema do sistema, é necessário configurar `darkMode: 'class'` (ou `media`) no Tailwind e usar o `colorScheme` do `ThemeProvider` para adicionar a classe `dark` ao elemento raiz. Enquanto isso, componentes criados com `useTheme()` + inline styles já suportam o toggle.
-- [x] **`SocialRow` caption hardcoded**: corrigido — usa `t('social.orContinueWith')` com chave nos 3 locales.
-- [ ] **Locales de telas de placeholder** (`home.comingSoon`, `library.comingSoon`, `forum.comingSoon`): adicionar as chaves aos arquivos de locale quando as telas forem implementadas.
-
----
-
-## Integração com o backend
-
-- **Base URL**: via `.env` (`EXPO_PUBLIC_API_URL`)
-- **Auth**: Bearer JWT no `Expo SecureStore`
-- **Interceptor Axios**: injeta Authorization + refresh automático em 401
-- **Paginação**: `ApiResponse<PageResponse<T>>` — acesso via `response.data.data.content`
-- **TanStack Query**: `staleTime` 5min para listagens, 1min para conteúdo dinâmico
-
----
-
-## Build & Run
+Requisitos recomendados para o SDK 57: Node.js 22.13 ou superior, Xcode 26.4 ou
+superior para iOS e JDK 17 para Android. O projeto mira iOS 16.4+ e Android 7+
+(API 24, compile/target SDK 36).
 
 ```bash
-cd mobile/
+cd mobile
 pnpm install
-pnpm dev                # Metro bundler (expo start --clear)
-pnpm android            # Android (emulador ou device)
-pnpm ios                # iOS (apenas macOS)
-
-# Gates de qualidade
-pnpm typecheck          # tsc --noEmit
-pnpm lint               # eslint
-pnpm lint:fsd           # steiger (boundaries FSD)
-pnpm check              # typecheck + lint + lint:fsd + format:check
+pnpm dev
 ```
 
----
+Outros alvos:
 
-## Fases de implementação
+```bash
+pnpm android
+pnpm ios       # requer macOS/Xcode
+pnpm web
+```
 
-### Fase 0 — Fundação (antes de qualquer tela)
+## Configuração da API
 
-- Setup Expo + Expo Router + TypeScript
-- NativeWind configurado com design tokens de tema escuro/claro
-- `ThemeProvider` + `settingsStore` (Zustand)
-- i18n configurado com os 3 idiomas e namespaces base
-- Axios instance + interceptors de auth
-- TanStack Query setup
-- Estrutura de pastas FSD criada com barrels
+O cliente usa:
 
-### Fase 1 — Auth
+```text
+EXPO_PUBLIC_API_URL=http://localhost:8080
+```
 
-- Login, registro, refresh token, logout
-- Proteção de rotas autenticadas
+Se a variável não existir, o fallback é `http://localhost:8080`. Em dispositivo
+físico, `localhost` aponta para o próprio aparelho; use um host da rede local ou
+outro endereço acessível pelo dispositivo.
 
-### Fase 2 — Core de leitura
+O cliente acrescenta `/api`, portanto a variável deve conter apenas a origem,
+sem `/api` no final.
 
-- Listagem e busca de títulos
-- Tela de detalhe do título
-- Leitor de capítulos (FlashList horizontal + vertical para manhwa)
-- Biblioteca pessoal
+O gateway de tradução usa uma origem independente
+(`EXPO_PUBLIC_TRANSLATION_GATEWAY_URL`) sem `/api` da Core. Apenas origens HTTPS
+sem path, credenciais, query ou fragment são aceitas; ausência ou configuração
+inválida fecha o upload e nunca ativa fallback direto para provider. Consulte o
+[plano arquitetural aprovado](../docs/translation-gateway-plan.md).
 
-### Fase 3 — Engajamento
+## Autenticação
 
-- Histórico de leitura e progresso
-- Avaliação (estrelas)
-- Comentários (sistema unificado — mesmo `targetType` do web)
-- Perfil com stats
+- access e refresh tokens são armazenados no SecureStore;
+- requests autenticadas recebem `Authorization: Bearer`;
+- uma resposta `401` inicia no máximo um refresh e enfileira requests
+  concorrentes;
+- falha no refresh limpa os tokens e notifica o gate de autenticação;
+- o mobile envia o refresh token no body, comportamento aceito pela API.
 
-### Fase 4 — Comunidade
+As telas de autenticação seguem os contratos e evidências registrados no
+[registry SDD](docs/specs/registry.md); protótipos externos não são dependências
+de runtime deste repositório.
 
-- Fórum, tópicos, grupos
-- Feed de notícias e eventos
+## Tema
 
-### Fase 5 — Monetização
+`src/shared/theme` contém os tokens e o `ThemeProvider`. O tema segue
+`useColorScheme()` quando não há override e persiste a escolha no
+`settingsStore`.
 
-- Planos de assinatura, loja, carrinho
+Componentes reutilizáveis devem consumir os tokens. As classes NativeWind
+baseadas em cores `ui-*` ainda não alternam automaticamente com o tema; até que
+o dark mode do Tailwind seja integrado ao provider, prefira `useTheme()` para
+cores que precisam reagir ao toggle.
 
-### Fase 6 — Polimento
+## Internacionalização
 
-- Notificações push
-- Cache offline
-- Deep links
-- Testes E2E (Maestro)
+O mobile possui atualmente seis namespaces:
 
----
+- `common`;
+- `auth`;
+- `launcher`;
+- `reader`;
+- `settingsNavigation`;
+- `remoteProcessing`.
 
-## Verificação antes de considerar tarefa concluída
+Todos existem nos três idiomas. Novos namespaces devem ser adicionados somente
+com a feature correspondente e replicados em todos os locales. Nenhum texto
+visível novo deve ser hardcoded.
 
-1. `pnpm check` verde (typecheck + eslint + `lint:fsd` + format:check)
-2. Nenhum texto hardcoded visível ao usuário (sempre via `t()`)
-3. Nenhuma cor hardcoded (sempre via token de tema)
-4. Componente reutilizável em `shared/ui` se aparece em mais de um lugar
-5. Boundary FSD respeitado (sem import proibido entre camadas)
+O idioma é persistido no `settingsStore`, e o cliente envia o valor atual no
+header `Accept-Language`.
+
+## Qualidade
+
+Scripts disponíveis:
+
+```bash
+pnpm specs:check
+pnpm test
+pnpm test:ci
+pnpm typecheck
+pnpm lint
+pnpm lint:fsd
+pnpm format:check
+pnpm check          # specs + typecheck + lint + FSD + format + testes
+```
+
+O runner usa Jest com `jest-expo` e React Native Testing Library. Não há meta
+percentual arbitrária: cada critério de aceite relevante deve indicar seu teste
+ou outra evidência adequada na Target Spec.
+
+## Spec-Driven Development
+
+Antes de alterar comportamento:
+
+1. consultar [`docs/specs/registry.md`](docs/specs/registry.md);
+2. confirmar a cobertura do arquivo em [`docs/specs/coverage.json`](docs/specs/coverage.json) e aplicar Reverse Spec se a área ainda não estiver documentada;
+3. criar uma Target Spec `draft` em `docs/specs/features/`;
+4. obter aprovação humana antes de tasks ou código;
+5. implementar, testar, revisar e auditar drift seguindo `AGENTS.md`.
+
+Baselines descrevem apenas como o código funciona hoje. Eles não transformam
+login obrigatório, dependência da Core ou placeholders em requisitos futuros.
+
+## Roadmap
+
+1. **Entrada local:** revisão, ordenação, idiomas independentes e validação da mídia.
+2. **Prova ponta a ponta:** consentimento remoto, gateway separado, OCR,
+   tradução, renderização e reader local. `MOB-FEAT-017..021` estão aprovadas;
+   somente 017 tem gate aberto.
+3. **Continuidade:** processamento incremental, retry, biblioteca e retomada offline.
+4. **Qualidade e proteção:** edição, benchmark, identidade anônima, quotas e controle de abuso.
+5. **Produção:** privacidade, observabilidade, E2E, hardware físico e release Google Play.
+
+O roadmap expressa direção não normativa, não dependências ou funcionalidades
+entregues. Cada item só se torna implementável por meio de uma Target Spec
+aprovada.
+
+## Checklist para mudanças
+
+1. `pnpm check` sem erros.
+2. Target Spec aprovada e tasks rastreáveis para qualquer mudança comportamental.
+3. Texto visível via i18n nos três idiomas.
+4. Cores reativas via tokens de tema.
+5. UI reutilizável em `shared/ui`.
+6. Boundaries FSD respeitados.
+
+## Links relacionados
+
+- [README principal](../README.md)
+- [Guardrails SDD](AGENTS.md)
+- [Índice da documentação mobile](docs/README.md)
+- [Workflow e contratos SDD](docs/specs/README.md)
+- [Registry de specs](docs/specs/registry.md)
+- [Workspace web](../web/README.md)
+- [Layout FSD](../docs/source-layout.md)
+- [Guia de i18n](../docs/i18n-guide.md)
+
+## Performance
+
+Antes e depois de mudanças de runtime, consultar a [referência normativa](docs/decisions/MOB-DEC-007-mobile-performance.md) e a [skill mobile-performance](.agents/skills/mobile-performance/SKILL.md). O [relatório consolidado](docs/active/performance-audit.md) distingue correções implementadas, diagnóstico histórico e medições pendentes; o [plano de remediação](docs/plans/performance-remediation.md) não substitui os gates SDD.
+
+Correções C01–C05 implementadas com testes; memória/frames e integração nativa de exportação seguem em validação. Ver [estado consolidado e evidências](docs/active/performance-audit.md).

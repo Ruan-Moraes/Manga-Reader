@@ -1,16 +1,29 @@
-# Manga Reader — Dívidas Técnicas
+# Toonlira — Dívidas Técnicas
 
-> Última atualização: 2 de julho de 2026
+> Última revisão documental: 19 de julho de 2026.
 >
-> Visão consolidada por categoria (para leitura rápida): [`TECHNICAL_DEBT.md`](../TECHNICAL_DEBT.md)
-> na raiz. Este arquivo continua sendo o **log canônico por item** — ao resolver
-> uma dívida, atualizar os dois.
+> Este arquivo é a **única fonte ativa** para as dívidas técnicas do projeto. O
+> relatório que originou parte dos itens está preservado como
+> [`audits/2026-07-02-project-audit.md`](audits/2026-07-02-project-audit.md).
 
 ---
 
-## Resumo
+## Pendências ativas
 
-Este documento lista as dívidas técnicas do projeto, organizadas por **prioridade**. Cada item inclui descrição, impacto e recomendação/estado.
+Esta tabela serve como índice rápido. O registro detalhado abaixo preserva
+também itens resolvidos, decisões aceitas e medições históricas.
+
+| Área | Itens com ação ou acompanhamento pendente |
+|---|---|
+| Qualidade | DT-02 (testes de componente/E2E) e DT-08 (auditoria de acessibilidade) |
+| Produção e infraestrutura | DT-03 (CI/CD), DT-09 (conteúdo legal), DT-21 (validação da migração em staging), DT-59 (notas operacionais de refresh token) e DT-73 (lock distribuído do trending) |
+| Produto e governança | DT-44 (funcionalidades adiadas, inclusive armazenamento/upload de mídia), DT-48 (resíduos do perfil) e DT-74 (default de analytics comportamental) |
+| Arquitetura e persistência | DT-50 (resíduos da unificação de comentários), DT-52 (escrita cross-DB não atômica), DT-67 (sessões analytics multiaba/offline), DT-69 (outbox de eventos) e DT-70 (invalidação imediata de access tokens) |
+| Performance e escala | DT-71 (exportação de dados sem streaming) e DT-72 (filtro adulto da biblioteca em memória) e DT-75 (performance mobile) |
+| Interface | DT-58 (tokens e portais de elementos flutuantes) |
+
+O estado registrado no título de cada `DT-NN` prevalece sobre medições e
+descrições históricas mantidas no corpo do item.
 
 > **Decisão 2026-05-16**: o projeto ainda **não vai a produção**. Itens que exigem
 > infraestrutura grande (CI/CD, jobs de limpeza, observabilidade, conteúdo legal
@@ -19,7 +32,10 @@ Este documento lista as dívidas técnicas do projeto, organizadas por **priorid
 
 ---
 
-## Itens em Aberto
+## Registro detalhado por item
+
+Esta seção contém itens abertos e encerrados para preservar o histórico das
+decisões. Itens resolvidos não fazem parte do índice de pendências ativas.
 
 ### DT-01: `@Transactional` em use cases — **Resolvido**
 
@@ -92,10 +108,10 @@ verde, registradas abaixo). 864 testes.
   (cobre `SideMenu`, que o encapsula) e `AdminModal`. `Modal` usa `<dialog>` nativo
   (trap + restauração nativos no browser). Bug a11y corrigido: `Drawer` usava
   `<aside role="dialog">` (proibido por `aria-allowed-role`) → trocado por `<div>`.
-- **Focus ring**: utilitário único `@utility mr-focus-ring` (`styles/index.css`),
+- **Focus ring**: utilitário único `@utility ui-focus-ring` (`styles/index.css`),
   substituindo os triplos `focus-visible:outline-*` ad-hoc com offset inconsistente
   (1/2/nenhum) nas primitivas do DS (Button, Switch, MangaCard, Logo, NavBar, Stars,
-  footer). Token `--mr-focus-ring` já existia + regra global `*:focus-visible`.
+  footer). Token `--ui-focus-ring` já existia + regra global `*:focus-visible`.
 - **Testes a11y**: `jest-axe` instalado, matcher `toHaveNoViolations` em
   `src/test/setup.ts`, helper `src/test/helpers/axe.ts` (desliga regra `region`
   para renders isolados sem o shell completo). Smoke tests em HelpCenter,
@@ -107,13 +123,18 @@ teclado completa fora dos overlays.
 
 ---
 
-### DT-09: Conteúdo placeholder em páginas legais — **Adiado (não-prod)**
+### DT-09: Conteúdo placeholder em páginas legais — **Parcialmente resolvido**
 
 Termos de Uso / Privacidade / DMCA / Contato com placeholder. Estrutura/UI/i18n
 **prontas** (LegalShell + LegalSection + LegalCrossLinks, rotas registradas e
-alcançáveis, chaves em pt-BR/en-US/es-ES). Falta apenas o **texto legal
-vinculante**, que exige revisão jurídica — **não é tarefa de engenharia**.
-Bloqueia produção; não-bloqueante para desenvolvimento.
+alcançáveis, chaves em pt-BR/en-US/es-ES). Em 2026-09-03, a empresa, o endereço e
+os e-mails fictícios foram removidos; as páginas agora identificam Ruan Moraes
+como operador, publicam o contato real e exibem aviso explícito de rascunho.
+Termos e Privacidade receberam a versão operacional 1.0 em 2026-09-07, com
+processamento remoto, Google Cloud, retenção e direitos LGPD explicitados nos
+três idiomas. As rotas estão publicadas em `toonlira-rm.firebaseapp.com`. Falta
+a aprovação final do operador e, para uso público de maior risco, revisão por
+profissional jurídico. DMCA e Contato continuam identificados como rascunho.
 
 ---
 
@@ -133,7 +154,7 @@ segurança no caminho frio):**
    `groups.total_titles` dos grupos afetados. As junções `title_authors`/`title_publishers`
    já eram limpas por `TitleAssociationWriter`.
 2. **Assíncrona (safety net)** — `OrphanTitleRefReconciler` no serviço
-   [`api/jobs/orphan-cleaner`](../api/jobs/orphan-cleaner) (ex-`counter-reconciler`, renomeado): job
+   [`api/apps/jobs/orphan-cleaner`](../api/apps/jobs/orphan-cleaner) (ex-`counter-reconciler`, renomeado): job
    diário (03:30) que varre os `title_id` distintos das 5 tabelas, confere existência em
    `titles` (batch `$in`, tratando `_id` ObjectId/String) e apaga os órfãos em lote. **Guard
    anti-wipe:** não apaga nada se o Mongo não devolve nenhum título (provável falha de
@@ -234,7 +255,7 @@ desvios same-layer aceitos: layout shells + design showcase).
 
 ### DT-25: Auditoria frontend — FSD / SRP / dead-code (mapeamento 2026-05-30)
 
-Varredura manual+heurística de `frontend-apps/manga-reader/src` (~720 arquivos). **Só documentação — nada corrigido aqui.** Escopo: violações FSD além do que o steiger pega (verde), responsabilidade excessiva, código morto/obsoleto.
+Varredura manual+heurística de `frontend-apps/toonlira/src` (~720 arquivos). **Só documentação — nada corrigido aqui.** Escopo: violações FSD além do que o steiger pega (verde), responsabilidade excessiva, código morto/obsoleto.
 
 #### 25.1 — Código morto / obsoleto
 - ✅ **Feito**: `entities/comment/model/useCommentEditor.tsx` removido (0 consumidores; substituído por `useCommentRichEditor`).
@@ -336,7 +357,7 @@ parametrizado por `VITE_BASE_URL` (`src/shared/constant/WEB_BASE_URL.ts`,
 usam a constante.
 
 **Resíduo — ✅ Stale (2026-05-30)**: varredura não encontra mais strings
-`'/Manga-Reader/...'` hardcoded. O wrapper `useAppNavigate()`
+`'/Toonlira/...'` hardcoded. O wrapper `useAppNavigate()`
 (`shared/hook/useAppNavigate.ts`) prefixa `WEB_BASE_URL` automaticamente em paths
 absolutos; call-sites usam paths limpos (`/forum`, `/titles/{id}`). Nada a migrar.
 
@@ -423,7 +444,7 @@ Lado-código resolvido; resíduo só-infra documentado acima.
 |----|--------|-----------|
 | DT-01 | `@Transactional` em use cases | 5 JPA anotados (2026-05-16) + 14 Mongo com `@Transactional("mongoTransactionManager")`; replica set + `MongoTransactionManager` + JPA `@Primary` (2026-05-17) |
 | DT-16 | `npm run build` quebrado (tsc -b) | 64 erros TS pré-existentes corrigidos (LocalizedString factories, paths admin.types, fixtures de service); build limpo, 92 chunks |
-| DT-13 (resíduo) | call-sites basename hardcoded | ~50 strings `/Manga-Reader/...` migradas para `WEB_BASE_URL` em 35 arquivos |
+| DT-13 (resíduo) | call-sites basename hardcoded | ~50 strings `/Toonlira/...` migradas para `WEB_BASE_URL` em 35 arquivos |
 | DT-04 | UserController injetava repository ports | Criado `GetUserViewHistoryUseCase`; content-locales reusa `GetUserProfileUseCase`; ports removidos do controller; testes atualizados + teste de application novo |
 | DT-05 | Sem Error Boundaries | **Stale** — `ErrorBoundary` + `RouteErrorFallback` já existiam e estão integrados em `main.tsx` |
 | DT-06 | Validação de forms insuficiente | `react-hook-form` + `zod` + `@hookform/resolvers`; `buildLoginSchema`/`buildSignUpSchema` com mensagens i18n; `Login`/`SignUp` migrados (demais forms = resíduo de baixa prioridade) |
@@ -452,7 +473,7 @@ Lado-código resolvido; resíduo só-infra documentado acima.
 
 ## Auditoria FSD Frontend (2026-05-31)
 
-Varredura pasta-a-pasta do frontend (`frontend-apps/manga-reader/src`) por dívida
+Varredura pasta-a-pasta do frontend (`frontend-apps/toonlira/src`) por dívida
 **semântica/acoplamento** — invisível ao `lint:fsd` (steiger), que está verde.
 Remediação **leva-a-leva por camada** (shared→entities→features→widgets→pages→app).
 
@@ -692,10 +713,10 @@ Itens de produto que ainda não existem no código, preservados aqui após a rem
 do antigo `pending-tasks.md` (cuja maior parte já estava resolvida/stale). Todos
 **não-bloqueantes** enquanto o projeto não vai a produção:
 
-- **Upload de arquivos**: capas de título, avatares de usuário, páginas de
-  capítulo. Hoje todas as imagens são URLs externas/seed; não há pipeline de
-  upload/storage.
-- **Endpoints ausentes**: `news/{id}/related`, `events/{id}/related`,
+- **Upload de arquivos**: capas de título/notícia, avatares de usuário e páginas de
+  capítulo ainda são URLs externas; notícias usam Picsum determinístico como provisório e
+  já expõem `NewsCoverStoragePort`, mas não há adapter S3/Cloudinary/R2 nem upload binário.
+- **Endpoints ausentes**: `events/{id}/related`,
   `groups/{id}/members/{memberId}` (detalhe de membro). Seções de UI
   correspondentes ficam sem dados quando aplicável.
 - **Busca global cross-domain** e **filtros avançados** em listagens (além dos
@@ -823,7 +844,7 @@ testes de hook/serviço (sem jest-dom) rodam verdes.
 
 ---
 
-### DT-48: Perfil — seções ainda simuladas (sem backend) — **Resolvido em sua maior parte (2026-07-02); resta o feed de atividade**
+### DT-48: Perfil — seções ainda simuladas (sem backend) — **Resolvido em sua maior parte (feed entregue em 2026-07-17)**
 
 **Entregue (2026-07-02, branch `feat/dt48-social-graph`)** — grafo social em **Neo4j**:
 - **Infra**: Neo4j 5.26-community nos composes dev/prod (spring-boot-docker-compose
@@ -855,11 +876,18 @@ testes de hook/serviço (sem jest-dom) rodam verdes.
   leve 1109; front 932; `tsc -b` 0; steiger verde.
 
 **Residual em aberto (Baixa)**:
-- **Feed de atividade** — segue mock (`ACTIVITY`); requer agregação de eventos.
 - **Endpoint admin p/ `verified`** (hoje mutação manual/SQL).
 - **Varredura de consistência Postgres×Neo4j** (estilo orphan-cleaner) — nós órfãos
   são inertes (só userId) e as listas filtram na hidratação; sem urgência.
 - **Cache dos contadores** (Redis) se as contagens por Cypher virarem hot-path.
+
+**Entregue (2026-07-17)** — o feed de atividade passou a usar dados reais de
+`activity_events`, com GET público sujeito a `viewHistoryVisibility`, ação de ocultar
+restrita ao proprietário e separada em `features/hide-activity-event`. A política de
+`DO_NOT_TRACK` foi centralizada na aplicação e unificou a retenção de
+`view_history`, `user_chapter_reads` e `activity_events`, sem apagar
+`reading_progress`. A idempotência de redelivery do RabbitMQ ficou registrada em
+DT-60.
 
 **Registro original (contexto):**
 
@@ -1082,7 +1110,8 @@ outbox/saga ou mover o título para Postgres.
 
 ## Auditoria técnica do repositório (2026-07-02)
 
-Auditoria completa de estrutura/documentação (ver [`PROJECT_AUDIT.md`](../PROJECT_AUDIT.md)).
+Auditoria completa de estrutura/documentação (ver
+[`audits/2026-07-02-project-audit.md`](audits/2026-07-02-project-audit.md)).
 Docs desatualizados foram corrigidos na própria auditoria (README raiz, architecture.md,
 mobile/README.md; removidos `docs/services/jobs/*` duplicados e `mobile/mobile.md` legado).
 Dívidas novas encontradas:
@@ -1090,7 +1119,7 @@ Dívidas novas encontradas:
 ### DT-53: Suíte de componentes do frontend quebrada no baseline (jest-dom × Vitest 4) — **Resolvido (2026-07-02)**
 
 **Causa-raiz**: o workspace resolvia **duas majors de vitest** (landing 3.2.4 /
-manga-reader 4.1.4) e a entry `@testing-library/jest-dom/vitest` faz `import 'vitest'`
+toonlira 4.1.4) e a entry `@testing-library/jest-dom/vitest` faz `import 'vitest'`
 sem declará-lo como dependência — no layout do pnpm o `expect.extend` caía no expect
 do vitest 3 enquanto os testes usavam o do vitest 4 → `Invalid Chai property` em 425
 testes (medição 2026-07-02).
@@ -1150,36 +1179,29 @@ pré-`api/`. Removido localmente (`rm -rf backend/`); sem efeito no git.
 
 ### DT-56: `web/packages/assets` sem `package.json` — **Resolvido (2026-07-02)**
 
-Promovido a `@manga-reader/assets` (`package.json` privado, sem scripts) — o glob
+Promovido a `@toonlira/assets` (`package.json` privado, sem scripts) — o glob
 `packages/*` do workspace agora o resolve. Os apps continuam consumindo via
 `publicDir` relativo nos `vite.config.ts` (sem mudança de código); lockfile
 atualizado com o novo importer.
 
-### DT-57: Capítulos admin — armazenamento provisório (localStorage) a substituir pela API real
+### DT-57: Capítulos admin — **Resolvido no contrato/API; mídia permanece em DT-44 (2026-07-18)**
 
-**Contexto (2026-07-04).** A feature de gerenciamento de capítulos (painel admin
-+ preparação do leitor) foi implementada **frontend-only**: o domínio vive em
-`web/manga-reader/src/entities/chapter/model/admin/` (types, validações puras,
-máquina de status e 3 ports — `ChapterAdminGateway`, `ChapterPublicGateway`,
-`ChapterAnalyticsGateway`) e a implementação atual é um repositório fake em
-localStorage (`entities/chapter/api/admin/`), com seed determinístico, latência
-simulada e pipeline fake de processamento de páginas. Depende de DT-44 (upload
-de arquivos) para o armazenamento real de imagens.
+**Resolução.** O backend agora expõe os casos de uso e endpoints administrativos,
+o documento `Chapter` recebeu workflow editorial com backfill Mongock V025/V026 e o
+frontend de produção usa gateways HTTP. A autorização foi provada como 401/403/200 e
+o Mongo real retornou 49 capítulos com os índices esperados. Os adapters
+`localStorageChapter*` ficaram restritos a testes e à leitura/migração controlada do
+legado; não são fallback de produção.
 
-**Dívida.** Quando o backend expor o CRUD admin de capítulos:
-1. Backend: `AdminChapterController` sob `/api/admin/**` (herda guard ADMIN),
-   status no `Chapter` Mongo (enum MAIÚSCULO + `fromValue`, DomainLabel),
-   coleção/endpoint de páginas, job de publicação agendada, soft delete.
-2. Frontend: reescrever **apenas** `entities/chapter/api/admin/chapterGateways.ts`
-   com services axios que implementem os mesmos ports (conversão de status via
-   `CHAPTER_STATUS_TO_API`); nenhum componente/hook/validação muda.
-3. Remover o fake (`localStorageChapter*.ts`) e a chave `mr:chapters:admin:v1`.
+Criar/substituir páginas continua deliberadamente indisponível porque o projeto não
+possui armazenamento binário/presigned upload. Essa pendência já é a dívida de upload
+de arquivos em DT-44 e não mantém este item aberto.
 
-**Comportamentos provisórios do fake** (não reimplementar no service real):
-- "Lazy promotion": agendado vence ⇒ publicado na leitura (no backend será job);
-- Métricas determinísticas por PRNG (no backend virão do analytics real);
-- `NewPageInput { originalFilename }` sem bytes — o upload real (DT-44) troca
-  por `File` + presigned URL e o pipeline real substitui os timers.
+**Histórico.** A primeira implementação (2026-07-04) foi frontend-only sobre
+`localStorage`. Ela foi substituída pelos gateways HTTP compostos em
+`entities/chapter/api/admin/chapterGateways.ts`. Os adapters locais são mantidos
+somente como fixtures de teste e fonte da importação legada; não são fallback de
+produção. O único comportamento ainda pendente é upload binário, coberto por DT-44.
 
 **Prioridade:** Baixa (acompanha DT-44; sem agendamento até produção).
 
@@ -1188,8 +1210,8 @@ de arquivos) para o armazenamento real de imagens.
 ### DT-58: Flutuantes fora do admin ainda sem tokens de camada / portal
 
 **Contexto (2026-07-06).** A padronização dos modais admin centralizou as
-camadas visuais na escala única `--z-mr-*` (`@theme` em `styles/index.css`;
-a escala legada `:root --mr-z-*` foi removida) e resolveu o problema de
+camadas visuais na escala única `--z-ui-*` (`@theme` em `styles/index.css`;
+a escala legada `:root --ui-z-*` foi removida) e resolveu o problema de
 dropdowns atrás do `<dialog>` portalando conteúdo flutuante para dentro do
 próprio dialog via `FloatingPortalContext` (`shared/ui/FloatingPortalContext.tsx`).
 `Select`, `DropdownMenu`, `TagSelectInput` (react-select, `menuPortalTarget`)
@@ -1203,25 +1225,380 @@ blast radius):**
   quando for usado dentro de modais.
 - z-index numéricos hardcoded fora do admin: NavBar/NavSearch/NavMegaMenu,
   `ChapterDropdown` (inline `zIndex: 20`), páginas de evento — rotear para
-  utilitários `z-mr-*`.
+  utilitários `z-ui-*`.
 
 **Prioridade:** Baixa (nenhum bug visível hoje; é consistência de tokens).
 
 ---
 
-## Resumo por Prioridade
+### DT-59: Notas operacionais do refresh token endurecido (2026-07-10)
 
-| Prioridade | Em aberto | IDs |
-|-----------|-----------|-----|
-| **Crítica** | 0 | — |
-| **Alta** | 1 | DT-02 (componente/E2E) |
-| **Média** | 6 | DT-54 (flake suíte leve H2), DT-49 (visibilidade da biblioteca pública), DT-08 (axe por rota — parcial), DT-50 (residuais: testes fórum + threads profundas + fase 2 drop PG), DT-52 (escrita cross-DB não-atômica; N+1 resolvido) |
-| **Resíduo só-infra (não-código)** | 1 | DT-21 (lado-código fechado; falta dump prod em staging — runbook documentado) |
-| **Baixa** | 7 | DT-03, DT-09, DT-44 (backlog de produto), DT-48 (perfil simulado), DT-51 (rotas/forms legados do admin), DT-57 (capítulos admin: fake localStorage → API real), DT-58 (flutuantes fora do admin sem tokens/portal) |
-| **Resolvidos 2026-07-02** | 3 | DT-53 (jest-dom × Vitest 4), DT-55 (dir `backend/`), DT-56 (`packages/assets`) |
-| **Fechados: aceitos (não-fix)** | 2 | DT-24, DT-33 (idiomáticos; steiger off de propósito) |
-| **Resolvidos 2026-05-16/17/18** | 18 | DT-01, DT-04, DT-05, DT-06, DT-07, DT-11, DT-12, DT-13, DT-14, DT-15, DT-16, DT-17, DT-18, DT-19, DT-20, DT-21 (código), DT-22, DT-23 |
-| **Resolvidos 2026-05-31** | 6 | DT-26 (shared), DT-28, DT-29, DT-30, DT-34, DT-35 |
-| **Resolvidos 2026-06-01** | 7 | DT-27, DT-31, DT-32, DT-36, DT-37, DT-38, DT-39 |
-| **Resolvidos 2026-06-06** | 2 | DT-45 (rating campos avançados + voto), DT-46 (store campos de compra) |
-| **Resolvidos 2026-06-16** | 1 | DT-10 (limpeza de órfãos cross-DB: síncrona + job diário `orphan-cleaner`) |
+Contexto: sessão expirando silenciosamente no web → implementado refresh
+rotation server-side (tabela `refresh_tokens` V40, reuso ⇒ revoga família),
+`POST /api/auth/logout`, cookie httpOnly p/ web (body preservado p/ mobile),
+interceptor web com fila + `authExpired`. Ver `docs/architecture.md` (Key
+Patterns → Refresh token rotation). Notas a acompanhar:
+
+- **Deploy invalida sessões antigas (one-shot)**: refresh tokens emitidos
+  antes do deploy não existem na tabela ⇒ primeiro refresh retorna 401 ⇒
+  um re-login por usuário (web e mobile). Comunicar no release.
+- **SameSite=Strict pressupõe API same-site**: se produção servir a API em
+  outro *registrable domain* que o front, o cookie precisa virar
+  `SameSite=None; Secure` (ver `RefreshTokenCookieFactory`). Registrar no
+  plano de deploy.
+- **Suíte `testcontainers` local**: `mongo:8.0` não sobe em Docker com
+  kernel Linux ≥ 6.19 (SERVER-121912) — falha ambiental pré-existente em
+  macs recentes; rodar `mvn test -Dtest.excludedGroups=testcontainers`
+  localmente e deixar o E2E (`AuthSecurityIntegrationTest`, incl. rotação/
+  reuso/logout/cookie) para o CI.
+
+**Prioridade:** Baixa (notas operacionais; nenhuma ação de código pendente).
+
+---
+
+### DT-60: Redelivery do RabbitMQ pode duplicar eventos de atividade — **Resolvido (2026-07-19)**
+
+**Resolução.** `RabbitEventPublisher` atribui um `messageId` UUID estável a cada
+publicação; `ActivityFeedConsumer` propaga esse identificador e
+`RecordActivityEventUseCase` o usa como `_id` de `activity_events`. Uma redelivery da
+mesma mensagem deixa de criar um segundo documento. Os testes do consumidor e do use
+case verificam a propagação até a entidade. A atomicidade entre a transação de origem
+e a publicação é um problema diferente, registrado em DT-69.
+
+**Contexto (2026-07-17).** O consumidor do feed traduz eventos RabbitMQ e delega a
+decisão de rastreamento ao `RecordActivityEventUseCase`, que bloqueia gravações sob
+`DO_NOT_TRACK`. Entretanto, as mensagens atuais não carregam um identificador estável
+de evento/origem e `activity_events` não possui chave de idempotência. Em uma
+redelivery *at-least-once*, a mesma ação pode ser inserida mais de uma vez.
+
+**Tratamento futuro:** incluir um `eventId` (ou `sourceKey`) estável no contrato das
+mensagens, persistir esse identificador com unicidade no MongoDB e tratar inserção
+duplicada como sucesso idempotente. Essa evolução exige modelagem de documento e
+índice; deve passar pela skill `database-design` antes da implementação.
+
+**Prioridade:** Baixa enquanto o sistema não está em produção; não altera a correção
+de privacidade desta rodada.
+
+---
+
+### DT-61: Preferências persistidas sem consumidor e leitor com fonte dupla — **Resolvido (2026-07-18)**
+
+**Resolução.** O contrato de settings foi centralizado em `entities/user`, o legado
+`reader:prefs` ganhou migração idempotente e o leitor passou a consumir direção, modo,
+fit, gap, fundo, qualidade, preload e auto-mark pela mesma precedência. Tema LIGHT,
+formato de data e timezone receberam consumidores observáveis. PATCH/GET/DB, reload e
+restart isolado foram comprovados e a suíte web fechou com 1.157 testes verdes.
+
+**Contexto (auditoria de configurações 2026-07-18).** O contrato tipado de 16
+preferências, a V36 e os endpoints `GET/PATCH /api/users/me/settings` estão corretos,
+mas a integração não termina em todos os consumidores:
+
+- qualidade de imagem, preload, formato de data e timezone são salvos/recuperados sem
+  efeito funcional encontrado;
+- `autoMarkRead=false` não impede a conclusão automática na última página;
+- LIGHT é aceito pela API/DB, mas `applySystemPreferences` aplica `ui-theme-dark`;
+- o leitor mantém `reader:prefs`, enquanto o sync autenticado usa
+  `mr.settings.v1`/React Query na página de configurações.
+
+**Plano histórico (executado):** consolidar o contrato na entity user e fazer leitor/formatadores
+consumirem a mesma fonte, preservando estado de sessão apenas quando explícito. Cada
+opção precisa de teste de efeito após reload e restart, não só teste de persistência.
+
+**Prioridade:** Alta. **Complexidade:** M. **Risco:** Médio.
+
+---
+
+### DT-62: Semântica de privacidade incompleta para comentários e conteúdo adulto — **Resolvido (2026-07-18)**
+
+**Resolução.** `DO_NOT_TRACK` passou a impedir coleta, com limpeza/retenção definida
+nos casos de uso, e a política adulta é aplicada no servidor (`HIDE`) e na apresentação
+(`BLUR`/`SHOW`). Testes cobrem dono, terceiro, anônimo, busca/listas e ingestão.
+
+**Contexto (auditoria de configurações 2026-07-18).** `PRIVATE` foi comprovado para
+comentários e biblioteca, e `DO_NOT_TRACK` do histórico cobre gravação, leitura e
+limpeza. Restam dois desvios comprovados:
+
+- `commentVisibility=DO_NOT_TRACK` só oculta comentários; não impede a coleta definida
+  pelo próprio enum;
+- `adultContentPreference` (BLUR/SHOW/HIDE) é persistido e devolvido por auth/profile,
+  mas não é consumido por catálogo, busca, cards ou leitor.
+
+**Plano histórico (executado):** definir uma política única de coleta/retenção e aplicar conteúdo
+adulto na consulta e apresentação. Qualquer deleção/backfill ou alteração de documento
+deve passar por `database-design` e migration forward-only.
+
+**Prioridade:** Alta. **Complexidade:** M. **Risco:** Alto (privacidade).
+
+---
+
+### DT-63: Aba Dados anuncia operações que são somente visuais — **Resolvido (2026-07-18)**
+
+**Resolução.** A aba mede o cache real do cliente, limpa Cache Storage/React Query,
+limpa histórico pela API e exporta um arquivo JSON versionado. Importação foi
+explicitamente desabilitada e rotulada como indisponível até existir contrato seguro;
+ela não dispara toast de falso sucesso.
+
+**Contexto (auditoria de configurações 2026-07-18).** `DataTab.tsx` mostra uso fixo de
+cache (`186 MB de 512 MB`). Limpar cache, limpar histórico, exportar e importar terminam
+em confirmação/toast; não há chamada de API, download, limpeza de React Query,
+localStorage ou Redis. A exportação foi reproduzida no navegador e gerou apenas
+“Exportação iniciada”. Notificações continuam cobertas pelo item de funcionalidades
+adiadas DT-44 e não são duplicadas aqui.
+
+**Plano histórico (executado):** ocultar ou sinalizar inequivocamente as ações como futuras até
+existirem; ao implementar, usar features FSD próprias, operações reversíveis e teste de
+efeito. Não acoplar “limpar cache” do navegador a flush global de Redis.
+
+**Prioridade:** Média. **Complexidade:** M. **Risco:** Médio (expectativa do usuário).
+
+---
+
+### DT-64: Refresh token JWT colide em login concorrente/multi-instância — **Resolvido (2026-07-18)**
+
+**Resolução.** Refresh tokens carregam `jti` criptograficamente único e tipo validado;
+emissão/rotação tratam conflito sem 500. Reuso revoga a família em transação nova para
+que a revogação sobreviva ao rollback da requisição. Testes cobrem concorrência,
+rotação, reuso e conflito.
+
+**Contexto (auditoria de configurações 2026-07-18).** Uma API temporária em `:18080`
+foi executada contra o mesmo PostgreSQL. Dois logins do mesmo usuário no mesmo segundo
+produziram o mesmo refresh JWT, pois `JwtTokenProvider#generateRefreshToken` não inclui
+`jti`/nonce. O segundo insert falhou no índice único `uk_refresh_tokens_token_hash` e
+retornou HTTP 500. Os tokens de prova foram removidos e o token seed pré-existente foi
+restaurado.
+
+**Plano histórico (executado):** incluir `jti` criptograficamente aleatório por emissão, preservar
+hash único/família e adicionar teste concorrente entre duas instâncias. Colisão deve ser
+impossível; uma violação de unicidade residual não pode escapar como 500 genérico.
+
+**Prioridade:** Alta. **Complexidade:** S. **Risco:** Alto (autenticação).
+
+---
+
+### DT-65: Invalidação de caches Redis incompleta após mutações — **Resolvido (2026-07-18)**
+
+**Resolução.** Chaves passaram a ter ownership central e as mutações de título, tag,
+plano, estatísticas e reviews invalidam depois do commit bem-sucedido. Rollback não
+evicta; indisponibilidade do Redis é observável. TTL permanece apenas otimização.
+
+**Contexto (auditoria de configurações 2026-07-18).** Existem caches de title (10 min),
+tag (30 min), rating (2 min), public stats (30 min) e subscription plans (1 h). A busca
+global encontrou `@CacheEvict` apenas nos use cases de review. Mutações de título, tag e
+plano podem continuar servindo dados antigos até o TTL; o Redis real continha as chaves
+de public stats e planos.
+
+**Plano histórico (executado):** definir ownership de chaves por domínio e invalidar/atualizar
+somente depois do commit bem-sucedido, com logs/métricas de falha. TTL continua sendo
+otimização, nunca garantia de consistência.
+
+**Prioridade:** Alta. **Complexidade:** S. **Risco:** Médio.
+
+---
+
+### DT-66: Drift operacional entre runtime, migrations e ambiente de teste — **Resolvido (2026-07-18)**
+
+**Resolução.** Liveness/readiness foram separados do health detalhado e o Compose usa
+readiness; a política Mongo 8 foi centralizada nos quatro módulos; os jobs receberam
+properties validadas e overrides completos no Compose; Mongock do trending executa e
+reconcilia índices no startup. As suítes completas da API e dos três jobs passaram.
+O health detalhado continua reportando SMTP opcional ausente, sem tornar readiness
+`DOWN`, que é o comportamento operacional esperado.
+
+**Contexto (auditoria de configurações 2026-07-18).** Quatro diferenças foram
+comprovadas e têm a mesma causa: configuração operacional não verificada ponta a ponta.
+
+- a API retorna health 503 porque o SMTP dev `localhost:1025` não está disponível,
+  embora PostgreSQL, Mongo, Redis, Rabbit e Neo4j estejam `UP`;
+- `V001/V002` do trending declaram índices de ranking/métricas/TTL, mas o Mongo real
+  tem apenas `_id_` em `title_trend_daily` e não registra essas change units;
+- o workaround de Mongo 8 para kernel Linux 6.19+ existe no Compose, mas não nos
+  `MongoDBContainer`, quebrando as suítes completas da API, rating e orphan;
+- o Compose prod não encaminha todos os crons, zone e pesos documentados pelos jobs.
+
+**Plano histórico (executado):** smoke de índices/config efetiva no startup, workaround único de
+Mongo para Compose/Testcontainers, readiness separado de dependência SMTP opcional e
+lista explícita de envs suportados no Compose prod.
+
+**Prioridade:** Alta. **Complexidade:** M. **Risco:** Alto para deploy/operabilidade.
+
+---
+
+### DT-67: Coordenação semântica de analytics entre abas e offline
+
+**Contexto.** A primeira rodada de analytics persiste eventos em IndexedDB,
+coordena flush com `BroadcastChannel` e garante idempotência por `eventId`. Ainda
+não existe lease compartilhado nem deadline persistido de sessão para deduplicar
+semanticamente abas concorrentes ou inferir abandono depois da janela offline.
+Origem completa de navegação, filtros estruturados e transições de capítulo também
+dependem desse coordenador; inferi-los de mount/unmount criaria falsos positivos.
+
+**Tratamento futuro:** criar uma máquina de sessão versionada em IndexedDB com
+lease/heartbeat entre abas, deadline de abandono e intenção de navegação tipada.
+Testar crash, reload, retorno online e duas abas com relógio determinístico.
+
+**Prioridade:** Média. **Complexidade:** M. **Risco:** Médio (qualidade analítica).
+
+---
+
+### DT-68: Prazo de redefinição de senha divergente — **Resolvido (2026-07-18)**
+
+**Resolução.** `app.jwt.password-reset-expiration` passou a ter default de 30 minutos
+e continua aceitando override validado por ambiente. `ForgotPasswordUseCase` usa essa
+mesma duração no token e no e-mail; `POST /api/auth/forgot-password` retorna
+`expiresInSeconds`, consumido pelas telas web e mobile. Em falha de rede, os clientes
+mantêm a proteção contra enumeração e exibem texto genérico, sem declarar prazo
+inventado. O teste JWT usa `Clock.fixed` e comprova exatamente a validade configurada.
+
+**Contexto comprovado (2026-07-18).** O token de redefinição expira em 15 minutos no
+`JwtTokenProvider`, enquanto a ajuda/tradução da interface informa 30 minutos. O fluxo
+é funcional, mas o contrato apresentado ao usuário não corresponde ao limite efetivo.
+
+**Plano histórico (executado):** escolher um único prazo como property tipada, derivar a mensagem
+de UI do contrato público e testar o limite com relógio controlado. A alteração não
+exige migration.
+
+**Prioridade:** Baixa. **Complexidade:** XS. **Risco:** Baixo.
+
+---
+
+### DT-69: Publicação RabbitMQ não é atômica com a transação de origem
+
+**Contexto comprovado (auditoria de 2026-07-19).** Use cases como envio de resenha,
+conclusão de obra, follow e registro de leitura publicam no RabbitMQ durante a mesma
+execução que altera PostgreSQL ou MongoDB. O `messageId` de DT-60 torna redelivery
+idempotente, mas não fecha as janelas entre sistemas: a mensagem pode ser entregue
+antes de um rollback (evento fantasma) ou a transação pode confirmar e o publish
+falhar (evento perdido).
+
+**Tratamento futuro.** Adotar transactional outbox no banco proprietário da mutação,
+com `event_id`, tipo, payload versionado, instante, tentativas e estado de publicação.
+Um relay deve publicar com confirmação do broker e marcar a linha processada; o
+consumidor continua idempotente pelo mesmo `event_id`. Como envolve nova tabela,
+índices, retenção e migration Flyway, executar o protocolo `database-design` antes da
+implementação. Testar rollback, falha do broker após commit, retry e concorrência.
+
+**Critério de aceite:** toda mutação e seu registro de outbox confirmam ou revertem na
+mesma transação; o relay recupera eventos pendentes após restart sem duplicar efeitos.
+
+**Prioridade:** Alta antes de produção. **Complexidade:** L. **Risco:** Alto.
+
+---
+
+### DT-70: Access tokens emitidos não têm revogação imediata
+
+**Contexto comprovado (auditoria de 2026-07-19).** Login e refresh já bloqueiam contas
+banidas/desativadas, e reset/exclusão revogam todas as sessões de refresh. Entretanto,
+`JwtAuthenticationFilter` valida somente assinatura e claims do access token. Um token
+emitido antes de banimento, desativação ou troca de senha permanece aceito até expirar
+(atualmente, janela máxima de 15 minutos).
+
+**Tratamento futuro.** Escolher entre `tokenVersion` persistido no usuário e incluído
+no JWT, denylist Redis com TTL até a expiração, ou access tokens ainda mais curtos. A
+primeira opção exige migration e leitura/cache coerente; a segunda exige política de
+degradação quando Redis estiver indisponível. Documentar a semântica esperada por ação
+administrativa e testar banimento, reset, exclusão e indisponibilidade do cache.
+
+**Critério de aceite:** após uma ação revogadora confirmada, qualquer access token
+anterior recebe 401 em todas as instâncias dentro do SLA definido.
+
+**Prioridade:** Alta antes de produção. **Complexidade:** M. **Risco:** Alto.
+
+---
+
+### DT-71: Exportação de dados pessoais materializa coleções sem limite
+
+**Contexto comprovado (auditoria de 2026-07-19).** `ExportUserDataUseCase` busca e
+materializa integralmente atividades, histórico e demais dados do usuário para montar
+uma única resposta. Contas antigas ou automatizadas podem manter a transação/leitura
+aberta por muito tempo e consumir memória proporcional a todo o histórico.
+
+**Tratamento futuro.** Gerar a exportação como job assíncrono paginado, escrever JSON
+ou ZIP em streaming para armazenamento temporário e entregar URL curta e autenticada.
+Aplicar snapshot lógico ou cursor estável, limites de retenção e limpeza de artefatos.
+Não manter transação JPA aberta durante leituras Mongo ou upload do arquivo.
+
+**Critério de aceite:** uso de memória limitado por página/chunk, retomada segura após
+falha e teste de volume que exceda o tamanho confortável de uma resposta síncrona.
+
+**Prioridade:** Média. **Complexidade:** L. **Risco:** Médio/alto por volume.
+
+---
+
+### DT-72: Filtro de conteúdo adulto da biblioteca pagina em memória
+
+**Contexto comprovado (auditoria de 2026-07-19).** No modo `HIDE`, consultas da
+biblioteca carregam a coleção do usuário, enriquecem títulos e só então filtram e
+paginam. O resultado funcional está correto, mas custo e latência crescem com toda a
+biblioteca e a paginação deixa de ser responsabilidade da fonte de dados.
+
+**Tratamento futuro.** Tornar a elegibilidade parte da query paginada. Como a
+classificação adulta pertence ao catálogo Mongo e a biblioteca ao PostgreSQL, definir
+uma projeção mínima sincronizada, uma lista de IDs elegíveis paginável ou outra
+estratégia explícita de leitura dual-DB. Avaliar consistência, índice e reconciliação
+com o protocolo `database-design` antes de duplicar dados.
+
+**Critério de aceite:** uma página de biblioteca executa trabalho proporcional ao
+tamanho da página, mantém `totalElements` correto e não introduz N+1.
+
+**Prioridade:** Média. **Complexidade:** M/L. **Risco:** Médio.
+
+---
+
+### DT-73: Exclusão mútua do trending vale apenas dentro de uma JVM
+
+**Contexto comprovado (auditoria de 2026-07-19).**
+`RecalculateTrendingUseCase.execute` é sincronizado e impede sobreposição entre o
+gatilho agendado e o manual na mesma instância. Em deployment com duas ou mais
+réplicas, cada JVM possui seu próprio monitor e duas reconstruções ainda podem
+intercalar a substituição do ranking diário.
+
+**Tratamento futuro.** Usar advisory lock PostgreSQL, ShedLock ou lease equivalente
+com timeout e owner identificável. O lock deve cobrir a reconstrução/substituição
+completa, liberar após crash e produzir métrica para execução ignorada ou expirada.
+
+**Critério de aceite:** teste com duas instâncias concorrentes comprova um único
+escritor por data e recuperação após expiração do lease.
+
+**Prioridade:** Média quando houver mais de uma réplica. **Complexidade:** S/M.
+**Risco:** Médio.
+
+---
+
+### DT-74: Default de analytics comportamental depende de decisão de consentimento
+
+**Contexto comprovado (auditoria de 2026-07-19).** Novos perfis recebem
+`behaviorAnalyticsEnabled=true`, enquanto `DO_NOT_TRACK` continua prevalecendo e
+limpa dados rastreados. A implementação é coerente tecnicamente, mas habilitar coleta
+por default é uma decisão de produto, base legal e jurisdição; não deve ser definida
+implicitamente pelo código.
+
+**Tratamento futuro.** Produto/jurídico deve registrar se a base é opt-in, opt-out ou
+interesse legítimo por região. Derivar o default e o onboarding dessa decisão, manter
+prova/versionamento do consentimento quando necessário e alinhar política de
+privacidade, retenção e exportação. Até a decisão, evitar descrever o comportamento
+como consentimento explícito.
+
+**Critério de aceite:** decisão registrada, textos legais/locales alinhados, default
+testado por região e trilha auditável quando a base exigir consentimento.
+
+**Prioridade:** Alta antes de produção. **Complexidade:** depende de produto/legal.
+**Risco:** Alto regulatório.
+
+---
+
+### DT-75: Performance mobile — correções implementadas, validações e hipóteses pendentes
+
+**Estado:** aberto. As cinco correções C01–C05 / MOB-PERF-001…005 foram implementadas com testes em 2026-09-06. Faltam validação comparativa nativa e investigação das seis hipóteses MOB-PERF-006…011; não há degradação nativa quantificada nem aceite final de performance.
+
+Fonte detalhada única: [relatório consolidado mobile](../mobile/docs/active/performance-audit.md), com diagnóstico histórico e links para as duas rodadas. O [plano](../mobile/docs/plans/performance-remediation.md) organiza medições B01–B06, investigações I01–I06, dependências e critérios de aceite.
+
+**Prioridade:** P2 provisória para mecanismos confirmados; hipóteses exigem investigação. **Conclusão:** somente após evidência funcional e comparativa por item, respeitando SDD; não implementar backend por este registro.
+
+---
+
+## Histórico de priorização
+
+As prioridades registradas durante cada auditoria permanecem no corpo dos
+itens. O índice no início deste arquivo representa a visão consolidada atual;
+não manter uma segunda tabela de contagens evita que itens resolvidos continuem
+aparecendo como pendentes.

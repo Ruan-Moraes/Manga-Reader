@@ -1,0 +1,89 @@
+{
+    "actions": {
+        "controlsHint": "Opens or closes reader controls and preferences",
+        "exit": "Exit reader",
+        "hideControls": "Hide controls",
+        "nextPage": "Next page",
+        "previousPage": "Previous page",
+        "retry": "Try again",
+        "retryImage": "Try loading page {{page}} again",
+        "retryProgress": "Try syncing progress again",
+        "retryProgressHydration": "Try loading progress again",
+        "showControls": "Show controls"
+    },
+    "controls": { "decrease": "Decrease {{label}}", "increase": "Increase {{label}}" },
+    "errors": {
+        "image": "This page could not be loaded.",
+        "progress": "Progress is pending. Tap to try again.",
+        "progressHydration": "Your progress could not be loaded. Reading remains available."
+    },
+    "options": {
+        "AUTO": "Automatic",
+        "BLACK": "Black",
+        "DARK": "Dark",
+        "DOUBLE": "Double",
+        "HEIGHT": "Height",
+        "HIGH": "High",
+        "LIGHT": "Light",
+        "LOW": "Low",
+        "LTR": "Left to right",
+        "MEDIUM": "Medium",
+        "ORIGINAL": "Original",
+        "PAGED": "Paged",
+        "PAPER": "Paper",
+        "RTL": "Right to left",
+        "VERTICAL": "Vertical",
+        "WEBTOON": "Webtoon",
+        "WHITE": "White",
+        "WIDTH": "Width"
+    },
+    "resume": {
+        "continue": "Continue reading",
+        "description": "Your latest progress is chapter {{chapter}}, page {{page}}.",
+        "requested": "Open requested chapter",
+        "title": "Continue where you left off?"
+    },
+    "settings": {
+        "autoMarkRead": "Automatically mark as read",
+        "background": "Background",
+        "closeSelection": "Close selection",
+        "descriptions": {
+            "autoMarkRead": "Updates progress when the page is completed.",
+            "gap": "Visual space between pages in vertical flow.",
+            "mode": {
+                "DOUBLE": "Two pages side by side.",
+                "PAGED": "One page at a time.",
+                "VERTICAL": "Continuous flow for scrolling."
+            },
+            "preload": "Number of pages prepared around the current one.",
+            "quality": {
+                "AUTO": "Balances sharpness and data usage.",
+                "HIGH": "Prioritizes sharpness with higher data usage.",
+                "LOW": "Prioritizes lower data usage and faster loading.",
+                "MEDIUM": "Keeps good sharpness with moderate data usage.",
+                "ORIGINAL": "Keeps the page at its original resolution."
+            },
+            "saturation": "Adjust the color intensity of pages."
+        },
+        "direction": "Direction",
+        "fit": "Fit",
+        "gap": "Gap",
+        "mode": "Mode",
+        "preload": "Preload",
+        "quality": "Quality",
+        "saturation": "Saturation",
+        "sections": {
+            "behavior": { "description": "Spacing, preloading, and progress updates.", "title": "Behavior" },
+            "image": { "description": "Page quality, background, and visual treatment.", "title": "Image" },
+            "navigation": { "description": "How pages advance and fill the screen.", "title": "Navigation" }
+        },
+        "values": { "pages": "{{value}} pages", "percent": "{{value}}%", "pixels": "{{value}} px" }
+    },
+    "states": {
+        "error": "The chapter could not be loaded.",
+        "loading": "Loading chapter…",
+        "safeExit": "You can try again or safely go back.",
+        "unavailable": "This chapter has no available pages."
+    },
+    "viewport": { "page": "Page {{page}} of {{total}}" }
+}

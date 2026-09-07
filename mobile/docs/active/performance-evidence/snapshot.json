@@ -1,0 +1,27 @@
+{
+    "capturedAt": "2026-09-05T23:17:16.187919+00:00",
+    "commit": "d29e3cfaf71e53e6ec8a5a21f0a2d0f2c7ad7955",
+    "scope": "mobile; includes uncommitted changes",
+    "sourceFiles": 406,
+    "runtimeBehaviorFiles": 311,
+    "inventorySha256": "5bc8cf7339999b3bee47cbb2e4e9da29ea930749e028f7a458e8d13f167ab15a",
+    "versions": {
+        "react": "19.2.3",
+        "react-native": "0.86.3",
+        "expo": "57.0.20",
+        "@tanstack/react-query": "5.101.0",
+        "zustand": "5.0.14",
+        "expo-image": "57.0.4",
+        "expo-sqlite": "57.0.2",
+        "typescript": "6.0.3"
+    },
+    "supportSha256": {
+        "package.json": "ba72a67ebfa5f1c005ce8f7bec8697985996b9e1aa79f31c72c08f7872a52c71",
+        "pnpm-lock.yaml": "a52e7d97008d813b1b32114032932d43ae9c30808eec33bdd76a4ac4b4f1059e",
+        "app.json": "0d9829fbb71e1a235c8c4a27a896fb35fba047de404961e1aa8b382317aaa6a5",
+        "docs/specs/coverage.json": "bdae6589b4b04b2ad80a662f71b8b6750ca83b13241c666bf2ca4ae9b97a55ce",
+        "docs/specs/registry.md": "f1e457aec93101a74c18349059767d329fcbd55114f6be20ef81b11a11b2ef12",
+        "docs/specs/features/MOB-FEAT-015-media-validation/review.md": "ce36be5d3d6887c4e45a28717bc6ee8ecda597c13b93c8fa7acfc037ef6d2f12"
+    },
+    "system": "Darwin arm64"
+}

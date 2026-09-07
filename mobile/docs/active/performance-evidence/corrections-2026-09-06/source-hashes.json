@@ -1,0 +1,42 @@
+[
+    {
+        "path": "src/entities/local-media-import/api/__tests__/localMediaImportRepository.test.ts",
+        "beforeSha256": "a3f43fac2d6d01c771028bca564bd33d062dc77aafd3bddb7a702f2082a7ca62",
+        "afterSha256": "cef247c3b54563199d366361be98c20885e29db3ebb52e202dbe14a74821b2f7"
+    },
+    {
+        "path": "src/entities/local-media-import/api/localMediaImportRepository.ts",
+        "beforeSha256": "d731292fea6be7043699558cd52664278d222409c5328cbfc117841db79e4c68",
+        "afterSha256": "f87944b217415de2b9094f9d24f0ff62cede910eafdb6f090c7c74d7bf4acc20"
+    },
+    {
+        "path": "src/features/validate-local-media/model/__tests__/validateLocalMedia.test.ts",
+        "beforeSha256": "c49c9efd26d1f75e999533ad5607e46b620e07746075d544ec2b25c97e7cbf7a",
+        "afterSha256": "4c48ac2f42a6d84742c7ceb5239d52f5487364cb4053fcb676c9b119d2b5d828"
+    },
+    {
+        "path": "src/features/validate-local-media/model/validateLocalMedia.ts",
+        "beforeSha256": "99d2fcf5d14730de6f8415cc73aec71437608fca9f2c930ac8971ac9fc76c67a",
+        "afterSha256": "733095a3d45d646f767e2cdae4e90666e0fda674870e98e16b1963dc8392d028"
+    },
+    {
+        "path": "src/shared/remote-gateway/__tests__/remoteGatewayTransport.test.ts",
+        "beforeSha256": "93716015c764571022c314017a71847ddc1b402ad77d6c29ecf121f5975861b5",
+        "afterSha256": "244c57c391d92582a256b4aa1fd483f16aacfb09d8cc092b3fa8c825949060b4"
+    },
+    {
+        "path": "src/shared/remote-gateway/remoteGatewayTransport.ts",
+        "beforeSha256": "fd77344a545097ae245b90b0b88a84ba01a8ebfdb637a474fdb1bbd3ea77c14f",
+        "afterSha256": "64553e1670e48b9251a5a9c3bfb7eb388d635c9ef39e1d425fbe1850fe4bfa7f"
+    },
+    {
+        "path": "src/widgets/chapter-reader/ui/ReaderViewport.tsx",
+        "beforeSha256": "e1f8cb68398b095e18bdbc20ddb64039e42ff49e88bdc44db655deffce7639ed",
+        "afterSha256": "5503625fc1af00e44f60d0c8b2f9008021348b3b163a49a19532a17e1424ce2e"
+    },
+    {
+        "path": "src/widgets/chapter-reader/ui/__tests__/ReaderViewport.test.tsx",
+        "beforeSha256": "cdb1f4051da2f491a370d6eb5336e85e703ca039ad25518a2378987ecc2a47f1",
+        "afterSha256": "8ee41c767357f9e8e9e3cdb995390c0cd3f28676a41001ea49ec2337693ac40f"
+    }
+]

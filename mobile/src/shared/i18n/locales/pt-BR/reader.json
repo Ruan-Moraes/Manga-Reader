@@ -1,0 +1,107 @@
+{
+    "actions": {
+        "controlsHint": "Abre ou fecha os controles e preferências do leitor",
+        "exit": "Sair do leitor",
+        "hideControls": "Ocultar controles",
+        "nextPage": "Próxima página",
+        "previousPage": "Página anterior",
+        "retry": "Tentar novamente",
+        "retryImage": "Tentar carregar a página {{page}} novamente",
+        "retryProgress": "Tentar sincronizar o progresso novamente",
+        "retryProgressHydration": "Tentar carregar o progresso novamente",
+        "showControls": "Mostrar controles"
+    },
+    "controls": {
+        "decrease": "Diminuir {{label}}",
+        "increase": "Aumentar {{label}}"
+    },
+    "errors": {
+        "image": "Não foi possível carregar esta página.",
+        "progress": "O progresso está pendente. Toque para tentar novamente.",
+        "progressHydration": "Não foi possível carregar seu progresso. A leitura continua disponível."
+    },
+    "options": {
+        "AUTO": "Automática",
+        "BLACK": "Preto",
+        "DARK": "Escuro",
+        "DOUBLE": "Dupla",
+        "HEIGHT": "Altura",
+        "HIGH": "Alta",
+        "LIGHT": "Claro",
+        "LOW": "Baixa",
+        "LTR": "Esquerda para direita",
+        "MEDIUM": "Média",
+        "ORIGINAL": "Original",
+        "PAGED": "Paginado",
+        "PAPER": "Papel",
+        "RTL": "Direita para esquerda",
+        "VERTICAL": "Vertical",
+        "WEBTOON": "Webtoon",
+        "WHITE": "Branco",
+        "WIDTH": "Largura"
+    },
+    "resume": {
+        "continue": "Continuar leitura",
+        "description": "Seu progresso mais recente está no capítulo {{chapter}}, página {{page}}.",
+        "requested": "Abrir capítulo solicitado",
+        "title": "Continuar de onde parou?"
+    },
+    "settings": {
+        "autoMarkRead": "Marcar automaticamente como lido",
+        "background": "Fundo",
+        "closeSelection": "Fechar seleção",
+        "descriptions": {
+            "autoMarkRead": "Atualiza o progresso quando a página é concluída.",
+            "gap": "Espaço visual entre páginas no fluxo vertical.",
+            "mode": {
+                "DOUBLE": "Duas páginas lado a lado.",
+                "PAGED": "Uma página por vez.",
+                "VERTICAL": "Fluxo contínuo para leitura por rolagem."
+            },
+            "preload": "Quantidade de páginas preparadas ao redor da atual.",
+            "quality": {
+                "AUTO": "Equilibra nitidez e uso de dados.",
+                "HIGH": "Prioriza nitidez com maior uso de dados.",
+                "LOW": "Prioriza economia de dados e carregamento rápido.",
+                "MEDIUM": "Mantém boa nitidez com uso moderado de dados.",
+                "ORIGINAL": "Preserva a resolução original da página."
+            },
+            "saturation": "Ajuste a intensidade das cores das páginas."
+        },
+        "direction": "Direção",
+        "fit": "Ajuste",
+        "gap": "Espaçamento",
+        "mode": "Modo",
+        "preload": "Pré-carregamento",
+        "quality": "Qualidade",
+        "saturation": "Saturação",
+        "sections": {
+            "behavior": {
+                "description": "Espaçamento, antecipação e atualização do progresso.",
+                "title": "Comportamento"
+            },
+            "image": {
+                "description": "Qualidade, fundo e tratamento visual das páginas.",
+                "title": "Imagem"
+            },
+            "navigation": {
+                "description": "Como as páginas avançam e ocupam a tela.",
+                "title": "Navegação"
+            }
+        },
+        "values": {
+            "pages": "{{value}} páginas",
+            "percent": "{{value}}%",
+            "pixels": "{{value}} px"
+        }
+    },
+    "states": {
+        "error": "Não foi possível carregar o capítulo.",
+        "loading": "Carregando capítulo…",
+        "safeExit": "Você pode tentar novamente ou voltar com segurança.",
+        "unavailable": "Este capítulo não possui páginas disponíveis."
+    },
+    "viewport": {
+        "page": "Página {{page}} de {{total}}"
+    }
+}
