@@ -27,7 +27,7 @@ describe('Hero', () => {
         ).toBeInTheDocument();
         expect(
             screen.getByRole('link', { name: 'Acessar plataforma' }),
-        ).toHaveAttribute('href', 'https://toonlira-rm.web.app/');
+        ).toHaveAttribute('href', 'http://localhost:5173/');
         const demo = screen.getByRole('button', { name: 'Ver demonstração' });
         expect(demo).toHaveClass(
             'border-accent-border/60',

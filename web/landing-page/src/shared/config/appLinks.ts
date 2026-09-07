@@ -1,4 +1,8 @@
-const DEFAULT_APP_URL = 'https://toonlira-rm.web.app';
+const DEVELOPMENT_APP_URL = 'http://localhost:5173';
+const PRODUCTION_APP_URL = 'https://toonlira-rm.web.app';
+const DEFAULT_APP_URL = import.meta.env.DEV
+    ? DEVELOPMENT_APP_URL
+    : PRODUCTION_APP_URL;
 
 export const APP_URL = (
     import.meta.env.VITE_APP_URL || DEFAULT_APP_URL

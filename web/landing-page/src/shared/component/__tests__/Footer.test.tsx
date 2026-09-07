@@ -17,7 +17,7 @@ describe('Footer', () => {
         ).not.toBeInTheDocument();
         expect(
             screen.getByRole('link', { name: 'Acessar plataforma' }),
-        ).toHaveAttribute('href', 'https://toonlira-rm.web.app/');
+        ).toHaveAttribute('href', 'http://localhost:5173/');
         expect(
             screen.getByRole('link', { name: 'Central de ajuda' }),
         ).toBeInTheDocument();

@@ -32,7 +32,7 @@ pnpm install
 
 | Variável | Uso | Padrão atual |
 |---|---|---|
-| `VITE_APP_URL` | Destino centralizado dos links para a aplicação principal | `https://toonlira-rm.web.app` |
+| `VITE_APP_URL` | Destino centralizado dos links para a aplicação principal | `http://localhost:5173` em desenvolvimento e `https://toonlira-rm.web.app` em produção |
 
 Defina `VITE_APP_URL` no ambiente de build para apontar planos, gift codes,
 suporte e páginas legais para a URL pública da aplicação principal.
