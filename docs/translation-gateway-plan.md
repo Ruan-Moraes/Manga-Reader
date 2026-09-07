@@ -232,9 +232,10 @@ leitor em loop.
 
 - Operador definido para a fase atual: Ruan Moraes, pessoa física, com contato
   público `ruanmoraessantosbarbosa@gmail.com`.
-- URLs canônicas reservadas: `https://app.toonlira.com/legal/terms` e
-  `https://app.toonlira.com/legal/privacy`; domínio, HTTPS e publicação ainda
-  são pendências, portanto não constituem políticas públicas vigentes.
+- URLs públicas: `https://toonlira-rm.firebaseapp.com/legal/terms` e
+  `https://toonlira-rm.firebaseapp.com/legal/privacy`; domínio, HTTPS e acesso
+  direto estão publicados. Os documentos ainda dependem de revisão jurídica
+  antes de constituírem políticas vinculantes.
 - Atualizar termos e privacidade web nos três locales antes do primeiro upload
   real, incluindo Google Cloud, transferência Brasil→EUA, finalidade, copyright,
   retenção e cancelamento.
@@ -242,8 +243,10 @@ leitor em loop.
   agregadas sem conteúdo podem permanecer.
 - Logs/eventos nunca incluem imagem, texto, filename, path/URI, token, URL
   assinada ou resposta bruta.
-- URLs legais publicadas em HTTPS, versão aprovada e política de treinamento do
-  provider são configuração obrigatória; ausência mantém o gateway fail-closed.
+- URLs legais estão publicadas em HTTPS. O disclosure operacional
+  `2026-09-07.v1` registra que Cloud Vision e Cloud Translation não usam o
+  conteúdo do cliente para treinar ou melhorar seus modelos. Ausência ou mudança
+  não revisada dessas configurações mantém o gateway fail-closed.
 - Play Integrity e proteção forte contra reinstalação ficam em M7; o alpha usa
   quota por instalação, limite global e rate limit conservador.
 - Qualidade permanece `verification-pending` até benchmark humano autorizado;

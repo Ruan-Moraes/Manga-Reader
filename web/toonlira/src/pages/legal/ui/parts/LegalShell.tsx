@@ -16,6 +16,7 @@ export interface TocItem {
 
 export interface LegalShellProps {
     page: LegalPage;
+    isDraft?: boolean;
     eyebrow?: string;
     title: string;
     sub?: string;
@@ -72,7 +73,7 @@ function scrollTo(id: string) {
     window.scrollTo({ top: y, behavior: 'smooth' });
 }
 
-export const LegalShell = ({ page, eyebrow, title, sub, updated, version, toc, children }: LegalShellProps) => {
+export const LegalShell = ({ page, isDraft = true, eyebrow, title, sub, updated, version, toc, children }: LegalShellProps) => {
     const navigate = useAppNavigate();
 
     const { t } = useTranslation('legal');
@@ -99,17 +100,19 @@ export const LegalShell = ({ page, eyebrow, title, sub, updated, version, toc, c
                         <Badge variant="neutral">{t('shell.language')}</Badge>
                     </div>
 
-                    <div
-                        role="note"
-                        aria-label={t('shell.draft.title')}
-                        className="mt-5 flex max-w-2xl gap-3 rounded-ui-sm border border-ui-danger-border bg-ui-danger-15 p-4"
-                    >
-                        <AlertTriangle aria-hidden="true" className="mt-0.5 size-5 shrink-0 text-ui-danger" />
-                        <div className="min-w-0">
-                            <p className="text-ui-small font-ui-extrabold text-ui-danger">{t('shell.draft.title')}</p>
-                            <p className="mt-1 text-ui-small text-ui-fg-muted">{t('shell.draft.description')}</p>
+                    {isDraft && (
+                        <div
+                            role="note"
+                            aria-label={t('shell.draft.title')}
+                            className="mt-5 flex max-w-2xl gap-3 rounded-ui-sm border border-ui-danger-border bg-ui-danger-15 p-4"
+                        >
+                            <AlertTriangle aria-hidden="true" className="mt-0.5 size-5 shrink-0 text-ui-danger" />
+                            <div className="min-w-0">
+                                <p className="text-ui-small font-ui-extrabold text-ui-danger">{t('shell.draft.title')}</p>
+                                <p className="mt-1 text-ui-small text-ui-fg-muted">{t('shell.draft.description')}</p>
+                            </div>
                         </div>
-                    </div>
+                    )}
 
                     {/* Doc tabs */}
                     <nav aria-label={t('shell.tabsAriaLabel')} className="mt-6 flex w-full flex-wrap gap-1">

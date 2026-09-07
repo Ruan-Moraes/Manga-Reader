@@ -117,9 +117,11 @@ resource "google_sql_database_instance" "gateway" {
   database_version    = "POSTGRES_17"
   deletion_protection = true
   settings {
-    tier              = var.database_tier
-    availability_type = "ZONAL"
-    disk_autoresize   = true
+    tier                  = var.database_tier
+    availability_type     = "ZONAL"
+    disk_autoresize       = true
+    disk_size             = var.database_disk_size_gb
+    disk_autoresize_limit = var.database_disk_autoresize_limit_gb
     backup_configuration {
       enabled                        = true
       point_in_time_recovery_enabled = true

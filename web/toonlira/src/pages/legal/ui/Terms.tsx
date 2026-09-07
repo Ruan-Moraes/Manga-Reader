@@ -21,7 +21,7 @@ export default function Terms() {
     }));
 
     return (
-        <LegalShell page="terms" title={t('terms.title')} sub={t('terms.sub')} updated={t('terms.updated')} version={t('terms.version')} toc={toc}>
+        <LegalShell page="terms" isDraft={false} title={t('terms.title')} sub={t('terms.sub')} updated={t('terms.updated')} version={t('terms.version')} toc={toc}>
             <LegalSection id="aceite" num={1} title={t('terms.sections.aceite.title')} tldr={t('terms.sections.aceite.tldr')}>
                 <p>{t('terms.sections.aceite.p1')}</p>
                 <p>{t('terms.sections.aceite.p2')}</p>
@@ -31,9 +31,6 @@ export default function Terms() {
             <LegalSection id="conta" num={2} title={t('terms.sections.conta.title')} tldr={t('terms.sections.conta.tldr')}>
                 <p>{t('terms.sections.conta.p1')}</p>
                 <p>{t('terms.sections.conta.p2')}</p>
-                <p>
-                    <Trans i18nKey="terms.sections.conta.p3" ns="legal" components={{ strong: <strong /> }} />
-                </p>
             </LegalSection>
 
             <LegalSection id="uso" num={3} title={t('terms.sections.uso.title')} tldr={t('terms.sections.uso.tldr')}>

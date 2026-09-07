@@ -52,6 +52,19 @@ variable "disclosure" {
 }
 
 variable "database_tier" {
-  type    = string
-  default = "db-custom-1-3840"
+  description = "Cloud SQL tier. Shared-core is intentional for the alpha and has no SLA."
+  type        = string
+  default     = "db-f1-micro"
+}
+
+variable "database_disk_size_gb" {
+  description = "Initial Cloud SQL SSD capacity in GiB."
+  type        = number
+  default     = 10
+}
+
+variable "database_disk_autoresize_limit_gb" {
+  description = "Hard ceiling for automatic Cloud SQL disk growth in GiB."
+  type        = number
+  default     = 20
 }

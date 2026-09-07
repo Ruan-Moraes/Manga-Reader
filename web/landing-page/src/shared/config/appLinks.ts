@@ -1,5 +1,7 @@
 const DEVELOPMENT_APP_URL = 'http://localhost:5173';
-const PRODUCTION_APP_URL = 'https://toonlira-rm.web.app';
+
+const PRODUCTION_APP_URL = 'https://toonlira-rm.firebaseapp.com';
+
 const DEFAULT_APP_URL = import.meta.env.DEV
     ? DEVELOPMENT_APP_URL
     : PRODUCTION_APP_URL;

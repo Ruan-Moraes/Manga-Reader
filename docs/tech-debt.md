@@ -123,16 +123,18 @@ teclado completa fora dos overlays.
 
 ---
 
-### DT-09: Conteúdo placeholder em páginas legais — **Adiado (não-prod)**
+### DT-09: Conteúdo placeholder em páginas legais — **Parcialmente resolvido**
 
 Termos de Uso / Privacidade / DMCA / Contato com placeholder. Estrutura/UI/i18n
 **prontas** (LegalShell + LegalSection + LegalCrossLinks, rotas registradas e
 alcançáveis, chaves em pt-BR/en-US/es-ES). Em 2026-09-03, a empresa, o endereço e
 os e-mails fictícios foram removidos; as páginas agora identificam Ruan Moraes
 como operador, publicam o contato real e exibem aviso explícito de rascunho.
-Falta o **texto legal vinculante**, a revisão jurídica e a publicação nas URLs
-canônicas de `app.toonlira.com` — **não é tarefa exclusivamente de
-engenharia**. Bloqueia produção; não-bloqueante para desenvolvimento.
+Termos e Privacidade receberam a versão operacional 1.0 em 2026-09-07, com
+processamento remoto, Google Cloud, retenção e direitos LGPD explicitados nos
+três idiomas. As rotas estão publicadas em `toonlira-rm.firebaseapp.com`. Falta
+a aprovação final do operador e, para uso público de maior risco, revisão por
+profissional jurídico. DMCA e Contato continuam identificados como rascunho.
 
 ---
 

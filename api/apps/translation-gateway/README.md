@@ -77,29 +77,35 @@ GATEWAY_WORKER_URL
 GATEWAY_TASKS_SERVICE_ACCOUNT
 ```
 
-### Configuração legal pretendida
+### Configuração legal pública
 
 [`infra/terraform/terraform.tfvars.example`](infra/terraform/terraform.tfvars.example)
 registra os valores públicos já definidos, sem habilitar o serviço:
 
 - operador: `Ruan Moraes`, pessoa física responsável pelo projeto;
 - contato: `ruanmoraessantosbarbosa@gmail.com`;
-- termos: `https://app.toonlira.com/legal/terms`;
-- privacidade: `https://app.toonlira.com/legal/privacy`;
-- contato complementar: `https://app.toonlira.com/legal/contact`.
+- termos: `https://toonlira-rm.firebaseapp.com/legal/terms`;
+- privacidade: `https://toonlira-rm.firebaseapp.com/legal/privacy`;
+- contato complementar: `https://toonlira-rm.firebaseapp.com/legal/contact`.
 
-As URLs são canônicas pretendidas, mas ainda não estão publicadas. Por isso,
-`GATEWAY_DISCLOSURE_VERSION` e `GATEWAY_PROVIDER_TRAINING_POLICY` permanecem
-vazios no exemplo e o runtime continua fail-closed. Antes de preenchê-los:
+As URLs estão publicadas com HTTPS e acesso direto. A versão operacional do
+disclosure é `2026-09-07.v1`. A política registrada segue a documentação oficial
+do Google Cloud: conteúdo enviado ao Cloud Vision ou Cloud Translation não é
+usado para treinar ou melhorar seus modelos. O runtime continua fail-closed até
+o worker existir e a configuração cloud ser validada. Antes de habilitá-lo:
 
-1. controlar o DNS de `app.toonlira.com` e publicar com certificado HTTPS
-   válido;
-2. garantir que Termos, Privacidade e Contato respondam `200` sem autenticação,
+1. garantir que Termos, Privacidade e Contato respondam `200` sem autenticação,
    inclusive em acesso direto às rotas;
-3. substituir o conteúdo em rascunho por texto juridicamente revisado;
-4. aprovar a política de treinamento do provider e versionar o disclosure;
-5. disponibilizar o worker e só então avaliar `GATEWAY_ENABLED=true` em mudança
+2. obter a aprovação final do operador para a versão publicada dos documentos;
+3. revalidar a política do provider se o produto ou contrato mudar;
+4. disponibilizar o worker e só então avaliar `GATEWAY_ENABLED=true` em mudança
    operacional separada.
+
+Referências do provider:
+
+- [Cloud Vision — Data Usage FAQ](https://cloud.google.com/vision/docs/data-usage);
+- [Cloud Translation — API overview](https://cloud.google.com/translate/docs/api-overview);
+- [Vertex AI — zero data retention e training restriction](https://cloud.google.com/vertex-ai/generative-ai/docs/vertex-ai-zero-data-retention).
 
 Operador, contato e URLs são informações públicas do disclosure e não pertencem
 ao Secret Manager. Credenciais e segredos continuam fora de arquivos `.tfvars`.

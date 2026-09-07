@@ -13,18 +13,18 @@ O contrato server-side, quotas, outbox e Terraform foram validados; no mobile,
 schema v7, transporte, identidade, consentimento, submissão, recovery,
 cancelamento e UI trilíngue possuem testes dirigidos e boundaries FSD verdes.
 
-A feature permanece fail-closed. Operador e contato reais foram definidos e a
-identidade fictícia das páginas web foi removida, mas a promoção para
-`implemented` ainda exige publicação/revisão das URLs legais reservadas,
-disclosure versionado, política do provider, configuração cloud correspondente,
-scan do AAB e verificação de SQLite/SecureStore/recovery e leitor de tela em
-Android físico.
+A feature permanece fail-closed. Operador e contato reais foram definidos;
+Termos e Privacidade operacionais 1.0 estão publicados nas URLs Firebase e o
+disclosure `2026-09-07.v1` registra a política do provider. A promoção para
+`implemented` ainda exige aprovação final do operador, configuração cloud e
+worker correspondentes, scan do AAB e verificação de leitor de tela em Android
+físico.
 
 ## Critérios e evidências
 
 | Critério | Implementado | Evidência verificada                                                                  | Resultado |
 | -------- | ------------ | ------------------------------------------------------------------------------------- | --------- |
-| AC-001   | parcial      | operador/contato reais e UI completos; publicação, revisão, versão e policy pendentes | pending   |
+| AC-001   | parcial      | operador/contato, publicação, versão e policy completos; aprovação final pendente     | pending   |
 | AC-002   | sim          | consent por projeto+versão+locale, recusa neutra e round-trip SQLite                  | pass      |
 | AC-003   | sim          | testes provam pré-condições e attempt durável antes do transporte de mídia            | pass      |
 | AC-004   | sim          | OpenAPI, Zod, HTTPS, timeout, limites, redirect e traversal hostil                    | pass      |
@@ -33,7 +33,7 @@ Android físico.
 | AC-007   | sim          | receipt e attempt/página/projeto transitam atomicamente; rejeição preserva DRAFT      | pass      |
 | AC-008   | sim          | SUBMITTING/UNKNOWN persistem e reconciliam por job/chave sem nova identidade          | pass      |
 | AC-009   | sim          | cancelamento distingue UNKNOWN, CANCEL_PENDING e confirmação terminal                 | pass      |
-| AC-010   | parcial      | payload/log allowlist e cleanup testados; política pública/cloud ainda abertos        | pending   |
+| AC-010   | parcial      | payload/log allowlist, cleanup e política pública completos; cloud ainda aberto       | pending   |
 | AC-011   | parcial      | RNTL trilíngue e sem falso sucesso; leitor de tela Android ainda aberto               | pending   |
 | AC-012   | sim          | somente a primeira página é submetida e não há OCR/provider/Core no client            | pass      |
 
@@ -86,3 +86,16 @@ application`, APIs públicas e ausência de deep imports externos. As URLs legai
 reservadas responderam com falha de handshake TLS e ainda não constituem
 publicação HTTPS válida. O verdict permanece `verification-pending` pelos gates
 externos e nativos já registrados.
+
+## Continuação — 2026-09-07
+
+Termos e Privacidade 1.0 foram atualizados nos três locales e publicados em
+`toonlira-rm.firebaseapp.com`. O disclosure `2026-09-07.v1` e a política de
+treinamento do Cloud Vision/Cloud Translation foram registrados no exemplo de
+Terraform. Testes legais, TypeScript, formatação e validação Terraform passaram.
+A publicação e a verificação pública estão registradas em
+[`evidence/legal-publication-2026-09-07.md`](evidence/legal-publication-2026-09-07.md).
+O runtime continua desabilitado: o projeto Cloud está ativo, porém sem billing,
+e o worker pertence a `MOB-FEAT-018..020`, ainda não implementadas. A auditoria
+está em
+[`evidence/cloud-deployment-audit-2026-09-07.md`](evidence/cloud-deployment-audit-2026-09-07.md).

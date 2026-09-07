@@ -24,7 +24,7 @@
 
 ## Checklist
 
-- [ ] TASK-001 — Operador/contato definidos e placeholders de identidade removidos nos três locales; publicar/revisar Termos e Privacidade nas URLs reservadas e criar disclosure versionado. Upload permanece fechado até a conclusão.
+- [ ] TASK-001 — Operador/contato definidos; Termos e Privacidade 1.0 atualizados nos três locales e publicados nas URLs Firebase; disclosure `2026-09-07.v1` e política do provider definidos. A aprovação final do operador permanece aberta e o upload continua fechado.
 - [x] TASK-002 — Implementar SQLite v7 para consents/attempts, estados local/remoto separados e repository transacional com FKs/checks/upgrade v6→v7.
 - [x] TASK-003 — Criar capabilities e validação pré-upload, incluindo sete idiomas/42 pares, arquivo e consentimento.
 - [x] TASK-004 — Congelar OpenAPI `/v1`; manter HTTPS/timeout/limites/redirects em `shared/remote-gateway` e capabilities/parsers Zod nas entities, separados do Core client.
@@ -53,10 +53,11 @@
 
 ## Bloqueios de verificação
 
-- Billing, projeto Google Cloud e ações externas precisam de aprovação no ato.
-- Operador e contato estão definidos. Publicação HTTPS das URLs legais, revisão
-  jurídica, versão do disclosure e política do provider ainda bloqueiam upload
-  real.
+- Projeto Google Cloud confirmado ativo em 2026-09-07, mas com billing
+  desabilitado e sem conta de faturamento disponível para vinculação.
+- Operador, contato, URLs HTTPS, versão do disclosure e política do provider
+  estão definidos. Aprovação final do operador, configuração cloud, worker,
+  scan do AAB e leitor de tela ainda bloqueiam upload real.
 - `MOB-FEAT-018..021` permanecem bloqueadas até esta feature ser executada.
 
 ## Marco server-side — gateway primeiro

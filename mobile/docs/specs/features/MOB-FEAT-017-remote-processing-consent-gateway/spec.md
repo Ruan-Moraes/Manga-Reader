@@ -6,7 +6,7 @@ status: verification-pending
 implementation_gate: open
 blocked_by: [MOB-FEAT-016]
 created: 2026-08-15
-updated: 2026-09-06
+updated: 2026-09-07
 supersedes: []
 superseded_by: []
 ---
@@ -42,6 +42,10 @@ mobile e sem expor segredo de provider no aplicativo.
   [`docs/translation-gateway-plan.md`](../../../../../docs/translation-gateway-plan.md).
 - `MOB-FEAT-018..020` interpretarão os resultados estruturados do job. Esta spec
   termina na submissão aceita e consulta/cancelamento do envelope remoto.
+- Termos e Privacidade operacionais 1.0 estão publicados em
+  `toonlira-rm.firebaseapp.com`; o disclosure correspondente é
+  `2026-09-07.v1`. A aprovação final do operador e o gate de implantação
+  permanecem separados da existência técnica desses artefatos.
 
 ## Requisitos e regras
 
@@ -276,11 +280,13 @@ Estado legal provisório definido em 2026-09-03:
 
 - operador: Ruan Moraes, pessoa física responsável pelo projeto;
 - contato público: `ruanmoraessantosbarbosa@gmail.com`;
-- URLs canônicas pretendidas: `https://app.toonlira.com/legal/terms` e
-  `https://app.toonlira.com/legal/privacy`;
-- o domínio ainda não está publicado, os documentos permanecem em rascunho e a
-  versão/política do provider continuam vazias; consequentemente o gateway deve
-  responder `capabilities-unavailable` e não aceitar upload.
+- URLs públicas: `https://toonlira-rm.firebaseapp.com/legal/terms` e
+  `https://toonlira-rm.firebaseapp.com/legal/privacy`;
+- o domínio e as rotas estão publicados; Termos e Privacidade usam a versão
+  operacional 1.0 e o disclosure `2026-09-07.v1` declara que Cloud Vision e
+  Cloud Translation não usam o conteúdo do cliente para treinar ou melhorar
+  seus modelos. O gateway permanece indisponível até a aprovação final do
+  operador, o worker e a configuração cloud estarem prontos.
 
 - API HTTP `/v1` com capabilities, instalação/sessão anônima, submit multipart,
   consulta por idempotency key ou job ref, cancel e ACK; OpenAPI será a

@@ -8,7 +8,7 @@ type FrameStyle = CSSProperties & {
 
 export function BrowserFrame({
     children,
-    url = 'app.toonlira.com',
+    url = 'toonlira-rm.firebaseapp.com',
     className = '',
     label = 'Toonlira no navegador',
 }: {

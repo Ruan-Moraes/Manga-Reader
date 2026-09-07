@@ -38,13 +38,23 @@ describe('Privacy', () => {
         expect(screen.getAllByRole('heading', { name: /quais dados coletamos/i }).length).toBeGreaterThan(0);
     });
 
-    it('publica somente o contato real de privacidade, sem endereço fictício', () => {
+    it('publica a política vigente e somente o contato real de privacidade', () => {
         renderWithProviders(<Privacy />);
 
-        expect(screen.getByRole('note', { name: /documento em rascunho/i })).toBeInTheDocument();
+        expect(screen.queryByRole('note', { name: /documento em rascunho/i })).not.toBeInTheDocument();
+        expect(screen.getByText(/^versão 1\.0$/i)).toBeInTheDocument();
+        expect(screen.getByText(/07\/09\/2026/i)).toBeInTheDocument();
         expect(screen.getByRole('link', { name: 'ruanmoraessantosbarbosa@gmail.com' })).toHaveAttribute('href', 'mailto:ruanmoraessantosbarbosa@gmail.com');
         expect(screen.queryByText(/Av\. Paulista/i)).not.toBeInTheDocument();
         expect(screen.queryByText(/dpo@toonlira\.example\.com/i)).not.toBeInTheDocument();
+    });
+
+    it('explica processamento remoto, retenção e política de treinamento', () => {
+        renderWithProviders(<Privacy />);
+
+        expect(screen.getByText(/Segundo a documentação oficial do Google Cloud/i)).toHaveTextContent(/não usam o conteúdo enviado para treinar/i);
+        expect(screen.getByText(/em até uma hora/i)).toBeInTheDocument();
+        expect(screen.getByText(/sete dias/i)).toBeInTheDocument();
     });
 
     it('renders cross-links to other docs', () => {

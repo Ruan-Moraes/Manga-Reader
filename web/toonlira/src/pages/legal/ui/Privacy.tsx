@@ -59,7 +59,7 @@ export default function Privacy() {
     const privacyContact = dpoRows.find(row => row.value.includes('@'))?.value ?? '';
 
     return (
-        <LegalShell page="privacy" title={t('privacy.title')} sub={t('privacy.sub')} updated={t('privacy.updated')} version={t('privacy.version')} toc={toc}>
+        <LegalShell page="privacy" isDraft={false} title={t('privacy.title')} sub={t('privacy.sub')} updated={t('privacy.updated')} version={t('privacy.version')} toc={toc}>
             <LegalSection id="tldr" num={1} title={t('privacy.sections.tldr.title')} tldr={t('privacy.sections.tldr.tldr')}>
                 <p>{t('privacy.sections.tldr.p1')}</p>
                 <p>{t('privacy.sections.tldr.p2')}</p>

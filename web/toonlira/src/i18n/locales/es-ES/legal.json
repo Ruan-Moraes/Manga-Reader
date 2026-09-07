@@ -45,8 +45,8 @@
     "terms": {
         "title": "Términos de uso",
         "sub": "Las reglas de convivencia, los límites del servicio y tus derechos como usuario de la plataforma.",
-        "updated": "03/09/2026",
-        "version": "Borrador",
+        "updated": "07/09/2026",
+        "version": "Versión 1.0",
         "toc": {
             "aceite": "01. Aceptación y quiénes somos",
             "conta": "02. Tu cuenta",
@@ -65,7 +65,7 @@
                 "tldr": "Al usar Toonlira, aceptas estos términos. Somos una plataforma de lectura y descubrimiento de manga, manhwa y manhua.",
                 "p1": "Estos Términos de Uso rigen el acceso y la utilización de Toonlira, plataforma operada en Brasil por Ruan Moraes, persona física responsable del proyecto (\"nosotros\", \"nuestro\" o \"Toonlira\").",
                 "p2": "Al crear una cuenta, acceder o utilizar cualquier parte del servicio, declaras que has leído, entendido y aceptas quedar vinculado a estos Términos y a nuestra Política de Privacidad. Si no estás de acuerdo con alguna parte, no utilices el servicio.",
-                "p3": "Toonlira es una plataforma de lectura, descubrimiento y discusión de cómics asiáticos — manga, manhwa y manhua — disponibles gracias a grupos de traducción asociados y a los propios autores."
+                "p3": "Toonlira ofrece recursos para leer, descubrir y comentar manga, manhwa y manhua, además de una herramienta opcional de procesamiento remoto de traducción para imágenes seleccionadas por el usuario en su dispositivo."
             },
             "conta": {
                 "title": "Tu cuenta",
@@ -76,8 +76,8 @@
             "uso": {
                 "title": "Uso del servicio",
                 "tldr": "Usa el servicio de forma responsable y legal. No intentes saltarte restricciones ni perjudicar a otros usuarios.",
-                "p1": "Aceptas usar Toonlira solo con fines lícitos y de acuerdo con estos Términos. Está prohibido: violar leyes aplicables, infringir derechos de terceros, transmitir virus o código malicioso, intentar acceder a sistemas no autorizados, realizar scraping automatizado sin permiso o cualquier forma de acoso.",
-                "p2": "Nos reservamos el derecho a cerrar o suspender cuentas que violen estos Términos, a nuestra exclusiva discreción y sin necesidad de previo aviso en casos graves."
+                "p1": "Aceptas usar Toonlira solo con fines lícitos y de acuerdo con estos Términos. No puedes violar leyes ni derechos de terceros, transmitir código malicioso, acceder a sistemas no autorizados, hacer scraping sin permiso, enviar contenido que no estés autorizado a procesar ni acosar a otras personas.",
+                "p2": "El procesamiento remoto de traducción depende de la conexión y de la disponibilidad y capacidad de servicios externos. Los resultados de OCR, traducción y renderizado pueden contener errores y deben ser revisados por el usuario. Podemos limitar o suspender esta función por seguridad, control de costes o mantenimiento."
             },
             "comunidade": {
                 "title": "Contenido de la comunidad",
@@ -89,13 +89,14 @@
             "direitos-autorais": {
                 "title": "Derechos de autor",
                 "tldr": "Respetamos los derechos de los creadores. Si eres titular de derechos e identificaste una infracción, consulta nuestra política DMCA.",
-                "p1": "Toonlira respeta los derechos de propiedad intelectual y espera que los usuarios hagan lo mismo. El contenido disponible en la plataforma por grupos de traducción asociados debe cumplir con las licencias aplicables."
+                "p1": "Toonlira respeta los derechos de propiedad intelectual y espera que los usuarios hagan lo mismo. El contenido disponible en la plataforma debe cumplir con las licencias aplicables.",
+                "p2": "Al seleccionar una imagen para traducir, declaras que posees los derechos, la licencia u otra autorización necesaria para procesarla. La función está destinada al uso privado del usuario y no concede derechos para publicar, distribuir o explotar comercialmente la obra traducida."
             },
             "pagamentos": {
                 "title": "Apoyo y pagos",
-                "tldr": "Los pagos son procesados por terceros. Las suscripciones se renuevan automáticamente salvo cancelación anticipada.",
-                "p1": "Toonlira puede ofrecer funciones premium mediante pago. Todos los pagos son procesados por proveedores externos (como Stripe o Mercado Pago). Los precios están sujetos a cambios con aviso previo de 30 días.",
-                "p2": "Las suscripciones recurrentes se renuevan automáticamente al final del periodo contratado, salvo cancelación realizada con al menos 24 horas de antelación. Los reembolsos se evalúan caso por caso conforme al Código de Defensa del Consumidor brasileño."
+                "tldr": "El flujo de traducción descrito en estos términos no tiene cobro activo en esta versión. Cualquier oferta de pago se mostrará antes de contratarla.",
+                "p1": "Si Toonlira ofrece funciones de pago, el precio, periodo de cobro, renovación y cancelación se informarán claramente antes de la contratación.",
+                "p2": "Enviar una imagen al flujo disponible actualmente no genera por sí solo ningún cobro. Las condiciones futuras respetarán la legislación brasileña de consumo aplicable."
             },
             "encerramento": {
                 "title": "Cierre de cuenta",
@@ -131,8 +132,8 @@
     "privacy": {
         "title": "Política de Privacidad",
         "sub": "Qué recopilamos, por qué, y cómo mantienes el control de lo que es tuyo.",
-        "updated": "03/09/2026",
-        "version": "Borrador",
+        "updated": "07/09/2026",
+        "version": "Versión 1.0",
         "toc": {
             "tldr": "01. Resumen rápido",
             "coleta": "02. Datos recopilados",
@@ -150,8 +151,8 @@
         "sections": {
             "tldr": {
                 "title": "Resumen en 30 segundos",
-                "tldr": "Recopilamos solo lo necesario para que el servicio funcione. No vendemos tus datos. Puedes exportar o eliminar tu cuenta en cualquier momento.",
-                "p1": "Toonlira recopila datos personales estrictamente necesarios para proveer el servicio, mejorar la experiencia y cumplir obligaciones legales. No comercializamos datos personales con terceros con fines publicitarios.",
+                "tldr": "Recopilamos solo lo necesario para que el servicio funcione. Las imágenes salen del dispositivo únicamente tras un consentimiento específico para el procesamiento remoto. No vendemos tus datos.",
+                "p1": "Toonlira recopila datos personales estrictamente necesarios para prestar el servicio, mantener la seguridad y cumplir obligaciones legales. No comercializamos datos personales con terceros con fines publicitarios.",
                 "p2": "Esta política explica qué datos recopilamos, cómo los usamos, con quién los compartimos y cuáles son tus derechos como titular de los datos, conforme a la Ley General de Protección de Datos brasileña (LGPD — Ley nº 13.709/2018)."
             },
             "coleta": {
@@ -175,8 +176,8 @@
                         "value": "IP, tipo de navegador, sistema operativo (logs de acceso)."
                     },
                     {
-                        "term": "Pagos",
-                        "value": "Datos procesados por la pasarela (Stripe/Mercado Pago) — no almacenamos número de tarjeta."
+                        "term": "Traducción remota",
+                        "value": "Imagen seleccionada, idiomas de origen y destino, identificador anónimo de la instalación y metadatos técnicos mínimos del procesamiento. No se envían el nombre ni la ruta local del archivo."
                     },
                     {
                         "term": "Comunicaciones",
@@ -190,7 +191,7 @@
                 "items": [
                     "Operar y mantener la plataforma funcionando correctamente;",
                     "Personalizar recomendaciones y experiencia de lectura;",
-                    "Procesar pagos de suscripción;",
+                    "Realizar, con consentimiento, OCR, traducción y renderizado de la imagen seleccionada;",
                     "Enviar notificaciones sobre nuevos capítulos, respuestas y avisos del sistema;",
                     "Detectar y prevenir fraudes y abusos;",
                     "Cumplir obligaciones legales y regulatorias."
@@ -201,8 +202,8 @@
                 "title": "Base legal (LGPD art. 7)",
                 "lead": "El tratamiento de tus datos personales se fundamenta en las siguientes bases legales previstas en el art. 7 de la LGPD:",
                 "items": [
-                    "<strong>Consentimiento</strong> — para correos de marketing y cookies no esenciales;",
-                    "<strong>Ejecución del contrato</strong> — para operar la cuenta y procesar pagos;",
+                    "<strong>Consentimiento</strong> — para el procesamiento remoto de la imagen seleccionada, correos de marketing y cookies no esenciales;",
+                    "<strong>Ejecución del contrato</strong> — para operar la cuenta y prestar las funciones solicitadas;",
                     "<strong>Interés legítimo</strong> — para seguridad, prevención de fraudes y mejora del servicio;",
                     "<strong>Cumplimiento de obligación legal</strong> — para atender requerimientos judiciales o regulatorios."
                 ]
@@ -211,11 +212,11 @@
                 "title": "Con quién compartimos",
                 "lead": "Solo compartimos datos con:",
                 "items": [
-                    "<strong>Proveedores de servicio</strong> — hosting (AWS), correo transaccional (SendGrid), pasarela de pago (Stripe), análisis de errores (Sentry);",
-                    "<strong>Autoridades públicas</strong> — cuando lo exija la ley o una decisión judicial;",
-                    "<strong>Grupos de traducción asociados</strong> — solo identificador anónimo de usuario con fines estadísticos."
+                    "<strong>Firebase Hosting</strong> — publicación de las páginas web públicas;",
+                    "<strong>Google Cloud</strong> — infraestructura del gateway y procesamiento mediante Cloud Vision y Cloud Translation;",
+                    "<strong>Autoridades públicas</strong> — cuando lo exija la ley o una orden válida."
                 ],
-                "outro": "Todos los proveedores de servicio están contractualmente obligados a tratar tus datos con confidencialidad y seguridad, sin poder utilizarlos para sus propios fines."
+                "outro": "Según la documentación oficial de Google Cloud, Google Cloud Vision y Cloud Translation no usan el contenido enviado para entrenar o mejorar sus modelos. Los proveedores procesan los datos para prestar y proteger los servicios contratados."
             },
             "cookies": {
                 "title": "Cookies",
@@ -236,22 +237,22 @@
             },
             "retencao": {
                 "title": "Retención y eliminación",
-                "p1": "Conservamos tus datos por el tiempo necesario para las finalidades descritas en esta política, o por el periodo mínimo exigido por ley. Al cerrar tu cuenta, los datos personales se anonimizan o eliminan en hasta 90 días, salvo cuando exista obligación legal de retención.",
-                "p2": "Los logs de acceso se conservan durante 6 meses conforme al Marco Civil de Internet brasileño (Ley nº 12.965/2014). Los datos de pago se retienen durante 5 años por obligaciones fiscales."
+                "p1": "Conservamos los datos de la cuenta durante el tiempo necesario para las finalidades descritas o para cumplir obligaciones legales. Las solicitudes de acceso, corrección, anonimización, bloqueo, portabilidad, oposición, revocación o eliminación pueden enviarse al contacto de esta política.",
+                "p2": "En el flujo de traducción, la imagen original remota se elimina después del OCR o, como límite de seguridad, en hasta una hora. El resultado y el manifiesto se eliminan tras confirmar la descarga o en hasta una hora desde que estén listos. Los metadatos técnicos sanitizados del gateway se conservan hasta siete días; los originales y resultados guardados localmente permanecen en el almacenamiento privado del dispositivo hasta que el usuario los elimine."
             },
             "seguranca": {
                 "title": "Seguridad",
-                "p1": "Adoptamos medidas técnicas y organizativas adecuadas para proteger tus datos contra acceso no autorizado, pérdida, alteración o divulgación. Entre las medidas implementadas: cifrado en tránsito (TLS 1.3), contraseñas con hash bcrypt, autenticación JWT con expiración corta, control de acceso por función y auditoría de logs.",
+                "p1": "Adoptamos medidas técnicas y organizativas para reducir el riesgo de acceso no autorizado, pérdida, alteración o divulgación, como cifrado en tránsito, credenciales almacenadas mediante hash, tokens de corta duración, controles de acceso y minimización de logs. Ningún sistema es totalmente inmune a incidentes.",
                 "p2": "En caso de incidente de seguridad que afecte tus datos, te notificaremos a ti y a la ANPD dentro de los plazos previstos por la LGPD."
             },
             "criancas": {
                 "title": "Niños y adolescentes",
                 "p1": "Toonlira no está dirigido a niños menores de 13 años. No recopilamos intencionalmente datos personales de menores de 13 años. Si llegamos a saber que recopilamos datos de un niño sin el debido consentimiento de los responsables, eliminaremos esa información de inmediato.",
-                "p2": "Para menores entre 13 y 18 años, recomendamos que el acceso a la plataforma se realice bajo la supervisión de un responsable legal."
+                "p2": "Para menores entre 13 y 18 años, recomendamos la supervisión de un responsable legal. No envíes al procesamiento remoto imágenes que contengan datos personales de niños menores de 13 años."
             },
             "internacional": {
                 "title": "Transferencias internacionales",
-                "p1": "Algunos de nuestros proveedores de servicio operan en otros países (EE. UU., UE). En esos casos, garantizamos que la transferencia de datos se realice con base en mecanismos legales adecuados, como cláusulas contractuales estándar aprobadas por autoridades de protección de datos."
+                "p1": "La infraestructura principal del gateway, la base de datos y el almacenamiento temporal están planificados para São Paulo, Brasil. Para OCR y traducción, la imagen y el texto extraído pueden ser procesados por servicios de Google Cloud en las regiones de Estados Unidos indicadas en la pantalla de consentimiento. La transferencia se utiliza para prestar el servicio solicitado con las salvaguardas contractuales y de seguridad aplicables a Google Cloud."
             },
             "dpo": {
                 "title": "Contacto de privacidad",

@@ -15,11 +15,13 @@ describe('Terms', () => {
         expect(screen.getByRole('heading', { name: /termos de uso/i, level: 1 })).toBeInTheDocument();
     });
 
-    it('identifica o operador real e sinaliza que o conteúdo ainda é rascunho', () => {
+    it('identifica o operador real e publica a versão vigente', () => {
         renderWithProviders(<Terms />);
 
-        expect(screen.getByRole('note', { name: /documento em rascunho/i })).toBeInTheDocument();
+        expect(screen.queryByRole('note', { name: /documento em rascunho/i })).not.toBeInTheDocument();
         expect(screen.getByText(/plataforma operada por Ruan Moraes/i)).toBeInTheDocument();
+        expect(screen.getAllByText(/processamento remoto de tradução/i)).toHaveLength(2);
+        expect(screen.queryByText(/terms\.sections\./i)).not.toBeInTheDocument();
         expect(screen.queryByText(/Toonlira Tecnologia Ltda/i)).not.toBeInTheDocument();
     });
 
@@ -50,8 +52,8 @@ describe('Terms', () => {
 
     it('renders version and date badges', () => {
         renderWithProviders(<Terms />);
-        expect(screen.getByText(/^rascunho$/i)).toBeInTheDocument();
-        expect(screen.getByText(/03\/09\/2026/i)).toBeInTheDocument();
+        expect(screen.getByText(/^versão 1\.0$/i)).toBeInTheDocument();
+        expect(screen.getByText(/07\/09\/2026/i)).toBeInTheDocument();
     });
 
     it('renders cross-links nav', () => {
