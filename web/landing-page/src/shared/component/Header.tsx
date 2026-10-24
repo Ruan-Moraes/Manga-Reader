@@ -1,140 +1,91 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import BrandWordmark from '@/shared/component/BrandWordmark';
+import Button from '@/shared/component/Button';
 import Icon from '@/shared/component/Icon';
-import LanguageSwitcher from '@/shared/component/LanguageSwitcher';
-import { Wordmark } from '@/shared/component/Primitives';
-
+import { useScrolled } from '@/shared/hook/useScrolled';
 import { goToSection } from '@/shared/util/smoothScroll';
+import { MobileDrawer } from './header/MobileDrawer';
+import { NavLinks } from './header/NavLinks';
 
-const NAV_IDS = ['benefits', 'demo', 'plans', 'app', 'faq'] as const;
+const DRAWER_ID = 'mobile-navigation';
 
 export default function Header() {
     const { t } = useTranslation();
-
-    const [scrolled, setScrolled] = useState(false);
+    const scrolled = useScrolled(24);
     const [open, setOpen] = useState(false);
+    const menuButtonRef = useRef<HTMLButtonElement>(null);
 
-    useEffect(() => {
-        const onScroll = () => setScrolled(window.scrollY > 24);
+    const closeDrawer = useCallback((restoreFocus = true) => {
+        setOpen(false);
 
-        onScroll();
-        window.addEventListener('scroll', onScroll, { passive: true });
-
-        return () => window.removeEventListener('scroll', onScroll);
+        if (restoreFocus) {
+            menuButtonRef.current?.focus();
+        }
     }, []);
-
-    useEffect(() => {
-        document.body.style.overflow = open ? 'hidden' : '';
-
-        return () => {
-            document.body.style.overflow = '';
-        };
-    }, [open]);
 
     function onNav(id: string) {
         setOpen(false);
         goToSection(id);
     }
 
-    const ctaClass =
-        'inline-flex h-10 cursor-pointer items-center justify-center gap-2 whitespace-nowrap rounded-xs border border-accent bg-accent px-[18px] text-sm font-extrabold tracking-wider text-primary transition-colors hover:bg-accent-hover';
-
     return (
         <>
             <header
-                className="fixed inset-x-0 top-0 z-[100] transition-all duration-300"
-                style={{
-                    background: scrolled ? 'rgba(22,22,22,0.78)' : 'transparent',
-                    backdropFilter: scrolled ? 'blur(14px)' : 'none',
-                    WebkitBackdropFilter: scrolled ? 'blur(14px)' : 'none',
-                    borderBottom: `1px solid ${scrolled ? '#2d2d2d' : 'transparent'}`,
-                }}
+                className={`fixed inset-x-0 top-0 z-50 transform-gpu border-b border-transparent bg-primary-90 backdrop-blur-[10px] transition-[background-color,border-color,box-shadow] duration-[180ms] ${
+                    scrolled
+                        ? 'border-border shadow-[0_8px_24px_rgb(0_0_0_/_18%)]'
+                        : ''
+                }`}
             >
-                <div className="mx-auto flex h-16 max-w-[1200px] items-center justify-between gap-4 px-5">
+                <div className="mx-auto flex min-h-20 w-full max-w-[1240px] items-center justify-between gap-4 px-[clamp(20px,4vw,32px)]">
                     <a
                         href="#top"
-                        onClick={e => {
-                            e.preventDefault();
+                        className="inline-flex min-h-11 cursor-pointer items-center rounded-lg px-1 no-underline transition-[background-color,scale] duration-[180ms] hover:bg-surface-hover active:scale-[0.98]"
+                        onClick={event => {
+                            event.preventDefault();
                             onNav('top');
                         }}
-                        className="no-underline"
                     >
-                        <Wordmark size={19} />
+                        <BrandWordmark size="sm" />
                     </a>
 
-                    <nav className="lp-nav-desktop hidden items-center gap-7">
-                        {NAV_IDS.map(id => (
-                            <a
-                                key={id}
-                                href={`#${id}`}
-                                onClick={e => {
-                                    e.preventDefault();
-                                    onNav(id);
-                                }}
-                                className="text-sm font-semibold tracking-wider text-[#cccccc] no-underline transition-colors hover:text-accent"
-                            >
-                                {t(`nav.${id}`)}
-                            </a>
-                        ))}
+                    <nav
+                        className="hidden items-center gap-2 min-[940px]:flex"
+                        aria-label={t('nav.primary')}
+                    >
+                        <NavLinks variant="desktop" onNav={onNav} />
                     </nav>
 
-                    <div className="lp-actions-desktop hidden items-center gap-3.5">
-                        <LanguageSwitcher />
-                        <button onClick={() => onNav('plans')} className={ctaClass}>
+                    <div className="hidden items-center gap-3 min-[940px]:flex">
+                        <Button size="sm" onClick={() => onNav('plans')}>
                             {t('cta.subscribe')}
-                        </button>
+                        </Button>
                     </div>
 
                     <button
-                        className="lp-burger inline-flex h-11 w-11 cursor-pointer items-center justify-center rounded-xs border border-[#444] bg-transparent text-white"
-                        aria-label={t('nav.menu')}
+                        ref={menuButtonRef}
+                        type="button"
+                        className="inline-flex size-11 cursor-pointer items-center justify-center rounded-lg border border-border bg-card text-fg transition-[border-color,background-color,color,scale] duration-[180ms] hover:border-accent-border hover:bg-accent-subtle hover:text-accent-fg active:scale-[0.97] min-[940px]:hidden"
+                        aria-label={open ? t('nav.closeMenu') : t('nav.menu')}
+                        aria-controls={DRAWER_ID}
                         aria-expanded={open}
-                        onClick={() => setOpen(o => !o)}
+                        onClick={() =>
+                            open ? closeDrawer(false) : setOpen(true)
+                        }
                     >
                         <Icon name={open ? 'close' : 'menu'} size={22} />
                     </button>
                 </div>
             </header>
 
-            {/* drawer mobile */}
-            <div
-                className="fixed inset-0 z-[99] transition-opacity duration-300"
-                onClick={() => setOpen(false)}
-                style={{
-                    background: 'rgba(22,22,22,0.75)',
-                    backdropFilter: 'blur(6px)',
-                    WebkitBackdropFilter: 'blur(6px)',
-                    opacity: open ? 1 : 0,
-                    pointerEvents: open ? 'auto' : 'none',
-                }}
-            >
-                <div
-                    onClick={e => e.stopPropagation()}
-                    className="absolute inset-y-0 right-0 flex w-[min(86vw,340px)] flex-col gap-2 overflow-y-auto border-l border-[#2d2d2d] bg-primary px-6 pb-7 pt-20 transition-transform duration-300"
-                    style={{ transform: open ? 'translateX(0)' : 'translateX(100%)' }}
-                >
-                    {NAV_IDS.map(id => (
-                        <a
-                            key={id}
-                            href={`#${id}`}
-                            onClick={e => {
-                                e.preventDefault();
-                                onNav(id);
-                            }}
-                            className="border-b border-[#2d2d2d] py-3 text-lg font-bold tracking-wider text-white no-underline"
-                        >
-                            {t(`nav.${id}`)}
-                        </a>
-                    ))}
-                    <div className="mt-[18px] max-w-[210px]">
-                        <LanguageSwitcher block />
-                    </div>
-                    <button onClick={() => onNav('plans')} className={`${ctaClass} mt-3.5 h-12 w-full`}>
-                        {t('cta.subscribe')}
-                    </button>
-                </div>
-            </div>
+            <MobileDrawer
+                open={open}
+                onClose={() => closeDrawer(true)}
+                onNav={onNav}
+                drawerId={DRAWER_ID}
+            />
         </>
     );
 }

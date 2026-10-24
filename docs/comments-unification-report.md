@@ -44,7 +44,7 @@ separada.
 - i18n: chave `validation.vote.value.required` + `validation.comment.targetType/targetId.required`.
 - Testes atualizados; **suíte da área alterada: 85+ testes verdes**, `mvn compile`/`test-compile` ok.
 
-**Frontend** (`web/manga-reader`): `entities/comment/api/commentService.ts` adapta ao novo
+**Frontend** (`web/toonlira`): `entities/comment/api/commentService.ts` adapta ao novo
 contrato (upvotes/downvotes; create com targetType/targetId; `/vote`; `/user-votes`
 traduzido para o modelo interno). Zero churn em types/hook/componentes. Service test 14 verde,
 sem novos erros de `tsc`.

@@ -1,0 +1,48 @@
+{
+  "format": "toonlira-cloud-validation-1",
+  "status": "planned-not-executed",
+  "projectId": "toonlira-rm",
+  "regionProposed": "southamerica-east1",
+  "regionConfirmed": null,
+  "runId": null,
+  "startedAtUtc": null,
+  "finishedAtUtc": null,
+  "gitRevision": null,
+  "workingTreeDirty": null,
+  "package": {
+    "role": null,
+    "sourceSha256": null,
+    "jarSha256": null,
+    "registryDigest": null,
+    "configurationSha256": null
+  },
+  "approvals": [],
+  "actions": [],
+  "cloudOperationRef": null,
+  "cloudExecutionRef": null,
+  "observations": [],
+  "artifactHashes": [],
+  "resourcesCreated": [],
+  "resourcesReused": [],
+  "cleanupActions": [],
+  "cost": {
+    "currency": null,
+    "regionalQuoteAtUtc": null,
+    "acceptedAmount": null,
+    "acceptedDurationSeconds": null,
+    "observedAmount": null,
+    "billingWindow": null,
+    "hardCapValidated": false,
+    "residualCosts": []
+  },
+  "findings": [],
+  "decision": {
+    "securityApproved": false,
+    "operationalApproved": false,
+    "qualityApproved": false,
+    "publicUploadsEnabled": false,
+    "paidProviderCallsAuthorized": false,
+    "status020": "in-progress",
+    "gate021": "blocked"
+  }
+}

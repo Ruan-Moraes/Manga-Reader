@@ -1,14 +1,14 @@
 import {
     createElement,
-    useEffect,
-    useRef,
-    useState,
+    memo,
     type CSSProperties,
     type ElementType,
     type ReactNode,
 } from 'react';
 
-interface RevealProps {
+import { useInView } from '@/shared/hook/useInView';
+
+export interface RevealProps {
     children: ReactNode;
     delay?: number;
     y?: number;
@@ -17,11 +17,16 @@ interface RevealProps {
     className?: string;
 }
 
+type RevealStyle = CSSProperties & {
+    '--reveal-delay'?: string;
+    '--reveal-y'?: string;
+};
+
 /**
  * Wrapper de entrada (fade + slide) ao entrar na viewport.
- * Elementos acima da dobra aparecem imediatamente; respeita prefers-reduced-motion.
+ * Respeita prefers-reduced-motion e não força reflows de layout síncronos.
  */
-export default function Reveal({
+export function Reveal({
     children,
     delay = 0,
     y = 18,
@@ -29,65 +34,27 @@ export default function Reveal({
     style,
     className,
 }: RevealProps) {
-    const ref = useRef<HTMLElement>(null);
-    const [shown, setShown] = useState(false);
-
-    useEffect(() => {
-        const el = ref.current;
-
-        if (!el) return;
-
-        const reduce =
-            window.matchMedia &&
-            window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-        if (reduce) {
-            setShown(true);
-            return;
-        }
-
-        const vh = window.innerHeight || 800;
-
-        if (el.getBoundingClientRect().top < vh * 0.92) {
-            setShown(true);
-            return;
-        }
-
-        if (!('IntersectionObserver' in window)) {
-            setShown(true);
-            return;
-        }
-
-        const io = new IntersectionObserver(
-            entries => {
-                entries.forEach(e => {
-                    if (e.isIntersecting) {
-                        setShown(true);
-                        io.disconnect();
-                    }
-                });
-            },
-            { threshold: 0.12, rootMargin: '0px 0px -8% 0px' },
-        );
-
-        io.observe(el);
-
-        return () => io.disconnect();
-    }, []);
+    const { ref, inView } = useInView<HTMLElement>({
+        threshold: 0.12,
+        rootMargin: '0px 0px -8% 0px',
+        once: true,
+    });
 
     return createElement(
         as,
         {
             ref,
-            className,
+            className: `translate-y-[var(--reveal-y)] opacity-0 transition-[opacity,translate] duration-600 ease-out [transition-delay:var(--reveal-delay)] motion-reduce:translate-y-0 motion-reduce:!opacity-100 ${
+                inView ? '!translate-y-0 !opacity-100' : ''
+            } ${className ?? ''}`,
             style: {
                 ...style,
-                opacity: shown ? 1 : 0,
-                transform: shown ? 'none' : `translateY(${y}px)`,
-                transition: `opacity .6s ease ${delay}ms, transform .6s ease ${delay}ms`,
-                willChange: 'opacity, transform',
-            },
+                '--reveal-delay': `${delay}ms`,
+                '--reveal-y': `${y}px`,
+            } as RevealStyle,
         },
         children,
     );
 }
+
+export default memo(Reveal);

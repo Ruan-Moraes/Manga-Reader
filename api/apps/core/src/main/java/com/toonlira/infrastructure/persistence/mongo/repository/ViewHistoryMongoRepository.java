@@ -1,0 +1,23 @@
+package com.toonlira.infrastructure.persistence.mongo.repository;
+
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.mongodb.repository.MongoRepository;
+
+import com.toonlira.domain.user.entity.ViewHistory;
+
+/**
+ * Spring Data MongoDB repository para histórico de visualização.
+ */
+public interface ViewHistoryMongoRepository extends MongoRepository<ViewHistory, String> {
+    Page<ViewHistory> findByUserIdOrderByViewedAtDesc(String userId, Pageable pageable);
+
+    Optional<ViewHistory> findByUserIdAndTitleId(String userId, String titleId);
+
+    List<ViewHistory> findAllByUserIdOrderByViewedAtDesc(String userId);
+
+    void deleteAllByUserId(String userId);
+}

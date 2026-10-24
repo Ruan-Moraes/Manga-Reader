@@ -1,0 +1,137 @@
+import { memo } from 'react';
+import { BadgeCheck } from 'lucide-react';
+
+import { cn } from '@shared/lib/cn';
+
+import { Avatar } from '@ui/Avatar';
+import { Badge } from '@ui/Badge';
+import { Button } from '@ui/Button';
+import { StatusDot } from '@ui/StatusDot';
+
+export interface GroupCardProps {
+    group: {
+        id: string;
+        name: string;
+        handle?: string;
+        avatar?: string;
+        banner?: string;
+        status: 'active' | 'hiatus' | 'inactive';
+        // Stats opcionais: fontes como GroupSummary (grupos seguidos — DT-48)
+        // não trazem todos os contadores; o card omite os ausentes.
+        members?: number;
+        projects?: number;
+        chaptersPublished?: number;
+        tags?: string[];
+        verified?: boolean;
+    };
+    onClick?: () => void;
+    following?: boolean;
+    onToggleFollow?: () => void;
+    isLoading?: boolean;
+}
+
+const fmt = (n: number) => (n >= 1000 ? `${(n / 1000).toFixed(1)}k` : String(n));
+
+const statusLabel = {
+    active: 'Ativo',
+    hiatus: 'Em hiato',
+    inactive: 'Inativo',
+};
+
+const statusKind = {
+    active: 'operating',
+    hiatus: 'degraded',
+    inactive: 'idle',
+} as const;
+
+const GroupCardBase = ({ group, onClick, following, onToggleFollow }: GroupCardProps) => (
+    <article
+        onClick={onClick}
+        onKeyDown={event => {
+            if (onClick && !onToggleFollow && (event.key === 'Enter' || event.key === ' ')) {
+                event.preventDefault();
+                onClick();
+            }
+        }}
+        role={onClick && !onToggleFollow ? 'button' : undefined}
+        tabIndex={onClick && !onToggleFollow ? 0 : undefined}
+        className={cn(
+            'group flex cursor-pointer flex-col overflow-hidden rounded-ui-md border border-ui-border bg-ui-surface transition-all duration-ui-default',
+            'hover:-translate-y-0.5 hover:border-ui-accent-50 hover:shadow-ui-default focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ui-focus-ring',
+        )}
+    >
+        <div
+            className="relative h-24 w-full bg-cover bg-center"
+            style={{
+                backgroundImage: group.banner ? `url(${group.banner})` : 'linear-gradient(135deg, var(--ui-accent-25), var(--ui-surface))',
+            }}
+        >
+        </div>
+        <div className="-mt-9 flex min-w-0 flex-col gap-3 p-4 pt-0">
+            <div className="relative z-10 w-fit rounded-ui-md border-4 border-ui-surface bg-ui-surface">
+                <Avatar src={group.avatar} name={group.name} size={64} />
+            </div>
+
+            <div className="flex min-w-0 items-start justify-between gap-3">
+                <div className="min-w-0">
+                    <h3 className="flex min-w-0 items-start gap-1.5 text-ui-h4 font-ui-extrabold leading-tight tracking-mr text-ui-fg">
+                        <span className="line-clamp-2 break-words">{group.name}</span>
+                        {group.verified && <BadgeCheck className="mt-0.5 size-4 shrink-0 text-ui-accent-fg" aria-label="Grupo verificado" />}
+                    </h3>
+                    {group.handle && <div className="mt-1 truncate text-ui-tiny text-ui-fg-subtle">@{group.handle}</div>}
+                </div>
+            </div>
+
+            <div className="inline-flex w-fit items-center gap-2 rounded-ui-full border border-ui-border-subtle bg-ui-surface-muted px-2.5 py-1 text-ui-tiny">
+                <StatusDot status={statusKind[group.status]} />
+                <span className="font-ui-bold uppercase tracking-[0.08em] text-ui-fg-muted">{statusLabel[group.status]}</span>
+            </div>
+
+            <div className="flex flex-wrap gap-x-4 gap-y-2 border-t border-ui-border-subtle pt-3 text-ui-tiny text-ui-fg-muted">
+                {group.members != null && (
+                    <span>
+                        <strong className="font-ui-extrabold text-ui-fg">{fmt(group.members)}</strong> seguidores
+                    </span>
+                )}
+                {group.projects != null && (
+                    <span>
+                        <strong className="font-ui-extrabold text-ui-fg">{group.projects}</strong> obras
+                    </span>
+                )}
+                {group.chaptersPublished != null && (
+                    <span>
+                        <strong className="font-ui-extrabold text-ui-fg">{fmt(group.chaptersPublished)}</strong> capítulos
+                    </span>
+                )}
+            </div>
+
+            {group.tags && group.tags.length > 0 && (
+                <div className="flex min-h-6 flex-wrap gap-1">
+                    {group.tags.map(t => (
+                        <Badge key={t} variant="neutral">
+                            {t}
+                        </Badge>
+                    ))}
+                </div>
+            )}
+
+            {onToggleFollow && (
+                <Button
+                    variant={following ? 'ghost' : 'primary'}
+                    block
+                    aria-pressed={following}
+                    onClick={e => {
+                        e.stopPropagation();
+                        onToggleFollow();
+                    }}
+                >
+                    {following ? 'Seguindo' : 'Seguir grupo'}
+                </Button>
+            )}
+        </div>
+    </article>
+);
+
+export const GroupCard = memo(GroupCardBase);
+
+export default GroupCard;

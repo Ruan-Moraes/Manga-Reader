@@ -1,0 +1,36 @@
+{
+  "source": {
+    "name": "Manga Reader",
+    "slug": "manga-reader",
+    "identifier": "mangareader",
+    "npmScope": "@manga-reader",
+    "javaPackage": "com.mangareader",
+    "visualPrefix": "mr-"
+  },
+  "target": {
+    "name": "Toonlira",
+    "slug": "toonlira",
+    "identifier": "toonlira",
+    "npmScope": "@toonlira",
+    "javaPackage": "com.toonlira",
+    "visualPrefix": "ui-"
+  },
+  "replacements": [
+    { "from": "com.mangareader", "to": "com.toonlira" },
+    { "from": "@manga-reader", "to": "@toonlira" },
+    { "from": "MangaReader", "to": "Toonlira" },
+    { "from": "Manga Reader", "to": "Toonlira" },
+    { "from": "Manga-Reader", "to": "Toonlira" },
+    { "from": "manga-reader", "to": "toonlira" },
+    { "from": "manga_reader", "to": "toonlira" },
+    { "from": "mangareader", "to": "toonlira" },
+    { "from": "mr-", "to": "ui-" }
+  ],
+  "ignoredDirectories": [".git", ".pnpm-store", ".idea", ".audit-admin", "node_modules", "target", "dist", "build", "coverage", ".expo", ".terraform"],
+  "ignoredPaths": ["scripts/brand.mjs", "scripts/config/rebrand.json"],
+  "semanticAllowlist": [
+    { "path": "web/toonlira/src/i18n/locales/en-US/manga.json", "text": "Manga reader", "reason": "Functional landmark for a manga-reading surface, not the platform name." },
+    { "path": "web/toonlira/src/i18n/locales/en-US/help.json", "text": "Manga reader", "reason": "Functional label, not the platform name." }
+    ,{ "path": "api/apps/core/src/main/java/com/toonlira/application/user/service/UsernameValidator.java", "text": "manga_reader", "reason": "Reserved username retained as a business compatibility rule." }
+  ]
+}

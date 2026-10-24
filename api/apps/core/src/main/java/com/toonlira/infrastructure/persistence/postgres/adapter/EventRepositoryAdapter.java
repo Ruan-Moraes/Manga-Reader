@@ -1,0 +1,80 @@
+package com.toonlira.infrastructure.persistence.postgres.adapter;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Component;
+
+import com.toonlira.application.event.port.EventRepositoryPort;
+import com.toonlira.domain.event.entity.Event;
+import com.toonlira.domain.event.valueobject.EventStatus;
+import com.toonlira.infrastructure.persistence.postgres.repository.EventJpaRepository;
+
+import lombok.RequiredArgsConstructor;
+
+/**
+ * Adapter que implementa {@link EventRepositoryPort} usando Spring Data JPA.
+ */
+@Component
+@RequiredArgsConstructor
+public class EventRepositoryAdapter implements EventRepositoryPort {
+    private final EventJpaRepository repository;
+
+    @Override
+    public List<Event> findAll() {
+        return repository.findAllByOrderByStartDateDesc();
+    }
+
+    @Override
+    public Optional<Event> findById(UUID id) {
+        return repository.findById(id);
+    }
+
+    @Override
+    public List<Event> findByStatus(EventStatus status) {
+        return repository.findByStatus(status);
+    }
+
+    @Override
+    public Event save(Event event) {
+        return repository.save(event);
+    }
+
+    @Override
+    public void deleteById(UUID id) {
+        repository.deleteById(id);
+    }
+
+    @Override
+    public Page<Event> findAll(Pageable pageable) {
+        return repository.findAll(pageable);
+    }
+
+    @Override
+    public Page<Event> findByStatus(EventStatus status, Pageable pageable) {
+        return repository.findByStatus(status, pageable);
+    }
+
+    @Override
+    public Page<Event> searchByTitle(String query, Pageable pageable) {
+        if (query == null || query.isBlank()) {
+            return new PageImpl<>(List.of(), pageable, 0);
+        }
+
+        return repository.searchByTitle(query.trim(), pageable);
+    }
+
+    @Override
+    public long count() {
+        return repository.count();
+    }
+
+    @Override
+    public long countByStatus(EventStatus status) {
+        return repository.countByStatus(status);
+    }
+}

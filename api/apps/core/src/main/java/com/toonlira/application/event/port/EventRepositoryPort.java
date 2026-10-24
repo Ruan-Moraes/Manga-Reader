@@ -1,0 +1,36 @@
+package com.toonlira.application.event.port;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
+import com.toonlira.domain.event.entity.Event;
+import com.toonlira.domain.event.valueobject.EventStatus;
+
+/**
+ * Port de saída — acesso a dados de Events (PostgreSQL).
+ */
+public interface EventRepositoryPort {
+    List<Event> findAll();
+
+    Optional<Event> findById(UUID id);
+
+    List<Event> findByStatus(EventStatus status);
+
+    Event save(Event event);
+
+    void deleteById(UUID id);
+
+    Page<Event> findAll(Pageable pageable);
+
+    Page<Event> findByStatus(EventStatus status, Pageable pageable);
+
+    Page<Event> searchByTitle(String query, Pageable pageable);
+
+    long count();
+
+    long countByStatus(EventStatus status);
+}

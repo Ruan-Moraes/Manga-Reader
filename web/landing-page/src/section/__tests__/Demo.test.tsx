@@ -47,4 +47,24 @@ describe('Demo', () => {
 
         expect(readerTab).toHaveAttribute('aria-selected', 'true');
     });
+
+    it('supports arrow-key tab navigation', async () => {
+        const user = userEvent.setup();
+        render(
+            <TestProviders>
+                <Demo />
+            </TestProviders>,
+        );
+        const library = screen.getByRole('tab', { name: /Biblioteca/ });
+        library.focus();
+        await user.keyboard('{ArrowRight}');
+        expect(screen.getByRole('tab', { name: /Obra/ })).toHaveAttribute(
+            'aria-selected',
+            'true',
+        );
+        expect(screen.getByRole('tabpanel')).toHaveAttribute(
+            'aria-labelledby',
+            'demo-tab-title',
+        );
+    });
 });

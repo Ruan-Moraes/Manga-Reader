@@ -1,30 +1,30 @@
 import { useEffect, useRef, useState } from 'react';
-import { KeyboardAvoidingView, Platform, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { Text, TouchableOpacity, View } from 'react-native';
 import { Image } from 'expo-image';
-import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 
-import { AuthFooter, AuthHeader, Field, GhostButton, MRIcon, PrimaryButton } from '@/src/features/auth';
-import { useTheme } from '@/src/shared/theme';
-import { FONTS } from '@/src/shared/theme';
+import { AuthHeader, MRIcon, requestPasswordReset } from '@/features/authenticate';
+import { navigateBackOrReplace, ROUTES } from '@/shared/navigation';
+import { useTheme } from '@/shared/theme';
+import { FONTS } from '@/shared/theme';
+import { Button, Input, NavigationHeader, PageContainer } from '@/shared/ui';
 
 const MASCOT_PENSANDO = require('../../../../assets/images/mascot-pensando.png');
 
 export function ForgotPage() {
-    const { tokens } = useTheme();
+    const { minimumTouchTarget, radii, spacing, tokens, typography } = useTheme();
     const { t } = useTranslation('auth');
 
     const [email, setEmail] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const [sent, setSent] = useState(false);
+    const [expirationMinutes, setExpirationMinutes] = useState<number | null>(null);
     const [cooldown, setCooldown] = useState(0);
-    const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
     const tick = useRef<ReturnType<typeof setInterval> | null>(null);
 
     useEffect(
         () => () => {
-            if (timer.current) clearTimeout(timer.current);
             if (tick.current) clearInterval(tick.current);
         },
         [],
@@ -44,7 +44,7 @@ export function ForgotPage() {
         }, 1000);
     };
 
-    const submit = () => {
+    const submit = async () => {
         if (loading) return;
         if (!email.trim() || !/.+@.+\..+/.test(email.trim())) {
             setError(t('forgotPassword.emailValidation'));
@@ -52,128 +52,138 @@ export function ForgotPage() {
         }
         setError('');
         setLoading(true);
-        timer.current = setTimeout(() => {
+        try {
+            const result = await requestPasswordReset(email.trim());
+            setExpirationMinutes(result.expiresInSeconds === null ? null : Math.max(1, Math.ceil(result.expiresInSeconds / 60)));
+        } catch {
+            // Always show success — never reveal if the account exists.
+            setExpirationMinutes(null);
+        } finally {
             setLoading(false);
             setSent(true);
             startCooldown();
-        }, 700);
-    };
-
-    const retry = () => {
-        setSent(false);
-        setError('');
-        setCooldown(0);
-        if (tick.current) clearInterval(tick.current);
+        }
     };
 
     if (sent) {
         return (
-            <View
-                style={{
-                    flex: 1,
-                    backgroundColor: tokens.bg,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    paddingHorizontal: tokens.screenPadding,
-                    paddingVertical: 24,
-                }}
-            >
-                <View style={{ marginBottom: 20 }}>
-                    <Image source={MASCOT_PENSANDO} style={{ width: 140, height: 140 }} contentFit="contain" />
+            <PageContainer scroll>
+                <View style={{ alignSelf: 'center', flex: 1, maxWidth: 440, paddingBottom: spacing.xl, paddingTop: spacing.sm, width: '100%' }}>
+                    <NavigationHeader backLabel={t('forgotPassword.backToLoginLink')} onBack={() => navigateBackOrReplace(ROUTES.AUTH.LOGIN)} />
+                    <View style={{ alignItems: 'center', flex: 1, justifyContent: 'center', paddingVertical: spacing.lg }}>
+                        <View style={{ marginBottom: spacing.lg }}>
+                            <Image source={MASCOT_PENSANDO} style={{ width: 140, height: 140 }} contentFit="contain" />
+                        </View>
+
+                        <View
+                            style={{
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                                gap: spacing.sm,
+                                marginBottom: spacing.md,
+                                paddingHorizontal: spacing.md,
+                                paddingVertical: spacing.xs,
+                                borderRadius: radii.pill,
+                                backgroundColor: tokens.accentSoft,
+                                borderWidth: 1,
+                                borderColor: tokens.accentBorder,
+                            }}
+                        >
+                            <MRIcon name="send" size={13} color={tokens.accentText} />
+                            <Text
+                                style={{
+                                    fontFamily: FONTS.extrabold,
+                                    fontSize: typography.minimum,
+                                    color: tokens.accentText,
+                                    letterSpacing: 1.6,
+                                    textTransform: 'uppercase',
+                                }}
+                            >
+                                {t('forgotPassword.sentEyebrow')}
+                            </Text>
+                        </View>
+
+                        <Text
+                            style={{
+                                fontFamily: FONTS.extrabold,
+                                fontSize: typography.h2,
+                                color: tokens.text,
+                                letterSpacing: 0,
+                                lineHeight: typography.h2 * 1.2,
+                                textAlign: 'center',
+                                marginBottom: spacing.md,
+                            }}
+                        >
+                            {t('forgotPassword.sentTitle')}
+                        </Text>
+
+                        <Text
+                            style={{
+                                fontFamily: FONTS.regular,
+                                fontSize: typography.body,
+                                color: tokens.subtle,
+                                letterSpacing: 0,
+                                lineHeight: typography.body * 1.45,
+                                textAlign: 'center',
+                                maxWidth: 300,
+                                marginBottom: spacing.xl,
+                            }}
+                        >
+                            {t('forgotPassword.sentLinkSentTo')} <Text style={{ color: tokens.text, fontFamily: FONTS.bold }}>{email.trim()}</Text>
+                            {'. '}
+                            {expirationMinutes === null
+                                ? t('forgotPassword.sentExpiryUnknown')
+                                : t('forgotPassword.sentExpiry', { minutes: expirationMinutes })}
+                        </Text>
+
+                        <View style={{ width: '100%', maxWidth: 340 }}>
+                            <Button
+                                leading={<MRIcon name="mail" size={20} color={tokens.accentText} />}
+                                disabled={cooldown > 0}
+                                loading={loading}
+                                onPress={() => void submit()}
+                                variant="outline"
+                            >
+                                {cooldown > 0 ? `${t('forgotPassword.sentNotReceived')} ${cooldown}s` : t('forgotPassword.sentTryAgain')}
+                            </Button>
+                        </View>
+
+                        <TouchableOpacity
+                            accessibilityRole="button"
+                            onPress={() => navigateBackOrReplace(ROUTES.AUTH.LOGIN)}
+                            style={{ marginTop: spacing.lg, minHeight: minimumTouchTarget, justifyContent: 'center' }}
+                        >
+                            <Text style={{ fontFamily: FONTS.regular, fontSize: typography.body, color: tokens.subtle }}>
+                                {t('forgotPassword.remembered')}{' '}
+                                <Text style={{ color: tokens.accentText, fontFamily: FONTS.bold }}>{t('forgotPassword.backToLoginLink')}</Text>
+                            </Text>
+                        </TouchableOpacity>
+                    </View>
                 </View>
-
-                <View
-                    style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        gap: 7,
-                        marginBottom: 14,
-                        paddingHorizontal: 12,
-                        paddingVertical: 5,
-                        borderRadius: 999,
-                        backgroundColor: `${tokens.accent}28`,
-                        borderWidth: 1,
-                        borderColor: `${tokens.accent}80`,
-                    }}
-                >
-                    <MRIcon name="send" size={13} color={tokens.accent} />
-                    <Text style={{ fontFamily: FONTS.extrabold, fontSize: 11, color: tokens.accent, letterSpacing: 1.6, textTransform: 'uppercase' }}>
-                        {t('forgotPassword.sentEyebrow')}
-                    </Text>
-                </View>
-
-                <Text
-                    style={{
-                        fontFamily: FONTS.extrabold,
-                        fontSize: 26,
-                        color: tokens.text,
-                        letterSpacing: tokens.ls,
-                        lineHeight: 31,
-                        textAlign: 'center',
-                        marginBottom: 14,
-                    }}
-                >
-                    {t('forgotPassword.sentTitle')}
-                </Text>
-
-                <Text
-                    style={{
-                        fontFamily: FONTS.regular,
-                        fontSize: 13,
-                        color: tokens.subtle,
-                        letterSpacing: tokens.ls,
-                        lineHeight: 21,
-                        textAlign: 'center',
-                        maxWidth: 300,
-                        marginBottom: 28,
-                    }}
-                >
-                    {t('forgotPassword.sentLinkSentTo')} <Text style={{ color: tokens.text, fontFamily: FONTS.bold }}>{email.trim()}</Text>
-                    {'. '}
-                    {t('forgotPassword.sentExpiry')}
-                </Text>
-
-                <View style={{ width: '100%', maxWidth: 340 }}>
-                    <GhostButton icon="mail" disabled={cooldown > 0} onPress={startCooldown}>
-                        {cooldown > 0 ? `${t('forgotPassword.sentNotReceived')} ${cooldown}s` : t('forgotPassword.sentTryAgain')}
-                    </GhostButton>
-                </View>
-
-                <TouchableOpacity onPress={retry} style={{ marginTop: 18 }}>
-                    <Text style={{ fontFamily: FONTS.regular, fontSize: 13, color: tokens.subtle, letterSpacing: tokens.ls }}>
-                        {t('forgotPassword.remembered')}{' '}
-                        <Text style={{ color: tokens.accent, fontFamily: FONTS.bold }}>{t('forgotPassword.backToLoginLink')}</Text>
-                    </Text>
-                </TouchableOpacity>
-            </View>
+            </PageContainer>
         );
     }
 
     return (
-        <KeyboardAvoidingView style={{ flex: 1, backgroundColor: tokens.bg }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-            <ScrollView
-                style={{ flex: 1 }}
-                contentContainerStyle={{ paddingHorizontal: tokens.screenPadding, paddingTop: 58, paddingBottom: 36 }}
-                keyboardShouldPersistTaps="handled"
-                showsVerticalScrollIndicator={false}
+        <PageContainer scroll>
+            <View
+                style={{
+                    alignSelf: 'center',
+                    maxWidth: 440,
+                    paddingBottom: spacing.xl,
+                    paddingTop: spacing.sm,
+                    width: '100%',
+                }}
             >
-                <TouchableOpacity
-                    onPress={() => router.back()}
-                    style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 22, alignSelf: 'flex-start' }}
-                >
-                    <MRIcon name="arrow-left" size={18} color={tokens.subtle} />
-                    <Text style={{ fontFamily: FONTS.regular, fontSize: 13, color: tokens.subtle, letterSpacing: tokens.ls }}>
-                        {t('forgotPassword.backToLoginLink')}
-                    </Text>
-                </TouchableOpacity>
+                <NavigationHeader backLabel={t('forgotPassword.backToLoginLink')} onBack={() => navigateBackOrReplace(ROUTES.AUTH.LOGIN)} />
 
                 <AuthHeader layout="minimal" eyebrow={t('forgotPassword.eyebrow')} title={t('forgotPassword.title')} sub={t('forgotPassword.subtitle')} />
 
-                <Field
+                <Input
                     label={t('forgotPassword.emailLabel')}
-                    icon="mail"
-                    type="email"
-                    inputMode="email"
+                    leading={<MRIcon name="mail" size={18} color={tokens.tertiary} />}
+                    keyboardType="email-address"
+                    autoCapitalize="none"
                     value={email}
                     onChange={v => {
                         setEmail(v);
@@ -181,16 +191,14 @@ export function ForgotPage() {
                     }}
                     placeholder={t('forgotPassword.emailPlaceholder')}
                     error={error}
-                    hint={t('forgotPassword.emailHint')}
+                    helperText={t('forgotPassword.emailHint')}
                 />
 
-                <View style={{ height: 6 }} />
-                <PrimaryButton onPress={submit} loading={loading}>
+                <View style={{ height: spacing.sm }} />
+                <Button onPress={() => void submit()} loading={loading}>
                     {t('forgotPassword.submitAction')}
-                </PrimaryButton>
-
-                <AuthFooter prompt={t('forgotPassword.remembered')} action={t('forgotPassword.backToLoginLink')} onAction={() => router.back()} />
-            </ScrollView>
-        </KeyboardAvoidingView>
+                </Button>
+            </View>
+        </PageContainer>
     );
 }

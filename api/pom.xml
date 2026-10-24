@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.4.3</version>
+        <relativePath/>
+    </parent>
+    <groupId>com.toonlira</groupId>
+    <artifactId>toonlira-services</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <name>Toonlira Services</name>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.toonlira</groupId>
+                <artifactId>testing-support</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+    <modules>
+        <module>libs/testing-support</module>
+        <module>apps/core</module>
+        <module>apps/jobs/rating-aggregator</module>
+        <module>apps/jobs/orphan-cleaner</module>
+        <module>apps/jobs/trending-aggregator</module>
+        <module>apps/translation-gateway</module>
+    </modules>
+</project>

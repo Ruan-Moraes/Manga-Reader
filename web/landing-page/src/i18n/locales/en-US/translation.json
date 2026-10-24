@@ -1,16 +1,31 @@
 {
     "nav": {
+        "translation": "Translation",
         "benefits": "Benefits",
         "demo": "Demo",
         "plans": "Plans",
         "app": "App",
         "faq": "FAQ",
-        "menu": "Menu",
-        "language": "Language"
+        "menu": "Open menu",
+        "closeMenu": "Close menu",
+        "mobile": "Mobile navigation",
+        "primary": "Primary navigation",
+        "skipToContent": "Skip to content",
+        "language": "Language",
+        "selectLanguage": "Select {{language}}",
+        "changeLanguage": "Change language. Current: {{language}}",
+        "preferences": "Quick preferences",
+        "theme": "Theme",
+        "changeTheme": "Change theme. Current: {{theme}}",
+        "selectTheme": "Select {{theme}} theme",
+        "themeSystem": "System",
+        "themeDark": "Dark",
+        "themeLight": "Light"
     },
     "cta": {
         "subscribe": "Subscribe now",
         "start": "Get started",
+        "access": "Access platform",
         "demo": "Watch demo"
     },
     "hero": {
@@ -22,7 +37,127 @@
         "badges": ["iOS", "Android", "Web", "Offline", "Ad-free"],
         "floatNew": "New chapter",
         "floatSync": "Synced",
-        "floatContinue": "Continue reading"
+        "floatContinue": "Continue reading",
+        "previewLabel": "Toonlira library preview in the browser",
+        "phonePreviewLabel": "Toonlira reading preview on a phone"
+    },
+    "translation": {
+        "eyebrow": "Proprietary Tech · AI & Vision",
+        "title": "Translate any series into your language",
+        "sub": "No more waiting months for scanlations. Our pipeline combines advanced OCR, contextual translation, and visual speech bubble reconstruction so you can read manga, manhwa, and manhua at your own pace.",
+        "badge": "In Development",
+        "languagePairs": "Japanese, Korean & Chinese → Portuguese, English & Spanish",
+        "examplesTitle": "Explore by comic format and style",
+        "examples": [
+            {
+                "id": "manga",
+                "label": "Manga (JA)",
+                "category": "Shounen Manga · Japanese",
+                "orientation": "Vertical (Tategaki)",
+                "character": "Chapter 14 · Page 08",
+                "sourceLang": "Japanese (JA)",
+                "targetLang": "English (EN)",
+                "originalBubble": "待たせたな！ここからが本当の戦いだ！",
+                "cleanedNote": "Text surgically removed · Background reconstructed",
+                "translatedBubble": "Sorry to keep you waiting! This is where the real battle begins!",
+                "detectionType": "Action Bubble · 4-Vertex Polygon",
+                "confidence": "99.8% Confidence"
+            },
+            {
+                "id": "manhwa",
+                "label": "Manhwa (KO)",
+                "category": "Action Webtoon · Korean",
+                "orientation": "Horizontal (Hangul)",
+                "character": "Chapter 03 · Panel 12",
+                "sourceLang": "Korean (KO)",
+                "targetLang": "English (EN)",
+                "originalBubble": "[시스템] 플레이어가 각성 퀘스트를 완료했습니다.",
+                "cleanedNote": "System box neutralized · Gradient preserved",
+                "translatedBubble": "[System] Player has completed the awakening quest.",
+                "detectionType": "System Box · Bordered Rectangle",
+                "confidence": "99.9% Confidence"
+            },
+            {
+                "id": "manhua",
+                "label": "Manhua (ZH)",
+                "category": "Cultivation & Fantasy · Chinese",
+                "orientation": "Horizontal / Columnar (Hanzi)",
+                "character": "Chapter 28 · Page 04",
+                "sourceLang": "Chinese (ZH)",
+                "targetLang": "English (EN)",
+                "originalBubble": "这家伙的气息…竟然比刚才更强了！",
+                "cleanedNote": "Dense ideograms cleared · Artwork intact",
+                "translatedBubble": "This guy's aura… has grown even stronger than before!",
+                "detectionType": "Organic Oval Bubble · Flexible Polygon",
+                "confidence": "99.5% Confidence"
+            }
+        ],
+        "preview": {
+            "cardLabel": "Translation Simulator",
+            "sourceLang": "Japanese (JA)",
+            "targetLang": "English (EN)",
+            "toggleOriginal": "Original",
+            "toggleCleaned": "Inpainting",
+            "toggleTranslated": "Translated",
+            "originalBubble": "待たせたな！ここからが本当の戦いだ！",
+            "translatedBubble": "Sorry to keep you waiting! This is where the real battle begins!",
+            "character": "Chapter 14 · Page 08",
+            "statusOcr": "OCR Detected",
+            "statusCleaned": "Inpainting Completed",
+            "statusTranslated": "Translation 100%",
+            "statusRendered": "Typeset Bubble"
+        },
+        "approachesTitle": "Technological Approaches in Our OCR",
+        "approaches": [
+            {
+                "tag": "Geometry",
+                "t": "Polygon Segmentation vs Rigid Boxes",
+                "d": "Instead of rectangular boxes that crop speech pointers and erase parts of the illustration, we map vertex-adaptive polygons that conform to the artwork's contours."
+            },
+            {
+                "tag": "Directionality",
+                "t": "Hybrid Direction Detection (Vertical & Horizontal)",
+                "d": "Full support for vertical Japanese reading (Tategaki, right-to-left columns) alongside horizontal webtoon text, preserving true story flow."
+            },
+            {
+                "tag": "Segmentation",
+                "t": "Dialogue vs Sound Effects (SFX) Filtering",
+                "d": "Algorithms trained to distinguish narrative dialogue from stylized sound effects embedded in art, safeguarding original line work."
+            },
+            {
+                "tag": "Rendering",
+                "t": "Adaptive Typography & Dynamic Auto-Fit",
+                "d": "Real-time font scaling, line height adjustment, and hyphenation so translations fill the bubble naturally without overflow or loss of legibility."
+            }
+        ],
+        "pipeline": {
+            "title": "5-stage pipeline",
+            "steps": [
+                { "name": "Queue", "desc": "Validation & dispatch" },
+                { "name": "OCR", "desc": "Bubble detection" },
+                { "name": "Translate", "desc": "Contextual AI" },
+                { "name": "Render", "desc": "Clean & typeset" },
+                { "name": "Reader", "desc": "Available offline" }
+            ]
+        },
+        "features": [
+            {
+                "t": "High-Precision Multilingual OCR",
+                "d": "Accurate polygon detection for speech bubbles, vertical and horizontal text in Japanese, Korean, and Chinese without harming original art."
+            },
+            {
+                "t": "Contextual AI Translation",
+                "d": "Language models tuned for comic narratives: capturing slang, casual dialogue, cultural nuances, and scene tone."
+            },
+            {
+                "t": "Visual Bubble Reconstruction",
+                "d": "Clean removal of source text with typography powered by balanced Noto Sans / CJK fonts and natural contrast."
+            },
+            {
+                "t": "Smooth & Offline Reading",
+                "d": "Translated chapters integrate directly into your reader, ready for seamless offline reading anywhere."
+            }
+        ]
     },
     "demo": {
         "eyebrow": "See how it works",
@@ -59,23 +194,63 @@
         "eyebrow": "Why subscribe",
         "title": "Everything you need to read",
         "items": [
-            { "t": "Vast library", "d": "Thousands of titles from the biggest names in Asian comics." },
-            { "t": "Daily updates", "d": "New chapters every day — always something fresh to read." },
-            { "t": "HD reading", "d": "High-resolution images with crisp zoom on every panel." },
-            { "t": "Offline mode", "d": "Download your favorite chapters and read with no connection." },
-            { "t": "Full sync", "d": "Start on your phone, continue in the browser right where you left off." },
-            { "t": "iOS and Android", "d": "Native apps on both stores, tuned for each platform." },
-            { "t": "Ad-free", "d": "No ads ever interrupting your reading. None." },
-            { "t": "Favorites & history", "d": "Organize your collection and resume any series in seconds." },
-            { "t": "Chapter downloads", "d": "Save whole volumes for the trip, the train, wherever you go." },
-            { "t": "Mobile-first", "d": "An interface designed for the phone first — fluid and light." }
+            {
+                "t": "Vast library",
+                "d": "Thousands of titles from the biggest names in Asian comics."
+            },
+            {
+                "t": "Daily updates",
+                "d": "New chapters every day — always something fresh to read."
+            },
+            {
+                "t": "HD reading",
+                "d": "High-resolution images with crisp zoom on every panel."
+            },
+            {
+                "t": "Offline mode",
+                "d": "Download your favorite chapters and read with no connection."
+            },
+            {
+                "t": "Full sync",
+                "d": "Start on your phone, continue in the browser right where you left off."
+            },
+            {
+                "t": "iOS and Android",
+                "d": "Native apps on both stores, tuned for each platform."
+            },
+            {
+                "t": "Ad-free",
+                "d": "No ads ever interrupting your reading. None."
+            },
+            {
+                "t": "Favorites & history",
+                "d": "Organize your collection and resume any series in seconds."
+            },
+            {
+                "t": "Chapter downloads",
+                "d": "Save whole volumes for the trip, the train, wherever you go."
+            },
+            {
+                "t": "Mobile-first",
+                "d": "An interface designed for the phone first — fluid and light."
+            },
+            {
+                "t": "Reading in your language",
+                "d": "The interface and language preference sync across devices. Titles and chapters follow your selected language, clearly flag unavailable translations and are ready for more languages."
+            }
         ]
     },
     "mobile": {
         "eyebrow": "In your pocket",
         "title": "Read anywhere. On iPhone, Android or the web.",
         "sub": "Your library travels with you. Resume reading automatically, even with no internet.",
-        "features": ["Offline reading", "Account sync", "Auto resume", "Saved library", "Phone-optimized interface"],
+        "features": [
+            "Offline reading",
+            "Account sync",
+            "Auto resume",
+            "Saved library",
+            "Phone-optimized interface"
+        ],
         "appStore": "Download on the",
         "appStoreName": "App Store",
         "googlePlay": "Get it on",
@@ -100,19 +275,19 @@
         "perDay": "/day",
         "perMonth": "/mo",
         "perYear": "/yr",
+        "periodName": {
+            "daily": "Daily",
+            "monthly": "Monthly",
+            "annual": "Annual"
+        },
         "popular": "Most popular",
         "bestValue": "Best value",
-        "monthlyEquiv": "equals",
-        "save": "save",
         "choose": "Subscribe",
         "loading": "Loading plans…",
-        "error": "Could not load plans. Please try again later.",
-        "trust": ["Cancel anytime", "No hidden fees", "1st-month guarantee"],
-        "items": [
-            { "name": "Daily", "price": "$0.49", "period": "/day", "features": ["Full access for 24h", "HD reading", "Ad-free", "Great for binging"] },
-            { "name": "Monthly", "price": "$6.90", "period": "/mo", "features": ["Everything in Daily", "Offline mode & downloads", "Sync across devices", "Priority support"] },
-            { "name": "Yearly", "price": "$54.90", "period": "/yr", "features": ["Everything in Monthly", "2 months free", "Early access to features", "Best value"], "equiv": "$4.57/mo", "save": "33%" }
-        ]
+        "unavailableTitle": "Plans are temporarily unavailable",
+        "unavailableDescription": "We're working to resolve this as quickly as possible. Please try again shortly.",
+        "retry": "Try again",
+        "trust": ["Cancel anytime", "No hidden fees", "1st-month guarantee"]
     },
     "compare": {
         "eyebrow": "Free vs Premium",
@@ -123,7 +298,15 @@
         "yes": "Yes",
         "no": "No",
         "limited": "Limited",
-        "features": ["Online reading", "Ads", "Offline reading", "HD quality", "Sync", "iOS / Android app", "Chapter downloads"]
+        "features": [
+            "Online reading",
+            "Ads",
+            "Offline reading",
+            "HD quality",
+            "Sync",
+            "iOS / Android app",
+            "Chapter downloads"
+        ]
     },
     "gift": {
         "eyebrow": "Gift",
@@ -134,13 +317,22 @@
         "tabRedeem": "Redeem code",
         "steps": [
             { "t": "Pick a plan", "d": "Choose the period you want to gift." },
-            { "t": "Generate a code", "d": "A unique code is created in your account." },
-            { "t": "Send it to anyone", "d": "Share it by message, email or printed." },
-            { "t": "They redeem it", "d": "They activate the code in the app and start reading." }
+            {
+                "t": "Generate a code",
+                "d": "A unique code is created in your account."
+            },
+            {
+                "t": "Send it to anyone",
+                "d": "Share it by message, email or printed."
+            },
+            {
+                "t": "They redeem it",
+                "d": "They activate the code in the app and start reading."
+            }
         ],
         "giveCta": "Create gift code",
         "redeemLabel": "Enter the gift code",
-        "redeemPlaceholder": "EX: MR-XXXX-XXXX",
+        "redeemPlaceholder": "EX: TL-XXXX-XXXX",
         "redeemCta": "Redeem code",
         "redeemHint": "The code has 12 characters and was sent by whoever gifted you."
     },
@@ -148,25 +340,68 @@
         "eyebrow": "Subscribers recommend it",
         "title": "What our readers say",
         "items": [
-            { "name": "Ana Lima", "role": "Reader for 2 years", "text": "Finally a platform with everything I love that works offline. I carry my whole collection on trips." },
-            { "name": "Carlos Matos", "role": "Yearly subscriber", "text": "The image quality is stunning and the app is absurdly fast. I would not trade it for anything." },
-            { "name": "Júlia Santos", "role": "Gifted a friend", "text": "I gifted my brother and he loved it. The gift code system is dead simple — done in a minute." },
-            { "name": "Rafael Tavares", "role": "Multi-device reader", "text": "I start on my phone on the bus and continue on my PC at home, right where I left off. Perfect sync." }
+            {
+                "name": "Ana Lima",
+                "role": "Reader for 2 years",
+                "text": "Finally a platform with everything I love that works offline. I carry my whole collection on trips."
+            },
+            {
+                "name": "Carlos Matos",
+                "role": "Yearly subscriber",
+                "text": "The image quality is stunning and the app is absurdly fast. I would not trade it for anything."
+            },
+            {
+                "name": "Júlia Santos",
+                "role": "Gifted a friend",
+                "text": "I gifted my brother and he loved it. The gift code system is dead simple — done in a minute."
+            },
+            {
+                "name": "Rafael Tavares",
+                "role": "Multi-device reader",
+                "text": "I start on my phone on the bus and continue on my PC at home, right where I left off. Perfect sync."
+            }
         ]
     },
     "faq": {
         "eyebrow": "Questions",
         "title": "Frequently asked questions",
         "items": [
-            { "q": "Can I cancel anytime?", "a": "Yes. Cancel anytime in the app or on the site, with no hassle and no fees. Access continues until the end of the period you already paid for." },
-            { "q": "Does it work on iOS and Android?", "a": "Yes. We have native apps on the App Store and Google Play, plus the full web version. Everything syncs through your account." },
-            { "q": "Can I read offline?", "a": "You can. Download chapters or whole volumes in the app and read with no internet — on a plane, the subway, anywhere. Downloads stay on your device." },
-            { "q": "What happens if I switch phones?", "a": "Nothing is lost. Your library, history and reading progress live in your account. Just log in on the new device and it all comes back." },
-            { "q": "Are there ads?", "a": "On Premium, none. Your reading is never interrupted by ads. The free plan has light ads between chapters." },
-            { "q": "How do gift codes work?", "a": "You pick a plan, generate a unique code in your account and send it to anyone. They redeem the code in the app and get access instantly." },
-            { "q": "How often are new chapters released?", "a": "Every day. We add hundreds of chapters per week, with popular series updated shortly after the official release." },
-            { "q": "Can I use it in the browser?", "a": "Yes, the web experience is complete: same library, same reader, same sync — with nothing to install." },
-            { "q": "Does the yearly plan have a discount?", "a": "It does. The yearly plan comes with 2 months free versus monthly, working out to about $4.57 per month." }
+            {
+                "q": "Can I cancel anytime?",
+                "a": "Yes. Cancel anytime in the app or on the site, with no hassle and no fees. Access continues until the end of the period you already paid for."
+            },
+            {
+                "q": "Does it work on iOS and Android?",
+                "a": "Yes. We have native apps on the App Store and Google Play, plus the full web version. Everything syncs through your account."
+            },
+            {
+                "q": "Can I read offline?",
+                "a": "You can. Download chapters or whole volumes in the app and read with no internet — on a plane, the subway, anywhere. Downloads stay on your device."
+            },
+            {
+                "q": "What happens if I switch phones?",
+                "a": "Nothing is lost. Your library, history and reading progress live in your account. Just log in on the new device and it all comes back."
+            },
+            {
+                "q": "Are there ads?",
+                "a": "On Premium, none. Your reading is never interrupted by ads. The free plan has light ads between chapters."
+            },
+            {
+                "q": "How do gift codes work?",
+                "a": "You pick a plan, generate a unique code in your account and send it to anyone. They redeem the code in the app and get access instantly."
+            },
+            {
+                "q": "How often are new chapters released?",
+                "a": "Every day. We add hundreds of chapters per week, with popular series updated shortly after the official release."
+            },
+            {
+                "q": "Can I use it in the browser?",
+                "a": "Yes, the web experience is complete: same library, same reader, same sync — with nothing to install."
+            },
+            {
+                "q": "Does the yearly plan have a discount?",
+                "a": "It does. The yearly plan comes with 2 months free versus monthly, working out to about $4.57 per month."
+            }
         ]
     },
     "finalCta": {
@@ -190,6 +425,7 @@
         "colLegal": "Legal",
         "backToTop": "Back to top",
         "links": {
+            "access": "Access platform",
             "benefits": "Benefits",
             "plans": "Plans",
             "app": "App",

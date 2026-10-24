@@ -64,6 +64,10 @@
         "forum": "Forum",
         "profile": "Profile"
     },
+    "navigation": {
+        "back": "Back",
+        "dismiss": "Close"
+    },
     "home": {
         "comingSoon": "Coming soon: manga discovery"
     },
@@ -78,5 +82,211 @@
     },
     "user": {
         "logout": "Sign out"
+    },
+    "dataControls": {
+        "title": "Data and storage",
+        "storageLabel": "Temporary usage",
+        "sections": {
+            "device": { "title": "On this device", "description": "Free up space without removing your account or preferences." },
+            "account": { "title": "Account data", "description": "Export your information or remove tracked activity." }
+        },
+        "cancel": "Cancel",
+        "confirm": "Confirm",
+        "removes": "Removes",
+        "preserves": "Preserves",
+        "storageUsage": "{{size}} in {{scope}}",
+        "storageScopes": { "temporaryExports": "temporary exports controlled by the app" },
+        "cache": {
+            "action": "Clear cache",
+            "description": "Removes images and data that can be downloaded again.",
+            "confirmTitle": "Clear regenerable data?",
+            "confirmBody": "Clearing may require images and data to be downloaded again.",
+            "queries": "query data",
+            "images": "cached images",
+            "temporary": "temporary files",
+            "session": "session",
+            "preferences": "preferences",
+            "pending": "pending changes"
+        },
+        "export": { "action": "Export my data", "description": "Creates a shareable file with the available account data." },
+        "history": {
+            "action": "Clear tracked history",
+            "description": "Removes read chapters and activity while preserving your current position.",
+            "confirmTitle": "Clear tracked history?",
+            "confirmBody": "This action cannot be undone. Your current reading position will be preserved.",
+            "history": "history",
+            "readChapters": "read chapters",
+            "activities": "activities",
+            "readingProgress": "reading position"
+        },
+        "offline": {
+            "title": "Offline data",
+            "action": "Clear offline data ({{size}})",
+            "description": "Removes registered local projects and files from this device.",
+            "empty": "No offline projects or files are stored on this device.",
+            "confirmTitle": "Clear offline data?",
+            "confirmBody": "Registered offline projects and files will be removed from this device.",
+            "projects": "offline projects and files"
+        },
+        "error": {
+            "cache": "Not all cache data could be cleared. Try again.",
+            "cachePartial": "These categories could not be removed:",
+            "export": "Your data could not be exported. Try again.",
+            "exportUnavailable": "Export is unavailable on this platform.",
+            "history": "Tracked history could not be cleared. Try again.",
+            "offline": "Offline data could not be cleared. Try again."
+        }
+    },
+    "localeControls": {
+        "title": "Language and region",
+        "closeSelection": "Close selection",
+        "interfaceSection": { "title": "Interface", "description": "Choose the language used in menus and messages." },
+        "regionSection": { "title": "Dates and time", "description": "Choose how dates appear and which timezone drives times." },
+        "language": "Interface language",
+        "dateFormat": "Date format",
+        "timezone": "Time zone",
+        "option": {
+            "pt-BR": "Português (Brasil)",
+            "en-US": "English (US)",
+            "es-ES": "Español",
+            "D_MON": "Day, month",
+            "D_M": "Day/month",
+            "MON_D": "Month, day",
+            "America/Sao_Paulo": "São Paulo",
+            "America/New_York": "New York",
+            "Europe/Lisbon": "Lisbon",
+            "Asia/Tokyo": "Tokyo",
+            "UTC": "UTC"
+        }
+    },
+    "privacy": {
+        "title": "Privacy and sensitive content",
+        "comments": "Comments",
+        "history": "History",
+        "library": "Library",
+        "adultContent": "Adult content",
+        "sections": {
+            "social": { "title": "Social visibility", "description": "Control who can see your comments and library." },
+            "activity": { "title": "Activity and data", "description": "Choose how history and behavioral events are handled." },
+            "sensitive": { "title": "Sensitive content", "description": "Define how adult content appears before it is opened." }
+        },
+        "descriptions": {
+            "history": {
+                "PUBLIC": "Keeps history available according to account rules.",
+                "PRIVATE": "Keeps history visible only to you.",
+                "DO_NOT_TRACK": "Stops tracking and requests removal of existing events."
+            },
+            "adultContent": {
+                "BLUR": "Shows a protective layer before revealing content.",
+                "HIDE": "Hides adult content from results and surfaces.",
+                "SHOW": "Shows adult content without an initial protective layer."
+            }
+        },
+        "sensitivePreview": { "content": "Sensitive content preview", "reveal": "Reveal sensitive content preview" },
+        "cancel": "Cancel",
+        "confirm": "Confirm",
+        "error": "Privacy could not be updated. Try again.",
+        "consumerError": "Privacy was saved, but content could not be refreshed.",
+        "retryWrite": "Try saving again",
+        "retryConsumers": "Try refreshing content again",
+        "option": {
+            "PUBLIC": "Public",
+            "PRIVATE": "Private",
+            "DO_NOT_TRACK": "Do not track",
+            "BLUR": "Initially conceal",
+            "HIDE": "Do not show",
+            "SHOW": "Show"
+        },
+        "dnt": {
+            "confirmTitle": "Stop tracking history?",
+            "confirmBody": "The Core will clear tracked history, reads, and activities. Your functional reading position will be preserved."
+        },
+        "analytics": {
+            "label": "Behavior analytics",
+            "description": "Helps understand reader usage and improve the experience.",
+            "disabledDescription": "Unavailable while Do Not Track is active.",
+            "enable": "Enable behavioral analytics",
+            "disable": "Disable behavioral analytics",
+            "confirmTitle": "Disable analytics?",
+            "confirmBody": "Existing behavioral events will be cleared by the Core."
+        }
+    },
+    "contentLanguages": {
+        "title": "Content languages",
+        "priorityTitle": "Preference order",
+        "availableTitle": "Add a language",
+        "availableDescription": "Include other languages in the fallback chain.",
+        "description": "The order defines content priority. Portuguese (Brazil) is the required fallback.",
+        "fallback": "required fallback",
+        "fallbackAnnouncement": "required fallback",
+        "position": "Position {{position}}: {{language}} {{fallback}}",
+        "moveUp": "Move {{language}} up",
+        "moveDown": "Move {{language}} down",
+        "remove": "Remove {{language}}",
+        "add": "Add {{language}}",
+        "loading": "Loading account preference...",
+        "pending": "Saving the chosen order...",
+        "readError": "The remote preference is unavailable. The interface policy is being used temporarily.",
+        "retryRead": "Try loading again",
+        "writeError": "Could not save. The chosen order remains pending.",
+        "retryWrite": "Try saving again",
+        "consumerError": "The preference was saved, but some content still needs to be refreshed.",
+        "retryConsumers": "Try refreshing content again",
+        "consumerRetrying": "Refreshing affected content..."
+    },
+    "settings": {
+        "appearance": {
+            "title": "Appearance",
+            "description": "Customize the visual foundation and how much content fits on screen.",
+            "theme": {
+                "label": "Theme",
+                "descriptions": {
+                    "SYSTEM": "Follows the appearance selected on your device.",
+                    "LIGHT": "Light surfaces and warm neutrals.",
+                    "DARK": "Dark background for low-light environments."
+                },
+                "options": {
+                    "SYSTEM": "Follow system",
+                    "LIGHT": "Light",
+                    "DARK": "Dark"
+                }
+            },
+            "fontSize": {
+                "label": "Text size",
+                "options": {
+                    "COMPACT": "Compact",
+                    "DEFAULT": "Default",
+                    "COMFORTABLE": "Comfortable"
+                }
+            },
+            "density": {
+                "label": "Density",
+                "options": {
+                    "COMFORTABLE": "Comfortable",
+                    "COMPACT": "Compact"
+                }
+            },
+            "animations": {
+                "label": "Decorative animations",
+                "description": "Allows non-essential visual motion and autoplay."
+            }
+        },
+        "accessibility": {
+            "title": "Accessibility",
+            "description": "Adjustments for comfort, contrast, and predictability.",
+            "reduceMotion": {
+                "label": "Reduce motion",
+                "description": "Stops decorative motion and spatial transitions."
+            },
+            "highContrast": {
+                "label": "High contrast",
+                "description": "Increases the contrast of text, borders, and interactive states."
+            }
+        },
+        "sync": {
+            "errorTitle": "Sync pending",
+            "error": "Could not sync. Your choice remains active on this device.",
+            "retry": "Try again"
+        }
     }
 }

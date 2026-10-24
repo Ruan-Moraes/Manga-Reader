@@ -1,0 +1,31 @@
+package com.toonlira.application.publisher.usecase;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.toonlira.application.publisher.port.PublisherRepositoryPort;
+import com.toonlira.domain.publisher.entity.Publisher;
+import com.toonlira.shared.exception.ResourceNotFoundException;
+
+import lombok.RequiredArgsConstructor;
+
+/**
+ * Retorna uma editora pelo ID.
+ */
+@Service
+@RequiredArgsConstructor
+public class GetPublisherUseCase {
+    private final PublisherRepositoryPort publisherRepository;
+
+    @Transactional(readOnly = true)
+    public Publisher execute(Long id) {
+        return publisherRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Publisher", "id", id));
+    }
+
+    @Transactional(readOnly = true)
+    public Publisher executeBySlug(String slug) {
+        return publisherRepository.findBySlug(slug)
+                .orElseThrow(() -> new ResourceNotFoundException("Publisher", "slug", slug));
+    }
+}

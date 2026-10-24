@@ -1,4 +1,4 @@
-# Manga Reader — Plano de Deploy
+# Toonlira — Plano de Deploy
 
 > Última atualização: 9 de março de 2026
 
@@ -10,10 +10,10 @@
 
 | Variável | Descrição | Exemplo | Obrigatória |
 |----------|-----------|---------|:-----------:|
-| `DATABASE_URL` | URL JDBC do PostgreSQL | `jdbc:postgresql://host:5432/mangareader` | ✅ |
+| `DATABASE_URL` | URL JDBC do PostgreSQL | `jdbc:postgresql://host:5432/toonlira` | ✅ |
 | `DATABASE_USERNAME` | Usuário do PostgreSQL | `manga_user` | ✅ |
 | `DATABASE_PASSWORD` | Senha do PostgreSQL | `***` | ✅ |
-| `MONGODB_URI` | URI de conexão MongoDB | `mongodb+srv://user:pass@cluster/mangareader` | ✅ |
+| `MONGODB_URI` | URI de conexão MongoDB | `mongodb+srv://user:pass@cluster/toonlira` | ✅ |
 | `REDIS_HOST` | Host do Redis | `redis.example.com` | ✅ |
 | `REDIS_PORT` | Porta do Redis | `6379` | ❌ (default: 6379) |
 | `REDIS_PASSWORD` | Senha do Redis | `***` | ❌ (default: vazio) |
@@ -25,17 +25,17 @@
 | `MAIL_PORT` | Porta SMTP | `587` | ❌ (default: 587) |
 | `MAIL_USERNAME` | Usuário SMTP | `noreply@example.com` | ✅ |
 | `MAIL_PASSWORD` | Senha SMTP | `***` | ✅ |
-| `MAIL_FROM` | Endereço remetente | `noreply@mangareader.com` | ✅ |
+| `MAIL_FROM` | Endereço remetente | `noreply@toonlira.com` | ✅ |
 | `JWT_SECRET` | Chave secreta JWT (mín. 256 bits) | `base64-encoded-secret` | ✅ |
-| `CORS_ALLOWED_ORIGINS` | Domínio(s) permitido(s) | `https://mangareader.com` | ✅ |
-| `APP_BASE_URL` | URL base da aplicação (para links em emails) | `https://mangareader.com` | ✅ |
+| `CORS_ALLOWED_ORIGINS` | Domínio(s) permitido(s) | `https://toonlira.com` | ✅ |
+| `APP_BASE_URL` | URL base da aplicação (para links em emails) | `https://toonlira.com` | ✅ |
 | `SPRING_PROFILES_ACTIVE` | Perfil Spring ativo | `prod` | ✅ |
 
 ### 1.2. Frontend (Build Time)
 
 | Variável | Descrição | Exemplo | Obrigatória |
 |----------|-----------|---------|:-----------:|
-| `VITE_API_BASE_URL` | URL base da API backend | `https://api.mangareader.com` | ✅ |
+| `VITE_API_BASE_URL` | URL base da API backend | `https://api.toonlira.com` | ✅ |
 | `VITE_BASE_URL` | Base path da aplicação (se não for `/`) | `/` | ❌ |
 
 ---
@@ -81,29 +81,29 @@ cd api
 ./mvnw clean package -DskipTests
 
 # Build da imagem Docker (multi-stage)
-docker build -t manga-reader-api:latest .
+docker build -t toonlira-api:latest .
 
 # Execução
 docker run -d \
-  --name manga-reader-api \
+  --name toonlira-api \
   -p 8080:8080 \
   -e SPRING_PROFILES_ACTIVE=prod \
-  -e DATABASE_URL=jdbc:postgresql://host:5432/mangareader \
+  -e DATABASE_URL=jdbc:postgresql://host:5432/toonlira \
   -e DATABASE_USERNAME=manga_user \
   -e DATABASE_PASSWORD=secret \
-  -e MONGODB_URI=mongodb+srv://user:pass@cluster/mangareader \
+  -e MONGODB_URI=mongodb+srv://user:pass@cluster/toonlira \
   -e REDIS_HOST=redis.host \
   -e RABBITMQ_HOST=rabbitmq.host \
   -e RABBITMQ_USERNAME=manga \
   -e RABBITMQ_PASSWORD=secret \
   -e JWT_SECRET=your-256-bit-secret \
-  -e CORS_ALLOWED_ORIGINS=https://mangareader.com \
-  -e APP_BASE_URL=https://mangareader.com \
+  -e CORS_ALLOWED_ORIGINS=https://toonlira.com \
+  -e APP_BASE_URL=https://toonlira.com \
   -e MAIL_HOST=smtp.gmail.com \
-  -e MAIL_USERNAME=noreply@mangareader.com \
+  -e MAIL_USERNAME=noreply@toonlira.com \
   -e MAIL_PASSWORD=secret \
-  -e MAIL_FROM=noreply@mangareader.com \
-  manga-reader-api:latest
+  -e MAIL_FROM=noreply@toonlira.com \
+  toonlira-api:latest
 ```
 
 **Dockerfile já existente** com:
@@ -120,13 +120,13 @@ cd web
 pnpm install
 
 # Build de produção
-VITE_API_BASE_URL=https://api.mangareader.com pnpm --filter manga-reader build
+VITE_API_BASE_URL=https://api.toonlira.com pnpm --filter toonlira build
 
-# Output: web/manga-reader/dist/
+# Output: web/toonlira/dist/
 # Servir com Nginx ou upload para CDN
 ```
 
-**Nota**: Atualmente o `base` do Vite está configurado para `/Manga-Reader` (GitHub Pages). Para produção em domínio próprio, alterar para `/` via `VITE_BASE_URL`.
+**Nota**: O `base` do Vite é `/`, compatível com Firebase Hosting e domínio próprio.
 
 ### 3.3. Docker Compose (Produção)
 
@@ -181,14 +181,14 @@ docker-compose -f docker-compose.prod.yml up -d
 ```nginx
 server {
     listen 443 ssl http2;
-    server_name mangareader.com;
+    server_name toonlira.com;
 
-    ssl_certificate /etc/letsencrypt/live/mangareader.com/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/mangareader.com/privkey.pem;
+    ssl_certificate /etc/letsencrypt/live/toonlira.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/toonlira.com/privkey.pem;
 
     # Frontend (SPA)
     location / {
-        root /var/www/manga-reader/dist;
+        root /var/www/toonlira/dist;
         try_files $uri $uri/ /index.html;
 
         # Cache de assets estáticos
@@ -221,7 +221,7 @@ server {
 
 server {
     listen 80;
-    server_name mangareader.com;
+    server_name toonlira.com;
     return 301 https://$server_name$request_uri;
 }
 ```
@@ -252,9 +252,9 @@ jobs:
         with: { node-version: '20' }
       - uses: pnpm/action-setup@v4
       - run: cd web && pnpm install --frozen-lockfile
-      - run: cd web && pnpm --filter manga-reader lint:fsd
-      - run: cd web/manga-reader && npx tsc -b
-      - run: cd web/manga-reader && npx vitest run --pool=forks
+      - run: cd web && pnpm --filter toonlira lint:fsd
+      - run: cd web/toonlira && npx tsc -b
+      - run: cd web/toonlira && npx vitest run --pool=forks
 
   frontend-build:
     needs: frontend-check
@@ -265,11 +265,11 @@ jobs:
         with: { node-version: '20' }
       - uses: pnpm/action-setup@v4
       - run: cd web && pnpm install --frozen-lockfile
-      - run: cd web && VITE_API_BASE_URL=${{ secrets.API_BASE_URL }} pnpm --filter manga-reader build
+      - run: cd web && VITE_API_BASE_URL=${{ secrets.API_BASE_URL }} pnpm --filter toonlira build
       - uses: actions/upload-artifact@v4
         with:
           name: frontend-dist
-          path: web/manga-reader/dist
+          path: web/toonlira/dist
 
   # ──── BACKEND ────
   backend-test:
@@ -278,7 +278,7 @@ jobs:
       postgres:
         image: postgres:17-alpine
         env:
-          POSTGRES_DB: mangareader_test
+          POSTGRES_DB: toonlira_test
           POSTGRES_USER: test
           POSTGRES_PASSWORD: test
         ports: ['5432:5432']

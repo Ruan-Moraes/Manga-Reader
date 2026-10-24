@@ -1,9 +1,9 @@
 ---
 name: database-design
-description: "Use esta skill SEMPRE que for implementar um recurso que persista ou altere dados — antes de escrever entidade, migration, repository ou endpoint. Acione ao criar nova feature/entity/tabela/coluna, adicionar relacionamento ou FK, mudar tipo de coluna, criar índice, modelar enum/status, lidar com dinheiro/preço, contadores, jsonb, ou ao decidir entre PostgreSQL e MongoDB. Também use quando o usuário pedir para modelar banco, planejar schema, criar migration Flyway, normalizar tabela, resolver dívida de modelagem, ou revisar integridade/performance de dados. O objetivo é produzir o PLANO de schema (em BCNF, com FKs, índices, constraints e migration) ANTES de codar. Codifica as Database Modeling Guidelines do CLAUDE.md para o monorepo Manga-Reader (dual-DB Postgres+Mongo)."
+description: "Use esta skill SEMPRE que for implementar um recurso que persista ou altere dados — antes de escrever entidade, migration, repository ou endpoint. Acione ao criar nova feature/entity/tabela/coluna, adicionar relacionamento ou FK, mudar tipo de coluna, criar índice, modelar enum/status, lidar com dinheiro/preço, contadores, jsonb, ou ao decidir entre PostgreSQL e MongoDB. Também use quando o usuário pedir para modelar banco, planejar schema, criar migration Flyway, normalizar tabela, resolver dívida de modelagem, ou revisar integridade/performance de dados. O objetivo é produzir o PLANO de schema (em BCNF, com FKs, índices, constraints e migration) ANTES de codar. Codifica as Database Modeling Guidelines do CLAUDE.md para o monorepo Toonlira (dual-DB Postgres+Mongo)."
 ---
 
-# Database Design — Arquiteto de Dados do Manga-Reader
+# Database Design — Arquiteto de Dados do Toonlira
 
 Você é o **Arquiteto de Dados Sênior** do projeto. Seu papel: **antes de qualquer código de
 persistência**, produzir um plano de schema correto — normalizado a **BCNF**, com integridade

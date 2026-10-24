@@ -1,0 +1,196 @@
+{
+    "actions": {
+        "controlsHint": "Abre ou fecha os controles e preferências do leitor",
+        "exit": "Sair do leitor",
+        "hideControls": "Ocultar controles",
+        "nextPage": "Próxima página",
+        "previousPage": "Página anterior",
+        "retry": "Tentar novamente",
+        "retryImage": "Tentar carregar a página {{page}} novamente",
+        "retryProgress": "Tentar sincronizar o progresso novamente",
+        "retryProgressHydration": "Tentar carregar o progresso novamente",
+        "overflow": "Ver texto completo",
+        "showOriginal": "Ver original",
+        "showResult": "Ver resultado",
+        "settings": "Configurações do leitor",
+        "showControls": "Mostrar controles"
+    },
+    "demo": {
+        "badge": "DEMONSTRAÇÃO"
+    },
+    "controls": {
+        "decrease": "Diminuir {{label}}",
+        "increase": "Aumentar {{label}}"
+    },
+    "errors": {
+        "image": "Não foi possível carregar esta página.",
+        "progress": "O progresso está pendente. Toque para tentar novamente.",
+        "progressHydration": "Não foi possível carregar seu progresso. A leitura continua disponível."
+    },
+    "options": {
+        "AUTO": "Automática",
+        "BLACK": "Preto",
+        "DARK": "Escuro",
+        "DOUBLE": "Dupla",
+        "HEIGHT": "Altura",
+        "HIGH": "Alta",
+        "LIGHT": "Claro",
+        "LOW": "Baixa",
+        "LTR": "Esquerda para direita",
+        "MEDIUM": "Média",
+        "ORIGINAL": "Original",
+        "PAGED": "Paginado",
+        "PAPER": "Papel",
+        "RTL": "Direita para esquerda",
+        "VERTICAL": "Vertical",
+        "WEBTOON": "Webtoon",
+        "WHITE": "Branco",
+        "WIDTH": "Largura"
+    },
+    "resume": {
+        "continue": "Continuar leitura",
+        "description": "Seu progresso mais recente está no capítulo {{chapter}}, página {{page}}.",
+        "requested": "Abrir capítulo solicitado",
+        "title": "Continuar de onde parou?"
+    },
+    "settings": {
+        "autoMarkRead": "Marcar automaticamente como lido",
+        "background": "Fundo",
+        "closeSelection": "Fechar seleção",
+        "descriptions": {
+            "autoMarkRead": "Atualiza o progresso quando a página é concluída.",
+            "gap": "Espaço visual entre páginas no fluxo vertical.",
+            "mode": {
+                "DOUBLE": "Duas páginas lado a lado.",
+                "PAGED": "Uma página por vez.",
+                "VERTICAL": "Fluxo contínuo para leitura por rolagem."
+            },
+            "preload": "Quantidade de páginas preparadas ao redor da atual.",
+            "quality": {
+                "AUTO": "Equilibra nitidez e uso de dados.",
+                "HIGH": "Prioriza nitidez com maior uso de dados.",
+                "LOW": "Prioriza economia de dados e carregamento rápido.",
+                "MEDIUM": "Mantém boa nitidez com uso moderado de dados.",
+                "ORIGINAL": "Preserva a resolução original da página."
+            },
+            "saturation": "Ajuste a intensidade das cores das páginas."
+        },
+        "direction": "Direção",
+        "fit": "Ajuste",
+        "gap": "Espaçamento",
+        "mode": "Modo",
+        "preload": "Pré-carregamento",
+        "quality": "Qualidade",
+        "saturation": "Saturação",
+        "sections": {
+            "behavior": {
+                "description": "Espaçamento, antecipação e atualização do progresso.",
+                "title": "Comportamento"
+            },
+            "image": {
+                "description": "Qualidade, fundo e tratamento visual das páginas.",
+                "title": "Imagem"
+            },
+            "navigation": {
+                "description": "Como as páginas avançam e ocupam a tela.",
+                "title": "Navegação"
+            }
+        },
+        "values": {
+            "pages": "{{value}} páginas",
+            "percent": "{{value}}%",
+            "pixels": "{{value}} px"
+        }
+    },
+    "states": {
+        "error": "Não foi possível carregar o capítulo.",
+        "loading": "Carregando capítulo…",
+        "safeExit": "Você pode tentar novamente ou voltar com segurança.",
+        "unavailable": "Este capítulo não possui páginas disponíveis."
+    },
+    "novelPreview": {
+        "title": "Preview de novel",
+        "heading": "Capítulo 1 — A cidade sob a chuva",
+        "paragraphOne": "A chuva desenhava caminhos prateados nas janelas quando Lira encontrou a carta que ninguém deveria ter enviado.",
+        "speaker": "Lira",
+        "dialogue": "Se esta mensagem chegou até mim, a história ainda pode mudar.",
+        "paragraphTwo": "Ela dobrou o papel, respirou fundo e atravessou a porta. A cidade continuava a mesma; o destino, não.",
+        "illustration": "Ilustração de demonstração do capítulo"
+    },
+    "viewport": {
+        "page": "Página {{page}} de {{total}}",
+        "item": "Trecho {{page}} de {{total}}",
+        "originalPage": "Página original",
+        "resultPage": "Página traduzida",
+        "chapter": "Capítulo {{chapter}}",
+        "progress": "Progresso da leitura"
+    },
+    "gestures": {
+        "title": "Gestos do leitor",
+        "description": "Escolha como acessar os controles. Estas preferências ficam neste dispositivo.",
+        "controls": "Exibir controles",
+        "options": {
+            "TAP": "Toque na tela",
+            "SWIPE": "Deslizar de baixo para cima",
+            "TAP_OR_SWIPE": "Toque ou deslize",
+            "VISIBLE": "Manter controles visíveis"
+        },
+        "descriptions": {
+            "TAP": "Toque no centro da obra para mostrar ou ocultar. Rolar oculta os controles.",
+            "SWIPE": "Deslize brevemente para cima no centro da região inferior para mostrar. Toque na obra para ocultar.",
+            "TAP_OR_SWIPE": "Toque no centro ou deslize para cima no centro da região inferior para mostrar. Toque na obra para ocultar.",
+            "VISIBLE": "Mostra os controles em repouso, oculta ao rolar e volta a mostrar após a desaceleração."
+        },
+        "sideTap": "Áreas laterais de toque",
+        "sideDescription": "Toque nas laterais para avançar ou voltar páginas, seguindo a direção de leitura.",
+        "sideUnavailable": "Disponível apenas nos modos paginado e duplo, sem direção Webtoon.",
+        "saveError": "Não foi possível salvar os gestos neste dispositivo. A escolha continua ativa nesta sessão.",
+        "retry": "Tentar salvar novamente"
+    },
+    "text": {
+        "title": "Texto e aparência",
+        "description": "Personalize apenas a leitura de texto. O tamanho também acompanha a ampliação do sistema.",
+        "font": "Fonte",
+        "fonts": {
+            "APP": "Do aplicativo",
+            "SERIF": "Serifada"
+        },
+        "size": "Tamanho do texto",
+        "decrease": "Diminuir texto",
+        "increase": "Aumentar texto",
+        "sizeValue": "{{size}} sp",
+        "spacing": "Entrelinha",
+        "lineSpacing": {
+            "COMPACT": "Compacta",
+            "COMFORTABLE": "Confortável",
+            "WIDE": "Ampla"
+        },
+        "margin": "Margens laterais",
+        "margins": {
+            "NARROW": "Estreitas",
+            "MEDIUM": "Médias",
+            "WIDE": "Largas"
+        },
+        "background": "Fundo do leitor",
+        "backgrounds": {
+            "APP": "Seguir aplicativo",
+            "LIGHT": "Claro",
+            "PAPER": "Papel",
+            "DARK": "Escuro"
+        },
+        "reset": "Restaurar ajustes do texto",
+        "saveError": "Não foi possível salvar os ajustes do texto.",
+        "retry": "Tentar novamente",
+        "progress": "{{percent}}% lido"
+    },
+    "panel": {
+        "expand": "Expandir painel",
+        "collapse": "Recolher painel",
+        "help": "Sobre {{label}}",
+        "tabs": {
+            "reading": "Leitura",
+            "appearance": "Aparência",
+            "gestures": "Gestos"
+        }
+    }
+}

@@ -4,7 +4,7 @@ Estrutura de pastas (backend + frontend FSD): onde colocar cada arquivo,
 entity×feature, regras de boundary/import. Referenciado por `CLAUDE.md`.
 
 ```
-api/core/src/main/java/com/mangareader/
+api/apps/core/src/main/java/com/toonlira/
 ├── domain/{domain}/entity/            # Entities e VOs
 ├── application/{domain}/usecase/      # Use cases
 ├── application/{domain}/port/         # Port interfaces (in/out)
@@ -15,7 +15,7 @@ api/core/src/main/java/com/mangareader/
 ├── presentation/{domain}/mapper/      # MapStruct mappers
 └── shared/                            # Cross-cutting: configs, exceptions, constants
 
-web/manga-reader/src/
+web/toonlira/src/
 ├── app/      # Router config + route guards (@app) — FSD app layer
 ├── pages/    # Route-level pages, 1 slice por rota (@pages) — FSD pages layer
 ├── widgets/  # Blocos compostos: header/, footer/, mobile-tab-bar/,

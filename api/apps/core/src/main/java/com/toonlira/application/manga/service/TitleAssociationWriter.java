@@ -1,0 +1,107 @@
+package com.toonlira.application.manga.service;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.toonlira.application.author.port.AuthorRepositoryPort;
+import com.toonlira.application.author.port.TitleAuthorRepositoryPort;
+import com.toonlira.application.manga.usecase.admin.TitleAuthorAssignment;
+import com.toonlira.application.publisher.port.PublisherRepositoryPort;
+import com.toonlira.application.publisher.port.TitlePublisherRepositoryPort;
+import com.toonlira.domain.author.entity.Author;
+import com.toonlira.domain.author.entity.TitleAuthor;
+import com.toonlira.domain.author.valueobject.AuthorRole;
+import com.toonlira.domain.publisher.entity.Publisher;
+import com.toonlira.domain.publisher.entity.TitlePublisher;
+import com.toonlira.shared.exception.ResourceNotFoundException;
+
+import lombok.RequiredArgsConstructor;
+
+/**
+ * Escreve as junções relacionais ({@code title_authors}, {@code title_publishers})
+ * de um título no PostgreSQL.
+ * <p>
+ * Semântica de <i>replace</i>: limpa as linhas existentes do título e regrava a
+ * partir da lista informada (lista vazia ⇒ remove todas). Entrada {@code null}
+ * deve ser tratada pelo chamador (não invocar).
+ * <p>
+ * <b>Nota:</b> chamado de dentro de use cases anotados com
+ * {@code @Transactional("mongoTransactionManager")}; estas escritas JPA correm no
+ * gerenciador de transações JPA (primário), <b>não</b> são atômicas com a escrita
+ * Mongo do título. Ver DT em {@code docs/tech-debt.md}.
+ */
+@Service
+@RequiredArgsConstructor
+public class TitleAssociationWriter {
+    private final AuthorRepositoryPort authorRepository;
+    private final PublisherRepositoryPort publisherRepository;
+    private final TitleAuthorRepositoryPort titleAuthorRepository;
+    private final TitlePublisherRepositoryPort titlePublisherRepository;
+
+    /**
+     * Substitui todas as associações relacionais presentes no comando em uma
+     * única transação PostgreSQL. Valores nulos preservam a associação atual.
+     */
+    @Transactional("transactionManager")
+    public void replace(String titleId, List<TitleAuthorAssignment> authors, List<Long> publisherIds) {
+        if (authors != null) replaceAuthorsInternal(titleId, authors);
+        if (publisherIds != null) replacePublishersInternal(titleId, publisherIds);
+    }
+
+    @Transactional("transactionManager")
+    public void replaceAuthors(String titleId, List<TitleAuthorAssignment> assignments) {
+        replaceAuthorsInternal(titleId, assignments);
+    }
+
+    private void replaceAuthorsInternal(String titleId, List<TitleAuthorAssignment> assignments) {
+        titleAuthorRepository.deleteByTitleId(titleId);
+
+        if (assignments == null) return;
+
+        Set<String> seen = new HashSet<>();
+        for (TitleAuthorAssignment assignment : assignments) {
+            if (assignment == null || assignment.authorId() == null) continue;
+
+            AuthorRole role = assignment.role() != null ? assignment.role() : AuthorRole.AUTHOR;
+            if (!seen.add(assignment.authorId() + ":" + role)) continue;
+
+            Author author = authorRepository.findById(assignment.authorId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Author", "id", assignment.authorId()));
+
+            titleAuthorRepository.save(TitleAuthor.builder()
+                    .titleId(titleId).author(author).role(role).build());
+        }
+    }
+
+    @Transactional("transactionManager")
+    public void replacePublishers(String titleId, List<Long> publisherIds) {
+        replacePublishersInternal(titleId, publisherIds);
+    }
+
+    private void replacePublishersInternal(String titleId, List<Long> publisherIds) {
+        titlePublisherRepository.deleteByTitleId(titleId);
+
+        if (publisherIds == null) return;
+
+        Set<Long> seen = new HashSet<>();
+        for (Long publisherId : publisherIds) {
+            if (publisherId == null || !seen.add(publisherId)) continue;
+
+            Publisher publisher = publisherRepository.findById(publisherId)
+                    .orElseThrow(() -> new ResourceNotFoundException("Publisher", "id", publisherId));
+
+            titlePublisherRepository.save(TitlePublisher.builder()
+                    .titleId(titleId).publisher(publisher).build());
+        }
+    }
+
+    @Transactional("transactionManager")
+    public void clear(String titleId) {
+        titleAuthorRepository.deleteByTitleId(titleId);
+        titlePublisherRepository.deleteByTitleId(titleId);
+    }
+}

@@ -12,7 +12,9 @@ describe('Stats', () => {
             </TestProviders>,
         );
 
-        expect(screen.getByText('Números que falam por si')).toBeInTheDocument();
+        expect(
+            screen.getByText('Números que falam por si'),
+        ).toBeInTheDocument();
     });
 
     it('renders stat labels after loading', async () => {

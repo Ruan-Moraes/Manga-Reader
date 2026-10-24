@@ -1,0 +1,11 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Mobile iOS" type="js.build_tools.npm" folderName="Mobile">
+    <package-json value="$PROJECT_DIR$/mobile/package.json" />
+    <command value="run" />
+    <scripts><script value="ios" /></scripts>
+    <node-interpreter value="project" />
+    <package-manager value="pnpm" />
+    <envs />
+    <method v="2" />
+  </configuration>
+</component>

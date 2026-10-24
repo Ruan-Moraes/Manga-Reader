@@ -1,0 +1,132 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: toonlira-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: toonlira
+      POSTGRES_USER: manga
+      POSTGRES_PASSWORD: manga_secret
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U manga -d toonlira"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: "1.0"
+  mongodb:
+    image: mongo:8.0.26
+    container_name: toonlira-mongodb
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: toonlira
+      # Workaround para SERVER-121912: TCMalloc do Mongo 8.x colide com o
+      # suporte a RSEQ do kernel Linux 6.19+, causando crash no boot. Sem
+      # patch oficial ainda; força o caminho compatível de RSEQ do glibc.
+      GLIBC_TUNABLES: glibc.pthread.rseq=1
+    command: mongod --replSet rs0 --bind_ip_all --wiredTigerCacheSizeGB 0.25
+    volumes:
+      - mongo_data:/data/db
+    healthcheck:
+      # Inicia o replica set de nó único na primeira vez e serve como
+      # healthcheck nas execuções seguintes. Replica set é requisito para
+      # transações multi-documento (MongoTransactionManager).
+      test:
+        [
+          "CMD",
+          "mongosh",
+          "--quiet",
+          "--eval",
+          "try { rs.status().ok } catch (e) { rs.initiate({ _id: 'rs0', members: [{ _id: 0, host: 'localhost:27017' }] }) }",
+        ]
+      interval: 5s
+      timeout: 10s
+      retries: 15
+      start_period: 40s
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: "1.0"
+  rabbitmq:
+    image: rabbitmq:4-management-alpine
+    container_name: toonlira-rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: manga
+      RABBITMQ_DEFAULT_PASS: manga_secret
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: "0.5"
+  neo4j:
+    image: neo4j:5.26-community
+    container_name: toonlira-neo4j
+    ports:
+      - "7687:7687"
+      - "7474:7474"
+    environment:
+      NEO4J_AUTH: neo4j/manga_secret
+      NEO4J_server_memory_heap_initial__size: 128M
+      NEO4J_server_memory_heap_max__size: 256M
+      NEO4J_server_memory_pagecache_size: 128M
+    volumes:
+      - neo4j_data:/data
+    healthcheck:
+      test: ["CMD-SHELL", "cypher-shell -u neo4j -p manga_secret 'RETURN 1' || exit 1"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+      start_period: 40s
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 640M
+          cpus: "1.0"
+  redis:
+    image: redis:7-alpine
+    container_name: toonlira-redis
+    ports:
+      - "6379:6379"
+    command: redis-server --maxmemory 128mb --maxmemory-policy allkeys-lru
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 192M
+          cpus: "0.5"
+volumes:
+  postgres_data:
+    driver: local
+  mongo_data:
+    driver: local
+  rabbitmq_data:
+    driver: local
+  neo4j_data:
+    driver: local

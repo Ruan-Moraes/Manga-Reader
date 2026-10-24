@@ -1,0 +1,25 @@
+# Valores públicos. Este arquivo não habilita o gateway.
+project_id              = "toonlira-rm"
+container_image         = "replace-with-immutable-image-reference"
+gateway_enabled         = false
+worker_enabled          = false
+worker_resource_profile = "baseline"
+worker_container_image  = null
+# O ambiente do worker também mantém GATEWAY_OCR_MODE=disabled neste incremento.
+database_tier                     = "db-f1-micro"
+database_disk_size_gb             = 10
+database_disk_autoresize_limit_gb = 20
+
+disclosure = {
+  # A versão anterior descreve localização incompatível com tradução global.
+  # Manter vazio até revisão, publicação e aprovação de um novo disclosure.
+  version          = ""
+  operator_name    = "Ruan Moraes"
+  operator_contact = "ruanmoraessantosbarbosa@gmail.com"
+  # Rotas públicas; usar o disclosure somente após revisão jurídica do conteúdo.
+  privacy_policy_url = "https://toonlira-rm.firebaseapp.com/legal/privacy"
+  terms_url          = "https://toonlira-rm.firebaseapp.com/legal/terms"
+  # URL pública complementar (não integra o shape atual do disclosure):
+  # https://toonlira-rm.firebaseapp.com/legal/contact
+  provider_training_policy = "Google Cloud does not use customer content submitted to Cloud Vision or Cloud Translation to train or improve its models."
+}

@@ -81,7 +81,7 @@ desperdício de memória, rede e cache de primeiro nível. Hierarquia preferida:
 ```java
 // Bom: projeção direta no banco
 @Query("""
-    SELECT new com.mangareader.application.manga.dto.MangaListItem(
+    SELECT new com.toonlira.application.manga.dto.MangaListItem(
         m.id, m.title, m.coverUrl, m.status
     )
     FROM Manga m WHERE m.status = :status

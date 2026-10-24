@@ -1,5 +1,5 @@
 import { http, HttpResponse } from 'msw';
-import type { PublicStats } from '@manga-reader/types';
+import type { PublicStats } from '@toonlira/types';
 
 export const statsHandlers = [
     http.get('*/api/public/stats', () => {

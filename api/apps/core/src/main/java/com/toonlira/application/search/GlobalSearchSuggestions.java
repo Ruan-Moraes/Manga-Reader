@@ -1,0 +1,9 @@
+package com.toonlira.application.search;
+
+import java.util.List;
+
+public record GlobalSearchSuggestions(
+        List<GlobalSearchSection> sections,
+        long totalElements
+) {
+}

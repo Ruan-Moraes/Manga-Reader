@@ -1,0 +1,48 @@
+const DEVELOPMENT_APP_URL = 'http://localhost:5173';
+
+const PRODUCTION_APP_URL = 'https://toonlira-rm.firebaseapp.com';
+
+const DEFAULT_APP_URL = import.meta.env.DEV
+    ? DEVELOPMENT_APP_URL
+    : PRODUCTION_APP_URL;
+
+export const APP_URL = (
+    import.meta.env.VITE_APP_URL || DEFAULT_APP_URL
+).replace(/\/$/, '');
+
+export function appHref(
+    path = '/',
+    params?: Record<string, string | undefined>,
+): string {
+    const base = `${APP_URL}${path.startsWith('/') ? path : `/${path}`}`;
+    if (!params) return base;
+
+    const entries = Object.entries(params).filter(
+        (entry): entry is [string, string] =>
+            entry[1] !== undefined && entry[1] !== '',
+    );
+    if (entries.length === 0) return base;
+
+    const searchParams = new URLSearchParams(entries);
+    const separator = base.includes('?') ? '&' : '?';
+    return `${base}${separator}${searchParams.toString()}`;
+}
+
+export function navigateToApp(
+    path = '/',
+    params?: Record<string, string | undefined>,
+): void {
+    if (typeof window !== 'undefined') {
+        window.location.href = appHref(path, params);
+    }
+}
+
+export const APP_LINKS = {
+    access: appHref('/'),
+    help: appHref('/help'),
+    contact: appHref('/legal/contact'),
+    status: appHref('/help'),
+    terms: appHref('/legal/terms'),
+    privacy: appHref('/legal/privacy'),
+    cookies: appHref('/legal/privacy#cookies'),
+} as const;

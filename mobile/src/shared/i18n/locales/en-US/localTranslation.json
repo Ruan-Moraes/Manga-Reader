@@ -1,0 +1,66 @@
+{
+    "actions": {
+        "back": "Back",
+        "cancel": "Cancel",
+        "delete": "Delete",
+        "retry": "Try again"
+    },
+    "demo": {
+        "title": "Demo mode",
+        "description": "The result uses your original image and simulated text. No real translation will run.",
+        "badge": "SIMULATED RESULT",
+        "action": "Generate demo result",
+        "progress": "Simulated demo stages",
+        "errorTitle": "The demo could not be generated",
+        "stages": {
+            "queue": "Queue",
+            "ocr": "OCR",
+            "translation": "Translation",
+            "rendering": "Rendering",
+            "saving": "Saving"
+        },
+        "errors": {
+            "development-only": "The demo is available in development only.",
+            "project-unavailable": "The project is unavailable.",
+            "original-unavailable": "An original image is no longer available.",
+            "storage-unavailable": "The result could not be saved on this device."
+        }
+    },
+    "library": {
+        "title": "Local library",
+        "loading": "Loading your projects…",
+        "emptyTitle": "Your library is empty",
+        "emptyDescription": "Import pages and generate a demo to get started.",
+        "create": "Translate chapter",
+        "projectTitle": "Project from {{date}}",
+        "summary": "{{source}} → {{target}} · {{ready}} of {{total}} pages ready",
+        "position": "Continue on page {{page}} of {{total}}",
+        "coverLabel": "Local project cover",
+        "open": "Open reader",
+        "deleteTitle": "Delete project?",
+        "deleteDescription": "This project's images and progress will be removed from the device.",
+        "errorTitle": "Library unavailable",
+        "errorDescription": "Saved projects could not be read."
+    },
+    "reader": {
+        "title": "Local reader",
+        "loading": "Opening project…",
+        "unavailableTitle": "Project unavailable",
+        "unavailableDescription": "This project no longer exists on the device.",
+        "library": "Back to library",
+        "demoDescription": "The image is the imported original. The text below only validates the experience.",
+        "originalLabel": "Original page",
+        "resultLabel": "Local demo result",
+        "checking": "Checking the local file…",
+        "damagedTitle": "Result needs repair",
+        "damagedDescription": "The file failed verification. The original was preserved.",
+        "showOriginal": "View original",
+        "showResult": "View result",
+        "regionsTitle": "Detected text",
+        "noText": "No text was identified on this page.",
+        "page": "Page {{page}} of {{total}}",
+        "previous": "Previous",
+        "next": "Next",
+        "exit": "Exit reader"
+    }
+}

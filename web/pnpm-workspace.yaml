@@ -1,5 +1,5 @@
 packages:
-  - "manga-reader"
+  - "toonlira"
   - "landing-page"
   - "packages/*"
 allowBuilds:

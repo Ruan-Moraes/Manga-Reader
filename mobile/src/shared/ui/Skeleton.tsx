@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { Animated, ViewStyle } from 'react-native';
 
-import { useTheme } from '@/src/shared/theme';
+import { useTheme } from '@/shared/theme';
 
 interface Props {
     width?: number | `${number}%`;
@@ -11,10 +11,15 @@ interface Props {
 }
 
 export function Skeleton({ width = '100%', height = 16, borderRadius, style }: Props) {
-    const { tokens } = useTheme();
+    const { decorativeMotionEnabled, radii, tokens } = useTheme();
     const opacity = useRef(new Animated.Value(0.3)).current;
 
     useEffect(() => {
+        if (!decorativeMotionEnabled) {
+            opacity.setValue(0.6);
+            return;
+        }
+
         const anim = Animated.loop(
             Animated.sequence([
                 Animated.timing(opacity, { toValue: 1, duration: 700, useNativeDriver: true }),
@@ -23,7 +28,7 @@ export function Skeleton({ width = '100%', height = 16, borderRadius, style }: P
         );
         anim.start();
         return () => anim.stop();
-    }, [opacity]);
+    }, [decorativeMotionEnabled, opacity]);
 
     return (
         <Animated.View
@@ -31,7 +36,7 @@ export function Skeleton({ width = '100%', height = 16, borderRadius, style }: P
                 {
                     width,
                     height,
-                    borderRadius: borderRadius ?? tokens.radius,
+                    borderRadius: borderRadius ?? radii.sm,
                     backgroundColor: tokens.surface,
                     opacity,
                 },
