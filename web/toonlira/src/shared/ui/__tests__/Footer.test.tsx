@@ -27,7 +27,7 @@ describe('Footer', () => {
 
     it('renders wordmark', () => {
         render(<Footer columns={columns} />);
-        expect(screen.getByText('Reader')).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: 'Toonlira, ir para home' })).toHaveTextContent('Toonlira');
     });
 
     it('renders column titles in both accordion and desktop views', () => {
@@ -54,7 +54,7 @@ describe('Footer', () => {
 
     it('renders default copyright when not provided', () => {
         render(<Footer columns={columns} />);
-        expect(screen.getByText(/toonlira/i)).toBeInTheDocument();
+        expect(screen.getByText(`© ${new Date().getFullYear()} Toonlira. Feito por Ruan — projeto de estudo.`)).toBeInTheDocument();
     });
 
     it('renders newsletter form by default', () => {

@@ -77,17 +77,23 @@ describe('HelpCenter', () => {
     it('renders FAQ accordion items', () => {
         renderWithProviders(<HelpCenter />);
         expect(screen.getByRole('heading', { name: /perguntas frequentes/i })).toBeInTheDocument();
-        expect(screen.getByRole('button', { name: /a toonlira é gratuita/i })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: 'O Toonlira é gratuito?' })).toBeInTheDocument();
     });
 
-    it('expands FAQ item on click', async () => {
+    it('expands and collapses FAQ item on click', async () => {
         const user = userEvent.setup();
         renderWithProviders(<HelpCenter />);
         const faqBtn = screen.getByRole('button', {
-            name: /a toonlira é gratuita/i,
+            name: 'O Toonlira é gratuito?',
         });
+        expect(faqBtn).toHaveAttribute('aria-expanded', 'false');
+        expect(screen.getByText(/leitura básica é totalmente gratuita/i)).not.toBeVisible();
         await user.click(faqBtn);
+        expect(faqBtn).toHaveAttribute('aria-expanded', 'true');
         expect(screen.getByText(/leitura básica é totalmente gratuita/i)).toBeVisible();
+        await user.click(faqBtn);
+        expect(faqBtn).toHaveAttribute('aria-expanded', 'false');
+        expect(screen.getByText(/leitura básica é totalmente gratuita/i)).not.toBeVisible();
     });
 
     it('renders system status section', () => {
