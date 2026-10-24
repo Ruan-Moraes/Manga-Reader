@@ -1,24 +1,22 @@
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import Button from '@/shared/component/Button';
-import Icon, { type IconName } from '@/shared/component/Icon';
-import PlatformBadge from '@/shared/component/PlatformBadge';
+import Icon from '@/shared/component/Icon';
+import PlatformBadge, {
+    buildPlatformBadges,
+} from '@/shared/component/PlatformBadge';
 import Reveal from '@/shared/component/Reveal';
 import { goToSection } from '@/shared/util/smoothScroll';
 
 export default function Final() {
-    const { t, i18n } = useTranslation();
-    const locale = i18n.resolvedLanguage ?? i18n.language;
-    const labels = t('finalCta.badges', { returnObjects: true }) as string[];
-    const badges: { icon: IconName; label: string; accent?: boolean }[] = [
-        { icon: 'smartphone', label: labels[0], accent: true },
-        { icon: 'smartphone', label: labels[1] },
-        { icon: 'globe', label: labels[2] },
-        { icon: 'wifiOff', label: labels[3], accent: true },
-        { icon: 'noAds', label: labels[4] },
-    ];
+    const { t } = useTranslation();
+    const labels = useMemo(
+        () => t('finalCta.badges', { returnObjects: true }) as string[],
+        [t],
+    );
+    const badges = useMemo(() => buildPlatformBadges(labels), [labels]);
     return (
         <section
-            key={locale}
             id="final"
             className="relative isolate overflow-clip bg-primary py-[clamp(72px,10vw,120px)]"
         >

@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { PhoneFrame } from '@/shared/component/DeviceFrames';
 import Icon from '@/shared/component/Icon';
@@ -9,11 +10,13 @@ import Reveal from '@/shared/component/Reveal';
 import StoreBadge from '@/shared/component/StoreBadge';
 
 export default function MobileApp() {
-    const { t, i18n } = useTranslation();
-    const locale = i18n.resolvedLanguage ?? i18n.language;
-    const features = t('mobile.features', { returnObjects: true }) as string[];
+    const { t } = useTranslation();
+    const features = useMemo(
+        () => t('mobile.features', { returnObjects: true }) as string[],
+        [t],
+    );
     return (
-        <MarketingSection key={locale} id="app" tone="raised">
+        <MarketingSection id="app" tone="raised">
             <div className="grid grid-cols-1 items-center gap-[clamp(42px,7vw,72px)] md:grid-cols-[0.95fr_1.05fr]">
                 <Reveal
                     y={26}

@@ -1,5 +1,6 @@
 {
     "nav": {
+        "translation": "Tradução",
         "benefits": "Benefícios",
         "demo": "Demonstração",
         "plans": "Planos",
@@ -39,6 +40,124 @@
         "floatContinue": "Continuar lendo",
         "previewLabel": "Prévia da biblioteca do Toonlira no navegador",
         "phonePreviewLabel": "Prévia do leitor do Toonlira no celular"
+    },
+    "translation": {
+        "eyebrow": "Tecnologia Própria · IA & Visão Computacional",
+        "title": "Traduza qualquer obra para o seu idioma",
+        "sub": "Chega de esperar meses por scans. Nosso pipeline combina OCR avançado, tradução contextual e reconstrução visual de balões para você ler mangás, manhwas e manhuas no seu ritmo.",
+        "badge": "Em desenvolvimento",
+        "languagePairs": "Japonês, Coreano e Chinês → Português, Inglês e Espanhol",
+        "examplesTitle": "Explore por formato e estilo de obra",
+        "examples": [
+            {
+                "id": "manga",
+                "label": "Mangá (JA)",
+                "category": "Mangá Shounen · Japonês",
+                "orientation": "Vertical (Tategaki)",
+                "character": "Capítulo 14 · Página 08",
+                "sourceLang": "Japonês (JA)",
+                "targetLang": "Português (PT-BR)",
+                "originalBubble": "待たせたな！ここからが本当の戦いだ！",
+                "cleanedNote": "Texto removido cirurgicamente · Fundo reconstituído",
+                "translatedBubble": "Desculpe a demora! É daqui que a verdadeira batalha começa!",
+                "detectionType": "Balão de Ação · Polígono 4 Vértices",
+                "confidence": "99.8% Confiança"
+            },
+            {
+                "id": "manhwa",
+                "label": "Manhwa (KO)",
+                "category": "Webtoon de Ação · Coreano",
+                "orientation": "Horizontal (Hangul)",
+                "character": "Capítulo 03 · Viñeta 12",
+                "sourceLang": "Coreano (KO)",
+                "targetLang": "Português (PT-BR)",
+                "originalBubble": "[시스템] 플레이어가 각성 퀘스트를 완료했습니다.",
+                "cleanedNote": "Caixa de interface neutralizada · Gradiente preservado",
+                "translatedBubble": "[Sistema] O jogador completou a missão de despertar.",
+                "detectionType": "Caixa de Sistema · Retângulo com Bordas",
+                "confidence": "99.9% Confiança"
+            },
+            {
+                "id": "manhua",
+                "label": "Manhua (ZH)",
+                "category": "Cultivo & Fantasia · Chinês",
+                "orientation": "Horizontal / Colunar (Hanzi)",
+                "character": "Capítulo 28 · Página 04",
+                "sourceLang": "Chinês (ZH)",
+                "targetLang": "Português (PT-BR)",
+                "originalBubble": "这家伙的气息…竟然比刚才更强了！",
+                "cleanedNote": "Densidade de ideogramas limpa · Arte intacta",
+                "translatedBubble": "A aura desse sujeito… ficou ainda mais forte do que antes!",
+                "detectionType": "Balão Oval Orgânico · Polígono Flexível",
+                "confidence": "99.5% Confiança"
+            }
+        ],
+        "preview": {
+            "cardLabel": "Demonstração da Tradução",
+            "sourceLang": "Japonês (JA)",
+            "targetLang": "Português (PT-BR)",
+            "toggleOriginal": "Original",
+            "toggleCleaned": "Inpainting",
+            "toggleTranslated": "Traduzido",
+            "originalBubble": "待たせたな！ここからが本当の戦いだ！",
+            "translatedBubble": "Desculpe a demora! É daqui que a verdadeira batalha começa!",
+            "character": "Capítulo 14 · Página 08",
+            "statusOcr": "OCR Reconhecido",
+            "statusCleaned": "Inpainting Concluído",
+            "statusTranslated": "Tradução 100%",
+            "statusRendered": "Balão Diagramado"
+        },
+        "approachesTitle": "Abordagens Tecnológicas do Nosso OCR",
+        "approaches": [
+            {
+                "tag": "Geometria",
+                "t": "Segmentação Poligonal vs Caixas Rígidas",
+                "d": "Em vez de caixas retangulares que cortam bicos de balões e apagam partes do desenho, mapeamos polígonos adaptativos por vértices que acompanham os contornos reais da arte."
+            },
+            {
+                "tag": "Direcionalidade",
+                "t": "Detecção Direcional Híbrida (Vertical & Horizontal)",
+                "d": "Suporte pleno à leitura vertical japonesa (Tategaki, colunas da direita para a esquerda) e texto horizontal de manhwas/manhuas, preservando a sequência correta da história."
+            },
+            {
+                "tag": "Segmentação",
+                "t": "Filtragem de Diálogo vs Onomatopeias (SFX)",
+                "d": "Algoritmos treinados para distinguir balões narrativos e falas de onomatopeias estilizadas integradas na ilustração, protegendo o traço artístico original."
+            },
+            {
+                "tag": "Renderização",
+                "t": "Tipografia Adaptativa & Auto-Fit Dinâmico",
+                "d": "Ajuste em tempo real de tamanho de fonte, entrelinha e quebra de palavras para que a tradução preencha harmoniosamente o balão sem transbordar nem perder legibilidade."
+            }
+        ],
+        "pipeline": {
+            "title": "Pipeline em 5 etapas",
+            "steps": [
+                { "name": "Fila", "desc": "Validação e envio" },
+                { "name": "OCR", "desc": "Detecção de balões" },
+                { "name": "Tradução", "desc": "IA contextual" },
+                { "name": "Render", "desc": "Limpeza & tipografia" },
+                { "name": "Leitura", "desc": "Disponível offline" }
+            ]
+        },
+        "features": [
+            {
+                "t": "OCR Multilíngue de Alta Precisão",
+                "d": "Detecção geométrica precisa de balões, textos verticais e horizontais em japonês, coreano e chinês, preservando a arte original."
+            },
+            {
+                "t": "Tradução Contextual por IA",
+                "d": "Modelos afinados para a narrativa dos quadrinhos: entendem gírias, diálogos informais, expressões culturais e intenções de cada cena."
+            },
+            {
+                "t": "Reconstrução Visual dos Balões",
+                "d": "Limpeza determinística do texto original e diagramação com fontes Noto Sans / CJK balanceadas com contraste natural."
+            },
+            {
+                "t": "Leitura Fluida e Offline",
+                "d": "Os capítulos traduzidos são integrados diretamente ao seu leitor, disponíveis para continuar a leitura mesmo sem internet."
+            }
+        ]
     },
     "demo": {
         "eyebrow": "Veja como funciona",

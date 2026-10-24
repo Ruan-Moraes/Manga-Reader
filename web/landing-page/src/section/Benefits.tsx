@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import Icon, { type IconName } from '@/shared/component/Icon';
 import MarketingSection, {
@@ -45,7 +46,10 @@ function BenefitCard({
 export default function Benefits() {
     const { t, i18n } = useTranslation();
     const locale = i18n.resolvedLanguage ?? i18n.language;
-    const items = t('benefits.items', { returnObjects: true }) as BenefitText[];
+    const items = useMemo(
+        () => t('benefits.items', { returnObjects: true }) as BenefitText[],
+        [t],
+    );
     return (
         <MarketingSection key={locale} id="benefits">
             <SectionHeading

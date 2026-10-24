@@ -1,4 +1,3 @@
-import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import AnimatedNumber from '@/shared/component/AnimatedNumber';
@@ -7,32 +6,18 @@ import MarketingSection, {
     SectionHeading,
 } from '@/shared/component/MarketingSection';
 import Reveal from '@/shared/component/Reveal';
+import { useInView } from '@/shared/hook/useInView';
 import { usePublicStats } from '@/feature/stats/hook/usePublicStats';
 import { STATS_META, type StatText } from '@/shared/data/landing';
 
 export default function Stats() {
     const { t, i18n } = useTranslation();
-    const locale = i18n.resolvedLanguage ?? i18n.language;
     const { data: stats, isLoading } = usePublicStats();
     const items = t('stats.items', { returnObjects: true }) as StatText[];
-    const [inView, setInView] = useState(false);
-    const ref = useRef<HTMLDivElement>(null);
-
-    useEffect(() => {
-        const element = ref.current;
-        if (!element) return;
-        const observer = new IntersectionObserver(
-            entries => {
-                if (entries.some(entry => entry.isIntersecting)) {
-                    setInView(true);
-                    observer.disconnect();
-                }
-            },
-            { threshold: 0.25 },
-        );
-        observer.observe(element);
-        return () => observer.disconnect();
-    }, []);
+    const { ref, inView } = useInView<HTMLDivElement>({
+        threshold: 0.25,
+        once: true,
+    });
 
     const values = items.map((item, index) => {
         if (stats && index === 0) return `+${stats.totalTitles}`;
@@ -41,7 +26,7 @@ export default function Stats() {
     });
 
     return (
-        <MarketingSection key={locale} id="stats">
+        <MarketingSection id="stats">
             <SectionHeading
                 eyebrow={t('stats.eyebrow')}
                 title={t('stats.title')}

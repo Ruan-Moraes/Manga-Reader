@@ -23,6 +23,7 @@ describe('Header', () => {
             </TestProviders>,
         );
 
+        expect(screen.getAllByText('Tradução').length).toBeGreaterThan(0);
         expect(screen.getAllByText('Benefícios').length).toBeGreaterThan(0);
         expect(screen.getAllByText('Planos').length).toBeGreaterThan(0);
         expect(screen.getAllByText('FAQ').length).toBeGreaterThan(0);

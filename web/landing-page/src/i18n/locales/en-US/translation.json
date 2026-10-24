@@ -1,5 +1,6 @@
 {
     "nav": {
+        "translation": "Translation",
         "benefits": "Benefits",
         "demo": "Demo",
         "plans": "Plans",
@@ -39,6 +40,124 @@
         "floatContinue": "Continue reading",
         "previewLabel": "Toonlira library preview in the browser",
         "phonePreviewLabel": "Toonlira reading preview on a phone"
+    },
+    "translation": {
+        "eyebrow": "Proprietary Tech · AI & Vision",
+        "title": "Translate any series into your language",
+        "sub": "No more waiting months for scanlations. Our pipeline combines advanced OCR, contextual translation, and visual speech bubble reconstruction so you can read manga, manhwa, and manhua at your own pace.",
+        "badge": "In Development",
+        "languagePairs": "Japanese, Korean & Chinese → Portuguese, English & Spanish",
+        "examplesTitle": "Explore by comic format and style",
+        "examples": [
+            {
+                "id": "manga",
+                "label": "Manga (JA)",
+                "category": "Shounen Manga · Japanese",
+                "orientation": "Vertical (Tategaki)",
+                "character": "Chapter 14 · Page 08",
+                "sourceLang": "Japanese (JA)",
+                "targetLang": "English (EN)",
+                "originalBubble": "待たせたな！ここからが本当の戦いだ！",
+                "cleanedNote": "Text surgically removed · Background reconstructed",
+                "translatedBubble": "Sorry to keep you waiting! This is where the real battle begins!",
+                "detectionType": "Action Bubble · 4-Vertex Polygon",
+                "confidence": "99.8% Confidence"
+            },
+            {
+                "id": "manhwa",
+                "label": "Manhwa (KO)",
+                "category": "Action Webtoon · Korean",
+                "orientation": "Horizontal (Hangul)",
+                "character": "Chapter 03 · Panel 12",
+                "sourceLang": "Korean (KO)",
+                "targetLang": "English (EN)",
+                "originalBubble": "[시스템] 플레이어가 각성 퀘스트를 완료했습니다.",
+                "cleanedNote": "System box neutralized · Gradient preserved",
+                "translatedBubble": "[System] Player has completed the awakening quest.",
+                "detectionType": "System Box · Bordered Rectangle",
+                "confidence": "99.9% Confidence"
+            },
+            {
+                "id": "manhua",
+                "label": "Manhua (ZH)",
+                "category": "Cultivation & Fantasy · Chinese",
+                "orientation": "Horizontal / Columnar (Hanzi)",
+                "character": "Chapter 28 · Page 04",
+                "sourceLang": "Chinese (ZH)",
+                "targetLang": "English (EN)",
+                "originalBubble": "这家伙的气息…竟然比刚才更强了！",
+                "cleanedNote": "Dense ideograms cleared · Artwork intact",
+                "translatedBubble": "This guy's aura… has grown even stronger than before!",
+                "detectionType": "Organic Oval Bubble · Flexible Polygon",
+                "confidence": "99.5% Confidence"
+            }
+        ],
+        "preview": {
+            "cardLabel": "Translation Simulator",
+            "sourceLang": "Japanese (JA)",
+            "targetLang": "English (EN)",
+            "toggleOriginal": "Original",
+            "toggleCleaned": "Inpainting",
+            "toggleTranslated": "Translated",
+            "originalBubble": "待たせたな！ここからが本当の戦いだ！",
+            "translatedBubble": "Sorry to keep you waiting! This is where the real battle begins!",
+            "character": "Chapter 14 · Page 08",
+            "statusOcr": "OCR Detected",
+            "statusCleaned": "Inpainting Completed",
+            "statusTranslated": "Translation 100%",
+            "statusRendered": "Typeset Bubble"
+        },
+        "approachesTitle": "Technological Approaches in Our OCR",
+        "approaches": [
+            {
+                "tag": "Geometry",
+                "t": "Polygon Segmentation vs Rigid Boxes",
+                "d": "Instead of rectangular boxes that crop speech pointers and erase parts of the illustration, we map vertex-adaptive polygons that conform to the artwork's contours."
+            },
+            {
+                "tag": "Directionality",
+                "t": "Hybrid Direction Detection (Vertical & Horizontal)",
+                "d": "Full support for vertical Japanese reading (Tategaki, right-to-left columns) alongside horizontal webtoon text, preserving true story flow."
+            },
+            {
+                "tag": "Segmentation",
+                "t": "Dialogue vs Sound Effects (SFX) Filtering",
+                "d": "Algorithms trained to distinguish narrative dialogue from stylized sound effects embedded in art, safeguarding original line work."
+            },
+            {
+                "tag": "Rendering",
+                "t": "Adaptive Typography & Dynamic Auto-Fit",
+                "d": "Real-time font scaling, line height adjustment, and hyphenation so translations fill the bubble naturally without overflow or loss of legibility."
+            }
+        ],
+        "pipeline": {
+            "title": "5-stage pipeline",
+            "steps": [
+                { "name": "Queue", "desc": "Validation & dispatch" },
+                { "name": "OCR", "desc": "Bubble detection" },
+                { "name": "Translate", "desc": "Contextual AI" },
+                { "name": "Render", "desc": "Clean & typeset" },
+                { "name": "Reader", "desc": "Available offline" }
+            ]
+        },
+        "features": [
+            {
+                "t": "High-Precision Multilingual OCR",
+                "d": "Accurate polygon detection for speech bubbles, vertical and horizontal text in Japanese, Korean, and Chinese without harming original art."
+            },
+            {
+                "t": "Contextual AI Translation",
+                "d": "Language models tuned for comic narratives: capturing slang, casual dialogue, cultural nuances, and scene tone."
+            },
+            {
+                "t": "Visual Bubble Reconstruction",
+                "d": "Clean removal of source text with typography powered by balanced Noto Sans / CJK fonts and natural contrast."
+            },
+            {
+                "t": "Smooth & Offline Reading",
+                "d": "Translated chapters integrate directly into your reader, ready for seamless offline reading anywhere."
+            }
+        ]
     },
     "demo": {
         "eyebrow": "See how it works",

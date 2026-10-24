@@ -16,7 +16,6 @@
     "@toonlira/brand": "workspace:*",
     "@toonlira/types": "workspace:*",
     "@tanstack/react-query": "^5.73.3",
-    "axios": "^1.7.2",
     "i18next": "^24.2.2",
     "i18next-browser-languagedetector": "^8.0.2",
     "react": "^19.1.0",

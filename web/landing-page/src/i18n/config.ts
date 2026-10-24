@@ -17,6 +17,7 @@ i18n.use(LanguageDetector)
         },
         fallbackLng: 'pt-BR',
         supportedLngs: ['pt-BR', 'en-US', 'es-ES'],
+        defaultNS: 'translation',
         interpolation: {
             escapeValue: false,
             defaultVariables: { brandName: brand.name },

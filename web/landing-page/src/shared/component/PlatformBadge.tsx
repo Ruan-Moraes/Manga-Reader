@@ -1,9 +1,30 @@
 import Icon, { type IconName } from '@/shared/component/Icon';
 
-interface PlatformBadgeProps {
+export interface PlatformBadgeProps {
     icon: IconName;
     label: string;
     accent?: boolean;
+}
+
+export const PLATFORM_BADGE_PRESETS: readonly {
+    icon: IconName;
+    accent?: boolean;
+}[] = [
+    { icon: 'smartphone', accent: true },
+    { icon: 'smartphone' },
+    { icon: 'globe' },
+    { icon: 'wifiOff', accent: true },
+    { icon: 'noAds' },
+] as const;
+
+export function buildPlatformBadges(
+    labels: string[] = [],
+): PlatformBadgeProps[] {
+    return PLATFORM_BADGE_PRESETS.map((preset, index) => ({
+        icon: preset.icon,
+        label: labels[index] ?? '',
+        accent: preset.accent,
+    }));
 }
 
 export default function PlatformBadge({

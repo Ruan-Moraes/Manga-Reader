@@ -202,10 +202,12 @@ input:focus-visible,
 @keyframes lp-cta-pulse {
     0%,
     100% {
-        box-shadow: 0 0 0 0 rgb(221 218 42 / 0%);
+        opacity: 0;
+        scale: 0.98;
     }
     50% {
-        box-shadow: 0 0 28px 2px rgb(221 218 42 / 35%);
+        opacity: 0.85;
+        scale: 1.03;
     }
 }
 
@@ -229,6 +231,15 @@ input:focus-visible,
         translate: 0 -50%;
         scale: 1;
     }
+}
+
+.animate-float-a,
+.animate-float-b {
+    will-change: translate;
+}
+
+.animate-cta-pulse {
+    will-change: opacity, scale;
 }
 
 @media (prefers-reduced-motion: reduce) {

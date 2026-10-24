@@ -1,20 +1,23 @@
+import { lazy, Suspense } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import Footer from '@/shared/component/Footer';
 import Header from '@/shared/component/Header';
 import PreferenceRail from '@/shared/component/PreferenceRail';
 
-import Benefits from '@/section/Benefits';
-import Compare from '@/section/Compare';
-import Demo from '@/section/Demo';
-import FAQ from '@/section/FAQ';
-import Final from '@/section/Final';
-import Gift from '@/section/Gift';
 import Hero from '@/section/Hero';
-import MobileApp from '@/section/MobileApp';
-import Plans from '@/section/Plans';
-import Stats from '@/section/Stats';
-import Testimonials from '@/section/Testimonials';
+import Translation from '@/section/Translation';
+
+const Demo = lazy(() => import('@/section/Demo'));
+const Benefits = lazy(() => import('@/section/Benefits'));
+const MobileApp = lazy(() => import('@/section/MobileApp'));
+const Stats = lazy(() => import('@/section/Stats'));
+const Plans = lazy(() => import('@/section/Plans'));
+const Compare = lazy(() => import('@/section/Compare'));
+const Gift = lazy(() => import('@/section/Gift'));
+const Testimonials = lazy(() => import('@/section/Testimonials'));
+const FAQ = lazy(() => import('@/section/FAQ'));
+const Final = lazy(() => import('@/section/Final'));
 
 export default function App() {
     const { t } = useTranslation();
@@ -31,16 +34,19 @@ export default function App() {
             <PreferenceRail />
             <main id="main-content" tabIndex={-1}>
                 <Hero />
-                <Demo />
-                <Benefits />
-                <MobileApp />
-                <Stats />
-                <Plans />
-                <Compare />
-                <Gift />
-                <Testimonials />
-                <FAQ />
-                <Final />
+                <Translation />
+                <Suspense fallback={null}>
+                    <Demo />
+                    <Benefits />
+                    <MobileApp />
+                    <Stats />
+                    <Plans />
+                    <Compare />
+                    <Gift />
+                    <Testimonials />
+                    <FAQ />
+                    <Final />
+                </Suspense>
             </main>
             <Footer />
         </>

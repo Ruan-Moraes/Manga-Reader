@@ -1,5 +1,6 @@
 {
     "nav": {
+        "translation": "Traducción",
         "benefits": "Beneficios",
         "demo": "Demo",
         "plans": "Planes",
@@ -39,6 +40,124 @@
         "floatContinue": "Seguir leyendo",
         "previewLabel": "Vista previa de la biblioteca de Toonlira en el navegador",
         "phonePreviewLabel": "Vista previa del lector de Toonlira en el móvil"
+    },
+    "translation": {
+        "eyebrow": "Tecnología Propia · IA & Visión",
+        "title": "Traduce cualquier obra a tu idioma",
+        "sub": "Basta de esperar meses por traducciones. Nuestro pipeline combina OCR avanzado, traducción contextual y reconstrucción visual de bocadillos para que leas manga, manhwa y manhua a tu propio ritmo.",
+        "badge": "En Desarrollo",
+        "languagePairs": "Japonés, Coreano y Chino → Portugués, Inglés y Español",
+        "examplesTitle": "Explora por formato y estilo de obra",
+        "examples": [
+            {
+                "id": "manga",
+                "label": "Manga (JA)",
+                "category": "Manga Shounen · Japonés",
+                "orientation": "Vertical (Tategaki)",
+                "character": "Capítulo 14 · Página 08",
+                "sourceLang": "Japonés (JA)",
+                "targetLang": "Español (ES)",
+                "originalBubble": "待たせたな！ここからが本当の戦いだ！",
+                "cleanedNote": "Texto eliminado quirúrgicamente · Fondo reconstruido",
+                "translatedBubble": "¡Perdón por la espera! ¡Aquí es donde empieza la verdadera batalla!",
+                "detectionType": "Bocadillo de Acción · Polígono de 4 Vértices",
+                "confidence": "99.8% Confianza"
+            },
+            {
+                "id": "manhwa",
+                "label": "Manhwa (KO)",
+                "category": "Webtoon de Acción · Coreano",
+                "orientation": "Horizontal (Hangul)",
+                "character": "Capítulo 03 · Viñeta 12",
+                "sourceLang": "Coreano (KO)",
+                "targetLang": "Español (ES)",
+                "originalBubble": "[시스템] 플레이어가 각성 퀘스트를 완료했습니다.",
+                "cleanedNote": "Caja de sistema neutralizada · Gradiente preservado",
+                "translatedBubble": "[Sistema] El jugador ha completado la misión de despertar.",
+                "detectionType": "Caja de Sistema · Rectángulo con Bordes",
+                "confidence": "99.9% Confianza"
+            },
+            {
+                "id": "manhua",
+                "label": "Manhua (ZH)",
+                "category": "Cultivo & Fantasía · Chino",
+                "orientation": "Horizontal / Columnar (Hanzi)",
+                "character": "Capítulo 28 · Página 04",
+                "sourceLang": "Chino (ZH)",
+                "targetLang": "Español (ES)",
+                "originalBubble": "这家伙的气息…竟然比刚才更强了！",
+                "cleanedNote": "Ideogramas densos limpiados · Arte intacto",
+                "translatedBubble": "El aura de este sujeto… ¡se volvió aún más fuerte que antes!",
+                "detectionType": "Bocadillo Ovalado Orgánico · Polígono Flexible",
+                "confidence": "99.5% Confianza"
+            }
+        ],
+        "preview": {
+            "cardLabel": "Simulador de Traducción",
+            "sourceLang": "Japonés (JA)",
+            "targetLang": "Español (ES)",
+            "toggleOriginal": "Original",
+            "toggleCleaned": "Inpainting",
+            "toggleTranslated": "Traducido",
+            "originalBubble": "待たせたな！ここからが本当の戦いだ！",
+            "translatedBubble": "¡Perdón por la espera! ¡Aquí es donde empieza la verdadera batalla!",
+            "character": "Capítulo 14 · Página 08",
+            "statusOcr": "OCR Reconocido",
+            "statusCleaned": "Inpainting Completado",
+            "statusTranslated": "Traducción 100%",
+            "statusRendered": "Bocadillo Maquetado"
+        },
+        "approachesTitle": "Enfoques Tecnológicos de Nuestro OCR",
+        "approaches": [
+            {
+                "tag": "Geometría",
+                "t": "Segmentación Poligonal vs Cajas Rígidas",
+                "d": "En lugar de cajas rectangulares que recortan los picos de los bocadillos y borran partes del dibujo, trazamos polígonos adaptables por vértices que siguen el contorno real del arte."
+            },
+            {
+                "tag": "Direccionalidad",
+                "t": "Detección Direccional Híbrida (Vertical y Horizontal)",
+                "d": "Soporte integral para lectura vertical japonesa (Tategaki, columnas de derecha a izquierda) y texto horizontal de webtoons, preservando el flujo narrativo correcto."
+            },
+            {
+                "tag": "Segmentación",
+                "t": "Filtrado de Diálogos vs Onomatopeyas (SFX)",
+                "d": "Algoritmos entrenados para distinguir diálogos narrativos de onomatopeyas estilizadas integradas en la ilustración, protegiendo el trazo artístico original."
+            },
+            {
+                "tag": "Maquetación",
+                "t": "Tipografía Adaptable & Auto-Fit Dinámico",
+                "d": "Ajuste en tiempo real del tamaño de fuente, interlineado y separación silábica para que la traducción llene armónicamente el bocadillo sin desbordarse ni perder legibilidad."
+            }
+        ],
+        "pipeline": {
+            "title": "Pipeline en 5 etapas",
+            "steps": [
+                { "name": "Cola", "desc": "Validación y envío" },
+                { "name": "OCR", "desc": "Detección de bocadillos" },
+                { "name": "Traducción", "desc": "IA contextual" },
+                { "name": "Render", "desc": "Limpieza y tipografía" },
+                { "name": "Lectura", "desc": "Disponible offline" }
+            ]
+        },
+        "features": [
+            {
+                "t": "OCR Multilingüe de Alta Precisión",
+                "d": "Detección geométrica precisa de bocadillos, textos verticales y horizontales en japonés, coreano y chino, conservando el arte original."
+            },
+            {
+                "t": "Traducción Contextual por IA",
+                "d": "Modelos adaptados a la narrativa del cómic: capturan jerga, diálogos informales, expresiones culturales y matices de la escena."
+            },
+            {
+                "t": "Reconstrucción Visual de Bocadillos",
+                "d": "Limpieza determinista del texto original y maquetación con fuentes Noto Sans / CJK equilibradas con contraste natural."
+            },
+            {
+                "t": "Lectura Fluida y Offline",
+                "d": "Los capítulos traducidos se integran directamente en tu lector, disponibles para continuar la lectura incluso sin conexión."
+            }
+        ]
     },
     "demo": {
         "eyebrow": "Mira cómo funciona",

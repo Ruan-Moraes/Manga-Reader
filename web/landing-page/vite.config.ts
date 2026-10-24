@@ -23,6 +23,31 @@ export default defineConfig({
             '@toonlira/brand': path.resolve(__dirname, '../packages/brand/src/index.ts'),
         },
     },
+    build: {
+        rollupOptions: {
+            output: {
+                manualChunks(id) {
+                    if (id.includes('node_modules')) {
+                        if (id.includes('react') || id.includes('react-dom')) {
+                            return 'vendor-react';
+                        }
+                        if (id.includes('@tanstack/react-query')) {
+                            return 'vendor-query';
+                        }
+                        if (id.includes('i18next')) {
+                            return 'vendor-i18n';
+                        }
+                        return 'vendor';
+                    }
+                    if (id.includes('locales/')) {
+                        if (id.includes('en-US')) return 'locale-en';
+                        if (id.includes('es-ES')) return 'locale-es';
+                        if (id.includes('pt-BR')) return 'locale-pt';
+                    }
+                },
+            },
+        },
+    },
     server: {
         port: 5174,
         proxy: {

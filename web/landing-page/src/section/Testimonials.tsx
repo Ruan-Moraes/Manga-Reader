@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { RatingStars } from '@/shared/component/Icon';
 import MarketingSection, {
@@ -7,13 +8,16 @@ import Reveal from '@/shared/component/Reveal';
 import { TESTIMONIALS_META, type TestimonialText } from '@/shared/data/landing';
 
 export default function Testimonials() {
-    const { t, i18n } = useTranslation();
-    const locale = i18n.resolvedLanguage ?? i18n.language;
-    const items = t('testimonials.items', {
-        returnObjects: true,
-    }) as TestimonialText[];
+    const { t } = useTranslation();
+    const items = useMemo(
+        () =>
+            t('testimonials.items', {
+                returnObjects: true,
+            }) as TestimonialText[],
+        [t],
+    );
     return (
-        <MarketingSection key={locale} id="testimonials">
+        <MarketingSection id="testimonials">
             <SectionHeading
                 eyebrow={t('testimonials.eyebrow')}
                 title={t('testimonials.title')}

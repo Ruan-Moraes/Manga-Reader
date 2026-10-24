@@ -10,8 +10,31 @@ export const APP_URL = (
     import.meta.env.VITE_APP_URL || DEFAULT_APP_URL
 ).replace(/\/$/, '');
 
-export function appHref(path = '/') {
-    return `${APP_URL}${path.startsWith('/') ? path : `/${path}`}`;
+export function appHref(
+    path = '/',
+    params?: Record<string, string | undefined>,
+): string {
+    const base = `${APP_URL}${path.startsWith('/') ? path : `/${path}`}`;
+    if (!params) return base;
+
+    const entries = Object.entries(params).filter(
+        (entry): entry is [string, string] =>
+            entry[1] !== undefined && entry[1] !== '',
+    );
+    if (entries.length === 0) return base;
+
+    const searchParams = new URLSearchParams(entries);
+    const separator = base.includes('?') ? '&' : '?';
+    return `${base}${separator}${searchParams.toString()}`;
+}
+
+export function navigateToApp(
+    path = '/',
+    params?: Record<string, string | undefined>,
+): void {
+    if (typeof window !== 'undefined') {
+        window.location.href = appHref(path, params);
+    }
 }
 
 export const APP_LINKS = {
