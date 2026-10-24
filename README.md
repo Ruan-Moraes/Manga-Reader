@@ -51,7 +51,8 @@ Documentação por área:
 
 | Ferramenta              | Uso                                              |
 | ----------------------- | ------------------------------------------------ |
-| Java 23                 | API e jobs Spring Boot                           |
+| Java 23                 | Core e jobs Spring Boot                          |
+| Java 25 LTS             | Gateway/worker de tradução (toolchain separado)  |
 | Docker e Docker Compose | Bancos, mensageria, cache e testes de integração |
 | Node.js 20 ou superior  | Aplicações web                                   |
 | pnpm 9 ou superior      | Workspace web e aplicativo mobile                |

@@ -19,8 +19,9 @@ também itens resolvidos, decisões aceitas e medições históricas.
 | Produção e infraestrutura | DT-03 (CI/CD), DT-09 (conteúdo legal), DT-21 (validação da migração em staging), DT-59 (notas operacionais de refresh token) e DT-73 (lock distribuído do trending) |
 | Produto e governança | DT-44 (funcionalidades adiadas, inclusive armazenamento/upload de mídia), DT-48 (resíduos do perfil) e DT-74 (default de analytics comportamental) |
 | Arquitetura e persistência | DT-50 (resíduos da unificação de comentários), DT-52 (escrita cross-DB não atômica), DT-67 (sessões analytics multiaba/offline), DT-69 (outbox de eventos) e DT-70 (invalidação imediata de access tokens) |
-| Performance e escala | DT-71 (exportação de dados sem streaming) e DT-72 (filtro adulto da biblioteca em memória) e DT-75 (performance mobile) |
+| Performance e escala | DT-71 (exportação de dados sem streaming) e DT-72 (filtro adulto da biblioteca em memória) |
 | Interface | DT-58 (tokens e portais de elementos flutuantes) |
+| Pipeline de tradução | DT-76 (urgente/P1: avaliar renderização híbrida sem interromper a implementação server-side) |
 
 O estado registrado no título de cada `DT-NN` prevalece sobre medições e
 descrições históricas mantidas no corpo do item.
@@ -708,6 +709,15 @@ em JSDoc.
 ## Backlog de produto pendente (consolidado de pending-tasks, 2026-06-01)
 
 ### DT-44: Funcionalidades não implementadas — **Adiado (não-prod)**
+
+**Complemento 2026-09-27 — gateway:** layout semântico é extensão experimental,
+separada do aceite atual de `MOB-FEAT-018`. V3 guarda metadados por job em BCNF,
+com FK composta/cascade e PK suficiente; não cria tabela de texto/regiões nem
+contador. Qualidade geral, geometria irregular, consumo pela tradução e ativação
+operacional permanecem abertos. Ver [contrato e limites](../api/apps/translation-gateway/docs/layout-experimental.md).
+Layout `1.1` trata duplicatas quase idênticas com auditoria e mantém ambiguidades
+reais; isso não aprova qualidade geral. Avaliação específica de onomatopeias fica
+para escopo futuro, sem remover suas regiões do OCR.
 
 Itens de produto que ainda não existem no código, preservados aqui após a remoção
 do antigo `pending-tasks.md` (cuja maior parte já estava resolvida/stale). Todos
@@ -1586,13 +1596,34 @@ testado por região e trilha auditável quando a base exigir consentimento.
 
 ---
 
-### DT-75: Performance mobile — correções implementadas, validações e hipóteses pendentes
+### DT-75: Performance mobile — **Arquivado externamente**
 
-**Estado:** aberto. As cinco correções C01–C05 / MOB-PERF-001…005 foram implementadas com testes em 2026-09-06. Faltam validação comparativa nativa e investigação das seis hipóteses MOB-PERF-006…011; não há degradação nativa quantificada nem aceite final de performance.
+Por solicitação do proprietário em 2026-10-24, relatórios, evidências e
+ferramentas foram movidos para a pasta irmã `perfomance_app/`. Correções
+funcionais existentes, incluindo C06, permanecem no aplicativo. O arquivamento
+não representa validação ou conclusão das pendências históricas.
 
-Fonte detalhada única: [relatório consolidado mobile](../mobile/docs/active/performance-audit.md), com diagnóstico histórico e links para as duas rodadas. O [plano](../mobile/docs/plans/performance-remediation.md) organiza medições B01–B06, investigações I01–I06, dependências e critérios de aceite.
+---
 
-**Prioridade:** P2 provisória para mecanismos confirmados; hipóteses exigem investigação. **Conclusão:** somente após evidência funcional e comparativa por item, respeitando SDD; não implementar backend por este registro.
+### DT-76: Renderização híbrida de tradução — **Urgente/P1**
+
+**Estado:** aberto, registrado em 2026-10-18 por solicitação de Ruan. Continuar
+implementando e validando a 020 no servidor; esta prioridade não muda os contratos
+ativos nem autoriza implementação/ativação mobile antecipada.
+
+**Objetivo:** investigar OCR/tradução remotos com composição visual leve no
+aparelho: instruções de cobertura/texto para fundos simples e, se a medição
+justificar, pequenos patches produzidos no servidor para regiões complexas.
+Não exigir inpainting no cliente nem presumir que overlay elimina o decode
+da página. Benefício de custo, memória e rede ainda não foi medido.
+
+Fonte detalhada: [alternativas e roteiro de comparação](../api/apps/translation-gateway/docs/hybrid-rendering-options-2026-10-18.md).
+O documento diferencia fatos existentes, alternativas e hipóteses; não reabre
+nem altera a auditoria de performance mobile DT-75.
+
+**Conclusão:** revisão arquitetural/SDD de 020/021 e protótipo comparativo com
+orçamentos definidos previamente, qualidade e consumo aceitáveis nos dois lados.
+Não equivale a concluir a 020, liberar uploads ou autorizar novas chamadas pagas.
 
 ---
 
