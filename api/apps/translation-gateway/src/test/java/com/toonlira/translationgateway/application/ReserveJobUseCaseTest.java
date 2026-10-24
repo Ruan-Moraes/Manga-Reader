@@ -5,6 +5,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import com.toonlira.translationgateway.application.port.GatewayRepository;
 import com.toonlira.translationgateway.domain.DispatchStatus;
@@ -19,6 +21,8 @@ import java.util.Optional;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -85,5 +89,24 @@ class ReserveJobUseCaseTest {
     private ProcessingJob job(String fingerprint) {
         return new ProcessingJob(candidate.id(), candidate.jobRef(), installationId, candidate.idempotencyKey(), candidate.attemptRef(), fingerprint,
             JobStatus.QUEUED, DispatchStatus.PENDING, null, candidate.now());
+    }
+
+    @ParameterizedTest
+    @ValueSource(booleans = {false, true})
+    void originalOwnershipOnlyLocksInstallationAndReadsTheExactBinding(boolean owned) {
+        when(repository.ownsOriginal(candidate)).thenReturn(owned);
+        assertThat(useCase.ownsOriginal(candidate)).isEqualTo(owned);
+        var ordered = inOrder(repository);
+        ordered.verify(repository).findInstallationForUpdate(installationId);
+        ordered.verify(repository).ownsOriginal(candidate);
+        verifyNoMoreInteractions(repository);
+    }
+
+    @Test
+    void missingInstallationCannotOwnAnOriginalAfterCascade() {
+        when(repository.findInstallationForUpdate(installationId)).thenReturn(Optional.empty());
+        assertThat(useCase.ownsOriginal(candidate)).isFalse();
+        verify(repository).findInstallationForUpdate(installationId);
+        verifyNoMoreInteractions(repository);
     }
 }

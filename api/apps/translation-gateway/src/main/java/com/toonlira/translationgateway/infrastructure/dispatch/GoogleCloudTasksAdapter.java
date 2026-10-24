@@ -11,6 +11,7 @@ import com.google.protobuf.ByteString;
 import com.toonlira.translationgateway.application.port.TaskDispatchPort;
 import com.toonlira.translationgateway.application.config.GatewayProperties;
 import java.io.IOException;
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -35,9 +36,12 @@ public class GoogleCloudTasksAdapter implements TaskDispatchPort, AutoCloseable 
     public DispatchResult dispatch(UUID jobRef) {
         var parent = QueueName.of(configuration.getProjectId(), configuration.getLocation(), configuration.getQueue());
         var body = ByteString.copyFrom(("{\"jobRef\":\"" + jobRef + "\"}").getBytes(StandardCharsets.UTF_8));
+        var target = URI.create(configuration.getWorkerUrl());
+        var audience = target.getScheme() + "://" + target.getRawAuthority();
         var request = HttpRequest.newBuilder().setHttpMethod(HttpMethod.POST).setUrl(configuration.getWorkerUrl())
             .putHeaders("Content-Type", "application/json").setBody(body)
-            .setOidcToken(OidcToken.newBuilder().setServiceAccountEmail(configuration.getServiceAccountEmail()).build()).build();
+            .setOidcToken(OidcToken.newBuilder().setServiceAccountEmail(configuration.getServiceAccountEmail())
+                .setAudience(audience).build()).build();
         var taskName = parent.toString() + "/tasks/job-" + jobRef;
         try {
             client.createTask(parent, Task.newBuilder().setName(taskName).setHttpRequest(request).build());

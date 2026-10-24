@@ -1,8 +1,22 @@
 locals {
+  worker_resource_profiles = {
+    baseline = {
+      cpu         = "1"
+      memory      = "1Gi"
+      concurrency = null
+    }
+    "native-candidate-8g" = {
+      cpu         = "2"
+      memory      = "8Gi"
+      concurrency = 1
+    }
+  }
+  worker_resources = local.worker_resource_profiles[var.worker_resource_profile]
   name             = "translation-gateway"
   database_name    = "translation_gateway"
   database_user    = "translation_gateway"
-  dispatch_enabled = var.gateway_enabled && var.worker_url != ""
+  dispatch_enabled = var.gateway_enabled && var.worker_enabled
+  worker_url       = var.worker_enabled ? "${google_cloud_run_v2_service.worker[0].uri}/internal/tasks/ocr" : ""
   required_apis = toset([
     "artifactregistry.googleapis.com",
     "cloudresourcemanager.googleapis.com",
@@ -13,10 +27,17 @@ locals {
     "sqladmin.googleapis.com",
     "storage.googleapis.com",
     "cloudtasks.googleapis.com",
+    "vision.googleapis.com",
     "cloudscheduler.googleapis.com",
     "monitoring.googleapis.com"
   ])
-  common_env = {
+  database_env = {
+    GATEWAY_STORAGE_MODE       = "gcs"
+    GATEWAY_STORAGE_BUCKET     = google_storage_bucket.temporary_media.name
+    SPRING_DATASOURCE_URL      = "jdbc:postgresql://${google_sql_database_instance.gateway.private_ip_address}:5432/${local.database_name}"
+    SPRING_DATASOURCE_USERNAME = local.database_user
+  }
+  gateway_env = merge(local.database_env, {
     GATEWAY_ENABLED                  = tostring(var.gateway_enabled)
     GATEWAY_KEY                      = var.gateway_key
     GATEWAY_DISCLOSURE_VERSION       = var.disclosure.version
@@ -25,23 +46,30 @@ locals {
     GATEWAY_PRIVACY_POLICY_URL       = var.disclosure.privacy_policy_url
     GATEWAY_TERMS_URL                = var.disclosure.terms_url
     GATEWAY_PROVIDER_TRAINING_POLICY = var.disclosure.provider_training_policy
-    GATEWAY_STORAGE_MODE             = "gcs"
-    GATEWAY_STORAGE_BUCKET           = google_storage_bucket.temporary_media.name
     GATEWAY_DISPATCH_MODE            = local.dispatch_enabled ? "cloud-tasks" : "disabled"
     GATEWAY_GCP_PROJECT_ID           = var.project_id
     GATEWAY_TASKS_LOCATION           = var.region
     GATEWAY_TASKS_QUEUE              = "translation-jobs"
-    GATEWAY_WORKER_URL               = var.worker_url
+    GATEWAY_WORKER_URL               = local.worker_url
     GATEWAY_TASKS_SERVICE_ACCOUNT    = google_service_account.tasks.email
-    SPRING_DATASOURCE_URL            = "jdbc:postgresql://${google_sql_database_instance.gateway.private_ip_address}:5432/${local.database_name}"
-    SPRING_DATASOURCE_USERNAME       = local.database_user
-  }
+  })
+  worker_env = merge(local.database_env, {
+    SPRING_PROFILES_ACTIVE       = "worker"
+    GATEWAY_ENABLED              = "false"
+    GATEWAY_DISPATCH_MODE        = "disabled"
+    GATEWAY_OCR_MODE             = "disabled"
+    GATEWAY_TRANSLATION_MODE     = "disabled"
+    GATEWAY_LAYOUT_MODE          = "disabled"
+    GATEWAY_RENDERING_MODE       = "disabled"
+    GATEWAY_RESULT_DOWNLOAD_MODE = "disabled"
+    GATEWAY_GCP_PROJECT_ID       = var.project_id
+  })
 }
 
 check "enabled_configuration" {
   assert {
     condition = !var.gateway_enabled || (
-      var.worker_url != "" &&
+      var.worker_enabled &&
       var.disclosure.version != "" &&
       var.disclosure.operator_name != "" &&
       var.disclosure.operator_contact != "" &&
@@ -183,6 +211,17 @@ resource "google_service_account" "tasks" {
   display_name = "Translation task worker invoker"
 }
 
+resource "google_service_account" "worker" {
+  account_id   = "translation-ocr-worker"
+  display_name = "Private OCR worker"
+}
+
+resource "google_project_iam_member" "worker_vision_usage" {
+  project = var.project_id
+  role    = "roles/serviceusage.serviceUsageConsumer"
+  member  = "serviceAccount:${google_service_account.worker.email}"
+}
+
 resource "google_service_account" "maintenance" {
   account_id   = "translation-maintenance"
   display_name = "Translation maintenance jobs"
@@ -192,6 +231,18 @@ resource "google_storage_bucket_iam_member" "gateway_objects" {
   bucket = google_storage_bucket.temporary_media.name
   role   = "roles/storage.objectAdmin"
   member = "serviceAccount:${google_service_account.gateway.email}"
+}
+
+resource "google_storage_bucket_iam_member" "worker_objects" {
+  bucket = google_storage_bucket.temporary_media.name
+  role   = "roles/storage.objectAdmin"
+  member = "serviceAccount:${google_service_account.worker.email}"
+}
+
+resource "google_secret_manager_secret_iam_member" "worker_database_password" {
+  secret_id = google_secret_manager_secret.database_password.id
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "serviceAccount:${google_service_account.worker.email}"
 }
 
 resource "google_project_iam_member" "gateway_tasks" {
@@ -213,6 +264,12 @@ resource "google_secret_manager_secret_iam_member" "gateway_database_password" {
 }
 
 resource "google_cloud_run_v2_service" "gateway" {
+  lifecycle {
+    precondition {
+      condition     = var.worker_resource_profile == "baseline"
+      error_message = "Native worker candidate is offline-only; deployment requires a separately reviewed operational configuration."
+    }
+  }
   name     = local.name
   location = var.region
   ingress  = "INGRESS_TRAFFIC_ALL"
@@ -241,7 +298,7 @@ resource "google_cloud_run_v2_service" "gateway" {
         }
       }
       dynamic "env" {
-        for_each = local.common_env
+        for_each = local.gateway_env
         content {
           name  = env.key
           value = env.value
@@ -259,6 +316,72 @@ resource "google_cloud_run_v2_service" "gateway" {
     }
   }
   depends_on = [google_sql_user.gateway]
+}
+
+resource "google_cloud_run_v2_service" "worker" {
+  lifecycle {
+    precondition {
+      condition     = var.worker_resource_profile == "baseline"
+      error_message = "Native worker candidate is offline-only; deployment requires a separately reviewed operational configuration."
+    }
+  }
+  count    = var.worker_enabled ? 1 : 0
+  name     = "${local.name}-ocr-worker"
+  location = var.region
+  ingress  = "INGRESS_TRAFFIC_ALL"
+  template {
+    service_account                  = google_service_account.worker.email
+    max_instance_request_concurrency = local.worker_resources.concurrency
+    scaling {
+      min_instance_count = 0
+      max_instance_count = 1
+    }
+    timeout = "600s"
+    vpc_access {
+      network_interfaces {
+        network    = google_compute_network.gateway.name
+        subnetwork = google_compute_subnetwork.gateway.name
+      }
+      egress = "PRIVATE_RANGES_ONLY"
+    }
+    containers {
+      image = coalesce(var.worker_container_image, var.container_image)
+      ports {
+        container_port = 8084
+      }
+      resources {
+        limits = {
+          cpu    = local.worker_resources.cpu
+          memory = local.worker_resources.memory
+        }
+      }
+      dynamic "env" {
+        for_each = local.worker_env
+        content {
+          name  = env.key
+          value = env.value
+        }
+      }
+      env {
+        name = "SPRING_DATASOURCE_PASSWORD"
+        value_source {
+          secret_key_ref {
+            secret  = google_secret_manager_secret.database_password.secret_id
+            version = "latest"
+          }
+        }
+      }
+    }
+  }
+  depends_on = [google_sql_user.gateway]
+}
+
+resource "google_cloud_run_v2_service_iam_member" "tasks_worker_invoker" {
+  count    = var.worker_enabled ? 1 : 0
+  name     = google_cloud_run_v2_service.worker[0].name
+  location = var.region
+  role     = "roles/run.invoker"
+  member   = "serviceAccount:${google_service_account.tasks.email}"
 }
 
 resource "google_cloud_run_v2_service_iam_member" "public_gateway" {
@@ -289,7 +412,7 @@ resource "google_cloud_run_v2_job" "maintenance" {
         command = ["java"]
         args    = ["-jar", "app.jar", "--spring.main.web-application-type=none", "--spring.profiles.active=${each.key}-job"]
         dynamic "env" {
-          for_each = local.common_env
+          for_each = local.gateway_env
           content {
             name  = env.key
             value = env.value

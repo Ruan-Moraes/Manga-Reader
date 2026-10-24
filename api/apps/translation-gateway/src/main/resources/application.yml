@@ -2,7 +2,7 @@ spring:
   application:
     name: translation-gateway
   autoconfigure:
-    exclude: org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration
+    exclude: org.springframework.boot.security.autoconfigure.UserDetailsServiceAutoConfiguration
   datasource:
     url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/manga_translation_gateway}
     username: ${SPRING_DATASOURCE_USERNAME:manga}
@@ -50,6 +50,33 @@ management:
 
 gateway:
   enabled: ${GATEWAY_ENABLED:false}
+  result-download:
+    mode: ${GATEWAY_RESULT_DOWNLOAD_MODE:disabled}
+    project-id: ${GATEWAY_RESULT_DOWNLOAD_PROJECT_ID:}
+    signer-service-account: ${GATEWAY_RESULT_DOWNLOAD_SIGNER_SERVICE_ACCOUNT:}
+  layout:
+    mode: ${GATEWAY_LAYOUT_MODE:disabled}
+    model-path: ${GATEWAY_LAYOUT_MODEL_PATH:}
+    direction: ${GATEWAY_LAYOUT_DIRECTION:}
+  ocr:
+    mode: ${GATEWAY_OCR_MODE:disabled}
+    project-id: ${GATEWAY_GCP_PROJECT_ID:}
+  translation:
+    mode: ${GATEWAY_TRANSLATION_MODE:disabled}
+    project-id: ${GATEWAY_TRANSLATION_PROJECT_ID:}
+    enabled-pairs: ${GATEWAY_TRANSLATION_ENABLED_PAIRS:}
+  rendering:
+    mode: ${GATEWAY_RENDERING_MODE:disabled}
+    temporary-directory: ${GATEWAY_RENDERING_TEMP_DIR:}
+    encoder-path: ${GATEWAY_RENDERING_ENCODER_PATH:}
+    encoder-sha256: ${GATEWAY_RENDERING_ENCODER_SHA256:}
+    decoder-path: ${GATEWAY_RENDERING_DECODER_PATH:}
+    decoder-sha256: ${GATEWAY_RENDERING_DECODER_SHA256:}
+    native-timeout: ${GATEWAY_RENDERING_NATIVE_TIMEOUT:PT60S}
+    native-distribution: ${GATEWAY_RENDERING_NATIVE_DISTRIBUTION:}
+    native-distribution-sha256: ${GATEWAY_RENDERING_NATIVE_DISTRIBUTION_SHA256:}
+    child-heap-mib: ${GATEWAY_RENDERING_CHILD_HEAP_MIB:128}
+    process-deadline: ${GATEWAY_RENDERING_PROCESS_DEADLINE:PT90S}
   key: ${GATEWAY_KEY:local-disabled}
   session-ttl: ${GATEWAY_SESSION_TTL:PT15M}
   capabilities-ttl: ${GATEWAY_CAPABILITIES_TTL:PT5M}

@@ -25,9 +25,14 @@ public class DispatchPendingJobsUseCase {
         var now = Instant.now(clock);
         var claims = persistence.claim(properties.getDispatch().getBatchSize(), now, now.plusSeconds(60));
         for (var claim : claims) {
+            if (claim.attemptCount() > properties.getDispatch().getMaxAttempts()) {
+                // A crashed final attempt can leave a pending lease, not permission for another task call.
+                persistence.fail(claim.jobId(), claim.attemptCount(), properties.getDispatch().getMaxAttempts(), Instant.now(clock));
+                continue;
+            }
             try {
                 taskDispatch.dispatch(claim.jobRef());
-                persistence.complete(claim.jobId(), Instant.now(clock));
+                persistence.complete(claim.jobId(), claim.attemptCount(), Instant.now(clock));
             } catch (RuntimeException error) {
                 persistence.fail(claim.jobId(), claim.attemptCount(), properties.getDispatch().getMaxAttempts(), Instant.now(clock));
             }

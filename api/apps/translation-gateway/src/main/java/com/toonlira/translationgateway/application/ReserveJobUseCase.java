@@ -14,10 +14,13 @@ import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.util.UUID;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ReserveJobUseCase {
+    private static final int ORIGINAL_OWNERSHIP_TIMEOUT_SECONDS = 30;
     private final GatewayRepository repository;
     private final GatewayProperties properties;
 
@@ -49,6 +52,14 @@ public class ReserveJobUseCase {
             throw new GatewayException(QUOTA_EXCEEDED, 429, true);
         }
         return new Result(repository.insertJob(candidate), true);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.READ_COMMITTED, timeout = ORIGINAL_OWNERSHIP_TIMEOUT_SECONDS)
+    public boolean ownsOriginal(GatewayRepository.NewJob candidate) {
+        if (candidate == null || candidate.installationId() == null) throw new IllegalArgumentException("Invalid original ownership lookup");
+        // Same lock order as reservation; the next statement observes the resolved commit, not an earlier snapshot.
+        if (repository.findInstallationForUpdate(candidate.installationId()).isEmpty()) return false;
+        return repository.ownsOriginal(candidate);
     }
 
     public record Result(ProcessingJob job, boolean created) { }

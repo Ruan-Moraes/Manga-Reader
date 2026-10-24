@@ -9,6 +9,9 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.verifyNoInteractions;
 
 import com.toonlira.translationgateway.application.port.ObjectStoragePort;
 import com.toonlira.translationgateway.domain.DispatchStatus;
@@ -26,6 +29,9 @@ import java.util.List;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
+import org.mockito.ArgumentCaptor;
 
 class SubmitPageUseCaseTest {
     private static final Instant NOW = Instant.parse("2026-09-02T12:00:00Z");
@@ -94,6 +100,65 @@ class SubmitPageUseCaseTest {
             new ByteArrayInputStream(new byte[0]))).isSameAs(conflict);
     }
 
+    @ParameterizedTest
+    @ValueSource(strings = {"accepted", "orphan", "unknown"})
+    void reservationFailureOnlyDeletesAnOriginalProvenUnaccepted(String resolution) {
+        var failure = new IllegalStateException("synthetic reservation unavailable");
+        when(reservation.execute(any())).thenThrow(failure);
+        if (resolution.equals("unknown")) when(reservation.ownsOriginal(any())).thenThrow(new IllegalStateException("synthetic lookup unavailable"));
+        else when(reservation.ownsOriginal(any())).thenReturn(resolution.equals("accepted"));
+        assertThatThrownBy(() -> useCase.execute(installationId, idempotencyKey, command,
+            new ByteArrayInputStream(new byte[0]))).isSameAs(failure);
+        verify(storage, times(resolution.equals("orphan") ? 1 : 0)).delete(anyString());
+        verify(reservation, times(1)).execute(any());
+        verify(reservation, times(1)).ownsOriginal(any());
+        verify(dispatcher, never()).dispatchBestEffort();
+        verify(mediaInspector).deleteQuietly(media.path());
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = {1, 900, 3600})
+    void originalLocatorSnapshotsThePublishedRetentionBeforeUpload(int seconds) {
+        when(capabilities.execute()).thenReturn(capabilitiesView(seconds));
+        when(reservation.execute(any())).thenReturn(new ReserveJobUseCase.Result(job(), true));
+        useCase.execute(installationId, idempotencyKey, command, new ByteArrayInputStream(new byte[0]));
+        var key = ArgumentCaptor.forClass(String.class);
+        verify(storage).store(key.capture(), any(), anyString(), anyString(), any());
+        var expiry = NOW.plusSeconds(seconds);
+        assertThat(key.getValue()).startsWith("private/originals/v1/" + expiry.getEpochSecond() + "-" + expiry.getNano() + "/");
+        var candidate = ArgumentCaptor.forClass(com.toonlira.translationgateway.application.port.GatewayRepository.NewJob.class);
+        verify(reservation).execute(candidate.capture());
+        assertThat(candidate.getValue().originalRetentionSeconds()).isEqualTo(seconds);
+        assertThat(candidate.getValue().objectKey()).isEqualTo(key.getValue());
+    }
+
+    @Test
+    void originalExpiredDuringUploadIsRemovedWithoutReservationOrDispatch() {
+        var clock = mock(Clock.class);
+        when(clock.instant()).thenReturn(NOW);
+        when(capabilities.execute()).thenReturn(capabilitiesView(1));
+        useCase = new SubmitPageUseCase(capabilities, mediaInspector, storage, reservation, dispatcher,
+            GetCapabilitiesUseCaseTest.validProperties(), clock);
+        doAnswer(call -> { when(clock.instant()).thenReturn(NOW.plusSeconds(1)); return null; })
+            .when(storage).store(anyString(), any(), anyString(), anyString(), any());
+        assertThatThrownBy(() -> useCase.execute(installationId, idempotencyKey, command,
+            new ByteArrayInputStream(new byte[0]))).isInstanceOfSatisfying(GatewayException.class,
+                error -> assertThat(error.code()).isEqualTo(GatewayErrorCode.STORAGE_UNAVAILABLE));
+        verify(storage).delete(anyString());
+        verifyNoInteractions(reservation, dispatcher);
+        verify(mediaInspector).deleteQuietly(media.path());
+    }
+
+    @ParameterizedTest @ValueSource(ints = {1, 60, 3600})
+    void resultPolicyIsFrozenFromThePublishedDisclosureNotAnotherConfiguration(int seconds) {
+        when(capabilities.execute()).thenReturn(capabilitiesView(3600, seconds));
+        when(reservation.execute(any())).thenReturn(new ReserveJobUseCase.Result(job(), true));
+        useCase.execute(installationId, idempotencyKey, command, new ByteArrayInputStream(new byte[0]));
+        var candidate = ArgumentCaptor.forClass(com.toonlira.translationgateway.application.port.GatewayRepository.NewJob.class);
+        verify(reservation).execute(candidate.capture());
+        assertThat(candidate.getValue().resultRetentionSeconds()).isEqualTo(seconds);
+    }
+
     @Test
     void shouldRejectDisabledGatewayBeforeInspectingOrUploading() {
         doThrow(new GatewayException(GatewayErrorCode.GATEWAY_DISABLED, 503, true)).when(capabilities).requireEnabled();
@@ -106,15 +171,34 @@ class SubmitPageUseCaseTest {
         verify(storage, never()).store(anyString(), any(), anyString(), anyString(), any());
     }
 
+    @Test
+    void shouldRejectAPairNotPublishedBeforeReadingMediaOrConsumingQuota() {
+        var removedPair = new SubmitPageUseCase.Command("image/png", 32, 1, 1, "pt-BR", "ja", "privacy-2026-09", attemptRef);
+        assertThatThrownBy(() -> useCase.execute(installationId, idempotencyKey, removedPair, new ByteArrayInputStream(new byte[0])))
+            .isInstanceOfSatisfying(GatewayException.class,
+                error -> assertThat(error.code()).isEqualTo(GatewayErrorCode.UNSUPPORTED_PAIR));
+        verify(mediaInspector, never()).inspect(any(), any(Long.class));
+        verify(storage, never()).store(anyString(), any(), anyString(), anyString(), any());
+        verify(reservation, never()).execute(any());
+    }
+
     private ProcessingJob job() {
         return new ProcessingJob(UUID.randomUUID(), UUID.randomUUID(), installationId, idempotencyKey, attemptRef,
             "b".repeat(64), JobStatus.QUEUED, DispatchStatus.PENDING, null, NOW);
     }
 
     private CapabilitiesView capabilitiesView() {
+        return capabilitiesView(3600);
+    }
+
+    private CapabilitiesView capabilitiesView(int originalRetention) {
+        return capabilitiesView(originalRetention, 3600);
+    }
+
+    private CapabilitiesView capabilitiesView(int originalRetention, int resultRetention) {
         var disclosure = new CapabilitiesView.LegalDisclosure("privacy-2026-09", "Toonlira",
             "privacy@example.com", "https://example.com/privacy", "https://example.com/terms",
-            "southamerica-east1", List.of("us", "us-central1"), 3600, 3600, 7, "No training");
+            "southamerica-east1", "us", "global", originalRetention, resultRetention, 7, "No training");
         return new CapabilitiesView("1.0", "toonlira-alpha", NOW, NOW.plusSeconds(300), true,
             GetCapabilitiesUseCase.LANGUAGES, List.of(new CapabilitiesView.LanguagePair("ja", "pt-BR")),
             new CapabilitiesView.MediaLimits(GetCapabilitiesUseCase.MIME_TYPES, 1000, 100, 100, 10000),

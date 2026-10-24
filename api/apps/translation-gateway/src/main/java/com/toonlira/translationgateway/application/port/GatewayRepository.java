@@ -2,6 +2,7 @@ package com.toonlira.translationgateway.application.port;
 
 import com.toonlira.translationgateway.domain.Installation;
 import com.toonlira.translationgateway.domain.ProcessingJob;
+import com.toonlira.translationgateway.domain.OriginalObjectKey;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
@@ -20,6 +21,11 @@ public interface GatewayRepository {
 
     Optional<ProcessingJob> findByIdempotency(UUID installationId, UUID idempotencyKey);
 
+    /** Exact immutable upload binding, checked after acquiring the installation lock. */
+    boolean ownsOriginal(NewJob candidate);
+
+    int expireOriginals(int limit, Instant now);
+
     Optional<ProcessingJob> findByJobRef(UUID installationId, UUID jobRef);
 
     void acquireGlobalQuotaLock(long utcEpochDay);
@@ -34,9 +40,9 @@ public interface GatewayRepository {
 
     List<DispatchClaim> claimDispatches(int limit, Instant now, Instant leaseUntil);
 
-    void markDispatched(UUID jobId, Instant now);
+    boolean markDispatched(UUID jobId, int attempt, Instant now);
 
-    void rescheduleDispatch(UUID jobId, Instant nextAttemptAt, String errorCode, boolean exhausted, Instant now);
+    boolean rescheduleDispatch(UUID jobId, int attempt, Instant nextAttemptAt, String errorCode, boolean exhausted, Instant now);
 
     int deleteExpiredSessions(Instant now);
 
@@ -59,8 +65,33 @@ public interface GatewayRepository {
         String originalSha256,
         String requestFingerprint,
         Instant now,
-        Instant metadataExpiresAt
+        Instant metadataExpiresAt,
+        int originalRetentionSeconds,
+        int resultRetentionSeconds
     ) {
+        public NewJob {
+            OriginalObjectKey.requireSeconds(originalRetentionSeconds);
+            OriginalObjectKey.requireSeconds(resultRetentionSeconds);
+        }
+
+        public NewJob(UUID id, UUID jobRef, UUID installationId, UUID idempotencyKey, UUID attemptRef,
+                      String disclosureVersion, String sourceLanguage, String targetLanguage, String mimeType,
+                      long byteSize, int widthPx, int heightPx, String objectKey, String originalSha256,
+                      String requestFingerprint, Instant now, Instant metadataExpiresAt, int originalRetentionSeconds) {
+            this(id, jobRef, installationId, idempotencyKey, attemptRef, disclosureVersion, sourceLanguage, targetLanguage,
+                mimeType, byteSize, widthPx, heightPx, objectKey, originalSha256, requestFingerprint, now, metadataExpiresAt,
+                originalRetentionSeconds, OriginalObjectKey.MAX_RETENTION_SECONDS);
+        }
+
+        /** Existing internal fixtures retain the historical alpha default; production admission passes its disclosure snapshot. */
+        public NewJob(UUID id, UUID jobRef, UUID installationId, UUID idempotencyKey, UUID attemptRef,
+                      String disclosureVersion, String sourceLanguage, String targetLanguage, String mimeType,
+                      long byteSize, int widthPx, int heightPx, String objectKey, String originalSha256,
+                      String requestFingerprint, Instant now, Instant metadataExpiresAt) {
+            this(id, jobRef, installationId, idempotencyKey, attemptRef, disclosureVersion, sourceLanguage, targetLanguage,
+                mimeType, byteSize, widthPx, heightPx, objectKey, originalSha256, requestFingerprint, now, metadataExpiresAt,
+                OriginalObjectKey.MAX_RETENTION_SECONDS, OriginalObjectKey.MAX_RETENTION_SECONDS);
+        }
     }
 
     record DispatchClaim(UUID jobId, UUID jobRef, int attemptCount) {

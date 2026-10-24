@@ -18,11 +18,22 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public class JdbcGatewayRepository implements GatewayRepository {
+    static final String ORIGINAL_OWNERSHIP_SQL = """
+        SELECT EXISTS (
+            SELECT 1 FROM processing_jobs
+            WHERE id = :id AND installation_id = :installationId AND idempotency_key = :idempotencyKey
+                AND original_object_key = :objectKey AND original_sha256 = :originalSha256
+                AND request_fingerprint = :fingerprint)
+        """;
     private final JdbcClient jdbc;
+    private final JdbcOriginalRetention originals;
 
-    public JdbcGatewayRepository(JdbcClient jdbc) {
+    public JdbcGatewayRepository(JdbcClient jdbc, JdbcOriginalRetention originals) {
         this.jdbc = jdbc;
+        this.originals = originals;
     }
+
+    @Override public int expireOriginals(int limit, Instant now) { return originals.expire(limit, null, now); }
 
     @Override
     public void createInstallation(UUID id, String credentialHash, Instant now) {
@@ -80,6 +91,14 @@ public class JdbcGatewayRepository implements GatewayRepository {
     }
 
     @Override
+    public boolean ownsOriginal(NewJob candidate) {
+        return jdbc.sql(ORIGINAL_OWNERSHIP_SQL).param("id", candidate.id()).param("installationId", candidate.installationId())
+            .param("idempotencyKey", candidate.idempotencyKey()).param("objectKey", candidate.objectKey())
+            .param("originalSha256", candidate.originalSha256()).param("fingerprint", candidate.requestFingerprint())
+            .query(Boolean.class).single();
+    }
+
+    @Override
     public Optional<ProcessingJob> findByJobRef(UUID installationId, UUID jobRef) {
         return findJob("j.installation_id = :installationId AND j.job_ref = :lookup", installationId, jobRef);
     }
@@ -128,12 +147,12 @@ public class JdbcGatewayRepository implements GatewayRepository {
                     (id, job_ref, installation_id, idempotency_key, attempt_ref, gateway_contract_version,
                      disclosure_version, source_language, target_language, original_mime_type,
                      original_byte_size, width_px, height_px, status, original_object_key,
-                     original_sha256, request_fingerprint, created_at, updated_at, accepted_at, metadata_expires_at)
+                     original_sha256, request_fingerprint, created_at, updated_at, accepted_at, metadata_expires_at, original_retention_seconds, result_retention_seconds)
                 VALUES
                     (:id, :jobRef, :installationId, :idempotencyKey, :attemptRef, '1.0',
                      :disclosureVersion, :sourceLanguage, :targetLanguage, :mimeType,
                      :byteSize, :widthPx, :heightPx, 'QUEUED', :objectKey,
-                     :originalSha256, :requestFingerprint, :now, :now, :now, :metadataExpiresAt)
+                     :originalSha256, :requestFingerprint, :now, :now, :now, :metadataExpiresAt, :originalRetentionSeconds, :resultRetentionSeconds)
                 """)
             .param("id", job.id()).param("jobRef", job.jobRef()).param("installationId", job.installationId())
             .param("idempotencyKey", job.idempotencyKey()).param("attemptRef", job.attemptRef())
@@ -142,7 +161,9 @@ public class JdbcGatewayRepository implements GatewayRepository {
             .param("byteSize", job.byteSize()).param("widthPx", job.widthPx()).param("heightPx", job.heightPx())
             .param("objectKey", job.objectKey()).param("originalSha256", job.originalSha256())
             .param("requestFingerprint", job.requestFingerprint()).param("now", timestamp(job.now()))
-            .param("metadataExpiresAt", timestamp(job.metadataExpiresAt())).update();
+            .param("metadataExpiresAt", timestamp(job.metadataExpiresAt()))
+            .param("originalRetentionSeconds", job.originalRetentionSeconds())
+            .param("resultRetentionSeconds", job.resultRetentionSeconds()).update();
         jdbc.sql("""
                 INSERT INTO processing_job_dispatches (job_id, status, next_attempt_at, created_at, updated_at)
                 VALUES (:jobId, 'PENDING', :now, :now, :now)
@@ -153,15 +174,17 @@ public class JdbcGatewayRepository implements GatewayRepository {
     @Override
     public ProcessingJob cancel(UUID installationId, UUID jobRef, Instant now) {
         var job = jdbc.sql("""
-                SELECT j.id, j.status, d.status AS dispatch_status
-                FROM processing_jobs j JOIN processing_job_dispatches d ON d.job_id = j.id
-                WHERE j.installation_id = :installationId AND j.job_ref = :jobRef FOR UPDATE OF j, d
+                SELECT id, status FROM processing_jobs
+                WHERE installation_id = :installationId AND job_ref = :jobRef FOR UPDATE
                 """)
             .param("installationId", installationId).param("jobRef", jobRef)
-            .query((row, ignored) -> new CancelRow(row.getObject("id", UUID.class), JobStatus.valueOf(row.getString("status")),
-                DispatchStatus.valueOf(row.getString("dispatch_status")))).optional()
+            .query((row, ignored) -> new CancelRow(row.getObject("id", UUID.class), JobStatus.valueOf(row.getString("status")))).optional()
             .orElseThrow(() -> new GatewayException(GatewayErrorCode.JOB_NOT_FOUND, 404, false));
-        var decision = job.status().cancellationDecision(job.dispatchStatus());
+        // Both terminal dispatch and cancellation acquire job before outbox; do not rely on join lock order.
+        var dispatch = jdbc.sql("SELECT status FROM processing_job_dispatches WHERE job_id = :id FOR UPDATE")
+            .param("id", job.id()).query(String.class).optional()
+            .orElseThrow(() -> new GatewayException(GatewayErrorCode.JOB_NOT_FOUND, 404, false));
+        var decision = job.status().cancellationDecision(DispatchStatus.valueOf(dispatch));
         if (decision == JobStatus.CancellationDecision.ALREADY_APPLIED) {
             return findByJobRef(installationId, jobRef).orElseThrow();
         }
@@ -204,32 +227,41 @@ public class JdbcGatewayRepository implements GatewayRepository {
     }
 
     @Override
-    public void markDispatched(UUID jobId, Instant now) {
-        jdbc.sql("""
+    public boolean markDispatched(UUID jobId, int attempt, Instant now) {
+        return jdbc.sql("""
                 UPDATE processing_job_dispatches SET status = 'DISPATCHED', updated_at = :now,
-                    dispatched_at = :now, last_error_code = NULL WHERE job_id = :jobId AND status = 'PENDING'
-                """).param("now", timestamp(now)).param("jobId", jobId).update();
+                    dispatched_at = :now, last_error_code = NULL
+                WHERE job_id = :jobId AND status = 'PENDING' AND attempt_count = :attempt AND :attempt > 0
+                """).param("now", timestamp(now)).param("jobId", jobId).param("attempt", attempt).update() == 1;
     }
 
     @Override
-    public void rescheduleDispatch(UUID jobId, Instant nextAttemptAt, String errorCode, boolean exhausted, Instant now) {
+    public boolean rescheduleDispatch(UUID jobId, int attempt, Instant nextAttemptAt, String errorCode, boolean exhausted, Instant now) {
         if (exhausted) {
-            jdbc.sql("""
+            // Lock the parent first, matching cancellation, before testing ownership of the outbox.
+            var job = jdbc.sql("SELECT id FROM processing_jobs WHERE id = :jobId FOR UPDATE")
+                .param("jobId", jobId).query(UUID.class).optional();
+            if (job.isEmpty()) return false;
+            int changed = jdbc.sql("""
                     UPDATE processing_job_dispatches SET status = 'FAILED', updated_at = :now,
-                        last_error_code = :errorCode WHERE job_id = :jobId AND status = 'PENDING'
-                    """).param("now", timestamp(now)).param("errorCode", errorCode).param("jobId", jobId).update();
+                        last_error_code = :errorCode
+                    WHERE job_id = :jobId AND status = 'PENDING' AND attempt_count = :attempt AND :attempt > 0
+                    """).param("now", timestamp(now)).param("errorCode", errorCode).param("jobId", jobId)
+                .param("attempt", attempt).update();
+            if (changed == 0) return false;
             jdbc.sql("""
                     UPDATE processing_jobs SET status = 'FAILED', error_code = :errorCode, updated_at = :now
                     WHERE id = :jobId AND status = 'QUEUED'
                     """).param("now", timestamp(now)).param("errorCode", GatewayErrorCode.DISPATCH_UNAVAILABLE.value())
                 .param("jobId", jobId).update();
-            return;
+            return true;
         }
-        jdbc.sql("""
+        return jdbc.sql("""
                 UPDATE processing_job_dispatches SET next_attempt_at = :nextAttemptAt,
-                    updated_at = :now, last_error_code = :errorCode WHERE job_id = :jobId AND status = 'PENDING'
+                    updated_at = :now, last_error_code = :errorCode
+                WHERE job_id = :jobId AND status = 'PENDING' AND attempt_count = :attempt AND :attempt > 0
                 """).param("nextAttemptAt", timestamp(nextAttemptAt)).param("now", timestamp(now)).param("errorCode", errorCode)
-            .param("jobId", jobId).update();
+            .param("jobId", jobId).param("attempt", attempt).update() == 1;
     }
 
     @Override
@@ -256,5 +288,5 @@ public class JdbcGatewayRepository implements GatewayRepository {
         return OffsetDateTime.ofInstant(value, ZoneOffset.UTC);
     }
 
-    private record CancelRow(UUID id, JobStatus status, DispatchStatus dispatchStatus) { }
+    private record CancelRow(UUID id, JobStatus status) { }
 }

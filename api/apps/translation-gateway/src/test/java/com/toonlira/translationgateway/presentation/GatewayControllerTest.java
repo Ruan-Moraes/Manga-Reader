@@ -3,20 +3,25 @@ package com.toonlira.translationgateway.presentation;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.toonlira.translationgateway.application.CancelJobUseCase;
+import com.toonlira.translationgateway.application.AcknowledgeResultUseCase;
 import com.toonlira.translationgateway.application.CapabilitiesView;
 import com.toonlira.translationgateway.application.AuthenticateSessionUseCase;
 import com.toonlira.translationgateway.application.CreateInstallationUseCase;
 import com.toonlira.translationgateway.application.CreateSessionUseCase;
 import com.toonlira.translationgateway.application.GetCapabilitiesUseCase;
-import com.toonlira.translationgateway.application.GetJobUseCase;
+import com.toonlira.translationgateway.application.GetJobResultUseCase;
+import com.toonlira.translationgateway.domain.rendering.PrivateDownload;
+import java.net.URI;
 import com.toonlira.translationgateway.application.SubmitPageUseCase;
 import com.toonlira.translationgateway.domain.DispatchStatus;
 import com.toonlira.translationgateway.domain.GatewayErrorCode;
@@ -29,8 +34,8 @@ import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.core.Authentication;
@@ -47,8 +52,9 @@ class GatewayControllerTest {
     @MockitoBean private CreateInstallationUseCase createInstallation;
     @MockitoBean private CreateSessionUseCase createSession;
     @MockitoBean private SubmitPageUseCase submitPage;
-    @MockitoBean private GetJobUseCase getJob;
+    @MockitoBean private GetJobResultUseCase getJob;
     @MockitoBean private CancelJobUseCase cancelJob;
+    @MockitoBean private AcknowledgeResultUseCase acknowledgeResult;
     @MockitoBean private AuthenticateSessionUseCase authenticateSession;
 
     private UUID installationId;
@@ -65,7 +71,7 @@ class GatewayControllerTest {
     @Test
     void shouldExposeCapabilitiesWithEtagOutsideTheBody() throws Exception {
         var disclosure = new CapabilitiesView.LegalDisclosure("privacy-1", "Toonlira", "privacy@example.com",
-            "https://example.com/privacy", "https://example.com/terms", "southamerica-east1", List.of("us", "us-central1"),
+            "https://example.com/privacy", "https://example.com/terms", "southamerica-east1", "us", "global",
             3600, 3600, 7, "No training");
         when(getCapabilities.execute()).thenReturn(new CapabilitiesView("1.0", "toonlira-alpha", job.serverTime(),
             job.serverTime().plusSeconds(300), false, List.of("ja", "pt-BR"),
@@ -74,7 +80,10 @@ class GatewayControllerTest {
 
         mockMvc.perform(get("/v1/capabilities"))
             .andExpect(status().isOk()).andExpect(header().string(HttpHeaders.ETAG, "\"etag\""))
-            .andExpect(jsonPath("$.etag").doesNotExist()).andExpect(jsonPath("$.enabled").value(false));
+            .andExpect(jsonPath("$.etag").doesNotExist()).andExpect(jsonPath("$.enabled").value(false))
+            .andExpect(jsonPath("$.disclosure.ocrRegion").value("us"))
+            .andExpect(jsonPath("$.disclosure.translationLocation").value("global"))
+            .andExpect(jsonPath("$.disclosure.processingRegions").doesNotExist());
 
         mockMvc.perform(get("/v1/capabilities").header(HttpHeaders.IF_NONE_MATCH, "\"etag\""))
             .andExpect(status().isNotModified()).andExpect(header().string(HttpHeaders.ETAG, "\"etag\""));
@@ -122,11 +131,13 @@ class GatewayControllerTest {
     @Test
     void shouldExposeSubmissionLookupCancellationAndAckConflict() throws Exception {
         var authentication = new UsernamePasswordAuthenticationToken(installationId, null, List.of());
-        when(getJob.byRef(installationId, job.jobRef())).thenReturn(job);
-        when(getJob.byIdempotency(installationId, job.idempotencyKey())).thenReturn(job);
+        when(getJob.byRef(installationId, job.jobRef())).thenReturn(new GetJobResultUseCase.Result(job, job.serverTime(), null));
+        when(getJob.byIdempotency(installationId, job.idempotencyKey())).thenReturn(new GetJobResultUseCase.Result(job, job.serverTime(), null));
         var cancelled = new ProcessingJob(job.id(), job.jobRef(), installationId, job.idempotencyKey(), job.attemptRef(), job.requestFingerprint(),
             JobStatus.CANCELLED, DispatchStatus.CANCELLED, null, job.serverTime());
         when(cancelJob.execute(installationId, job.jobRef())).thenReturn(cancelled);
+        doThrow(new GatewayException(GatewayErrorCode.JOB_STATE_CONFLICT, 409, false))
+            .when(acknowledgeResult).execute(installationId, job.jobRef());
 
         mockMvc.perform(get("/v1/page-jobs/{jobRef}", job.jobRef()).principal(authentication))
             .andExpect(status().isOk()).andExpect(jsonPath("$.status").value("QUEUED"));
@@ -136,6 +147,69 @@ class GatewayControllerTest {
             .andExpect(status().isOk()).andExpect(jsonPath("$.status").value("CANCELLED"));
         mockMvc.perform(post("/v1/page-jobs/{jobRef}/ack", job.jobRef()).principal(authentication))
             .andExpect(status().isConflict()).andExpect(jsonPath("$.code").value("job-state-conflict"));
+    }
+
+    @Test
+    void shouldAcceptAnIdempotentAcknowledgementWithoutAResponseBody() throws Exception {
+        var authentication = new UsernamePasswordAuthenticationToken(installationId, null, List.of());
+        mockMvc.perform(post("/v1/page-jobs/{jobRef}/ack", job.jobRef()).principal(authentication))
+            .andExpect(status().isAccepted())
+            .andExpect(content().string(""));
+        verify(acknowledgeResult).execute(installationId, job.jobRef());
+    }
+
+    @Test
+    void shouldNotCacheExpiredJobQueriesOrInventDownloadArtifacts() throws Exception {
+        var authentication = new UsernamePasswordAuthenticationToken(installationId, null, List.of());
+        var expired = new ProcessingJob(job.id(), job.jobRef(), installationId, job.idempotencyKey(), job.attemptRef(),
+            job.requestFingerprint(), JobStatus.RESULT_EXPIRED, DispatchStatus.DISPATCHED, null, job.serverTime());
+        when(getJob.byRef(installationId, job.jobRef())).thenReturn(new GetJobResultUseCase.Result(expired, job.serverTime(), null));
+        when(getJob.byIdempotency(installationId, job.idempotencyKey())).thenReturn(new GetJobResultUseCase.Result(expired, job.serverTime(), null));
+        for (var path : List.of("/v1/page-jobs/" + job.jobRef(), "/v1/page-jobs/by-idempotency/" + job.idempotencyKey())) {
+            mockMvc.perform(get(path).principal(authentication))
+                .andExpect(status().isOk()).andExpect(header().string(HttpHeaders.CACHE_CONTROL, "no-store"))
+                .andExpect(jsonPath("$.contractVersion").value("1.0"))
+                .andExpect(jsonPath("$.jobRef").value(job.jobRef().toString()))
+                .andExpect(jsonPath("$.status").value("RESULT_EXPIRED"))
+                .andExpect(jsonPath("$.result").doesNotExist());
+        }
+    }
+
+    @Test
+    void shouldExposeOnlyCompleteReadyResultsAndNeverCacheTheirBearerUrls() throws Exception {
+        var authentication = new UsernamePasswordAuthenticationToken(installationId, null, List.of());
+        var ready = new ProcessingJob(job.id(), job.jobRef(), installationId, job.idempotencyKey(), job.attemptRef(),
+            job.requestFingerprint(), JobStatus.READY, DispatchStatus.DISPATCHED, null, job.serverTime());
+        var url = URI.create("https://storage.googleapis.com/test/private/rendering/image?signature=secret");
+        var image = new PrivateDownload(url, "image/webp", 1024, "a".repeat(64), job.serverTime().plusSeconds(300));
+        var manifest = new PrivateDownload(url, "application/json", 2048, "b".repeat(64), job.serverTime().plusSeconds(300));
+        var result = new GetJobResultUseCase.Result(ready, job.serverTime(),
+            new GetJobResultUseCase.ReadyResult(100, 200, job.serverTime().plusSeconds(3600), image, manifest));
+        when(getJob.byRef(installationId, job.jobRef())).thenReturn(result);
+        when(getJob.byIdempotency(installationId, job.idempotencyKey())).thenReturn(result);
+        for (var path : List.of("/v1/page-jobs/" + job.jobRef(), "/v1/page-jobs/by-idempotency/" + job.idempotencyKey())) {
+            mockMvc.perform(get(path).principal(authentication)).andExpect(status().isOk())
+                .andExpect(header().string(HttpHeaders.CACHE_CONTROL, "no-store"))
+                .andExpect(jsonPath("$.result.manifestVersion").value("1.0"))
+                .andExpect(jsonPath("$.result.widthPx").value(100))
+                .andExpect(jsonPath("$.result.heightPx").value(200))
+                .andExpect(jsonPath("$.result.image.mimeType").value("image/webp"))
+                .andExpect(jsonPath("$.result.image.byteSize").value(1024))
+                .andExpect(jsonPath("$.result.image.sha256").value("a".repeat(64)))
+                .andExpect(jsonPath("$.result.manifest.mimeType").value("application/json"))
+                .andExpect(jsonPath("$.result.manifest.byteSize").value(2048))
+                .andExpect(jsonPath("$.result.image.objectKey").doesNotExist())
+                .andExpect(jsonPath("$.result.regions").doesNotExist());
+        }
+    }
+
+    @Test
+    void unavailableResultProducesSanitizedProblemWithoutPartialUrls() throws Exception {
+        var authentication = new UsernamePasswordAuthenticationToken(installationId, null, List.of());
+        when(getJob.byRef(installationId, job.jobRef())).thenThrow(new GatewayException(GatewayErrorCode.STORAGE_UNAVAILABLE, 503, true));
+        mockMvc.perform(get("/v1/page-jobs/{jobRef}", job.jobRef()).principal(authentication))
+            .andExpect(status().isServiceUnavailable()).andExpect(jsonPath("$.code").value("storage-unavailable"))
+            .andExpect(jsonPath("$.result").doesNotExist()).andExpect(jsonPath("$.cause").doesNotExist());
     }
 
     @Test

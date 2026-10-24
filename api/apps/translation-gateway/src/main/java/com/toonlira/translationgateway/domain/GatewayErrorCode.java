@@ -17,6 +17,12 @@ public enum GatewayErrorCode {
     CANCELLATION_UNAVAILABLE("cancellation-unavailable"),
     STORAGE_UNAVAILABLE("storage-unavailable"),
     DISPATCH_UNAVAILABLE("dispatch-unavailable"),
+    OCR_INVALID_MEDIA("ocr-invalid-media"),
+    OCR_INVALID_RESPONSE("ocr-invalid-response"),
+    OCR_UNAVAILABLE("ocr-unavailable"),
+    TRANSLATION_INVALID_REQUEST("translation-invalid-request"),
+    TRANSLATION_INVALID_RESPONSE("translation-invalid-response"),
+    TRANSLATION_UNAVAILABLE("translation-unavailable"),
     INTERNAL_ERROR("internal-error");
 
     private final String value;

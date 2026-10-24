@@ -1,0 +1,25 @@
+ARG RUNTIME_IMAGE
+FROM ${RUNTIME_IMAGE}
+WORKDIR /app
+ARG CODEC_MANIFEST_SHA256
+ARG GATEWAY_JAR_SHA256
+COPY gateway.jar /app/gateway.jar
+COPY image-inputs.json /app/image-inputs.json
+COPY native/libwebp.so.7 native/libsharpyuv.so.0 native/COPYING native/PATENTS native/manifest.properties /relocated/lib/
+RUN ["chmod", "0444", "/app/gateway.jar", "/app/image-inputs.json", "/relocated/lib/libwebp.so.7", "/relocated/lib/libsharpyuv.so.0", "/relocated/lib/COPYING", "/relocated/lib/PATENTS", "/relocated/lib/manifest.properties"]
+RUN ["chmod", "0555", "/app", "/relocated/lib"]
+ENV MALLOC_ARENA_MAX=2 \
+    SPRING_PROFILES_ACTIVE=worker \
+    GATEWAY_ENABLED=false \
+    GATEWAY_OCR_MODE=disabled \
+    GATEWAY_TRANSLATION_MODE=disabled \
+    GATEWAY_LAYOUT_MODE=disabled \
+    GATEWAY_RENDERING_MODE=disabled \
+    GATEWAY_RENDERING_TEMP_DIR=/work \
+    GATEWAY_RENDERING_NATIVE_DISTRIBUTION=/relocated/lib \
+    GATEWAY_RENDERING_NATIVE_DISTRIBUTION_SHA256=${CODEC_MANIFEST_SHA256} \
+    GATEWAY_NATIVE_IMAGE_JAR_SHA256=${GATEWAY_JAR_SHA256}
+RUN ["java", "--enable-native-access=ALL-UNNAMED", "-Xmx128m", "-Dloader.main=com.toonlira.translationgateway.infrastructure.rendering.NativeCodecImageAdmissionMain", "-Dloader.path=BOOT-INF/classes/,BOOT-INF/lib/", "-Dloader.config.location=classpath:/META-INF/render-child-no-config.properties", "-cp", "/app/gateway.jar", "org.springframework.boot.loader.launch.PropertiesLauncher"]
+USER 1000:1000
+EXPOSE 8084
+ENTRYPOINT ["java", "-Xmx512m", "-Xms16m", "-XX:ActiveProcessorCount=1", "-XX:+UseSerialGC", "-XX:MaxMetaspaceSize=192m", "-XX:+ExitOnOutOfMemoryError", "-Djava.awt.headless=true", "-Djava.io.tmpdir=/work", "-jar", "/app/gateway.jar"]

@@ -66,6 +66,57 @@ class TranslationGatewayOpenApiTest {
             .containsExactly("QUEUED", "OCR", "TRANSLATING", "RENDERING", "READY", "FAILED", "CANCEL_PENDING", "CANCELLED", "RESULT_EXPIRED");
     }
 
+    @Test
+    void shouldDistinguishRegionalOcrFromGlobalTranslation() throws IOException {
+        var disclosure = schema(loadContract(), "LegalDisclosure");
+        var properties = map(disclosure.get("properties"));
+        assertThat(list(disclosure.get("required"))).contains("gatewayRegion", "ocrRegion", "translationLocation")
+            .doesNotContain("processingRegions");
+        assertThat(properties).doesNotContainKey("processingRegions");
+        assertThat(map(properties.get("ocrRegion"))).containsEntry("const", "us");
+        assertThat(map(properties.get("translationLocation"))).containsEntry("const", "global");
+    }
+
+    @Test
+    void shouldAllowAnEmptyOperationalSetOnlyForADisabledGateway() throws IOException {
+        var capabilities = schema(loadContract(), "Capabilities");
+        var pairs = map(map(capabilities.get("properties")).get("supportedPairs"));
+        assertThat(pairs).containsEntry("minItems", 0).containsEntry("maxItems", 42).containsEntry("uniqueItems", true);
+        var conditional = map(list(capabilities.get("allOf")).iterator().next());
+        assertThat(map(map(map(conditional.get("if")).get("properties")).get("enabled"))).containsEntry("const", true);
+        assertThat(map(map(map(conditional.get("then")).get("properties")).get("supportedPairs"))).containsEntry("minItems", 1);
+    }
+
+    @Test
+    void readyQueriesRequireCompletePrivateArtifactsWithoutChangingRoutesOrVersion() throws IOException {
+        var contract = loadContract();
+        assertThat(map(contract.get("paths"))).hasSize(8);
+        var result = schema(contract, "ReadyResult");
+        assertThat(list(result.get("required"))).containsExactly("manifestVersion", "widthPx", "heightPx", "expiresAt", "image", "manifest");
+        assertThat(map(map(result.get("properties")).get("manifestVersion"))).containsEntry("const", "1.0");
+        var download = schema(contract, "PrivateResultDownload");
+        assertThat(list(download.get("required"))).containsExactly("url", "mimeType", "byteSize", "sha256", "expiresAt");
+        assertThat(download).containsEntry("additionalProperties", false);
+        assertThat(map(map(download.get("properties")).get("url"))).containsEntry("maxLength", 8192);
+        var paths = map(contract.get("paths"));
+        for (var path : new String[] {"/v1/page-jobs/{jobRef}", "/v1/page-jobs/by-idempotency/{idempotencyKey}"}) {
+            var responses = map(map(map(paths.get(path)).get("get")).get("responses"));
+            var json = map(map(map(responses.get("200")).get("content")).get("application/json"));
+            assertThat(map(json.get("schema"))).containsEntry("$ref", "#/components/schemas/PageJobQueryEnvelope");
+        }
+        assertThat(list(schema(contract, "PageJobQueryEnvelope").get("allOf"))).hasSize(2);
+    }
+
+    @Test
+    void jobQueriesDoNotCacheAvailabilityAfterAckOrTtl() throws IOException {
+        var paths = map(loadContract().get("paths"));
+        for (var path : new String[] {"/v1/page-jobs/{jobRef}", "/v1/page-jobs/by-idempotency/{idempotencyKey}"}) {
+            var response = map(map(map(paths.get(path)).get("get")).get("responses"));
+            var header = map(map(map(response.get("200")).get("headers")).get("Cache-Control"));
+            assertThat(map(header.get("schema"))).containsEntry("const", "no-store");
+        }
+    }
+
     private Map<String, Object> loadContract() throws IOException {
         try (var reader = Files.newBufferedReader(CONTRACT_PATH)) {
             return map(new Yaml().load(reader));

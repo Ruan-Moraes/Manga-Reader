@@ -1,13 +1,15 @@
 package com.toonlira.translationgateway.presentation;
 
-import static com.toonlira.translationgateway.domain.GatewayErrorCode.JOB_STATE_CONFLICT;
-
+import com.toonlira.translationgateway.application.AcknowledgeResultUseCase;
 import com.toonlira.translationgateway.application.CancelJobUseCase;
 import com.toonlira.translationgateway.application.CapabilitiesView;
 import com.toonlira.translationgateway.application.CreateInstallationUseCase;
 import com.toonlira.translationgateway.application.CreateSessionUseCase;
 import com.toonlira.translationgateway.application.GetCapabilitiesUseCase;
-import com.toonlira.translationgateway.application.GetJobUseCase;
+import com.toonlira.translationgateway.application.GetJobResultUseCase;
+import com.toonlira.translationgateway.domain.rendering.PrivateDownload;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import java.net.URI;
 import com.toonlira.translationgateway.application.SubmitPageUseCase;
 import com.toonlira.translationgateway.domain.GatewayException;
 import com.toonlira.translationgateway.domain.JobStatus;
@@ -22,6 +24,7 @@ import org.springframework.http.CacheControl;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,24 +37,28 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
+@Profile("!worker")
 @RequestMapping("/v1")
 public class GatewayController {
     private final GetCapabilitiesUseCase getCapabilities;
     private final CreateInstallationUseCase createInstallation;
     private final CreateSessionUseCase createSession;
     private final SubmitPageUseCase submitPage;
-    private final GetJobUseCase getJob;
+    private final GetJobResultUseCase getJob;
     private final CancelJobUseCase cancelJob;
+    private final AcknowledgeResultUseCase acknowledgeResult;
 
     public GatewayController(GetCapabilitiesUseCase getCapabilities, CreateInstallationUseCase createInstallation,
                              CreateSessionUseCase createSession, SubmitPageUseCase submitPage,
-                             GetJobUseCase getJob, CancelJobUseCase cancelJob) {
+                             GetJobResultUseCase getJob, CancelJobUseCase cancelJob,
+                             AcknowledgeResultUseCase acknowledgeResult) {
         this.getCapabilities = getCapabilities;
         this.createInstallation = createInstallation;
         this.createSession = createSession;
         this.submitPage = submitPage;
         this.getJob = getJob;
         this.cancelJob = cancelJob;
+        this.acknowledgeResult = acknowledgeResult;
     }
 
     @GetMapping("/capabilities")
@@ -110,13 +117,15 @@ public class GatewayController {
     }
 
     @GetMapping("/page-jobs/by-idempotency/{idempotencyKey}")
-    JobEnvelope byIdempotency(Authentication authentication, @PathVariable UUID idempotencyKey) {
-        return envelope(getJob.byIdempotency(installationId(authentication), idempotencyKey));
+    ResponseEntity<JobEnvelope> byIdempotency(Authentication authentication, @PathVariable UUID idempotencyKey) {
+        return ResponseEntity.ok().cacheControl(CacheControl.noStore())
+            .body(envelope(getJob.byIdempotency(installationId(authentication), idempotencyKey)));
     }
 
     @GetMapping("/page-jobs/{jobRef}")
-    JobEnvelope byRef(Authentication authentication, @PathVariable UUID jobRef) {
-        return envelope(getJob.byRef(installationId(authentication), jobRef));
+    ResponseEntity<JobEnvelope> byRef(Authentication authentication, @PathVariable UUID jobRef) {
+        return ResponseEntity.ok().cacheControl(CacheControl.noStore())
+            .body(envelope(getJob.byRef(installationId(authentication), jobRef)));
     }
 
     @PostMapping("/page-jobs/{jobRef}/cancel")
@@ -128,8 +137,8 @@ public class GatewayController {
 
     @PostMapping("/page-jobs/{jobRef}/ack")
     ResponseEntity<Void> acknowledge(Authentication authentication, @PathVariable UUID jobRef) {
-        getJob.byRef(installationId(authentication), jobRef);
-        throw new GatewayException(JOB_STATE_CONFLICT, 409, false);
+        acknowledgeResult.execute(installationId(authentication), jobRef);
+        return ResponseEntity.accepted().build();
     }
 
     private UUID installationId(Authentication authentication) {
@@ -138,12 +147,34 @@ public class GatewayController {
 
     private JobEnvelope envelope(ProcessingJob job) {
         JobError error = job.errorCode() == null ? null : new JobError(job.errorCode(), false);
-        return new JobEnvelope("1.0", job.jobRef(), job.status().name(), job.serverTime(), error);
+        return new JobEnvelope("1.0", job.jobRef(), job.status().name(), job.serverTime(), error, null);
+    }
+
+    private JobEnvelope envelope(GetJobResultUseCase.Result query) {
+        var job = query.job();
+        var result = query.result();
+        var body = result == null ? null : new ReadyResult("1.0", result.widthPx(), result.heightPx(), result.expiresAt(),
+            download(result.image()), download(result.manifest()));
+        return new JobEnvelope("1.0", job.jobRef(), job.status().name(), query.serverTime(),
+            job.errorCode() == null ? null : new JobError(job.errorCode(), false), body);
+    }
+
+    private Download download(PrivateDownload value) {
+        return new Download(value.url(), value.mimeType(), value.byteSize(), value.sha256(), value.expiresAt());
     }
 
     public record InstallationCreated(String contractVersion, UUID installationRef, String credential, Instant createdAt) { }
     public record SessionRequest(@NotNull UUID installationRef) { }
     public record SessionCreated(String contractVersion, String accessToken, Instant expiresAt) { }
-    public record JobEnvelope(String contractVersion, UUID jobRef, String status, Instant serverTime, JobError error) { }
+    public record JobEnvelope(String contractVersion, UUID jobRef, String status, Instant serverTime, JobError error,
+                              @JsonInclude(JsonInclude.Include.NON_NULL) ReadyResult result) {
+        @Override public String toString() { return "JobEnvelope[redacted]"; }
+    }
+    public record ReadyResult(String manifestVersion, int widthPx, int heightPx, Instant expiresAt, Download image, Download manifest) {
+        @Override public String toString() { return "ReadyResult[redacted]"; }
+    }
+    public record Download(URI url, String mimeType, long byteSize, String sha256, Instant expiresAt) {
+        @Override public String toString() { return "Download[redacted]"; }
+    }
     public record JobError(String code, boolean retryable) { }
 }

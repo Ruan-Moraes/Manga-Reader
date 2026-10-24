@@ -8,6 +8,15 @@ class SecureTokenAdapterTest {
     private final SecureTokenAdapter adapter = new SecureTokenAdapter();
 
     @Test
+    void shouldVerifySyntheticHashesCreatedBeforeTheSecurityStackMigration() {
+        // Captured locally with Security 6.5.11 / Bouncy Castle 1.80, never a real credential.
+        String legacyHash = "$argon2id$v=19$m=16384,t=2,p=1$0le4AvWbZCCU8LF9lwPMWQ"
+            + "$MjIITkh8FqiIjS5IyOFLCnip/UEaOCq1cdSZGrMS9I0";
+        assertThat(adapter.matchesCredential("synthetic-legacy-migration-fixture", legacyHash)).isTrue();
+        assertThat(adapter.matchesCredential("synthetic-other-fixture", legacyHash)).isFalse();
+    }
+
+    @Test
     void shouldGenerateOpaqueTokensAndStoreOnlyOneWayHashes() {
         var credential = adapter.generate();
         var other = adapter.generate();

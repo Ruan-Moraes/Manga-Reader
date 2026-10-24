@@ -150,10 +150,15 @@ paths:
       responses:
         "200":
           description: Job existente para a chave
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+                const: no-store
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/PageJobEnvelope"
+                $ref: "#/components/schemas/PageJobQueryEnvelope"
         "401":
           $ref: "#/components/responses/Unauthorized"
         "403":
@@ -176,10 +181,15 @@ paths:
       responses:
         "200":
           description: Estado confirmado
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+                const: no-store
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/PageJobEnvelope"
+                $ref: "#/components/schemas/PageJobQueryEnvelope"
         "401":
           $ref: "#/components/responses/Unauthorized"
         "403":
@@ -378,6 +388,12 @@ components:
         - cancellation-unavailable
         - storage-unavailable
         - dispatch-unavailable
+        - ocr-invalid-media
+        - ocr-invalid-response
+        - ocr-unavailable
+        - translation-invalid-request
+        - translation-invalid-response
+        - translation-unavailable
         - internal-error
 
     LanguagePair:
@@ -427,7 +443,8 @@ components:
         - privacyPolicyUrl
         - termsUrl
         - gatewayRegion
-        - processingRegions
+        - ocrRegion
+        - translationLocation
         - originalRetentionSeconds
         - resultRetentionSeconds
         - metadataRetentionDays
@@ -455,13 +472,13 @@ components:
         gatewayRegion:
           type: string
           const: southamerica-east1
-        processingRegions:
-          type: array
-          minItems: 1
-          uniqueItems: true
-          items:
-            type: string
-            enum: [us, us-central1]
+        ocrRegion:
+          type: string
+          const: us
+        translationLocation:
+          type: string
+          const: global
+          description: Global endpoint; translation processing has no guaranteed US residency.
         originalRetentionSeconds:
           type: integer
           minimum: 1
@@ -517,7 +534,9 @@ components:
             $ref: "#/components/schemas/TranslationLanguage"
         supportedPairs:
           type: array
-          minItems: 1
+          description: Explicitly configured operational pairs; empty while translation is disabled.
+          minItems: 0
+          maxItems: 42
           uniqueItems: true
           items:
             $ref: "#/components/schemas/LanguagePair"
@@ -531,6 +550,15 @@ components:
           const: 100
         disclosure:
           $ref: "#/components/schemas/LegalDisclosure"
+      allOf:
+        - if:
+            properties:
+              enabled:
+                const: true
+          then:
+            properties:
+              supportedPairs:
+                minItems: 1
 
     AnonymousInstallationCreated:
       type: object
@@ -641,6 +669,98 @@ components:
           oneOf:
             - $ref: "#/components/schemas/JobError"
             - type: "null"
+        result:
+          oneOf:
+            - $ref: "#/components/schemas/ReadyResult"
+            - type: "null"
+      allOf:
+        - if:
+            required: [result]
+            properties:
+              result:
+                type: object
+          then:
+            properties:
+              status:
+                const: READY
+              error:
+                type: "null"
+
+    PageJobQueryEnvelope:
+      description: GET READY exige ambos os arquivos. Mutação/replay pode omitir result; aquisição posterior usa GET. serverTime é o instante da consulta.
+      allOf:
+        - $ref: "#/components/schemas/PageJobEnvelope"
+        - if:
+            properties:
+              status:
+                const: READY
+          then:
+            required: [result]
+            properties:
+              result:
+                $ref: "#/components/schemas/ReadyResult"
+
+    ReadyResult:
+      type: object
+      additionalProperties: false
+      required: [manifestVersion, widthPx, heightPx, expiresAt, image, manifest]
+      description: Resultado privado efêmero; área máxima de 80 milhões de pixels. expiresAt não excede uma hora da conclusão do render. Não promove READY local.
+      properties:
+        manifestVersion:
+          type: string
+          const: "1.0"
+        widthPx:
+          type: integer
+          minimum: 1
+          maximum: 12000
+        heightPx:
+          type: integer
+          minimum: 1
+          maximum: 12000
+        expiresAt:
+          type: string
+          format: date-time
+        image:
+          allOf:
+            - $ref: "#/components/schemas/PrivateResultDownload"
+            - properties:
+                mimeType:
+                  const: image/webp
+                byteSize:
+                  maximum: 67108864
+        manifest:
+          allOf:
+            - $ref: "#/components/schemas/PrivateResultDownload"
+            - properties:
+                mimeType:
+                  const: application/json
+                byteSize:
+                  maximum: 4194304
+
+    PrivateResultDownload:
+      type: object
+      additionalProperties: false
+      required: [url, mimeType, byteSize, sha256, expiresAt]
+      description: URL bearer GET V4, generation fixada, sem credenciais do gateway. Prazo efetivo de até 300 segundos, nunca além do resultado. ACK não promete revogação instantânea. Hash será conferido nos bytes pela aquisição futura.
+      properties:
+        url:
+          type: string
+          format: uri
+          maxLength: 8192
+          pattern: '^https://storage\.googleapis\.com/[^?#]+\?[^#]+$'
+        mimeType:
+          type: string
+          enum: [image/webp, application/json]
+        byteSize:
+          type: integer
+          minimum: 1
+          maximum: 67108864
+        sha256:
+          type: string
+          pattern: "^[0-9a-f]{64}$"
+        expiresAt:
+          type: string
+          format: date-time
 
     JobError:
       type: object

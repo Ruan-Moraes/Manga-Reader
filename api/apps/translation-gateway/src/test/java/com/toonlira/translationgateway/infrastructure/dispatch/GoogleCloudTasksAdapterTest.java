@@ -32,6 +32,8 @@ class GoogleCloudTasksAdapterTest {
         assertThat(task.getValue().getName()).endsWith("/tasks/job-" + jobRef);
         assertThat(task.getValue().getHttpRequest().getBody().toString(StandardCharsets.UTF_8))
             .isEqualTo("{\"jobRef\":\"" + jobRef + "\"}");
+        assertThat(task.getValue().getHttpRequest().getOidcToken().getAudience())
+            .isEqualTo("https://worker.example.com");
     }
 
     @Test

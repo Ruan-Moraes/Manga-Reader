@@ -11,6 +11,7 @@ import com.toonlira.translationgateway.application.port.GatewayRepository;
 import com.toonlira.translationgateway.application.port.ObjectStoragePort;
 import com.toonlira.translationgateway.domain.GatewayException;
 import com.toonlira.translationgateway.domain.ProcessingJob;
+import com.toonlira.translationgateway.domain.OriginalObjectKey;
 import com.toonlira.translationgateway.application.config.GatewayProperties;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -18,6 +19,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.Clock;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.HexFormat;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -54,21 +56,27 @@ public class SubmitPageUseCase {
         try {
             validateMedia(command, media, capabilities);
             var fingerprint = fingerprint(command, media);
-            var objectKey = "private/originals/" + UUID.randomUUID();
-            var now = Instant.now(clock);
+            var now = Instant.now(clock).truncatedTo(ChronoUnit.MICROS);
+            int originalRetention = OriginalObjectKey.requireSeconds(capabilities.disclosure().originalRetentionSeconds());
+            var objectKey = OriginalObjectKey.create(now, originalRetention);
             storage.store(objectKey, media.path(), media.mimeType(), media.sha256(), now);
+            if (!clock.instant().isBefore(now.plusSeconds(originalRetention))) {
+                deleteBestEffort(objectKey);
+                throw new GatewayException(STORAGE_UNAVAILABLE, 503, true);
+            }
+            var candidate = new GatewayRepository.NewJob(UUID.randomUUID(), UUID.randomUUID(), installationId,
+                idempotencyKey, command.attemptRef(), command.disclosureVersion(), command.sourceLanguage(),
+                command.targetLanguage(), media.mimeType(), media.byteSize(), media.widthPx(), media.heightPx(),
+                objectKey, media.sha256(), fingerprint, now,
+                now.plusSeconds(properties.getDisclosure().getMetadataRetentionDays() * 86_400L), originalRetention,
+                capabilities.disclosure().resultRetentionSeconds());
             try {
-                var candidate = new GatewayRepository.NewJob(UUID.randomUUID(), UUID.randomUUID(), installationId,
-                    idempotencyKey, command.attemptRef(), command.disclosureVersion(), command.sourceLanguage(),
-                    command.targetLanguage(), media.mimeType(), media.byteSize(), media.widthPx(), media.heightPx(),
-                    objectKey, media.sha256(), fingerprint, now,
-                    now.plusSeconds(properties.getDisclosure().getMetadataRetentionDays() * 86_400L));
                 var result = reservation.execute(candidate);
                 if (!result.created()) deleteBestEffort(objectKey);
                 if (result.created()) dispatcher.dispatchBestEffort();
                 return new Result(result.job(), result.created());
             } catch (RuntimeException error) {
-                deleteBestEffort(objectKey);
+                discardUnacceptedOriginal(candidate);
                 throw error;
             }
         } finally {
@@ -80,6 +88,14 @@ public class SubmitPageUseCase {
         try { storage.delete(objectKey); } catch (RuntimeException ignored) { }
     }
 
+    private void discardUnacceptedOriginal(GatewayRepository.NewJob candidate) {
+        try {
+            if (!reservation.ownsOriginal(candidate)) deleteBestEffort(candidate.objectKey());
+        } catch (RuntimeException uncertain) {
+            // An accepted reservation may still be resolving; retain the upload for the private age failsafe.
+        }
+    }
+
     private void validateCommand(Command command, CapabilitiesView capabilities) {
         if (command.byteSize() <= 0 || command.widthPx() <= 0 || command.heightPx() <= 0 || command.attemptRef() == null) {
             throw new GatewayException(INVALID_REQUEST, 400, false);
@@ -89,7 +105,9 @@ public class SubmitPageUseCase {
         }
         if (!GetCapabilitiesUseCase.LANGUAGES.contains(command.sourceLanguage())
             || !GetCapabilitiesUseCase.LANGUAGES.contains(command.targetLanguage())
-            || command.sourceLanguage().equals(command.targetLanguage())) {
+            || command.sourceLanguage().equals(command.targetLanguage())
+            || capabilities.supportedPairs().stream().noneMatch(pair -> pair.source().equals(command.sourceLanguage())
+                && pair.target().equals(command.targetLanguage()))) {
             throw new GatewayException(UNSUPPORTED_PAIR, 400, false);
         }
         if (!GetCapabilitiesUseCase.MIME_TYPES.contains(command.mimeType())) {

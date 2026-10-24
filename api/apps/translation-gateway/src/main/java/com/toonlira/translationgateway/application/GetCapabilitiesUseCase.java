@@ -3,7 +3,11 @@ package com.toonlira.translationgateway.application;
 import static com.toonlira.translationgateway.domain.GatewayErrorCode.CAPABILITIES_UNAVAILABLE;
 
 import com.toonlira.translationgateway.domain.GatewayException;
+import com.toonlira.translationgateway.domain.SupportedLanguages;
 import com.toonlira.translationgateway.application.config.GatewayProperties;
+import com.toonlira.translationgateway.application.config.ConfiguredTranslationPairs;
+import com.toonlira.translationgateway.domain.translation.LanguagePair;
+import com.toonlira.translationgateway.domain.translation.TranslationValidationException;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -13,6 +17,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.HexFormat;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -20,10 +25,14 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class GetCapabilitiesUseCase {
-    public static final List<String> LANGUAGES = List.of("ja", "en", "es", "ko", "zh-Hans", "zh-Hant", "pt-BR");
+    public static final List<String> LANGUAGES = SupportedLanguages.CODES;
     public static final List<String> MIME_TYPES = List.of("image/jpeg", "image/png", "image/webp");
     private static final Pattern GATEWAY_KEY = Pattern.compile("^[a-z0-9][a-z0-9-]{1,62}$");
     private static final Pattern EMAIL = Pattern.compile("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$");
+    private static final String GATEWAY_REGION = "southamerica-east1";
+    private static final String OCR_REGION = "us";
+    private static final String TRANSLATION_LOCATION = "global";
+    private static final Set<String> SUPERSEDED_DISCLOSURE_VERSIONS = Set.of("2026-09-07.v1");
 
     private final GatewayProperties properties;
     private final Clock clock;
@@ -37,20 +46,19 @@ public class GetCapabilitiesUseCase {
         validateConfiguration();
         var now = Instant.now(clock);
         var disclosure = properties.getDisclosure();
-        var pairs = LANGUAGES.stream()
-            .flatMap(source -> LANGUAGES.stream().filter(target -> !source.equals(target))
-                .map(target -> new CapabilitiesView.LanguagePair(source, target)))
-            .toList();
+        var pairs = operationalPairs();
         var media = properties.getMedia();
         var canonical = Stream.of(
             "1.0", properties.getKey(), Boolean.toString(properties.isEnabled()),
             String.join(",", LANGUAGES), String.join(",", MIME_TYPES),
+            pairs.stream().map(pair -> pair.source() + ":" + pair.target()).collect(Collectors.joining(",")),
             properties.getCapabilitiesTtl().toString(),
             Long.toString(media.getMaxBytes()), Integer.toString(media.getMaxWidthPx()),
             Integer.toString(media.getMaxHeightPx()), Long.toString(media.getMaxPixels()),
             Integer.toString(properties.getInstallationDailyQuota()), Integer.toString(properties.getGlobalDailyQuota()),
             disclosure.getVersion(), disclosure.getOperatorName(), disclosure.getOperatorContact(),
             disclosure.getPrivacyPolicyUrl(), disclosure.getTermsUrl(), disclosure.getProviderTrainingPolicy(),
+            GATEWAY_REGION, OCR_REGION, TRANSLATION_LOCATION,
             Integer.toString(disclosure.getOriginalRetentionSeconds()),
             Integer.toString(disclosure.getResultRetentionSeconds()),
             Integer.toString(disclosure.getMetadataRetentionDays()))
@@ -62,7 +70,7 @@ public class GetCapabilitiesUseCase {
                 properties.getMedia().getMaxHeightPx(), properties.getMedia().getMaxPixels()),
             properties.getInstallationDailyQuota(), properties.getGlobalDailyQuota(),
             new CapabilitiesView.LegalDisclosure(disclosure.getVersion(), disclosure.getOperatorName(), disclosure.getOperatorContact(),
-                disclosure.getPrivacyPolicyUrl(), disclosure.getTermsUrl(), "southamerica-east1", List.of("us", "us-central1"),
+                disclosure.getPrivacyPolicyUrl(), disclosure.getTermsUrl(), GATEWAY_REGION, OCR_REGION, TRANSLATION_LOCATION,
                 disclosure.getOriginalRetentionSeconds(), disclosure.getResultRetentionSeconds(), disclosure.getMetadataRetentionDays(),
                 disclosure.getProviderTrainingPolicy()),
             "W/\"" + sha256(canonical) + '"'
@@ -92,6 +100,7 @@ public class GetCapabilitiesUseCase {
             && properties.getInstallationDailyQuota() == 20
             && properties.getGlobalDailyQuota() == 100
             && !disclosure.getVersion().isBlank() && disclosure.getVersion().length() <= 64
+            && !SUPERSEDED_DISCLOSURE_VERSIONS.contains(disclosure.getVersion())
             && !disclosure.getOperatorName().isBlank() && disclosure.getOperatorName().length() <= 160
             && EMAIL.matcher(disclosure.getOperatorContact()).matches()
             && isHttps(disclosure.getPrivacyPolicyUrl())
@@ -100,8 +109,19 @@ public class GetCapabilitiesUseCase {
             && disclosure.getOriginalRetentionSeconds() > 0 && disclosure.getOriginalRetentionSeconds() <= 3600
             && disclosure.getResultRetentionSeconds() > 0 && disclosure.getResultRetentionSeconds() <= 3600
             && disclosure.getMetadataRetentionDays() > 0 && disclosure.getMetadataRetentionDays() <= 7
-            && (!properties.isEnabled() || validOperationalConfiguration());
+            && (!properties.isEnabled() || (validOperationalConfiguration() && !operationalPairs().isEmpty()));
         if (!valid) throw new GatewayException(CAPABILITIES_UNAVAILABLE, 503, true);
+    }
+
+    private List<CapabilitiesView.LanguagePair> operationalPairs() {
+        try {
+            var configured = ConfiguredTranslationPairs.parse(properties.getTranslation().getEnabledPairs());
+            if (properties.getTranslation().getMode() == GatewayProperties.Translation.Mode.DISABLED) return List.of();
+            return LanguagePair.all().stream().filter(configured::contains)
+                .map(pair -> new CapabilitiesView.LanguagePair(pair.source(), pair.target())).toList();
+        } catch (TranslationValidationException error) {
+            throw new GatewayException(CAPABILITIES_UNAVAILABLE, 503, true);
+        }
     }
 
     private boolean positiveDurations() {

@@ -1,6 +1,6 @@
 package com.toonlira.translationgateway.infrastructure.security;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import com.toonlira.translationgateway.application.AuthenticateSessionUseCase;
 import com.toonlira.translationgateway.domain.GatewayErrorCode;
 import com.toonlira.translationgateway.domain.GatewayException;
@@ -16,9 +16,11 @@ import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Profile;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 @Component
+@Profile("!worker")
 public class SessionAuthenticationFilter extends OncePerRequestFilter {
     private final AuthenticateSessionUseCase authenticate;
     private final ObjectMapper objectMapper;

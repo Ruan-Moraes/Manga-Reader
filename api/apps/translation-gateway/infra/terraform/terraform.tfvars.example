@@ -1,13 +1,19 @@
 # Valores públicos. Este arquivo não habilita o gateway.
-project_id      = "toonlira-rm"
-container_image = "replace-with-immutable-image-reference"
-gateway_enabled = false
-database_tier    = "db-f1-micro"
+project_id              = "toonlira-rm"
+container_image         = "replace-with-immutable-image-reference"
+gateway_enabled         = false
+worker_enabled          = false
+worker_resource_profile = "baseline"
+worker_container_image  = null
+# O ambiente do worker também mantém GATEWAY_OCR_MODE=disabled neste incremento.
+database_tier                     = "db-f1-micro"
 database_disk_size_gb             = 10
 database_disk_autoresize_limit_gb = 20
 
 disclosure = {
-  version          = "2026-09-07.v1"
+  # A versão anterior descreve localização incompatível com tradução global.
+  # Manter vazio até revisão, publicação e aprovação de um novo disclosure.
+  version          = ""
   operator_name    = "Ruan Moraes"
   operator_contact = "ruanmoraessantosbarbosa@gmail.com"
   # Rotas públicas; usar o disclosure somente após revisão jurídica do conteúdo.

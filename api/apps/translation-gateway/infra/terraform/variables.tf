@@ -20,15 +20,36 @@ variable "gateway_enabled" {
   default     = false
 }
 
+variable "worker_enabled" {
+  description = "Deploy the private OCR worker only after a real provider adapter is available."
+  type        = bool
+  default     = false
+}
+
+variable "worker_resource_profile" {
+  description = "baseline preserves the current worker. native-candidate-8g is an offline-only resource proposal, blocked from deployment."
+  type        = string
+  default     = "baseline"
+  nullable    = false
+  validation {
+    condition     = contains(["baseline", "native-candidate-8g"], var.worker_resource_profile)
+    error_message = "Use baseline or native-candidate-8g; the native candidate is not operationally admitted."
+  }
+}
+
+variable "worker_container_image" {
+  description = "Optional distinct worker image pinned by registry digest. Null preserves the existing shared-image baseline."
+  type        = string
+  default     = null
+  validation {
+    condition     = var.worker_container_image == null ? true : can(regex("^[^[:space:]@]+@sha256:[a-f0-9]{64}$", var.worker_container_image))
+    error_message = "A worker image override must use an immutable registry reference ending in @sha256:<64 lowercase hex>."
+  }
+}
+
 variable "gateway_key" {
   type    = string
   default = "toonlira-alpha"
-}
-
-variable "worker_url" {
-  description = "Private worker endpoint introduced by MOB-FEAT-018. Empty keeps dispatch disabled."
-  type        = string
-  default     = ""
 }
 
 variable "disclosure" {
