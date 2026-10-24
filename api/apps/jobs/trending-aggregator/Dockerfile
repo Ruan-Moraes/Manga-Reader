@@ -1,4 +1,4 @@
-FROM maven:3.9-eclipse-temurin-23-alpine AS build
+FROM maven:3.9-eclipse-temurin-25-alpine AS build
 WORKDIR /workspace
 COPY pom.xml .
 COPY libs/testing-support/pom.xml libs/testing-support/pom.xml
@@ -12,7 +12,7 @@ COPY libs/testing-support/src libs/testing-support/src
 COPY apps/jobs/trending-aggregator/src apps/jobs/trending-aggregator/src
 RUN mvn -pl apps/jobs/trending-aggregator -am package -DskipTests -B
 
-FROM eclipse-temurin:23-jre-alpine
+FROM eclipse-temurin:25-jre-alpine
 WORKDIR /app
 RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 COPY --from=build /workspace/apps/jobs/trending-aggregator/target/*.jar app.jar

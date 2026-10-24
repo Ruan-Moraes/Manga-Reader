@@ -2,7 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 
-test("Java 25 stack and toolchains are confined to the gateway", async () => {
+test("all services use Java 25 while the gateway keeps its independent Boot stack", async () => {
   const gateway = await readFile(
     new URL("../pom.xml", import.meta.url),
     "utf8",
@@ -12,7 +12,7 @@ test("Java 25 stack and toolchains are confined to the gateway", async () => {
     gateway,
     /<artifactId>spring-boot-starter-parent<\/artifactId>\s*<version>4\.1\.1<\/version>/,
   );
-  assert.equal((gateway.match(/<jdkToolchain>/g) ?? []).length, 2);
+  assert.doesNotMatch(gateway, /<jdkToolchain>/);
   assert.ok(!gateway.includes("net.bytebuddy.experimental"));
   for (const path of [
     "../../../libs/testing-support/pom.xml",
@@ -22,12 +22,12 @@ test("Java 25 stack and toolchains are confined to the gateway", async () => {
     "../../jobs/trending-aggregator/pom.xml",
   ]) {
     const pom = await readFile(new URL(path, import.meta.url), "utf8");
-    assert.match(pom, /<java.version>23<\/java.version>/);
+    assert.match(pom, /<java.version>25<\/java.version>/);
   }
   const reactor = await readFile(
     new URL("../../../pom.xml", import.meta.url),
     "utf8",
   );
-  assert.match(reactor, /<version>3\.4\.3<\/version>/);
+  assert.match(reactor, /<version>3\.5\.16<\/version>/);
   assert.match(reactor, /<module>apps\/translation-gateway<\/module>/);
 });

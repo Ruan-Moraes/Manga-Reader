@@ -13,7 +13,7 @@
     <name>Toonlira Testing Support</name>
     <description>Utilitários compartilhados exclusivamente pelos testes de integração dos serviços.</description>
     <properties>
-        <java.version>23</java.version>
+        <java.version>25</java.version>
         <testcontainers.version>1.21.4</testcontainers.version>
     </properties>
     <dependencies>
@@ -27,4 +27,16 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <!-- Biblioteca de testes: não iniciar nem gerar um JAR executável. -->
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

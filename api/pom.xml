@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.4.3</version>
+        <version>3.5.16</version>
         <relativePath/>
     </parent>
     <groupId>com.toonlira</groupId>
@@ -31,4 +31,17 @@
         <module>apps/jobs/trending-aggregator</module>
         <module>apps/translation-gateway</module>
     </modules>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <!-- O agregador participa do reactor, mas não é uma aplicação. -->
+                <inherited>false</inherited>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

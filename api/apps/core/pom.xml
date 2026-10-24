@@ -16,9 +16,9 @@
     <properties>
         <!-- 1.21.4 corrige negociação com Docker Engine 29 (API mínima 1.40). -->
         <testcontainers.version>1.21.4</testcontainers.version>
-        <java.version>23</java.version>
+        <java.version>25</java.version>
         <mapstruct.version>1.6.3</mapstruct.version>
-        <springdoc.version>2.8.4</springdoc.version>
+        <springdoc.version>2.8.17</springdoc.version>
         <!-- Phase 1: Auth -->
         <jjwt.version>0.12.6</jjwt.version>
         <!-- Phase 8: MongoDB migrations -->
@@ -251,7 +251,7 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.12</version>
+                <version>0.8.15</version>
                 <executions>
                     <execution>
                         <id>prepare-agent</id>
