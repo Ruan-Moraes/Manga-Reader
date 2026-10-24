@@ -21,7 +21,12 @@ aparecem como pastas irmãs na lista de configurações.
 
 ## Pré-requisitos
 
-- Backend: Java 23 e Docker para as suítes que usam Testcontainers.
+API Core e os três jobs executam `-am test-compile spring-boot:run`, compilando
+`testing-support` no reactor. Não é necessário instalar módulos internos
+manualmente antes do primeiro Run. O agregador e a biblioteca não iniciam como
+aplicações. O Translation Gateway mantém seu fluxo independente.
+
+- Backend: Java 25 e Docker para as suítes que usam Testcontainers.
 - Web/mobile: Node.js e pnpm; dependências previamente instaladas.
 - Mobile Android/iOS: toolchains nativas e emulador/simulador disponíveis.
 

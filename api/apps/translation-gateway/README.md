@@ -386,13 +386,13 @@ e suas dependências para produção ainda não foi entregue.
 
 O gateway/worker exige **Java 25 LTS**, com Spring Boot **4.1.1** em parent
 próprio. O reactor continua agregando o módulo; Core, testing-support e jobs
-permanecem em Java 23/Boot 3.4.3. Compilador e Surefire selecionam toolchain 25;
-não há bypass experimental do Byte Buddy. Para execução do gateway, iniciar
-Maven com `JAVA_HOME`/`PATH` apontando ao JDK 25. Para o reactor misto, iniciar
-Maven com JDK 23 e fornecer `-t <toolchains.xml>` contendo um JDK 25 local.
-O arquivo é configuração pessoal fora do Git; usar o modelo e os requisitos em
-[migração Java 25](docs/java25-migration.md). Downloads/instalação são explícitos,
-nunca feitos por uma task. Os digests das imagens também estão nesse registro.
+também usam Java 25, com parent compartilhado Boot 3.5.16. Compilador e Surefire
+usam o JDK do Maven: iniciar com `JAVA_HOME`/`PATH` apontando ao JDK 25, inclusive
+para o reactor completo. Não é necessário criar `toolchains.xml` em um clone
+novo. Não há bypass experimental do Byte Buddy. O registro histórico da
+[migração Java 25](docs/java25-migration.md) descreve o antigo reactor misto e
+os digests das imagens; a configuração atual exige Java 25 em todos os módulos.
+Downloads/instalação são explícitos, nunca feitos por uma task.
 
 A [triagem de segurança](docs/security-triage-2026-10-10.md) identifica os patches
 candidatos. A [migração Boot 4 autorizada](docs/boot4-execution-2026-10-10.md)

@@ -34,11 +34,25 @@ conectam aos serviços já disponíveis.
 
 ## Execução local
 
+Todos os módulos usam **JDK 25**. Execute Maven com `JAVA_HOME` e o Maven Runner
+do IntelliJ apontando para essa versão. Core/jobs usam Spring Boot 3.5.16,
+compatível com Java 25; o gateway mantém seu parent independente Boot 4.1.1.
+As imagens Docker de build e runtime da Core e dos jobs também usam Java 25.
+Referências de compatibilidade: [Spring Boot 3.5](https://docs.spring.io/spring-boot/3.5/system-requirements.html)
+e [JaCoCo](https://www.jacoco.org/jacoco/trunk/doc/changes.html).
+
+Os comandos da Core e dos jobs incluem `-am test-compile`: o Maven compila
+`libs/testing-support` no mesmo reactor antes de iniciar o serviço escolhido.
+Isso funciona em um clone novo, sem `mvn install` prévio. O agregador e a
+biblioteca pulam o goal `spring-boot:run`; apenas a aplicação selecionada inicia.
+Use os mesmos comandos nas configurações Maven pessoais do IntelliJ. As
+configurações compartilhadas em [`../.run/`](../.run/README.md) já incluem essa preparação.
+
 ### API principal
 
 ```bash
 cd api
-./mvnw -pl apps/core spring-boot:run
+./mvnw -pl apps/core -am test-compile spring-boot:run
 ```
 
 Use `-Dspring-boot.run.profiles=dev` quando quiser executar os seeds de
@@ -51,7 +65,7 @@ comando na pasta do serviço:
 
 ```bash
 cd api
-./mvnw -pl apps/jobs/rating-aggregator spring-boot:run
+./mvnw -pl apps/jobs/rating-aggregator -am test-compile spring-boot:run
 ```
 
 Substitua a pasta pelo job desejado. PostgreSQL, MongoDB e/ou RabbitMQ devem
@@ -84,6 +98,17 @@ cd api
 
 A suíte completa do core usa Testcontainers. As convenções por camada ficam em
 [`../docs/testing.md`](../docs/testing.md).
+
+Regressão dos cinco fluxos de inicialização do IntelliJ, com build limpo e
+repositório Maven sem artefatos `com.toonlira` (não inicia bancos nem serviços):
+
+```bash
+python3 api/scripts/tests/test_reactor_run.py # a partir da raiz do monorepo
+```
+
+Esse teste usa Java, Python 3 e o cache Maven de dependências externas, previamente
+preenchido por um build normal; executa Maven offline e substitui o main por uma
+sonda que encerra imediatamente. `MAVEN_TEST_CACHE` permite indicar outro cache.
 
 `libs/testing-support` não é uma aplicação nem é publicado em produção: é um JAR
 interno para fixtures e fábricas compartilhadas de Testcontainers. Execute os

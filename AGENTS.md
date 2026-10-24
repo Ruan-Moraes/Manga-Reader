@@ -13,7 +13,7 @@
 ./mvnw -pl apps/core -am test                        # Core e testing-support
 ./mvnw -pl apps/core -am test -Dtest=UserTest        # Classe específica
 ./mvnw -pl apps/core -am package -DskipTests         # Build do core
-./mvnw -pl apps/core spring-boot:run                 # Iniciar core (Docker Compose sobe automaticamente)
+./mvnw -pl apps/core -am test-compile spring-boot:run                 # Iniciar core (Docker Compose sobe automaticamente)
 ```
 
 `libs/testing-support` é um JAR interno de escopo `test`, compilado pelo reactor;

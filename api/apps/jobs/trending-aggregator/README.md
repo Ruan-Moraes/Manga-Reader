@@ -37,12 +37,12 @@ retenção configurada.
 
 ## Dependências
 
-- Java 23 e Maven 3.9.x;
+- Java 25 e Maven 3.9.x;
 - PostgreSQL 17;
 - MongoDB 8.0;
 - infraestrutura iniciada separadamente pelo `api/apps/core`.
 
-Stack: Spring Boot 3.4.3, Spring JDBC, Spring Data MongoDB, Mongock, Actuator e
+Stack: Spring Boot 3.5.16, Spring JDBC, Spring Data MongoDB, Mongock, Actuator e
 JUnit 5.
 
 ## Configuração
@@ -74,13 +74,13 @@ Suba a infraestrutura em outro terminal:
 
 ```bash
 cd api
-./mvnw -pl apps/core spring-boot:run
+./mvnw -pl apps/core -am test-compile spring-boot:run
 ```
 
 Depois, no diretório `api/`:
 
 ```bash
-./mvnw -pl apps/jobs/trending-aggregator spring-boot:run
+./mvnw -pl apps/jobs/trending-aggregator -am test-compile spring-boot:run
 
 # Build
 ./mvnw -pl apps/jobs/trending-aggregator -am package -DskipTests

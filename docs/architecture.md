@@ -12,11 +12,21 @@ presentation → application → domain ← infrastructure
 
 ### Suporte compartilhado de testes
 
+Todos os módulos Maven usam Java 25. Core, jobs e `testing-support` herdam
+Spring Boot 3.5.16 do parent do reactor; o gateway mantém parent próprio
+Spring Boot 4.1.1. A seleção da versão Java é comum, sem compartilhar contratos
+de produção entre serviços.
+
 `api/libs/testing-support` é um módulo Maven interno, incluído no reactor
 `api/pom.xml`, que reúne apenas utilitários de teste reutilizáveis entre a Core
 e os jobs. Ele não é dependência de produção nem canal de compartilhamento de
 contratos de negócio. Os consumidores o declaram com escopo `test`; atualmente
 ele centraliza a configuração do MongoDB 8 usada pelo Testcontainers.
+
+Para iniciar Core ou jobs em um clone novo, usar
+`./mvnw -pl <serviço> -am test-compile spring-boot:run` a partir de `api/`.
+O reactor compila a biblioteca antes do consumidor, sem instalação local prévia;
+o plugin Spring Boot pula a execução no agregador e na biblioteca.
 
 - **presentation**: REST controllers, DTOs, MapStruct mappers
 - **application**: use cases (cada um implementa uma Port interface)
