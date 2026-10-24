@@ -7,6 +7,7 @@ export { Button } from './Button';
 export { Card } from './Card';
 export { ChoiceCards } from './ChoiceCards';
 export { ChoiceGroup } from './ChoiceGroup';
+export { ControlHelp } from './ControlHelp';
 export { EmptyState } from './EmptyState';
 export { FormSection } from './FormSection';
 export type { IconName } from './Icon';

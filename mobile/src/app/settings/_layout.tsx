@@ -3,8 +3,6 @@ import { useTranslation } from 'react-i18next';
 
 import { useTheme } from '@/shared/theme';
 
-export const unstable_settings = { initialRouteName: 'index' };
-
 export default function SettingsLayout() {
     const { t } = useTranslation('settingsNavigation');
 

@@ -13,6 +13,7 @@ describe('MOB-FEAT-005/AC-001 public chapter reader contract', () => {
     it('usa título/capítulo codificados, aceita cancelamento e normaliza o envelope', async () => {
         apiMock.onGet('/titles/title%2Fwith%2Fslash/chapters/7%20special/reader').reply(config => {
             expect(config.signal).toBeDefined();
+
             return [
                 200,
                 {
@@ -74,6 +75,7 @@ describe('MOB-FEAT-005/AC-001 public chapter reader contract', () => {
         });
 
         await expect(getChapterForReader('title-1', '1')).resolves.toMatchObject({ pages: [] });
+
         expect(apiMock.history.get.map(({ url }) => url)).toEqual(['/titles/title-1/chapters/1/reader']);
         expect(apiMock.history.get.some(({ url }) => url?.includes('/users/me/'))).toBe(false);
     });

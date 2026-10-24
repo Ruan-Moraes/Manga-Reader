@@ -31,6 +31,7 @@ const positiveInteger = (value: unknown): number | null => (typeof value === 'nu
 
 export function mapChapterPage(value: unknown): ChapterPage | null {
     const source = record(value);
+
     if (!source) return null;
 
     const id = nonEmptyString(source.id);
@@ -52,17 +53,21 @@ export function normalizeChapterPages(value: unknown): ChapterPage[] {
         .map(mapChapterPage)
         .filter((page): page is ChapterPage => page !== null)
         .sort((left, right) => left.order - right.order || left.id.localeCompare(right.id));
+
     const seenPageIds = new Set<string>();
 
     return ordered.filter(page => {
         if (seenPageIds.has(page.id)) return false;
+
         seenPageIds.add(page.id);
+
         return true;
     });
 }
 
 export function mapReaderChapter(value: unknown): Chapter | null {
     const source = record(value);
+
     if (!source) return null;
 
     const id = nonEmptyString(source.id);

@@ -9,9 +9,19 @@
         "retryImage": "Try loading page {{page}} again",
         "retryProgress": "Try syncing progress again",
         "retryProgressHydration": "Try loading progress again",
+        "overflow": "View full text",
+        "showOriginal": "View original",
+        "showResult": "View result",
+        "settings": "Reader settings",
         "showControls": "Show controls"
     },
-    "controls": { "decrease": "Decrease {{label}}", "increase": "Increase {{label}}" },
+    "demo": {
+        "badge": "DEMO"
+    },
+    "controls": {
+        "decrease": "Decrease {{label}}",
+        "increase": "Increase {{label}}"
+    },
     "errors": {
         "image": "This page could not be loaded.",
         "progress": "Progress is pending. Tap to try again.",
@@ -73,11 +83,24 @@
         "quality": "Quality",
         "saturation": "Saturation",
         "sections": {
-            "behavior": { "description": "Spacing, preloading, and progress updates.", "title": "Behavior" },
-            "image": { "description": "Page quality, background, and visual treatment.", "title": "Image" },
-            "navigation": { "description": "How pages advance and fill the screen.", "title": "Navigation" }
+            "behavior": {
+                "description": "Spacing, preloading, and progress updates.",
+                "title": "Behavior"
+            },
+            "image": {
+                "description": "Page quality, background, and visual treatment.",
+                "title": "Image"
+            },
+            "navigation": {
+                "description": "How pages advance and fill the screen.",
+                "title": "Navigation"
+            }
         },
-        "values": { "pages": "{{value}} pages", "percent": "{{value}}%", "pixels": "{{value}} px" }
+        "values": {
+            "pages": "{{value}} pages",
+            "percent": "{{value}}%",
+            "pixels": "{{value}} px"
+        }
     },
     "states": {
         "error": "The chapter could not be loaded.",
@@ -85,5 +108,89 @@
         "safeExit": "You can try again or safely go back.",
         "unavailable": "This chapter has no available pages."
     },
-    "viewport": { "page": "Page {{page}} of {{total}}" }
+    "novelPreview": {
+        "title": "Novel preview",
+        "heading": "Chapter 1 — The city beneath the rain",
+        "paragraphOne": "Rain traced silver paths across the windows when Lira found the letter no one was supposed to send.",
+        "speaker": "Lira",
+        "dialogue": "If this message reached me, the story can still change.",
+        "paragraphTwo": "She folded the paper, took a breath, and crossed the doorway. The city remained the same; fate did not.",
+        "illustration": "Chapter demonstration illustration"
+    },
+    "viewport": {
+        "page": "Page {{page}} of {{total}}",
+        "item": "Section {{page}} of {{total}}",
+        "originalPage": "Original page",
+        "resultPage": "Translated page",
+        "chapter": "Chapter {{chapter}}",
+        "progress": "Reading progress"
+    },
+    "gestures": {
+        "title": "Reader gestures",
+        "description": "Choose how to access controls. These preferences stay on this device.",
+        "controls": "Show controls",
+        "options": {
+            "TAP": "Tap the screen",
+            "SWIPE": "Swipe up from the bottom",
+            "TAP_OR_SWIPE": "Tap or swipe",
+            "VISIBLE": "Keep controls visible"
+        },
+        "descriptions": {
+            "TAP": "Tap the center of the content to show or hide controls. Scrolling hides them.",
+            "SWIPE": "Swipe briefly upward at the bottom center to show controls. Tap the content to hide them.",
+            "TAP_OR_SWIPE": "Tap the center or swipe upward at the bottom center to show controls. Tap the content to hide them.",
+            "VISIBLE": "Shows controls at rest, hides them while scrolling, and shows them again after deceleration."
+        },
+        "sideTap": "Side tap areas",
+        "sideDescription": "Tap the sides to move between pages, following the reading direction.",
+        "sideUnavailable": "Available only in paged and double modes without Webtoon direction.",
+        "saveError": "Could not save gestures on this device. Your choice remains active for this session.",
+        "retry": "Try saving again"
+    },
+    "text": {
+        "title": "Text and appearance",
+        "description": "Customize text reading only. Text also follows system font scaling.",
+        "font": "Font",
+        "fonts": {
+            "APP": "App font",
+            "SERIF": "Serif"
+        },
+        "size": "Text size",
+        "decrease": "Decrease text size",
+        "increase": "Increase text size",
+        "sizeValue": "{{size}} sp",
+        "spacing": "Line spacing",
+        "lineSpacing": {
+            "COMPACT": "Compact",
+            "COMFORTABLE": "Comfortable",
+            "WIDE": "Wide"
+        },
+        "margin": "Side margins",
+        "margins": {
+            "NARROW": "Narrow",
+            "MEDIUM": "Medium",
+            "WIDE": "Wide"
+        },
+        "background": "Reader background",
+        "backgrounds": {
+            "APP": "Follow app",
+            "LIGHT": "Light",
+            "PAPER": "Paper",
+            "DARK": "Dark"
+        },
+        "reset": "Reset text settings",
+        "saveError": "Could not save text settings.",
+        "retry": "Try again",
+        "progress": "{{percent}}% read"
+    },
+    "panel": {
+        "expand": "Expand panel",
+        "collapse": "Collapse panel",
+        "help": "About {{label}}",
+        "tabs": {
+            "reading": "Reading",
+            "appearance": "Appearance",
+            "gestures": "Gestures"
+        }
+    }
 }

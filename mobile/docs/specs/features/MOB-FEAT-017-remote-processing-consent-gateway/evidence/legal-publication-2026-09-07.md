@@ -6,8 +6,8 @@
   1.0 nos locales pt-BR, en-US e es-ES.
 - Build publicado no target Firebase Hosting `app` do projeto `toonlira-rm`.
 - URLs públicas:
-  - `https://toonlira-rm.firebaseapp.com/legal/terms`;
-  - `https://toonlira-rm.firebaseapp.com/legal/privacy`.
+    - `https://toonlira-rm.firebaseapp.com/legal/terms`;
+    - `https://toonlira-rm.firebaseapp.com/legal/privacy`.
 
 ## Validação
 

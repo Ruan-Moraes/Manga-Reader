@@ -9,5 +9,6 @@ interface ContentLocalesEnvelope {
 
 export async function getMyContentLanguages(signal?: AbortSignal): Promise<ContentLanguageChain> {
     const response = await api.get<ApiResponse<ContentLocalesEnvelope>>('/users/me/content-locales', { signal });
+
     return normalizeContentLanguages(response.data.data.contentLocales);
 }

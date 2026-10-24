@@ -11,6 +11,7 @@ function TabIcon({ name, color }: { name: IconName; color: ColorValue }) {
 
 export default function TabLayout() {
     const { tokens } = useTheme();
+
     const { t } = useTranslation('common');
 
     return (

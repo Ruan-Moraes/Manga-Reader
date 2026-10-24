@@ -1,4 +1,10 @@
+jest.unmock('expo/src/winter/FormData');
 jest.mock('expo/fetch', () => ({ fetch: jest.fn() }));
+jest.mock('expo-file-system', () => ({ File: jest.fn() }));
+
+import { convertFormDataAsync } from 'expo/src/winter/fetch/convertFormData';
+import { installFormDataPatch } from 'expo/src/winter/FormData';
+import { File } from 'expo-file-system';
 
 import { createRemoteGatewayTransport, RemoteGatewayTransportError } from '../remoteGatewayTransport';
 
@@ -26,6 +32,49 @@ function response(body: string, options: { status?: number; url?: string; length
 }
 
 describe('MOB-FEAT-017 remote gateway transport', () => {
+    it('serializes a private file with the installed Expo multipart converter, preserving bytes, MIME and idempotency', async () => {
+        const originalFormData = global.FormData;
+        const nativeFormData = jest.requireActual('react-native/Libraries/Network/FormData').default;
+        global.FormData = installFormDataPatch(nativeFormData) as unknown as typeof FormData;
+        const bytes = new Uint8Array([137, 80, 78, 71, 0, 255]);
+        const readBytes = jest.fn().mockResolvedValue(bytes);
+        (File as jest.MockedClass<typeof File>).mockImplementation(() => ({ bytes: readBytes }) as unknown as File);
+        let encoded: Uint8Array = new Uint8Array();
+        const fetcher = jest.fn(async (_url: RequestInfo | URL, init?: RequestInit) => {
+            encoded = (await convertFormDataAsync(init!.body as FormData, 'fixture-boundary')).body;
+            return response('{}', { status: 202 });
+        });
+        try {
+            const transport = createRemoteGatewayTransport({ origin: 'https://gateway.test', fetcher: fetcher as typeof fetch });
+            await expect(
+                transport.upload(
+                    '/v1/page-jobs',
+                    { attemptRef: 'attempt-1' },
+                    { uri: 'file:///private/internal-name', mimeType: 'image/png' },
+                    {
+                        token: 'opaque-token',
+                        headers: { 'Idempotency-Key': 'key-1' },
+                    },
+                ),
+            ).resolves.toMatchObject({ status: 202 });
+            const header = new TextEncoder().encode(
+                '--fixture-boundary\r\ncontent-disposition: form-data; name="attemptRef"\r\n\r\nattempt-1\r\n--fixture-boundary\r\ncontent-disposition: form-data; name="page"; filename="page"\r\ncontent-type: image/png\r\n\r\n',
+            );
+            const tail = new TextEncoder().encode('\r\n--fixture-boundary--\r\n');
+            expect(Array.from(encoded)).toEqual([...header, ...bytes, ...tail]);
+            expect(File).toHaveBeenCalledWith('file:///private/internal-name');
+            expect(readBytes).toHaveBeenCalledTimes(1);
+            expect(fetcher).toHaveBeenCalledWith(
+                'https://gateway.test/v1/page-jobs',
+                expect.objectContaining({
+                    headers: { Accept: 'application/json', Authorization: 'Bearer opaque-token', 'Idempotency-Key': 'key-1' },
+                }),
+            );
+        } finally {
+            global.FormData = originalFormData;
+        }
+    });
+
     it.each(['http://gateway.test', 'https://user:pass@gateway.test', 'https://gateway.test/path', undefined])('rejects unsafe origin %s', origin => {
         expect(() => createRemoteGatewayTransport({ origin })).toThrow(RemoteGatewayTransportError);
     });

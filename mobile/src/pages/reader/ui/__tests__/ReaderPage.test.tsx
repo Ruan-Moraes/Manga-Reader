@@ -41,7 +41,13 @@ describe('MOB-FEAT-005/AC-005/006 ReaderPage session integration', () => {
     beforeEach(async () => {
         apiMock.reset();
         resetSettingsRuntimeForTests();
-        useSettingsStore.setState({ settings: DEFAULT_USER_SETTINGS, guestSettings: DEFAULT_USER_SETTINGS, isHydrated: true, activeIdentityEpoch: null });
+        useSettingsStore.setState({
+            readerGestures: { controlsMode: 'VISIBLE', sideTapNavigation: false },
+            settings: DEFAULT_USER_SETTINGS,
+            guestSettings: DEFAULT_USER_SETTINGS,
+            isHydrated: true,
+            activeIdentityEpoch: null,
+        });
         useSessionStore.setState({ user: null, tokens: null, isAuthenticated: false, identityEpoch: 0 });
         await i18n.changeLanguage('pt-BR');
     });

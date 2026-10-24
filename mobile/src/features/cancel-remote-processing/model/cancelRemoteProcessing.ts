@@ -42,7 +42,12 @@ export function createCancelRemoteProcessingController(dependencies: Dependencie
                     signal,
                 });
                 const envelope = pageJobEnvelopeSchema.safeParse(response.body);
-                if ((response.status !== 200 && response.status !== 202) || !envelope.success) {
+                if (
+                    (response.status !== 200 && response.status !== 202) ||
+                    !envelope.success ||
+                    envelope.data.contractVersion !== attempt.gatewayContractVersion ||
+                    envelope.data.jobRef !== attempt.remoteJobRef
+                ) {
                     return { attempt, error: 'cancellation-unavailable' };
                 }
                 const projectId = await dependencies.attempts.getProjectIdForPage(attempt.pageId);

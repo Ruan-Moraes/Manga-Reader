@@ -99,8 +99,7 @@ function validateMapping(mapping, artifactsById, errors) {
     }
 
     for (const specId of mapping.specs ?? []) {
-        if (!artifactsById.has(specId))
-            errors.push(`${mapping.path ?? mapping.pattern}: ID relacionado inexistente '${specId}'`);
+        if (!artifactsById.has(specId)) errors.push(`${mapping.path ?? mapping.pattern}: ID relacionado inexistente '${specId}'`);
     }
 
     if (mapping.category === 'behavior' || mapping.category === 'evidence') {
@@ -108,20 +107,16 @@ function validateMapping(mapping, artifactsById, errors) {
             errors.push(`${mapping.path}: categoria '${mapping.category}' exige observations`);
         }
 
-        for (const reference of mapping.observations ?? [])
-            validateReference(reference, mapping, artifactsById, errors);
+        for (const reference of mapping.observations ?? []) validateReference(reference, mapping, artifactsById, errors);
     } else {
-        if (!mapping.rationale?.trim())
-            errors.push(`${mapping.path ?? mapping.pattern}: categoria '${mapping.category}' exige rationale`);
+        if (!mapping.rationale?.trim()) errors.push(`${mapping.path ?? mapping.pattern}: categoria '${mapping.category}' exige rationale`);
 
-        for (const reference of mapping.observations ?? [])
-            validateReference(reference, mapping, artifactsById, errors);
+        for (const reference of mapping.observations ?? []) validateReference(reference, mapping, artifactsById, errors);
     }
 }
 
 export function validateCoverage({ mobileRoot, coverage, artifactsById, errors }) {
-    if (coverage.version !== 1)
-        errors.push(`docs/specs/coverage.json: versão '${coverage.version}' não suportada`);
+    if (coverage.version !== 1) errors.push(`docs/specs/coverage.json: versão '${coverage.version}' não suportada`);
 
     const files = listFiles(mobileRoot);
 
@@ -139,18 +134,15 @@ export function validateCoverage({ mobileRoot, coverage, artifactsById, errors }
     for (const entry of entries) {
         entry.path = normalize(entry.path);
 
-        if (exact.has(entry.path))
-            errors.push(`${entry.path}: mapeamento exato duplicado`);
+        if (exact.has(entry.path)) errors.push(`${entry.path}: mapeamento exato duplicado`);
 
         exact.set(entry.path, entry);
 
         validateMapping(entry, artifactsById, errors);
 
-        for (const reference of entry.observations ?? [])
-            referencedBehavior.add(reference);
+        for (const reference of entry.observations ?? []) referencedBehavior.add(reference);
 
-        if (!files.includes(entry.path))
-            errors.push(`${entry.path}: caminho mapeado inexistente`);
+        if (!files.includes(entry.path)) errors.push(`${entry.path}: caminho mapeado inexistente`);
     }
 
     for (const pattern of patterns) {
@@ -186,16 +178,14 @@ export function validateCoverage({ mobileRoot, coverage, artifactsById, errors }
     }
 
     for (const [artifactId, artifact] of artifactsById) {
-        if (artifact.metadata.type !== 'baseline' || artifact.metadata.status === 'superseded')
-            continue;
+        if (artifact.metadata.type !== 'baseline' || artifact.metadata.status === 'superseded') continue;
 
         const observationIds = [...artifact.content.matchAll(/^### (OBS-\d{3})\b/gm)].map(match => match[1]);
 
         for (const observationId of observationIds) {
             const reference = `${artifactId}/${observationId}`;
 
-            if (!referencedBehavior.has(reference))
-                errors.push(`${reference}: observação sem arquivo relacionado no coverage.json`);
+            if (!referencedBehavior.has(reference)) errors.push(`${reference}: observação sem arquivo relacionado no coverage.json`);
         }
     }
 

@@ -11,11 +11,17 @@ import { StartupFeedback } from '@/shared/ui';
 export function SessionGate({ children }: PropsWithChildren) {
     const isAuthenticated = useSessionStore(state => state.isAuthenticated);
     const identityEpoch = useSessionStore(state => state.identityEpoch);
+
     const [isHydrated, setIsHydrated] = useState(false);
+
     const segments = useSegments();
+
     const params = useGlobalSearchParams<{ returnTo?: string | string[] }>();
+
     const router = useRouter();
+
     const { t } = useTranslation('launcher');
+
     const consumedReturnTo = useRef<{ identityEpoch: number; route: string } | null>(null);
 
     useEffect(() => {
@@ -35,10 +41,14 @@ export function SessionGate({ children }: PropsWithChildren) {
 
         const first = segments[0] as string | undefined;
         const second = segments[1] as string | undefined;
+
         const inAuthGroup = first === '(auth)';
         const inSettingsGroup = first === 'settings';
         const inOfflineTranslation = first === 'offline-translation';
         const inReader = first === 'reader';
+        const inTranslationLibrary = first === 'translation-library';
+        const inTranslationReader = first === 'translation-reader';
+        const inDevelopmentReaderPreview = __DEV__ && first === 'reader-preview';
         const atRoot = first === undefined || first === 'index';
         const inNotFound = first === '+not-found';
         const inPlatform = first === 'platform';
@@ -47,17 +57,31 @@ export function SessionGate({ children }: PropsWithChildren) {
         if (!isAuthenticated) {
             if (inPlatform) {
                 router.replace({ pathname: ROUTES.AUTH.LOGIN, params: { returnTo: ROUTES.PLATFORM.STATUS } } as never);
-            } else if (!inAuthGroup && !inSettingsGroup && !inOfflineTranslation && !inReader && !atRoot && !inNotFound) {
+            } else if (
+                !inAuthGroup &&
+                !inSettingsGroup &&
+                !inOfflineTranslation &&
+                !inReader &&
+                !inTranslationLibrary &&
+                !inTranslationReader &&
+                !inDevelopmentReaderPreview &&
+                !atRoot &&
+                !inNotFound
+            ) {
                 router.replace(ROUTES.AUTH.LOGIN as never);
             }
+
             return;
         }
 
         if (inAuthGroup) {
             const returnTo = parseAuthReturnRoute(params.returnTo) ?? ROUTES.PLATFORM.STATUS;
+
             const alreadyConsumed = consumedReturnTo.current?.identityEpoch === identityEpoch && consumedReturnTo.current.route === returnTo;
+
             if (!alreadyConsumed) {
                 consumedReturnTo.current = { identityEpoch, route: returnTo };
+
                 router.replace(returnTo as never);
             }
         } else if (inPlatformTabs) {

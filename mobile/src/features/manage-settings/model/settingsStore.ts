@@ -1,11 +1,17 @@
 import { create } from 'zustand';
 
 import {
+    DEFAULT_READER_GESTURES,
+    DEFAULT_TEXT_READER_PREFERENCES,
     DEFAULT_USER_SETTINGS,
     getMySettings,
+    normalizeReaderGestures,
+    normalizeTextReaderPreferences,
     normalizeUserSettings,
+    type ReaderGesturePreferences,
     SETTINGS_ENVELOPE_VERSION,
     type SyncStatus,
+    type TextReaderPreferences,
     themePreferenceToColorScheme,
     type UserSettings,
 } from '@/entities/user-setting';
@@ -22,8 +28,10 @@ const LEGACY_LANGUAGE_KEY = 'mr_language';
 const SYNC_DEBOUNCE_MS = 400;
 const STORAGE_TIMEOUT_MS = 1500;
 
-interface SettingsEnvelopeV2 {
-    version: 2;
+interface SettingsEnvelopeV4 {
+    version: 4;
+    textReader: TextReaderPreferences;
+    readerGestures: ReaderGesturePreferences;
     deviceSettings: UserSettings;
     language: SupportedLanguage;
     revision: number;
@@ -32,6 +40,8 @@ interface SettingsEnvelopeV2 {
 
 interface StoredSettingsEnvelope {
     version?: number;
+    textReader?: unknown;
+    readerGestures?: unknown;
     deviceSettings?: unknown;
     guestSettings?: unknown;
     language?: unknown;
@@ -40,6 +50,8 @@ interface StoredSettingsEnvelope {
 }
 
 interface SettingsState {
+    textReader: TextReaderPreferences;
+    readerGestures: ReaderGesturePreferences;
     settings: UserSettings;
     guestSettings: UserSettings;
     themeOverride: ColorScheme | null;
@@ -57,6 +69,10 @@ interface SettingsState {
 }
 
 interface SettingsActions {
+    updateTextReader: (patch: Partial<TextReaderPreferences>) => Promise<void>;
+    resetTextReader: () => Promise<void>;
+    updateReaderGestures: (patch: Partial<ReaderGesturePreferences>) => Promise<void>;
+    retryReaderGesturesPersistence: () => Promise<void>;
     hydrate: () => Promise<void>;
     retryLocalHydration: () => Promise<void>;
     activateAccount: (identityEpoch: number) => Promise<void>;
@@ -109,15 +125,24 @@ const withTimeout = async <T>(operation: Promise<T>, timeoutMs: number): Promise
         );
     });
 
-const envelope = (deviceSettings: UserSettings, language: SupportedLanguage, revision: number, dirtyPaths: UserSettingsPath[]): SettingsEnvelopeV2 => ({
+const envelope = (
+    deviceSettings: UserSettings,
+    language: SupportedLanguage,
+    revision: number,
+    dirtyPaths: UserSettingsPath[],
+    readerGestures = DEFAULT_READER_GESTURES,
+    textReader = DEFAULT_TEXT_READER_PREFERENCES,
+): SettingsEnvelopeV4 => ({
     version: SETTINGS_ENVELOPE_VERSION,
+    textReader,
+    readerGestures,
     deviceSettings,
     language,
     revision,
     dirtyPaths,
 });
 
-async function readLocalEnvelope(): Promise<SettingsEnvelopeV2> {
+async function readLocalEnvelope(): Promise<SettingsEnvelopeV4> {
     const stored = await readJson<StoredSettingsEnvelope>(secureKeyValueStorage, SETTINGS_KEY);
 
     if (stored && typeof stored.version === 'number' && stored.version > SETTINGS_ENVELOPE_VERSION) {
@@ -127,17 +152,19 @@ async function readLocalEnvelope(): Promise<SettingsEnvelopeV2> {
     const storedSettings = stored?.deviceSettings ?? stored?.guestSettings;
     if (storedSettings !== undefined) {
         const deviceSettings = normalizeUserSettings(storedSettings);
-        const migratedFromV1 = stored?.version !== SETTINGS_ENVELOPE_VERSION;
+        const migratedFromV1 = (stored?.version ?? 0) < 2;
         const dirtyPaths = migratedFromV1
             ? diffUserSettings(DEFAULT_USER_SETTINGS, deviceSettings)
-            : Array.isArray(stored.dirtyPaths)
-              ? stored.dirtyPaths.filter(isUserSettingsPath)
+            : Array.isArray(stored?.dirtyPaths)
+              ? stored!.dirtyPaths.filter(isUserSettingsPath)
               : [];
         const migrated = envelope(
             deviceSettings,
             typeof stored?.language === 'string' && isSupportedLanguage(stored.language) ? stored.language : DEFAULT_LANGUAGE,
             typeof stored?.revision === 'number' && Number.isInteger(stored.revision) && stored.revision >= 0 ? stored.revision : dirtyPaths.length > 0 ? 1 : 0,
             dirtyPaths,
+            normalizeReaderGestures(stored?.readerGestures),
+            normalizeTextReaderPreferences(stored?.textReader),
         );
         await writeJson(secureKeyValueStorage, SETTINGS_KEY, migrated);
         return migrated;
@@ -180,7 +207,7 @@ const requestController = (): AbortController => {
 
 export const useSettingsStore = create<SettingsState & SettingsActions>((set, get) => {
     const persistDevice = async () => {
-        const value = envelope(get().guestSettings, get().language, get().localRevision, get().dirtyPaths);
+        const value = envelope(get().guestSettings, get().language, get().localRevision, get().dirtyPaths, get().readerGestures, get().textReader);
         const version = ++persistenceVersion;
         const operation = persistenceTail.then(() => writeJson(secureKeyValueStorage, SETTINGS_KEY, value));
         persistenceTail = operation.catch(() => undefined);
@@ -208,6 +235,21 @@ export const useSettingsStore = create<SettingsState & SettingsActions>((set, ge
     };
 
     return {
+        textReader: DEFAULT_TEXT_READER_PREFERENCES,
+        updateTextReader: async patch => {
+            set({ textReader: normalizeTextReaderPreferences({ ...get().textReader, ...patch }) });
+            await persistDevice();
+        },
+        resetTextReader: async () => {
+            set({ textReader: DEFAULT_TEXT_READER_PREFERENCES });
+            await persistDevice();
+        },
+        readerGestures: DEFAULT_READER_GESTURES,
+        updateReaderGestures: async patch => {
+            set({ readerGestures: normalizeReaderGestures({ ...get().readerGestures, ...patch }) });
+            await persistDevice();
+        },
+        retryReaderGesturesPersistence: persistDevice,
         settings: DEFAULT_USER_SETTINGS,
         guestSettings: DEFAULT_USER_SETTINGS,
         themeOverride: null,
@@ -232,6 +274,8 @@ export const useSettingsStore = create<SettingsState & SettingsActions>((set, ge
                 await i18n.changeLanguage(local.language);
                 if (hydrationToken !== transitionToken) return;
                 set({
+                    textReader: local.textReader,
+                    readerGestures: local.readerGestures,
                     settings: local.deviceSettings,
                     guestSettings: local.deviceSettings,
                     themeOverride: themePreferenceToColorScheme(local.deviceSettings.appearance.theme),

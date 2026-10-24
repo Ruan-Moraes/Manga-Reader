@@ -122,6 +122,6 @@
 
 TASK-010 permanece aberta: medir memória/frames, rotação, retorno, VoiceOver/TalkBack, imagens pequenas e fonte ampliada em Android/iOS release.
 
-Evidências, riscos e reversão: [review C02/C05](../../../active/performance-evidence/corrections-c02-c05-2026-09-06/review.md).
+Evidências, riscos e reversão: review C02/C05 (arquivo externo: `perfomance_app/mobile/docs/active/performance-evidence/corrections-c02-c05-2026-09-06/review.md`).
 
 Gate C02/C05: `pnpm check` passou, 95 suítes / 588 testes. Nenhuma validação física adicionada.

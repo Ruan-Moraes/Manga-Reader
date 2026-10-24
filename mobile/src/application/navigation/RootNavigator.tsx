@@ -1,7 +1,7 @@
 import { Stack } from 'expo-router';
 
 import { useTheme } from '@/shared/theme';
-import { READER_SCREEN_OPTIONS } from '@/widgets/chapter-reader';
+import { READER_SCREEN_OPTIONS } from '@/widgets/content-reader';
 
 export function RootNavigator() {
     const { decorativeMotionEnabled, tokens } = useTheme();
@@ -19,6 +19,7 @@ export function RootNavigator() {
             <Stack.Screen name="offline-translation" />
             <Stack.Screen name="platform" />
             <Stack.Screen name="reader" options={READER_SCREEN_OPTIONS} />
+            {__DEV__ ? <Stack.Screen name="reader-preview" options={READER_SCREEN_OPTIONS} /> : null}
             <Stack.Screen name="settings" />
             <Stack.Screen name="+not-found" />
         </Stack>

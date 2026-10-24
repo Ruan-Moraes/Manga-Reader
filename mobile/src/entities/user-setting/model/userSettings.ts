@@ -53,11 +53,13 @@ export interface UserSettings {
     accessibility: AccessibilitySettings;
 }
 
-export const SETTINGS_ENVELOPE_VERSION = 2;
+export const SETTINGS_ENVELOPE_VERSION = 4;
 
 export function themePreferenceToColorScheme(theme: ThemePreference): 'dark' | 'light' | null {
     if (theme === 'DARK') return 'dark';
+
     if (theme === 'LIGHT') return 'light';
+
     return null;
 }
 
@@ -99,17 +101,24 @@ const FONT_SIZES = ['COMPACT', 'DEFAULT', 'COMFORTABLE'] as const;
 const DENSITIES = ['COMFORTABLE', 'COMPACT'] as const;
 
 const record = (value: unknown): Record<string, unknown> => (value !== null && typeof value === 'object' ? (value as Record<string, unknown>) : {});
+
 const enumValue = <T extends string>(value: unknown, allowed: readonly T[], fallback: T): T =>
     typeof value === 'string' && allowed.includes(value as T) ? (value as T) : fallback;
+
 const boundedInteger = (value: unknown, min: number, max: number, fallback: number): number =>
     typeof value === 'number' && Number.isInteger(value) && value >= min && value <= max ? value : fallback;
+
 const booleanValue = (value: unknown, fallback: boolean): boolean => (typeof value === 'boolean' ? value : fallback);
 
 export function normalizeUserSettings(value: unknown, defaults: UserSettings = DEFAULT_USER_SETTINGS): UserSettings {
     const root = record(value);
+
     const reader = record(root.reader);
+
     const appearance = record(root.appearance);
+
     const locale = record(root.locale);
+
     const accessibility = record(root.accessibility);
 
     return {

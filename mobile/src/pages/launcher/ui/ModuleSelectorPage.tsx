@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useSessionStore } from '@/entities/session';
 import { useSettingsStore } from '@/features/manage-settings';
 import { ROUTES } from '@/shared/navigation';
-import { PageContainer } from '@/shared/ui';
+import { Button, PageContainer } from '@/shared/ui';
 
 import type { AppModuleId } from '../model/modules';
 import { ModuleSelector } from './ModuleSelector';
@@ -60,6 +60,11 @@ export function ModuleSelectorPage() {
                 onOpenSettings={() => router.push(ROUTES.SETTINGS.INDEX as never)}
                 recovery={localError ? { message: t('startup.error'), action: t('startup.retry'), onRetry: () => void retryLocalHydration() } : undefined}
             />
+            {__DEV__ ? (
+                <Button variant="outline" onPress={() => router.push(ROUTES.READER_PREVIEW_NOVEL as never)}>
+                    {t('selector.novelPreview')}
+                </Button>
+            ) : null}
         </PageContainer>
     );
 }

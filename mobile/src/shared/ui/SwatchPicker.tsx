@@ -12,6 +12,7 @@ const TRACK_BORDER_WIDTH = 1;
 
 interface SwatchPickerProps<T extends string> {
     label: string;
+    separated?: boolean;
     description?: string;
     value: T;
     options: readonly T[];
@@ -30,6 +31,7 @@ export function SwatchPicker<T extends string>({
     optionColor,
     onChange,
     disabled = false,
+    separated = false,
 }: SwatchPickerProps<T>) {
     const { minimumTouchTarget, radii, spacing, tokens } = useTheme();
     const [focusedOption, setFocusedOption] = useState<T | null>(null);
@@ -82,6 +84,58 @@ export function SwatchPicker<T extends string>({
             cancelPreviewTimerRef.current = null;
         }, 0);
     };
+
+    if (separated) {
+        return (
+            <View accessibilityRole="radiogroup" accessibilityLabel={label} style={{ gap: spacing.sm }}>
+                <AppText variant="label">{label}</AppText>
+                <View className="flex-row flex-wrap" style={{ gap: spacing.sm }}>
+                    {options.map(option => (
+                        <Pressable
+                            key={option}
+                            accessibilityRole="radio"
+                            accessibilityLabel={optionLabel(option)}
+                            accessibilityState={{ selected: option === displayedValue, disabled }}
+                            disabled={disabled}
+                            onBlur={() => setFocusedOption(current => (current === option ? null : current))}
+                            onFocus={() => setFocusedOption(option)}
+                            onPress={() => commitOption(option)}
+                            style={{
+                                minWidth: minimumTouchTarget,
+                                flexGrow: 1,
+                                flexBasis: '15%',
+                                gap: spacing.xs,
+                                alignItems: 'center',
+                                opacity: disabled ? 0.5 : 1,
+                            }}
+                        >
+                            <View
+                                style={{
+                                    width: minimumTouchTarget,
+                                    height: minimumTouchTarget,
+                                    borderRadius: radii.control,
+                                    backgroundColor: optionColor(option),
+                                    borderColor: focusedOption === option ? tokens.focus : option === displayedValue ? tokens.accentText : tokens.borderStrong,
+                                    borderWidth: 2,
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                }}
+                            >
+                                {option === displayedValue ? (
+                                    <View style={{ backgroundColor: tokens.accent, borderRadius: radii.pill, padding: spacing.xs }}>
+                                        <Icon name="checkmark" color={tokens.onAccent} size={16} decorative />
+                                    </View>
+                                ) : null}
+                            </View>
+                            <AppText variant="caption" tone={option === displayedValue ? 'accent' : 'muted'}>
+                                {optionLabel(option)}
+                            </AppText>
+                        </Pressable>
+                    ))}
+                </View>
+            </View>
+        );
+    }
 
     return (
         <View accessibilityRole="radiogroup" accessibilityLabel={label} style={{ gap: spacing.sm }}>

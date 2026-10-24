@@ -13,6 +13,7 @@
         },
         "android": {
             "package": "com.toonlira.app",
+            "allowBackup": false,
             "blockedPermissions": [
                 "android.permission.CAMERA",
                 "android.permission.RECORD_AUDIO",

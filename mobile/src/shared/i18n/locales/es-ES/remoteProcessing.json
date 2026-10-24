@@ -45,7 +45,7 @@
         "network": "Se requiere internet. El procesamiento no ocurre completamente en este dispositivo.",
         "data": "Se envían los bytes de la imagen, MIME, dimensiones, idiomas e identificadores opacos del intento. No se envían nombre, ruta, cuenta ni diálogo.",
         "operator": "Operación: {{operator}} ({{contact}}), usando servicios de Google Cloud.",
-        "regions": "El gateway y los datos temporales permanecen en {{gateway}}; OCR y traducción pueden ocurrir en {{processing}}.",
+        "regions": "El gateway y los datos temporales permanecen en {{gateway}}. El OCR usa la región estadounidense {{ocr}}. La traducción usa el endpoint {{translation}}, sin garantía de procesamiento en EE. UU. ni en otra región específica.",
         "retention": "El original y el resultado se conservan hasta {{originalMinutes}} y {{resultMinutes}} minutos; metadatos saneados hasta {{metadataDays}} días.",
         "training": "Política de entrenamiento del proveedor: {{policy}}",
         "cancellation": "Después de iniciar el procesamiento, la cancelación y eliminación pueden no ser inmediatas o posibles.",

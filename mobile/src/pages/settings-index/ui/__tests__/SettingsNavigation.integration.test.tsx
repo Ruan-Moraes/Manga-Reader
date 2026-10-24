@@ -1,6 +1,6 @@
 import { createElement, type ReactNode } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react-native';
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react-native';
 import AxiosMockAdapter from 'axios-mock-adapter';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
@@ -119,7 +119,7 @@ describe('MOB-FEAT-008 Router/pages integration', () => {
     it('mantém fundo e intervalos do leitor após a interação', async () => {
         render(shell(<SettingsReaderPage />));
 
-        fireEvent.press(screen.getByRole('radio', { name: 'Papel' }));
+        fireEvent.press(within(screen.getByLabelText('Fundo')).getByRole('radio', { name: 'Papel' }));
         fireEvent(screen.getByRole('adjustable', { name: 'Saturação' }), 'accessibilityAction', {
             nativeEvent: { actionName: 'decrement' },
         });
@@ -133,7 +133,7 @@ describe('MOB-FEAT-008 Router/pages integration', () => {
         await waitFor(() =>
             expect(useSettingsStore.getState().settings.reader).toEqual(expect.objectContaining({ background: 'PAPER', gap: 1, preload: 4, saturation: 95 })),
         );
-        expect(screen.getByRole('radio', { name: 'Papel' }).props.accessibilityState.selected).toBe(true);
+        expect(within(screen.getByLabelText('Fundo')).getByRole('radio', { name: 'Papel' }).props.accessibilityState.selected).toBe(true);
     });
 
     it('compõe diretamente as sete subrotas localizadas com identidade alinhada', () => {

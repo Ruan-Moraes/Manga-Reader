@@ -15,20 +15,28 @@ describe('MOB-FEAT-017 SQLite v7', () => {
 
     it('runs after the project schema and advances a v6 database to v7', async () => {
         const statements: string[] = [];
+
         let version = 6;
+
         const executor: SqlExecutor = {
             execAsync: async source => {
                 statements.push(source);
+
                 const match = source.match(/PRAGMA user_version = (\d+)/);
+
                 if (match) version = Number(match[1]);
             },
             runAsync: async () => ({}),
             getFirstAsync: async <T>(source: string) => (source === 'PRAGMA user_version' ? ({ user_version: version } as T) : null),
             getAllAsync: async <T>() => [] as T[],
         };
+
         const withExclusiveTransactionAsync = jest.fn(async (task: (transaction: SqlExecutor) => Promise<void>) => task(executor));
+
         const database: AppDatabase = { ...executor, withExclusiveTransactionAsync };
+
         const projects = { initialize: jest.fn(async () => undefined) };
+
         const repository = createSqliteRemoteProcessingAttemptRepository(async () => database, projects);
 
         await repository.initialize();

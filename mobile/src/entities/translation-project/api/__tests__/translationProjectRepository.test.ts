@@ -33,28 +33,41 @@ interface PageRow {
 
 function databaseFixture(options: { initialVersion?: number; legacyV5?: boolean; foreignKeyViolation?: boolean } = {}) {
     const projects: ProjectRow[] = [];
+
     const pages: PageRow[] = [];
+
     const statements: string[] = [];
+
     let userVersion = options.initialVersion ?? 4;
+
     let hasLanguageReviewRequired = !options.legacyV5;
+
     const executor: SqlExecutor = {
         execAsync: async source => {
             statements.push(source);
+
             const version = source.match(/PRAGMA user_version = (\d+)/);
+
             if (version) userVersion = Number(version[1]);
+
             if (source.includes('CREATE TABLE translation_projects_v6')) {
                 hasLanguageReviewRequired = true;
+
                 for (const project of projects) {
                     const hadLegacyChinese = project.source_language === 'zh' || project.target_language === 'zh';
+
                     if (project.source_language === 'zh') project.source_language = 'zh-Hans';
                     if (project.target_language === 'zh') project.target_language = 'zh-Hans';
+
                     project.language_review_required = hadLegacyChinese ? 1 : 0;
                 }
             }
         },
         runAsync: async (source, params = []) => {
             statements.push(source);
+
             const values = params as unknown[];
+
             if (source.includes('INSERT INTO translation_projects')) {
                 projects.push({
                     id: String(values[0]),
@@ -85,6 +98,7 @@ function databaseFixture(options: { initialVersion?: number; legacyV5?: boolean;
                 });
             } else if (source.includes('UPDATE translation_pages SET status')) {
                 const page = pages.find(candidate => candidate.project_id === String(values[3]) && candidate.id === String(values[4]));
+
                 if (page) {
                     page.status = String(values[0]);
                     page.updated_at = Number(values[1]);
@@ -92,6 +106,7 @@ function databaseFixture(options: { initialVersion?: number; legacyV5?: boolean;
                 }
             } else if (source.includes('UPDATE translation_projects SET status')) {
                 const project = projects.find(candidate => candidate.id === String(values[3]));
+
                 if (project) {
                     project.status = String(values[0]);
                     project.updated_at = Number(values[1]);
@@ -99,37 +114,58 @@ function databaseFixture(options: { initialVersion?: number; legacyV5?: boolean;
                 }
             } else if (source.includes('DELETE FROM translation_projects')) {
                 projects.splice(0);
+
                 pages.splice(0);
             }
+
             return {};
         },
         getFirstAsync: async <T>(source: string, params = []) => {
             if (source === 'PRAGMA user_version') return { user_version: userVersion } as T;
+
             if (source.includes('SUM(original_byte_size)')) {
                 return { total: pages.reduce((sum, page) => sum + page.original_byte_size, 0) } as T;
             }
+
             if (source.includes('FROM translation_projects WHERE id')) {
                 return (projects.find(project => project.id === String((params as unknown[])[0])) ?? null) as T | null;
             }
+
             if (source.includes('FROM translation_projects ORDER BY')) {
                 return ([...projects].sort((left, right) => right.updated_at - left.updated_at || right.id.localeCompare(left.id))[0] ?? null) as T | null;
             }
+
             return null;
         },
         getAllAsync: async <T>(source: string, params = []) => {
             statements.push(source);
+
             if (source.includes('PRAGMA table_info(translation_projects)')) {
                 return [{ name: 'id' }, ...(hasLanguageReviewRequired ? [{ name: 'language_review_required' }] : [])] as T[];
             }
+
             if (source.includes('PRAGMA foreign_key_check')) return (options.foreignKeyViolation ? [{}] : []) as T[];
+
             if (source.includes('FROM translation_pages')) {
+                if (!source.includes('WHERE project_id')) {
+                    return [...pages].sort((left, right) => left.project_id.localeCompare(right.project_id) || left.position - right.position) as T[];
+                }
+
                 return pages.filter(page => page.project_id === String((params as unknown[])[0])).sort((left, right) => left.position - right.position) as T[];
             }
+
+            if (source.includes('FROM translation_projects ORDER BY')) {
+                return [...projects].sort((left, right) => right.updated_at - left.updated_at || right.id.localeCompare(left.id)) as T[];
+            }
+
             if (source.includes('SELECT id FROM translation_projects')) return projects.map(project => ({ id: project.id })) as T[];
+
             return [];
         },
     };
+
     const database: AppDatabase = { ...executor, withExclusiveTransactionAsync: async task => task(executor) };
+
     return { database, projects, pages, statements, userVersion: () => userVersion };
 }
 
@@ -167,6 +203,7 @@ function snapshot(overrides: Partial<NewTranslationProject> = {}): NewTranslatio
 describe('MOB-FEAT-016 SQLite translation project repository', () => {
     it('creates v6 with relational constraints, language review marker and a deterministic latest index', async () => {
         const fixture = databaseFixture();
+
         const repository = createSqliteTranslationProjectRepository(async () => fixture.database);
 
         await repository.initialize();
@@ -182,6 +219,7 @@ describe('MOB-FEAT-016 SQLite translation project repository', () => {
 
     it('migrates a v5 zh project to zh-Hans and blocks processing until language review', async () => {
         const fixture = databaseFixture({ initialVersion: 5, legacyV5: true });
+
         fixture.projects.push({
             id: 'legacy-project',
             source_language: 'zh',
@@ -192,6 +230,7 @@ describe('MOB-FEAT-016 SQLite translation project repository', () => {
             status_updated_at: 10,
             language_review_required: 0,
         });
+
         const repository = createSqliteTranslationProjectRepository(async () => fixture.database);
 
         await repository.initialize();
@@ -201,32 +240,40 @@ describe('MOB-FEAT-016 SQLite translation project repository', () => {
             targetLanguage: 'en',
             languageReviewRequired: true,
         });
+
         await expect(repository.transitionProject('legacy-project', 'DRAFT', 10, 'QUEUED', 11)).rejects.toThrow('translationProject.languageReviewRequired');
+
         expect(fixture.statements.some(statement => statement.includes('PRAGMA foreign_key_check'))).toBe(true);
     });
 
     it('rolls back the project rebuild when foreign key verification fails', async () => {
         const fixture = databaseFixture({ initialVersion: 5, legacyV5: true, foreignKeyViolation: true });
+
         const repository = createSqliteTranslationProjectRepository(async () => fixture.database);
 
         await expect(repository.initialize()).rejects.toThrow('translationProject.foreignKeyViolation');
+
         expect(fixture.statements).toContain('ROLLBACK;');
         expect(fixture.statements).not.toContain('PRAGMA user_version = 6;');
     });
 
     it('round-trips a stable snapshot and treats an equivalent repeat as idempotent', async () => {
         const fixture = databaseFixture();
+
         const repository = createSqliteTranslationProjectRepository(async () => fixture.database);
 
         await expect(repository.create(snapshot())).resolves.toMatchObject({ created: true, project: { id: 'project-1', pages: [{ id: 'page-1' }] } });
         await expect(repository.create(snapshot({ createdAt: 99, updatedAt: 99, statusUpdatedAt: 99 }))).resolves.toMatchObject({ created: false });
         await expect(repository.getLatest()).resolves.toMatchObject({ id: 'project-1', sourceLanguage: 'ja', targetLanguage: 'pt-BR' });
+        await expect(repository.listAll()).resolves.toEqual([expect.objectContaining({ id: 'project-1', pages: [expect.objectContaining({ id: 'page-1' })] })]);
         await expect(repository.measureBytes()).resolves.toBe(42);
     });
 
     it('rejects a divergent snapshot with the same identity without overwriting it', async () => {
         const fixture = databaseFixture();
+
         const repository = createSqliteTranslationProjectRepository(async () => fixture.database);
+
         await repository.create(snapshot());
 
         await expect(repository.create(snapshot({ targetLanguage: 'en' }))).rejects.toThrow('translationProject.projectConflict');
@@ -235,15 +282,20 @@ describe('MOB-FEAT-016 SQLite translation project repository', () => {
 
     it('requires every page READY before the project can become READY', async () => {
         const fixture = databaseFixture();
+
         const repository = createSqliteTranslationProjectRepository(async () => fixture.database);
+
         await repository.create(snapshot());
+
         await repository.transitionProject('project-1', 'DRAFT', 20, 'QUEUED', 21);
         await repository.transitionProject('project-1', 'QUEUED', 21, 'PROCESSING', 22);
         await repository.transitionPage('project-1', 'page-1', 'DRAFT', 20, 'QUEUED', 21);
         await repository.transitionPage('project-1', 'page-1', 'QUEUED', 21, 'PROCESSING', 22);
 
         await expect(repository.transitionProject('project-1', 'PROCESSING', 22, 'READY', 23)).rejects.toThrow('translationProject.pagesNotReady');
+
         await repository.transitionPage('project-1', 'page-1', 'PROCESSING', 22, 'READY', 23);
+
         await expect(repository.transitionProject('project-1', 'PROCESSING', 22, 'READY', 24)).resolves.toMatchObject({
             status: 'READY',
             pages: [{ status: 'READY' }],
@@ -252,6 +304,7 @@ describe('MOB-FEAT-016 SQLite translation project repository', () => {
 
     it('cancels non-terminal pages atomically and rejects stale state', async () => {
         const fixture = databaseFixture();
+
         const repository = createSqliteTranslationProjectRepository(async () => fixture.database);
         await repository.create(snapshot());
 
@@ -260,6 +313,7 @@ describe('MOB-FEAT-016 SQLite translation project repository', () => {
             status: 'CANCELLED',
             pages: [{ status: 'CANCELLED' }],
         });
+
         await expect(repository.transitionProject('project-1', 'CANCELLED', 30, 'QUEUED', 31)).rejects.toThrow('translationProject.invalidTransition');
     });
 });

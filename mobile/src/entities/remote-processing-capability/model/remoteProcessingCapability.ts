@@ -8,13 +8,18 @@ const languagePairSchema = z.object({ source: remoteLanguageSchema, target: remo
 
 export const legalDisclosureSchema = z
     .object({
-        version: z.string().min(1).max(64),
+        version: z
+            .string()
+            .min(1)
+            .max(64)
+            .refine(version => version !== '2026-09-07.v1'),
         operatorName: z.string().min(1).max(160),
         operatorContact: z.email(),
         privacyPolicyUrl: httpsUrl,
         termsUrl: httpsUrl,
         gatewayRegion: z.literal('southamerica-east1'),
-        processingRegions: z.array(z.enum(['us', 'us-central1'])).min(1),
+        ocrRegion: z.literal('us'),
+        translationLocation: z.literal('global'),
         originalRetentionSeconds: z.number().int().positive().max(3600),
         resultRetentionSeconds: z.number().int().positive().max(3600),
         metadataRetentionDays: z.number().int().positive().max(7),
@@ -30,7 +35,7 @@ export const remoteProcessingCapabilitiesSchema = z
         validUntil: z.iso.datetime(),
         enabled: z.boolean(),
         supportedLanguages: z.array(remoteLanguageSchema).min(2),
-        supportedPairs: z.array(languagePairSchema).min(1),
+        supportedPairs: z.array(languagePairSchema).max(42),
         mediaLimits: z
             .object({
                 mimeTypes: z.array(z.enum(['image/jpeg', 'image/png', 'image/webp'])).min(1),
@@ -46,25 +51,32 @@ export const remoteProcessingCapabilitiesSchema = z
     })
     .strict()
     .superRefine((capabilities, context) => {
+        if (capabilities.enabled && capabilities.supportedPairs.length === 0) {
+            context.addIssue({ code: 'custom', message: 'enabled gateway requires an operational pair' });
+        }
         if (Date.parse(capabilities.validUntil) <= Date.parse(capabilities.generatedAt)) {
             context.addIssue({ code: 'custom', message: 'invalid capability validity' });
         }
+
         const languages = new Set(capabilities.supportedLanguages);
+
         if (languages.size !== capabilities.supportedLanguages.length) {
             context.addIssue({ code: 'custom', message: 'duplicate supported language' });
         }
+
         if (new Set(capabilities.mediaLimits.mimeTypes).size !== capabilities.mediaLimits.mimeTypes.length) {
             context.addIssue({ code: 'custom', message: 'duplicate media type' });
         }
-        if (new Set(capabilities.disclosure.processingRegions).size !== capabilities.disclosure.processingRegions.length) {
-            context.addIssue({ code: 'custom', message: 'duplicate processing region' });
-        }
+
         const pairs = new Set<string>();
+
         for (const pair of capabilities.supportedPairs) {
             const key = `${pair.source}:${pair.target}`;
+
             if (pair.source === pair.target || !languages.has(pair.source) || !languages.has(pair.target) || pairs.has(key)) {
                 context.addIssue({ code: 'custom', message: 'invalid or duplicate language pair' });
             }
+
             pairs.add(key);
         }
     });

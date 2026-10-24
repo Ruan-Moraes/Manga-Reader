@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Text, View } from 'react-native';
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
@@ -6,14 +6,14 @@ import { useTranslation } from 'react-i18next';
 import { chapterReaderQueryOptions, getImageVariantCapabilities } from '@/entities/chapter';
 import { getReadingProgress, type ReadingProgress, readingProgressQueryKeys, reportInvalidReadingProgress } from '@/entities/reading-progress';
 import { useSessionStore } from '@/entities/session';
-import { normalizeReaderSettings } from '@/features/configure-chapter-reader';
+import { normalizeReaderSettings, ReaderGestureControls, ReaderSettingsControls } from '@/features/configure-chapter-reader';
 import { useSettingsStore } from '@/features/manage-settings';
 import { clampLogicalPage } from '@/features/navigate-chapter-reader';
 import { createProgressSnapshot, isReadingProgressValidForChapter, ProgressSynchronizer, resolveResumeChoice } from '@/features/track-reading-progress';
 import { navigateBackOrReplace, ROUTES } from '@/shared/navigation';
 import { useTheme } from '@/shared/theme';
-import { Button, EmptyState, NavigationHeader, PageContainer } from '@/shared/ui';
-import { ChapterReader } from '@/widgets/chapter-reader';
+import { Button, EmptyState, NavigationHeader, PageContainer, StatusMessage } from '@/shared/ui';
+import { ContentReader, type ImageSequenceDocument } from '@/widgets/content-reader';
 
 interface Props {
     titleId: string;
@@ -30,10 +30,13 @@ function IdentityReaderPage({ titleId, requestedChapter, identityEpoch, isAuthen
     const { spacing, tokens, typography } = useTheme();
     const settings = useSettingsStore(state => state.settings);
     const updateSettings = useSettingsStore(state => state.updateSettings);
+    const readerGestures = useSettingsStore(state => state.readerGestures);
+    const updateReaderGestures = useSettingsStore(state => state.updateReaderGestures);
+    const localError = useSettingsStore(state => state.localError);
+    const retryReaderGesturesPersistence = useSettingsStore(state => state.retryReaderGesturesPersistence);
     const synchronizer = useRef(new ProgressSynchronizer()).current;
     const [chapterNumber, setChapterNumber] = useState(requestedChapter);
     const [currentPage, setCurrentPage] = useState(1);
-    const [controlsVisible, setControlsVisible] = useState(true);
     const [resumeResolved, setResumeResolved] = useState(!isAuthenticated);
     const [pendingResume, setPendingResume] = useState<ReadingProgress | null>(null);
     const [suppressHydrationWrite, setSuppressHydrationWrite] = useState(false);
@@ -116,6 +119,19 @@ function IdentityReaderPage({ titleId, requestedChapter, identityEpoch, isAuthen
         setResumeResolved(true);
     };
 
+    const readerDocument = useMemo<ImageSequenceDocument | null>(() => {
+        if (!chapterQuery.data?.pages.length) return null;
+        return {
+            kind: 'IMAGE_SEQUENCE',
+            id: chapterQuery.data.id,
+            title: chapterQuery.data.title,
+            chapterNumber: chapterQuery.data.number,
+            sourceKind: 'PUBLISHED',
+            initialLocation: { itemId: chapterQuery.data.pages[0].id, index: 0 },
+            items: chapterQuery.data.pages.map(page => ({ id: page.id, primaryUri: page.imageUrl, width: page.width, height: page.height })),
+        };
+    }, [chapterQuery.data]);
+
     if (chapterQuery.isPending) {
         return (
             <PageContainer>
@@ -191,24 +207,82 @@ function IdentityReaderPage({ titleId, requestedChapter, identityEpoch, isAuthen
         );
     }
 
+    const document = readerDocument!;
+    const logicalPage = clampLogicalPage(currentPage, chapterQuery.data.pages.length);
+
     return (
-        <ChapterReader
-            chapter={chapterQuery.data}
+        <ContentReader
+            document={document}
             settings={settings.reader}
-            capabilities={getImageVariantCapabilities(chapterQuery.data.pages)}
-            currentPage={clampLogicalPage(currentPage, chapterQuery.data.pages.length)}
-            controlsVisible={controlsVisible}
-            progressHydrationError={isAuthenticated && progressQuery.isError}
-            syncStatus={syncError ? 'error' : 'idle'}
-            onCurrentPageChange={page => {
+            gesturePreferences={readerGestures}
+            location={{ itemId: chapterQuery.data.pages[logicalPage - 1].id, index: logicalPage - 1 }}
+            controlSections={[
+                {
+                    id: 'reading',
+                    title: t('panel.tabs.reading'),
+                    content: (
+                        <ReaderSettingsControls
+                            compact
+                            category="reading"
+                            value={settings.reader}
+                            capabilities={getImageVariantCapabilities(chapterQuery.data.pages)}
+                            onChange={patch => void updateSettings(current => ({ ...current, reader: normalizeReaderSettings(patch, current) }), 'reader')}
+                        />
+                    ),
+                },
+                {
+                    id: 'appearance',
+                    title: t('panel.tabs.appearance'),
+                    content: (
+                        <ReaderSettingsControls
+                            compact
+                            category="appearance"
+                            value={settings.reader}
+                            capabilities={getImageVariantCapabilities(chapterQuery.data.pages)}
+                            onChange={patch => void updateSettings(current => ({ ...current, reader: normalizeReaderSettings(patch, current) }), 'reader')}
+                        />
+                    ),
+                },
+                {
+                    id: 'gestures',
+                    title: t('panel.tabs.gestures'),
+                    content: (
+                        <ReaderGestureControls
+                            compact
+                            value={readerGestures}
+                            onChange={patch => void updateReaderGestures(patch)}
+                            sideNavigationAvailable={settings.reader.mode !== 'VERTICAL' && settings.reader.direction !== 'WEBTOON'}
+                            persistenceError={!!localError}
+                            onRetry={() => void retryReaderGesturesPersistence()}
+                        />
+                    ),
+                },
+            ]}
+            statusContent={
+                <>
+                    {isAuthenticated && progressQuery.isError ? (
+                        <StatusMessage
+                            actionLabel={t('actions.retryProgressHydration')}
+                            title={t('errors.progressHydration')}
+                            onAction={() => void progressQuery.refetch()}
+                            tone="danger"
+                        />
+                    ) : null}
+                    {syncError ? (
+                        <StatusMessage
+                            actionLabel={t('actions.retryProgress')}
+                            title={t('errors.progress')}
+                            onAction={() => void synchronizer.retry().then(() => setSyncError(synchronizer.getState().status === 'error'))}
+                            tone="danger"
+                        />
+                    ) : null}
+                </>
+            }
+            onLocationChange={next => {
                 setSuppressHydrationWrite(false);
-                setCurrentPage(page);
+                setCurrentPage(next.index + 1);
             }}
-            onSettingsChange={patch => void updateSettings(current => ({ ...current, reader: normalizeReaderSettings(patch, current) }), 'reader')}
-            onToggleControls={() => setControlsVisible(visible => !visible)}
             onExit={exitReader}
-            onRetryProgress={() => void synchronizer.retry().then(() => setSyncError(synchronizer.getState().status === 'error'))}
-            onRetryProgressHydration={() => void progressQuery.refetch()}
         />
     );
 }

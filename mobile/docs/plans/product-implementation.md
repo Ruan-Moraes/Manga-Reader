@@ -11,8 +11,11 @@
 - M0 e M1 estão validados: SDD brownfield, tema, i18n, settings, FSD e launcher
   público possuem contratos e gates verificáveis.
 - O fluxo guest-first já importa, persiste, revisa, ordena, valida, confirma
-  mídia e restaura o projeto por `MOB-FEAT-012..016`; o gateway remoto é o
-  próximo handoff em verificação.
+  mídia e restaura o projeto por `MOB-FEAT-012..016`. Gateway, OCR e tradução
+  estão em verificação (`017..019`), sem ativação de uploads; a renderização
+  `020` está em execução, com contratos/serialização, fontes e composição
+  raster, worker opt-in e entrega privada nas consultas testados offline. Aquisição/resultado real mobile
+  `021` ainda está bloqueada pela renderização.
 - O leitor de capítulos publicados (`MOB-FEAT-005`) está em
   `verification-pending`; ele pode fornecer primitivas técnicas, mas não modela
   projetos privados de tradução nem páginas em processamento.
@@ -21,14 +24,14 @@
 
 ### Respostas operacionais
 
-| Pergunta                   | Resposta                                                                                                                          |
-| -------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| Maior gap                  | A cadeia `mídia local → OCR → tradução → renderização → estado por página → persistência` não existe.                             |
-| Primeiro milestone ativo   | M2 — Guest Entry + Local Import.                                                                                                  |
-| Primeiro vertical slice    | Uma imagem autorizada → validar → usar idioma de origem escolhido → traduzir ao destino escolhido → renderizar → abrir no leitor. |
-| Próximo handoff executável | concluir os gates externos e nativos de `MOB-FEAT-017` gateway/consentimento.                                                     |
-| Caminho crítico do MVP     | Importar → revisar/ordenar → escolher idioma → processar incrementalmente → ler → retry → biblioteca → continuar offline.         |
-| Caminho crítico da Play    | MVP persistente → privacidade/permissões → custo/telemetria → AAB → testes físicos/fechados → Data Safety/listing → go/no-go.     |
+| Pergunta                   | Resposta                                                                                                                              |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| Maior gap                  | A cadeia completa ainda não funciona de ponta a ponta: faltam fechamento da renderização e aquisição/commit do resultado real no app. |
+| Primeiro milestone ativo   | M3 — Primeiro vertical slice remoto; fundamentos de importação já entregues.                                                          |
+| Primeiro vertical slice    | Uma imagem autorizada → validar → usar idioma de origem escolhido → traduzir ao destino escolhido → renderizar → abrir no leitor.     |
+| Próximo handoff executável | implementar `MOB-FEAT-020` após auditoria técnica da 019; verificações externas 017/018/019 permanecem abertas.                       |
+| Caminho crítico do MVP     | Importar → revisar/ordenar → escolher idioma → processar incrementalmente → ler → retry → biblioteca → continuar offline.             |
+| Caminho crítico da Play    | MVP persistente → privacidade/permissões → custo/telemetria → AAB → testes físicos/fechados → Data Safety/listing → go/no-go.         |
 
 ## Decisões consolidadas
 
@@ -44,8 +47,9 @@
    O conjunto aprovado é japonês, inglês, espanhol, coreano, chinês simplificado,
    chinês tradicional e português brasileiro: 42 pares direcionais diferentes.
    JA → PT-BR permanece cenário prioritário de benchmark, não restrição.
-5. **Gateway aprovado:** Cloud Run/Tasks/SQL/Storage em São Paulo, Vision OCR e
-   Translation LLM nos EUA, conteúdo remoto efêmero, sessão anônima e quota alpha
+5. **Gateway aprovado:** Cloud Run/Tasks/SQL/Storage em São Paulo, Vision OCR
+   regional `us` e Translation LLM pelo endpoint global sem residência fixa
+   garantida, conteúdo remoto efêmero, sessão anônima e quota alpha
    conforme [`docs/translation-gateway-plan.md`](../../../docs/translation-gateway-plan.md).
 6. **Diferencial P0:** uma página `READY` libera o leitor enquanto as seguintes
    continuam em `PROCESSING`/`QUEUED`.
@@ -57,21 +61,21 @@ deve ser substituída antes de qualquer processamento remoto.
 
 ## Current State
 
-| Capacidade                               | Classificação                                    | Consequência                                                                            |
-| ---------------------------------------- | ------------------------------------------------ | --------------------------------------------------------------------------------------- |
-| SDD, registry, coverage e gates          | `IMPLEMENTED_AND_SPECCED`                        | Manter paridade zero antes de cada nova spec.                                           |
-| FSD, tema, i18n e settings               | `IMPLEMENTED_AND_SPECCED`                        | Fundação disponível para novos slices.                                                  |
-| Guest entry e launcher                   | `IMPLEMENTED_AND_SPECCED`                        | `MOB-FEAT-010` já elimina login obrigatório.                                            |
-| Jornada local de tradução                | `PARTIALLY_IMPLEMENTED`                          | Import, review, validação e projeto existem; a copy remota ainda deve ser reconciliada. |
-| Leitor da plataforma                     | `PARTIALLY_IMPLEMENTED`                          | Reuso apenas por API pública e após reconciliar o domínio local.                        |
-| Auth/sessão/Core atual                   | `IMPLEMENTED_BASELINE_ONLY` para o produto local | Conta segue opcional e isolada da biblioteca local.                                     |
-| Home/Library/Forum/Profile da plataforma | `PLACEHOLDER`                                    | Não promover rotas ou copy a requisitos do produto local.                               |
-| Import/review/language/validation        | `IMPLEMENTED_AND_SPECCED`                        | Sete idiomas, 42 pares e migration v6 possuem evidência automatizada.                   |
-| OCR/tradução/renderização                | `NOT_IMPLEMENTED`                                | Exige gateway externo, privacidade e benchmark.                                         |
-| Incremental/retry                        | `NOT_IMPLEMENTED`                                | Exige máquina de estado e idempotência próprias.                                        |
-| Biblioteca/offline                       | `NOT_IMPLEMENTED`                                | Projetos participam do storage; resultados e progresso local ainda não.                 |
-| Analytics/observabilidade                | `PARTIALLY_IMPLEMENTED`                          | Há preferência de privacidade, mas não instrumentação real.                             |
-| Android release                          | `NOT_IMPLEMENTED`                                | Nome/package temporários e ausência de EAS/listing.                                     |
+| Capacidade                               | Classificação                                    | Consequência                                                                                                   |
+| ---------------------------------------- | ------------------------------------------------ | -------------------------------------------------------------------------------------------------------------- |
+| SDD, registry, coverage e gates          | `IMPLEMENTED_AND_SPECCED`                        | Manter paridade zero antes de cada nova spec.                                                                  |
+| FSD, tema, i18n e settings               | `IMPLEMENTED_AND_SPECCED`                        | Fundação disponível para novos slices.                                                                         |
+| Guest entry e launcher                   | `IMPLEMENTED_AND_SPECCED`                        | `MOB-FEAT-010` já elimina login obrigatório.                                                                   |
+| Jornada local de tradução                | `PARTIALLY_IMPLEMENTED`                          | Import, review, validação e projeto existem; a copy remota ainda deve ser reconciliada.                        |
+| Leitor da plataforma                     | `PARTIALLY_IMPLEMENTED`                          | Reuso apenas por API pública e após reconciliar o domínio local.                                               |
+| Auth/sessão/Core atual                   | `IMPLEMENTED_BASELINE_ONLY` para o produto local | Conta segue opcional e isolada da biblioteca local.                                                            |
+| Home/Library/Forum/Profile da plataforma | `PLACEHOLDER`                                    | Não promover rotas ou copy a requisitos do produto local.                                                      |
+| Import/review/language/validation        | `IMPLEMENTED_AND_SPECCED`                        | Sete idiomas, 42 pares e migration v6 possuem evidência automatizada.                                          |
+| OCR/tradução/renderização                | `PARTIALLY_IMPLEMENTED`                          | OCR e tradução codificados/auditados; renderer raster local testado, integração e verificação externa abertas. |
+| Incremental/retry                        | `NOT_IMPLEMENTED`                                | Exige máquina de estado e idempotência próprias.                                                               |
+| Biblioteca/offline                       | `PARTIALLY_IMPLEMENTED`                          | Base local implementada/em verificação; integração com resultados reais depende de 020/021.                    |
+| Analytics/observabilidade                | `PARTIALLY_IMPLEMENTED`                          | Há preferência de privacidade, mas não instrumentação real.                                                    |
+| Android release                          | `NOT_IMPLEMENTED`                                | Nome/package temporários e ausência de EAS/listing.                                                            |
 
 ## Product Target
 

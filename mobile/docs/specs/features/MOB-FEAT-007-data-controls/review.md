@@ -1,7 +1,7 @@
 # Review — MOB-FEAT-007
 
 - Spec revisada: `spec.md`
-- Implementação/revisão: working-tree sha256:cb2e5226cae5289175f02ef3243e0e048890a91e89ff1da21764db1ee89ab84e
+- Implementação/revisão: commit c55a22aaaebeeba279a0e535730b8ee246a9b30e
 - Gate na entrada do planejamento: `open`
 - Dependências verificadas: `MOB-FEAT-001` (`implemented`)
 - Verdict: `verification-pending`
@@ -78,14 +78,14 @@ AC-003/004/008: testes automatizados verdes; integração e performance nativas 
 na TASK-007. AC-001/002/005/006/007 seguem cobertos pelos testes existentes e pelo teste
 da medição em diretórios isolados. Nenhuma intenção funcional ou gate alterado.
 Verdict atual: `verification-pending`; a conclusão histórica não aprova esta versão.
-Ver [evidências](../../../active/performance-evidence/corrections-c02-c05-2026-09-06/review.md).
+Ver evidências (arquivo externo: `perfomance_app/mobile/docs/active/performance-evidence/corrections-c02-c05-2026-09-06/review.md`).
 
-Rodada C02/C05: contratos aprovados e gates abertos preservados; runtime coberto e revisão registrada no [review da rodada](../../../active/performance-evidence/corrections-c02-c05-2026-09-06/review.md). Medição nativa permanece aberta. Contadores da revisão estática: mismatch 0, undocumented 0, arquivos descobertos 0; não substituem validação física.
+Rodada C02/C05: contratos aprovados e gates abertos preservados; runtime coberto e revisão registrada no review da rodada (arquivo externo: `perfomance_app/mobile/docs/active/performance-evidence/corrections-c02-c05-2026-09-06/review.md`). Medição nativa permanece aberta. Contadores da revisão estática: mismatch 0, undocumented 0, arquivos descobertos 0; não substituem validação física.
 
-Rebase C02/C05 (2026-09-06): checksum global atualizado após virtualização do leitor e download de exportação para arquivo. [Escopo e validação](../../../active/performance-evidence/corrections-c02-c05-2026-09-06/review.md). Não representa nova verificação física das demais features.
+Rebase C02/C05 (2026-09-06): checksum global atualizado após virtualização do leitor e download de exportação para arquivo. Escopo e validação (arquivo externo: `perfomance_app/mobile/docs/active/performance-evidence/corrections-c02-c05-2026-09-06/review.md`). Não representa nova verificação física das demais features.
 
 Gate completo C05: `pnpm check` passou, 95 suítes / 588 testes.
 
-Consolidação documental (2026-09-06): checksum global atualizado após reconciliar o estado de performance; runtime e verdict preservados. [Registro](../../../active/performance-evidence/consolidation-2026-09-06/review.md). Sem nova validação física.
+Consolidação documental (2026-09-06): checksum global atualizado após reconciliar o estado de performance; runtime e verdict preservados. Registro (arquivo externo: `perfomance_app/mobile/docs/active/performance-evidence/consolidation-2026-09-06/review.md`). Sem nova validação física.
 
 Preparação de commit (2026-09-06): rebase global após excluir scripts avulsos de ensaio, listagens Git e metadados do sistema dos arquivos versionados, conforme solicitação humana. Resultados históricos preservados; runtime e verdict inalterados.

@@ -64,6 +64,7 @@ function fixture() {
             return { project, created: true };
         }),
         getById: jest.fn(async id => (project?.id === id ? project : null)),
+        listAll: jest.fn(async () => (project ? [project] : [])),
         getLatest: jest.fn(async () => project),
         transitionPage: jest.fn(),
         transitionProject: jest.fn(),

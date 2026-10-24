@@ -1,0 +1,66 @@
+{
+    "actions": {
+        "back": "Voltar",
+        "cancel": "Cancelar",
+        "delete": "Excluir",
+        "retry": "Tentar novamente"
+    },
+    "demo": {
+        "title": "Modo de demonstração",
+        "description": "O resultado usa sua imagem original e textos simulados. Nenhuma tradução real será executada.",
+        "badge": "RESULTADO SIMULADO",
+        "action": "Gerar resultado de demonstração",
+        "progress": "Etapas simuladas da demonstração",
+        "errorTitle": "Não foi possível gerar a demonstração",
+        "stages": {
+            "queue": "Fila",
+            "ocr": "OCR",
+            "translation": "Tradução",
+            "rendering": "Renderização",
+            "saving": "Salvando"
+        },
+        "errors": {
+            "development-only": "A demonstração está disponível apenas em desenvolvimento.",
+            "project-unavailable": "O projeto não está disponível.",
+            "original-unavailable": "Uma imagem original não está mais disponível.",
+            "storage-unavailable": "Não foi possível salvar o resultado no aparelho."
+        }
+    },
+    "library": {
+        "title": "Biblioteca local",
+        "loading": "Carregando seus projetos…",
+        "emptyTitle": "Sua biblioteca está vazia",
+        "emptyDescription": "Importe páginas e gere uma demonstração para começar.",
+        "create": "Traduzir capítulo",
+        "projectTitle": "Projeto de {{date}}",
+        "summary": "{{source}} → {{target}} · {{ready}} de {{total}} páginas prontas",
+        "position": "Continuar na página {{page}} de {{total}}",
+        "coverLabel": "Capa do projeto local",
+        "open": "Abrir leitor",
+        "deleteTitle": "Excluir projeto?",
+        "deleteDescription": "As imagens e o progresso deste projeto serão removidos do aparelho.",
+        "errorTitle": "Biblioteca indisponível",
+        "errorDescription": "Não foi possível ler os projetos salvos."
+    },
+    "reader": {
+        "title": "Leitor local",
+        "loading": "Abrindo o projeto…",
+        "unavailableTitle": "Projeto indisponível",
+        "unavailableDescription": "Este projeto não existe mais no aparelho.",
+        "library": "Voltar à biblioteca",
+        "demoDescription": "A imagem é o original importado. Os textos abaixo servem apenas para validar a experiência.",
+        "originalLabel": "Página original",
+        "resultLabel": "Resultado local demonstrativo",
+        "checking": "Verificando o arquivo local…",
+        "damagedTitle": "Resultado precisa de reparo",
+        "damagedDescription": "O arquivo não passou na verificação. O original foi preservado.",
+        "showOriginal": "Ver original",
+        "showResult": "Ver resultado",
+        "regionsTitle": "Texto identificado",
+        "noText": "Nenhum texto foi identificado nesta página.",
+        "page": "Página {{page}} de {{total}}",
+        "previous": "Anterior",
+        "next": "Próxima",
+        "exit": "Sair do leitor"
+    }
+}

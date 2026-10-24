@@ -7,6 +7,7 @@ import { startRemoteProcessingController } from '@/features/start-remote-process
 export function RemoteProcessingRecoveryGate({ children }: PropsWithChildren) {
     const recover = useCallback(async () => {
         await remoteProcessingAttemptRepository.initialize();
+
         if ((await remoteProcessingAttemptRepository.listRecoverable()).length > 0) {
             await startRemoteProcessingController.reconcile();
         }
@@ -14,9 +15,11 @@ export function RemoteProcessingRecoveryGate({ children }: PropsWithChildren) {
 
     useEffect(() => {
         void recover().catch(() => undefined);
+
         const subscription = AppState.addEventListener('change', state => {
             if (state === 'active') void recover().catch(() => undefined);
         });
+
         return () => subscription.remove();
     }, [recover]);
 

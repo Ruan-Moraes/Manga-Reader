@@ -1,3 +1,4 @@
+export { sha256Bytes, sha256File } from './fileIntegrity';
 export {
     jsonExport,
     type JsonExportAdapter,

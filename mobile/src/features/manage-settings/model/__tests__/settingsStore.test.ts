@@ -1,7 +1,7 @@
 import * as SecureStore from 'expo-secure-store';
 import AxiosMockAdapter from 'axios-mock-adapter';
 
-import { DEFAULT_USER_SETTINGS } from '@/entities/user-setting';
+import { DEFAULT_READER_GESTURES, DEFAULT_TEXT_READER_PREFERENCES, DEFAULT_USER_SETTINGS } from '@/entities/user-setting';
 import { api } from '@/shared/api';
 import i18n, { DEFAULT_LANGUAGE } from '@/shared/i18n';
 
@@ -14,6 +14,8 @@ let values = new Map<string, string>();
 const resetStore = () => {
     resetSettingsRuntimeForTests();
     useSettingsStore.setState({
+        readerGestures: DEFAULT_READER_GESTURES,
+        textReader: DEFAULT_TEXT_READER_PREFERENCES,
         settings: DEFAULT_USER_SETTINGS,
         guestSettings: DEFAULT_USER_SETTINGS,
         themeOverride: null,
@@ -60,7 +62,7 @@ describe('MOB-FEAT-001 settings store', () => {
 
         expect(useSettingsStore.getState()).toMatchObject({ themeOverride: 'dark', language: 'es-ES', isHydrated: true });
         expect(JSON.parse(values.get('mr_settings_guest_v1') ?? '{}')).toMatchObject({
-            version: 2,
+            version: 4,
             language: 'es-ES',
             revision: 1,
             dirtyPaths: ['appearance.theme'],
@@ -86,7 +88,7 @@ describe('MOB-FEAT-001 settings store', () => {
 
         expect(useSettingsStore.getState()).toMatchObject({ language: 'en-US', themeOverride: 'dark' });
         expect(JSON.parse(values.get('mr_settings_guest_v1') ?? '{}')).toMatchObject({
-            version: 2,
+            version: 4,
             language: 'en-US',
             deviceSettings: { appearance: { theme: 'DARK' } },
             dirtyPaths: ['appearance.theme'],
@@ -437,5 +439,104 @@ describe('MOB-FEAT-001 settings store', () => {
         releasePatch();
         await flush;
         expect(useSettingsStore.getState()).toMatchObject({ activeIdentityEpoch: null, themeOverride: 'dark', syncStatus: 'local' });
+    });
+    it('migrates v2 without making clean remote fields dirty and persists gestures through restart', async () => {
+        values.set(
+            'mr_settings_guest_v1',
+            JSON.stringify({
+                version: 2,
+                deviceSettings: { ...DEFAULT_USER_SETTINGS, reader: { ...DEFAULT_USER_SETTINGS.reader, gap: 8 } },
+                dirtyPaths: [],
+                revision: 4,
+            }),
+        );
+        await useSettingsStore.getState().hydrate();
+        expect(useSettingsStore.getState().dirtyPaths).toEqual([]);
+        expect(useSettingsStore.getState().readerGestures).toEqual(DEFAULT_READER_GESTURES);
+        await useSettingsStore.getState().updateReaderGestures({ controlsMode: 'SWIPE', sideTapNavigation: true });
+        resetStore();
+        await useSettingsStore.getState().hydrate();
+        expect(useSettingsStore.getState().readerGestures).toEqual({ controlsMode: 'SWIPE', sideTapNavigation: true });
+        expect(useSettingsStore.getState().settings.reader.gap).toBe(8);
+    });
+
+    it('keeps gestures local across account activation, remote saves and logout', async () => {
+        await useSettingsStore.getState().hydrate();
+        await useSettingsStore.getState().updateReaderGestures({ controlsMode: 'VISIBLE' });
+        apiMock.onGet('/users/me/settings').reply(200, { data: DEFAULT_USER_SETTINGS });
+        apiMock.onPatch('/users/me/settings').reply(config => {
+            expect(config.data).not.toContain('controlsMode');
+            return [200, { data: JSON.parse(config.data) }];
+        });
+        await useSettingsStore.getState().activateAccount(52);
+        await useSettingsStore.getState().updateSettings(current => ({ ...current, reader: { ...current.reader, gap: 4 } }), 'reader');
+        await useSettingsStore.getState().flush();
+        expect(apiMock.history.patch).toHaveLength(1);
+        expect(useSettingsStore.getState().readerGestures.controlsMode).toBe('VISIBLE');
+        useSettingsStore.getState().deactivateAccount();
+        expect(useSettingsStore.getState().readerGestures.controlsMode).toBe('VISIBLE');
+    });
+
+    it('normalizes invalid gestures and keeps immediate updates on write failure with retry', async () => {
+        values.set(
+            'mr_settings_guest_v1',
+            JSON.stringify({ version: 3, deviceSettings: DEFAULT_USER_SETTINGS, readerGestures: { controlsMode: 'INVALID', sideTapNavigation: 'yes' } }),
+        );
+        await useSettingsStore.getState().hydrate();
+        expect(useSettingsStore.getState().readerGestures).toEqual(DEFAULT_READER_GESTURES);
+        secureStore.setItemAsync.mockRejectedValueOnce(new Error('disk unavailable'));
+        const save = useSettingsStore.getState().updateReaderGestures({ controlsMode: 'TAP' });
+        expect(useSettingsStore.getState().readerGestures.controlsMode).toBe('TAP');
+        await save;
+        expect(useSettingsStore.getState().localError).toContain('disk unavailable');
+        await useSettingsStore.getState().retryReaderGesturesPersistence();
+        expect(useSettingsStore.getState().localError).toBeNull();
+        expect(JSON.parse(values.get('mr_settings_guest_v1')!).readerGestures.controlsMode).toBe('TAP');
+    });
+    it('MOB-FEAT-053 migrates v3 and preserves text choices across restart and reset', async () => {
+        values.set(
+            'mr_settings_guest_v1',
+            JSON.stringify({
+                version: 3,
+                deviceSettings: DEFAULT_USER_SETTINGS,
+                dirtyPaths: [],
+                readerGestures: { controlsMode: 'SWIPE', sideTapNavigation: true },
+            }),
+        );
+        await useSettingsStore.getState().hydrate();
+        expect(useSettingsStore.getState().textReader).toEqual(DEFAULT_TEXT_READER_PREFERENCES);
+        await useSettingsStore.getState().updateTextReader({ fontFamily: 'SERIF', fontSize: 24, background: 'PAPER' });
+        expect(JSON.parse(values.get('mr_settings_guest_v1')!).version).toBe(4);
+        resetStore();
+        await useSettingsStore.getState().hydrate();
+        expect(useSettingsStore.getState().textReader).toMatchObject({ fontFamily: 'SERIF', fontSize: 24, background: 'PAPER' });
+        expect(useSettingsStore.getState().dirtyPaths).toEqual([]);
+        await useSettingsStore.getState().resetTextReader();
+        expect(useSettingsStore.getState().textReader).toEqual(DEFAULT_TEXT_READER_PREFERENCES);
+        expect(useSettingsStore.getState().readerGestures).toEqual({ controlsMode: 'SWIPE', sideTapNavigation: true });
+    });
+
+    it('MOB-FEAT-053 applies immediately after disk failure, retries and isolates account synchronization', async () => {
+        await useSettingsStore.getState().hydrate();
+        secureStore.setItemAsync.mockRejectedValueOnce(new Error('disk unavailable'));
+        const save = useSettingsStore.getState().updateTextReader({ fontSize: 28, lineSpacing: 'WIDE' });
+        expect(useSettingsStore.getState().textReader.fontSize).toBe(28);
+        await save;
+        expect(useSettingsStore.getState().localError).toContain('disk unavailable');
+        await useSettingsStore.getState().retryReaderGesturesPersistence();
+        expect(useSettingsStore.getState().localError).toBeNull();
+        expect(JSON.parse(values.get('mr_settings_guest_v1')!).textReader.fontSize).toBe(28);
+        apiMock.onGet('/users/me/settings').reply(200, { data: DEFAULT_USER_SETTINGS });
+        apiMock.onPatch('/users/me/settings').reply(config => {
+            expect(config.data).not.toContain('textReader');
+            expect(config.data).not.toContain('fontSize');
+            return [200, { data: JSON.parse(config.data) }];
+        });
+        await useSettingsStore.getState().activateAccount(53);
+        await useSettingsStore.getState().updateSettings(current => ({ ...current, reader: { ...current.reader, gap: 4 } }), 'reader');
+        await useSettingsStore.getState().flush();
+        expect(apiMock.history.patch).toHaveLength(1);
+        useSettingsStore.getState().deactivateAccount();
+        expect(useSettingsStore.getState().textReader).toMatchObject({ fontSize: 28, lineSpacing: 'WIDE' });
     });
 });

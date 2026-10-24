@@ -95,6 +95,7 @@ export interface TranslationProjectRepository {
     initialize(): Promise<void>;
     create(project: NewTranslationProject): Promise<{ project: TranslationProject; created: boolean }>;
     getById(projectId: string): Promise<TranslationProject | null>;
+    listAll(): Promise<TranslationProject[]>;
     getLatest(): Promise<TranslationProject | null>;
     transitionPage(
         projectId: string,
@@ -136,18 +137,10 @@ function mapPage(row: PageRow): TranslationPage {
     };
 }
 
-async function getProjectFrom(executor: SqlExecutor, row: ProjectRow | null): Promise<TranslationProject | null> {
-    if (!row) return null;
+function mapProject(row: ProjectRow, pages: readonly PageRow[]): TranslationProject {
     if (!isTranslationLanguageCode(row.source_language) || !isTranslationLanguageCode(row.target_language) || !isTranslationState(row.status)) {
         throw new Error('translationProject.invalidStoredValue');
     }
-    const pages = await executor.getAllAsync<PageRow>(
-        `SELECT id, project_id, position, original_filename, original_byte_size, original_mime_type,
-                width_px, height_px, media_validated_at, media_validation_policy_version,
-                status, created_at, updated_at, status_updated_at
-         FROM translation_pages WHERE project_id = ? ORDER BY position ASC`,
-        [row.id],
-    );
     return {
         id: row.id,
         sourceLanguage: row.source_language,
@@ -159,6 +152,18 @@ async function getProjectFrom(executor: SqlExecutor, row: ProjectRow | null): Pr
         languageReviewRequired: row.language_review_required === 1,
         pages: pages.map(mapPage),
     };
+}
+
+async function getProjectFrom(executor: SqlExecutor, row: ProjectRow | null): Promise<TranslationProject | null> {
+    if (!row) return null;
+    const pages = await executor.getAllAsync<PageRow>(
+        `SELECT id, project_id, position, original_filename, original_byte_size, original_mime_type,
+                width_px, height_px, media_validated_at, media_validation_policy_version,
+                status, created_at, updated_at, status_updated_at
+         FROM translation_pages WHERE project_id = ? ORDER BY position ASC`,
+        [row.id],
+    );
+    return mapProject(row, pages);
 }
 
 async function getByIdFrom(executor: SqlExecutor, projectId: string): Promise<TranslationProject | null> {
@@ -359,6 +364,29 @@ export function createSqliteTranslationProjectRepository(openDatabase: () => Pro
         },
         async getById(projectId) {
             return getByIdFrom(await database(), projectId);
+        },
+        async listAll() {
+            const db = await database();
+            const projectRows = await db.getAllAsync<ProjectRow>(
+                `SELECT id, source_language, target_language, status, created_at, updated_at, status_updated_at, language_review_required
+                 FROM translation_projects ORDER BY updated_at DESC, id DESC`,
+                [],
+            );
+            if (projectRows.length === 0) return [];
+            const pageRows = await db.getAllAsync<PageRow>(
+                `SELECT id, project_id, position, original_filename, original_byte_size, original_mime_type,
+                        width_px, height_px, media_validated_at, media_validation_policy_version,
+                        status, created_at, updated_at, status_updated_at
+                 FROM translation_pages ORDER BY project_id ASC, position ASC`,
+                [],
+            );
+            const pagesByProject = new Map<string, PageRow[]>();
+            for (const page of pageRows) {
+                const pages = pagesByProject.get(page.project_id) ?? [];
+                pages.push(page);
+                pagesByProject.set(page.project_id, pages);
+            }
+            return projectRows.map(row => mapProject(row, pagesByProject.get(row.id) ?? []));
         },
         async getLatest() {
             const db = await database();

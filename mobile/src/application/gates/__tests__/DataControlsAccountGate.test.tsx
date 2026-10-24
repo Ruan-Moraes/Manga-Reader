@@ -11,6 +11,7 @@ jest.mock('@/features/data-controls', () => ({ clearDataControlTemporaries: jest
 describe('MOB-FEAT-007 DataControlsAccountGate', () => {
     it('remove temporários ao iniciar e trocar a identidade', async () => {
         useSessionStore.setState({ identityEpoch: 0 });
+
         render(
             <DataControlsAccountGate>
                 <Text>conteúdo</Text>
@@ -18,9 +19,11 @@ describe('MOB-FEAT-007 DataControlsAccountGate', () => {
         );
 
         expect(screen.getByText('conteúdo')).toBeOnTheScreen();
+
         await waitFor(() => expect(clearDataControlTemporaries).toHaveBeenCalledTimes(1));
 
         act(() => useSessionStore.setState({ identityEpoch: 1 }));
+
         await waitFor(() => expect(clearDataControlTemporaries).toHaveBeenCalledTimes(2));
     });
 });

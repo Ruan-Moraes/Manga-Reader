@@ -30,7 +30,14 @@ describe('MOB-FEAT-008/AC-002 typed settings routes', () => {
 
 describe('MOB-FEAT-010 public and auth routes', () => {
     it('declara launcher, offline e settings como superfícies públicas', () => {
-        expect(PUBLIC_ROUTES).toEqual([ROUTES.ROOT, ROUTES.READER, ROUTES.OFFLINE_TRANSLATION, ...SETTINGS_ROUTES]);
+        expect(PUBLIC_ROUTES).toEqual([
+            ROUTES.ROOT,
+            ROUTES.READER,
+            ROUTES.OFFLINE_TRANSLATION,
+            ROUTES.TRANSLATION_LIBRARY,
+            ROUTES.TRANSLATION_READER,
+            ...SETTINGS_ROUTES,
+        ]);
         expect(PUBLIC_ROUTES).not.toContain(ROUTES.PLATFORM.STATUS);
     });
 

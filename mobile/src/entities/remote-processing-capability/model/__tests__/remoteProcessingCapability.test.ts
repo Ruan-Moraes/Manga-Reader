@@ -19,7 +19,8 @@ function fixture() {
             privacyPolicyUrl: 'https://toonlira.com/privacy',
             termsUrl: 'https://toonlira.com/terms',
             gatewayRegion: 'southamerica-east1',
-            processingRegions: ['us', 'us-central1'],
+            ocrRegion: 'us',
+            translationLocation: 'global',
             originalRetentionSeconds: 3600,
             resultRetentionSeconds: 3600,
             metadataRetentionDays: 7,
@@ -40,10 +41,29 @@ describe('MOB-FEAT-017 remote processing capabilities', () => {
         expect(capabilityAcceptsMedia(parsed, { mimeType: 'image/png', byteSize: 100, widthPx: 100, heightPx: 200 })).toBe(false);
     });
 
+    it('accepts an empty operational set only while the gateway is disabled', () => {
+        const disabled = remoteProcessingCapabilitiesSchema.parse({ ...fixture(), enabled: false, supportedPairs: [] });
+        expect(capabilitiesAreUsable(disabled)).toBe(false);
+        expect(capabilitySupportsPair(disabled, 'ja', 'pt-BR')).toBe(false);
+        expect(remoteProcessingCapabilitiesSchema.safeParse({ ...fixture(), supportedPairs: [] }).success).toBe(false);
+    });
+
+    it('preserves the direction of the two Chinese variants in a partial matrix', () => {
+        const parsed = remoteProcessingCapabilitiesSchema.parse({ ...fixture(), supportedPairs: [{ source: 'zh-Hant', target: 'zh-Hans' }] });
+        expect(capabilitySupportsPair(parsed, 'zh-Hant', 'zh-Hans')).toBe(true);
+        expect(capabilitySupportsPair(parsed, 'zh-Hans', 'zh-Hant')).toBe(false);
+    });
+
     it.each([
         ['unknown field', { extra: true }],
         ['http legal URL', { disclosure: { ...fixture().disclosure, privacyPolicyUrl: 'http://unsafe.test/privacy' } }],
         ['unknown contract', { contractVersion: '2.0' }],
+        ['superseded disclosure', { disclosure: { ...fixture().disclosure, version: '2026-09-07.v1' } }],
+        [
+            'legacy location disclosure',
+            { disclosure: { ...fixture().disclosure, ocrRegion: undefined, translationLocation: undefined, processingRegions: ['us', 'us-central1'] } },
+        ],
+        ['unsupported translation location', { disclosure: { ...fixture().disclosure, translationLocation: 'us' } }],
         [
             'duplicate pair',
             {

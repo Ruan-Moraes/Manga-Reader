@@ -1,5 +1,9 @@
+import { openDatabaseAsync } from 'expo-sqlite';
+
 import type { SqlExecutor } from '../appDatabase';
-import { advanceAppSchemaVersion, readAppSchemaVersion, runAppDatabaseMigration } from '../appDatabase';
+import { advanceAppSchemaVersion, openAppDatabase, readAppSchemaVersion, resetAppDatabaseForTests, runAppDatabaseMigration } from '../appDatabase';
+
+jest.mock('expo-sqlite', () => ({ openDatabaseAsync: jest.fn() }));
 
 function executor(initialVersion: number) {
     let version = initialVersion;
@@ -18,6 +22,21 @@ function executor(initialVersion: number) {
 }
 
 describe('app database schema version', () => {
+    afterEach(() => resetAppDatabaseForTests());
+
+    it('enables foreign keys once when opening the shared connection', async () => {
+        const execAsync = jest.fn(async () => undefined);
+        jest.mocked(openDatabaseAsync).mockResolvedValue({ execAsync } as never);
+
+        await openAppDatabase();
+        await openAppDatabase();
+
+        expect(openDatabaseAsync).toHaveBeenCalledTimes(1);
+        expect(openDatabaseAsync).toHaveBeenCalledWith('toonlira-local.db');
+        expect(execAsync).toHaveBeenCalledTimes(1);
+        expect(execAsync).toHaveBeenCalledWith('PRAGMA foreign_keys = ON;');
+    });
+
     it('advances an older schema and reads the persisted version', async () => {
         const fixture = executor(4);
         await expect(advanceAppSchemaVersion(fixture.sql, 5)).resolves.toBe(5);

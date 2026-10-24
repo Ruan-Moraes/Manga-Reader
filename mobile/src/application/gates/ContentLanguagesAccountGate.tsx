@@ -21,8 +21,11 @@ interface IdentityBoundaryProps extends PropsWithChildren {
 
 export function ContentLanguagesIdentityBoundary({ children, identityEpoch, isAuthenticated }: IdentityBoundaryProps) {
     const contentIdentityEpoch = useContentLanguagesStore(state => state.identityEpoch);
+
     const { t } = useTranslation('settingsNavigation');
+
     const identityAligned = isAuthenticated ? contentIdentityEpoch === identityEpoch : contentIdentityEpoch === null;
+
     return identityAligned ? children : <StartupFeedback label={t('sync.syncing')} />;
 }
 
@@ -30,17 +33,22 @@ export function ContentLanguagesAccountGate({ children }: PropsWithChildren) {
     const isAuthenticated = useSessionStore(state => state.isAuthenticated);
     const identityEpoch = useSessionStore(state => state.identityEpoch);
     const language = useSettingsStore(state => state.language);
+
     const queryClient = useQueryClient();
 
     useEffect(() => {
         const currentLanguage = useSettingsStore.getState().language;
+
         const fallback = deriveGuestContentLanguages(currentLanguage);
+
         resetContentLanguagesMutationRuntime();
         resetContentLanguagesHydration();
+
         contentLanguageQueryKeys().forEach(queryKey => queryClient.removeQueries({ queryKey, exact: false }));
 
         if (isAuthenticated) {
             useContentLanguagesStore.getState().beginAccount(identityEpoch, currentLanguage, fallback);
+
             void hydrateContentLanguages(identityEpoch);
         } else {
             useContentLanguagesStore.getState().beginGuest(currentLanguage, fallback);

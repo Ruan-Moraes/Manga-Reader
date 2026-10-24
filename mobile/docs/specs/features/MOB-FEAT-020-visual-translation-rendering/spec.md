@@ -2,11 +2,11 @@
 id: MOB-FEAT-020
 type: feature
 title: Renderização visual da tradução
-status: approved
-implementation_gate: blocked
+status: in-progress
+implementation_gate: open
 blocked_by: [MOB-FEAT-019]
 created: 2026-08-15
-updated: 2026-08-15
+updated: 2026-10-05
 supersedes: []
 superseded_by: []
 ---
@@ -30,8 +30,11 @@ traduções que não caibam com segurança.
 
 ## Requisitos e regras
 
-- O renderer reabre a mídia validada com decode limitado e rejeita dimensões ou
-  consumo incompatíveis com capabilities.
+- O renderer reabre a mídia remota privada validada, retida desde o upload com
+  limite absoluto de uma hora, com decode limitado e rejeita dimensões ou
+  consumo incompatíveis com capabilities. Não usa a cópia local do aparelho
+  no worker. Depois do commit válido do render, remove o original remoto;
+  falha/cancelamento também exigem cleanup, sem estender o prazo de uma hora.
 - Cada polígono é recortado/clampado aos limites; sobreposição é resolvida por
   ordem estável sem pintar fora da união textual necessária.
 - A região é neutralizada com cor estimada do entorno. Não há reconstrução de
@@ -46,6 +49,18 @@ traduções que não caibam com segurança.
   válido, sem caixa artificial.
 - Saída WebP usa política de qualidade/tamanho versionada; hash, bytes, MIME e
   dimensões são calculados sobre o arquivo final.
+- A aplicação não mantém cópias integrais redundantes do raster. Buffers internos
+  do codec são permitidos com versão/política fixadas, desde que o consumo total
+  seja limitado e medido no pipeline completo, incluindo JVM, memória nativa,
+  fontes e arquivos temporários. Heap ou limite de cache não representa esse total.
+- A capacidade de renderização deve ser adquirida antes do decode, com uma
+  página pesada por instância e sem fila ilimitada. Buffers emprestados e
+  capacidade permanecem sob posse até a execução nativa e sua limpeza terminarem.
+- O orçamento operacional só será admitido após provas das imagens aceitas,
+  timeout/cancelamento e falhas de memória/disco no ambiente de execução.
+  Um teto experimental maior não muda a configuração cloud nem aprova operação.
+  Permanecem dimensões/bytes/pixels defensivos e WebP lossless/exact; não reduzir
+  qualidade, redimensionar ou truncar silenciosamente para atender ao orçamento.
 - Resultado e manifesto ficam privados, disponíveis por URL assinada curta e
   expiram após ACK ou uma hora. URL nunca entra em analytics/log.
 - `READY` remoto significa render concluído; `READY` local só ocorre após
@@ -99,23 +114,27 @@ e manifesto remotos.
 
 ### AC-006 — Memória e falha isoladas
 
-Imagens nos limites defensivos não são mantidas em múltiplas cópias simultâneas;
-falha não corrompe original nem outra página.
+Imagens nos limites defensivos são processadas sem cópias integrais redundantes
+pela aplicação. Buffers internos do codec são contabilizados em um orçamento
+total limitado e demonstrado pelo pipeline completo, com concorrência limitada
+antes do decode e isolamento de timeout, cancelamento e falhas de memória/disco.
+Falha não corrompe original nem outra página; não há perda silenciosa de qualidade.
 
 ## Estratégia de evidência
 
-| Critério | Teste/evidência esperada                                      |
-| -------- | ------------------------------------------------------------- |
-| AC-001   | golden fixtures e diff fora dos polígonos                     |
-| AC-002   | render dos sete scripts/destinos e revisão visual             |
-| AC-003   | fixture de overflow prova manifesto e ausência de truncamento |
-| AC-004   | fixture arte-only e comparação visual/hash compatível         |
-| AC-005   | integração URL/hash/ACK/TTL/cleanup                           |
-| AC-006   | profiling Android/gateway e fault injection de memória/disco  |
+| Critério | Teste/evidência esperada                                                                                 |
+| -------- | -------------------------------------------------------------------------------------------------------- |
+| AC-001   | golden fixtures e diff fora dos polígonos                                                                |
+| AC-002   | render dos sete scripts/destinos e revisão visual                                                        |
+| AC-003   | fixture de overflow prova manifesto e ausência de truncamento                                            |
+| AC-004   | fixture arte-only e comparação visual/hash compatível                                                    |
+| AC-005   | integração URL/hash/ACK/TTL/cleanup                                                                      |
+| AC-006   | profiling total gateway/Android, concorrência antes do decode e fault injection de memória/disco/timeout |
 
 ## Gate de implementação
 
-- Estado: `blocked`
+- Estado: `open` em 2026-10-03, após a 019 atingir `verification-pending` e
+  conforme autorização de Ruan para execução incremental autônoma até a renderização.
 - Dependência: `MOB-FEAT-019` implementada ou em verificação.
 - Política de fonte/codec e fixtures precisam ser licenciadas e versionadas na
   execução.
@@ -131,5 +150,38 @@ falha não corrompe original nem outra página.
 - Aprovador: Ruan Moraes
 - Data: 2026-08-15
 
-Aprovação registrada junto ao plano do vertical slice. O gate permanece
-bloqueado pela execução de `MOB-FEAT-019`.
+Aprovação registrada junto ao plano do vertical slice. O gate permaneceu
+bloqueado até a execução e auditoria de `MOB-FEAT-019`. Em 2026-10-03, sua
+transição verificada para `verification-pending` satisfez a dependência técnica;
+a autorização de Ruan para avançar autonomamente até a 020 permite abrir o
+gate e derivar tasks. Não autoriza custo de provider, deploy, alteração legal
+ou habilitação de uploads. A 021 continua bloqueada.
+
+## Decisão de manutenção — 2026-10-02
+
+Ruan aprovou reter o original remoto até a renderização, sempre com failsafe
+de uma hora. Esta revisão não abre o gate nem afirma implementação do renderer.
+
+## Decisão de memória — 2026-10-05
+
+Ruan escolheu explicitamente a opção «manter libwebp, com orçamento total
+medido» após a pesquisa das alternativas. Isso substitui a proibição absoluta
+de cópias internas do codec, não a proteção contra cópias redundantes da
+aplicação. A revisão humana do requisito precede a nova prova técnica; não é
+autoaprovação do renderer ou do consumo de memória.
+
+O orçamento cloud atual de 1 GiB permanece inalterado e não foi admitido para
+o máximo multicolor. Integração supervisionada, distribuição, perfil completo,
+qualidade e operação continuam pendentes. 020 in-progress/open e 021 blocked.
+Ver o [plano de memória](../../../../../api/apps/translation-gateway/docs/rendering-memory-policy.md).
+
+Parcela posterior de 2026-10-05: [distribuição local fixada](evidence/rendering-native-distribution-2026-10-05.md)
+e seleção explícita supervisionada foram codificadas e testadas no bean mínimo
+Linux. Não habilita o modo, publica package, altera limites ou admite o worker
+completo. Distribuição operacional, contenção e perfil total seguem pendentes.
+
+Parcela posterior: [limites self-only da filha](evidence/rendering-native-limits-2026-10-05.md)
+foram implementados no opt-in antes de fontes/decode, sem alteração de intenção
+ou defaults. Provas locais não admitem RAM agregada, worker completo ou
+contenção atômica; pico máximo ainda excede os 1 GiB cloud. Tasks/status/gates
+permanecem conservadores, sem nova aprovação de qualidade.

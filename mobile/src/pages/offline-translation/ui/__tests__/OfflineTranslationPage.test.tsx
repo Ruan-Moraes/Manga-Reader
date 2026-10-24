@@ -3,6 +3,7 @@ import AxiosMockAdapter from 'axios-mock-adapter';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { type LocalMediaImportDraft, PENDING_MEDIA_VALIDATION } from '@/entities/local-media-import';
+import type { TranslationProject } from '@/entities/translation-project';
 import type { CreateTranslationProjectController } from '@/features/create-translation-project';
 import { type LocalMediaImportController, LocalMediaImportError } from '@/features/import-local-media';
 import type { ReviewLocalMediaImportController } from '@/features/review-local-media-import';
@@ -20,6 +21,7 @@ jest.mock('expo-router', () => ({
 }));
 jest.mock('@expo/vector-icons', () => ({ Ionicons: () => null }));
 jest.mock('expo-image', () => ({ Image: () => null }));
+jest.mock('@/widgets/remote-processing', () => ({ RemoteProcessingPanel: () => null }));
 
 const draft: LocalMediaImportDraft = {
     id: 'draft-1',
@@ -72,14 +74,14 @@ function validationController(): ValidateLocalMediaController {
     };
 }
 
-function renderPage(importController = controller(), reviewer = reviewController(), validator = validationController()) {
+function renderPage(importController = controller(), reviewer = reviewController(), validator = validationController(), projects = projectController) {
     return render(
         <SafeAreaProvider initialMetrics={{ frame: { x: 0, y: 0, width: 390, height: 844 }, insets: { top: 0, left: 0, right: 0, bottom: 0 } }}>
             <OfflineTranslationPage
                 importController={importController}
                 reviewController={reviewer}
                 validationController={validator}
-                projectController={projectController}
+                projectController={projects}
             />
         </SafeAreaProvider>,
     );
@@ -218,6 +220,31 @@ describe('MOB-FEAT-012 local media import page', () => {
         expect(await screen.findByRole('header', { name: 'Suas imagens estão prontas.' })).toBeOnTheScreen();
         fireEvent.press(screen.getByRole('button', { name: 'Continuar para revisão' }));
         expect(await screen.findByTestId('translation-flow-step-review')).toBeOnTheScreen();
+    });
+
+    it('restores a prepared project on the final step without returning to import', async () => {
+        const prepared: TranslationProject = {
+            id: 'project-1',
+            sourceLanguage: 'ja',
+            targetLanguage: 'pt-BR',
+            status: 'DRAFT',
+            createdAt: 10,
+            updatedAt: 10,
+            statusUpdatedAt: 10,
+            languageReviewRequired: false,
+            pages: [],
+        };
+        const projects: CreateTranslationProjectController = {
+            initialize: jest.fn().mockResolvedValue(prepared),
+            prepare: jest.fn(),
+        };
+
+        renderPage(controller(), reviewController(), validationController(), projects);
+
+        expect(await screen.findByTestId('translation-flow-step-review')).toBeOnTheScreen();
+        expect(screen.getByLabelText('Progresso da preparação. Revisar. 5/5')).toBeOnTheScreen();
+        expect(screen.queryByText('Cada imagem é uma página.')).toBeNull();
+        expect(screen.getByRole('button', { name: 'Gerar resultado de demonstração' })).toBeOnTheScreen();
     });
 
     it.each([

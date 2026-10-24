@@ -109,6 +109,7 @@ async function applyEnvelope(
 
 export function createStartRemoteProcessingController(dependencies: Dependencies): StartRemoteProcessingController {
     let submission: Promise<RemoteProcessingSnapshot> | null = null;
+    const reconciliations = new Map<AbortSignal | undefined, Promise<RemoteProcessingSnapshot>>();
 
     const initialize = async (signal?: AbortSignal): Promise<RemoteProcessingSnapshot> => {
         try {
@@ -194,74 +195,92 @@ export function createStartRemoteProcessingController(dependencies: Dependencies
             });
             return submission;
         },
-        async reconcile(signal) {
-            let capabilities: RemoteProcessingCapabilities | null = null;
-            try {
-                const loaded = await loadCapabilities(dependencies, signal);
-                capabilities = loaded.capabilities;
-                const session = await dependencies.identity.getSession(capabilities.gatewayKey, loaded.transport, signal);
-                const recoverable = await dependencies.attempts.listRecoverable();
-                for (const attempt of recoverable.filter(item => item.gatewayKey === capabilities!.gatewayKey)) {
-                    const path = attempt.remoteJobRef
-                        ? `/v1/page-jobs/${encodeURIComponent(attempt.remoteJobRef)}`
-                        : `/v1/page-jobs/by-idempotency/${encodeURIComponent(attempt.idempotencyKey)}`;
-                    const response = await loaded.transport.request(path, { token: session.accessToken, signal });
-                    if (response.status === 404 && !attempt.remoteJobRef) {
-                        const projectId = await dependencies.attempts.getProjectIdForPage(attempt.pageId);
-                        const project = projectId ? await dependencies.projects.getById(projectId) : null;
-                        const validated = validateProject(project, capabilities, dependencies.now());
-                        const consent = await dependencies.attempts.getConsent(projectId!, capabilities.disclosure.version);
-                        const exists = await dependencies.files.fileExists(TRANSLATION_PROJECT_NAMESPACE, projectId!, validated.page.originalFilename);
-                        if (!consent || !exists) continue;
-                        const submitting = await dependencies.attempts.markSubmitting(attempt.id, dependencies.now());
-                        const replay = await loaded.transport.upload(
-                            '/v1/page-jobs',
-                            {
-                                mimeType: validated.page.originalMimeType,
-                                byteSize: String(validated.page.originalByteSize),
-                                widthPx: String(validated.page.widthPx),
-                                heightPx: String(validated.page.heightPx),
-                                sourceLanguage: validated.project.sourceLanguage,
-                                targetLanguage: validated.project.targetLanguage,
-                                disclosureVersion: capabilities.disclosure.version,
-                                attemptRef: submitting.id,
-                            },
-                            {
-                                uri: dependencies.files.fileUri(TRANSLATION_PROJECT_NAMESPACE, projectId!, validated.page.originalFilename),
-                                mimeType: validated.page.originalMimeType,
-                            },
-                            { token: session.accessToken, headers: { 'Idempotency-Key': submitting.idempotencyKey }, signal },
-                        );
-                        if (replay.status === 202) {
-                            await applyEnvelope(dependencies, submitting, projectId!, replay.body, dependencies.now());
-                        } else {
-                            await dependencies.attempts.markRejected(submitting.id, dependencies.now(), 'gateway-rejected');
+        reconcile(signal) {
+            // Compartilhar somente o mesmo dono do cancelamento, sem cache após conclusão.
+            const pending = reconciliations.get(signal);
+            if (pending) return pending;
+            const operation = (async () => {
+                let capabilities: RemoteProcessingCapabilities | null = null;
+                try {
+                    const loaded = await loadCapabilities(dependencies, signal);
+                    capabilities = loaded.capabilities;
+                    const session = await dependencies.identity.getSession(capabilities.gatewayKey, loaded.transport, signal);
+                    const recoverable = await dependencies.attempts.listRecoverable();
+                    for (const attempt of recoverable.filter(
+                        item => item.gatewayKey === capabilities!.gatewayKey && item.gatewayContractVersion === capabilities!.contractVersion,
+                    )) {
+                        const path = attempt.remoteJobRef
+                            ? `/v1/page-jobs/${encodeURIComponent(attempt.remoteJobRef)}`
+                            : `/v1/page-jobs/by-idempotency/${encodeURIComponent(attempt.idempotencyKey)}`;
+                        const response = await loaded.transport.request(path, { token: session.accessToken, signal });
+                        if (response.status === 404 && !attempt.remoteJobRef) {
+                            const projectId = await dependencies.attempts.getProjectIdForPage(attempt.pageId);
+                            const project = projectId ? await dependencies.projects.getById(projectId) : null;
+                            const validated = validateProject(project, capabilities, dependencies.now());
+                            const consent = await dependencies.attempts.getConsent(projectId!, capabilities.disclosure.version);
+                            const exists = await dependencies.files.fileExists(TRANSLATION_PROJECT_NAMESPACE, projectId!, validated.page.originalFilename);
+                            if (!consent || !exists) continue;
+                            const submitting = await dependencies.attempts.markSubmitting(attempt.id, dependencies.now());
+                            const replay = await loaded.transport.upload(
+                                '/v1/page-jobs',
+                                {
+                                    mimeType: validated.page.originalMimeType,
+                                    byteSize: String(validated.page.originalByteSize),
+                                    widthPx: String(validated.page.widthPx),
+                                    heightPx: String(validated.page.heightPx),
+                                    sourceLanguage: validated.project.sourceLanguage,
+                                    targetLanguage: validated.project.targetLanguage,
+                                    disclosureVersion: capabilities.disclosure.version,
+                                    attemptRef: submitting.id,
+                                },
+                                {
+                                    uri: dependencies.files.fileUri(TRANSLATION_PROJECT_NAMESPACE, projectId!, validated.page.originalFilename),
+                                    mimeType: validated.page.originalMimeType,
+                                },
+                                { token: session.accessToken, headers: { 'Idempotency-Key': submitting.idempotencyKey }, signal },
+                            );
+                            if (replay.status === 202) {
+                                await applyEnvelope(dependencies, submitting, projectId!, replay.body, dependencies.now());
+                            } else {
+                                await dependencies.attempts.markRejected(submitting.id, dependencies.now(), 'gateway-rejected');
+                            }
+                            continue;
                         }
-                        continue;
+                        const envelope = pageJobEnvelopeSchema.safeParse(response.body);
+                        if (
+                            response.status !== 200 ||
+                            !envelope.success ||
+                            envelope.data.contractVersion !== attempt.gatewayContractVersion ||
+                            (attempt.remoteJobRef !== null && envelope.data.jobRef !== attempt.remoteJobRef)
+                        ) {
+                            continue;
+                        }
+                        const projectId = await dependencies.attempts.getProjectIdForPage(attempt.pageId);
+                        if (!projectId) continue;
+                        if (envelope.data.status === 'CANCELLED') {
+                            await dependencies.attempts.confirmCancelled(attempt.id, projectId, attempt.pageId, dependencies.now());
+                        } else if (!attempt.remoteJobRef) {
+                            await dependencies.attempts.acceptAndQueue(
+                                attempt.id,
+                                projectId,
+                                attempt.pageId,
+                                envelope.data.jobRef,
+                                envelope.data.status,
+                                dependencies.now(),
+                            );
+                        } else {
+                            await dependencies.attempts.observe(attempt.id, envelope.data.status, dependencies.now());
+                        }
                     }
-                    const envelope = pageJobEnvelopeSchema.safeParse(response.body);
-                    if (response.status !== 200 || !envelope.success) continue;
-                    const projectId = await dependencies.attempts.getProjectIdForPage(attempt.pageId);
-                    if (!projectId) continue;
-                    if (envelope.data.status === 'CANCELLED') {
-                        await dependencies.attempts.confirmCancelled(attempt.id, projectId, attempt.pageId, dependencies.now());
-                    } else if (!attempt.remoteJobRef) {
-                        await dependencies.attempts.acceptAndQueue(
-                            attempt.id,
-                            projectId,
-                            attempt.pageId,
-                            envelope.data.jobRef,
-                            envelope.data.status,
-                            dependencies.now(),
-                        );
-                    } else {
-                        await dependencies.attempts.observe(attempt.id, envelope.data.status, dependencies.now());
-                    }
+                    return snapshot(dependencies, capabilities, null);
+                } catch {
+                    return snapshot(dependencies, capabilities, 'submission-unknown');
                 }
-                return snapshot(dependencies, capabilities, null);
-            } catch {
-                return snapshot(dependencies, capabilities, 'submission-unknown');
-            }
+            })().finally(() => {
+                reconciliations.delete(signal);
+            });
+            reconciliations.set(signal, operation);
+            return operation;
         },
     };
 }

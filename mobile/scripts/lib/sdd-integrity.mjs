@@ -8,9 +8,7 @@ function listFiles(root) {
     return readdirSync(root, { withFileTypes: true }).flatMap(entry => {
         const path = resolve(root, entry.name);
 
-        return entry.isDirectory()
-            ? listFiles(path)
-            : [path];
+        return entry.isDirectory() ? listFiles(path) : [path];
     });
 }
 
@@ -19,7 +17,7 @@ export function implementationChecksum(mobileRoot) {
         .flatMap(listFiles)
         .filter(path => !path.endsWith('/review.md') && !path.endsWith('/drift-audit.md'))
         .concat(
-            ['app.json', 'babel.config.js', 'eslint.config.mjs', 'jest.config.js', 'package.json', 'tsconfig.json']
+            ['app.json', 'babel.config.js', 'eslint.config.mjs', 'jest.config.js', 'package.json', 'pnpm-workspace.yaml', 'tsconfig.json']
                 .map(path => resolve(mobileRoot, path))
                 .filter(existsSync),
         )
@@ -114,12 +112,9 @@ export function validateReconciliationSummary({ content, observedBaselineIds, er
 
     const unexpected = sections.filter(id => !observedBaselineIds.includes(id));
 
-    for (const id of unexpected)
-        errors.push(`${id}: baseline não atual aparece na reconciliação corrente`);
+    for (const id of unexpected) errors.push(`${id}: baseline não atual aparece na reconciliação corrente`);
 
-    for (const id of observedBaselineIds)
-        if (!sections.includes(id))
-            errors.push(`${id}: baseline atual ausente da reconciliação`);
+    for (const id of observedBaselineIds) if (!sections.includes(id)) errors.push(`${id}: baseline atual ausente da reconciliação`);
 
     const verdicts = [...content.matchAll(/\|\s*`(match|mismatch|undocumented)`\s*\|/g)].map(match => match[1]);
 

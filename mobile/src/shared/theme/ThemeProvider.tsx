@@ -205,3 +205,10 @@ export function ThemeProvider({
 export function useTheme(): ThemeContextValue {
     return useContext(ThemeContext);
 }
+
+/** Scope a palette without adding platform listeners or changing application preferences. */
+export function ThemePaletteProvider({ tokens, colorScheme, children }: { tokens: ThemeTokens; colorScheme: ColorScheme; children: React.ReactNode }) {
+    const parent = useTheme();
+    const value = useMemo(() => ({ ...parent, tokens, colorScheme }), [parent, tokens, colorScheme]);
+    return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
+}

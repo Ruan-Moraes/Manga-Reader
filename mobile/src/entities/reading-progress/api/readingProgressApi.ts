@@ -10,7 +10,10 @@ export const readingProgressQueryKeys = {
 
 export async function getReadingProgress(titleId: string, signal?: AbortSignal): Promise<ReadingProgress | null> {
     const response = await api.get<ApiResponse<unknown>>(`/users/me/reading-progress/${encodeURIComponent(titleId)}`, { signal });
+
     const progress = normalizeReadingProgress(response.data.data);
+
     if (response.data.data !== null && response.data.data !== undefined && progress === null) reportInvalidReadingProgress(titleId);
+
     return progress;
 }

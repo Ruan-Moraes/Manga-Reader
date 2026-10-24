@@ -54,7 +54,8 @@ const capabilities: RemoteProcessingCapabilities = {
         privacyPolicyUrl: 'https://toonlira.com/privacy',
         termsUrl: 'https://toonlira.com/terms',
         gatewayRegion: 'southamerica-east1',
-        processingRegions: ['us'],
+        ocrRegion: 'us',
+        translationLocation: 'global',
         originalRetentionSeconds: 3600,
         resultRetentionSeconds: 3600,
         metadataRetentionDays: 7,
@@ -83,6 +84,8 @@ describe('MOB-FEAT-017 disclosure UI', () => {
         expect(screen.getByText(/Internet é obrigatória/)).toBeOnTheScreen();
         expect(screen.getByText(/bytes da imagem, MIME, dimensões, idiomas/)).toBeOnTheScreen();
         expect(screen.getByText(/southamerica-east1/)).toBeOnTheScreen();
+        expect(screen.getByText(/OCR usa a região us dos EUA/)).toBeOnTheScreen();
+        expect(screen.getByText(/sem garantia de processamento nos EUA/)).toBeOnTheScreen();
         expect(screen.getByRole('button', { name: 'Abrir política de privacidade' })).toBeOnTheScreen();
         fireEvent.press(screen.getByRole('button', { name: 'Agora não' }));
 
@@ -102,11 +105,12 @@ describe('MOB-FEAT-017 disclosure UI', () => {
     });
 
     it.each([
-        ['en-US', 'Start processing'],
-        ['es-ES', 'Iniciar procesamiento'],
-    ])('renders an accessible localized action in %s', async (locale, label) => {
+        ['en-US', 'Start processing', /no guarantee of processing in the US/],
+        ['es-ES', 'Iniciar procesamiento', /sin garantía de procesamiento en EE\. UU\./],
+    ])('renders an accessible localized action and location disclosure in %s', async (locale, label, location) => {
         await i18n.changeLanguage(locale);
         render(<RemoteProcessingPanel startController={controller()} />);
-        expect(await screen.findByRole('button', { name: label })).toBeEnabled();
+        fireEvent.press(await screen.findByRole('button', { name: label }));
+        expect(screen.getByText(location)).toBeOnTheScreen();
     });
 });

@@ -2,6 +2,9 @@ export const ROUTES = {
     ROOT: '/',
     READER: '/reader',
     OFFLINE_TRANSLATION: '/offline-translation',
+    TRANSLATION_LIBRARY: '/translation-library',
+    TRANSLATION_READER: '/translation-reader/[projectId]',
+    READER_PREVIEW_NOVEL: '/reader-preview/novel',
     PLATFORM: {
         STATUS: '/platform/status',
         TABS: '/platform/(tabs)',
@@ -38,7 +41,14 @@ export const SETTINGS_ROUTES = [
     ROUTES.SETTINGS.ABOUT,
 ] as const;
 
-export const PUBLIC_ROUTES = [ROUTES.ROOT, ROUTES.READER, ROUTES.OFFLINE_TRANSLATION, ...SETTINGS_ROUTES] as const;
+export const PUBLIC_ROUTES = [
+    ROUTES.ROOT,
+    ROUTES.READER,
+    ROUTES.OFFLINE_TRANSLATION,
+    ROUTES.TRANSLATION_LIBRARY,
+    ROUTES.TRANSLATION_READER,
+    ...SETTINGS_ROUTES,
+] as const;
 export type SettingsRoute = (typeof SETTINGS_ROUTES)[number];
 
 export const SETTINGS_AUTH_RETURN_ROUTES = [ROUTES.SETTINGS.CONTENT_LANGUAGES, ROUTES.SETTINGS.PRIVACY, ROUTES.SETTINGS.DATA] as const;

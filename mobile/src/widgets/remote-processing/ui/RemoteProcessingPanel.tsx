@@ -105,7 +105,8 @@ export function RemoteProcessingPanel({ startController, cancelController = canc
                             <AppText>
                                 {t('disclosure.regions', {
                                     gateway: capability.disclosure.gatewayRegion,
-                                    processing: capability.disclosure.processingRegions.join(', '),
+                                    ocr: capability.disclosure.ocrRegion,
+                                    translation: capability.disclosure.translationLocation,
                                 })}
                             </AppText>
                             <AppText>

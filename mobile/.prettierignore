@@ -6,3 +6,5 @@ build
 design
 *.log
 *.lock
+# Canonical cross-project output; validate with node ../scripts/brand.mjs generate --check.
+src/shared/config/brand.generated.ts

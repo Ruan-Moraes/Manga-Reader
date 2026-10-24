@@ -18,6 +18,7 @@ describe('MOB-FEAT-004 content language preference', () => {
 
     it('adiciona, move e remove mantendo prioridade e impedindo remover pt-BR', () => {
         const added = addContentLanguage(['pt-BR'], 'en-US');
+
         expect(added).toEqual(['pt-BR', 'en-US']);
         expect(moveContentLanguage(added, 1, 0)).toEqual(['en-US', 'pt-BR']);
         expect(removeContentLanguage(['en-US', 'pt-BR'], 'en-US')).toEqual(['pt-BR']);

@@ -16,6 +16,7 @@ import { StartupFeedback } from '@/shared/ui';
 
 export function SettingsGate({ children }: PropsWithChildren) {
     const { t } = useTranslation('launcher');
+
     const [fontsLoaded, fontError] = useFonts({
         NunitoSans_400Regular,
         NunitoSans_700Bold,
@@ -23,8 +24,11 @@ export function SettingsGate({ children }: PropsWithChildren) {
         NunitoSans_800ExtraBold,
         NunitoSans_800ExtraBold_Italic,
     });
+
     const hydrateSettings = useSettingsStore(state => state.hydrate);
+
     const isSettingsHydrated = useSettingsStore(state => state.isHydrated);
+
     const language = useSettingsStore(state => state.language);
 
     useEffect(() => {

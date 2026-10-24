@@ -1,0 +1,66 @@
+{
+    "actions": {
+        "back": "Volver",
+        "cancel": "Cancelar",
+        "delete": "Eliminar",
+        "retry": "Intentar de nuevo"
+    },
+    "demo": {
+        "title": "Modo de demostración",
+        "description": "El resultado usa tu imagen original y textos simulados. No se ejecutará una traducción real.",
+        "badge": "RESULTADO SIMULADO",
+        "action": "Generar resultado de demostración",
+        "progress": "Etapas simuladas de la demostración",
+        "errorTitle": "No se pudo generar la demostración",
+        "stages": {
+            "queue": "Cola",
+            "ocr": "OCR",
+            "translation": "Traducción",
+            "rendering": "Renderizado",
+            "saving": "Guardando"
+        },
+        "errors": {
+            "development-only": "La demostración solo está disponible en desarrollo.",
+            "project-unavailable": "El proyecto no está disponible.",
+            "original-unavailable": "Una imagen original ya no está disponible.",
+            "storage-unavailable": "No se pudo guardar el resultado en el dispositivo."
+        }
+    },
+    "library": {
+        "title": "Biblioteca local",
+        "loading": "Cargando tus proyectos…",
+        "emptyTitle": "Tu biblioteca está vacía",
+        "emptyDescription": "Importa páginas y genera una demostración para comenzar.",
+        "create": "Traducir capítulo",
+        "projectTitle": "Proyecto del {{date}}",
+        "summary": "{{source}} → {{target}} · {{ready}} de {{total}} páginas listas",
+        "position": "Continuar en la página {{page}} de {{total}}",
+        "coverLabel": "Portada del proyecto local",
+        "open": "Abrir lector",
+        "deleteTitle": "¿Eliminar proyecto?",
+        "deleteDescription": "Las imágenes y el progreso de este proyecto se eliminarán del dispositivo.",
+        "errorTitle": "Biblioteca no disponible",
+        "errorDescription": "No se pudieron leer los proyectos guardados."
+    },
+    "reader": {
+        "title": "Lector local",
+        "loading": "Abriendo el proyecto…",
+        "unavailableTitle": "Proyecto no disponible",
+        "unavailableDescription": "Este proyecto ya no existe en el dispositivo.",
+        "library": "Volver a la biblioteca",
+        "demoDescription": "La imagen es el original importado. Los textos siguientes solo validan la experiencia.",
+        "originalLabel": "Página original",
+        "resultLabel": "Resultado local de demostración",
+        "checking": "Verificando el archivo local…",
+        "damagedTitle": "El resultado necesita reparación",
+        "damagedDescription": "El archivo no superó la verificación. El original fue preservado.",
+        "showOriginal": "Ver original",
+        "showResult": "Ver resultado",
+        "regionsTitle": "Texto identificado",
+        "noText": "No se identificó texto en esta página.",
+        "page": "Página {{page}} de {{total}}",
+        "previous": "Anterior",
+        "next": "Siguiente",
+        "exit": "Salir del lector"
+    }
+}

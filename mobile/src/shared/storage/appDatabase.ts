@@ -16,7 +16,10 @@ let schemaVersionQueue: Promise<void> = Promise.resolve();
 let schemaMigrationQueue: Promise<void> = Promise.resolve();
 
 export async function openAppDatabase(): Promise<AppDatabase> {
-    databasePromise ??= openDatabaseAsync('toonlira-local.db');
+    databasePromise ??= openDatabaseAsync('toonlira-local.db').then(async database => {
+        await database.execAsync('PRAGMA foreign_keys = ON;');
+        return database;
+    });
     return (await databasePromise) as AppDatabase;
 }
 

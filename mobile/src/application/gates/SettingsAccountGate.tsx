@@ -12,11 +12,15 @@ interface SettingsAccountBoundaryProps extends PropsWithChildren {
 
 export function SettingsAccountBoundary({ children, identityEpoch, isAuthenticated }: SettingsAccountBoundaryProps) {
     const activeIdentityEpoch = useSettingsStore(state => state.activeIdentityEpoch);
+
     const pendingVersion = useSettingsStore(state => state.pendingVersion);
+
     const syncStatus = useSettingsStore(state => state.syncStatus);
+
     const { t } = useTranslation('settingsNavigation');
 
     if (!isAuthenticated) return activeIdentityEpoch === null ? children : <StartupFeedback label={t('sync.syncing')} />;
+
     if (activeIdentityEpoch !== identityEpoch) return <StartupFeedback label={t('sync.syncing')} />;
 
     const accountHydrationFailed = syncStatus === 'error' && pendingVersion === null;
@@ -30,6 +34,7 @@ export function SettingsAccountBoundary({ children, identityEpoch, isAuthenticat
 export function SettingsAccountGate({ children }: PropsWithChildren) {
     const isAuthenticated = useSessionStore(state => state.isAuthenticated);
     const identityEpoch = useSessionStore(state => state.identityEpoch);
+
     const activateAccount = useSettingsStore(state => state.activateAccount);
     const deactivateAccount = useSettingsStore(state => state.deactivateAccount);
     const flush = useSettingsStore(state => state.flush);

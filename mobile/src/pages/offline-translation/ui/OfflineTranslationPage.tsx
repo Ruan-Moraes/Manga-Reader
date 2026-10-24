@@ -7,6 +7,7 @@ import { isMediaValidationReady, type LocalMediaImportDraft } from '@/entities/l
 import type { TranslationProject } from '@/entities/translation-project';
 import { type CreateTranslationProjectController, CreateTranslationProjectPanel } from '@/features/create-translation-project';
 import { ImportLocalMediaPanel, type LocalMediaImportController } from '@/features/import-local-media';
+import { GenerateDemoTranslationPanel } from '@/features/local-translation';
 import { LocalMediaReviewPanel, type ReviewLocalMediaImportController } from '@/features/review-local-media-import';
 import { type SelectTranslationLanguagesController, TranslationLanguageSelectionPanel } from '@/features/select-translation-languages';
 import { LocalMediaValidationItemStatus, LocalMediaValidationPanel, type ValidateLocalMediaController } from '@/features/validate-local-media';
@@ -38,7 +39,7 @@ export function OfflineTranslationPage({ importController, reviewController, lan
         if (isMediaValidationReady(nextDraft, MEDIA_VALIDATION_POLICY_VERSION)) setRequestedStep('validate');
     }, []);
     const availableStep = availableTranslationFlowStep(draft);
-    const currentStep = visibleTranslationFlowStep(availableStep, requestedStep);
+    const currentStep = !draft && preparedProject ? 'review' : visibleTranslationFlowStep(availableStep, requestedStep);
     const currentIndex = TRANSLATION_FLOW_STEPS.indexOf(currentStep);
     const steps = useMemo(() => TRANSLATION_FLOW_STEPS.map(id => ({ id, label: t(`offline.flow.steps.${id}`) })), [t]);
 
@@ -66,6 +67,34 @@ export function OfflineTranslationPage({ importController, reviewController, lan
                 <AppText tone="muted">{t(`offline.flow.intro.${step}.description`)}</AppText>
             </View>
         );
+        if (!draft && preparedProject) {
+            return (
+                <View style={{ gap: spacing.md }}>
+                    {intro('review')}
+                    <Card variant="elevated" style={{ gap: spacing.xs }}>
+                        <AppText accessibilityRole="header" variant="section">
+                            {t('offline.project.preparedTitle')}
+                        </AppText>
+                        <AppText tone="success">{t('offline.project.preparedDescription')}</AppText>
+                        <AppText variant="caption" tone="muted">
+                            {t('offline.project.summary', {
+                                count: preparedProject.pages.length,
+                                source: t(`offline.languages.options.${preparedProject.sourceLanguage}`),
+                                target: t(`offline.languages.options.${preparedProject.targetLanguage}`),
+                                status: t(`offline.project.status.${preparedProject.status}`),
+                            })}
+                        </AppText>
+                    </Card>
+                    {__DEV__ ? (
+                        <GenerateDemoTranslationPanel
+                            project={preparedProject}
+                            onGenerated={project => router.push({ pathname: ROUTES.TRANSLATION_READER, params: { projectId: project.id } } as never)}
+                        />
+                    ) : null}
+                    <RemoteProcessingPanel />
+                </View>
+            );
+        }
         if (currentStep === 'import') {
             return (
                 <View style={{ gap: spacing.md }}>
@@ -79,6 +108,12 @@ export function OfflineTranslationPage({ importController, reviewController, lan
                                 controller={projectController}
                                 onProjectChange={setPreparedProject}
                             />
+                            {preparedProject && __DEV__ ? (
+                                <GenerateDemoTranslationPanel
+                                    project={preparedProject}
+                                    onGenerated={project => router.push({ pathname: ROUTES.TRANSLATION_READER, params: { projectId: project.id } } as never)}
+                                />
+                            ) : null}
                             {preparedProject ? <RemoteProcessingPanel /> : null}
                         </>
                     ) : null}
@@ -179,7 +214,13 @@ export function OfflineTranslationPage({ importController, reviewController, lan
             headerAction={
                 currentIndex > 0 ? (
                     <IconButton accessibilityLabel={t('navigation.selector')} icon="close" onPress={() => router.replace(ROUTES.ROOT as never)} />
-                ) : undefined
+                ) : (
+                    <IconButton
+                        accessibilityLabel={t('offline.library')}
+                        icon="library-outline"
+                        onPress={() => router.push(ROUTES.TRANSLATION_LIBRARY as never)}
+                    />
+                )
             }
         >
             <ProgressSteps steps={steps} currentIndex={currentIndex} accessibilityLabel={t('offline.flow.label')} />

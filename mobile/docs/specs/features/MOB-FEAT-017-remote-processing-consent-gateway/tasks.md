@@ -7,24 +7,24 @@
 
 ## Rastreabilidade
 
-| Critério | Tasks    | Evidência planejada                                                   |
-| -------- | -------- | --------------------------------------------------------------------- |
-| AC-001   | TASK-001 | disclosure/policies comparados ao capabilities e à configuração cloud |
-| AC-002   | TASK-002 | consentimento aceitar/recusar/reconsentir + SQLite                    |
-| AC-003   | TASK-003 | spy prova zero byte antes de todas as pré-condições                   |
-| AC-004   | TASK-004 | porta, parser Zod e contract tests HTTP/OpenAPI                       |
-| AC-005   | TASK-005 | sessão anônima, SecureStore, IAM e secret scan                        |
-| AC-006   | TASK-006 | idempotência, timeout, duplo toque e restart                          |
-| AC-007   | TASK-007 | receipt e transição atômica de attempt/página/projeto                 |
-| AC-008   | TASK-008 | reconciliation de `SUBMITTING`/`UNKNOWN` após process kill            |
-| AC-009   | TASK-009 | cancel antes/depois do receipt e `CANCEL_PENDING`                     |
-| AC-010   | TASK-010 | allowlist de logs, ACK/TTL/cleanup e política pública                 |
-| AC-011   | TASK-011 | RNTL pt-BR/en-US/es-ES e acessibilidade                               |
-| AC-012   | TASK-012 | somente primeira página e boundaries sem Core/provider direto         |
+| Critério | Tasks                        | Evidência planejada                                                   |
+| -------- | ---------------------------- | --------------------------------------------------------------------- |
+| AC-001   | TASK-001, TASK-016           | disclosure/policies comparados ao capabilities e à configuração cloud |
+| AC-002   | TASK-002                     | consentimento aceitar/recusar/reconsentir + SQLite                    |
+| AC-003   | TASK-003, TASK-013, TASK-014 | spy prova zero byte antes de todas as pré-condições                   |
+| AC-004   | TASK-004, TASK-016           | porta, parser Zod e contract tests HTTP/OpenAPI                       |
+| AC-005   | TASK-005                     | sessão anônima, SecureStore, IAM e secret scan                        |
+| AC-006   | TASK-006, TASK-013, TASK-014 | idempotência, timeout, duplo toque e restart                          |
+| AC-007   | TASK-007                     | receipt e transição atômica de attempt/página/projeto                 |
+| AC-008   | TASK-008, TASK-013, TASK-014 | reconciliation de `SUBMITTING`/`UNKNOWN` após process kill            |
+| AC-009   | TASK-009                     | cancel antes/depois do receipt e `CANCEL_PENDING`                     |
+| AC-010   | TASK-010, TASK-017           | allowlist de logs, ACK/TTL/cleanup e retenção até render              |
+| AC-011   | TASK-011, TASK-016           | RNTL pt-BR/en-US/es-ES e acessibilidade                               |
+| AC-012   | TASK-012                     | somente primeira página e boundaries sem Core/provider direto         |
 
 ## Checklist
 
-- [ ] TASK-001 — Operador/contato definidos; Termos e Privacidade 1.0 atualizados nos três locales e publicados nas URLs Firebase; disclosure `2026-09-07.v1` e política do provider definidos. A aprovação final do operador permanece aberta e o upload continua fechado.
+- [ ] TASK-001 — Operador/contato definidos; Termos e Privacidade 1.0 e disclosure `2026-09-07.v1` publicados historicamente. Revisar e republicar a informação de localização para tradução pelo endpoint global, aprovar uma nova versão de disclosure e obter aprovação final do operador antes de abrir uploads.
 - [x] TASK-002 — Implementar SQLite v7 para consents/attempts, estados local/remoto separados e repository transacional com FKs/checks/upgrade v6→v7.
 - [x] TASK-003 — Criar capabilities e validação pré-upload, incluindo sete idiomas/42 pares, arquivo e consentimento.
 - [x] TASK-004 — Congelar OpenAPI `/v1`; manter HTTPS/timeout/limites/redirects em `shared/remote-gateway` e capabilities/parsers Zod nas entities, separados do Core client.
@@ -55,10 +55,12 @@
 
 - Projeto Google Cloud confirmado ativo em 2026-09-07, mas com billing
   desabilitado e sem conta de faturamento disponível para vinculação.
-- Operador, contato, URLs HTTPS, versão do disclosure e política do provider
-  estão definidos. Aprovação final do operador, configuração cloud, worker,
-  scan do AAB e leitor de tela ainda bloqueiam upload real.
-- `MOB-FEAT-018..021` permanecem bloqueadas até esta feature ser executada.
+- Operador, contato e URLs HTTPS estão definidos; o disclosure publicado usa
+  a premissa anterior de tradução nos EUA. Uma nova versão aprovada, contrato
+  capabilities/mobile coerente, configuração cloud, worker, scan do AAB e
+  leitor de tela ainda bloqueiam upload real.
+- A 018 está em `verification-pending` e a 019 em `in-progress`; esses estados
+  não removem o bloqueio operacional de uploads desta feature.
 
 ## Marco server-side — gateway primeiro
 
@@ -72,3 +74,76 @@ acima.
 Evidência: [`evidence/gateway-server-foundation.md`](evidence/gateway-server-foundation.md).
 
 Evidência mobile: [`evidence/mobile-foundation.md`](evidence/mobile-foundation.md).
+
+## Performance C06 — 2026-09-12
+
+- [x] TASK-013 — Compartilhar reconcile concorrente no mesmo contexto de cancelamento; regressão de replay, retry e isolamento de AbortSignal (AC-003/006/008).
+- [ ] TASK-014 — Validar recuperação/lifecycle e custo nativos após C06, incluindo contextos distintos, submissão simultânea e novos recoverables durante consulta. Responsável a definir.
+
+Evidência C06 (arquivo externo: `perfomance_app/mobile/docs/active/performance-evidence/recovery-2026-09-12/review.md`).
+
+Avanço parcial TASK-014 em 2026-09-12: teste controlado confirma descoberta de uma
+tentativa adicionada durante consulta na próxima chamada, sem varredura automática.
+Integração dos gatilhos, submissão simultânea e validação nativa continuam abertas.
+
+Integração automatizada parcial: gate + hook + reconcile cobertos sob falha de rede,
+com sobreposição de active, consulta posterior e remoção de listeners. A emissão
+real de AppState, SQLite, replay e demais cenários nativos continuam pendentes.
+
+Avanço nativo parcial: cinco rodadas negativas (arquivo externo: `perfomance_app/mobile/docs/active/performance-evidence/native-recovery-2026-09-12/review.md`)
+preservaram uma tentativa UNKNOWN no SQLite após abertura, background, verificação
+manual e force-stop. Gateway sem origem; consulta/replay com respostas reais ou
+controladas e medições de custo permanecem abertos.
+
+## Correção multipart — 2026-09-13
+
+- [x] TASK-015 — Corrigir incompatibilidade do descritor de arquivo com expo/fetch instalado; teste de regressão usa conversor real e verifica bytes, MIME, nome público e idempotência (AC-003/004/006). Sem mudança de contrato/gate.
+
+Evidência HTTPS (arquivo externo: `perfomance_app/mobile/docs/active/performance-evidence/https-recovery-2026-09-13/review.md`).
+TASK-014 continua aberta para os cenários e medições residuais.
+
+Avanço TASK-014 em 2026-09-13: quinze rodadas HTTPS controladas passaram (cinco
+sem consentimento, cinco com job existente, cinco com replay). Mesma identidade,
+zero reenvio no job existente, um POST por replay e SQLite íntegro. TASK-014
+permanece aberta para cancelamento, concorrência residual e custo nativo.
+
+## Revisão de localização — 2026-09-27
+
+- [x] TASK-016 — Atualizar capabilities do gateway, OpenAPI, parser mobile e
+      copy de consentimento para diferenciar OCR regional `us` de tradução global;
+      testar compatibilidade e comportamento fail-closed antes de aceitar mídia.
+      Não atualizar a publicação legal sem revisão e aprovação da TASK-001.
+
+Conclusão técnica em 2026-10-02: o campo legado é recusado pelo parser,
+`2026-09-07.v1` é recusado pelo gateway e a configuração de exemplo deixa a
+versão vazia. A publicação legal e a ativação permanecem em TASK-001.
+
+- [ ] TASK-017 — Na integração do renderer, reter o original remoto privado até render/terminal, remover após commit e preservar cleanup absoluto de uma hora; testar falha, cancelamento e crash. Não executar antes de abrir o gate da 020.
+
+Parcela de 2026-10-04 entregue no gate aberto da 020: fila de ciclo de vida
+separada do ACK, intenção individual atômica, reconciliação limitada e recuperação
+de delete/lease/crash. Ver [evidência](../MOB-FEAT-020-visual-translation-rendering/evidence/lifecycle-retention-2026-10-04.md).
+TASK-017 continua aberta para remoção imediata e falhas integrais dos workers;
+esta parcela não habilita uploads nem aprova validação operacional.
+
+Parcela posterior de 2026-10-04: os três workers tentam limpeza por job ao
+finalizar, com falhas diferidas, retry e estado ativo preservado. Varredura por
+idade testada contra upload sem referência e falha SQL independente. Ver
+[evidência](../MOB-FEAT-020-visual-translation-rendering/evidence/lifecycle-worker-cleanup-2026-10-04.md).
+TASK-017 permanece aberta para auditoria integral de cancelamento/dispatch
+fora do worker e operação bootstrap/scheduler/storage; nenhuma ativação real.
+
+Incremento posterior de 2026-10-04: cancelamento terminal e dispatch esgotado
+agendam tentativa somente após commit, com rollback sem delete e recuperação
+durável. A limpeza ACK suspende TX externa; arquivos são removidos fora de TX,
+com confirmação própria. Ver
+[evidência](../MOB-FEAT-020-visual-translation-rendering/evidence/lifecycle-controls-cleanup-2026-10-04.md).
+TASK-017 permanece aberta para auditoria integral de concorrência e validação
+operacional, sem presumir SLA de bootstrap/scheduler/storage ou habilitar upload.
+
+Parcela posterior: dispatch agora exige a tentativa possuída antes de mudar
+outbox/job/cleanup; conclusão tardia não encerra job confirmado ou lease nova.
+Locks job → outbox e recuperação sem nona criação de task comprovados localmente.
+Ver [evidência](../MOB-FEAT-020-visual-translation-rendering/evidence/dispatch-ownership-2026-10-04.md).
+TASK-017 continua aberta para auditoria integral/operacional; não muda gate ou
+autoriza upload/processamento cloud.

@@ -6,7 +6,7 @@ status: verification-pending
 implementation_gate: open
 blocked_by: [MOB-FEAT-016]
 created: 2026-08-15
-updated: 2026-09-07
+updated: 2026-10-02
 supersedes: []
 superseded_by: []
 ---
@@ -38,14 +38,18 @@ mobile e sem expor segredo de provider no aplicativo.
   serviço Spring Boot separado e atualizar somente as páginas legais de `/web`;
   catálogo, auth da plataforma e endpoints da Core continuam fora.
 - A arquitetura usa Cloud Run/Tasks/SQL/Storage em São Paulo, Cloud Vision OCR
-  regional nos EUA e Cloud Translation LLM em `us-central1`, conforme
+  regional `us` e Cloud Translation Advanced `general/translation-llm` pelo
+  endpoint global, sem garantia de processamento da tradução apenas nos EUA, conforme
   [`docs/translation-gateway-plan.md`](../../../../../docs/translation-gateway-plan.md).
 - `MOB-FEAT-018..020` interpretarão os resultados estruturados do job. Esta spec
   termina na submissão aceita e consulta/cancelamento do envelope remoto.
 - Termos e Privacidade operacionais 1.0 estão publicados em
   `toonlira-rm.firebaseapp.com`; o disclosure correspondente é
-  `2026-09-07.v1`. A aprovação final do operador e o gate de implantação
-  permanecem separados da existência técnica desses artefatos.
+  `2026-09-07.v1`. Esses textos antecedem a decisão de usar o endpoint global
+  para tradução e não aprovam esta transferência. Revisão, republicação e
+  nova versão do disclosure são pré-condições do primeiro upload; a aprovação
+  final do operador e o gate de implantação permanecem separados da existência
+  técnica desses artefatos.
 
 ## Requisitos e regras
 
@@ -59,7 +63,8 @@ mobile e sem expor segredo de provider no aplicativo.
     - que internet é obrigatória e o processamento não ocorre integralmente no
       aparelho;
     - categorias de dados/metadados enviados;
-    - Toonlira/Google Cloud, gateway no Brasil, OCR/tradução nos EUA,
+    - Toonlira/Google Cloud, gateway no Brasil, OCR regional nos EUA e
+      tradução pelo endpoint global, sem localização geográfica garantida,
       retenção e política de treinamento conforme os contratos vigentes;
     - limite de cancelamento/exclusão depois que o processamento começar;
     - link para política/termos vigentes.
@@ -74,7 +79,11 @@ mobile e sem expor segredo de provider no aplicativo.
 ### Matriz de capacidade
 
 - O gateway fornece configuração validada e versionada com pares origem/destino,
-  MIME, limites de bytes/dimensões e capacidades disponíveis.
+  MIME, limites de bytes/dimensões e capacidades disponíveis. O disclosure
+  distingue `gatewayRegion=southamerica-east1`, `ocrRegion=us` e
+  `translationLocation=global`; a localização de tradução não é uma região
+  garantida. Resposta com o campo legado `processingRegions` é incompatível e
+  bloqueia o envio.
 - Os sete idiomas de `MOB-FEAT-014` continuam selecionáveis localmente, mas a UI
   nunca promete que os 42 pares são processáveis. Par não suportado é bloqueado
   antes do consentimento/upload com ação para iniciar outro projeto.
@@ -285,8 +294,10 @@ Estado legal provisório definido em 2026-09-03:
 - o domínio e as rotas estão publicados; Termos e Privacidade usam a versão
   operacional 1.0 e o disclosure `2026-09-07.v1` declara que Cloud Vision e
   Cloud Translation não usam o conteúdo do cliente para treinar ou melhorar
-  seus modelos. O gateway permanece indisponível até a aprovação final do
-  operador, o worker e a configuração cloud estarem prontos.
+  seus modelos. Essa publicação é histórica, anterior à decisão de endpoint
+  global para tradução: não satisfaz o disclosure de localização agora exigido.
+  O gateway permanece indisponível até republicação/revisão da informação,
+  aprovação final do operador, worker e configuração cloud prontos.
 
 - API HTTP `/v1` com capabilities, instalação/sessão anônima, submit multipart,
   consulta por idempotency key ou job ref, cancel e ACK; OpenAPI será a
@@ -296,10 +307,18 @@ Estado legal provisório definido em 2026-09-03:
 - A aceitação do job e o pedido de dispatch usam outbox PostgreSQL. Criar Cloud
   Task não participa da transação do banco; dispatcher e reconciliação retomam
   linhas pendentes de modo idempotente antes de declarar a fila operacional.
-- Conteúdo remoto efêmero: original apagado após OCR (failsafe de uma hora) e
-  resultado/manifesto após ACK ou uma hora; metadados sanitizados por sete dias.
-- Região e transferência: gateway/dados temporários em São Paulo; OCR e tradução
-  nos EUA. Política e disclosure devem declarar isso antes do primeiro upload.
+- Conteúdo remoto efêmero: o original permanece privado até o renderer concluir
+  ou o job terminar/cancelar e então é removido; o failsafe remove qualquer
+  original após no máximo uma hora, inclusive em falha. Resultado/manifesto
+  expiram após ACK ou uma hora; metadados sanitizados após sete dias. A
+  implementação atual do worker ainda remove o original após OCR: a mudança
+  de ciclo de vida pertence à integração futura do renderer e não autoriza
+  uploads enquanto estiver divergente.
+- Região e transferência: gateway/dados temporários em São Paulo; OCR pelo
+  endpoint regional `us`; tradução pelo endpoint global do Cloud Translation
+  Advanced, sem garantia de residência nos EUA ou em outra região específica.
+  Política, disclosure versionado e capabilities devem refletir a distinção
+  antes do primeiro upload, após aprovação do operador.
 - Idempotência por instalação+chave; URL de resultado assinada curta com hash;
   nenhuma chamada cobrada possui retry automático.
 - Limites, URLs legais, versões, matriz de 42 pares, quota e kill switch vêm de
@@ -442,3 +461,10 @@ permanecem os mesmos.
 Aprovação humana registrada após planejamento de provider, infraestrutura,
 regiões, retenção, quota e UX. Tasks podem ser criadas com o gate aberto;
 implementação real deverá permanecer honesta sobre os gates externos.
+
+## Decisão de manutenção — 2026-10-02
+
+Ruan aprovou o plano em quatro etapas para usar tradução pelo endpoint global.
+Esta etapa revisa o contrato e o consentimento, sem publicar novos textos legais
+nem ativar uploads. A retenção do original até a renderização é intenção
+aprovada para a etapa de integração; o limite absoluto de uma hora permanece.

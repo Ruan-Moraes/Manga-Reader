@@ -92,7 +92,9 @@ export function resolveSettingsAccess(section: SettingsSection, authenticated: b
     if (section.access !== 'private' || authenticated) return { kind: 'open', route: section.route };
 
     const returnTo = parseSettingsAuthReturnRoute(section.route);
+
     if (!returnTo) throw new Error(`Private settings route is not registered as an auth return target: ${section.route}`);
+
     return { kind: 'authenticate', route: ROUTES.AUTH.LOGIN, returnTo };
 }
 

@@ -2,11 +2,11 @@
 id: MOB-FEAT-018
 type: feature
 title: OCR multilíngue e regiões de texto
-status: approved
-implementation_gate: blocked
+status: verification-pending
+implementation_gate: open
 blocked_by: [MOB-FEAT-017]
 created: 2026-08-15
-updated: 2026-08-15
+updated: 2026-09-27
 supersedes: []
 superseded_by: []
 ---
@@ -41,8 +41,10 @@ confirmado sem inventar detecção automática.
   polígono de quatro vértices normalizado ao espaço da imagem original.
 - Blocos/parágrafos do provider são a unidade inicial. Nenhuma heurística afirma
   detectar balão, personagem ou onomatopeia.
-- A ordem inicial preserva a sequência do provider; empates/ausências usam regra
-  determinística por posição e direção de escrita, registrada no contrato.
+- A ordem preserva a sequência estrutural página/bloco/parágrafo do provider;
+  após filtragem, a ordem é contígua e os IDs são determinísticos por job e
+  posição estrutural. Não há desempate direcional, reordenação por geometria
+  ou consumo do layout experimental neste contrato.
 - Texto horizontal e vertical são aceitos quando o provider os retornar. A
   qualidade de japonês vertical permanece `verification-pending` até benchmark.
 - Região vazia, fora dos limites, duplicada ou com polígono degenerado é
@@ -59,7 +61,8 @@ confirmado sem inventar detecção automática.
 ## Plano de persistência
 
 No gateway, texto/regiões ficam em manifesto privado efêmero no bucket. A tabela
-`processing_job_stages` guarda somente estado, timestamps e erro sanitizado.
+`processing_job_stages` guarda estado, timestamps, erro sanitizado, chave opaca
+do manifesto e seu SHA-256; não guarda o conteúdo textual.
 
 No mobile, a persistência final é normalizada por `MOB-FEAT-019/021`:
 `text_regions` possui PK própria e `UNIQUE(page_id, reading_order)`;
@@ -121,10 +124,18 @@ eventos contêm apenas etapa, duração em bucket e código sanitizado.
 
 ## Gate de implementação
 
-- Estado: `blocked`
+- Estado: `open` em 2026-09-24, por autorização do plano de implementação deste marco.
 - Dependência: `MOB-FEAT-017` implementada ou em verificação.
-- A aprovação registra o contrato; não autoriza tasks enquanto o gateway ainda
-  não fornecer sessão, upload idempotente e ambiente de teste.
+- `MOB-FEAT-017` está em `verification-pending`; a fundação do gateway fornece
+  sessão, upload idempotente e ambiente de teste. O adapter Vision v1 regional
+  `us`, hints e mapeamento estão codificados, testados com gRPC local e exercitados
+  em capturas reais dos sete idiomas. A auditoria de 2026-09-27 confirmou os seis
+  critérios técnicos; benchmark independente, qualidade linguística e operação
+  cloud completa permanecem abertos. Após autorização do plano de transição
+  documental, a 018 passa a `verification-pending`, com TASK-004/005 abertas.
+  O bloqueio anterior de tasks da 019 é resolvido pelo planejamento autorizado;
+  `gateway.ocr.mode=disabled` e upload real fechado continuam defaults.
+  Ver [consolidação](evidence/ocr-consolidation.md) e [drift](drift-audit.md).
 
 ## Fora de escopo
 
@@ -138,5 +149,15 @@ eventos contêm apenas etapa, duração em bucket e código sanitizado.
 - Aprovador: Ruan Moraes
 - Data: 2026-08-15
 
-Aprovação registrada junto ao plano do vertical slice. O gate permanece
-bloqueado pela execução de `MOB-FEAT-017`.
+Aprovação registrada junto ao plano do vertical slice. A abertura posterior
+do gate decorre da execução técnica de `MOB-FEAT-017` em verificação.
+
+Em 2026-09-27, Ruan aprovou explicitamente preservar a sequência do Vision em
+vez da frase antiga de desempate direcional e autorizou a consolidação/auditoria.
+A alteração é normativa e documentada; não muda o mapper. A autorização para
+abrir a 019 é condicionada à implementação auditada e aos gates aprovados,
+sem iniciar tradução, encerrar verificações externas ou habilitar uploads.
+
+Ainda em 2026-09-27, Ruan aprovou o plano de transição documental e criação das
+tasks da 019. Hashes da consolidação reconferidos antes da promoção, sem nova
+execução OCR. Esta autorização não aprova qualidade linguística nem operação.

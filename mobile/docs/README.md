@@ -27,9 +27,7 @@ guardrails SDD.
 4. Mova material obsoleto para `legacy/`; exclusão documental exige aprovação
    humana individual.
 
-## Performance
+## Arquivo de performance
 
-- [Referência normativa — MOB-DEC-007](decisions/MOB-DEC-007-mobile-performance.md).
-- [Estado consolidado, diagnóstico histórico e evidências](active/performance-audit.md).
-- [Plano de validação e investigações restantes](plans/performance-remediation.md).
-- [Skill obrigatória](../.agents/skills/mobile-performance/SKILL.md).
+Materiais e ferramentas de performance foram movidos para `perfomance_app/`,
+pasta irmã deste repositório, por solicitação do proprietário.

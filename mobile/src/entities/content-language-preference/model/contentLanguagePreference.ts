@@ -13,6 +13,7 @@ export function isContentLanguage(value: unknown): value is ContentLanguage {
 
 export function normalizeContentLanguages(value: unknown): ContentLanguageChain {
     const source = Array.isArray(value) ? value : [];
+
     const normalized = source.filter(isContentLanguage).filter((locale, index, locales) => locales.indexOf(locale) === index);
 
     if (!normalized.includes('pt-BR')) normalized.push('pt-BR');
@@ -35,10 +36,14 @@ export function removeContentLanguage(chain: readonly ContentLanguage[], languag
 
 export function moveContentLanguage(chain: readonly ContentLanguage[], from: number, to: number): ContentLanguageChain {
     const normalized = normalizeContentLanguages(chain);
+
     if (from < 0 || from >= normalized.length || to < 0 || to >= normalized.length || from === to) return normalized;
 
     const moved = [...normalized];
+
     const [language] = moved.splice(from, 1);
+
     moved.splice(to, 0, language);
+
     return moved;
 }

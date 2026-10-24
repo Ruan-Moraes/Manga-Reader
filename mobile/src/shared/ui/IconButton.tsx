@@ -14,7 +14,9 @@ interface IconButtonProps extends Omit<PressableProps, 'children' | 'style'> {
 
 export function IconButton({ icon, accessibilityLabel, tone = 'accent', surface = 'transparent', disabled, ...props }: IconButtonProps) {
     const { minimumTouchTarget, radii, tokens } = useTheme();
+
     const color = tone === 'danger' ? tokens.danger : tone === 'inverse' ? tokens.inverseText : tokens.accentText;
+
     const [focused, setFocused] = useState(false);
     const [pressed, setPressed] = useState(false);
 

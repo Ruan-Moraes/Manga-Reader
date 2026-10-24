@@ -27,11 +27,14 @@ export const usePrivacySettingsStore = create<PrivacyState & PrivacyActions>((se
     beginIdentity: identityEpoch => set({ ...initialState, identityEpoch }),
     hydrate: (identityEpoch, value) => {
         if (get().identityEpoch !== identityEpoch) return;
+
         const settings = normalizePrivacySettings(value);
+
         set({ confirmed: settings, current: settings, error: null });
     },
     failHydration: (identityEpoch, error) => {
         if (get().identityEpoch !== identityEpoch) return;
+
         set({ confirmed: null, current: null, error });
     },
 }));

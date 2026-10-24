@@ -1,3 +1,5 @@
+// TODO: REFATORAR TUDO AQUI, DIVIDIR POR RESPONSABILIDADES, RETIRAR SQL E COLOCAR EM UM ARQUIVO, COLOCAR AS TIPAGENS EM LUGARES CORRETOS e etc.
+
 import { appPrivateBatchFiles } from '@/shared/files';
 import {
     advanceAppSchemaVersion,
@@ -21,7 +23,9 @@ import {
 export const LOCAL_MEDIA_IMPORT_NAMESPACE = 'local-media-imports';
 
 const CURRENT_SCHEMA_VERSION = 6;
+
 const LANGUAGE_CHECK = "'ja', 'en', 'es', 'ko', 'zh-Hans', 'zh-Hant', 'pt-BR'";
+
 const CREATE_SCHEMA = `
 PRAGMA foreign_keys = ON;
 PRAGMA journal_mode = WAL;
@@ -135,13 +139,18 @@ export interface LocalMediaImportRepository {
 
 async function migrateDatabase(database: AppDatabase): Promise<void> {
     await database.execAsync(CREATE_SCHEMA);
+
     let columns = await database.getAllAsync<TableColumnRow>('PRAGMA table_info(local_media_import_drafts)', []);
+
     if (!columns.some(column => column.name === 'confirmed_at')) {
         await database.execAsync('ALTER TABLE local_media_import_drafts ADD COLUMN confirmed_at INTEGER;');
+
         columns = await database.getAllAsync<TableColumnRow>('PRAGMA table_info(local_media_import_drafts)', []);
     }
+
     if (!columns.some(column => column.name === 'source_language')) {
         await database.execAsync('PRAGMA foreign_keys = OFF;');
+
         try {
             await database.execAsync(`
 BEGIN IMMEDIATE;
@@ -185,17 +194,22 @@ ALTER TABLE local_media_import_items_v3 RENAME TO local_media_import_items;
 COMMIT;
 `);
             const violations = await database.getAllAsync<unknown>('PRAGMA foreign_key_check', []);
+
             if (violations.length > 0) throw new Error('localMediaImport.foreignKeyViolation');
         } catch (error) {
             await database.execAsync('ROLLBACK;').catch(() => undefined);
+
             throw error;
         } finally {
             await database.execAsync('PRAGMA foreign_keys = ON;');
         }
     }
+
     const itemColumns = await database.getAllAsync<TableColumnRow>('PRAGMA table_info(local_media_import_items)', []);
+
     if (!itemColumns.some(column => column.name === 'media_validation_status')) {
         await database.execAsync('PRAGMA foreign_keys = OFF;');
+
         try {
             await database.execAsync(`
 BEGIN IMMEDIATE;
@@ -233,20 +247,25 @@ ALTER TABLE local_media_import_items_v4 RENAME TO local_media_import_items;
 COMMIT;
 `);
             const violations = await database.getAllAsync<unknown>('PRAGMA foreign_key_check', []);
+
             if (violations.length > 0) throw new Error('localMediaImport.foreignKeyViolation');
         } catch (error) {
             await database.execAsync('ROLLBACK;').catch(() => undefined);
+
             throw error;
         } finally {
             await database.execAsync('PRAGMA foreign_keys = ON;');
         }
     }
+
     const draftSchema = await database.getFirstAsync<TableSqlRow>(
         "SELECT sql FROM sqlite_master WHERE type = 'table' AND name = 'local_media_import_drafts' LIMIT 1",
         [],
     );
+
     if (!draftSchema?.sql?.includes("'zh-Hans'")) {
         await database.execAsync('PRAGMA foreign_keys = OFF;');
+
         try {
             await database.execAsync(`
 BEGIN IMMEDIATE;
@@ -308,15 +327,31 @@ ALTER TABLE local_media_import_drafts_v6 RENAME TO local_media_import_drafts;
 ALTER TABLE local_media_import_items_v6 RENAME TO local_media_import_items;
 `);
             const violations = await database.getAllAsync<unknown>('PRAGMA foreign_key_check', []);
+
             if (violations.length > 0) throw new Error('localMediaImport.foreignKeyViolation');
+
             await database.execAsync('COMMIT;');
         } catch (error) {
             await database.execAsync('ROLLBACK;').catch(() => undefined);
+
             throw error;
         } finally {
             await database.execAsync('PRAGMA foreign_keys = ON;');
         }
     }
+
+    await database.runAsync(
+        `DELETE FROM local_media_import_items
+         WHERE NOT EXISTS (
+             SELECT 1 FROM local_media_import_drafts draft WHERE draft.id = local_media_import_items.draft_id
+         )`,
+        [],
+    );
+
+    const remainingViolations = await database.getAllAsync<unknown>('PRAGMA foreign_key_check(local_media_import_items)', []);
+
+    if (remainingViolations.length > 0) throw new Error('localMediaImport.foreignKeyViolation');
+
     await advanceAppSchemaVersion(database, CURRENT_SCHEMA_VERSION);
 }
 
@@ -327,7 +362,9 @@ async function getDraftFrom(executor: SqlExecutor, draftId?: string): Promise<Lo
             : "SELECT id, created_at, updated_at, confirmed_at, source_language, target_language, languages_confirmed_at FROM local_media_import_drafts WHERE slot = 'active' LIMIT 1",
         draftId ? [draftId] : [],
     );
+
     if (!draft) return null;
+
     if (!isTranslationLanguageCode(draft.source_language) || !isTranslationLanguageCode(draft.target_language)) {
         throw new Error('localMediaImport.invalidLanguageCode');
     }
@@ -339,6 +376,7 @@ async function getDraftFrom(executor: SqlExecutor, draftId?: string): Promise<Lo
          FROM local_media_import_items WHERE draft_id = ? ORDER BY position ASC`,
         [draft.id],
     );
+
     return {
         id: draft.id,
         createdAt: draft.created_at,
@@ -353,13 +391,17 @@ async function getDraftFrom(executor: SqlExecutor, draftId?: string): Promise<Lo
 
 async function requireDraft(executor: SqlExecutor, draftId: string): Promise<LocalMediaImportDraft> {
     const draft = await getDraftFrom(executor, draftId);
+
     if (!draft) throw new Error('localMediaImport.draftNotFound');
+
     return draft;
 }
 
 async function persistOrder(executor: SqlExecutor, draftId: string, orderedItemIds: readonly string[]): Promise<void> {
     const offset = orderedItemIds.length + 1;
+
     await executor.runAsync('UPDATE local_media_import_items SET position = position + ? WHERE draft_id = ?', [offset, draftId]);
+
     for (const [position, itemId] of orderedItemIds.entries()) {
         await executor.runAsync('UPDATE local_media_import_items SET position = ? WHERE draft_id = ? AND id = ?', [position, draftId, itemId]);
     }
@@ -370,11 +412,14 @@ export function createSqliteLocalMediaImportRepository(openDatabase: () => Promi
 
     const database = async (): Promise<AppDatabase> => {
         const db = await openDatabase();
+
         initialized ??= runAppDatabaseMigration(() => migrateDatabase(db)).catch(error => {
             initialized = null;
             throw error;
         });
+
         await initialized;
+
         return db;
     };
 
@@ -387,17 +432,27 @@ export function createSqliteLocalMediaImportRepository(openDatabase: () => Promi
         },
         async replaceActive(draft) {
             const db = await database();
+
             let previousId: string | null = null;
+
             await db.withExclusiveTransactionAsync(async transaction => {
                 previousId =
                     (await transaction.getFirstAsync<{ id: string }>("SELECT id FROM local_media_import_drafts WHERE slot = 'active'", []))?.id ?? null;
+
+                await transaction.runAsync(
+                    "DELETE FROM local_media_import_items WHERE draft_id IN (SELECT id FROM local_media_import_drafts WHERE slot = 'active')",
+                    [],
+                );
+
                 await transaction.runAsync("DELETE FROM local_media_import_drafts WHERE slot = 'active'", []);
+
                 await transaction.runAsync(
                     `INSERT INTO local_media_import_drafts
                      (id, slot, created_at, updated_at, confirmed_at, source_language, target_language, languages_confirmed_at)
                      VALUES (?, 'active', ?, ?, ?, ?, ?, ?)`,
                     [draft.id, draft.createdAt, draft.updatedAt, draft.confirmedAt, draft.sourceLanguage, draft.targetLanguage, draft.languagesConfirmedAt],
                 );
+
                 for (const item of draft.items) {
                     await transaction.runAsync(
                         `INSERT INTO local_media_import_items
@@ -424,13 +479,17 @@ export function createSqliteLocalMediaImportRepository(openDatabase: () => Promi
                     );
                 }
             });
+
             return previousId;
         },
         async appendItems(draftId, items, updatedAt) {
             const db = await database();
+
             let result: LocalMediaImportDraft | null = null;
+
             await db.withExclusiveTransactionAsync(async transaction => {
                 const current = await requireDraft(transaction, draftId);
+
                 for (const [index, item] of items.entries()) {
                     await transaction.runAsync(
                         `INSERT INTO local_media_import_items
@@ -456,23 +515,33 @@ export function createSqliteLocalMediaImportRepository(openDatabase: () => Promi
                         ],
                     );
                 }
+
                 await transaction.runAsync(
                     'UPDATE local_media_import_drafts SET updated_at = ?, confirmed_at = NULL, languages_confirmed_at = NULL WHERE id = ?',
                     [updatedAt, draftId],
                 );
+
                 result = await requireDraft(transaction, draftId);
             });
+
             if (!result) throw new Error('localMediaImport.draftNotFound');
+
             return result;
         },
         async replaceItem(draftId, itemId, replacement, updatedAt, expectedUpdatedAt) {
             const db = await database();
+
             let result: ReplacedLocalMediaImportItem | null = null;
+
             await db.withExclusiveTransactionAsync(async transaction => {
                 const current = await requireDraft(transaction, draftId);
+
                 if (current.updatedAt !== expectedUpdatedAt) throw new Error('localMediaImport.staleDraft');
+
                 const previous = current.items.find(item => item.id === itemId);
+
                 if (!previous) throw new Error('localMediaImport.itemNotFound');
+
                 await transaction.runAsync(
                     `UPDATE local_media_import_items SET
                         local_filename = ?, byte_size = ?, mime_hint = ?, created_at = ?,
@@ -481,42 +550,62 @@ export function createSqliteLocalMediaImportRepository(openDatabase: () => Promi
                      WHERE draft_id = ? AND id = ?`,
                     [replacement.localFilename, replacement.byteSize, replacement.mimeHint, replacement.createdAt, draftId, itemId],
                 );
+
                 await transaction.runAsync('UPDATE local_media_import_drafts SET updated_at = ? WHERE id = ?', [updatedAt, draftId]);
+
                 result = { draft: await requireDraft(transaction, draftId), previousFilename: previous.localFilename };
             });
+
             if (!result) throw new Error('localMediaImport.itemNotFound');
+
             return result;
         },
         async removeItem(draftId, itemId, updatedAt) {
             const db = await database();
+
             let result: RemovedLocalMediaImportItem | null = null;
+
             await db.withExclusiveTransactionAsync(async transaction => {
                 const current = await requireDraft(transaction, draftId);
+
                 const removed = current.items.find(item => item.id === itemId);
+
                 if (!removed) throw new Error('localMediaImport.itemNotFound');
+
                 await transaction.runAsync('DELETE FROM local_media_import_items WHERE draft_id = ? AND id = ?', [draftId, itemId]);
+
                 const remainingIds = current.items.filter(item => item.id !== itemId).map(item => item.id);
+
                 if (remainingIds.length === 0) {
                     await transaction.runAsync('DELETE FROM local_media_import_drafts WHERE id = ?', [draftId]);
                     result = { draft: null, filename: removed.localFilename };
                     return;
                 }
+
                 await persistOrder(transaction, draftId, remainingIds);
+
                 await transaction.runAsync(
                     'UPDATE local_media_import_drafts SET updated_at = ?, confirmed_at = NULL, languages_confirmed_at = NULL WHERE id = ?',
                     [updatedAt, draftId],
                 );
+
                 result = { draft: await requireDraft(transaction, draftId), filename: removed.localFilename };
             });
+
             if (!result) throw new Error('localMediaImport.itemNotFound');
+
             return result;
         },
         async reorderItems(draftId, orderedItemIds, updatedAt) {
             const db = await database();
+
             let result: LocalMediaImportDraft | null = null;
+
             await db.withExclusiveTransactionAsync(async transaction => {
                 const current = await requireDraft(transaction, draftId);
+
                 const currentIds = new Set(current.items.map(item => item.id));
+
                 if (
                     orderedItemIds.length !== currentIds.size ||
                     new Set(orderedItemIds).size !== currentIds.size ||
@@ -524,83 +613,119 @@ export function createSqliteLocalMediaImportRepository(openDatabase: () => Promi
                 ) {
                     throw new Error('localMediaImport.invalidOrder');
                 }
+
                 await persistOrder(transaction, draftId, orderedItemIds);
+
                 await transaction.runAsync(
                     'UPDATE local_media_import_drafts SET updated_at = ?, confirmed_at = NULL, languages_confirmed_at = NULL WHERE id = ?',
                     [updatedAt, draftId],
                 );
+
                 result = await requireDraft(transaction, draftId);
             });
+
             if (!result) throw new Error('localMediaImport.invalidOrder');
+
             return result;
         },
         async confirm(draftId, confirmedAt) {
             const db = await database();
+
             let result: LocalMediaImportDraft | null = null;
+
             await db.withExclusiveTransactionAsync(async transaction => {
                 const current = await requireDraft(transaction, draftId);
+
                 if (current.items.length === 0) throw new Error('localMediaImport.emptyDraft');
+
                 await transaction.runAsync('UPDATE local_media_import_drafts SET updated_at = ?, confirmed_at = ? WHERE id = ?', [
                     confirmedAt,
                     confirmedAt,
                     draftId,
                 ]);
+
                 result = await requireDraft(transaction, draftId);
             });
+
             if (!result) throw new Error('localMediaImport.emptyDraft');
+
             return result;
         },
         async updateLanguages(draftId, pair, updatedAt, expectedUpdatedAt) {
             if (!isValidTranslationLanguagePair(pair)) throw new Error('localMediaImport.invalidLanguagePair');
+
             const db = await database();
+
             let result: LocalMediaImportDraft | null = null;
+
             await db.withExclusiveTransactionAsync(async transaction => {
                 const current = await requireDraft(transaction, draftId);
+
                 if (current.updatedAt !== expectedUpdatedAt) throw new Error('localMediaImport.staleDraft');
+
                 if (current.items.length === 0 || current.confirmedAt === null) throw new Error('localMediaImport.reviewRequired');
+
                 await transaction.runAsync(
                     `UPDATE local_media_import_drafts
                      SET updated_at = ?, source_language = ?, target_language = ?, languages_confirmed_at = NULL
                      WHERE id = ?`,
                     [updatedAt, pair.sourceLanguage, pair.targetLanguage, draftId],
                 );
+
                 result = await requireDraft(transaction, draftId);
             });
+
             if (!result) throw new Error('localMediaImport.invalidLanguagePair');
+
             return result;
         },
         async confirmLanguages(draftId, confirmedAt, expectedUpdatedAt) {
             const db = await database();
+
             let result: LocalMediaImportDraft | null = null;
+
             await db.withExclusiveTransactionAsync(async transaction => {
                 const current = await requireDraft(transaction, draftId);
+
                 if (current.updatedAt !== expectedUpdatedAt) throw new Error('localMediaImport.staleDraft');
+
                 if (current.items.length === 0 || current.confirmedAt === null) throw new Error('localMediaImport.reviewRequired');
+
                 if (!isValidTranslationLanguagePair(current)) throw new Error('localMediaImport.invalidLanguagePair');
+
                 await transaction.runAsync('UPDATE local_media_import_drafts SET updated_at = ?, languages_confirmed_at = ? WHERE id = ?', [
                     confirmedAt,
                     confirmedAt,
                     draftId,
                 ]);
+
                 result = await requireDraft(transaction, draftId);
             });
+
             if (!result) throw new Error('localMediaImport.invalidLanguagePair');
+
             return result;
         },
         async updateMediaValidation(draftId, itemId, validation, updatedAt, expectedUpdatedAt) {
             const db = await database();
+
             await db.withExclusiveTransactionAsync(async transaction => {
                 const current = await transaction.getFirstAsync<{ updated_at: number }>(
                     "SELECT updated_at FROM local_media_import_drafts WHERE slot = 'active' AND id = ? LIMIT 1",
                     [draftId],
                 );
+
                 if (!current) throw new Error('localMediaImport.draftNotFound');
+
                 if (current.updated_at !== expectedUpdatedAt) throw new Error('localMediaImport.staleDraft');
+
                 const item = await transaction.getFirstAsync<{ id: string }>('SELECT id FROM local_media_import_items WHERE draft_id = ? AND id = ? LIMIT 1', [
                     draftId,
                     itemId,
                 ]);
+
                 if (!item) throw new Error('localMediaImport.itemNotFound');
+
                 await transaction.runAsync(
                     `UPDATE local_media_import_items SET
                         media_validation_status = ?, media_validation_error = ?, detected_mime_type = ?,
@@ -618,27 +743,40 @@ export function createSqliteLocalMediaImportRepository(openDatabase: () => Promi
                         itemId,
                     ],
                 );
+
                 await transaction.runAsync('UPDATE local_media_import_drafts SET updated_at = ? WHERE id = ?', [updatedAt, draftId]);
             });
         },
         async getReferencedDraftIds() {
             const rows = await (await database()).getAllAsync<{ id: string }>('SELECT id FROM local_media_import_drafts', []);
+
             return new Set(rows.map(row => row.id));
         },
         async measureBytes() {
             const row = await (
                 await database()
             ).getFirstAsync<{ total: number | null }>('SELECT COALESCE(SUM(byte_size), 0) AS total FROM local_media_import_items', []);
+
             return Math.max(0, row?.total ?? 0);
         },
         async clear() {
-            await (await database()).runAsync('DELETE FROM local_media_import_drafts', []);
+            const db = await database();
+
+            await db.withExclusiveTransactionAsync(async transaction => {
+                await transaction.runAsync('DELETE FROM local_media_import_items', []);
+
+                await transaction.runAsync('DELETE FROM local_media_import_drafts', []);
+            });
         },
         async consumeActive(draftId, expectedUpdatedAt) {
             const db = await database();
+
             await db.withExclusiveTransactionAsync(async transaction => {
                 const current = await requireDraft(transaction, draftId);
+
                 if (current.updatedAt !== expectedUpdatedAt) throw new Error('localMediaImport.staleDraft');
+
+                await transaction.runAsync('DELETE FROM local_media_import_items WHERE draft_id = ?', [draftId]);
                 await transaction.runAsync('DELETE FROM local_media_import_drafts WHERE id = ?', [draftId]);
             });
         },

@@ -59,35 +59,48 @@ function databaseFixture(
     } = {},
 ) {
     const rows = { draft: null as DraftRow | null, items: [] as ItemRow[] };
+
     const statements: string[] = [];
+
     let hasConfirmedAt = !options.legacyV1;
     let hasLanguages = !options.legacyV1 && !options.legacyV2;
     let hasValidation = !options.legacyV1 && !options.legacyV2 && !options.legacyV3;
     let hasV6LanguageSchema = false;
+
     let userVersion = options.userVersion ?? 0;
 
     const executor: SqlExecutor = {
         execAsync: async source => {
             statements.push(source);
+
             const version = source.match(/PRAGMA user_version = (\d+)/);
+
             if (version) userVersion = Number(version[1]);
+
             if (source.includes('ADD COLUMN confirmed_at')) hasConfirmedAt = true;
+
             if (source.includes('CREATE TABLE local_media_import_drafts_v3')) {
                 hasLanguages = true;
+
                 if (rows.draft) {
                     rows.draft.source_language = 'ja';
                     rows.draft.target_language = 'pt-BR';
                     rows.draft.languages_confirmed_at = null;
                 }
             }
+
             if (source.includes('CREATE TABLE local_media_import_items_v4')) {
                 hasValidation = true;
+
                 rows.items = rows.items.map(item => pendingItem(item));
             }
+
             if (source.includes('CREATE TABLE local_media_import_drafts_v6')) {
                 hasV6LanguageSchema = true;
+
                 if (rows.draft) {
                     const hadLegacyChinese = rows.draft.source_language === 'zh' || rows.draft.target_language === 'zh';
+
                     if (rows.draft.source_language === 'zh') rows.draft.source_language = 'zh-Hans';
                     if (rows.draft.target_language === 'zh') rows.draft.target_language = 'zh-Hans';
                     if (hadLegacyChinese) rows.draft.languages_confirmed_at = null;
@@ -96,12 +109,25 @@ function databaseFixture(
         },
         runAsync: async (source, params = []) => {
             statements.push(source);
+
             const values = params as unknown[];
-            if (source.includes("DELETE FROM local_media_import_drafts WHERE slot = 'active'")) {
+
+            // TODO: RETIRAR ESSE MONTE IFS, crie um objeto com chave para acessamos a logica correta sem um monte de ifs
+            if (source.includes('WHERE NOT EXISTS')) {
+                rows.items = rows.items.filter(item => rows.draft?.id === item.draft_id);
+            } else if (source.includes('DELETE FROM local_media_import_items') && source.includes('draft_id IN')) {
+                rows.items = [];
+            } else if (source === 'DELETE FROM local_media_import_items WHERE draft_id = ?') {
+                rows.items = rows.items.filter(item => item.draft_id !== String(values[0]));
+            } else if (source === 'DELETE FROM local_media_import_items') {
+                rows.items = [];
+            } else if (source.includes("DELETE FROM local_media_import_drafts WHERE slot = 'active'")) {
                 rows.draft = null;
+
                 rows.items = [];
             } else if (source.includes('DELETE FROM local_media_import_drafts WHERE id')) {
                 rows.draft = null;
+
                 rows.items = [];
             } else if (source.includes('DELETE FROM local_media_import_items')) {
                 rows.items = rows.items.filter(item => item.id !== String(values[1]));
@@ -134,15 +160,18 @@ function databaseFixture(
                 });
             } else if (source.includes("media_validation_status = 'PENDING'")) {
                 const item = rows.items.find(candidate => candidate.draft_id === String(values[4]) && candidate.id === String(values[5]));
+
                 if (item) {
                     item.local_filename = String(values[0]);
                     item.byte_size = Number(values[1]);
                     item.mime_hint = values[2] === null ? null : String(values[2]);
                     item.created_at = Number(values[3]);
+
                     Object.assign(item, pendingItem(item));
                 }
             } else if (source.includes('media_validation_status = ?')) {
                 const item = rows.items.find(candidate => candidate.draft_id === String(values[7]) && candidate.id === String(values[8]));
+
                 if (item) {
                     item.media_validation_status = String(values[0]) as ItemRow['media_validation_status'];
                     item.media_validation_error = values[1] as ItemRow['media_validation_error'];
@@ -158,6 +187,7 @@ function databaseFixture(
                 });
             } else if (source.includes('SET position = ?')) {
                 const item = rows.items.find(candidate => candidate.draft_id === String(values[1]) && candidate.id === String(values[2]));
+
                 if (item) item.position = Number(values[0]);
             } else if (source.includes('source_language = ?')) {
                 if (rows.draft) {
@@ -185,42 +215,59 @@ function databaseFixture(
                     rows.draft.confirmed_at = Number(values[1]);
                 }
             }
+
             return {};
         },
         getFirstAsync: async <T>(source: string, params = []) => {
             statements.push(source);
+
             if (source.includes('FROM local_media_import_items') && !source.includes('SUM(byte_size)')) {
                 const [draftId, itemId] = params as unknown[];
+
                 return (rows.items.find(item => item.draft_id === draftId && item.id === itemId) ?? null) as T | null;
             }
+
             if (source === 'PRAGMA user_version') return { user_version: userVersion } as T;
+
             if (source.includes('sqlite_master') && source.includes('local_media_import_drafts')) {
                 const languageCheck = hasV6LanguageSchema ? "'ja', 'en', 'es', 'ko', 'zh-Hans', 'zh-Hant', 'pt-BR'" : "'ja', 'en', 'es', 'ko', 'zh', 'pt-BR'";
+
                 return { sql: `CREATE TABLE local_media_import_drafts (source_language TEXT CHECK (source_language IN (${languageCheck})))` } as T;
             }
+
             if (source.includes('SUM(byte_size)')) return { total: rows.items.reduce((total, item) => total + item.byte_size, 0) } as T;
+
             if (source === "SELECT id FROM local_media_import_drafts WHERE slot = 'active'") return (rows.draft ? { id: rows.draft.id } : null) as T | null;
+
             return rows.draft as T | null;
         },
         getAllAsync: async <T>(source: string) => {
             statements.push(source);
+
             if (source.includes('PRAGMA foreign_key_check')) return (options.foreignKeyViolation ? [{}] : []) as T[];
+
             if (source.includes('PRAGMA table_info')) {
                 if (source.includes('local_media_import_items')) {
                     return [{ name: 'id' }, ...(hasValidation ? [{ name: 'media_validation_status' }] : [])] as T[];
                 }
+
                 return [
                     { name: 'id' },
                     ...(hasConfirmedAt ? [{ name: 'confirmed_at' }] : []),
                     ...(hasLanguages ? [{ name: 'source_language' }, { name: 'target_language' }, { name: 'languages_confirmed_at' }] : []),
                 ] as T[];
             }
+
             if (source.includes('FROM local_media_import_items')) return [...rows.items].sort((a, b) => a.position - b.position) as T[];
+
             if (source.includes('SELECT id FROM local_media_import_drafts')) return (rows.draft ? [{ id: rows.draft.id }] : []) as T[];
+
             return [];
         },
     };
+
     const database: AppDatabase = { ...executor, withExclusiveTransactionAsync: async task => task(executor) };
+
     return {
         database,
         rows,
@@ -250,6 +297,7 @@ const draft = (id = 'draft-1') => ({
 describe('MOB-FEAT-012/013 SQLite local import repository', () => {
     it('migrates a v1 draft to v2 without losing ids or order', async () => {
         const fixture = databaseFixture({ legacyV1: true });
+
         fixture.rows.draft = {
             id: 'legacy',
             created_at: 1,
@@ -259,10 +307,12 @@ describe('MOB-FEAT-012/013 SQLite local import repository', () => {
             target_language: '',
             languages_confirmed_at: null,
         };
+
         fixture.rows.items = [
             pendingItem({ id: 'b', draft_id: 'legacy', position: 1, local_filename: 'b', byte_size: 2, mime_hint: null, created_at: 1 }),
             pendingItem({ id: 'a', draft_id: 'legacy', position: 0, local_filename: 'a', byte_size: 1, mime_hint: null, created_at: 1 }),
         ];
+
         const repository = createSqliteLocalMediaImportRepository(async () => fixture.database);
 
         await repository.initialize();
@@ -271,6 +321,7 @@ describe('MOB-FEAT-012/013 SQLite local import repository', () => {
         expect(fixture.statements).toContain('ALTER TABLE local_media_import_drafts ADD COLUMN confirmed_at INTEGER;');
         expect(fixture.hasLanguages()).toBe(true);
         expect(fixture.statements).toContain('PRAGMA user_version = 6;');
+
         await expect(repository.getActive()).resolves.toMatchObject({
             id: 'legacy',
             confirmedAt: null,
@@ -283,6 +334,7 @@ describe('MOB-FEAT-012/013 SQLite local import repository', () => {
 
     it('migrates v2 to v3 with language constraints and a clean foreign key check', async () => {
         const fixture = databaseFixture({ legacyV2: true });
+
         fixture.rows.draft = {
             id: 'legacy-v2',
             created_at: 1,
@@ -292,6 +344,7 @@ describe('MOB-FEAT-012/013 SQLite local import repository', () => {
             target_language: '',
             languages_confirmed_at: null,
         };
+
         const repository = createSqliteLocalMediaImportRepository(async () => fixture.database);
 
         await repository.initialize();
@@ -300,6 +353,7 @@ describe('MOB-FEAT-012/013 SQLite local import repository', () => {
         expect(fixture.statements.some(statement => statement.includes('CHECK (source_language <> target_language)'))).toBe(true);
         expect(fixture.statements).toContain('PRAGMA foreign_keys = OFF;');
         expect(fixture.statements).toContain('PRAGMA foreign_keys = ON;');
+
         await expect(repository.getActive()).resolves.toMatchObject({
             id: 'legacy-v2',
             confirmedAt: 2,
@@ -311,6 +365,7 @@ describe('MOB-FEAT-012/013 SQLite local import repository', () => {
 
     it('migrates v3 items to pending v4 validation fields', async () => {
         const fixture = databaseFixture({ legacyV3: true });
+
         fixture.rows.draft = {
             id: 'legacy-v3',
             created_at: 1,
@@ -320,19 +375,23 @@ describe('MOB-FEAT-012/013 SQLite local import repository', () => {
             target_language: 'pt-BR',
             languages_confirmed_at: 2,
         };
+
         fixture.rows.items = [
             pendingItem({ id: 'page', draft_id: 'legacy-v3', position: 0, local_filename: 'page', byte_size: 3, mime_hint: null, created_at: 1 }),
         ];
+
         const repository = createSqliteLocalMediaImportRepository(async () => fixture.database);
 
         await repository.initialize();
 
         expect(fixture.hasValidation()).toBe(true);
+
         await expect(repository.getActive()).resolves.toMatchObject({ items: [{ id: 'page', mediaValidationStatus: 'PENDING' }] });
     });
 
     it('advances the shared database from v5 to v6', async () => {
         const fixture = databaseFixture({ userVersion: 5 });
+
         const repository = createSqliteLocalMediaImportRepository(async () => fixture.database);
 
         await repository.initialize();
@@ -344,15 +403,19 @@ describe('MOB-FEAT-012/013 SQLite local import repository', () => {
         const pairs = TRANSLATION_LANGUAGE_CODES.flatMap(sourceLanguage =>
             TRANSLATION_LANGUAGE_CODES.map(targetLanguage => ({ sourceLanguage, targetLanguage })),
         );
+
         expect(pairs.filter(isValidTranslationLanguagePair)).toHaveLength(42);
+
         for (const language of TRANSLATION_LANGUAGE_CODES) {
             expect(isValidTranslationLanguagePair({ sourceLanguage: language, targetLanguage: language })).toBe(false);
         }
+
         expect(isValidTranslationLanguagePair({ sourceLanguage: 'unknown', targetLanguage: 'pt-BR' })).toBe(false);
     });
 
     it('stores, appends and confirms ordered metadata transactionally', async () => {
         const fixture = databaseFixture();
+
         const repository = createSqliteLocalMediaImportRepository(async () => fixture.database);
         await repository.replaceActive(draft());
 
@@ -363,13 +426,16 @@ describe('MOB-FEAT-012/013 SQLite local import repository', () => {
                 20,
             ),
         ).resolves.toMatchObject({ confirmedAt: null, items: [{ id: 'item-1' }, { id: 'item-2' }, { id: 'item-3', position: 2 }] });
+
         await expect(repository.confirm('draft-1', 30)).resolves.toMatchObject({ confirmedAt: 30, updatedAt: 30 });
         await expect(repository.measureBytes()).resolves.toBe(40);
     });
 
     it('persists a page validation result without changing order or confirmations', async () => {
         const fixture = databaseFixture();
+
         const repository = createSqliteLocalMediaImportRepository(async () => fixture.database);
+
         await repository.replaceActive({ ...draft(), confirmedAt: 9, languagesConfirmedAt: 9 });
 
         await expect(
@@ -389,6 +455,7 @@ describe('MOB-FEAT-012/013 SQLite local import repository', () => {
                 10,
             ),
         ).resolves.toBeUndefined();
+
         await expect(repository.getActive()).resolves.toMatchObject({
             confirmedAt: 9,
             languagesConfirmedAt: 9,
@@ -401,7 +468,9 @@ describe('MOB-FEAT-012/013 SQLite local import repository', () => {
 
     it('replaces one page, resets only its validation and preserves order and confirmations', async () => {
         const fixture = databaseFixture();
+
         const repository = createSqliteLocalMediaImportRepository(async () => fixture.database);
+
         await repository.replaceActive({
             ...draft(),
             confirmedAt: 9,
@@ -434,6 +503,7 @@ describe('MOB-FEAT-012/013 SQLite local import repository', () => {
                 ],
             },
         });
+
         await expect(
             repository.replaceItem('draft-1', 'item-1', { localFilename: 'stale', byteSize: 1, mimeHint: null, createdAt: 13 }, 13, 999),
         ).rejects.toThrow('localMediaImport.staleDraft');
@@ -441,7 +511,9 @@ describe('MOB-FEAT-012/013 SQLite local import repository', () => {
 
     it('reorders without changing ids and clears confirmation', async () => {
         const fixture = databaseFixture();
+
         const repository = createSqliteLocalMediaImportRepository(async () => fixture.database);
+
         await repository.replaceActive({
             ...draft(),
             confirmedAt: 15,
@@ -460,11 +532,13 @@ describe('MOB-FEAT-012/013 SQLite local import repository', () => {
                 { id: 'item-1', position: 1 },
             ],
         });
+
         await expect(repository.reorderItems('draft-1', ['item-1', 'unknown'], 21)).rejects.toThrow('localMediaImport.invalidOrder');
     });
 
     it('migrates legacy zh to zh-Hans and clears language confirmation without losing the draft', async () => {
         const fixture = databaseFixture({ legacyV5Language: true, userVersion: 5 });
+
         fixture.rows.draft = {
             id: 'legacy-zh',
             created_at: 1,
@@ -474,15 +548,18 @@ describe('MOB-FEAT-012/013 SQLite local import repository', () => {
             target_language: 'en',
             languages_confirmed_at: 2,
         };
+
         fixture.rows.items = [
             pendingItem({ id: 'page', draft_id: 'legacy-zh', position: 0, local_filename: 'page', byte_size: 3, mime_hint: null, created_at: 1 }),
         ];
+
         const repository = createSqliteLocalMediaImportRepository(async () => fixture.database);
 
         await repository.initialize();
 
         expect(fixture.hasV6LanguageSchema()).toBe(true);
         expect(fixture.userVersion()).toBe(6);
+
         await expect(repository.getActive()).resolves.toMatchObject({
             id: 'legacy-zh',
             sourceLanguage: 'zh-Hans',
@@ -490,14 +567,17 @@ describe('MOB-FEAT-012/013 SQLite local import repository', () => {
             languagesConfirmedAt: null,
             items: [{ id: 'page' }],
         });
+
         expect(fixture.statements.some(statement => statement.includes('PRAGMA foreign_key_check'))).toBe(true);
     });
 
     it('rolls back the v6 rebuild when foreign key verification fails', async () => {
         const fixture = databaseFixture({ legacyV5Language: true, userVersion: 5, foreignKeyViolation: true });
+
         const repository = createSqliteLocalMediaImportRepository(async () => fixture.database);
 
         await expect(repository.initialize()).rejects.toThrow('localMediaImport.foreignKeyViolation');
+
         expect(fixture.statements).toContain('ROLLBACK;');
         expect(fixture.statements).not.toContain('PRAGMA user_version = 6;');
     });
@@ -510,30 +590,37 @@ describe('MOB-FEAT-012/013 SQLite local import repository', () => {
         ),
     )('persists and confirms the directed pair %s → %s', async (sourceLanguage, targetLanguage) => {
         const fixture = databaseFixture();
+
         const repository = createSqliteLocalMediaImportRepository(async () => fixture.database);
         await repository.replaceActive({ ...draft(), confirmedAt: 15 });
 
         const selected = await repository.updateLanguages('draft-1', { sourceLanguage, targetLanguage }, 20, 10);
+
         expect(selected).toMatchObject({ sourceLanguage, targetLanguage, languagesConfirmedAt: null, updatedAt: 20 });
+
         await expect(repository.confirmLanguages('draft-1', 30, 20)).resolves.toMatchObject({ languagesConfirmedAt: 30, updatedAt: 30 });
     });
 
     it('rejects invalid or stale language changes without mutating the persisted draft', async () => {
         const fixture = databaseFixture();
+
         const repository = createSqliteLocalMediaImportRepository(async () => fixture.database);
         await repository.replaceActive({ ...draft(), confirmedAt: 15 });
 
         await expect(repository.updateLanguages('draft-1', { sourceLanguage: 'ja', targetLanguage: 'ja' }, 20, 10)).rejects.toThrow(
             'localMediaImport.invalidLanguagePair',
         );
+
         await expect(repository.updateLanguages('draft-1', { sourceLanguage: 'en', targetLanguage: 'es' }, 20, 999)).rejects.toThrow(
             'localMediaImport.staleDraft',
         );
+
         await expect(repository.getActive()).resolves.toMatchObject({ sourceLanguage: 'ja', targetLanguage: 'pt-BR', updatedAt: 10 });
     });
 
     it('removes an item, compacts positions and deletes the draft after the last item', async () => {
         const fixture = databaseFixture();
+
         const repository = createSqliteLocalMediaImportRepository(async () => fixture.database);
         await repository.replaceActive(draft());
 
@@ -541,12 +628,14 @@ describe('MOB-FEAT-012/013 SQLite local import repository', () => {
             filename: 'item-1',
             draft: { items: [{ id: 'item-2', position: 0 }] },
         });
+
         await expect(repository.removeItem('draft-1', 'item-2', 30)).resolves.toEqual({ filename: 'item-2', draft: null });
         await expect(repository.getActive()).resolves.toBeNull();
     });
 
     it('consumes only the exact active draft version', async () => {
         const fixture = databaseFixture();
+
         const repository = createSqliteLocalMediaImportRepository(async () => fixture.database);
         await repository.replaceActive(draft());
 
@@ -554,6 +643,26 @@ describe('MOB-FEAT-012/013 SQLite local import repository', () => {
         await expect(repository.getActive()).resolves.toMatchObject({ id: 'draft-1' });
         await expect(repository.consumeActive('draft-1', 10)).resolves.toBeUndefined();
         await expect(repository.getActive()).resolves.toBeNull();
+
+        expect(fixture.statements.indexOf('DELETE FROM local_media_import_items WHERE draft_id = ?')).toBeLessThan(
+            fixture.statements.indexOf('DELETE FROM local_media_import_drafts WHERE id = ?'),
+        );
+    });
+
+    it('repairs legacy child rows whose consumed draft no longer exists', async () => {
+        const fixture = databaseFixture({ userVersion: 8 });
+
+        fixture.rows.items = [
+            pendingItem({ id: 'orphan', draft_id: 'consumed', position: 0, local_filename: 'orphan', byte_size: 1, mime_hint: null, created_at: 1 }),
+        ];
+
+        const repository = createSqliteLocalMediaImportRepository(async () => fixture.database);
+
+        await repository.initialize();
+
+        expect(fixture.rows.items).toEqual([]);
+        expect(fixture.statements.some(statement => statement.includes('WHERE NOT EXISTS'))).toBe(true);
+        expect(fixture.statements).toContain('PRAGMA foreign_key_check(local_media_import_items)');
     });
 });
 
@@ -570,32 +679,46 @@ describe('MOB-PERF-003 validation write cost and conflict guards', () => {
 
     it.each([10, 67, 200])('does not hydrate the %i-item collection per result', async count => {
         const fixture = databaseFixture();
+
         const repository = createSqliteLocalMediaImportRepository(async () => fixture.database);
+
         const input = {
             ...draft(),
             items: Array.from({ length: count }, (_, index) => ({ ...draft().items[0], id: `item-${index}`, localFilename: `item-${index}`, position: index })),
         };
+
         await repository.replaceActive(input);
+
         fixture.statements.length = 0;
+
         for (let index = 0; index < count; index++) {
             await repository.updateMediaValidation(input.id, `item-${index}`, valid, 11 + index, 10 + index);
         }
+
         const collectionReads = fixture.statements.filter(sql => /FROM local_media_import_items/.test(sql) && !/WHERE draft_id = \? AND id = \?/.test(sql));
+
         expect(collectionReads).toHaveLength(0);
+
         const persisted = await repository.getActive();
+
         expect(persisted?.items).toHaveLength(count);
         expect(persisted?.items.every(item => item.mediaValidationStatus === 'VALID')).toBe(true);
     });
 
     it('rejects stale versions and missing items without writing a result', async () => {
         const fixture = databaseFixture();
+
         const repository = createSqliteLocalMediaImportRepository(async () => fixture.database);
         await repository.replaceActive(draft());
+
         await expect(repository.updateMediaValidation('draft-1', 'item-1', valid, 11, 9)).rejects.toThrow('localMediaImport.staleDraft');
         await expect(repository.updateMediaValidation('draft-1', 'missing', valid, 11, 10)).rejects.toThrow('localMediaImport.itemNotFound');
+
         expect(fixture.rows.draft?.updated_at).toBe(10);
         expect(fixture.rows.items.every(item => item.media_validation_status === 'PENDING')).toBe(true);
+
         fixture.rows.draft = null;
+
         await expect(repository.updateMediaValidation('draft-1', 'item-1', valid, 11, 10)).rejects.toThrow('localMediaImport.draftNotFound');
     });
 });

@@ -57,7 +57,3 @@ Antes de criar uma Target Spec, a paridade brownfield deve estar verde: zero arq
 - `sdd-drift-auditor`: detectar divergências entre specs e código.
 
 Antes de concluir, executar `pnpm check` dentro de `mobile/`.
-
-## Performance obrigatória
-
-Consultar [mobile-performance](.agents/skills/mobile-performance/SKILL.md) antes de novas funcionalidades ou alterações de componentes/fluxos, durante reviews/refatorações, após implementar e em investigações de lentidão ou consumo crescente. Aplicar a [MOB-DEC-007](docs/decisions/MOB-DEC-007-mobile-performance.md) proporcionalmente ao impacto, preservando os gates SDD.

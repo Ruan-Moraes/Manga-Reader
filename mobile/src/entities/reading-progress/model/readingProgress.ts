@@ -15,6 +15,7 @@ const diagnosticListeners = new Set<(diagnostic: ReadingProgressDiagnostic) => v
 
 export function subscribeReadingProgressDiagnostics(listener: (diagnostic: ReadingProgressDiagnostic) => void): () => void {
     diagnosticListeners.add(listener);
+
     return () => diagnosticListeners.delete(listener);
 }
 
@@ -26,8 +27,11 @@ const record = (value: unknown): Record<string, unknown> => (value !== null && t
 
 export function normalizeReadingProgress(value: unknown): ReadingProgress | null {
     const source = record(value);
+
     const titleId = typeof source.titleId === 'string' ? source.titleId : '';
+
     const chapterNumber = typeof source.chapterNumber === 'string' ? source.chapterNumber.trim() : '';
+
     const currentPage = source.currentPage;
     const totalPages = source.totalPages;
 

@@ -16,6 +16,7 @@ export function applyAdultContentPolicy<T>(
         .filter(item => preference !== 'HIDE' || !isAdult(item))
         .map(item => {
             const concealed = preference === 'BLUR' && isAdult(item) && !isRevealed(item);
+
             return { item, concealSensitiveMedia: concealed, canReveal: concealed };
         });
 }

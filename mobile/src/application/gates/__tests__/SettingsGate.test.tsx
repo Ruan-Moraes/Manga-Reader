@@ -17,13 +17,16 @@ const secureStore = jest.mocked(SecureStore);
 
 function TranslatedHomeLabel() {
     const { t } = useTranslation('common');
+
     return <Text>{t('nav.home')}</Text>;
 }
 
 describe('MOB-FEAT-001/003 SettingsGate', () => {
     beforeEach(async () => {
         await i18n.changeLanguage(DEFAULT_LANGUAGE);
+
         resetSettingsRuntimeForTests();
+
         useSettingsStore.setState({
             settings: DEFAULT_USER_SETTINGS,
             guestSettings: DEFAULT_USER_SETTINGS,
@@ -38,14 +41,17 @@ describe('MOB-FEAT-001/003 SettingsGate', () => {
             localError: null,
             syncError: null,
         });
+
         secureStore.getItemAsync.mockResolvedValue(null);
         secureStore.setItemAsync.mockResolvedValue();
         secureStore.deleteItemAsync.mockResolvedValue();
+
         jest.mocked(SplashScreen.hideAsync).mockResolvedValue();
     });
 
     it('bloqueia filhos até hidratar e então esconde o splash', async () => {
         let release!: () => void;
+
         secureStore.getItemAsync
             .mockImplementationOnce(async () => {
                 await new Promise<void>(resolve => {
@@ -60,10 +66,13 @@ describe('MOB-FEAT-001/003 SettingsGate', () => {
                 <Text>conteúdo</Text>
             </SettingsGate>,
         );
+
         expect(screen.queryByText('conteúdo')).toBeNull();
 
         release();
+
         await waitFor(() => expect(screen.getByText('conteúdo')).toBeOnTheScreen());
+
         expect(SplashScreen.hideAsync).toHaveBeenCalled();
     });
 
@@ -77,6 +86,7 @@ describe('MOB-FEAT-001/003 SettingsGate', () => {
         );
 
         await waitFor(() => expect(screen.getByText('conteúdo')).toBeOnTheScreen());
+
         expect(useSettingsStore.getState().localError).toContain('unavailable');
     });
 
@@ -86,6 +96,7 @@ describe('MOB-FEAT-001/003 SettingsGate', () => {
                 <TranslatedHomeLabel />
             </SettingsGate>,
         );
+
         await waitFor(() => expect(screen.getByText('Início')).toBeOnTheScreen());
 
         await act(async () => useSettingsStore.getState().setLanguage('en-US'));

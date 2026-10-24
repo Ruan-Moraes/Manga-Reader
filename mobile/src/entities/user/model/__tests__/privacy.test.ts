@@ -26,6 +26,7 @@ describe('MOB-FEAT-006 privacy entity', () => {
 
     it('normaliza DNT com analytics desligado e rejeita valor desconhecido sem default silencioso', () => {
         expect(normalizePrivacySettings({ ...privacy, viewHistoryVisibility: 'DO_NOT_TRACK' }).behaviorAnalyticsEnabled).toBe(false);
+
         expect(() => normalizePrivacySettings({ ...privacy, adultContentPreference: 'UNKNOWN' })).toThrow(InvalidPrivacySettingsError);
     });
 
@@ -38,13 +39,16 @@ describe('MOB-FEAT-006 privacy entity', () => {
             { id: 'safe', adult: false },
             { id: 'adult', adult: true },
         ];
+
         const result = applyAdultContentPolicy(items, preference, item => item.adult);
+
         expect(result.map(entry => entry.item.id)).toEqual(ids);
         expect(result.map(entry => entry.concealSensitiveMedia)).toEqual(concealed);
     });
 
     it('permite revelação explícita apenas para a interação BLUR informada', () => {
         const item = { id: 'adult', adult: true };
+
         expect(
             applyAdultContentPolicy(
                 [item],

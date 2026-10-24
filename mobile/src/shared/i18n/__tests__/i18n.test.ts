@@ -41,7 +41,7 @@ describe('MOB-BASE-003 i18n', () => {
 
     it('registra os três idiomas e os namespaces observados', () => {
         expect(SUPPORTED_LANGUAGES).toEqual(['pt-BR', 'en-US', 'es-ES']);
-        expect(NAMESPACES).toEqual(['common', 'auth', 'launcher', 'reader', 'remoteProcessing', 'settingsNavigation']);
+        expect(NAMESPACES).toEqual(['common', 'auth', 'launcher', 'localTranslation', 'reader', 'remoteProcessing', 'settingsNavigation']);
         expect(DEFAULT_LANGUAGE).toBe('pt-BR');
     });
 

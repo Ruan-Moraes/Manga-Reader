@@ -1,4 +1,6 @@
 export { getMySettings } from './api/userSettingsApi';
+export { DEFAULT_READER_GESTURES, normalizeReaderGestures, type ReaderControlsMode, type ReaderGesturePreferences } from './model/readerGesturePreferences';
+export { DEFAULT_TEXT_READER_PREFERENCES, normalizeTextReaderPreferences, type TextReaderPreferences } from './model/textReaderPreferences';
 export {
     type AccessibilitySettings,
     type AppearanceSettings,

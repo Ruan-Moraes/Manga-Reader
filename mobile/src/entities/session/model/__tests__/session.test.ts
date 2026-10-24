@@ -12,7 +12,9 @@ jest.mock('@/shared/api', () => ({
 }));
 
 const mockedStorage = jest.mocked(tokenStorage);
+
 const user = { id: 'u1', name: 'Reader', email: 'reader@example.com', role: 'MEMBER' as const };
+
 const tokens = { accessToken: 'access', refreshToken: 'refresh' };
 
 describe('MOB-BASE-005 session entity', () => {
@@ -31,16 +33,19 @@ describe('MOB-BASE-005 session entity', () => {
 
     it('inicia e encerra a sessão preservando o contrato de armazenamento', async () => {
         await sessionTransitions.start(user, tokens);
+
         expect(mockedStorage.setTokens).toHaveBeenCalledWith(tokens.accessToken, tokens.refreshToken);
         expect(useSessionStore.getState()).toMatchObject({ user, tokens, isAuthenticated: true, identityEpoch: 1 });
 
         await sessionTransitions.clear();
+
         expect(mockedStorage.clear).toHaveBeenCalled();
         expect(useSessionStore.getState()).toMatchObject({ user: null, tokens: null, isAuthenticated: false, identityEpoch: 2 });
     });
 
     it('limpa o estado local mesmo quando o armazenamento seguro falha', async () => {
         useSessionStore.setState({ user, tokens, isAuthenticated: true, identityEpoch: 4 });
+
         mockedStorage.clear.mockRejectedValueOnce(new Error('secure storage unavailable'));
 
         await expect(sessionTransitions.clear()).rejects.toThrow('secure storage unavailable');

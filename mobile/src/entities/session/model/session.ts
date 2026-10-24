@@ -44,6 +44,7 @@ export const sessionTransitions = {
 
     start: async (user: User, tokens: SessionTokens): Promise<void> => {
         await tokenStorage.setTokens(tokens.accessToken, tokens.refreshToken);
+
         useSessionStore.setState(state => ({
             user,
             tokens,

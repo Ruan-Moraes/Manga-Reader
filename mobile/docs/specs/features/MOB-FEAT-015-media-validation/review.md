@@ -1,7 +1,7 @@
 # Review — MOB-FEAT-015
 
 - Spec revisada: `spec.md`
-- Implementação/revisão: working-tree sha256:cb2e5226cae5289175f02ef3243e0e048890a91e89ff1da21764db1ee89ab84e
+- Implementação/revisão: commit c55a22aaaebeeba279a0e535730b8ee246a9b30e
 - Gate na entrada do planejamento: `open`
 - Dependências verificadas: `MOB-FEAT-012`, `MOB-FEAT-013` e `MOB-FEAT-014` implementadas
 - Verdict: `approved`
@@ -69,16 +69,16 @@ Rebase documental de performance (2026-09-05): checksum global atualizado pela i
 ## Rodada C03 — 2026-09-06 (estado atual)
 
 Caminho de persistência otimizado sem mudar requisitos ou schema. Testes funcionais
-e ensaio SQLite Node cobrem preservação/rollback; [review da rodada](../../../active/performance-evidence/corrections-2026-09-06/review.md).
+e ensaio SQLite Node cobrem preservação/rollback; review da rodada (arquivo externo: `perfomance_app/mobile/docs/active/performance-evidence/corrections-2026-09-06/review.md`).
 A matriz física de TASK-014/AC-008 foi repetida e atestada por Ruan Moraes em
 2026-09-06, cobrindo o fluxo de importação e validação após a alteração de
 persistência, sem regressão reportada. O verdict atual é `approved`.
 
-Rebase C01/C03/C04 (2026-09-06): checksum global atualizado após correções de numeração do leitor, persistência da validação e limite de resposta. Escopo e validações em [review de performance](../../../active/performance-evidence/corrections-2026-09-06/review.md). Não representa nova verificação física das demais features.
+Rebase C01/C03/C04 (2026-09-06): checksum global atualizado após correções de numeração do leitor, persistência da validação e limite de resposta. Escopo e validações em review de performance (arquivo externo: `perfomance_app/mobile/docs/active/performance-evidence/corrections-2026-09-06/review.md`). Não representa nova verificação física das demais features.
 
-Rebase C02/C05 (2026-09-06): checksum global atualizado após virtualização do leitor e download de exportação para arquivo. [Escopo e validação](../../../active/performance-evidence/corrections-c02-c05-2026-09-06/review.md). Não representa nova verificação física das demais features.
+Rebase C02/C05 (2026-09-06): checksum global atualizado após virtualização do leitor e download de exportação para arquivo. Escopo e validação (arquivo externo: `perfomance_app/mobile/docs/active/performance-evidence/corrections-c02-c05-2026-09-06/review.md`). Não representa nova verificação física das demais features.
 
-Consolidação documental (2026-09-06): checksum global atualizado após reconciliar o estado de performance; runtime e verdict preservados. [Registro](../../../active/performance-evidence/consolidation-2026-09-06/review.md). Sem nova validação física.
+Consolidação documental (2026-09-06): checksum global atualizado após reconciliar o estado de performance; runtime e verdict preservados. Registro (arquivo externo: `perfomance_app/mobile/docs/active/performance-evidence/consolidation-2026-09-06/review.md`). Sem nova validação física.
 
 Preparação de commit (2026-09-06): rebase global após excluir scripts avulsos de ensaio, listagens Git e metadados do sistema dos arquivos versionados, conforme solicitação humana. Resultados históricos preservados; runtime e verdict inalterados.
 

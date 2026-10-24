@@ -1,0 +1,4 @@
+# Este workspace contém somente o pacote mobile; web/ é independente.
+packages: []
+enableGlobalVirtualStore: false
+verifyDepsBeforeRun: error

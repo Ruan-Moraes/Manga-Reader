@@ -84,8 +84,7 @@ export function validateFsdBoundaries({ mobileRoot, files = listRuntimeFiles(res
 
                 const targetsPublicApi = targetPath === normalizedPublicPath || targetPath === `${normalizedPublicPath}/index`;
 
-                if (!targetsPublicApi && !entityCrossReference)
-                    errors.push(`${sourcePath}: deep import '${importPath}'; use '${publicPath}'`);
+                if (!targetsPublicApi && !entityCrossReference) errors.push(`${sourcePath}: deep import '${importPath}'; use '${publicPath}'`);
             }
         }
     }

@@ -5,13 +5,14 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { registerLocalMediaImportDataParticipant } from '@/entities/local-media-import';
+import { registerLocalTranslationResultDataParticipant } from '@/entities/local-translation-result';
 import { registerRemoteProcessingIdentityDataParticipant } from '@/entities/remote-processing-identity';
 import { registerTranslationProjectDataParticipant } from '@/entities/translation-project';
 import { themePreferenceToColorScheme } from '@/entities/user-setting';
 import { useSettingsStore } from '@/features/manage-settings';
 import { ThemeProvider, useTheme } from '@/shared/theme';
 
-import { RemoteProcessingRecoveryGate } from '../gates';
+import { LocalTranslationRecoveryGate, RemoteProcessingRecoveryGate } from '../gates';
 import { QueryProvider } from './QueryProvider';
 
 function ThemedApplicationSurface({ children }: PropsWithChildren) {
@@ -25,7 +26,9 @@ function ThemedApplicationSurface({ children }: PropsWithChildren) {
         <SafeAreaProvider style={{ backgroundColor: tokens.bg }}>
             <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
             <QueryProvider>
-                <RemoteProcessingRecoveryGate>{children}</RemoteProcessingRecoveryGate>
+                <RemoteProcessingRecoveryGate>
+                    <LocalTranslationRecoveryGate>{children}</LocalTranslationRecoveryGate>
+                </RemoteProcessingRecoveryGate>
             </QueryProvider>
         </SafeAreaProvider>
     );
@@ -34,15 +37,18 @@ function ThemedApplicationSurface({ children }: PropsWithChildren) {
 export function AppProviders({ children }: PropsWithChildren) {
     const appearance = useSettingsStore(state => state.settings.appearance);
     const accessibility = useSettingsStore(state => state.settings.accessibility);
+
     const setThemeOverride = useSettingsStore(state => state.setThemeOverride);
 
     useEffect(() => {
         const unregisterImports = registerLocalMediaImportDataParticipant();
+        const unregisterResults = registerLocalTranslationResultDataParticipant();
         const unregisterProjects = registerTranslationProjectDataParticipant();
         const unregisterRemoteIdentity = registerRemoteProcessingIdentityDataParticipant();
 
         return () => {
             unregisterRemoteIdentity();
+            unregisterResults();
             unregisterProjects();
             unregisterImports();
         };

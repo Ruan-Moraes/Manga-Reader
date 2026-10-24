@@ -13,10 +13,12 @@ describe('MOB-FEAT-004 content language GET contract', () => {
     it('usa o endpoint autenticado, aceita cancelamento e normaliza o envelope', async () => {
         apiMock.onGet('/users/me/content-locales').reply(config => {
             expect(config.signal).toBeDefined();
+
             return [200, { data: { contentLocales: ['en-US', 'fr-FR', 'en-US'] } }];
         });
 
         await expect(getMyContentLanguages(new AbortController().signal)).resolves.toEqual(['en-US', 'pt-BR']);
+
         expect(apiMock.history.get).toHaveLength(1);
     });
 });

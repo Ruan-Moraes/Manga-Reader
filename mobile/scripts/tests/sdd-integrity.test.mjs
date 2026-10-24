@@ -83,6 +83,19 @@ test('checksum cobre recursos e configuração, mas não é autorreferente às e
     assert.notEqual(implementationChecksum(root), initial);
 });
 
+test('checksum inclui criação e alteração da configuração local do pnpm', () => {
+    const root = mkdtempSync(resolve(tmpdir(), 'mobile-pnpm-integrity-'));
+    const configPath = resolve(root, 'pnpm-workspace.yaml');
+    const withoutConfig = implementationChecksum(root);
+
+    writeFileSync(configPath, 'enableGlobalVirtualStore: false\nverifyDepsBeforeRun: error\n');
+    const configured = implementationChecksum(root);
+    assert.notEqual(configured, withoutConfig);
+
+    writeFileSync(configPath, 'enableGlobalVirtualStore: true\nverifyDepsBeforeRun: error\n');
+    assert.notEqual(implementationChecksum(root), configured);
+});
+
 test('valida supersession corrente e contadores derivados da reconciliação', () => {
     const content = `| Baselines observados | 1 |\n| Verdicts \`match\` | 1 |\n| Verdicts \`mismatch\` | 0 |\n| Verdicts \`undocumented\` | 0 |\n\n## MOB-BASE-001\n| OBS-001 | x | \`match\` | — |`;
 

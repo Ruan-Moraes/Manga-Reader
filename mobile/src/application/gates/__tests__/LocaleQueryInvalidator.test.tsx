@@ -10,6 +10,7 @@ import { LocaleQueryInvalidator } from '../LocaleQueryInvalidator';
 describe('MOB-FEAT-003 invalidação seletiva por locale', () => {
     beforeEach(() => {
         resetSettingsRuntimeForTests();
+
         useSettingsStore.setState({
             settings: DEFAULT_USER_SETTINGS,
             guestSettings: DEFAULT_USER_SETTINGS,
@@ -26,11 +27,14 @@ describe('MOB-FEAT-003 invalidação seletiva por locale', () => {
 
     it('invalida somente queries marcadas e preserva dados locais e independentes', async () => {
         const queryClient = new QueryClient();
+
         queryClient.setQueryData(['localized-title'], { title: 'Título' });
+
         queryClient
             .getQueryCache()
             .find({ queryKey: ['localized-title'] })
             ?.setOptions({ meta: { localeDependent: true } });
+
         queryClient.setQueryData(['local-form'], { draft: 'não perder' });
 
         const { unmount } = render(
@@ -42,10 +46,13 @@ describe('MOB-FEAT-003 invalidação seletiva por locale', () => {
         act(() => useSettingsStore.setState({ language: 'en-US' }));
 
         await waitFor(() => expect(queryClient.getQueryState(['localized-title'])?.isInvalidated).toBe(true));
+
         expect(queryClient.getQueryData(['localized-title'])).toEqual({ title: 'Título' });
         expect(queryClient.getQueryState(['local-form'])?.isInvalidated).toBe(false);
         expect(queryClient.getQueryData(['local-form'])).toEqual({ draft: 'não perder' });
+
         unmount();
+
         queryClient.clear();
     });
 });

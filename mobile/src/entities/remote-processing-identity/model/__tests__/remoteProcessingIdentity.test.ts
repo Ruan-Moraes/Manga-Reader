@@ -5,11 +5,13 @@ import { createRemoteProcessingIdentity } from '../remoteProcessingIdentity';
 describe('MOB-FEAT-017 anonymous gateway identity', () => {
     it('stores only the long installation credential and keeps the short bearer in memory', async () => {
         const values = new Map<string, string>();
+
         const storage = {
             getItemAsync: jest.fn(async (key: string) => values.get(key) ?? null),
             setItemAsync: jest.fn(async (key: string, value: string) => void values.set(key, value)),
             deleteItemAsync: jest.fn(async (key: string) => void values.delete(key)),
         };
+
         const request = jest
             .fn()
             .mockResolvedValueOnce({
@@ -27,7 +29,9 @@ describe('MOB-FEAT-017 anonymous gateway identity', () => {
                 headers: {},
                 body: { contractVersion: '1.0', accessToken: 's'.repeat(43), expiresAt: '2099-09-02T12:15:00.000Z' },
             });
+
         const transport = { request, upload: jest.fn() } as unknown as RemoteGatewayTransport;
+
         const identity = createRemoteProcessingIdentity(storage);
 
         const first = await identity.getSession('gateway-alpha', transport);

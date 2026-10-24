@@ -9,7 +9,8 @@
         "eyebrow": "READ WITHOUT NOISE",
         "title": "Your chapters, at your pace.",
         "subtitle": "Prepare pages on your device and continue exactly where you stopped.",
-        "settings": "Device settings"
+        "settings": "Device settings",
+        "novelPreview": "Open novel preview (development)"
     },
     "platform": {
         "title": "Reading platform",
@@ -28,6 +29,7 @@
         "logout": "Sign out"
     },
     "offline": {
+        "library": "Open local library",
         "title": "Translate chapter",
         "description": "Import and prepare your pages",
         "status": "Local-first",

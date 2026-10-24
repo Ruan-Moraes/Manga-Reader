@@ -11,6 +11,7 @@ import { PrivacyAccountGate } from '../PrivacyAccountGate';
 
 describe('MOB-FEAT-006 PrivacyAccountGate', () => {
     const apiMock = new AxiosMockAdapter(api);
+
     const privacy = {
         commentVisibility: 'PRIVATE',
         viewHistoryVisibility: 'PRIVATE',
@@ -24,8 +25,11 @@ describe('MOB-FEAT-006 PrivacyAccountGate', () => {
 
     it('hidrata pela Core e remove estado privado e caches ao trocar de identidade e no logout', async () => {
         const queryClient = new QueryClient();
+
         queryClient.setQueryData(['user', 'old-account'], { secret: true });
+
         useSessionStore.setState({ isAuthenticated: true, identityEpoch: 1 });
+
         apiMock.onGet('/users/me/profile').reply(200, { data: { privacySettings: privacy } });
 
         const view = render(
@@ -35,14 +39,19 @@ describe('MOB-FEAT-006 PrivacyAccountGate', () => {
                 </PrivacyAccountGate>
             </QueryClientProvider>,
         );
+
         await waitFor(() => expect(usePrivacySettingsStore.getState().current).toEqual(privacy));
 
         act(() => useSessionStore.setState({ isAuthenticated: true, identityEpoch: 2 }));
+
         await waitFor(() => expect(usePrivacySettingsStore.getState()).toMatchObject({ identityEpoch: 2 }));
+
         expect(queryClient.getQueryData(['user', 'old-account'])).toBeUndefined();
 
         act(() => useSessionStore.setState({ isAuthenticated: false, identityEpoch: 3 }));
+
         expect(usePrivacySettingsStore.getState().identityEpoch).toBeNull();
+
         view.unmount();
     });
 });

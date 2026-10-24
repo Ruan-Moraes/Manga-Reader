@@ -20,6 +20,7 @@ interface ChoiceCardsProps<T extends string> {
     accessibilityHint?: string;
     disabled?: boolean;
     layout?: 'grid' | 'stacked';
+    compact?: boolean;
 }
 
 export function resolveChoiceCardsStacked(
@@ -43,11 +44,12 @@ export function ChoiceCards<T extends string>({
     accessibilityHint,
     disabled = false,
     layout = 'grid',
+    compact = false,
 }: ChoiceCardsProps<T>) {
     const { sizeClass } = useResponsiveLayout();
     const { fontScale, minimumTouchTarget, radii, spacing, tokens } = useTheme();
     const [focusedOption, setFocusedOption] = useState<T | null>(null);
-    const stacked = resolveChoiceCardsStacked(layout, sizeClass, fontScale);
+    const stacked = compact ? fontScale >= 1.6 : resolveChoiceCardsStacked(layout, sizeClass, fontScale);
     const cardBasis = sizeClass === 'regular' ? '46%' : '29%';
 
     return (
@@ -80,7 +82,7 @@ export function ChoiceCards<T extends string>({
                                 minHeight: minimumTouchTarget,
                                 minWidth: 0,
                                 opacity: disabled ? 0.48 : 1,
-                                ...(stacked ? { alignSelf: 'stretch' } : { flexBasis: cardBasis, flexGrow: 1 }),
+                                ...(stacked ? { alignSelf: 'stretch' } : { flexBasis: compact ? '45%' : cardBasis, flexGrow: 1 }),
                             }}
                         >
                             {({ pressed }) => (
@@ -89,18 +91,18 @@ export function ChoiceCards<T extends string>({
                                     style={{
                                         backgroundColor: selected ? tokens.surfaceSelected : pressed ? tokens.surfacePressed : tokens.surfaceMuted,
                                         borderColor: focused ? tokens.focus : selected ? tokens.accentBorder : tokens.separator,
-                                        borderRadius: radii.card,
-                                        borderWidth: 2,
+                                        borderRadius: compact ? radii.control : radii.card,
+                                        borderWidth: compact ? 1 : 2,
                                         flex: 1,
                                         gap: spacing.xs,
                                         justifyContent: 'center',
                                         minHeight: minimumTouchTarget,
-                                        padding: spacing.md,
+                                        padding: compact ? spacing.sm : spacing.md,
                                     }}
                                 >
                                     <View testID={`choice-card-row-${option}`} style={{ alignItems: 'center', flexDirection: 'row', gap: spacing.md }}>
                                         {optionPreview?.(option) ??
-                                            (icon ? (
+                                            (icon && !compact ? (
                                                 <View
                                                     accessibilityElementsHidden
                                                     style={{
@@ -119,7 +121,7 @@ export function ChoiceCards<T extends string>({
                                             <AppText variant="label" tone={selected ? 'accent' : 'default'}>
                                                 {optionLabel(option)}
                                             </AppText>
-                                            {optionDescription ? (
+                                            {optionDescription && !compact ? (
                                                 <AppText variant="caption" tone="muted">
                                                     {optionDescription(option)}
                                                 </AppText>
@@ -150,6 +152,11 @@ export function ChoiceCards<T extends string>({
                     );
                 })}
             </View>
+            {compact && optionDescription ? (
+                <AppText variant="caption" tone="muted">
+                    {optionDescription(value)}
+                </AppText>
+            ) : null}
         </View>
     );
 }

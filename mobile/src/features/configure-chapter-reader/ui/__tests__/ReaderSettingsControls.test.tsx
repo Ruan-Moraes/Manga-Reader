@@ -117,3 +117,29 @@ describe('MOB-FEAT-031 reader settings controls', () => {
         jest.useRealTimers();
     });
 });
+
+it('separa categorias compactas e mantém ajuda e alteração de preferências', () => {
+    const onChange = jest.fn();
+    const node = (category: 'reading' | 'appearance') => (
+        <ThemeProvider waitForPlatform={false}>
+            <ReaderSettingsControls
+                compact
+                category={category}
+                capabilities={{ high: false, low: false, medium: false }}
+                onChange={onChange}
+                value={DEFAULT_USER_SETTINGS.reader}
+            />
+        </ThemeProvider>
+    );
+    const screen = render(node('reading'));
+    expect(screen.queryByRole('adjustable', { name: 'Saturação' })).toBeNull();
+    expect(screen.getByRole('radio', { name: 'Paginado' })).toBeOnTheScreen();
+    expect(screen.queryByText('Espaço visual entre páginas no fluxo vertical.')).toBeNull();
+    fireEvent.press(screen.getByRole('button', { name: 'Sobre Espaçamento' }));
+    expect(screen.getByText('Espaço visual entre páginas no fluxo vertical.')).toBeOnTheScreen();
+    screen.rerender(node('appearance'));
+    expect(screen.queryByRole('radio', { name: 'Paginado' })).toBeNull();
+    fireEvent.press(screen.getByRole('radio', { name: 'Papel' }));
+    expect(onChange).toHaveBeenCalledWith({ background: 'PAPER' });
+    expect(screen.getByRole('adjustable', { name: 'Saturação' })).toBeOnTheScreen();
+});

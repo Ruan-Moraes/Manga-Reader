@@ -8,13 +8,17 @@ import { hydratePrivacy, privacySessionQueryKeys, resetPrivacyHydration, resetPr
 export function PrivacyAccountGate({ children }: PropsWithChildren) {
     const isAuthenticated = useSessionStore(state => state.isAuthenticated);
     const identityEpoch = useSessionStore(state => state.identityEpoch);
+
     const queryClient = useQueryClient();
 
     useEffect(() => {
         resetPrivacyMutationRuntime();
         resetPrivacyHydration();
+
         usePrivacySettingsStore.getState().beginIdentity(isAuthenticated ? identityEpoch : null);
+
         privacySessionQueryKeys().forEach(queryKey => queryClient.removeQueries({ queryKey, exact: false }));
+
         if (isAuthenticated) void hydratePrivacy(identityEpoch);
     }, [identityEpoch, isAuthenticated, queryClient]);
 

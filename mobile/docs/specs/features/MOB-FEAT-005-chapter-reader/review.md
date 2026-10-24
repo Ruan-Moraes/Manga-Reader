@@ -1,7 +1,7 @@
 # Review — MOB-FEAT-005
 
 - Spec revisada: `spec.md`
-- Implementação/revisão: working-tree sha256:cb2e5226cae5289175f02ef3243e0e048890a91e89ff1da21764db1ee89ab84e
+- Implementação/revisão: commit c55a22aaaebeeba279a0e535730b8ee246a9b30e
 - Gate na entrada do planejamento: `open`
 - Dependências verificadas: `MOB-FEAT-001` (`implemented`) e `MOB-FEAT-004` (`implemented`)
 - Verdict: `verification-pending`
@@ -41,15 +41,15 @@ Nenhum finding de código conhecido permanece. A verificação física obrigató
 
 ## Gates
 
-| Comando                                                                     | Resultado                                                                                                                                                   |
-| --------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 5 suítes focadas da terceira rodada, via Jest local                         | pass — 5 suítes, 15 testes, 0 snapshots                                                                                                                     |
-| Suíte Jest completa, via binário local                                      | pass — 48 suítes, 192 testes, 0 snapshots                                                                                                                   |
-| `node --test scripts/tests/spec-coverage.test.mjs scripts/tests/feature-gates.test.mjs` | pass — 15 testes                                                                                                                               |
-| `node scripts/checks/validate-specs.mjs`                                     | pass — 19 artefatos, 324 arquivos classificados                                                                                                             |
-| TypeScript / ESLint / Steiger, via binários locais                          | pass                                                                                                                                                        |
-| Prettier                                                                    | pass após formatação deste review                                                                                                                           |
-| `pnpm check`                                                                | o Executor registrou pass pós-correção; a revisão repetiu diretamente todos os subgates aplicáveis devido à reconciliação interativa do pnpm neste ambiente |
+| Comando                                                                                 | Resultado                                                                                                                                                   |
+| --------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 5 suítes focadas da terceira rodada, via Jest local                                     | pass — 5 suítes, 15 testes, 0 snapshots                                                                                                                     |
+| Suíte Jest completa, via binário local                                                  | pass — 48 suítes, 192 testes, 0 snapshots                                                                                                                   |
+| `node --test scripts/tests/spec-coverage.test.mjs scripts/tests/feature-gates.test.mjs` | pass — 15 testes                                                                                                                                            |
+| `node scripts/checks/validate-specs.mjs`                                                | pass — 19 artefatos, 324 arquivos classificados                                                                                                             |
+| TypeScript / ESLint / Steiger, via binários locais                                      | pass                                                                                                                                                        |
+| Prettier                                                                                | pass após formatação deste review                                                                                                                           |
+| `pnpm check`                                                                            | o Executor registrou pass pós-correção; a revisão repetiu diretamente todos os subgates aplicáveis devido à reconciliação interativa do pnpm neste ambiente |
 
 ## Cobertura e drift
 
@@ -68,9 +68,9 @@ Nenhum finding de código conhecido permanece. A verificação física obrigató
 
 Todos os AC-001…009 possuem implementação automatizada rastreável, os contratos reais da Core estão preservados e a leitura guest não toca endpoints privados. Como a matriz física iOS/Android de TASK-010 não foi executada, o verdict é `verification-pending`. A promoção para `implemented` exige a execução real e o registro dessa matriz, sem substituir ou fabricar evidência.
 
-Rodada de performance 2026-09-06: C01 / MOB-PERF-002 corrigido dentro do contrato existente, com testes de regressão. [Evidência](../../../active/performance-evidence/corrections-2026-09-06/review.md). Verificação nativa permanece aberta; nenhuma nova evidência física é atribuída a esta alteração.
+Rodada de performance 2026-09-06: C01 / MOB-PERF-002 corrigido dentro do contrato existente, com testes de regressão. Evidência (arquivo externo: `perfomance_app/mobile/docs/active/performance-evidence/corrections-2026-09-06/review.md`). Verificação nativa permanece aberta; nenhuma nova evidência física é atribuída a esta alteração.
 
-Rodada C02/C05: contratos aprovados e gates abertos preservados; runtime coberto e revisão registrada no [review da rodada](../../../active/performance-evidence/corrections-c02-c05-2026-09-06/review.md). Medição nativa permanece aberta. Contadores da revisão estática: mismatch 0, undocumented 0, arquivos descobertos 0; não substituem validação física.
+Rodada C02/C05: contratos aprovados e gates abertos preservados; runtime coberto e revisão registrada no review da rodada (arquivo externo: `perfomance_app/mobile/docs/active/performance-evidence/corrections-c02-c05-2026-09-06/review.md`). Medição nativa permanece aberta. Contadores da revisão estática: mismatch 0, undocumented 0, arquivos descobertos 0; não substituem validação física.
 
 ## Review C02 — 2026-09-06
 
@@ -83,6 +83,6 @@ nos testes atuais. Campos de erro/retry ficam fora das células recicladas. C01 
 preservada. `pnpm check`: 95 suítes / 588 testes passaram. TASK-010 ainda aberta para
 rotação, acessibilidade e performance físicas; verdict permanece verification-pending.
 
-Consolidação documental (2026-09-06): checksum global atualizado após reconciliar o estado de performance; runtime e verdict preservados. [Registro](../../../active/performance-evidence/consolidation-2026-09-06/review.md). Sem nova validação física.
+Consolidação documental (2026-09-06): checksum global atualizado após reconciliar o estado de performance; runtime e verdict preservados. Registro (arquivo externo: `perfomance_app/mobile/docs/active/performance-evidence/consolidation-2026-09-06/review.md`). Sem nova validação física.
 
 Preparação de commit (2026-09-06): rebase global após excluir scripts avulsos de ensaio, listagens Git e metadados do sistema dos arquivos versionados, conforme solicitação humana. Resultados históricos preservados; runtime e verdict inalterados.

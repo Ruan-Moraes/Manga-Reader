@@ -40,6 +40,6 @@
 - [x] TASK-006 — C05: download para temporário isolado por Axios com adapter nativo, preservando refresh/timeout/cancelamento; compartilhar sem materializar JSON no JS.
 - [ ] TASK-007 — Validar bytes equivalentes, share sheet, cleanup, troca de identidade, falha de disco e memória em Android/iOS release com payload sintético crescente. Responsável a definir.
 
-Evidências, riscos e reversão: [review C02/C05](../../../active/performance-evidence/corrections-c02-c05-2026-09-06/review.md).
+Evidências, riscos e reversão: review C02/C05 (arquivo externo: `perfomance_app/mobile/docs/active/performance-evidence/corrections-c02-c05-2026-09-06/review.md`).
 
 Gate C02/C05: `pnpm check` passou, 95 suítes / 588 testes. Nenhuma validação física adicionada.

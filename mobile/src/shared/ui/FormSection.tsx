@@ -8,12 +8,28 @@ import { Card } from './Card';
 
 interface FormSectionProps extends PropsWithChildren {
     title: string;
+    compact?: boolean;
     description?: string;
     contentPadding?: 'default' | 'none';
 }
 
-export function FormSection({ title, description, children, contentPadding = 'default' }: FormSectionProps) {
+export function FormSection({ title, description, children, contentPadding = 'default', compact = false }: FormSectionProps) {
     const { radii, spacing, tokens } = useTheme();
+
+    if (compact) {
+        return (
+            <View
+                style={{
+                    gap: spacing.md,
+                    paddingBottom: spacing.md,
+                    borderBottomWidth: 1,
+                    borderBottomColor: tokens.separator,
+                }}
+            >
+                {children}
+            </View>
+        );
+    }
 
     return (
         <View style={{ gap: spacing.sm }}>
