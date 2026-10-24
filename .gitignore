@@ -38,6 +38,11 @@ yarn-error.log*
 .env.local
 .env.*.local
 
+# Private translation inputs, native builds, journals and financial reservations
+/.local/ocr-samples/
+/.local/rendering-linux/
+/.local/worker-isolation/
+
 # =====================================================
 # Yarn
 # =====================================================
@@ -138,3 +143,6 @@ coverage/
 *.tfstate
 *.tfstate.*
 .terraform.tfstate.lock.info
+/api/apps/translation-gateway/infra/terraform/terraform.tfvars
+/api/apps/translation-gateway/infra/terraform/*.auto.tfvars
+/api/apps/translation-gateway/infra/terraform/*.auto.tfvars.json
