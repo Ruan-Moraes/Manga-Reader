@@ -50,7 +50,6 @@ const Chapter = () => {
     });
 
     const displayTitle = title?.name ?? t('reader.untitled');
-    const status = title?.status ?? '';
     const ratingAverage = title?.ratingAverage ?? 0;
     const ratingCount = title?.ratingCount ?? 0;
 
@@ -101,7 +100,6 @@ const Chapter = () => {
                     chapter={r.chapter}
                     page={r.page}
                     total={r.total}
-                    status={status}
                     hidden={r.topbarHidden}
                     saved={titleId ? isSaved(titleId) : false}
                     chaptersOpen={r.chaptersOpen}

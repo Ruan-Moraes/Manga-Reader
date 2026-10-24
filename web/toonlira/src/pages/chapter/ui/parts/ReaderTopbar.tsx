@@ -10,7 +10,6 @@ interface ReaderTopbarProps {
     page: number;
     /** Total de páginas do capítulo (real ou fallback). Default: placeholder legado. */
     total?: number;
-    status: string;
     hidden: boolean;
     saved: boolean;
     chaptersOpen: boolean;
@@ -30,7 +29,6 @@ export const ReaderTopbar = ({
     chapter,
     page,
     total = TOTAL,
-    status,
     hidden,
     saved,
     chaptersOpen,
@@ -61,7 +59,6 @@ export const ReaderTopbar = ({
                     </span>
                     <ChevronDown size={14} strokeWidth={2} />
                 </span>
-                <span className="reader-title-meta">{t('reader.titleMeta', { page, total, status })}</span>
             </button>
 
             <div className="reader-topbar-actions">
@@ -80,7 +77,12 @@ export const ReaderTopbar = ({
                 >
                     <MessageSquare size={18} strokeWidth={2} />
                 </button>
-                <button type="button" className={`reader-icon-btn ${settingsOpen ? 'primary' : ''}`} onClick={onToggleSettings} aria-label={t('reader.settingsAria')}>
+                <button
+                    type="button"
+                    className={`reader-icon-btn ${settingsOpen ? 'primary' : ''}`}
+                    onClick={onToggleSettings}
+                    aria-label={t('reader.settingsAria')}
+                >
                     <Settings size={18} strokeWidth={2} />
                 </button>
             </div>
