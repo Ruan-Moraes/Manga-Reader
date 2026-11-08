@@ -2,7 +2,7 @@
 id: MOB-FEAT-061
 type: feature
 title: Telas de conta no padrão do kit mobile
-status: draft
+status: approved
 implementation_gate: open
 blocked_by: [MOB-FEAT-057]
 created: 2026-11-08
@@ -133,14 +133,17 @@ mapeados no `coverage.json`.
 - "Manter sessão ativa", inscrição em novidades e prazo de expiração do link (sem comportamento nem contrato de API).
 - Fundir as telas, login social ou qualquer mudança em `features/authenticate/model` e na API.
 
-## Pontos em aberto para a aprovação
+## Decisões registradas na aprovação
+
+As propostas abaixo foram aceitas como redigidas.
 
 - **D6 — controles sem contrato.** Proposta: deixar "Manter sessão ativa", novidades e o prazo do link fora. As chaves
   `auth.rememberSession` e `auth.newsletterOptIn` existem nos locales sem uso; esta spec não as remove.
 
 ## Aprovação humana
 
-- Aprovador: pendente
-- Data: pendente
+- Aprovador: Ruan Moraes
+- Data: 2026-11-08
+- Evidência: resposta “Aprovo as cinco” à apresentação das Target Specs 058–062, aceitando as propostas dos pontos em aberto como redigidas.
 
 Não criar `tasks.md` antes de status `approved` e aprovação preenchida.

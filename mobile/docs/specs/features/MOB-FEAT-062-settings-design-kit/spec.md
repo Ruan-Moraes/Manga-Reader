@@ -2,7 +2,7 @@
 id: MOB-FEAT-062
 type: feature
 title: Configurações no padrão do kit mobile
-status: draft
+status: approved
 implementation_gate: open
 blocked_by: [MOB-FEAT-057]
 created: 2026-11-08
@@ -212,14 +212,17 @@ passam e os arquivos estão mapeados no `coverage.json`.
 - Painel de ajustes dentro do leitor e botão "Ajustes do leitor" (ficam com a 063).
 - Novas preferências ou preferências sem efeito real.
 
-## Pontos em aberto para a aprovação
+## Decisões registradas na aprovação
+
+As propostas abaixo foram aceitas como redigidas.
 
 - Nenhum além dos herdados da 057. Observação: o kit mostra a qualidade com as cinco opções sempre; esta spec mantém a
   regra atual de disponibilidade (005/AC-004).
 
 ## Aprovação humana
 
-- Aprovador: pendente
-- Data: pendente
+- Aprovador: Ruan Moraes
+- Data: 2026-11-08
+- Evidência: resposta “Aprovo as cinco” à apresentação das Target Specs 058–062, aceitando as propostas dos pontos em aberto como redigidas.
 
 Não criar `tasks.md` antes de status `approved` e aprovação preenchida.

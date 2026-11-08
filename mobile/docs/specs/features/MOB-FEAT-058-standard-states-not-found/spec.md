@@ -2,7 +2,7 @@
 id: MOB-FEAT-058
 type: feature
 title: Estados padrão e página não encontrada
-status: draft
+status: approved
 implementation_gate: open
 blocked_by: [MOB-FEAT-057]
 created: 2026-11-08
@@ -131,13 +131,16 @@ mapeados no `coverage.json`.
 - Telas da área da MOB-FEAT-055 (biblioteca, obra, fluxo de tradução, leitor local).
 - Mudanças em rotas, retomada, progresso ou queries do leitor.
 
-## Pontos em aberto para a aprovação
+## Decisões registradas na aprovação
+
+As propostas abaixo foram aceitas como redigidas.
 
 - **D5 — estado "sem conexão".** Proposta: fora desta spec até aprovar `@react-native-community/netinfo`.
 
 ## Aprovação humana
 
-- Aprovador: pendente
-- Data: pendente
+- Aprovador: Ruan Moraes
+- Data: 2026-11-08
+- Evidência: resposta “Aprovo as cinco” à apresentação das Target Specs 058–062, aceitando as propostas dos pontos em aberto como redigidas.
 
 Não criar `tasks.md` antes de status `approved` e aprovação preenchida.

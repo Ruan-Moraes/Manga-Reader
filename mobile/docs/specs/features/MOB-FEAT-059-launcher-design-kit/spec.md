@@ -2,7 +2,7 @@
 id: MOB-FEAT-059
 type: feature
 title: Início no padrão do kit mobile
-status: draft
+status: approved
 implementation_gate: open
 blocked_by: [MOB-FEAT-057]
 created: 2026-11-08
@@ -138,7 +138,9 @@ página, i18n e FSD desta spec passam, com arquivos mapeados no `coverage.json`.
 - Fundir Início e Biblioteca, mudar rotas ou abrir as abas da plataforma.
 - Mudanças no `PlatformStatusPage`, no login ou na allowlist de retorno.
 
-## Pontos em aberto para a aprovação
+## Decisões registradas na aprovação
+
+As propostas abaixo foram aceitas como redigidas.
 
 - **D8 — Início separado da Biblioteca.** Proposta: seguir o kit (Início com dois módulos e atalho para a biblioteca).
 - **D13 — atalho de preview de novel.** Proposta: manter só em `__DEV__`, como hoje. A alternativa é removê-lo do
@@ -146,7 +148,8 @@ página, i18n e FSD desta spec passam, com arquivos mapeados no `coverage.json`.
 
 ## Aprovação humana
 
-- Aprovador: pendente
-- Data: pendente
+- Aprovador: Ruan Moraes
+- Data: 2026-11-08
+- Evidência: resposta “Aprovo as cinco” à apresentação das Target Specs 058–062, aceitando as propostas dos pontos em aberto como redigidas.
 
 Não criar `tasks.md` antes de status `approved` e aprovação preenchida.

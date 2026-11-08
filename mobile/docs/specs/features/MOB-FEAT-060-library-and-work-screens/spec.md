@@ -2,7 +2,7 @@
 id: MOB-FEAT-060
 type: feature
 title: Biblioteca em grade e tela da obra
-status: draft
+status: approved
 implementation_gate: blocked
 blocked_by: [MOB-FEAT-055, MOB-FEAT-057]
 created: 2026-11-08
@@ -218,7 +218,9 @@ i18n e FSD desta spec passam, com arquivos mapeados no `coverage.json`.
 - Fluxo de tradução em 3 etapas (056) e leitor (063).
 - Sincronização com conta, busca e filtros.
 
-## Pontos em aberto para a aprovação
+## Decisões registradas na aprovação
+
+As propostas abaixo foram aceitas como redigidas.
 
 - **D7 — dependência da 055.** Proposta: esperar a 055 (gate bloqueado). A alternativa é revisar a 055 para absorver
   este redesenho.
@@ -230,7 +232,8 @@ i18n e FSD desta spec passam, com arquivos mapeados no `coverage.json`.
 
 ## Aprovação humana
 
-- Aprovador: pendente
-- Data: pendente
+- Aprovador: Ruan Moraes
+- Data: 2026-11-08
+- Evidência: resposta “Aprovo as cinco” à apresentação das Target Specs 058–062, aceitando as propostas dos pontos em aberto como redigidas. O gate de implementação segue `blocked`.
 
 Não criar `tasks.md` antes de status `approved` e aprovação preenchida.
