@@ -18,6 +18,8 @@ interface ChoiceGroupProps<T extends string> {
     accessibilityHint?: string;
     disabled?: boolean;
     layout?: 'horizontal' | 'stacked';
+    /** Keeps the group label for assistive tech only (used when a sheet title already names it). */
+    hideLabel?: boolean;
 }
 
 export function resolveChoiceGroupStacked(layout: 'horizontal' | 'stacked', fontScale: number): boolean {
@@ -34,6 +36,7 @@ export function ChoiceGroup<T extends string>({
     accessibilityHint,
     disabled = false,
     layout = 'horizontal',
+    hideLabel = false,
 }: ChoiceGroupProps<T>) {
     const { fontScale, metrics, minimumTouchTarget, radii, spacing, tokens } = useTheme();
     const [focusedOption, setFocusedOption] = useState<T | null>(null);
@@ -41,7 +44,7 @@ export function ChoiceGroup<T extends string>({
 
     return (
         <View accessibilityRole="radiogroup" accessibilityLabel={label} style={{ gap: spacing.sm }}>
-            <AppText variant="label">{label}</AppText>
+            {hideLabel ? null : <AppText variant="label">{label}</AppText>}
             <View style={{ flexDirection: stacked ? 'column' : 'row', flexWrap: stacked ? 'nowrap' : 'wrap', gap: spacing.sm }}>
                 {options.map(option => {
                     const selected = option === value;

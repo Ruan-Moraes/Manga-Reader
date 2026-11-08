@@ -139,6 +139,7 @@
         }
     },
     "localeControls": {
+        "dateExample": "Example: {{value}}",
         "title": "Language and region",
         "closeSelection": "Close selection",
         "interfaceSection": { "title": "Interface", "description": "Choose the language used in menus and messages." },

@@ -1,9 +1,9 @@
-import { View } from 'react-native';
+import { Pressable, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import type { AppearanceSettings, DensityPreference, FontSizePreference, ThemePreference } from '@/entities/user-setting';
-import { darkTokens, lightTokens, useTheme } from '@/shared/theme';
-import { ChoiceCards, FormSection, SectionStack, SegmentedControl, StatusMessage, SwitchRow } from '@/shared/ui';
+import { darkTokens, lightTokens, useResponsiveLayout, useTheme } from '@/shared/theme';
+import { AppText, FormSection, SectionStack, SegmentedControl, StatusMessage, SwitchRow } from '@/shared/ui';
 
 import { useSettingsStore } from '../model/settingsStore';
 
@@ -12,10 +12,14 @@ type AppearanceKey = keyof AppearanceSettings;
 const THEME_OPTIONS: readonly ThemePreference[] = ['SYSTEM', 'LIGHT', 'DARK'];
 const FONT_OPTIONS: readonly FontSizePreference[] = ['COMPACT', 'DEFAULT', 'COMFORTABLE'];
 const DENSITY_OPTIONS: readonly DensityPreference[] = ['COMFORTABLE', 'COMPACT'];
-const THEME_PREVIEW_HEIGHT = 38;
-const THEME_PREVIEW_WIDTH = 54;
+const THEME_PREVIEW_HEIGHT = 44;
 const THEME_PREVIEW_ACCENT_HEIGHT = 4;
 const THEME_PREVIEW_PADDING = 4;
+const LARGE_FONT_SCALE = 1.6;
+
+export function resolveThemeTilesStacked(sizeClass: ReturnType<typeof useResponsiveLayout>['sizeClass'], fontScale: number): boolean {
+    return sizeClass === 'compact' || fontScale >= LARGE_FONT_SCALE;
+}
 
 function ThemePreview({ option }: { option: ThemePreference }) {
     const { radii, tokens } = useTheme();
@@ -25,13 +29,13 @@ function ThemePreview({ option }: { option: ThemePreference }) {
         <View
             accessibilityElementsHidden
             style={{
+                alignSelf: 'stretch',
                 borderColor: tokens.borderStrong,
-                borderRadius: radii.control,
+                borderRadius: radii.sm,
                 borderWidth: 1,
                 flexDirection: 'row',
                 height: THEME_PREVIEW_HEIGHT,
                 overflow: 'hidden',
-                width: THEME_PREVIEW_WIDTH,
             }}
         >
             {[left, right].map((preview, index) => (
@@ -39,6 +43,62 @@ function ThemePreview({ option }: { option: ThemePreference }) {
                     <View style={{ backgroundColor: preview.accent, borderRadius: radii.pill, height: THEME_PREVIEW_ACCENT_HEIGHT, width: '100%' }} />
                 </View>
             ))}
+        </View>
+    );
+}
+
+interface ThemeTilesProps {
+    label: string;
+    value: ThemePreference;
+    optionLabel: (option: ThemePreference) => string;
+    optionDescription: (option: ThemePreference) => string;
+    onChange: (option: ThemePreference) => void;
+    accessibilityHint?: string;
+}
+
+function ThemeTiles({ label, value, optionLabel, optionDescription, onChange, accessibilityHint }: ThemeTilesProps) {
+    const { sizeClass } = useResponsiveLayout();
+    const { fontScale, minimumTouchTarget, radii, spacing, tokens } = useTheme();
+    const stacked = resolveThemeTilesStacked(sizeClass, fontScale);
+
+    return (
+        <View style={{ gap: spacing.sm }}>
+            <AppText variant="label">{label}</AppText>
+            <View accessibilityRole="radiogroup" accessibilityLabel={label} style={{ flexDirection: stacked ? 'column' : 'row', gap: spacing.sm }}>
+                {THEME_OPTIONS.map(option => {
+                    const selected = option === value;
+
+                    return (
+                        <Pressable
+                            key={option}
+                            testID={`theme-tile-${option}`}
+                            accessibilityHint={accessibilityHint}
+                            accessibilityLabel={optionLabel(option)}
+                            accessibilityRole="radio"
+                            accessibilityState={{ disabled: false, selected }}
+                            onPress={() => onChange(option)}
+                            style={({ pressed }) => ({
+                                backgroundColor: selected ? tokens.surfaceSelected : pressed ? tokens.surfacePressed : tokens.surface,
+                                borderColor: selected ? tokens.accentBorder : tokens.separator,
+                                borderRadius: radii.control,
+                                borderWidth: 2,
+                                flex: stacked ? undefined : 1,
+                                gap: spacing.sm,
+                                minHeight: minimumTouchTarget,
+                                padding: spacing.sm,
+                            })}
+                        >
+                            <ThemePreview option={option} />
+                            <AppText variant="label" tone={selected ? 'accent' : 'default'} style={{ textAlign: 'center' }}>
+                                {optionLabel(option)}
+                            </AppText>
+                        </Pressable>
+                    );
+                })}
+            </View>
+            <AppText testID="theme-tiles-description" variant="caption" tone="muted">
+                {optionDescription(value)}
+            </AppText>
         </View>
     );
 }
@@ -61,15 +121,12 @@ export function AppearanceAccessibilityControls() {
     return (
         <SectionStack>
             <FormSection title={t('settings.appearance.title')} description={t('settings.appearance.description')}>
-                <ChoiceCards
+                <ThemeTiles
                     accessibilityHint={syncHint}
                     label={t('settings.appearance.theme.label')}
                     onChange={value => void updateAppearance('theme', value)}
                     optionDescription={option => t(`settings.appearance.theme.descriptions.${option}`)}
                     optionLabel={option => t(`settings.appearance.theme.options.${option}`)}
-                    optionPreview={option => <ThemePreview option={option} />}
-                    options={THEME_OPTIONS}
-                    layout="stacked"
                     value={appearance.theme}
                 />
                 <SegmentedControl

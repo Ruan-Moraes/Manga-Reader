@@ -2,7 +2,7 @@
 id: MOB-FEAT-062
 type: feature
 title: Configurações no padrão do kit mobile
-status: approved
+status: in-progress
 implementation_gate: open
 blocked_by: [MOB-FEAT-057]
 created: 2026-11-08

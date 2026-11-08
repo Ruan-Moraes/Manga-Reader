@@ -23,10 +23,10 @@
 
 ## Checklist
 
-- [ ] TASK-001 — Em `src/widgets/settings-index/ui/SettingsIndex.tsx` e `SettingsSections.tsx`, usar `ListRow` com tile de ícone (64) e cabeçalho de grupo com barra 4 × 16; preservar ordem, status e bloqueio de login; atualizar os testes do widget e da página.
-- [ ] TASK-002 — Criar em `src/shared/ui` a linha de escolha (`ChoiceRow`) que abre `BottomSheet` com `ChoiceGroup` empilhado; testes de abrir, escolher e cancelar.
-- [ ] TASK-003 — Em `features/manage-settings/ui/AppearanceAccessibilityControls.tsx`, trocar o tema por três tiles com prévia e descrição ativa (empilhando em tela estreita ou fonte ampliada); testes.
-- [ ] TASK-004 — Em `features/manage-settings/ui/InterfaceLanguageRegionControls.tsx`, usar a linha de escolha para idioma, formato de data (com exemplo) e fuso; testes de persistência.
+- [x] TASK-001 — Em `src/widgets/settings-index/ui/SettingsIndex.tsx` e `SettingsSections.tsx`, usar `ListRow` com tile de ícone (64) e cabeçalho de grupo com barra 4 × 16; preservar ordem, status e bloqueio de login; atualizar os testes do widget e da página.
+- [x] TASK-002 — Criar em `src/shared/ui` a linha de escolha (`ChoiceRow`) que abre `BottomSheet` com `ChoiceGroup` empilhado; testes de abrir, escolher e cancelar.
+- [x] TASK-003 — Em `features/manage-settings/ui/AppearanceAccessibilityControls.tsx`, trocar o tema por três tiles com prévia e descrição ativa (empilhando em tela estreita ou fonte ampliada); testes.
+- [x] TASK-004 — Em `features/manage-settings/ui/InterfaceLanguageRegionControls.tsx`, usar a linha de escolha para idioma, formato de data (com exemplo) e fuso; testes de persistência.
 - [ ] TASK-005 — Em `features/manage-content-languages/ui/ContentLanguagesEditor.tsx`, número em círculo de 24 e linhas "+ Adicionar"; testes.
 - [ ] TASK-006 — Em `src/pages/settings-reader/ui/SettingsReaderPage.tsx`, organizar as cinco linhas com folhas (Navegação, Imagem, Comportamento, Gestos, Texto e aparência), adicionando em `features/configure-chapter-reader` as categorias necessárias sem mudar as usadas pelo painel do leitor; preservar o ajuste Original, a qualidade condicionada, limites e persistência.
 - [ ] TASK-007 — Criar testes da página do leitor por folha e manter verdes os testes de `ReaderSettingsControls`, `ReaderGestureControls`, `TextReaderControls` e do painel do leitor.

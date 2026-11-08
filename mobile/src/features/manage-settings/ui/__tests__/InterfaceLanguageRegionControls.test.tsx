@@ -27,7 +27,7 @@ describe('MOB-FEAT-003 interface language controls', () => {
         await i18n.changeLanguage(DEFAULT_LANGUAGE);
     });
 
-    it('troca textos montados imediatamente e persiste o idioma', async () => {
+    it('MOB-FEAT-062 AC-004 troca o idioma pela folha, atualiza os textos e persiste', async () => {
         render(
             <ThemeProvider waitForPlatform={false}>
                 <InterfaceLanguageRegionControls />
@@ -35,19 +35,22 @@ describe('MOB-FEAT-003 interface language controls', () => {
         );
         expect(screen.getByRole('header', { name: 'Idioma e região' })).toBeOnTheScreen();
 
-        fireEvent.press(screen.getByText('English (US)'));
+        fireEvent.press(screen.getByRole('button', { name: 'Idioma da interface: Português (Brasil)' }));
+        fireEvent.press(screen.getByRole('radio', { name: 'English (US)' }));
         await waitFor(() => expect(screen.getByRole('header', { name: 'Language and region' })).toBeOnTheScreen());
         expect(useSettingsStore.getState().language).toBe('en-US');
         expect(SecureStore.setItemAsync).toHaveBeenCalled();
     });
 
-    it('persiste formato de data e escolhe fuso em sheet sem conflitar controles', async () => {
+    it('MOB-FEAT-062 AC-004 persiste formato de data e fuso escolhidos em folhas', async () => {
         render(
             <ThemeProvider waitForPlatform={false}>
                 <InterfaceLanguageRegionControls />
             </ThemeProvider>,
         );
 
+        fireEvent.press(screen.getByRole('button', { name: 'Formato de data: Dia, mês' }));
+        expect(screen.getAllByText(/Exemplo: /)).toHaveLength(3);
         fireEvent.press(screen.getByRole('radio', { name: 'Mês, dia' }));
         fireEvent.press(screen.getByRole('button', { name: 'Fuso horário: São Paulo' }));
         fireEvent.press(screen.getByRole('radio', { name: 'Tóquio' }));

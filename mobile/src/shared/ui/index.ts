@@ -11,6 +11,7 @@ export { Button } from './Button';
 export { Card } from './Card';
 export { ChoiceCards } from './ChoiceCards';
 export { ChoiceGroup } from './ChoiceGroup';
+export { ChoiceRow } from './ChoiceRow';
 export { ConfirmSheet } from './ConfirmSheet';
 export { ControlHelp } from './ControlHelp';
 export { EmptyState } from './EmptyState';

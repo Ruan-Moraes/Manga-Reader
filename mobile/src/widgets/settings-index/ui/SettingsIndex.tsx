@@ -1,7 +1,6 @@
 import { View } from 'react-native';
 
-import { useTheme } from '@/shared/theme';
-import { Icon, ListRow } from '@/shared/ui';
+import { ListRow } from '@/shared/ui';
 
 import type { SettingsIndexItem } from '../model/types';
 
@@ -12,8 +11,6 @@ interface SettingsIndexProps {
 }
 
 export function SettingsIndex({ items, openHint, loginRequiredLabel }: SettingsIndexProps) {
-    const { radii, tokens } = useTheme();
-
     return (
         <View accessibilityRole="list">
             {items.map((item, index) => (
@@ -22,23 +19,7 @@ export function SettingsIndex({ items, openHint, loginRequiredLabel }: SettingsI
                     accessibilityHint={item.loginRequired ? loginRequiredLabel : openHint}
                     accessibilityLabel={item.statusLabel ? `${item.title}. ${item.statusLabel}` : item.title}
                     description={item.description}
-                    leading={
-                        item.icon ? (
-                            <View
-                                accessibilityElementsHidden
-                                style={{
-                                    alignItems: 'center',
-                                    backgroundColor: tokens.accentSoft,
-                                    borderRadius: radii.control,
-                                    height: 42,
-                                    justifyContent: 'center',
-                                    width: 42,
-                                }}
-                            >
-                                <Icon name={item.icon} size={21} decorative />
-                            </View>
-                        ) : undefined
-                    }
+                    icon={item.icon}
                     meta={item.loginRequired ? loginRequiredLabel : item.statusLabel}
                     metaPlacement="supporting"
                     onPress={item.onPress}
