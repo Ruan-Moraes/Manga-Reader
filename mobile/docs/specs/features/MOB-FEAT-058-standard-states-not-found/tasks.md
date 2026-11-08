@@ -26,7 +26,7 @@
 - [x] TASK-005 — Adicionar as chaves novas da 404 em `common.json` (`pt-BR`, `en-US`, `es-ES`) e testar a paridade.
       Execução: `notFound.eyebrow` novo e `notFound.goHome` alterado para "Voltar ao início" nos três idiomas; paridade coberta por `src/shared/i18n/__tests__/i18n.test.ts`.
 - [ ] TASK-006 — Verificar fonte a 200%, 320 pt, alto contraste e temas; capturas da 404 e dos estados do leitor no iOS Simulator (fica aberta se não for executada).
-- [ ] TASK-007 — Mapear arquivos no `coverage.json`, rodar `pnpm lint:fsd`, `pnpm typecheck`, `pnpm test:ci` e `pnpm check`, e registrar review e drift.
+- [x] TASK-007 — Mapear arquivos no `coverage.json`, rodar `pnpm lint:fsd`, `pnpm typecheck`, `pnpm test:ci` e `pnpm check`, e registrar review e drift.
 
 `implemented` exige todos os checkboxes concluídos. Quando o código estiver pronto, mas uma verificação real ainda estiver aberta, usar `verification-pending` e manter a task correspondente desmarcada.
 
