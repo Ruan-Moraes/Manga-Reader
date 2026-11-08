@@ -26,7 +26,7 @@
 - [x] TASK-005 — Atualizar `src/pages/launcher/ui/__tests__/ModuleSelectorPage.test.tsx` cobrindo AC-001 a AC-005 sem perder os casos da 010.
 - [x] TASK-006 — Adicionar as chaves novas em `launcher.json` (`pt-BR`, `en-US`, `es-ES`) e testar a paridade.
 - [ ] TASK-007 — Verificar fonte a 200%, 320 pt, alto contraste e temas; capturas do Início e da folha no iOS Simulator (fica aberta se não for executada).
-- [ ] TASK-008 — Mapear arquivos no `coverage.json`, rodar `pnpm lint:fsd`, `pnpm typecheck`, `pnpm test:ci` e `pnpm check`, e registrar review e drift.
+- [x] TASK-008 — Mapear arquivos no `coverage.json`, rodar `pnpm lint:fsd`, `pnpm typecheck`, `pnpm test:ci` e `pnpm check`, e registrar review e drift.
 
 `implemented` exige todos os checkboxes concluídos. Quando o código estiver pronto, mas uma verificação real ainda estiver aberta, usar `verification-pending` e manter a task correspondente desmarcada.
 
