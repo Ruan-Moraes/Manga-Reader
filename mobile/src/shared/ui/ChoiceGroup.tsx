@@ -5,6 +5,9 @@ import { useTheme } from '@/shared/theme';
 
 import { AppText } from './AppText';
 
+const RADIO_SIZE = 22;
+const RADIO_DOT_SIZE = 10;
+
 interface ChoiceGroupProps<T extends string> {
     label: string;
     value: T;
@@ -32,7 +35,7 @@ export function ChoiceGroup<T extends string>({
     disabled = false,
     layout = 'horizontal',
 }: ChoiceGroupProps<T>) {
-    const { fontScale, minimumTouchTarget, radii, spacing, tokens } = useTheme();
+    const { fontScale, metrics, minimumTouchTarget, radii, spacing, tokens } = useTheme();
     const [focusedOption, setFocusedOption] = useState<T | null>(null);
     const stacked = resolveChoiceGroupStacked(layout, fontScale);
 
@@ -72,11 +75,11 @@ export function ChoiceGroup<T extends string>({
                                         borderRadius: radii.control,
                                         borderWidth: 2,
                                         flexDirection: 'row',
-                                        gap: spacing.sm,
+                                        gap: stacked ? metrics.rhythm.itemGap : spacing.sm,
                                         maxWidth: '100%',
-                                        minHeight: minimumTouchTarget,
+                                        minHeight: stacked ? Math.max(minimumTouchTarget, metrics.row.single) : minimumTouchTarget,
                                         paddingHorizontal: spacing.md,
-                                        paddingVertical: spacing.sm,
+                                        paddingVertical: stacked ? metrics.rhythm.itemGap : spacing.sm,
                                         width: stacked ? '100%' : undefined,
                                     }}
                                 >
@@ -89,12 +92,21 @@ export function ChoiceGroup<T extends string>({
                                             borderRadius: radii.pill,
                                             borderWidth: 2,
                                             flexShrink: 0,
-                                            height: 24,
+                                            height: RADIO_SIZE,
                                             justifyContent: 'center',
-                                            width: 24,
+                                            width: RADIO_SIZE,
                                         }}
                                     >
-                                        {selected ? <View style={{ backgroundColor: tokens.accent, borderRadius: radii.pill, height: 10, width: 10 }} /> : null}
+                                        {selected ? (
+                                            <View
+                                                style={{
+                                                    backgroundColor: tokens.accent,
+                                                    borderRadius: radii.pill,
+                                                    height: RADIO_DOT_SIZE,
+                                                    width: RADIO_DOT_SIZE,
+                                                }}
+                                            />
+                                        ) : null}
                                     </View>
                                     <View testID={`choice-group-copy-${option}`} style={{ flexShrink: 1, gap: spacing.xs, minWidth: 0 }}>
                                         <AppText variant="label" tone={selected ? 'accent' : 'default'}>

@@ -6,12 +6,20 @@ import { useTheme } from '@/shared/theme';
 import { AppText } from './AppText';
 import { Icon } from './Icon';
 
-const SELECTION_BADGE_SIZE = 24;
-const SWATCH_HEIGHT = 54;
-const TRACK_BORDER_WIDTH = 1;
+const SELECTION_BADGE_SIZE = 22;
+const SWATCH_HEIGHT = 48;
+const SWATCH_BORDER_WIDTH = 2;
+
+/** Equal width for every swatch from the measured group width (MOB-FEAT-057/AC-010). */
+export function resolveSwatchWidth(trackWidth: number, count: number, gap: number): number {
+    if (!Number.isFinite(trackWidth) || count <= 0) return 0;
+
+    return Math.max(0, (trackWidth - Math.max(0, gap) * (count - 1)) / count);
+}
 
 interface SwatchPickerProps<T extends string> {
     label: string;
+    /** Kept for compatibility: every picker now renders separated swatches of equal width. */
     separated?: boolean;
     description?: string;
     value: T;
@@ -31,9 +39,8 @@ export function SwatchPicker<T extends string>({
     optionColor,
     onChange,
     disabled = false,
-    separated = false,
 }: SwatchPickerProps<T>) {
-    const { minimumTouchTarget, radii, spacing, tokens } = useTheme();
+    const { metrics, minimumTouchTarget, radii, spacing, tokens } = useTheme();
     const [focusedOption, setFocusedOption] = useState<T | null>(null);
     const [optimisticOption, setOptimisticOption] = useState<T | null>(null);
     const [trackWidth, setTrackWidth] = useState(0);
@@ -41,7 +48,7 @@ export function SwatchPicker<T extends string>({
     const previousValueRef = useRef(value);
     const cancelPreviewTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const swatchSize = Math.max(SWATCH_HEIGHT, minimumTouchTarget);
-    const optionWidth = options.length > 0 ? Math.max(0, (trackWidth - TRACK_BORDER_WIDTH * 2) / options.length) : 0;
+    const optionWidth = resolveSwatchWidth(trackWidth, options.length, spacing.sm);
     const displayedValue = optimisticOption ?? value;
 
     useEffect(() => {
@@ -85,58 +92,6 @@ export function SwatchPicker<T extends string>({
         }, 0);
     };
 
-    if (separated) {
-        return (
-            <View accessibilityRole="radiogroup" accessibilityLabel={label} style={{ gap: spacing.sm }}>
-                <AppText variant="label">{label}</AppText>
-                <View className="flex-row flex-wrap" style={{ gap: spacing.sm }}>
-                    {options.map(option => (
-                        <Pressable
-                            key={option}
-                            accessibilityRole="radio"
-                            accessibilityLabel={optionLabel(option)}
-                            accessibilityState={{ selected: option === displayedValue, disabled }}
-                            disabled={disabled}
-                            onBlur={() => setFocusedOption(current => (current === option ? null : current))}
-                            onFocus={() => setFocusedOption(option)}
-                            onPress={() => commitOption(option)}
-                            style={{
-                                minWidth: minimumTouchTarget,
-                                flexGrow: 1,
-                                flexBasis: '15%',
-                                gap: spacing.xs,
-                                alignItems: 'center',
-                                opacity: disabled ? 0.5 : 1,
-                            }}
-                        >
-                            <View
-                                style={{
-                                    width: minimumTouchTarget,
-                                    height: minimumTouchTarget,
-                                    borderRadius: radii.control,
-                                    backgroundColor: optionColor(option),
-                                    borderColor: focusedOption === option ? tokens.focus : option === displayedValue ? tokens.accentText : tokens.borderStrong,
-                                    borderWidth: 2,
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                }}
-                            >
-                                {option === displayedValue ? (
-                                    <View style={{ backgroundColor: tokens.accent, borderRadius: radii.pill, padding: spacing.xs }}>
-                                        <Icon name="checkmark" color={tokens.onAccent} size={16} decorative />
-                                    </View>
-                                ) : null}
-                            </View>
-                            <AppText variant="caption" tone={option === displayedValue ? 'accent' : 'muted'}>
-                                {optionLabel(option)}
-                            </AppText>
-                        </Pressable>
-                    ))}
-                </View>
-            </View>
-        );
-    }
-
     return (
         <View accessibilityRole="radiogroup" accessibilityLabel={label} style={{ gap: spacing.sm }}>
             <View style={{ gap: spacing.xs }}>
@@ -154,17 +109,9 @@ export function SwatchPicker<T extends string>({
                         const nextWidth = nativeEvent.layout.width;
                         setTrackWidth(currentWidth => (currentWidth === nextWidth ? currentWidth : nextWidth));
                     }}
-                    style={{
-                        alignSelf: 'stretch',
-                        borderColor: tokens.borderStrong,
-                        borderRadius: radii.control,
-                        borderWidth: TRACK_BORDER_WIDTH,
-                        flexDirection: 'row',
-                        height: swatchSize,
-                        overflow: 'hidden',
-                    }}
+                    style={{ alignSelf: 'stretch', flexDirection: 'row', gap: spacing.sm }}
                 >
-                    {options.map((option, index) => {
+                    {options.map(option => {
                         const selected = option === displayedValue;
                         const focused = option === focusedOption;
                         return (
@@ -183,13 +130,14 @@ export function SwatchPicker<T extends string>({
                                 style={{
                                     alignItems: 'center',
                                     backgroundColor: optionColor(option),
-                                    borderLeftColor: tokens.borderStrong,
-                                    borderLeftWidth: index === 0 ? 0 : 1,
-                                    borderColor: focused ? tokens.focus : 'transparent',
-                                    borderWidth: focused ? 2 : 0,
+                                    borderColor: focused ? tokens.focus : selected ? tokens.accent : tokens.borderStrong,
+                                    borderRadius: radii.control,
+                                    borderWidth: SWATCH_BORDER_WIDTH,
                                     height: swatchSize,
                                     justifyContent: 'center',
                                     opacity: disabled ? 0.5 : 1,
+                                    outlineColor: tokens.accentSoft,
+                                    outlineWidth: selected ? SWATCH_BORDER_WIDTH : 0,
                                     width: optionWidth,
                                 }}
                             >
@@ -207,16 +155,16 @@ export function SwatchPicker<T extends string>({
                                             width: SELECTION_BADGE_SIZE,
                                         }}
                                     >
-                                        <Icon name="checkmark" color={tokens.onAccent} size={16} decorative />
+                                        <Icon name="checkmark" color={tokens.onAccent} size={metrics.icon.sm} decorative />
                                     </View>
                                 ) : null}
                             </Pressable>
                         );
                     })}
                 </View>
-                <View accessibilityElementsHidden style={{ flexDirection: 'row', paddingHorizontal: TRACK_BORDER_WIDTH }}>
+                <View accessibilityElementsHidden style={{ flexDirection: 'row', gap: spacing.sm }}>
                     {options.map(option => (
-                        <View key={option} style={{ alignItems: 'center', paddingHorizontal: 2, width: optionWidth }}>
+                        <View key={option} style={{ alignItems: 'center', width: optionWidth }}>
                             <AppText numberOfLines={2} variant="caption" tone={option === displayedValue ? 'accent' : 'muted'} style={{ textAlign: 'center' }}>
                                 {optionLabel(option)}
                             </AppText>

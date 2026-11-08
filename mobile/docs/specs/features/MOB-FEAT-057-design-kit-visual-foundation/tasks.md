@@ -36,11 +36,11 @@
 - [x] TASK-007 — Criar `StateView.tsx` (`empty`/`error`/`offline`/`notfound`, tela cheia e inline, ilustração substituível, semântica `alert`/`status`, ações obrigatórias tipadas para `error` e `notfound`, ilustração oculta com fonte ampliada ou altura baixa); manter `EmptyState` compatível; testes, incluindo de tipos.
 - [x] TASK-008 — Criar `LoadingBlock.tsx` e `ListSkeleton.tsx` (composto de `Skeleton`, linhas `double`, rótulo acessível); testes com movimento reduzido.
 - [x] TASK-009 — Criar `SectionHeader.tsx`, `SectionAction.tsx` e `TextAction.tsx` com os tons e as alturas da spec e área de toque mínima; testes.
-- [ ] TASK-010 — Ajustar `SegmentedControl.tsx` ao contêiner único (segmento visual 40, raio `sm`, ativo em acento, borda de espessura constante, área de toque ≥ alvo mínimo), preservando o empilhamento da 032; testes.
-- [ ] TASK-011 — Ajustar a apresentação de `RangeSlider.tsx` (pílula de valor, trilho, polegar preenchido, rótulos de mínimo e máximo) sem alterar a interação da 034/AC-004; testes.
-- [ ] TASK-012 — Reescrever a apresentação de `SwatchPicker.tsx` para amostras separadas por `sm`, mesma largura numérica medida, altura 48, borda constante e check em círculo, com rótulo abaixo (substitui 034/AC-003); testes.
-- [ ] TASK-013 — Ajustar `ChoiceGroup.tsx` empilhado (altura mínima 56, rádio 22 centralizado, descrição por opção, seleção sem mudança geométrica); testes.
-- [ ] TASK-014 — Adicionar a `ListRow.tsx` o tile de ícone opcional e as alturas `single`/`double`, sem mudar os usos atuais; testes de regressão dos consumidores.
+- [x] TASK-010 — Ajustar `SegmentedControl.tsx` ao contêiner único (segmento visual 40, raio `sm`, ativo em acento, borda de espessura constante, área de toque ≥ alvo mínimo), preservando o empilhamento da 032; testes.
+- [x] TASK-011 — Ajustar a apresentação de `RangeSlider.tsx` (pílula de valor, trilho, polegar preenchido, rótulos de mínimo e máximo) sem alterar a interação da 034/AC-004; testes.
+- [x] TASK-012 — Reescrever a apresentação de `SwatchPicker.tsx` para amostras separadas por `sm`, mesma largura numérica medida, altura 48, borda constante e check em círculo, com rótulo abaixo (substitui 034/AC-003); testes.
+- [x] TASK-013 — Ajustar `ChoiceGroup.tsx` empilhado (altura mínima 56, rádio 22 centralizado, descrição por opção, seleção sem mudança geométrica); testes.
+- [x] TASK-014 — Adicionar a `ListRow.tsx` o tile de ícone opcional e as alturas `single`/`double`, sem mudar os usos atuais; testes de regressão dos consumidores.
 - [x] TASK-015 — Copiar `triste`, `duvida` e `404` do Design System para `assets/images/mascot-*.png`, otimizados, e registrar origem, dimensões e tamanhos em `evidence/assets.md`.
 - [ ] TASK-016 — Verificar fonte a 200%, largura 320, densidade compacta, alto contraste e movimento reduzido nas primitivas; capturas no iOS Simulator em claro e escuro; validação em Android físico (fica aberta se não for executada).
 - [ ] TASK-017 — Exportar as primitivas novas em `src/shared/ui/index.ts`, adicionar as chaves internas em `common.json` (`pt-BR`, `en-US`, `es-ES`) e uma entrada individual por arquivo novo em `docs/specs/coverage.json`.

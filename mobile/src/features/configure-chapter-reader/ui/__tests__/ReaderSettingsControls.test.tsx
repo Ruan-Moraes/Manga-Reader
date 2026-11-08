@@ -70,7 +70,7 @@ describe('MOB-FEAT-031 reader settings controls', () => {
         expect(onChange).toHaveBeenCalledWith({ preload: 4 });
     });
 
-    it('mantém a nova cor de fundo selecionada sem aplicar borda ao item', () => {
+    it('mantém a nova cor de fundo selecionada com amostras de mesma largura e borda estável', () => {
         const view = render(
             <ThemeProvider waitForPlatform={false}>
                 <ControlledReaderSettingsControls />
@@ -80,10 +80,10 @@ describe('MOB-FEAT-031 reader settings controls', () => {
         fireEvent.press(view.getByRole('radio', { name: 'Papel' }));
 
         expect(view.getByRole('radio', { name: 'Papel' }).props.accessibilityState.selected).toBe(true);
-        fireEvent(view.getByTestId('swatch-picker-track'), 'layout', { nativeEvent: { layout: { width: 342 } } });
+        fireEvent(view.getByTestId('swatch-picker-track'), 'layout', { nativeEvent: { layout: { width: 372 } } });
         expect(view.getByTestId('swatch-picker-surface-PAPER').props.style).toEqual(expect.objectContaining({ width: 68 }));
         expect(StyleSheet.flatten(view.getByTestId('swatch-picker-surface-PAPER').props.style)).toEqual(
-            expect.objectContaining({ alignItems: 'center', borderWidth: 0, justifyContent: 'center' }),
+            expect.objectContaining({ alignItems: 'center', borderWidth: 2, justifyContent: 'center' }),
         );
         expect(view.UNSAFE_getByProps({ testID: 'swatch-picker-badge-PAPER' })).toBeDefined();
 

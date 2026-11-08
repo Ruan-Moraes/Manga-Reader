@@ -269,7 +269,7 @@ describe('shared ui', () => {
         expect(view.getByRole('radio', { name: 'SEPIA' }).props.accessibilityState.selected).toBe(true);
         expect(view.getByRole('radio', { name: 'WHITE' })).toBeOnTheScreen();
         expect(view.getByRole('radio', { name: 'BLACK' })).toBeOnTheScreen();
-        fireEvent(view.getByTestId('swatch-picker-track'), 'layout', { nativeEvent: { layout: { width: 302 } } });
+        fireEvent(view.getByTestId('swatch-picker-track'), 'layout', { nativeEvent: { layout: { width: 316 } } });
         expect(StyleSheet.flatten(view.getByTestId('swatch-picker-surface-SEPIA').props.style)).toEqual(
             expect.objectContaining({ backgroundColor: '#E6D2A6', width: 100 }),
         );
@@ -440,7 +440,7 @@ describe('shared ui', () => {
             expect.objectContaining({ alignItems: 'center', borderWidth: 2, flexDirection: 'row' }),
         );
         expect(StyleSheet.flatten(view.UNSAFE_getByProps({ testID: 'choice-group-indicator-VERTICAL' }).props.style)).toEqual(
-            expect.objectContaining({ flexShrink: 0, height: 24, width: 24 }),
+            expect.objectContaining({ flexShrink: 0, height: 22, width: 22 }),
         );
         expect(StyleSheet.flatten(view.getByTestId('choice-group-copy-VERTICAL').props.style)).toEqual(expect.objectContaining({ flexShrink: 1, minWidth: 0 }));
     });

@@ -5,13 +5,15 @@ import type { ReactNode } from 'react';
 import { useTheme } from '@/shared/theme';
 
 import { AppText } from './AppText';
-import { Icon } from './Icon';
+import { Icon, type IconName } from './Icon';
 
 interface ListRowProps {
     title: string;
     description?: string;
     meta?: string;
     leading?: ReactNode;
+    /** Icon tile (MOB-FEAT-057/AC-012); with it the row uses the 56/64 list heights. */
+    icon?: IconName;
     trailing?: ReactNode;
     onPress?: () => void;
     accessibilityLabel?: string;
@@ -30,6 +32,7 @@ export function ListRow({
     description,
     meta,
     leading,
+    icon,
     trailing,
     onPress,
     accessibilityLabel,
@@ -42,8 +45,12 @@ export function ListRow({
     loading = false,
     tone = 'default',
 }: ListRowProps) {
-    const { minimumTouchTarget, radii, spacing, tokens } = useTheme();
+    const { metrics, minimumTouchTarget, radii, spacing, tokens } = useTheme();
     const [pressed, setPressed] = useState(false);
+    const rowHeight = icon
+        ? Math.max(minimumTouchTarget, description || (meta && metaPlacement === 'supporting') ? metrics.row.double : metrics.row.single)
+        : minimumTouchTarget;
+    const statusDotSize = icon ? 6 : 7;
     const statusColors = {
         accent: tokens.accentText,
         danger: tokens.danger,
@@ -70,8 +77,8 @@ export function ListRow({
                 borderBottomWidth: variant === 'plain' && showDivider ? 1 : 0,
                 borderWidth: variant === 'card' ? 1 : 0,
                 flexDirection: 'row',
-                gap: spacing.md,
-                minHeight: minimumTouchTarget,
+                gap: icon ? metrics.rhythm.itemGap : spacing.md,
+                minHeight: rowHeight,
                 padding: spacing.md,
                 paddingRight: trailing || onPress || loading ? spacing.md + 24 : spacing.md,
                 position: 'relative',
@@ -79,6 +86,22 @@ export function ListRow({
             }}
         >
             {leading}
+            {icon ? (
+                <View
+                    testID="list-row-icon-tile"
+                    style={{
+                        alignItems: 'center',
+                        backgroundColor: tone === 'danger' ? tokens.dangerSoft : tokens.accentSoft,
+                        borderRadius: radii.control,
+                        flexShrink: 0,
+                        height: metrics.iconTile.default,
+                        justifyContent: 'center',
+                        width: metrics.iconTile.default,
+                    }}
+                >
+                    <Icon name={icon} size={metrics.icon.md} color={tone === 'danger' ? tokens.danger : tokens.accentText} decorative />
+                </View>
+            ) : null}
             <View style={{ flex: 1, gap: spacing.xs, minWidth: 0 }}>
                 <View style={{ alignItems: 'center', flexDirection: 'row', gap: spacing.sm }}>
                     <AppText numberOfLines={2} variant="label" tone={tone === 'danger' ? 'danger' : 'default'} style={{ flex: 1, minWidth: 0 }}>
@@ -99,7 +122,7 @@ export function ListRow({
                     <View style={{ alignItems: 'center', flexDirection: 'row', gap: spacing.xs }}>
                         <View
                             accessibilityElementsHidden
-                            style={{ backgroundColor: statusColors[statusTone], borderRadius: radii.pill, height: 7, width: 7 }}
+                            style={{ backgroundColor: statusColors[statusTone], borderRadius: radii.pill, height: statusDotSize, width: statusDotSize }}
                         />
                         <AppText variant="caption" tone={statusTone === 'danger' ? 'danger' : statusTone === 'success' ? 'success' : 'muted'}>
                             {meta}
