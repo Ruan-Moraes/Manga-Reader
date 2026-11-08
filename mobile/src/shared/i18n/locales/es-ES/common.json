@@ -214,6 +214,7 @@
         }
     },
     "contentLanguages": {
+        "addAction": "Añadir",
         "title": "Idiomas del contenido",
         "priorityTitle": "Orden de preferencia",
         "availableTitle": "Añadir idioma",

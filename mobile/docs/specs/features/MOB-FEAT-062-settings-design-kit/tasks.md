@@ -27,7 +27,7 @@
 - [x] TASK-002 — Criar em `src/shared/ui` a linha de escolha (`ChoiceRow`) que abre `BottomSheet` com `ChoiceGroup` empilhado; testes de abrir, escolher e cancelar.
 - [x] TASK-003 — Em `features/manage-settings/ui/AppearanceAccessibilityControls.tsx`, trocar o tema por três tiles com prévia e descrição ativa (empilhando em tela estreita ou fonte ampliada); testes.
 - [x] TASK-004 — Em `features/manage-settings/ui/InterfaceLanguageRegionControls.tsx`, usar a linha de escolha para idioma, formato de data (com exemplo) e fuso; testes de persistência.
-- [ ] TASK-005 — Em `features/manage-content-languages/ui/ContentLanguagesEditor.tsx`, número em círculo de 24 e linhas "+ Adicionar"; testes.
+- [x] TASK-005 — Em `features/manage-content-languages/ui/ContentLanguagesEditor.tsx`, número em círculo de 24 e linhas "+ Adicionar"; testes.
 - [ ] TASK-006 — Em `src/pages/settings-reader/ui/SettingsReaderPage.tsx`, organizar as cinco linhas com folhas (Navegação, Imagem, Comportamento, Gestos, Texto e aparência), adicionando em `features/configure-chapter-reader` as categorias necessárias sem mudar as usadas pelo painel do leitor; preservar o ajuste Original, a qualidade condicionada, limites e persistência.
 - [ ] TASK-007 — Criar testes da página do leitor por folha e manter verdes os testes de `ReaderSettingsControls`, `ReaderGestureControls`, `TextReaderControls` e do painel do leitor.
 - [ ] TASK-008 — Em `features/update-privacy/ui/PrivacyControlsPanel.tsx`, trocar os `Alert` por `ConfirmSheet` com o texto atual; testes de confirmar e cancelar.

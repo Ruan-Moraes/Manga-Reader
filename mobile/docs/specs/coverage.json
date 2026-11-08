@@ -2407,7 +2407,7 @@
         {
             "path": "src/features/manage-content-languages/ui/__tests__/ContentLanguagesEditor.test.tsx",
             "category": "evidence",
-            "specs": ["MOB-FEAT-004", "MOB-FEAT-031"],
+            "specs": ["MOB-FEAT-004", "MOB-FEAT-031", "MOB-FEAT-062"],
             "observations": [
                 "MOB-FEAT-004/AC-002",
                 "MOB-FEAT-004/AC-003",
@@ -2415,13 +2415,15 @@
                 "MOB-FEAT-004/AC-006",
                 "MOB-FEAT-004/AC-009",
                 "MOB-FEAT-004/AC-011",
-                "MOB-FEAT-031/AC-005"
+                "MOB-FEAT-031/AC-005",
+                "MOB-FEAT-062/AC-005",
+                "MOB-FEAT-062/AC-009"
             ]
         },
         {
             "path": "src/features/manage-content-languages/ui/ContentLanguagesEditor.tsx",
             "category": "behavior",
-            "specs": ["MOB-FEAT-004"],
+            "specs": ["MOB-FEAT-004", "MOB-FEAT-062"],
             "observations": [
                 "MOB-FEAT-004/AC-002",
                 "MOB-FEAT-004/AC-003",
@@ -2429,8 +2431,15 @@
                 "MOB-FEAT-004/AC-006",
                 "MOB-FEAT-004/AC-009",
                 "MOB-FEAT-004/AC-010",
-                "MOB-FEAT-004/AC-011"
+                "MOB-FEAT-004/AC-011",
+                "MOB-FEAT-062/AC-005"
             ]
+        },
+        {
+            "path": "src/features/manage-content-languages/ui/__tests__/ContentLanguagesAdd.test.tsx",
+            "category": "evidence",
+            "specs": ["MOB-FEAT-062"],
+            "observations": ["MOB-FEAT-062/AC-005"]
         },
         {
             "path": "src/features/manage-settings/api/manageSettingsApi.ts",
