@@ -49,17 +49,17 @@ O tema passa a expor, por `useTheme()`, os grupos abaixo. Valores fixos independ
 densidade, exceto onde indicado. Nenhuma primitiva desta spec usa número literal para
 estas medidas.
 
-| Grupo | Papéis e valores |
-| ----- | ---------------- |
-| Ícones | `sm` 16 (inline e chips), `md` 20 (linhas, botões, controles), `lg` 24 (cabeçalhos e ações principais) |
-| Tile de ícone | `default` 40, `feature` 48 |
-| Altura de linha de lista | `single` 56, `double` 64 |
-| Altura de controle visual | `compact` 40, `default` 44, `comfortable` 52 (os dois últimos são `compactControlHeight` e `controlHeight` existentes) |
-| Chips e pílulas | `action` 36, `value` 28, `count` 24 |
-| Ritmo | `itemGap` 12 (compacta 8), `groupGap` = `lg`, `cardPadding` = `md` |
-| Barra de acento | 4 × 16, raio `pill` |
-| Sombras | `card` (y 8, opacidade 0,12, raio 18) e `sheet` (y −8, opacidade 0,28, raio 22), sempre com `shadowColor` vindo de token |
-| Movimento | `fast` 140, `base` 180, `sheet` 240, `pulse` 700 ms; zerados ou estáticos quando o movimento reduzido efetivo estiver ativo |
+| Grupo                     | Papéis e valores                                                                                                            |
+| ------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| Ícones                    | `sm` 16 (inline e chips), `md` 20 (linhas, botões, controles), `lg` 24 (cabeçalhos e ações principais)                      |
+| Tile de ícone             | `default` 40, `feature` 48                                                                                                  |
+| Altura de linha de lista  | `single` 56, `double` 64                                                                                                    |
+| Altura de controle visual | `compact` 40, `default` 44, `comfortable` 52 (os dois últimos são `compactControlHeight` e `controlHeight` existentes)      |
+| Chips e pílulas           | `action` 36, `value` 28, `count` 24                                                                                         |
+| Ritmo                     | `itemGap` 12 (compacta 8), `groupGap` = `lg`, `cardPadding` = `md`                                                          |
+| Barra de acento           | 4 × 16, raio `pill`                                                                                                         |
+| Sombras                   | `card` (y 8, opacidade 0,12, raio 18) e `sheet` (y −8, opacidade 0,28, raio 22), sempre com `shadowColor` vindo de token    |
+| Movimento                 | `fast` 140, `base` 180, `sheet` 240, `pulse` 700 ms; zerados ou estáticos quando o movimento reduzido efetivo estiver ativo |
 
 - **Altura visual × área de toque:** um controle pode ter altura visual 40, mas sua área
   de toque nunca fica abaixo de `minimumTouchTarget` (44 iOS / 48 Android). A diferença é
@@ -102,17 +102,17 @@ estas medidas.
 
 - **`StateView`** (nova): `kind` `empty` | `error` | `offline` | `notfound`, em modo tela
   cheia ou `inline`, com eyebrow opcional, título, texto e ações.
-  - Ilustração por `kind`: `pensando` (vazio), `triste` (erro), `duvida` (sem conexão),
-    `404` (não encontrada); substituível pelo consumidor.
-  - Tela cheia: título no papel `title`, texto no papel `body` tom muted, conteúdo centrado
-    e com largura máxima legível. Inline: título `label`, texto `caption`, superfície com
-    raio `card` — vazio com borda tracejada `borderStrong`, erro com `dangerSoft` e borda
-    `danger`, demais com borda `separator`.
-  - `error` exige uma ação de repetir; `notfound` exige uma ação de voltar ao início. A
-    exigência é imposta pela API (tipos), não só por convenção.
-  - Semântica: `alert` em `error`, `status` nos demais.
-  - Ilustrações são decorativas para leitores de tela e somem quando a altura útil é baixa
-    ou a fonte está ampliada, sem esconder título nem ações.
+    - Ilustração por `kind`: `pensando` (vazio), `triste` (erro), `duvida` (sem conexão),
+      `404` (não encontrada); substituível pelo consumidor.
+    - Tela cheia: título no papel `title`, texto no papel `body` tom muted, conteúdo centrado
+      e com largura máxima legível. Inline: título `label`, texto `caption`, superfície com
+      raio `card` — vazio com borda tracejada `borderStrong`, erro com `dangerSoft` e borda
+      `danger`, demais com borda `separator`.
+    - `error` exige uma ação de repetir; `notfound` exige uma ação de voltar ao início. A
+      exigência é imposta pela API (tipos), não só por convenção.
+    - Semântica: `alert` em `error`, `status` nos demais.
+    - Ilustrações são decorativas para leitores de tela e somem quando a altura útil é baixa
+      ou a fonte está ampliada, sem esconder título nem ações.
 - `EmptyState` continua exportado com o mesmo comportamento, para não alterar consumidores.
 - **`LoadingBlock`** (nova): indicador de atividade com rótulo, em tela cheia ou inline,
   anunciado como status. Usado quando o formato do conteúdo é desconhecido.
@@ -281,23 +281,23 @@ testes; `pnpm lint:fsd`, `pnpm typecheck` e os testes passam.
 
 ## Estratégia de evidência
 
-| Critério | Teste/evidência esperada |
-| -------- | ------------------------ |
-| AC-001   | Teste unitário do tema por densidade; busca por literais nas primitivas novas |
-| AC-002   | Teste unitário das quatro paletas e cálculo de contraste; teste de `StatusMessage` por tom |
-| AC-003   | RNTL do `BottomSheet` (fechar por botão, scrim e back; altura limite); testes existentes da 042 verdes |
-| AC-004   | RNTL de `ActionSheet` e `ConfirmSheet`: ordem fechar→executar, cancelar sem efeito |
-| AC-005   | RNTL por `kind` e modo; teste de tipos (`@ts-expect-error`) para ações obrigatórias; testes de `EmptyState` verdes |
-| AC-006   | RNTL de anúncio e rótulo; teste com movimento reduzido |
-| AC-007   | RNTL de contagem, tons e área de toque |
-| AC-008   | RNTL de seleção, geometria estável, área de toque e empilhamento |
-| AC-009   | Testes existentes da 034 verdes e RNTL da apresentação |
-| AC-010   | RNTL com largura medida simulada; captura iOS claro/escuro |
-| AC-011   | RNTL de seleção, descrição e geometria |
-| AC-012   | RNTL das alturas e regressão dos consumidores de `ListRow` |
-| AC-013   | Verificação de presença e tamanho dos arquivos registrada em evidência |
+| Critério | Teste/evidência esperada                                                                                            |
+| -------- | ------------------------------------------------------------------------------------------------------------------- |
+| AC-001   | Teste unitário do tema por densidade; busca por literais nas primitivas novas                                       |
+| AC-002   | Teste unitário das quatro paletas e cálculo de contraste; teste de `StatusMessage` por tom                          |
+| AC-003   | RNTL do `BottomSheet` (fechar por botão, scrim e back; altura limite); testes existentes da 042 verdes              |
+| AC-004   | RNTL de `ActionSheet` e `ConfirmSheet`: ordem fechar→executar, cancelar sem efeito                                  |
+| AC-005   | RNTL por `kind` e modo; teste de tipos (`@ts-expect-error`) para ações obrigatórias; testes de `EmptyState` verdes  |
+| AC-006   | RNTL de anúncio e rótulo; teste com movimento reduzido                                                              |
+| AC-007   | RNTL de contagem, tons e área de toque                                                                              |
+| AC-008   | RNTL de seleção, geometria estável, área de toque e empilhamento                                                    |
+| AC-009   | Testes existentes da 034 verdes e RNTL da apresentação                                                              |
+| AC-010   | RNTL com largura medida simulada; captura iOS claro/escuro                                                          |
+| AC-011   | RNTL de seleção, descrição e geometria                                                                              |
+| AC-012   | RNTL das alturas e regressão dos consumidores de `ListRow`                                                          |
+| AC-013   | Verificação de presença e tamanho dos arquivos registrada em evidência                                              |
 | AC-014   | RNTL com `fontScale` 2 e largura 320; capturas no iOS Simulator; validação Android física pendente se não executada |
-| AC-015   | `pnpm check` (ver nota do gate), `pnpm lint:fsd`, revisão do barrel e do `coverage.json` |
+| AC-015   | `pnpm check` (ver nota do gate), `pnpm lint:fsd`, revisão do barrel e do `coverage.json`                            |
 
 ## Gate de implementação
 

@@ -4077,6 +4077,12 @@
             "observations": ["MOB-FEAT-043/AC-005", "MOB-FEAT-043/AC-006", "MOB-FEAT-043/AC-007", "MOB-FEAT-045/AC-002", "MOB-FEAT-045/AC-005"]
         },
         {
+            "path": "src/shared/ui/__tests__/designKitAccessibility.test.tsx",
+            "category": "evidence",
+            "specs": ["MOB-FEAT-057"],
+            "observations": ["MOB-FEAT-057/AC-014"]
+        },
+        {
             "path": "src/shared/ui/__tests__/designKitControls.test.tsx",
             "category": "evidence",
             "specs": ["MOB-FEAT-057"],

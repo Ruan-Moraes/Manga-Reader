@@ -7,23 +7,23 @@
 
 ## Rastreabilidade
 
-| Critério | Tasks              | Evidência planejada                                                                 |
-| -------- | ------------------ | ----------------------------------------------------------------------------------- |
-| AC-001   | TASK-001, TASK-002 | `appearance.test.ts`/`ThemeProvider.test.tsx` por densidade; busca por literais     |
-| AC-002   | TASK-003           | teste das quatro paletas e contraste; RNTL de `StatusMessage` por tom               |
-| AC-003   | TASK-004, TASK-005 | RNTL do `BottomSheet`; testes existentes do `SelectField` (042) verdes              |
-| AC-004   | TASK-006           | RNTL de `ActionSheet` e `ConfirmSheet` (fechar→executar, cancelar sem efeito)        |
+| Critério | Tasks              | Evidência planejada                                                                    |
+| -------- | ------------------ | -------------------------------------------------------------------------------------- |
+| AC-001   | TASK-001, TASK-002 | `appearance.test.ts`/`ThemeProvider.test.tsx` por densidade; busca por literais        |
+| AC-002   | TASK-003           | teste das quatro paletas e contraste; RNTL de `StatusMessage` por tom                  |
+| AC-003   | TASK-004, TASK-005 | RNTL do `BottomSheet`; testes existentes do `SelectField` (042) verdes                 |
+| AC-004   | TASK-006           | RNTL de `ActionSheet` e `ConfirmSheet` (fechar→executar, cancelar sem efeito)          |
 | AC-005   | TASK-007           | RNTL por `kind` e modo; `@ts-expect-error` para ações obrigatórias; `EmptyState` verde |
-| AC-006   | TASK-008           | RNTL de rótulo/anúncio de `LoadingBlock` e `ListSkeleton`; movimento reduzido        |
-| AC-007   | TASK-009           | RNTL de `SectionHeader`, `SectionAction` e `TextAction` (tons e área de toque)       |
-| AC-008   | TASK-010           | RNTL de seleção, geometria estável, área de toque e empilhamento do segmentado      |
-| AC-009   | TASK-011           | testes existentes do `RangeSlider` (034) verdes e RNTL da apresentação               |
-| AC-010   | TASK-012           | RNTL do `SwatchPicker` com largura medida simulada; captura iOS claro/escuro         |
-| AC-011   | TASK-013           | RNTL do `ChoiceGroup` empilhado (altura, rádio, descrição, geometria)                |
-| AC-012   | TASK-014           | RNTL das alturas do `ListRow` e regressão dos consumidores atuais                   |
-| AC-013   | TASK-015           | registro de presença e tamanho dos assets em `evidence/`                            |
-| AC-014   | TASK-016           | RNTL com `fontScale` 2 e largura 320; capturas no iOS Simulator; Android físico     |
-| AC-015   | TASK-017, TASK-018 | barrel, `coverage.json`, i18n nos três idiomas, `pnpm lint:fsd`, `typecheck`, testes |
+| AC-006   | TASK-008           | RNTL de rótulo/anúncio de `LoadingBlock` e `ListSkeleton`; movimento reduzido          |
+| AC-007   | TASK-009           | RNTL de `SectionHeader`, `SectionAction` e `TextAction` (tons e área de toque)         |
+| AC-008   | TASK-010           | RNTL de seleção, geometria estável, área de toque e empilhamento do segmentado         |
+| AC-009   | TASK-011           | testes existentes do `RangeSlider` (034) verdes e RNTL da apresentação                 |
+| AC-010   | TASK-012           | RNTL do `SwatchPicker` com largura medida simulada; captura iOS claro/escuro           |
+| AC-011   | TASK-013           | RNTL do `ChoiceGroup` empilhado (altura, rádio, descrição, geometria)                  |
+| AC-012   | TASK-014           | RNTL das alturas do `ListRow` e regressão dos consumidores atuais                      |
+| AC-013   | TASK-015           | registro de presença e tamanho dos assets em `evidence/`                               |
+| AC-014   | TASK-016           | RNTL com `fontScale` 2 e largura 320; capturas no iOS Simulator; Android físico        |
+| AC-015   | TASK-017, TASK-018 | barrel, `coverage.json`, i18n nos três idiomas, `pnpm lint:fsd`, `typecheck`, testes   |
 
 ## Checklist
 
@@ -43,7 +43,8 @@
 - [x] TASK-014 — Adicionar a `ListRow.tsx` o tile de ícone opcional e as alturas `single`/`double`, sem mudar os usos atuais; testes de regressão dos consumidores.
 - [x] TASK-015 — Copiar `triste`, `duvida` e `404` do Design System para `assets/images/mascot-*.png`, otimizados, e registrar origem, dimensões e tamanhos em `evidence/assets.md`.
 - [ ] TASK-016 — Verificar fonte a 200%, largura 320, densidade compacta, alto contraste e movimento reduzido nas primitivas; capturas no iOS Simulator em claro e escuro; validação em Android físico (fica aberta se não for executada).
-- [ ] TASK-017 — Exportar as primitivas novas em `src/shared/ui/index.ts`, adicionar as chaves internas em `common.json` (`pt-BR`, `en-US`, `es-ES`) e uma entrada individual por arquivo novo em `docs/specs/coverage.json`.
+- [x] TASK-017 — Exportar as primitivas novas em `src/shared/ui/index.ts`, adicionar as chaves internas em `common.json` (`pt-BR`, `en-US`, `es-ES`) e uma entrada individual por arquivo novo em `docs/specs/coverage.json`.
+      Execução: nenhuma chave nova foi necessária. Todos os rótulos das primitivas (fechar, cancelar, ações, títulos) vêm do consumidor, como a spec permite; os consumidores existentes já usam chaves nos três idiomas.
 - [ ] TASK-018 — Executar `pnpm lint:fsd`, `pnpm typecheck`, `pnpm test:ci` e `pnpm check`; registrar `review.md`, `drift-audit.md` e o resultado, separando as falhas de checksum pré-existentes.
 
 `implemented` exige todos os checkboxes concluídos. Quando o código estiver pronto, mas uma verificação real ainda estiver aberta, usar `verification-pending` e manter a task correspondente desmarcada.
