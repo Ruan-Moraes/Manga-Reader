@@ -2,7 +2,7 @@
 id: MOB-FEAT-061
 type: feature
 title: Telas de conta no padrão do kit mobile
-status: in-progress
+status: verification-pending
 implementation_gate: open
 blocked_by: [MOB-FEAT-057]
 created: 2026-11-08

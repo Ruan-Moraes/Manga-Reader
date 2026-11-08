@@ -27,7 +27,7 @@
 - [x] TASK-006 — Adicionar as chaves novas em `auth.json` (`pt-BR`, `en-US`, `es-ES`) e testar a paridade.
       Execução: nenhuma chave nova. A tela de enviado reaproveita `sentNextSteps`, `sentStep1..3`, `sentSubtitle` e `sentExpiry*`, que já existiam sem uso; `sentStep1` e `sentStep2` ficaram genéricos nos três idiomas (sem citar assunto do e-mail). O prazo do link continua vindo da resposta da Core (`expiresInSeconds`) ou do texto de validade limitada.
 - [ ] TASK-007 — Verificar fonte a 200%, 320 pt, alto contraste e temas; capturas das três telas e da tela de enviado no iOS Simulator (fica aberta se não for executada).
-- [ ] TASK-008 — Mapear arquivos no `coverage.json`, rodar `pnpm lint:fsd`, `pnpm typecheck`, `pnpm test:ci` e `pnpm check`, e registrar review e drift.
+- [x] TASK-008 — Mapear arquivos no `coverage.json`, rodar `pnpm lint:fsd`, `pnpm typecheck`, `pnpm test:ci` e `pnpm check`, e registrar review e drift.
 
 `implemented` exige todos os checkboxes concluídos. Quando o código estiver pronto, mas uma verificação real ainda estiver aberta, usar `verification-pending` e manter a task correspondente desmarcada.
 
