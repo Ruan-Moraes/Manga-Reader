@@ -4077,10 +4077,22 @@
             "observations": ["MOB-FEAT-043/AC-005", "MOB-FEAT-043/AC-006", "MOB-FEAT-043/AC-007", "MOB-FEAT-045/AC-002", "MOB-FEAT-045/AC-005"]
         },
         {
+            "path": "src/shared/ui/__tests__/designKitSections.test.tsx",
+            "category": "evidence",
+            "specs": ["MOB-FEAT-057"],
+            "observations": ["MOB-FEAT-057/AC-007"]
+        },
+        {
             "path": "src/shared/ui/__tests__/designKitSheets.test.tsx",
             "category": "evidence",
             "specs": ["MOB-FEAT-057"],
             "observations": ["MOB-FEAT-057/AC-003", "MOB-FEAT-057/AC-004"]
+        },
+        {
+            "path": "src/shared/ui/__tests__/designKitStates.test.tsx",
+            "category": "evidence",
+            "specs": ["MOB-FEAT-057"],
+            "observations": ["MOB-FEAT-057/AC-005", "MOB-FEAT-057/AC-006", "MOB-FEAT-057/AC-014"]
         },
         {
             "path": "src/shared/ui/__tests__/designKitStatus.test.tsx",
@@ -4328,6 +4340,18 @@
             ]
         },
         {
+            "path": "src/shared/ui/ListSkeleton.tsx",
+            "category": "behavior",
+            "specs": ["MOB-FEAT-057"],
+            "observations": ["MOB-FEAT-057/AC-006", "MOB-FEAT-057/AC-014"]
+        },
+        {
+            "path": "src/shared/ui/LoadingBlock.tsx",
+            "category": "behavior",
+            "specs": ["MOB-FEAT-057"],
+            "observations": ["MOB-FEAT-057/AC-006"]
+        },
+        {
             "path": "src/shared/ui/NavigationHeader.tsx",
             "category": "behavior",
             "specs": ["MOB-FEAT-029"],
@@ -4368,6 +4392,18 @@
             "observations": ["MOB-FEAT-011/AC-004", "MOB-FEAT-011/AC-007"]
         },
         {
+            "path": "src/shared/ui/SectionAction.tsx",
+            "category": "behavior",
+            "specs": ["MOB-FEAT-057"],
+            "observations": ["MOB-FEAT-057/AC-007", "MOB-FEAT-057/AC-014"]
+        },
+        {
+            "path": "src/shared/ui/SectionHeader.tsx",
+            "category": "behavior",
+            "specs": ["MOB-FEAT-057"],
+            "observations": ["MOB-FEAT-057/AC-007"]
+        },
+        {
             "path": "src/shared/ui/SectionStack.tsx",
             "category": "behavior",
             "specs": ["MOB-FEAT-033"],
@@ -4384,6 +4420,12 @@
             "category": "behavior",
             "specs": ["MOB-FEAT-010"],
             "observations": ["MOB-FEAT-010/AC-001", "MOB-FEAT-010/AC-008"]
+        },
+        {
+            "path": "src/shared/ui/StateView.tsx",
+            "category": "behavior",
+            "specs": ["MOB-FEAT-057"],
+            "observations": ["MOB-FEAT-057/AC-005", "MOB-FEAT-057/AC-013", "MOB-FEAT-057/AC-014"]
         },
         {
             "path": "src/shared/ui/SwitchRow.tsx",
@@ -4409,6 +4451,12 @@
                 "MOB-FEAT-040/AC-004",
                 "MOB-FEAT-040/AC-005"
             ]
+        },
+        {
+            "path": "src/shared/ui/TextAction.tsx",
+            "category": "behavior",
+            "specs": ["MOB-FEAT-057"],
+            "observations": ["MOB-FEAT-057/AC-007", "MOB-FEAT-057/AC-014"]
         },
         {
             "path": "src/widgets/chapter-reader/index.ts",
@@ -5949,6 +5997,12 @@
             "category": "evidence",
             "specs": ["MOB-FEAT-054"],
             "observations": ["MOB-FEAT-054/AC-004"]
+        },
+        {
+            "path": "docs/specs/features/MOB-FEAT-057-design-kit-visual-foundation/evidence/assets.md",
+            "category": "evidence",
+            "specs": ["MOB-FEAT-057"],
+            "observations": ["MOB-FEAT-057/AC-013"]
         },
         {
             "path": "docs/specs/features/MOB-FEAT-054-reader-settings-refinement/evidence/ios-appearance.png",
