@@ -72,6 +72,7 @@ Todo baseline, Target Spec e decisão deve estar nesta tabela. Caminhos são rel
 
 | MOB-FEAT-053 | feature | Light novel: conforto e personalização | verification-pending | open | `MOB-FEAT-051`, `MOB-FEAT-052` | features/MOB-FEAT-053-novel-reading/spec.md | `src/widgets/content-reader`; `src/features/configure-text-reader`; `src/entities/user-setting` | — | — |
 | MOB-FEAT-054 | feature | Refinamento do leitor e configurações | verification-pending | open | `MOB-FEAT-051`, `MOB-FEAT-052`, `MOB-FEAT-053` | features/MOB-FEAT-054-reader-settings-refinement/spec.md | `src/widgets/content-reader`; `src/features/configure-chapter-reader`; `src/shared/ui` | — | — |
+| MOB-FEAT-057 | feature | Fundação visual do kit mobile do Design System | approved | open | — | features/MOB-FEAT-057-design-kit-visual-foundation/spec.md | `src/shared/theme`; `src/shared/ui`; `src/shared/i18n/locales/*/common.json`; `assets/images` | — | — |
 
 ## Relatórios informativos mantidos
 
