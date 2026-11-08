@@ -4083,6 +4083,12 @@
             "observations": ["MOB-FEAT-057/AC-014"]
         },
         {
+            "path": "src/shared/ui/__tests__/designKitBarrel.test.ts",
+            "category": "evidence",
+            "specs": ["MOB-FEAT-057"],
+            "observations": ["MOB-FEAT-057/AC-015"]
+        },
+        {
             "path": "src/shared/ui/__tests__/designKitControls.test.tsx",
             "category": "evidence",
             "specs": ["MOB-FEAT-057"],
