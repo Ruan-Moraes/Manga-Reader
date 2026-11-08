@@ -30,9 +30,9 @@
 - [x] TASK-005 — Em `features/manage-content-languages/ui/ContentLanguagesEditor.tsx`, número em círculo de 24 e linhas "+ Adicionar"; testes.
 - [x] TASK-006 — Em `src/pages/settings-reader/ui/SettingsReaderPage.tsx`, organizar as cinco linhas com folhas (Navegação, Imagem, Comportamento, Gestos, Texto e aparência), adicionando em `features/configure-chapter-reader` as categorias necessárias sem mudar as usadas pelo painel do leitor; preservar o ajuste Original, a qualidade condicionada, limites e persistência.
 - [x] TASK-007 — Criar testes da página do leitor por folha e manter verdes os testes de `ReaderSettingsControls`, `ReaderGestureControls`, `TextReaderControls` e do painel do leitor.
-- [ ] TASK-008 — Em `features/update-privacy/ui/PrivacyControlsPanel.tsx`, trocar os `Alert` por `ConfirmSheet` com o texto atual; testes de confirmar e cancelar.
-- [ ] TASK-009 — Em `features/data-controls/ui/DataControlsPanel.tsx`, reagrupar em "Neste dispositivo", "Dados offline" e "Dados da conta", manter o uso de armazenamento, mostrar o tamanho em "Limpar cache" e trocar os `Alert` por `ConfirmSheet`; testes.
-- [ ] TASK-010 — Aplicar o padrão de grupo das subpáginas (barra, título `section`, cartão com blocos) em `pages/settings-*` e em `SettingsAboutPage.tsx` (links como linhas de tile), e rodar os testes das specs 008, 031 e 032.
+- [x] TASK-008 — Em `features/update-privacy/ui/PrivacyControlsPanel.tsx`, trocar os `Alert` por `ConfirmSheet` com o texto atual; testes de confirmar e cancelar.
+- [x] TASK-009 — Em `features/data-controls/ui/DataControlsPanel.tsx`, reagrupar em "Neste dispositivo", "Dados offline" e "Dados da conta", manter o uso de armazenamento, mostrar o tamanho em "Limpar cache" e trocar os `Alert` por `ConfirmSheet`; testes.
+- [x] TASK-010 — Aplicar o padrão de grupo das subpáginas (barra, título `section`, cartão com blocos) em `pages/settings-*` e em `SettingsAboutPage.tsx` (links como linhas de tile), e rodar os testes das specs 008, 031 e 032.
 - [ ] TASK-011 — Adicionar as chaves novas nos namespaces envolvidos (`pt-BR`, `en-US`, `es-ES`) e testar a paridade.
 - [ ] TASK-012 — Verificar fonte a 200%, 320 × 568, paisagem, alto contraste e temas; capturas do índice, das subpáginas e das folhas no iOS Simulator (fica aberta se não for executada).
 - [ ] TASK-013 — Mapear arquivos no `coverage.json`, rodar `pnpm lint:fsd`, `pnpm typecheck`, `pnpm test:ci` e `pnpm check`, e registrar review e drift.

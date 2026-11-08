@@ -1938,20 +1938,21 @@
         {
             "path": "src/features/data-controls/ui/__tests__/DataControlsPanel.test.tsx",
             "category": "evidence",
-            "specs": ["MOB-FEAT-007", "MOB-FEAT-008", "MOB-FEAT-009", "MOB-FEAT-031"],
+            "specs": ["MOB-FEAT-007", "MOB-FEAT-008", "MOB-FEAT-009", "MOB-FEAT-031", "MOB-FEAT-062"],
             "observations": [
                 "MOB-FEAT-007/AC-002",
                 "MOB-FEAT-007/AC-006",
                 "MOB-FEAT-007/AC-007",
                 "MOB-FEAT-008/AC-004",
                 "MOB-FEAT-009/AC-007",
-                "MOB-FEAT-031/AC-006"
+                "MOB-FEAT-031/AC-006",
+                "MOB-FEAT-062/AC-008"
             ]
         },
         {
             "path": "src/features/data-controls/ui/DataControlsPanel.tsx",
             "category": "behavior",
-            "specs": ["MOB-FEAT-007", "MOB-FEAT-008", "MOB-FEAT-009", "MOB-FEAT-033"],
+            "specs": ["MOB-FEAT-007", "MOB-FEAT-008", "MOB-FEAT-009", "MOB-FEAT-033", "MOB-FEAT-062"],
             "observations": [
                 "MOB-FEAT-007/AC-002",
                 "MOB-FEAT-007/AC-003",
@@ -1962,7 +1963,8 @@
                 "MOB-FEAT-008/AC-004",
                 "MOB-FEAT-009/AC-007",
                 "MOB-FEAT-033/AC-004",
-                "MOB-FEAT-033/AC-005"
+                "MOB-FEAT-033/AC-005",
+                "MOB-FEAT-062/AC-008"
             ]
         },
         {
@@ -2767,7 +2769,7 @@
         {
             "path": "src/features/update-privacy/ui/__tests__/PrivacyControlsPanel.test.tsx",
             "category": "evidence",
-            "specs": ["MOB-FEAT-006", "MOB-FEAT-031", "MOB-FEAT-032", "MOB-FEAT-037", "MOB-FEAT-038"],
+            "specs": ["MOB-FEAT-006", "MOB-FEAT-031", "MOB-FEAT-032", "MOB-FEAT-037", "MOB-FEAT-038", "MOB-FEAT-062"],
             "observations": [
                 "MOB-FEAT-006/AC-003",
                 "MOB-FEAT-006/AC-004",
@@ -2780,13 +2782,14 @@
                 "MOB-FEAT-037/AC-004",
                 "MOB-FEAT-037/AC-006",
                 "MOB-FEAT-038/AC-005",
-                "MOB-FEAT-038/AC-006"
+                "MOB-FEAT-038/AC-006",
+                "MOB-FEAT-062/AC-007"
             ]
         },
         {
             "path": "src/features/update-privacy/ui/PrivacyControlsPanel.tsx",
             "category": "behavior",
-            "specs": ["MOB-FEAT-006", "MOB-FEAT-011"],
+            "specs": ["MOB-FEAT-006", "MOB-FEAT-011", "MOB-FEAT-062"],
             "observations": [
                 "MOB-FEAT-006/AC-001",
                 "MOB-FEAT-006/AC-003",
@@ -2795,7 +2798,8 @@
                 "MOB-FEAT-011/AC-007",
                 "MOB-FEAT-011/AC-008",
                 "MOB-FEAT-011/AC-009",
-                "MOB-FEAT-011/AC-010"
+                "MOB-FEAT-011/AC-010",
+                "MOB-FEAT-062/AC-007"
             ]
         },
         {
@@ -3257,14 +3261,21 @@
         {
             "path": "src/pages/settings-about/ui/__tests__/SettingsAboutPage.test.tsx",
             "category": "evidence",
-            "specs": ["MOB-FEAT-008"],
-            "observations": ["MOB-FEAT-008/AC-007", "MOB-FEAT-008/AC-009"]
+            "specs": ["MOB-FEAT-008", "MOB-FEAT-062"],
+            "observations": ["MOB-FEAT-008/AC-007", "MOB-FEAT-008/AC-009", "MOB-FEAT-062/AC-009", "MOB-FEAT-062/AC-011"]
         },
         {
             "path": "src/pages/settings-about/ui/SettingsAboutPage.tsx",
             "category": "behavior",
-            "specs": ["MOB-FEAT-008", "MOB-FEAT-033"],
-            "observations": ["MOB-FEAT-008/AC-002", "MOB-FEAT-008/AC-007", "MOB-FEAT-008/AC-009", "MOB-FEAT-033/AC-004", "MOB-FEAT-033/AC-005"]
+            "specs": ["MOB-FEAT-008", "MOB-FEAT-033", "MOB-FEAT-062"],
+            "observations": [
+                "MOB-FEAT-008/AC-002",
+                "MOB-FEAT-008/AC-007",
+                "MOB-FEAT-008/AC-009",
+                "MOB-FEAT-033/AC-004",
+                "MOB-FEAT-033/AC-005",
+                "MOB-FEAT-062/AC-009"
+            ]
         },
         {
             "path": "src/pages/settings-appearance/index.ts",

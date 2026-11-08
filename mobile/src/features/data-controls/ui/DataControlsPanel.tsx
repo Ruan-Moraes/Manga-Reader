@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { Alert, View } from 'react-native';
 import { useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 
@@ -7,8 +6,7 @@ import { useSessionStore } from '@/entities/session';
 import { type StorageMeasurementAdapter, temporaryExportStorageMeasurement } from '@/shared/files';
 import { formatByteSize } from '@/shared/locale';
 import { type LocalDataSummary, measureLocalData } from '@/shared/storage';
-import { useTheme } from '@/shared/theme';
-import { AppText, FormSection, Icon, type IconName, ListRow, SectionStack, StatusMessage } from '@/shared/ui';
+import { AppText, ConfirmSheet, FormSection, ListRow, SectionStack, StatusMessage } from '@/shared/ui';
 
 import {
     clearApplicationCache,
@@ -20,8 +18,7 @@ import {
 } from '../model/dataControls';
 import { useDataControlsStore } from '../model/dataControlsStore';
 
-const confirmationBody = (t: (key: string) => string, descriptor: (typeof DATA_CONTROL_CONFIRMATIONS)[keyof typeof DATA_CONTROL_CONFIRMATIONS]) =>
-    `${t(descriptor.bodyKey)}\n\n${t('dataControls.removes')}: ${descriptor.removesKeys.map(key => t(key)).join(', ')}.\n${t('dataControls.preserves')}: ${descriptor.preservesKeys.map(key => t(key)).join(', ')}.`;
+type ConfirmKind = keyof typeof DATA_CONTROL_CONFIRMATIONS;
 
 interface DataControlsPanelProps {
     storageMeasurement?: StorageMeasurementAdapter;
@@ -38,7 +35,7 @@ export function DataControlsPanel({
     const isAuthenticated = useSessionStore(state => state.isAuthenticated);
     const { busyAction, errorKey, failedCategories, run } = useDataControlsStore();
     const { t } = useTranslation('common');
-    const { radii, tokens } = useTheme();
+    const [pending, setPending] = useState<{ kind: ConfirmKind; operation: () => Promise<unknown> } | null>(null);
     const [storage, setStorage] = useState<{ usedBytes: number; scope: string } | null>(null);
     const [offlineData, setOfflineData] = useState<LocalDataSummary | null>({ totalBytes: 0, participantIds: [] });
 
@@ -70,28 +67,8 @@ export function DataControlsPanel({
         };
     }, [busyAction]);
 
-    const confirm = (kind: 'cache' | 'history' | 'offline', operation: () => Promise<unknown>) => {
-        const descriptor = DATA_CONTROL_CONFIRMATIONS[kind];
-        Alert.alert(t(descriptor.titleKey), confirmationBody(t, descriptor), [
-            { text: t('dataControls.cancel'), style: 'cancel' },
-            { text: t('dataControls.confirm'), style: 'destructive', onPress: () => void run(kind, operation) },
-        ]);
-    };
-    const leading = (icon: IconName, danger = false) => (
-        <View
-            accessibilityElementsHidden
-            style={{
-                alignItems: 'center',
-                backgroundColor: danger ? tokens.disabledSurface : tokens.accentSoft,
-                borderRadius: radii.control,
-                height: 42,
-                justifyContent: 'center',
-                width: 42,
-            }}
-        >
-            <Icon color={danger ? tokens.danger : tokens.accentText} name={icon} decorative />
-        </View>
-    );
+    const confirm = (kind: ConfirmKind, operation: () => Promise<unknown>) => setPending({ kind, operation });
+    const descriptor = pending ? DATA_CONTROL_CONFIRMATIONS[pending.kind] : null;
 
     return (
         <SectionStack>
@@ -104,7 +81,7 @@ export function DataControlsPanel({
                 {storage ? (
                     <ListRow
                         description={t('dataControls.storageLabel')}
-                        leading={leading('pie-chart-outline')}
+                        icon="pie-chart-outline"
                         showDivider
                         title={t('dataControls.storageUsage', {
                             size: formatByteSize(storage.usedBytes),
@@ -117,20 +94,22 @@ export function DataControlsPanel({
                     accessibilityHint={t('dataControls.cache.description')}
                     disabled={busyAction !== null}
                     description={t('dataControls.cache.description')}
-                    leading={leading('sparkles-outline', true)}
+                    icon="sparkles-outline"
                     loading={busyAction === 'cache'}
                     onPress={() => confirm('cache', () => clearApplicationCache(true, { queryClient }))}
-                    showDivider
+                    showDivider={false}
                     tone="danger"
                     title={t('dataControls.cache.action')}
                     variant="plain"
                 />
+            </FormSection>
+            <FormSection contentPadding="none" title={t('dataControls.offline.title')} description={t('dataControls.offline.description')}>
                 {offlineData && offlineData.totalBytes > 0 ? (
                     <ListRow
                         accessibilityHint={t('dataControls.offline.description')}
                         disabled={busyAction !== null}
                         description={t('dataControls.offline.description')}
-                        leading={leading('phone-portrait-outline', true)}
+                        icon="phone-portrait-outline"
                         loading={busyAction === 'offline'}
                         onPress={() => confirm('offline', () => clearRegisteredLocalData(true, offlineData))}
                         showDivider={false}
@@ -141,7 +120,7 @@ export function DataControlsPanel({
                 ) : (
                     <ListRow
                         description={t('dataControls.offline.empty')}
-                        leading={leading('phone-portrait-outline')}
+                        icon="phone-portrait-outline"
                         showDivider={false}
                         title={t('dataControls.offline.title')}
                         variant="plain"
@@ -153,7 +132,7 @@ export function DataControlsPanel({
                     accessibilityHint={t('dataControls.export.description')}
                     disabled={busyAction !== null}
                     description={t('dataControls.export.description')}
-                    leading={leading('download-outline')}
+                    icon="download-outline"
                     loading={busyAction === 'export'}
                     onPress={() => (isAuthenticated ? void run('export', () => shareAccountExport(true, { queryClient })) : onAuthenticationRequired?.())}
                     showDivider
@@ -164,7 +143,7 @@ export function DataControlsPanel({
                     accessibilityHint={t('dataControls.history.description')}
                     disabled={busyAction !== null}
                     description={t('dataControls.history.description')}
-                    leading={leading('time-outline', true)}
+                    icon="time-outline"
                     loading={busyAction === 'history'}
                     onPress={() =>
                         isAuthenticated ? confirm('history', () => clearTrackedHistory(true, true, { queryClient })) : onAuthenticationRequired?.()
@@ -182,6 +161,24 @@ export function DataControlsPanel({
                     tone="danger"
                 />
             )}
+            <ConfirmSheet
+                visible={pending !== null}
+                onClose={() => setPending(null)}
+                onConfirm={() => {
+                    if (pending) void run(pending.kind, pending.operation);
+                }}
+                closeLabel={t('navigation.dismiss')}
+                cancelLabel={t('dataControls.cancel')}
+                confirmLabel={t('dataControls.confirm')}
+                title={descriptor ? t(descriptor.titleKey) : ''}
+                description={
+                    descriptor
+                        ? `${t(descriptor.bodyKey)}\n\n${t('dataControls.preserves')}: ${descriptor.preservesKeys.map(key => t(key)).join(', ')}.`
+                        : undefined
+                }
+                itemsTitle={t('dataControls.removes')}
+                items={descriptor ? descriptor.removesKeys.map(key => t(key)) : undefined}
+            />
         </SectionStack>
     );
 }

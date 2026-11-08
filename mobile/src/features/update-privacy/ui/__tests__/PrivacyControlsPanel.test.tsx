@@ -1,6 +1,5 @@
-import { Alert } from 'react-native';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { fireEvent, render, screen, waitFor, within } from '@testing-library/react-native';
+import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react-native';
 import AxiosMockAdapter from 'axios-mock-adapter';
 
 import { usePrivacySettingsStore } from '@/entities/user';
@@ -64,8 +63,7 @@ describe('MOB-FEAT-006 PrivacyControlsPanel', () => {
         expect(screen.getByRole('switch', { name: 'Analytics comportamental' })).toBeDisabled();
     });
 
-    it('cancela DNT sem request e confirma com explicação da limpeza', async () => {
-        const alert = jest.spyOn(Alert, 'alert').mockImplementation(() => undefined);
+    it('cancela DNT sem request e confirma em folha com explicação da limpeza (MOB-FEAT-062 AC-007)', async () => {
         render(
             <QueryClientProvider client={new QueryClient()}>
                 <ThemeProvider waitForPlatform={false}>
@@ -75,26 +73,45 @@ describe('MOB-FEAT-006 PrivacyControlsPanel', () => {
         );
 
         fireEvent.press(screen.getByText('Não rastrear'));
-        expect(alert).toHaveBeenCalledWith(
-            'Parar de rastrear o histórico?',
-            expect.stringContaining('posição funcional de leitura será preservada'),
-            expect.any(Array),
-        );
-        const buttons = alert.mock.calls[0][2] ?? [];
-        buttons[0]?.onPress?.();
+        expect(screen.getByRole('header', { name: 'Parar de rastrear o histórico?' })).toBeOnTheScreen();
+        expect(screen.getByText(/posição funcional de leitura será preservada/)).toBeOnTheScreen();
+        fireEvent.press(screen.getByTestId('confirm-sheet-cancel'));
+        await act(async () => undefined);
         expect(apiMock.history.patch).toHaveLength(0);
+        expect(screen.queryByTestId('confirm-sheet')).toBeNull();
 
         apiMock.onPatch('/users/me/privacy').reply(200, {
             data: { ...privacy, viewHistoryVisibility: 'DO_NOT_TRACK', behaviorAnalyticsEnabled: false },
         });
         fireEvent.press(screen.getByText('Não rastrear'));
-        const confirmButtons = alert.mock.calls[1][2] ?? [];
-        confirmButtons[1]?.onPress?.();
+        fireEvent.press(screen.getByTestId('confirm-sheet-confirm'));
         await waitFor(() => expect(apiMock.history.patch).toHaveLength(1));
         expect(JSON.parse(apiMock.history.patch[0].data)).toEqual({
             viewHistoryVisibility: 'DO_NOT_TRACK',
             behaviorAnalyticsEnabled: false,
         });
+    });
+
+    it('confirma a desativação do analytics em folha e cancelar não muda nada (MOB-FEAT-062 AC-007)', async () => {
+        apiMock.onPatch('/users/me/privacy').reply(200, { data: { ...privacy, behaviorAnalyticsEnabled: false } });
+        render(
+            <QueryClientProvider client={new QueryClient()}>
+                <ThemeProvider waitForPlatform={false}>
+                    <PrivacyControlsPanel />
+                </ThemeProvider>
+            </QueryClientProvider>,
+        );
+
+        fireEvent(screen.getByRole('switch', { name: 'Analytics comportamental' }), 'valueChange', false);
+        expect(screen.getByRole('header', { name: 'Desativar analytics?' })).toBeOnTheScreen();
+        fireEvent.press(screen.getByTestId('confirm-sheet-backdrop'));
+        await act(async () => undefined);
+        expect(apiMock.history.patch).toHaveLength(0);
+
+        fireEvent(screen.getByRole('switch', { name: 'Analytics comportamental' }), 'valueChange', false);
+        fireEvent.press(screen.getByTestId('confirm-sheet-confirm'));
+        await waitFor(() => expect(apiMock.history.patch).toHaveLength(1));
+        expect(JSON.parse(apiMock.history.patch[0].data)).toEqual({ behaviorAnalyticsEnabled: false });
     });
 
     it('consome falha da mutação e oferece retry sem rejeição não tratada', async () => {

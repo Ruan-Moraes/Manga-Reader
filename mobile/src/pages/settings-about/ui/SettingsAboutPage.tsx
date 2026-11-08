@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { appMetadata, type ExternalLinkKey, externalLinks } from '@/shared/config';
 import { navigateBackOrReplace, ROUTES } from '@/shared/navigation';
 import { useTheme } from '@/shared/theme';
-import { AppText, Button, FormSection, Icon, type IconName, ListRow, ScreenScaffold, SectionStack } from '@/shared/ui';
+import { AppText, Button, FormSection, type IconName, ListRow, ScreenScaffold, SectionStack } from '@/shared/ui';
 
 const LINK_ICONS: Record<ExternalLinkKey, IconName> = {
     privacy: 'shield-checkmark-outline',
@@ -16,7 +16,7 @@ const LINK_ICONS: Record<ExternalLinkKey, IconName> = {
 
 export function SettingsAboutPage() {
     const { t } = useTranslation('settingsNavigation');
-    const { radii, spacing, tokens } = useTheme();
+    const { spacing } = useTheme();
     const metadata = useMemo(() => appMetadata.read(), []);
     const links = useMemo(() => externalLinks.read(), []);
     const [failedLink, setFailedLink] = useState<{ key: ExternalLinkKey; url: string } | null>(null);
@@ -50,21 +50,7 @@ export function SettingsAboutPage() {
                         <ListRow
                             description={t(`about.linkDescriptions.${key}`)}
                             key={key}
-                            leading={
-                                <View
-                                    accessibilityElementsHidden
-                                    style={{
-                                        alignItems: 'center',
-                                        backgroundColor: tokens.accentSoft,
-                                        borderRadius: radii.control,
-                                        height: 42,
-                                        justifyContent: 'center',
-                                        width: 42,
-                                    }}
-                                >
-                                    <Icon name={LINK_ICONS[key]} color={tokens.accentText} decorative />
-                                </View>
-                            }
+                            icon={LINK_ICONS[key]}
                             onPress={() => void open(key, url)}
                             showDivider={index < entries.length - 1}
                             title={t(`about.links.${key}`)}

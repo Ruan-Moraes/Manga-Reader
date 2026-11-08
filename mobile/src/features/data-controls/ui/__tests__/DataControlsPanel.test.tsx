@@ -1,4 +1,3 @@
-import { Alert } from 'react-native';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react-native';
 
@@ -10,8 +9,7 @@ import { DataControlsPanel } from '../DataControlsPanel';
 describe('MOB-FEAT-007 DataControlsPanel', () => {
     afterEach(() => jest.restoreAllMocks());
 
-    it('explica remoções e preservações antes de executar a limpeza', () => {
-        const alert = jest.spyOn(Alert, 'alert').mockImplementation(() => undefined);
+    it('explica remoções e preservações em folha antes de executar a limpeza (MOB-FEAT-062 AC-008)', () => {
         useSessionStore.setState({ isAuthenticated: false });
 
         render(
@@ -24,15 +22,16 @@ describe('MOB-FEAT-007 DataControlsPanel', () => {
 
         fireEvent.press(screen.getByText('Limpar cache'));
 
-        expect(alert).toHaveBeenCalledWith(
-            'Limpar dados regeneráveis?',
-            expect.stringContaining('Preserva: sessão, preferências, alterações pendentes.'),
-            expect.arrayContaining([expect.objectContaining({ style: 'cancel' }), expect.objectContaining({ style: 'destructive' })]),
-        );
+        expect(screen.getByRole('header', { name: 'Limpar dados regeneráveis?' })).toBeOnTheScreen();
+        expect(screen.getByText(/Preserva: sessão, preferências, alterações pendentes\./)).toBeOnTheScreen();
+        expect(screen.getByText('Remove')).toBeOnTheScreen();
+        expect(screen.getByTestId('confirm-sheet-cancel')).toBeOnTheScreen();
+        expect(screen.getByTestId('confirm-sheet-confirm')).toBeOnTheScreen();
+        fireEvent.press(screen.getByTestId('confirm-sheet-cancel'));
+        expect(screen.queryByTestId('confirm-sheet')).toBeNull();
     });
 
-    it('explica irreversibilidade e preservação da posição antes de limpar histórico', () => {
-        const alert = jest.spyOn(Alert, 'alert').mockImplementation(() => undefined);
+    it('explica irreversibilidade e preservação da posição em folha antes de limpar histórico (MOB-FEAT-062 AC-008)', () => {
         useSessionStore.setState({ isAuthenticated: true });
 
         render(
@@ -44,11 +43,8 @@ describe('MOB-FEAT-007 DataControlsPanel', () => {
         );
 
         fireEvent.press(screen.getByText('Limpar histórico rastreado'));
-        expect(alert).toHaveBeenCalledWith(
-            'Limpar histórico rastreado?',
-            expect.stringContaining('Preserva: posição de leitura, sessão, preferências.'),
-            expect.arrayContaining([expect.objectContaining({ style: 'cancel' }), expect.objectContaining({ style: 'destructive' })]),
-        );
+        expect(screen.getByRole('header', { name: 'Limpar histórico rastreado?' })).toBeOnTheScreen();
+        expect(screen.getByText(/Preserva: posição de leitura, sessão, preferências\./)).toBeOnTheScreen();
     });
 
     it('exibe medição somente com escopo suportado e explícito', async () => {
@@ -76,7 +72,6 @@ describe('MOB-FEAT-007 DataControlsPanel', () => {
     });
 
     it('encaminha ações privadas do guest ao login sem confirmação ou request privado', () => {
-        const alert = jest.spyOn(Alert, 'alert').mockImplementation(() => undefined);
         const authenticate = jest.fn();
         useSessionStore.setState({ isAuthenticated: false });
         render(
@@ -90,6 +85,6 @@ describe('MOB-FEAT-007 DataControlsPanel', () => {
         fireEvent.press(screen.getByText('Exportar meus dados'));
         fireEvent.press(screen.getByText('Limpar histórico rastreado'));
         expect(authenticate).toHaveBeenCalledTimes(2);
-        expect(alert).not.toHaveBeenCalled();
+        expect(screen.queryByTestId('confirm-sheet')).toBeNull();
     });
 });
