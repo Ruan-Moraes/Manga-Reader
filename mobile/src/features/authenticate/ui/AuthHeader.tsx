@@ -1,14 +1,17 @@
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 import { Image } from 'expo-image';
 import { useTranslation } from 'react-i18next';
 
 import { useTheme } from '@/shared/theme';
-import { FONTS } from '@/shared/theme';
+import { AppText } from '@/shared/ui';
 
 const LOGIN_HERO = require('../../../../assets/images/login-hero.png');
 const LOGIN_HERO_LIGHT = require('../../../../assets/images/login-hero-light.png');
 
+const ARTWORK_HEIGHT = 152;
+
 interface Props {
+    /** `minimal` keeps the same page heading without artwork. */
     layout?: 'mascote' | 'minimal';
     artwork?: boolean;
     eyebrow?: string;
@@ -16,65 +19,26 @@ interface Props {
     sub?: string;
 }
 
+/** Page heading of the account screens: optional artwork, eyebrow, display title and supporting text. */
 export function AuthHeader({ layout = 'mascote', artwork = false, eyebrow, title, sub }: Props) {
     const { t } = useTranslation('auth');
-    const { colorScheme, radii, spacing, textStyles, tokens, typography } = useTheme();
+    const { colorScheme, radii, spacing, tokens } = useTheme();
 
-    if (layout === 'minimal') {
-        return (
-            <View style={{ marginBottom: spacing.lg }}>
-                {eyebrow && (
-                    <Text
-                        style={{
-                            fontSize: typography.minimum,
-                            fontFamily: FONTS.extrabold,
-                            letterSpacing: 1.4,
-                            textTransform: 'uppercase',
-                            color: tokens.accentText,
-                            marginBottom: spacing.sm,
-                        }}
-                    >
-                        {eyebrow}
-                    </Text>
-                )}
-                <Text
-                    style={{
-                        ...textStyles.display,
-                        color: tokens.text,
-                    }}
-                >
-                    {title}
-                </Text>
-                {sub && (
-                    <Text
-                        style={{
-                            marginTop: spacing.sm,
-                            ...textStyles.body,
-                            color: tokens.subtle,
-                            fontFamily: FONTS.regular,
-                        }}
-                    >
-                        {sub}
-                    </Text>
-                )}
-            </View>
-        );
-    }
+    const showArtwork = artwork && layout !== 'minimal';
 
     return (
-        <View style={{ alignItems: 'center', marginBottom: spacing.lg }}>
-            {artwork ? (
+        <View style={{ marginBottom: spacing.lg }}>
+            {showArtwork ? (
                 <View
+                    testID="auth-header-artwork"
                     accessibilityElementsHidden
                     style={{
-                        alignItems: 'center',
-                        backgroundColor: tokens.accent,
-                        borderColor: tokens.borderStrong,
-                        borderRadius: radii.control,
+                        backgroundColor: tokens.heroSurface,
+                        borderColor: tokens.separator,
+                        borderRadius: radii.card,
                         borderWidth: 1,
-                        height: 152,
-                        justifyContent: 'center',
-                        marginBottom: spacing.xl,
+                        height: ARTWORK_HEIGHT,
+                        marginBottom: spacing.lg,
                         overflow: 'hidden',
                         width: '100%',
                     }}
@@ -87,47 +51,17 @@ export function AuthHeader({ layout = 'mascote', artwork = false, eyebrow, title
                     />
                 </View>
             ) : null}
-
-            {eyebrow && (
-                <Text
-                    style={{
-                        fontSize: typography.minimum,
-                        fontFamily: FONTS.extrabold,
-                        letterSpacing: 1.4,
-                        textTransform: 'uppercase',
-                        color: tokens.accentText,
-                        marginBottom: spacing.sm,
-                    }}
-                >
-                    {eyebrow}
-                </Text>
-            )}
-
-            <Text
-                style={{
-                    ...textStyles.display,
-                    fontFamily: FONTS.extrabold,
-                    color: tokens.text,
-                    textAlign: 'center',
-                }}
-            >
-                {title}
-            </Text>
-
-            {sub && (
-                <Text
-                    style={{
-                        marginTop: spacing.sm,
-                        ...textStyles.body,
-                        color: tokens.subtle,
-                        textAlign: 'center',
-                        maxWidth: 340,
-                        fontFamily: FONTS.regular,
-                    }}
-                >
-                    {sub}
-                </Text>
-            )}
+            <View style={{ gap: spacing.xs }}>
+                {eyebrow ? (
+                    <AppText variant="eyebrow" tone="accent">
+                        {eyebrow}
+                    </AppText>
+                ) : null}
+                <AppText accessibilityRole="header" variant="display">
+                    {title}
+                </AppText>
+                {sub ? <AppText tone="muted">{sub}</AppText> : null}
+            </View>
         </View>
     );
 }

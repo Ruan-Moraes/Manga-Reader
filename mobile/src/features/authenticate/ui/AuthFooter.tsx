@@ -1,7 +1,7 @@
-import { Pressable, Text, View } from 'react-native';
+import { View } from 'react-native';
 
 import { useTheme } from '@/shared/theme';
-import { FONTS } from '@/shared/theme';
+import { AppText, TextAction } from '@/shared/ui';
 
 interface Props {
     prompt: string;
@@ -10,27 +10,25 @@ interface Props {
 }
 
 export function AuthFooter({ prompt, action, onAction }: Props) {
-    const { minimumTouchTarget, spacing, tokens, typography } = useTheme();
+    const { spacing, tokens } = useTheme();
+
     return (
         <View
+            testID="auth-footer"
             style={{
-                marginTop: spacing.lg,
-                paddingTop: spacing.lg,
-                borderTopWidth: 1,
-                borderTopColor: tokens.inputBorder,
                 alignItems: 'center',
+                borderTopColor: tokens.separator,
+                borderTopWidth: 1,
+                flexDirection: 'row',
+                flexWrap: 'wrap',
+                gap: spacing.xs,
+                justifyContent: 'center',
+                marginTop: spacing.lg,
+                paddingTop: spacing.md,
             }}
         >
-            <View style={{ alignItems: 'center', flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center' }}>
-                <Text style={{ fontFamily: FONTS.regular, fontSize: typography.body, color: tokens.subtle }}>{prompt} </Text>
-                <Pressable
-                    accessibilityRole="button"
-                    onPress={onAction}
-                    style={{ justifyContent: 'center', minHeight: minimumTouchTarget, paddingHorizontal: spacing.xs }}
-                >
-                    <Text style={{ fontFamily: FONTS.bold, fontSize: typography.body, color: tokens.accentText }}>{action}</Text>
-                </Pressable>
-            </View>
+            <AppText tone="muted">{prompt}</AppText>
+            <TextAction label={action} onPress={onAction} />
         </View>
     );
 }

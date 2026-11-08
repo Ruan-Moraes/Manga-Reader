@@ -1,14 +1,14 @@
 import { useState } from 'react';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { AuthCheckbox, AuthFooter, AuthHeader, MRIcon, signUp, StrengthMeter } from '@/features/authenticate';
 import { navigateBackOrReplace, ROUTES } from '@/shared/navigation';
-import { FONTS, useTheme } from '@/shared/theme';
-import { Button, IconButton, Input, NavigationHeader, PageContainer } from '@/shared/ui';
+import { useTheme } from '@/shared/theme';
+import { AppText, Button, IconButton, Input, NavigationHeader, PageContainer } from '@/shared/ui';
 
 export function RegisterPage() {
-    const { spacing, tokens, typography } = useTheme();
+    const { metrics, spacing, tokens } = useTheme();
     const { t } = useTranslation('auth');
 
     const [email, setEmail] = useState('');
@@ -135,17 +135,9 @@ export function RegisterPage() {
                     }}
                     error={errors.terms}
                 >
-                    <Text
-                        style={{
-                            fontFamily: FONTS.regular,
-                            fontSize: typography.body,
-                            color: errors.terms ? tokens.danger : tokens.muted,
-                            letterSpacing: 0,
-                            lineHeight: typography.body * 1.45,
-                        }}
-                    >
+                    <AppText tone={errors.terms ? 'danger' : 'muted'}>
                         {t('signUp.termsPrefix')} {t('signUp.termsLinkLabel')} {t('signUp.termsAnd')} {t('signUp.privacyLinkLabel')}.
-                    </Text>
+                    </AppText>
                 </AuthCheckbox>
 
                 {errors.terms && (
@@ -153,15 +145,19 @@ export function RegisterPage() {
                         accessibilityRole="alert"
                         style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.sm, marginTop: -spacing.sm, marginBottom: spacing.md }}
                     >
-                        <MRIcon name="alert" size={13} color={tokens.danger} />
-                        <Text style={{ fontSize: typography.minimum, color: tokens.danger, fontFamily: FONTS.regular }}>{errors.terms}</Text>
+                        <MRIcon name="alert" size={metrics.icon.sm} color={tokens.danger} />
+                        <AppText variant="caption" tone="danger" style={{ flexShrink: 1 }}>
+                            {errors.terms}
+                        </AppText>
                     </View>
                 )}
 
                 {errors.root && (
                     <View accessibilityRole="alert" style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.sm, marginBottom: spacing.md }}>
-                        <MRIcon name="alert" size={13} color={tokens.danger} />
-                        <Text style={{ fontSize: typography.minimum, color: tokens.danger, fontFamily: FONTS.regular }}>{errors.root}</Text>
+                        <MRIcon name="alert" size={metrics.icon.sm} color={tokens.danger} />
+                        <AppText variant="caption" tone="danger" style={{ flexShrink: 1 }}>
+                            {errors.root}
+                        </AppText>
                     </View>
                 )}
 

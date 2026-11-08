@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { AuthFooter, AuthHeader, DemoCredentials, MRIcon, signIn } from '@/features/authenticate';
 import { navigateBackOrReplace, ROUTES } from '@/shared/navigation';
 import { useTheme } from '@/shared/theme';
-import { Button, IconButton, Input, NavigationHeader, PageContainer } from '@/shared/ui';
+import { Button, IconButton, Input, NavigationHeader, PageContainer, TextAction } from '@/shared/ui';
 
 export function LoginPage() {
     const params = useGlobalSearchParams<{ returnTo?: string | string[] }>();
@@ -75,6 +75,7 @@ export function LoginPage() {
                     }}
                     placeholder={t('login.passwordPlaceholder')}
                     error={error}
+                    labelAction={<TextAction label={t('login.forgotPassword')} onPress={() => router.push('/(auth)/forgot')} />}
                     trailing={
                         <IconButton
                             icon={showPw ? 'eye-off-outline' : 'eye-outline'}
@@ -87,10 +88,6 @@ export function LoginPage() {
                 <View style={{ height: spacing.sm }} />
                 <Button onPress={submit} loading={loading} disabled={!email.trim() || !password}>
                     {t('login.submit')}
-                </Button>
-
-                <Button size="compact" fullWidth={false} variant="ghost" onPress={() => router.push('/(auth)/forgot')}>
-                    {t('login.forgotPassword')}
                 </Button>
 
                 {__DEV__ && (
