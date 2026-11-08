@@ -33,9 +33,10 @@
 - [x] TASK-008 — Em `features/update-privacy/ui/PrivacyControlsPanel.tsx`, trocar os `Alert` por `ConfirmSheet` com o texto atual; testes de confirmar e cancelar.
 - [x] TASK-009 — Em `features/data-controls/ui/DataControlsPanel.tsx`, reagrupar em "Neste dispositivo", "Dados offline" e "Dados da conta", manter o uso de armazenamento, mostrar o tamanho em "Limpar cache" e trocar os `Alert` por `ConfirmSheet`; testes.
 - [x] TASK-010 — Aplicar o padrão de grupo das subpáginas (barra, título `section`, cartão com blocos) em `pages/settings-*` e em `SettingsAboutPage.tsx` (links como linhas de tile), e rodar os testes das specs 008, 031 e 032.
-- [ ] TASK-011 — Adicionar as chaves novas nos namespaces envolvidos (`pt-BR`, `en-US`, `es-ES`) e testar a paridade.
+- [x] TASK-011 — Adicionar as chaves novas nos namespaces envolvidos (`pt-BR`, `en-US`, `es-ES`) e testar a paridade.
+      Execução: chaves novas `common.localeControls.dateExample`, `common.contentLanguages.addAction` e `settingsNavigation.readerSheets.{close,groupDescription}` nos três idiomas; paridade coberta por `i18n.test.ts`.
 - [ ] TASK-012 — Verificar fonte a 200%, 320 × 568, paisagem, alto contraste e temas; capturas do índice, das subpáginas e das folhas no iOS Simulator (fica aberta se não for executada).
-- [ ] TASK-013 — Mapear arquivos no `coverage.json`, rodar `pnpm lint:fsd`, `pnpm typecheck`, `pnpm test:ci` e `pnpm check`, e registrar review e drift.
+- [x] TASK-013 — Mapear arquivos no `coverage.json`, rodar `pnpm lint:fsd`, `pnpm typecheck`, `pnpm test:ci` e `pnpm check`, e registrar review e drift.
 
 `implemented` exige todos os checkboxes concluídos. Quando o código estiver pronto, mas uma verificação real ainda estiver aberta, usar `verification-pending` e manter a task correspondente desmarcada.
 
