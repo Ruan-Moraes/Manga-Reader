@@ -9,6 +9,10 @@ interface Props {
     onReset(): void;
     persistenceError?: boolean;
     onRetry?(): void;
+    /** Renders without the section header (inside a sheet that already names it). */
+    compact?: boolean;
+    /** The settings sheet renders the reset action in its footer. */
+    showReset?: boolean;
 }
 
 const FAMILIES = ['APP', 'SERIF'] as const;
@@ -16,11 +20,11 @@ const SPACING = ['COMPACT', 'COMFORTABLE', 'WIDE'] as const;
 const MARGINS = ['NARROW', 'MEDIUM', 'WIDE'] as const;
 const BACKGROUNDS = ['APP', 'LIGHT', 'PAPER', 'DARK'] as const;
 
-export function TextReaderControls({ value, onChange, onReset, persistenceError, onRetry }: Props) {
+export function TextReaderControls({ value, onChange, onReset, persistenceError, onRetry, compact = false, showReset = true }: Props) {
     const { t } = useTranslation('reader');
 
     return (
-        <FormSection title={t('text.title')} description={t('text.description')}>
+        <FormSection compact={compact} title={t('text.title')} description={t('text.description')}>
             <SegmentedControl
                 label={t('text.font')}
                 value={value.fontFamily}
@@ -61,9 +65,11 @@ export function TextReaderControls({ value, onChange, onReset, persistenceError,
                 optionLabel={option => t(`text.backgrounds.${option}`)}
                 onChange={background => onChange({ background })}
             />
-            <Button variant="ghost" onPress={onReset}>
-                {t('text.reset')}
-            </Button>
+            {showReset ? (
+                <Button variant="ghost" onPress={onReset}>
+                    {t('text.reset')}
+                </Button>
+            ) : null}
             {persistenceError ? <StatusMessage tone="danger" title={t('text.saveError')} actionLabel={t('text.retry')} onAction={onRetry} /> : null}
         </FormSection>
     );

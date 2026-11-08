@@ -1779,8 +1779,8 @@
         {
             "path": "src/features/configure-chapter-reader/index.ts",
             "category": "behavior",
-            "specs": ["MOB-FEAT-005", "MOB-FEAT-052"],
-            "observations": ["MOB-FEAT-005/AC-003", "MOB-FEAT-005/AC-004", "MOB-FEAT-052/AC-003"]
+            "specs": ["MOB-FEAT-005", "MOB-FEAT-052", "MOB-FEAT-062"],
+            "observations": ["MOB-FEAT-005/AC-003", "MOB-FEAT-005/AC-004", "MOB-FEAT-052/AC-003", "MOB-FEAT-062/AC-006"]
         },
         {
             "path": "src/features/configure-chapter-reader/model/__tests__/readerConfiguration.test.ts",
@@ -1797,7 +1797,7 @@
         {
             "path": "src/features/configure-chapter-reader/ui/ReaderSettingsControls.tsx",
             "category": "behavior",
-            "specs": ["MOB-FEAT-005", "MOB-FEAT-011", "MOB-FEAT-033", "MOB-FEAT-034", "MOB-FEAT-042", "MOB-FEAT-054"],
+            "specs": ["MOB-FEAT-005", "MOB-FEAT-011", "MOB-FEAT-033", "MOB-FEAT-034", "MOB-FEAT-042", "MOB-FEAT-054", "MOB-FEAT-062"],
             "observations": [
                 "MOB-FEAT-005/AC-003",
                 "MOB-FEAT-005/AC-004",
@@ -1813,7 +1813,8 @@
                 "MOB-FEAT-034/AC-006",
                 "MOB-FEAT-042/AC-003",
                 "MOB-FEAT-042/AC-005",
-                "MOB-FEAT-054/AC-002"
+                "MOB-FEAT-054/AC-002",
+                "MOB-FEAT-062/AC-006"
             ]
         },
         {
@@ -3325,7 +3326,7 @@
         {
             "path": "src/pages/settings-index/ui/__tests__/SettingsNavigation.integration.test.tsx",
             "category": "evidence",
-            "specs": ["MOB-FEAT-008", "MOB-FEAT-011", "MOB-FEAT-030", "MOB-FEAT-032", "MOB-FEAT-053"],
+            "specs": ["MOB-FEAT-008", "MOB-FEAT-011", "MOB-FEAT-030", "MOB-FEAT-032", "MOB-FEAT-053", "MOB-FEAT-062"],
             "observations": [
                 "MOB-FEAT-008/AC-002",
                 "MOB-FEAT-008/AC-004",
@@ -3333,7 +3334,9 @@
                 "MOB-FEAT-011/AC-008",
                 "MOB-FEAT-030/AC-003",
                 "MOB-FEAT-032/AC-006",
-                "MOB-FEAT-053/AC-002"
+                "MOB-FEAT-053/AC-002",
+                "MOB-FEAT-062/AC-006",
+                "MOB-FEAT-062/AC-009"
             ]
         },
         {
@@ -3391,8 +3394,21 @@
         {
             "path": "src/pages/settings-reader/ui/SettingsReaderPage.tsx",
             "category": "behavior",
-            "specs": ["MOB-FEAT-008", "MOB-FEAT-052", "MOB-FEAT-053"],
-            "observations": ["MOB-FEAT-008/AC-002", "MOB-FEAT-008/AC-005", "MOB-FEAT-008/AC-006", "MOB-FEAT-052/AC-003", "MOB-FEAT-053/AC-002"]
+            "specs": ["MOB-FEAT-008", "MOB-FEAT-052", "MOB-FEAT-053", "MOB-FEAT-062"],
+            "observations": [
+                "MOB-FEAT-008/AC-002",
+                "MOB-FEAT-008/AC-005",
+                "MOB-FEAT-008/AC-006",
+                "MOB-FEAT-052/AC-003",
+                "MOB-FEAT-053/AC-002",
+                "MOB-FEAT-062/AC-006"
+            ]
+        },
+        {
+            "path": "src/pages/settings-reader/ui/__tests__/SettingsReaderPage.test.tsx",
+            "category": "evidence",
+            "specs": ["MOB-FEAT-062"],
+            "observations": ["MOB-FEAT-062/AC-006"]
         },
         {
             "path": "src/shared/api/__tests__/apiClient.test.ts",
@@ -3684,7 +3700,7 @@
         {
             "path": "src/shared/i18n/locales/en-US/settingsNavigation.json",
             "category": "behavior",
-            "specs": ["MOB-FEAT-008", "MOB-FEAT-030"],
+            "specs": ["MOB-FEAT-008", "MOB-FEAT-030", "MOB-FEAT-062"],
             "observations": [
                 "MOB-FEAT-008/AC-001",
                 "MOB-FEAT-008/AC-004",
@@ -3692,7 +3708,8 @@
                 "MOB-FEAT-008/AC-007",
                 "MOB-FEAT-008/AC-009",
                 "MOB-FEAT-030/AC-001",
-                "MOB-FEAT-030/AC-004"
+                "MOB-FEAT-030/AC-004",
+                "MOB-FEAT-062/AC-010"
             ]
         },
         {
@@ -3773,7 +3790,7 @@
         {
             "path": "src/shared/i18n/locales/es-ES/settingsNavigation.json",
             "category": "behavior",
-            "specs": ["MOB-FEAT-008", "MOB-FEAT-030"],
+            "specs": ["MOB-FEAT-008", "MOB-FEAT-030", "MOB-FEAT-062"],
             "observations": [
                 "MOB-FEAT-008/AC-001",
                 "MOB-FEAT-008/AC-004",
@@ -3781,7 +3798,8 @@
                 "MOB-FEAT-008/AC-007",
                 "MOB-FEAT-008/AC-009",
                 "MOB-FEAT-030/AC-001",
-                "MOB-FEAT-030/AC-004"
+                "MOB-FEAT-030/AC-004",
+                "MOB-FEAT-062/AC-010"
             ]
         },
         {
@@ -3862,7 +3880,7 @@
         {
             "path": "src/shared/i18n/locales/pt-BR/settingsNavigation.json",
             "category": "behavior",
-            "specs": ["MOB-FEAT-008", "MOB-FEAT-030"],
+            "specs": ["MOB-FEAT-008", "MOB-FEAT-030", "MOB-FEAT-062"],
             "observations": [
                 "MOB-FEAT-008/AC-001",
                 "MOB-FEAT-008/AC-004",
@@ -3870,7 +3888,8 @@
                 "MOB-FEAT-008/AC-007",
                 "MOB-FEAT-008/AC-009",
                 "MOB-FEAT-030/AC-001",
-                "MOB-FEAT-030/AC-004"
+                "MOB-FEAT-030/AC-004",
+                "MOB-FEAT-062/AC-010"
             ]
         },
         {
@@ -4639,8 +4658,8 @@
         {
             "path": "src/widgets/chapter-reader/ui/ReaderPreferencesSection.tsx",
             "category": "behavior",
-            "specs": ["MOB-FEAT-005"],
-            "observations": ["MOB-FEAT-005/AC-003", "MOB-FEAT-005/AC-004", "MOB-FEAT-005/AC-009"]
+            "specs": ["MOB-FEAT-005", "MOB-FEAT-062"],
+            "observations": ["MOB-FEAT-005/AC-003", "MOB-FEAT-005/AC-004", "MOB-FEAT-005/AC-009", "MOB-FEAT-062/AC-006"]
         },
         {
             "path": "src/widgets/settings-index/index.ts",
@@ -6155,8 +6174,8 @@
         {
             "path": "src/features/configure-text-reader/ui/TextReaderControls.tsx",
             "category": "behavior",
-            "specs": ["MOB-FEAT-053"],
-            "observations": ["MOB-FEAT-053/AC-002"]
+            "specs": ["MOB-FEAT-053", "MOB-FEAT-062"],
+            "observations": ["MOB-FEAT-053/AC-002", "MOB-FEAT-062/AC-006"]
         },
         {
             "path": "src/features/configure-text-reader/ui/__tests__/TextReaderControls.test.tsx",

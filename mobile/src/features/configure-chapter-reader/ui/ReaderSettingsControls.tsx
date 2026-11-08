@@ -24,9 +24,16 @@ const FITS: readonly ReadingFit[] = ['WIDTH', 'HEIGHT', 'ORIGINAL'];
 const BACKGROUNDS: readonly ReaderBackground[] = ['BLACK', 'DARK', 'PAPER', 'LIGHT', 'WHITE'];
 const MODE_ICONS: Record<ReadingMode, IconName> = { VERTICAL: 'swap-vertical-outline', PAGED: 'copy-outline', DOUBLE: 'albums-outline' };
 const DIRECTION_ICONS: Record<ReadingDirection, IconName> = { LTR: 'arrow-forward-outline', RTL: 'arrow-back-outline', WEBTOON: 'arrow-down-outline' };
+export type ReaderSettingsCategory = 'reading' | 'appearance' | 'navigation' | 'image' | 'behavior';
+
+const showsNavigation = (category?: ReaderSettingsCategory) => category === undefined || category === 'reading' || category === 'navigation';
+const showsImage = (category?: ReaderSettingsCategory) => category === undefined || category === 'appearance' || category === 'image';
+const showsBehavior = (category?: ReaderSettingsCategory) => category === undefined || category === 'reading' || category === 'behavior';
+
 interface Props {
     value: ReaderSettings;
-    category?: 'reading' | 'appearance';
+    /** `reading`/`appearance` group sections for the reader panel; `navigation`/`image`/`behavior` render one section. */
+    category?: ReaderSettingsCategory;
     compact?: boolean;
     capabilities: ImageVariantCapabilities;
     onChange: (patch: Partial<ReaderSettings>) => void;
@@ -47,7 +54,7 @@ export function ReaderSettingsControls({ value, capabilities, onChange, category
 
     return (
         <SectionStack>
-            {category !== 'appearance' ? (
+            {showsNavigation(category) ? (
                 <FormSection compact={compact} title={t('settings.sections.navigation.title')} description={t('settings.sections.navigation.description')}>
                     <ChoiceCards
                         compact={compact}
@@ -79,7 +86,7 @@ export function ReaderSettingsControls({ value, capabilities, onChange, category
                     />
                 </FormSection>
             ) : null}
-            {category !== 'reading' ? (
+            {showsImage(category) ? (
                 <FormSection compact={compact} title={t('settings.sections.image.title')} description={t('settings.sections.image.description')}>
                     <SelectField
                         closeLabel={t('settings.closeSelection')}
@@ -116,7 +123,7 @@ export function ReaderSettingsControls({ value, capabilities, onChange, category
                     ) : null}
                 </FormSection>
             ) : null}
-            {category !== 'appearance' ? (
+            {showsBehavior(category) ? (
                 <FormSection compact={compact} title={t('settings.sections.behavior.title')} description={t('settings.sections.behavior.description')}>
                     <RangeSlider
                         decrementLabel={t('controls.decrease', { label: t('settings.gap') })}

@@ -116,13 +116,18 @@ describe('MOB-FEAT-008 Router/pages integration', () => {
         expect(screen.getByRole('radio', { name: 'Escuro' }).props.accessibilityState).toEqual(expect.objectContaining({ selected: true }));
     });
 
-    it('mantém fundo e intervalos do leitor após a interação', async () => {
+    it('mantém fundo e intervalos do leitor após a interação nas folhas (MOB-FEAT-062 AC-006)', async () => {
         render(shell(<SettingsReaderPage />));
 
+        fireEvent.press(screen.getByRole('button', { name: 'Imagem: Automática' }));
         fireEvent.press(within(screen.getByLabelText('Fundo')).getByRole('radio', { name: 'Papel' }));
         fireEvent(screen.getByRole('adjustable', { name: 'Saturação' }), 'accessibilityAction', {
             nativeEvent: { actionName: 'decrement' },
         });
+        expect(within(screen.getByLabelText('Fundo')).getByRole('radio', { name: 'Papel' }).props.accessibilityState.selected).toBe(true);
+        fireEvent.press(screen.getByTestId('reader-settings-sheet-backdrop'));
+
+        fireEvent.press(screen.getByRole('button', { name: 'Comportamento' }));
         fireEvent(screen.getByRole('adjustable', { name: 'Espaçamento' }), 'accessibilityAction', {
             nativeEvent: { actionName: 'increment' },
         });
@@ -133,7 +138,6 @@ describe('MOB-FEAT-008 Router/pages integration', () => {
         await waitFor(() =>
             expect(useSettingsStore.getState().settings.reader).toEqual(expect.objectContaining({ background: 'PAPER', gap: 1, preload: 4, saturation: 95 })),
         );
-        expect(within(screen.getByLabelText('Fundo')).getByRole('radio', { name: 'Papel' }).props.accessibilityState.selected).toBe(true);
     });
 
     it('compõe diretamente as sete subrotas localizadas com identidade alinhada', () => {

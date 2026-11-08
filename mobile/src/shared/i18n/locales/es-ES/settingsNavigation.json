@@ -108,5 +108,9 @@
     },
     "errors": {
         "externalLink": "No se pudo abrir el enlace externo. Inténtalo de nuevo."
+    },
+    "readerSheets": {
+        "close": "Cerrar",
+        "groupDescription": "Elige un área para ajustar."
     }
 }

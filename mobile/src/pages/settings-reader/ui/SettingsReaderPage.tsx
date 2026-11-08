@@ -1,14 +1,28 @@
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { normalizeReaderSettings, ReaderGestureControls } from '@/features/configure-chapter-reader';
+import { normalizeReaderSettings, ReaderGestureControls, selectableQualities } from '@/features/configure-chapter-reader';
 import { TextReaderControls } from '@/features/configure-text-reader';
 import { SettingsSyncStatus, useSettingsStore } from '@/features/manage-settings';
 import { navigateBackOrReplace, ROUTES } from '@/shared/navigation';
-import { ScreenScaffold } from '@/shared/ui';
+import { BottomSheet, Button, FormSection, type IconName, ListRow, ScreenScaffold } from '@/shared/ui';
 import { ReaderPreferencesSection } from '@/widgets/chapter-reader';
+
+type ReaderSheet = 'navigation' | 'image' | 'behavior' | 'gestures' | 'text';
+
+const SHEET_ICONS: Record<ReaderSheet, IconName> = {
+    navigation: 'compass-outline',
+    image: 'image-outline',
+    behavior: 'options-outline',
+    gestures: 'hand-left-outline',
+    text: 'text-outline',
+};
+const SHEETS: readonly ReaderSheet[] = ['navigation', 'image', 'behavior', 'gestures', 'text'];
+const SETTINGS_PAGE_CAPABILITIES = { low: false, medium: false, high: false };
 
 export function SettingsReaderPage() {
     const { t } = useTranslation('settingsNavigation');
+    const { t: tr } = useTranslation('reader');
 
     const value = useSettingsStore(state => state.settings.reader);
 
@@ -21,6 +35,57 @@ export function SettingsReaderPage() {
     const retryReaderGesturesPersistence = useSettingsStore(state => state.retryReaderGesturesPersistence);
     const updateSettings = useSettingsStore(state => state.updateSettings);
 
+    const [openSheet, setOpenSheet] = useState<ReaderSheet | null>(null);
+
+    const qualities = selectableQualities(SETTINGS_PAGE_CAPABILITIES);
+    const quality = qualities.includes(value.quality) ? value.quality : 'AUTO';
+
+    const updateReader = (patch: Parameters<typeof normalizeReaderSettings>[0]) =>
+        void updateSettings(current => ({ ...current, reader: normalizeReaderSettings(patch, current) }), 'reader');
+
+    const sheetCopy: Record<ReaderSheet, { title: string; description: string; value?: string }> = {
+        navigation: {
+            title: tr('settings.sections.navigation.title'),
+            description: tr('settings.sections.navigation.description'),
+            value: tr(`options.${value.mode}`),
+        },
+        image: { title: tr('settings.sections.image.title'), description: tr('settings.sections.image.description'), value: tr(`options.${quality}`) },
+        behavior: { title: tr('settings.sections.behavior.title'), description: tr('settings.sections.behavior.description') },
+        gestures: { title: tr('gestures.title'), description: tr('gestures.description') },
+        text: { title: tr('text.title'), description: tr('text.description'), value: tr('text.sizeValue', { size: textReader.fontSize }) },
+    };
+
+    const renderSheetContent = (sheet: ReaderSheet) => {
+        if (sheet === 'gestures') {
+            return (
+                <ReaderGestureControls
+                    compact
+                    value={readerGestures}
+                    onChange={patch => void updateReaderGestures(patch)}
+                    sideNavigationAvailable={value.mode !== 'VERTICAL' && value.direction !== 'WEBTOON'}
+                    persistenceError={!!localError}
+                    onRetry={() => void retryReaderGesturesPersistence()}
+                />
+            );
+        }
+
+        if (sheet === 'text') {
+            return (
+                <TextReaderControls
+                    compact
+                    showReset={false}
+                    value={textReader}
+                    onChange={patch => void updateTextReader(patch)}
+                    onReset={() => void resetTextReader()}
+                    persistenceError={!!localError}
+                    onRetry={() => void retryReaderGesturesPersistence()}
+                />
+            );
+        }
+
+        return <ReaderPreferencesSection compact category={sheet} value={value} onChange={updateReader} />;
+    };
+
     return (
         <ScreenScaffold
             backLabel={t('actions.back')}
@@ -29,25 +94,39 @@ export function SettingsReaderPage() {
             onBack={() => navigateBackOrReplace(ROUTES.SETTINGS.INDEX)}
             title={t('sections.reader.editorialTitle')}
         >
-            <TextReaderControls
-                value={textReader}
-                onChange={patch => void updateTextReader(patch)}
-                onReset={() => void resetTextReader()}
-                persistenceError={!!localError}
-                onRetry={() => void retryReaderGesturesPersistence()}
-            />
-            <ReaderGestureControls
-                value={readerGestures}
-                onChange={patch => void updateReaderGestures(patch)}
-                sideNavigationAvailable={value.mode !== 'VERTICAL' && value.direction !== 'WEBTOON'}
-                persistenceError={!!localError}
-                onRetry={() => void retryReaderGesturesPersistence()}
-            />
-            <ReaderPreferencesSection
-                value={value}
-                onChange={patch => void updateSettings(current => ({ ...current, reader: normalizeReaderSettings(patch, current) }), 'reader')}
-            />
+            <FormSection title={t('sections.reader.title')} description={t('readerSheets.groupDescription')} contentPadding="none">
+                {SHEETS.map((sheet, index) => (
+                    <ListRow
+                        key={sheet}
+                        accessibilityLabel={sheetCopy[sheet].value ? `${sheetCopy[sheet].title}: ${sheetCopy[sheet].value}` : sheetCopy[sheet].title}
+                        description={sheetCopy[sheet].description}
+                        icon={SHEET_ICONS[sheet]}
+                        meta={sheetCopy[sheet].value}
+                        onPress={() => setOpenSheet(sheet)}
+                        showDivider={index < SHEETS.length - 1}
+                        title={sheetCopy[sheet].title}
+                        variant="plain"
+                    />
+                ))}
+            </FormSection>
             <SettingsSyncStatus group="reader" />
+            <BottomSheet
+                visible={openSheet !== null}
+                onClose={() => setOpenSheet(null)}
+                closeLabel={t('readerSheets.close')}
+                title={openSheet ? sheetCopy[openSheet].title : undefined}
+                description={openSheet ? sheetCopy[openSheet].description : undefined}
+                footer={
+                    openSheet === 'text' ? (
+                        <Button variant="ghost" onPress={() => void resetTextReader()}>
+                            {tr('text.reset')}
+                        </Button>
+                    ) : undefined
+                }
+                testIDs={{ sheet: 'reader-settings-sheet', backdrop: 'reader-settings-sheet-backdrop', layer: 'reader-settings-sheet-layer' }}
+            >
+                {openSheet ? renderSheetContent(openSheet) : null}
+            </BottomSheet>
         </ScreenScaffold>
     );
 }
