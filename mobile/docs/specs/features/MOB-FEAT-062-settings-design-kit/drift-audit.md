@@ -13,11 +13,13 @@
 
 ## Divergências
 
-| Severidade | Evidência                                                                       | Classificação                             | Ação                                                                |
-| ---------- | ------------------------------------------------------------------------------- | ----------------------------------------- | ------------------------------------------------------------------- |
-| Média      | Requisito "Limpar cache mostra o tamanho atual como valor" sem fonte de medição | spec divergente (requisito sem dado real) | decisão humana: remover o requisito ou especificar medição de cache |
+| Severidade | Evidência | Classificação             | Ação    |
+| ---------- | --------- | ------------------------- | ------- |
+| —          | —         | sem divergência conhecida | nenhuma |
 
 Verificações feitas:
+
+- A divergência do tamanho do cache foi resolvida pela decisão D17 (requisito removido da spec).
 
 - Arquivos novos e alterados mapeados a `MOB-FEAT-062/AC-*` no `coverage.json`.
 - Categorias `reading` e `appearance` do `ReaderSettingsControls` inalteradas; testes do painel do leitor (054) verdes.

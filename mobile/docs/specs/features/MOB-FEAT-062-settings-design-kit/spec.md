@@ -104,7 +104,7 @@ Limites, passos, commit dos sliders e persistência continuam os mesmos.
 ### Dados e armazenamento
 
 - Grupos "Neste dispositivo", "Dados offline" e "Dados da conta" com linhas de tile.
-- "Uso de armazenamento" continua visível; "Limpar cache" mostra o tamanho atual como valor.
+- "Uso de armazenamento" continua visível. "Limpar cache" não mostra tamanho: o app não mede o cache (decisão D17).
 - Limpar cache, limpar dados offline e limpar histórico confirmam em `ConfirmSheet` com o que será removido e o que é
   preservado; exportar dados mantém o comportamento atual (login quando necessário). Carregamento e erro continuam
   na própria linha.
@@ -218,6 +218,10 @@ As propostas abaixo foram aceitas como redigidas.
 
 - Nenhum além dos herdados da 057. Observação: o kit mostra a qualidade com as cinco opções sempre; esta spec mantém a
   regra atual de disponibilidade (005/AC-004).
+
+- **D17 — tamanho do cache (2026-11-08, durante a execução):** o app não mede o cache, e a única medição existente é a
+  das exportações temporárias, já mostrada em "Uso de armazenamento". Ruan Moraes decidiu remover o requisito de mostrar
+  o tamanho em "Limpar cache"; não haverá medição de cache.
 
 ## Aprovação humana
 

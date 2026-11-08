@@ -8,11 +8,9 @@
 
 ## Findings
 
-1. **Média — "Limpar cache" sem o tamanho como valor (requisito não atendido de forma honesta).** A spec pede o tamanho
-   atual do cache como valor da linha, mas o app não mede o cache: a única medição disponível é a de exportações
-   temporárias (`measureControlledStorage`), que já aparece na linha "Uso de armazenamento". Mostrar esse número como
-   tamanho do cache seria falso, então a linha ficou sem valor. O AC-008 não depende disso e passa. **Precisa de decisão
-   humana:** remover o requisito da spec ou especificar uma medição real de cache.
+1. **Resolvida — "Limpar cache" sem o tamanho como valor.** A spec pedia o tamanho do cache como valor da linha, mas o
+   app não mede o cache. Ruan Moraes decidiu remover o requisito (D17, registrada na spec); a implementação já estava
+   assim.
 2. **Baixa — caminho de confirmação dos Dados coberto indiretamente.** Os testes do painel verificam folha, textos,
    cancelar e o bloqueio para visitante; a execução após confirmar usa o mesmo `run` de antes e o fechar-antes-de-executar
    é coberto pelos testes do `ConfirmSheet` (057). Não há teste de ponta a ponta que confirme uma limpeza real.
@@ -62,5 +60,5 @@
 ## Conclusão
 
 Os 11 critérios estão implementados com evidência automatizada. Verdict `verification-pending` porque TASK-012
-(capturas no iOS Simulator) continua aberta, e o finding 1 pede decisão humana sobre o valor de "Limpar cache".
+(capturas no iOS Simulator) continua aberta. O finding 1 foi resolvido pela decisão D17.
 Review feita pelo próprio implementador, sem auditor externo.
