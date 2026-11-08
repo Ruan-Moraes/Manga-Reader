@@ -2,7 +2,7 @@
 id: MOB-FEAT-057
 type: feature
 title: Fundação visual do kit mobile do Design System
-status: in-progress
+status: verification-pending
 implementation_gate: open
 blocked_by: []
 created: 2026-11-08

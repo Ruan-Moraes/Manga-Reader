@@ -1,7 +1,7 @@
 # Tasks — MOB-FEAT-057
 
 - Spec: `spec.md`
-- Status da spec no planejamento: `approved` (execução: `in-progress`)
+- Status da spec no planejamento: `approved` (execução: `verification-pending`)
 - Gate no planejamento: `open`
 - Dependências implementadas: nenhuma (`blocked_by: []`)
 
@@ -45,7 +45,7 @@
 - [ ] TASK-016 — Verificar fonte a 200%, largura 320, densidade compacta, alto contraste e movimento reduzido nas primitivas; capturas no iOS Simulator em claro e escuro; validação em Android físico (fica aberta se não for executada).
 - [x] TASK-017 — Exportar as primitivas novas em `src/shared/ui/index.ts`, adicionar as chaves internas em `common.json` (`pt-BR`, `en-US`, `es-ES`) e uma entrada individual por arquivo novo em `docs/specs/coverage.json`.
       Execução: nenhuma chave nova foi necessária. Todos os rótulos das primitivas (fechar, cancelar, ações, títulos) vêm do consumidor, como a spec permite; os consumidores existentes já usam chaves nos três idiomas.
-- [ ] TASK-018 — Executar `pnpm lint:fsd`, `pnpm typecheck`, `pnpm test:ci` e `pnpm check`; registrar `review.md`, `drift-audit.md` e o resultado, separando as falhas de checksum pré-existentes.
+- [x] TASK-018 — Executar `pnpm lint:fsd`, `pnpm typecheck`, `pnpm test:ci` e `pnpm check`; registrar `review.md`, `drift-audit.md` e o resultado, separando as falhas de checksum pré-existentes.
 
 `implemented` exige todos os checkboxes concluídos. Quando o código estiver pronto, mas uma verificação real ainda estiver aberta, usar `verification-pending` e manter a task correspondente desmarcada.
 
