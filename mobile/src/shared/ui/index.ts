@@ -1,12 +1,17 @@
+export type { ActionSheetAction } from './ActionSheet';
+export { ActionSheet } from './ActionSheet';
 export { AppDialog } from './AppDialog';
 export { AppText } from './AppText';
 export { Avatar } from './Avatar';
 export type { BackButtonAppearance, BackButtonTone } from './BackButton';
 export { BackButton } from './BackButton';
+export type { BottomSheetProps } from './BottomSheet';
+export { BottomSheet } from './BottomSheet';
 export { Button } from './Button';
 export { Card } from './Card';
 export { ChoiceCards } from './ChoiceCards';
 export { ChoiceGroup } from './ChoiceGroup';
+export { ConfirmSheet } from './ConfirmSheet';
 export { ControlHelp } from './ControlHelp';
 export { EmptyState } from './EmptyState';
 export { FormSection } from './FormSection';
