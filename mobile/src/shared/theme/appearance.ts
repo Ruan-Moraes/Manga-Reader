@@ -42,6 +42,65 @@ export const LAYOUT_SCALES: Record<DensityPreference, LayoutScale> = {
     COMPACT: { screenGutter: 16, sectionGap: 24, controlHeight: 52, compactControlHeight: 44 },
 };
 
+export interface MetricScale {
+    icon: { sm: number; md: number; lg: number };
+    iconTile: { default: number; feature: number };
+    row: { single: number; double: number };
+    control: { compact: number; default: number; comfortable: number };
+    chip: { action: number; value: number; count: number };
+    rhythm: { itemGap: number; groupGap: number; cardPadding: number };
+    accentBar: { width: number; height: number };
+}
+
+const FIXED_METRICS: Omit<MetricScale, 'rhythm'> = {
+    icon: { sm: 16, md: 20, lg: 24 },
+    iconTile: { default: 40, feature: 48 },
+    row: { single: 56, double: 64 },
+    control: { compact: 40, default: 44, comfortable: 52 },
+    chip: { action: 36, value: 28, count: 24 },
+    accentBar: { width: 4, height: 16 },
+};
+
+export const METRIC_SCALES: Record<DensityPreference, MetricScale> = {
+    COMFORTABLE: { ...FIXED_METRICS, rhythm: { itemGap: 12, groupGap: SPACING_SCALES.COMFORTABLE.lg, cardPadding: SPACING_SCALES.COMFORTABLE.md } },
+    COMPACT: { ...FIXED_METRICS, rhythm: { itemGap: 8, groupGap: SPACING_SCALES.COMPACT.lg, cardPadding: SPACING_SCALES.COMPACT.md } },
+};
+
+export type ShadowRole = 'card' | 'sheet';
+export interface ShadowSpec {
+    offsetY: number;
+    opacity: number;
+    radius: number;
+    elevation: number;
+}
+export type ShadowScale = Record<ShadowRole, ShadowSpec>;
+
+export const SHADOWS: ShadowScale = {
+    card: { offsetY: 8, opacity: 0.12, radius: 18, elevation: 3 },
+    sheet: { offsetY: -8, opacity: 0.28, radius: 22, elevation: 18 },
+};
+
+/** Builds a platform shadow style; the color must come from a theme token. */
+export function createShadowStyle(role: ShadowRole, shadowColor: string) {
+    const shadow = SHADOWS[role];
+
+    return {
+        shadowColor,
+        shadowOffset: { width: 0, height: shadow.offsetY },
+        shadowOpacity: shadow.opacity,
+        shadowRadius: shadow.radius,
+        elevation: shadow.elevation,
+    };
+}
+
+export type MotionRole = 'fast' | 'base' | 'sheet' | 'pulse';
+export type MotionScale = Record<MotionRole, number>;
+
+export const MOTION_DURATIONS: MotionScale = { fast: 140, base: 180, sheet: 240, pulse: 700 };
+
+export const resolveMotionDurations = (effectiveReduceMotion: boolean): MotionScale =>
+    effectiveReduceMotion ? { fast: 0, base: 0, sheet: 0, pulse: 0 } : MOTION_DURATIONS;
+
 export function createTypographyStyles(scale: TypographyScale): TypographyStyleScale {
     return {
         display: { fontFamily: FONTS.extrabold, fontSize: scale.h1, lineHeight: scale.h1 * 1.12, letterSpacing: -0.7 },
@@ -94,6 +153,9 @@ export const darkHighContrastTokens: ThemeTokens = {
     onDanger: '#ffffff',
     success: '#69f0ae',
     warn: '#ffe082',
+    dangerSoft: '#181818',
+    successSoft: '#181818',
+    warnSoft: '#181818',
     text: '#ffffff',
     inverseText: '#000000',
     muted: '#f2f2f2',
@@ -134,6 +196,9 @@ export const lightHighContrastTokens: ThemeTokens = {
     onDanger: '#ffffff',
     success: '#005a32',
     warn: '#664000',
+    dangerSoft: '#f5f5f5',
+    successSoft: '#f5f5f5',
+    warnSoft: '#f5f5f5',
     text: '#000000',
     inverseText: '#ffffff',
     muted: '#1f1f1f',

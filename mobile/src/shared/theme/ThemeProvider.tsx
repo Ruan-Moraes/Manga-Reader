@@ -8,14 +8,21 @@ import {
     type FontSizePreference,
     LAYOUT_SCALES,
     type LayoutScale,
+    METRIC_SCALES,
+    type MetricScale,
     minimumTouchTarget,
+    MOTION_DURATIONS,
+    type MotionScale,
     RADII,
     type RadiusScale,
     resolveColorScheme,
     resolveDecorativeMotion,
     resolveEffectiveHighContrast,
     resolveEffectiveReduceMotion,
+    resolveMotionDurations,
     resolveThemeTokens,
+    SHADOWS,
+    type ShadowScale,
     SPACING_SCALES,
     type SpacingScale,
     TYPOGRAPHY_SCALES,
@@ -33,6 +40,9 @@ interface ThemeContextValue {
     spacing: SpacingScale;
     radii: RadiusScale;
     layout: LayoutScale;
+    metrics: MetricScale;
+    shadows: ShadowScale;
+    motion: MotionScale;
     fontScale: number;
     minimumTouchTarget: number;
     effectiveReduceMotion: boolean;
@@ -50,6 +60,9 @@ const ThemeContext = createContext<ThemeContextValue>({
     spacing: SPACING_SCALES.COMFORTABLE,
     radii: RADII,
     layout: LAYOUT_SCALES.COMFORTABLE,
+    metrics: METRIC_SCALES.COMFORTABLE,
+    shadows: SHADOWS,
+    motion: MOTION_DURATIONS,
     fontScale: 1,
     minimumTouchTarget: 48,
     effectiveReduceMotion: false,
@@ -177,6 +190,9 @@ export function ThemeProvider({
             spacing: SPACING_SCALES[density],
             radii: RADII,
             layout: LAYOUT_SCALES[density],
+            metrics: METRIC_SCALES[density],
+            shadows: SHADOWS,
+            motion: resolveMotionDurations(effectiveReduceMotion),
             fontScale,
             minimumTouchTarget: minimumTouchTarget(),
             effectiveReduceMotion,

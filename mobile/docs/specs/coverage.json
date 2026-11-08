@@ -3949,6 +3949,12 @@
             ]
         },
         {
+            "path": "src/shared/theme/__tests__/designKitTokens.test.tsx",
+            "category": "evidence",
+            "specs": ["MOB-FEAT-057"],
+            "observations": ["MOB-FEAT-057/AC-001", "MOB-FEAT-057/AC-002"]
+        },
+        {
             "path": "src/shared/theme/__tests__/ThemeProvider.test.tsx",
             "category": "evidence",
             "specs": ["MOB-FEAT-002", "MOB-FEAT-011", "MOB-FEAT-030"],
@@ -3973,7 +3979,7 @@
         {
             "path": "src/shared/theme/appearance.ts",
             "category": "behavior",
-            "specs": ["MOB-FEAT-002", "MOB-FEAT-011", "MOB-FEAT-043"],
+            "specs": ["MOB-FEAT-002", "MOB-FEAT-011", "MOB-FEAT-043", "MOB-FEAT-057"],
             "observations": [
                 "MOB-FEAT-002/AC-001",
                 "MOB-FEAT-002/AC-002",
@@ -3989,7 +3995,9 @@
                 "MOB-FEAT-011/AC-003",
                 "MOB-FEAT-011/AC-004",
                 "MOB-FEAT-043/AC-005",
-                "MOB-FEAT-043/AC-006"
+                "MOB-FEAT-043/AC-006",
+                "MOB-FEAT-057/AC-001",
+                "MOB-FEAT-057/AC-002"
             ]
         },
         {
@@ -4001,7 +4009,7 @@
         {
             "path": "src/shared/theme/index.ts",
             "category": "behavior",
-            "specs": ["MOB-FEAT-002", "MOB-FEAT-011", "MOB-FEAT-053"],
+            "specs": ["MOB-FEAT-002", "MOB-FEAT-011", "MOB-FEAT-053", "MOB-FEAT-057"],
             "observations": [
                 "MOB-FEAT-002/AC-004",
                 "MOB-FEAT-002/AC-005",
@@ -4012,13 +4020,14 @@
                 "MOB-FEAT-011/AC-003",
                 "MOB-FEAT-011/AC-004",
                 "MOB-FEAT-011/AC-011",
-                "MOB-FEAT-053/AC-002"
+                "MOB-FEAT-053/AC-002",
+                "MOB-FEAT-057/AC-001"
             ]
         },
         {
             "path": "src/shared/theme/ThemeProvider.tsx",
             "category": "behavior",
-            "specs": ["MOB-FEAT-002", "MOB-FEAT-011", "MOB-FEAT-053"],
+            "specs": ["MOB-FEAT-002", "MOB-FEAT-011", "MOB-FEAT-053", "MOB-FEAT-057"],
             "observations": [
                 "MOB-FEAT-002/AC-001",
                 "MOB-FEAT-002/AC-002",
@@ -4034,13 +4043,14 @@
                 "MOB-FEAT-011/AC-002",
                 "MOB-FEAT-011/AC-003",
                 "MOB-FEAT-011/AC-004",
-                "MOB-FEAT-053/AC-002"
+                "MOB-FEAT-053/AC-002",
+                "MOB-FEAT-057/AC-001"
             ]
         },
         {
             "path": "src/shared/theme/tokens.ts",
             "category": "behavior",
-            "specs": ["MOB-FEAT-002", "MOB-FEAT-011", "MOB-FEAT-043"],
+            "specs": ["MOB-FEAT-002", "MOB-FEAT-011", "MOB-FEAT-043", "MOB-FEAT-057"],
             "observations": [
                 "MOB-FEAT-002/AC-004",
                 "MOB-FEAT-002/AC-005",
@@ -4050,7 +4060,8 @@
                 "MOB-FEAT-011/AC-002",
                 "MOB-FEAT-011/AC-003",
                 "MOB-FEAT-043/AC-005",
-                "MOB-FEAT-043/AC-006"
+                "MOB-FEAT-043/AC-006",
+                "MOB-FEAT-057/AC-002"
             ]
         },
         {
@@ -4058,6 +4069,12 @@
             "category": "evidence",
             "specs": ["MOB-FEAT-043", "MOB-FEAT-045"],
             "observations": ["MOB-FEAT-043/AC-005", "MOB-FEAT-043/AC-006", "MOB-FEAT-043/AC-007", "MOB-FEAT-045/AC-002", "MOB-FEAT-045/AC-005"]
+        },
+        {
+            "path": "src/shared/ui/__tests__/designKitStatus.test.tsx",
+            "category": "evidence",
+            "specs": ["MOB-FEAT-057"],
+            "observations": ["MOB-FEAT-057/AC-002"]
         },
         {
             "path": "src/shared/ui/__tests__/sharedUi.test.tsx",
@@ -4510,8 +4527,8 @@
         {
             "path": "src/shared/ui/StatusMessage.tsx",
             "category": "behavior",
-            "specs": ["MOB-FEAT-028"],
-            "observations": ["MOB-FEAT-028/AC-005", "MOB-FEAT-028/AC-006"]
+            "specs": ["MOB-FEAT-028", "MOB-FEAT-057"],
+            "observations": ["MOB-FEAT-028/AC-005", "MOB-FEAT-028/AC-006", "MOB-FEAT-057/AC-002"]
         },
         {
             "path": "src/shared/ui/StickyActionBar.tsx",

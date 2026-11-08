@@ -2,7 +2,7 @@
 id: MOB-FEAT-057
 type: feature
 title: Fundação visual do kit mobile do Design System
-status: approved
+status: in-progress
 implementation_gate: open
 blocked_by: []
 created: 2026-11-08
@@ -69,8 +69,9 @@ estas medidas.
 
 - `dangerSoft`, `successSoft` e `warnSoft` existem nas quatro paletas (claro, escuro e as
   duas de alto contraste).
-- Claro/escuro seguem o kit: `danger`, `success` e `warn` com opacidade 0,10 (claro) e
-  0,14 (escuro). Nas paletas de alto contraste, a superfície suave é opaca e a borda
+- Claro/escuro: `danger`, `success` e `warn` com opacidade 0,06 (claro) e 0,14 (escuro).
+  O kit usa 0,10 no claro, mas esse valor deixa o texto de perigo e de sucesso abaixo do AA
+  (ver decisão D12). Nas paletas de alto contraste, a superfície suave é opaca e a borda
   mantém a cor sólida do tom, preservando contraste AA do texto sobre ela.
 - `StatusMessage` passa a usar a superfície suave do seu tom (info e loading continuam em
   `surfaceSelected`), com a mesma borda e o mesmo layout atuais.
@@ -324,6 +325,10 @@ testes; `pnpm lint:fsd`, `pnpm typecheck` e os testes passam.
   toque ≥ 44 pt iOS / 48 dp Android.
 - **D9 — ilustrações:** aceita a origem `~/Toonlira-Design-System/project/assets/illustrations/`,
   com otimização antes de entrar no repositório.
+- **D12 — opacidade das superfícies suaves no tema claro (2026-11-08, durante a execução):**
+  com 0,10 o texto ficava em 4,45:1 (perigo) e 4,27:1 (sucesso). Ruan Moraes escolheu
+  reduzir para 0,06 no tema claro, mantendo o AA (4,71 / 4,51 / 5,36) e sem mudar as cores
+  de texto.
 
 ## Aprovação humana
 

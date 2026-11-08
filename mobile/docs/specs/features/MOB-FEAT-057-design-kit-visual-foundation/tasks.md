@@ -1,7 +1,7 @@
 # Tasks — MOB-FEAT-057
 
 - Spec: `spec.md`
-- Status da spec no planejamento: `approved`
+- Status da spec no planejamento: `approved` (execução: `in-progress`)
 - Gate no planejamento: `open`
 - Dependências implementadas: nenhuma (`blocked_by: []`)
 
@@ -27,9 +27,9 @@
 
 ## Checklist
 
-- [ ] TASK-001 — Adicionar ao tema os grupos de medida (ícones, tiles, linhas, alturas de controle, chips, ritmo com `itemGap` por densidade, barra de acento, sombras, movimento) em `src/shared/theme/appearance.ts` e expô-los no contexto de `ThemeProvider.tsx` e no barrel `src/shared/theme/index.ts`.
-- [ ] TASK-002 — Testar os grupos de medida por densidade e o zeramento das durações com movimento reduzido efetivo (`appearance.test.ts`, `ThemeProvider.test.tsx`).
-- [ ] TASK-003 — Adicionar `dangerSoft`, `successSoft` e `warnSoft` em `tokens.ts` (claro/escuro) e nas paletas de alto contraste de `appearance.ts`; aplicar a superfície suave por tom em `StatusMessage.tsx`; testar paletas, contraste AA e `StatusMessage`.
+- [x] TASK-001 — Adicionar ao tema os grupos de medida (ícones, tiles, linhas, alturas de controle, chips, ritmo com `itemGap` por densidade, barra de acento, sombras, movimento) em `src/shared/theme/appearance.ts` e expô-los no contexto de `ThemeProvider.tsx` e no barrel `src/shared/theme/index.ts`.
+- [x] TASK-002 — Testar os grupos de medida por densidade e o zeramento das durações com movimento reduzido efetivo (`appearance.test.ts`, `ThemeProvider.test.tsx`).
+- [x] TASK-003 — Adicionar `dangerSoft`, `successSoft` e `warnSoft` em `tokens.ts` (claro/escuro) e nas paletas de alto contraste de `appearance.ts`; aplicar a superfície suave por tom em `StatusMessage.tsx`; testar paletas, contraste AA e `StatusMessage`.
 - [ ] TASK-004 — Criar `src/shared/ui/BottomSheet.tsx` (cabeçalho com título/descrição/fechar, ritmo `lg`, rodapé com divisória, raio `feature`, scrim, sombra `sheet`, safe area, altura máxima parametrizável com padrão 85%, back Android, sem animação com movimento reduzido) e seus testes.
 - [ ] TASK-005 — Montar a folha do `SelectField.tsx` sobre `BottomSheet`, preservando 82%, opções de 56 dp, padding `xl`, área de 28 dp e cancelamento sem `onChange`; manter verdes os testes da 042.
 - [ ] TASK-006 — Criar `ActionSheet.tsx` e `ConfirmSheet.tsx` sobre `BottomSheet`, com grupos destrutivos separados, execução após o fechamento e cancelamento por botão, scrim e back sem confirmar; testes.
