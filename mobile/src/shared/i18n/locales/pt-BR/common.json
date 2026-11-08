@@ -8,9 +8,10 @@
         "dashboardForbidden": "Você não possui permissão para acessar o dashboard."
     },
     "notFound": {
+        "eyebrow": "Erro 404",
         "pageTitle": "Página não encontrada",
         "pageDesc": "O endereço que você acessou não existe ou foi removido. Verifique o link ou volte para o início.",
-        "goHome": "Ir para o início",
+        "goHome": "Voltar ao início",
         "searchWorks": "Buscar obras"
     },
     "aboutUs": {

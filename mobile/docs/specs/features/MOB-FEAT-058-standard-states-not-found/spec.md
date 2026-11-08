@@ -2,7 +2,7 @@
 id: MOB-FEAT-058
 type: feature
 title: Estados padrão e página não encontrada
-status: approved
+status: in-progress
 implementation_gate: open
 blocked_by: [MOB-FEAT-057]
 created: 2026-11-08

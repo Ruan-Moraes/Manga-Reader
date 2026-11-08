@@ -19,11 +19,12 @@
 
 ## Checklist
 
-- [ ] TASK-001 — Reescrever `src/pages/not-found/ui/NotFoundPage.tsx` com `StateView kind="notfound"` (eyebrow, título, texto, "Voltar ao início" com replace para `/`, "Voltar" e botão do cabeçalho só com histórico).
-- [ ] TASK-002 — Criar `src/pages/not-found/ui/__tests__/NotFoundPage.test.tsx` cobrindo AC-001 e AC-002.
-- [ ] TASK-003 — Em `src/pages/reader/ui/ReaderPage.tsx`, trocar carregando por `LoadingBlock`, erro por `StateView kind="error"` (com a ação de capítulo pedido quando houver retomada), sem páginas por `StateView kind="empty"`, e a escolha de retomada para `AppText`.
-- [ ] TASK-004 — Atualizar `src/pages/reader/ui/__tests__/ReaderPage.test.tsx` para os estados novos sem perder os casos atuais.
-- [ ] TASK-005 — Adicionar as chaves novas da 404 em `common.json` (`pt-BR`, `en-US`, `es-ES`) e testar a paridade.
+- [x] TASK-001 — Reescrever `src/pages/not-found/ui/NotFoundPage.tsx` com `StateView kind="notfound"` (eyebrow, título, texto, "Voltar ao início" com replace para `/`, "Voltar" e botão do cabeçalho só com histórico).
+- [x] TASK-002 — Criar `src/pages/not-found/ui/__tests__/NotFoundPage.test.tsx` cobrindo AC-001 e AC-002.
+- [x] TASK-003 — Em `src/pages/reader/ui/ReaderPage.tsx`, trocar carregando por `LoadingBlock`, erro por `StateView kind="error"` (com a ação de capítulo pedido quando houver retomada), sem páginas por `StateView kind="empty"`, e a escolha de retomada para `AppText`.
+- [x] TASK-004 — Atualizar `src/pages/reader/ui/__tests__/ReaderPage.test.tsx` para os estados novos sem perder os casos atuais.
+- [x] TASK-005 — Adicionar as chaves novas da 404 em `common.json` (`pt-BR`, `en-US`, `es-ES`) e testar a paridade.
+      Execução: `notFound.eyebrow` novo e `notFound.goHome` alterado para "Voltar ao início" nos três idiomas; paridade coberta por `src/shared/i18n/__tests__/i18n.test.ts`.
 - [ ] TASK-006 — Verificar fonte a 200%, 320 pt, alto contraste e temas; capturas da 404 e dos estados do leitor no iOS Simulator (fica aberta se não for executada).
 - [ ] TASK-007 — Mapear arquivos no `coverage.json`, rodar `pnpm lint:fsd`, `pnpm typecheck`, `pnpm test:ci` e `pnpm check`, e registrar review e drift.
 

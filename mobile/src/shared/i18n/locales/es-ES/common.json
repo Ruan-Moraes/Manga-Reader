@@ -8,9 +8,10 @@
         "dashboardForbidden": "No tienes permiso para acceder al panel."
     },
     "notFound": {
+        "eyebrow": "Error 404",
         "pageTitle": "Página no encontrada",
         "pageDesc": "La dirección a la que accediste no existe o ha sido eliminada. Verifica el enlace o vuelve al inicio.",
-        "goHome": "Ir al inicio",
+        "goHome": "Volver al inicio",
         "searchWorks": "Explorar obras"
     },
     "aboutUs": {

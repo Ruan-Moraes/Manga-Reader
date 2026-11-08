@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 
@@ -12,7 +12,7 @@ import { clampLogicalPage } from '@/features/navigate-chapter-reader';
 import { createProgressSnapshot, isReadingProgressValidForChapter, ProgressSynchronizer, resolveResumeChoice } from '@/features/track-reading-progress';
 import { navigateBackOrReplace, ROUTES } from '@/shared/navigation';
 import { useTheme } from '@/shared/theme';
-import { Button, EmptyState, NavigationHeader, PageContainer, StatusMessage } from '@/shared/ui';
+import { AppText, Button, LoadingBlock, NavigationHeader, PageContainer, StateView, StatusMessage } from '@/shared/ui';
 import { ContentReader, type ImageSequenceDocument } from '@/widgets/content-reader';
 
 interface Props {
@@ -27,7 +27,7 @@ interface IdentityProps extends Props {
 
 function IdentityReaderPage({ titleId, requestedChapter, identityEpoch, isAuthenticated }: IdentityProps) {
     const { t } = useTranslation('reader');
-    const { spacing, tokens, typography } = useTheme();
+    const { spacing, tokens } = useTheme();
     const settings = useSettingsStore(state => state.settings);
     const updateSettings = useSettingsStore(state => state.updateSettings);
     const readerGestures = useSettingsStore(state => state.readerGestures);
@@ -136,7 +136,7 @@ function IdentityReaderPage({ titleId, requestedChapter, identityEpoch, isAuthen
         return (
             <PageContainer>
                 <NavigationHeader backLabel={t('actions.exit')} onBack={exitReader} />
-                <EmptyState title={t('states.loading')} />
+                <LoadingBlock label={t('states.loading')} />
             </PageContainer>
         );
     }
@@ -144,18 +144,17 @@ function IdentityReaderPage({ titleId, requestedChapter, identityEpoch, isAuthen
         return (
             <PageContainer>
                 <NavigationHeader backLabel={t('actions.exit')} onBack={exitReader} />
-                <EmptyState
+                <StateView
+                    kind="error"
                     title={t('states.error')}
-                    description={t('states.safeExit')}
-                    action={
-                        <View style={{ gap: spacing.sm }}>
-                            <Button onPress={() => void chapterQuery.refetch()}>{t('actions.retry')}</Button>
-                            {pendingResume ? (
-                                <Button variant="outline" onPress={openRequestedChapter}>
-                                    {t('resume.requested')}
-                                </Button>
-                            ) : null}
-                        </View>
+                    text={t('states.safeExit')}
+                    retry={{ label: t('actions.retry'), onPress: () => void chapterQuery.refetch() }}
+                    actions={
+                        pendingResume ? (
+                            <Button variant="outline" onPress={openRequestedChapter}>
+                                {t('resume.requested')}
+                            </Button>
+                        ) : null
                     }
                 />
             </PageContainer>
@@ -165,10 +164,11 @@ function IdentityReaderPage({ titleId, requestedChapter, identityEpoch, isAuthen
         return (
             <PageContainer>
                 <NavigationHeader backLabel={t('actions.exit')} onBack={exitReader} />
-                <EmptyState
+                <StateView
+                    kind="empty"
                     title={t('states.unavailable')}
-                    description={t('states.safeExit')}
-                    action={
+                    text={t('states.safeExit')}
+                    actions={
                         pendingResume ? (
                             <Button variant="outline" onPress={openRequestedChapter}>
                                 {t('resume.requested')}
@@ -185,12 +185,10 @@ function IdentityReaderPage({ titleId, requestedChapter, identityEpoch, isAuthen
     if (isAuthenticated && progressQuery.isSuccess && resume.kind === 'choose' && !resumeResolved) {
         return (
             <View style={{ flex: 1, justifyContent: 'center', padding: spacing.lg, gap: spacing.md, backgroundColor: tokens.bg }}>
-                <Text accessibilityRole="header" style={{ color: tokens.text, fontSize: typography.h2 }}>
+                <AppText accessibilityRole="header" variant="title">
                     {t('resume.title')}
-                </Text>
-                <Text style={{ color: tokens.muted, fontSize: typography.body }}>
-                    {t('resume.description', { chapter: resume.recent?.chapterNumber, page: resume.recent?.currentPage })}
-                </Text>
+                </AppText>
+                <AppText tone="muted">{t('resume.description', { chapter: resume.recent?.chapterNumber, page: resume.recent?.currentPage })}</AppText>
                 <Button
                     onPress={() => {
                         setChapterNumber(resume.recent!.chapterNumber);
