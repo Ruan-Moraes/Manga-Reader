@@ -13,6 +13,8 @@
         "novelPreview": "Abrir preview de novel (desenvolvimento)"
     },
     "platform": {
+        "notNow": "Agora não",
+        "closeSheet": "Fechar",
         "title": "Plataforma de leitura",
         "description": "Acesse sua conta e acompanhe o desenvolvimento da biblioteca.",
         "status": "Em construção",

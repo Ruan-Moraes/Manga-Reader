@@ -13,6 +13,8 @@
         "novelPreview": "Open novel preview (development)"
     },
     "platform": {
+        "notNow": "Not now",
+        "closeSheet": "Close",
         "title": "Reading platform",
         "description": "Access your account and follow the library development.",
         "status": "Under construction",

@@ -2,7 +2,7 @@ import { View } from 'react-native';
 import { Image } from 'expo-image';
 
 import { useResponsiveLayout, useTheme } from '@/shared/theme';
-import { AppText, IconButton, StatusMessage } from '@/shared/ui';
+import { AppText, IconButton, StatusMessage, TextAction } from '@/shared/ui';
 
 import { APP_MODULES, type AppModuleId } from '../model/modules';
 import { AppModuleCard } from './AppModuleCard';
@@ -17,14 +17,16 @@ interface ModuleSelectorProps {
         title: string;
         subtitle: string;
         settings: string;
+        library: string;
         modules: Record<AppModuleId, { title: string; description: string; status: string; action: string; authenticatedAction?: string }>;
     };
     onOpenModule: (module: AppModuleId) => void;
     onOpenSettings: () => void;
+    onOpenLibrary: () => void;
     recovery?: { message: string; action: string; onRetry: () => void };
 }
 
-export function ModuleSelector({ authenticated, copy, onOpenModule, onOpenSettings, recovery }: ModuleSelectorProps) {
+export function ModuleSelector({ authenticated, copy, onOpenModule, onOpenSettings, onOpenLibrary, recovery }: ModuleSelectorProps) {
     const { radii, spacing } = useTheme();
 
     const responsive = useResponsiveLayout();
@@ -52,7 +54,7 @@ export function ModuleSelector({ authenticated, copy, onOpenModule, onOpenSettin
                 <AppText variant="eyebrow" tone="accent">
                     {copy.eyebrow}
                 </AppText>
-                <AppText accessibilityRole="header" variant="title">
+                <AppText accessibilityRole="header" variant="display">
                     {copy.title}
                 </AppText>
                 <AppText tone="muted">{copy.subtitle}</AppText>
@@ -75,6 +77,9 @@ export function ModuleSelector({ authenticated, copy, onOpenModule, onOpenSettin
                         />
                     );
                 })}
+            </View>
+            <View style={{ alignItems: 'center' }}>
+                <TextAction icon="library-outline" label={copy.library} onPress={onOpenLibrary} />
             </View>
         </View>
     );

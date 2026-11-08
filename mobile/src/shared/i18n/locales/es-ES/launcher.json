@@ -13,6 +13,8 @@
         "novelPreview": "Abrir vista previa de novela (desarrollo)"
     },
     "platform": {
+        "notNow": "Ahora no",
+        "closeSheet": "Cerrar",
         "title": "Plataforma de lectura",
         "description": "Accede a tu cuenta y sigue el desarrollo de la biblioteca.",
         "status": "En construcción",

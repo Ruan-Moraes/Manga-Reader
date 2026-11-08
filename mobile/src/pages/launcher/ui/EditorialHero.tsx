@@ -7,20 +7,20 @@ const LAUNCHER_HERO = require('../../../../assets/images/launcher-hero.png');
 const LAUNCHER_HERO_LIGHT = require('../../../../assets/images/launcher-hero-light.png');
 
 export function EditorialHero() {
-    const { colorScheme, radii, spacing, tokens } = useTheme();
+    const { colorScheme, radii, tokens } = useTheme();
 
     return (
         <View
+            testID="launcher-hero"
             accessibilityElementsHidden
             style={{
+                aspectRatio: 16 / 9,
                 backgroundColor: tokens.heroSurface,
-                borderColor: tokens.borderStrong,
-                borderRadius: radii.control,
+                borderColor: tokens.separator,
+                borderRadius: radii.card,
                 borderWidth: 1,
-                height: 218,
-                justifyContent: 'center',
                 overflow: 'hidden',
-                padding: spacing.lg,
+                width: '100%',
             }}
         >
             <Image

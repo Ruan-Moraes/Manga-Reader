@@ -1,10 +1,11 @@
+import { useState } from 'react';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 
 import { useSessionStore } from '@/entities/session';
 import { useSettingsStore } from '@/features/manage-settings';
 import { ROUTES } from '@/shared/navigation';
-import { Button, PageContainer } from '@/shared/ui';
+import { AppText, BottomSheet, Button, PageContainer } from '@/shared/ui';
 
 import type { AppModuleId } from '../model/modules';
 import { ModuleSelector } from './ModuleSelector';
@@ -16,6 +17,8 @@ export function ModuleSelectorPage() {
     const localError = useSettingsStore(state => state.localError);
     const retryLocalHydration = useSettingsStore(state => state.retryLocalHydration);
 
+    const [platformSheetOpen, setPlatformSheetOpen] = useState(false);
+
     const openModule = (module: AppModuleId) => {
         if (module === 'offline-translation') {
             router.push(ROUTES.OFFLINE_TRANSLATION as never);
@@ -23,7 +26,13 @@ export function ModuleSelectorPage() {
             return;
         }
 
-        if (authenticated) {
+        setPlatformSheetOpen(true);
+    };
+
+    const enterPlatform = () => {
+        setPlatformSheetOpen(false);
+
+        if (useSessionStore.getState().isAuthenticated) {
             router.push(ROUTES.PLATFORM.STATUS as never);
 
             return;
@@ -40,6 +49,7 @@ export function ModuleSelectorPage() {
                     title: t('selector.title'),
                     subtitle: t('selector.subtitle'),
                     settings: t('selector.settings'),
+                    library: t('offline.library'),
                     modules: {
                         platform: {
                             title: t('platform.title'),
@@ -58,6 +68,7 @@ export function ModuleSelectorPage() {
                 }}
                 onOpenModule={openModule}
                 onOpenSettings={() => router.push(ROUTES.SETTINGS.INDEX as never)}
+                onOpenLibrary={() => router.push(ROUTES.TRANSLATION_LIBRARY as never)}
                 recovery={localError ? { message: t('startup.error'), action: t('startup.retry'), onRetry: () => void retryLocalHydration() } : undefined}
             />
             {__DEV__ ? (
@@ -65,6 +76,19 @@ export function ModuleSelectorPage() {
                     {t('selector.novelPreview')}
                 </Button>
             ) : null}
+            <BottomSheet
+                visible={platformSheetOpen}
+                onClose={() => setPlatformSheetOpen(false)}
+                closeLabel={t('platform.closeSheet')}
+                title={t('platform.constructionTitle')}
+                testIDs={{ sheet: 'platform-sheet', backdrop: 'platform-sheet-backdrop', layer: 'platform-sheet-layer' }}
+            >
+                <AppText tone="muted">{t('platform.constructionDescription')}</AppText>
+                <Button onPress={enterPlatform}>{t('platform.loginAction')}</Button>
+                <Button variant="ghost" onPress={() => setPlatformSheetOpen(false)}>
+                    {t('platform.notNow')}
+                </Button>
+            </BottomSheet>
         </PageContainer>
     );
 }

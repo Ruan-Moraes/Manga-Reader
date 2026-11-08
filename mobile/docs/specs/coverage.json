@@ -2836,7 +2836,7 @@
         {
             "path": "src/pages/launcher/ui/__tests__/ModuleSelectorPage.test.tsx",
             "category": "evidence",
-            "specs": ["MOB-FEAT-010", "MOB-FEAT-012"],
+            "specs": ["MOB-FEAT-010", "MOB-FEAT-012", "MOB-FEAT-059"],
             "observations": [
                 "MOB-FEAT-010/AC-001",
                 "MOB-FEAT-010/AC-002",
@@ -2844,7 +2844,13 @@
                 "MOB-FEAT-010/AC-006",
                 "MOB-FEAT-010/AC-008",
                 "MOB-FEAT-012/AC-001",
-                "MOB-FEAT-012/AC-010"
+                "MOB-FEAT-012/AC-010",
+                "MOB-FEAT-059/AC-001",
+                "MOB-FEAT-059/AC-002",
+                "MOB-FEAT-059/AC-003",
+                "MOB-FEAT-059/AC-004",
+                "MOB-FEAT-059/AC-005",
+                "MOB-FEAT-059/AC-007"
             ]
         },
         {
@@ -2856,26 +2862,27 @@
         {
             "path": "src/pages/launcher/ui/AppModuleCard.tsx",
             "category": "behavior",
-            "specs": ["MOB-FEAT-010", "MOB-FEAT-011"],
+            "specs": ["MOB-FEAT-010", "MOB-FEAT-011", "MOB-FEAT-059"],
             "observations": [
                 "MOB-FEAT-010/AC-002",
                 "MOB-FEAT-010/AC-008",
                 "MOB-FEAT-011/AC-004",
                 "MOB-FEAT-011/AC-008",
                 "MOB-FEAT-011/AC-009",
-                "MOB-FEAT-011/AC-010"
+                "MOB-FEAT-011/AC-010",
+                "MOB-FEAT-059/AC-002"
             ]
         },
         {
             "path": "src/pages/launcher/ui/EditorialHero.tsx",
             "category": "behavior",
-            "specs": ["MOB-FEAT-028"],
-            "observations": ["MOB-FEAT-028/AC-001", "MOB-FEAT-028/AC-007", "MOB-FEAT-028/AC-009"]
+            "specs": ["MOB-FEAT-028", "MOB-FEAT-059"],
+            "observations": ["MOB-FEAT-028/AC-001", "MOB-FEAT-028/AC-007", "MOB-FEAT-028/AC-009", "MOB-FEAT-059/AC-001"]
         },
         {
             "path": "src/pages/launcher/ui/ModuleSelector.tsx",
             "category": "behavior",
-            "specs": ["MOB-FEAT-010", "MOB-FEAT-011"],
+            "specs": ["MOB-FEAT-010", "MOB-FEAT-011", "MOB-FEAT-059"],
             "observations": [
                 "MOB-FEAT-010/AC-001",
                 "MOB-FEAT-010/AC-002",
@@ -2883,14 +2890,24 @@
                 "MOB-FEAT-011/AC-004",
                 "MOB-FEAT-011/AC-008",
                 "MOB-FEAT-011/AC-009",
-                "MOB-FEAT-011/AC-010"
+                "MOB-FEAT-011/AC-010",
+                "MOB-FEAT-059/AC-001",
+                "MOB-FEAT-059/AC-004"
             ]
         },
         {
             "path": "src/pages/launcher/ui/ModuleSelectorPage.tsx",
             "category": "behavior",
-            "specs": ["MOB-FEAT-010"],
-            "observations": ["MOB-FEAT-010/AC-001", "MOB-FEAT-010/AC-002", "MOB-FEAT-010/AC-004", "MOB-FEAT-010/AC-006"]
+            "specs": ["MOB-FEAT-010", "MOB-FEAT-059"],
+            "observations": [
+                "MOB-FEAT-010/AC-001",
+                "MOB-FEAT-010/AC-002",
+                "MOB-FEAT-010/AC-004",
+                "MOB-FEAT-010/AC-006",
+                "MOB-FEAT-059/AC-003",
+                "MOB-FEAT-059/AC-004",
+                "MOB-FEAT-059/AC-005"
+            ]
         },
         {
             "path": "src/pages/launcher/ui/PlatformStatusPage.tsx",
@@ -3497,7 +3514,8 @@
                 "MOB-FEAT-012",
                 "MOB-FEAT-013",
                 "MOB-FEAT-017",
-                "MOB-FEAT-058"
+                "MOB-FEAT-058",
+                "MOB-FEAT-059"
             ],
             "observations": [
                 "MOB-FEAT-002/AC-011",
@@ -3514,7 +3532,8 @@
                 "MOB-FEAT-013/AC-011",
                 "MOB-FEAT-013/AC-012",
                 "MOB-FEAT-017/AC-011",
-                "MOB-FEAT-058/AC-006"
+                "MOB-FEAT-058/AC-006",
+                "MOB-FEAT-059/AC-006"
             ]
         },
         {
@@ -3555,7 +3574,17 @@
         {
             "path": "src/shared/i18n/locales/en-US/launcher.json",
             "category": "behavior",
-            "specs": ["MOB-FEAT-010", "MOB-FEAT-012", "MOB-FEAT-013", "MOB-FEAT-014", "MOB-FEAT-015", "MOB-FEAT-016", "MOB-FEAT-043", "MOB-FEAT-044"],
+            "specs": [
+                "MOB-FEAT-010",
+                "MOB-FEAT-012",
+                "MOB-FEAT-013",
+                "MOB-FEAT-014",
+                "MOB-FEAT-015",
+                "MOB-FEAT-016",
+                "MOB-FEAT-043",
+                "MOB-FEAT-044",
+                "MOB-FEAT-059"
+            ],
             "observations": [
                 "MOB-FEAT-010/AC-008",
                 "MOB-FEAT-012/AC-001",
@@ -3576,7 +3605,8 @@
                 "MOB-FEAT-016/AC-011",
                 "MOB-FEAT-044/AC-001",
                 "MOB-FEAT-044/AC-002",
-                "MOB-FEAT-044/AC-004"
+                "MOB-FEAT-044/AC-004",
+                "MOB-FEAT-059/AC-006"
             ]
         },
         {
@@ -3632,7 +3662,17 @@
         {
             "path": "src/shared/i18n/locales/es-ES/launcher.json",
             "category": "behavior",
-            "specs": ["MOB-FEAT-010", "MOB-FEAT-012", "MOB-FEAT-013", "MOB-FEAT-014", "MOB-FEAT-015", "MOB-FEAT-016", "MOB-FEAT-043", "MOB-FEAT-044"],
+            "specs": [
+                "MOB-FEAT-010",
+                "MOB-FEAT-012",
+                "MOB-FEAT-013",
+                "MOB-FEAT-014",
+                "MOB-FEAT-015",
+                "MOB-FEAT-016",
+                "MOB-FEAT-043",
+                "MOB-FEAT-044",
+                "MOB-FEAT-059"
+            ],
             "observations": [
                 "MOB-FEAT-010/AC-008",
                 "MOB-FEAT-012/AC-001",
@@ -3653,7 +3693,8 @@
                 "MOB-FEAT-016/AC-011",
                 "MOB-FEAT-044/AC-001",
                 "MOB-FEAT-044/AC-002",
-                "MOB-FEAT-044/AC-004"
+                "MOB-FEAT-044/AC-004",
+                "MOB-FEAT-059/AC-006"
             ]
         },
         {
@@ -3709,7 +3750,17 @@
         {
             "path": "src/shared/i18n/locales/pt-BR/launcher.json",
             "category": "behavior",
-            "specs": ["MOB-FEAT-010", "MOB-FEAT-012", "MOB-FEAT-013", "MOB-FEAT-014", "MOB-FEAT-015", "MOB-FEAT-016", "MOB-FEAT-043", "MOB-FEAT-044"],
+            "specs": [
+                "MOB-FEAT-010",
+                "MOB-FEAT-012",
+                "MOB-FEAT-013",
+                "MOB-FEAT-014",
+                "MOB-FEAT-015",
+                "MOB-FEAT-016",
+                "MOB-FEAT-043",
+                "MOB-FEAT-044",
+                "MOB-FEAT-059"
+            ],
             "observations": [
                 "MOB-FEAT-010/AC-008",
                 "MOB-FEAT-012/AC-001",
@@ -3730,7 +3781,8 @@
                 "MOB-FEAT-016/AC-011",
                 "MOB-FEAT-044/AC-001",
                 "MOB-FEAT-044/AC-002",
-                "MOB-FEAT-044/AC-004"
+                "MOB-FEAT-044/AC-004",
+                "MOB-FEAT-059/AC-006"
             ]
         },
         {
