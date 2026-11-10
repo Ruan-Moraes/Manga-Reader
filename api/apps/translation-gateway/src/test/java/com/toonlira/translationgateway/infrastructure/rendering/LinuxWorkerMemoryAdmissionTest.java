@@ -2,13 +2,26 @@ package com.toonlira.translationgateway.infrastructure.rendering;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 class LinuxWorkerMemoryAdmissionTest {
     private static final long GIB = 1024L * 1024 * 1024;
     private static final long MIB = 1024L * 1024;
+
+    @Test void temporaryFilesMustShareTheValidatedScratchFilesystem(@TempDir Path scratch) throws Exception {
+        LinuxWorkerMemoryAdmission.requireTemporaryFilesOnScratch(scratch);
+
+        var otherFilesystem = Path.of("/dev");
+        assumeFalse(Files.getFileStore(otherFilesystem).equals(Files.getFileStore(scratch)));
+        assertThatThrownBy(() -> LinuxWorkerMemoryAdmission.requireTemporaryFilesOnScratch(otherFilesystem))
+            .isInstanceOf(RenderFileException.class).hasNoCause();
+    }
 
     @Test void admitsOnlyFiniteOwnedBudgetWithoutChangingAnyLimits() {
         var calls = new AtomicInteger();

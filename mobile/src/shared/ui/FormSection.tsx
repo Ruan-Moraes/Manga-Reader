@@ -19,12 +19,8 @@ export function FormSection({ title, description, children, contentPadding = 'de
     if (compact) {
         return (
             <View
-                style={{
-                    gap: spacing.md,
-                    paddingBottom: spacing.md,
-                    borderBottomWidth: 1,
-                    borderBottomColor: tokens.separator,
-                }}
+                // Folhas: 24 entre controles; seções vizinhas já se separam pelo SectionStack.
+                style={{ gap: spacing.lg }}
             >
                 {children}
             </View>

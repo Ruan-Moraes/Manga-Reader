@@ -28,7 +28,7 @@ import org.junit.jupiter.api.io.TempDir;
 
 class NativeFileRenderAdapterTest {
     @TempDir Path temporary;
-    private final NativeWebpCodec codec = mock(NativeWebpCodec.class);
+    private final LegacyNativeWebpCodec codec = mock(LegacyNativeWebpCodec.class);
     private final PageRasterPainter painter = mock(PageRasterPainter.class);
     private final AtomicInteger created = new AtomicInteger();
 

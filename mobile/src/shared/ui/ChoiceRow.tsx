@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Pressable, View } from 'react-native';
+import { View } from 'react-native';
 
 import { useTheme } from '@/shared/theme';
 
@@ -7,6 +7,7 @@ import { AppText } from './AppText';
 import { BottomSheet } from './BottomSheet';
 import { ChoiceGroup } from './ChoiceGroup';
 import { Icon } from './Icon';
+import { PressableBox as Pressable } from './PressableBox';
 
 interface ChoiceRowProps<T extends string> {
     label: string;

@@ -48,98 +48,34 @@ const gatewayErrorCodeSchema = z.enum([
     'internal-error',
 ]);
 
-const privateDownloadUrlSchema = z
-    .string()
-    .max(8192)
-    .refine(value => {
-        try {
-            const url = new URL(value);
-            return (
-                /^https:\/\/storage\.googleapis\.com\/[^?#]+\?[^#]+$/.test(value) &&
-                url.protocol === 'https:' &&
-                url.hostname === 'storage.googleapis.com' &&
-                !url.port &&
-                !url.username &&
-                !url.password &&
-                !url.hash &&
-                url.search.length > 1
-            );
-        } catch {
-            return false;
-        }
-    }, 'Invalid private download URL');
-
-const downloadMetadata = {
-    url: privateDownloadUrlSchema,
-    sha256: z.string().regex(/^[0-9a-f]{64}$/),
-    expiresAt: z.iso.datetime(),
-};
-const MAX_RESULT_PIXELS = 80000000;
-const MAX_RESULT_LIFETIME_MS = 3600000;
-const MAX_DOWNLOAD_LIFETIME_MS = 300000;
-const readyResultSchema = z
+export const volatileReceiptSchema = z
     .object({
-        manifestVersion: z.literal('1.0'),
-        widthPx: z.number().int().min(1).max(12000),
-        heightPx: z.number().int().min(1).max(12000),
-        expiresAt: z.iso.datetime(),
-        image: z
+        contractVersion: z.literal('2.0'),
+        contentRecoverable: z.literal(false),
+        receipt: z
             .object({
-                ...downloadMetadata,
-                mimeType: z.literal('image/webp'),
-                byteSize: z
-                    .number()
-                    .int()
-                    .min(1)
-                    .max(64 * 1024 * 1024),
+                operationRef: z.uuid(),
+                status: z.enum(['STARTED', 'FINISHED', 'FAILED']),
+                createdAt: z.iso.datetime(),
+                finishedAt: z.iso.datetime().nullable(),
+                errorCode: gatewayErrorCodeSchema.nullable(),
             })
             .strict(),
-        manifest: z
-            .object({
-                ...downloadMetadata,
-                mimeType: z.literal('application/json'),
-                byteSize: z
-                    .number()
-                    .int()
-                    .min(1)
-                    .max(4 * 1024 * 1024),
-            })
-            .strict(),
-    })
-    .strict();
-
-export const pageJobEnvelopeSchema = z
-    .object({
-        contractVersion: z.literal('1.0'),
-        jobRef: z.uuid(),
-        status: z.enum(REMOTE_JOB_STATUSES),
-        serverTime: z.iso.datetime(),
-        error: z.object({ code: gatewayErrorCodeSchema, retryable: z.boolean().optional() }).strict().nullable().optional(),
-        result: readyResultSchema.nullable().optional(),
     })
     .strict()
-    .superRefine((envelope, context) => {
-        const result = envelope.result;
-        if (!result) return;
-        const serverTime = Date.parse(envelope.serverTime);
-        const resultDeadline = Date.parse(result.expiresAt);
-        const downloads = [result.image, result.manifest];
+    .superRefine(({ receipt }, context) => {
         if (
-            envelope.status !== 'READY' ||
-            envelope.error ||
-            result.widthPx * result.heightPx > MAX_RESULT_PIXELS ||
-            resultDeadline <= serverTime ||
-            resultDeadline > serverTime + MAX_RESULT_LIFETIME_MS ||
-            downloads.some(download => {
-                const expiry = Date.parse(download.expiresAt);
-                return expiry <= serverTime || expiry > serverTime + MAX_DOWNLOAD_LIFETIME_MS || expiry > resultDeadline;
-            })
+            receipt.status === 'STARTED'
+                ? receipt.finishedAt !== null || receipt.errorCode !== null
+                : receipt.finishedAt === null ||
+                  Date.parse(receipt.finishedAt) < Date.parse(receipt.createdAt) ||
+                  (receipt.status === 'FAILED') !== (receipt.errorCode !== null)
         ) {
-            context.addIssue({ code: 'custom', message: 'Invalid private result metadata', path: ['result'] });
+            context.addIssue({ code: 'custom', message: 'Invalid operational receipt' });
         }
     });
 
-export type PageJobEnvelope = z.infer<typeof pageJobEnvelopeSchema>;
+export type VolatileReceiptStatus = 'STARTED' | 'FINISHED' | 'FAILED';
 
 export interface RemoteProcessingConsent {
     projectId: string;
@@ -157,6 +93,7 @@ export interface RemoteProcessingAttempt {
     gatewayContractVersion: string;
     status: RemoteAttemptStatus;
     remoteStatus: RemoteJobStatus | null;
+    volatileReceiptStatus?: VolatileReceiptStatus | null;
     remoteJobRef: string | null;
     errorCode: RemoteProcessingErrorCode | null;
     createdAt: number;

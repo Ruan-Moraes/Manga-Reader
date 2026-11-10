@@ -18,6 +18,10 @@ interface Props extends Omit<TextInputProps, 'onBlur' | 'onChange' | 'onChangeTe
     onBlur?: () => void;
 }
 
+/**
+ * Form field. Form rhythm used across the app: label → field `spacing.sm`, field → next field or the primary action
+ * `spacing.md` (this component's bottom margin), so screens do not add their own spacers.
+ */
 export function Input({
     label,
     value,
@@ -47,7 +51,13 @@ export function Input({
                     <AppText variant="label" tone={error ? 'danger' : 'default'}>
                         {label}
                     </AppText>
-                    {labelAction}
+                    {labelAction ? (
+                        // The action keeps its 44 pt target but overlaps the row, so the label stays as close to the
+                        // field as a label without an action.
+                        <View style={{ marginVertical: -Math.max(0, (minimumTouchTarget - (textStyles.label.lineHeight ?? minimumTouchTarget)) / 2) }}>
+                            {labelAction}
+                        </View>
+                    ) : null}
                 </View>
             )}
             <View

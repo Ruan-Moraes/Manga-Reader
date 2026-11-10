@@ -17,8 +17,12 @@ import { join, resolve } from "node:path";
 import { packageCodec } from "./render-native-package.mjs";
 import {
   prepareImageContext,
+  prepareReproImageContext,
+  prepareSecurityRefreshImageContext,
   parseImageOptions,
+  REPRO_LOCAL_PARENT,
 } from "./render-native-image.mjs";
+import { SECURITY_REFRESH } from "./ubuntu-base-update.mjs";
 
 const sha = (bytes) => createHash("sha256").update(bytes).digest("hex");
 async function fixture(platform = "linux-aarch64-glibc") {
@@ -76,6 +80,85 @@ test("requires explicit glibc target/pins, rejects aliases, duplicate options, d
     ["--credentials", "/private"],
   ])
     assert.throws(() => parseImageOptions(args), /native-image-unavailable/);
+});
+
+test("local reproducibility context binds parent, rebuilt codec and JAR without changing defaults", async () => {
+  const { root, options } = await fixture();
+  try {
+    await assert.rejects(
+      prepareReproImageContext({ ...options, platform: "linux-x86_64-glibc" }),
+    );
+    const result = await prepareReproImageContext(options);
+    assert.equal(result.baseImage, REPRO_LOCAL_PARENT);
+    assert.equal(result.baseSecurityApproved, false);
+    assert.equal(result.manifestSha256, options["manifest-sha256"]);
+    const metadata = JSON.parse(
+      await readFile(join(options.destination, "image-inputs.json"), "utf8"),
+    );
+    assert.equal(metadata.baseImage, REPRO_LOCAL_PARENT);
+    assert.equal(metadata.jarSha256, options["jar-sha256"]);
+    const dockerfile = await readFile(
+      join(options.destination, "Dockerfile"),
+      "utf8",
+    );
+    assert.match(
+      dockerfile,
+      /COPY native\/libwebp\.so\.7 native\/libsharpyuv\.so\.0/,
+    );
+    assert.match(
+      dockerfile,
+      /COPY image-inputs\.json \/app\/image-inputs\.json/,
+    );
+    assert.match(
+      dockerfile,
+      /GATEWAY_RENDERING_NATIVE_DISTRIBUTION_SHA256=\$\{CODEC_MANIFEST_SHA256\}/,
+    );
+    assert.match(dockerfile, /NativeCodecImageAdmissionMain/);
+  } finally {
+    await cleanup(root);
+  }
+});
+
+test("security refresh requires exact parent, packages and unchanged JRE proof", async () => {
+  const { root, options } = await fixture();
+  const proofPath = join(root, "refresh-proof.json");
+  const hashes = {
+    libbrotli1: "911411fb6fdfb4ab91dd4242f5a0a5e1f47b38e003a25c8dc7730238cb323e18",
+    zlib1g: "84536bcf440cf0f988899b24b6c7df32cb9ff9f0dfa97d5e7efcc2dc088d15dc",
+  };
+  const proof = {
+    format: "toonlira-local-security-refresh-1", base: SECURITY_REFRESH.bases.arm64,
+    architecture: "arm64", imageId: "sha256:" + "a".repeat(64),
+    status: "local-only-not-security-approved",
+    jreInventorySha256: "70262bcefe0ea863a04e86afc7f797655a8ff6a18571f6e3e8a8c42de13fec81",
+    packages: Object.entries(SECURITY_REFRESH.updates).map(([name, v]) => ({
+      name, version: v.after, architecture: "arm64", sha256: hashes[name],
+    })),
+    changes: Object.entries(SECURITY_REFRESH.updates).map(([name, v]) => ({
+      package: `${name}:arm64`, before: v.before, after: v.after,
+    })),
+  };
+  try {
+    for (const altered of [
+      { ...proof, base: "sha256:" + "b".repeat(64) },
+      { ...proof, jreInventorySha256: "0".repeat(64) },
+      { ...proof, packages: [{ ...proof.packages[0], sha256: "0".repeat(64) }, proof.packages[1]] },
+      { ...proof, changes: [proof.changes[0]] },
+    ]) {
+      const bytes = Buffer.from(JSON.stringify(altered));
+      await chmod(proofPath, 0o600).catch(() => {});
+      await writeFile(proofPath, bytes); await chmod(proofPath, 0o444);
+      await assert.rejects(prepareSecurityRefreshImageContext({ ...options, "base-proof": proofPath,
+        "base-proof-sha256": sha(bytes) }), /native-image-unavailable/);
+    }
+    const bytes = Buffer.from(JSON.stringify(proof));
+    await chmod(proofPath, 0o600); await writeFile(proofPath, bytes); await chmod(proofPath, 0o444);
+    const result = await prepareSecurityRefreshImageContext({ ...options, "base-proof": proofPath,
+      "base-proof-sha256": sha(bytes) });
+    assert.equal(result.baseImage, proof.imageId);
+    assert.equal(result.baseParentImage, proof.base);
+    assert.equal(result.baseSecurityApproved, false);
+  } finally { await chmod(proofPath, 0o600).catch(() => {}); await cleanup(root); }
 });
 
 test("derived local base needs an explicit hash-pinned matching preparation proof", async () => {

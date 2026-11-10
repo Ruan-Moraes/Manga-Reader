@@ -16,7 +16,7 @@ public final class NativeWebpCodecProbe {
     public static void main(String[] arguments) throws Exception {
         if(arguments.length!=5)throw new AssertionError("native-probe-configuration");
         var policy=RenderPolicy.initial(); var work=Path.of(arguments[4]);
-        try(var codec=new NativeWebpCodec(Path.of(arguments[0]),arguments[1],Path.of(arguments[2]),arguments[3],Duration.ofSeconds(60))) {
+        try(var codec=new LegacyNativeWebpCodec(Path.of(arguments[0]),arguments[1],Path.of(arguments[2]),arguments[3],Duration.ofSeconds(60))) {
             var foreign=new AtomicReference<Throwable>();
             var thread=Thread.ofPlatform().start(()-> {
                 try {codec.close();foreign.set(new AssertionError("foreign-close-accepted"));}
@@ -57,7 +57,7 @@ public final class NativeWebpCodecProbe {
                     codec.decodeOriginalInto(result.path(),new RenderSource("image/webp",result.image().byteSize(),width,height,
                         result.image().sha256()),tinyOutput,decoded);
                     check(Arrays.equals(expected,decoded.image().getRGB(0,0,width,height,null,0,width)),"input-budget-coupled-to-output");
-                    var capacityField=NativeWebpCodec.class.getDeclaredField("CAPACITY");capacityField.setAccessible(true);
+                    var capacityField=LegacyNativeWebpCodec.class.getDeclaredField("CAPACITY");capacityField.setAccessible(true);
                     var capacity=(Semaphore)capacityField.get(null);capacity.acquire();
                     try {checkFailure(()->codec.encode(source,work,policy),"codec-busy");}
                     finally {capacity.release();}
@@ -73,14 +73,14 @@ public final class NativeWebpCodecProbe {
                     finally {check(Thread.interrupted(),"interrupt-cleared");}
                 }
             }
-            check(codec.toString().equals("NativeWebpCodec[redacted]"),"sensitive-to-string");
+            check(codec.toString().equals("LegacyNativeWebpCodec[redacted]"),"sensitive-to-string");
         }
-        checkFailure(()->new NativeWebpCodec(Path.of(arguments[0]),"0".repeat(64),Path.of(arguments[2]),arguments[3],Duration.ofSeconds(1)),"codec-configuration");
-        try(var immediate=new NativeWebpCodec(Path.of(arguments[0]),arguments[1],Path.of(arguments[2]),arguments[3],Duration.ofNanos(1));
+        checkFailure(()->new LegacyNativeWebpCodec(Path.of(arguments[0]),"0".repeat(64),Path.of(arguments[2]),arguments[3],Duration.ofSeconds(1)),"codec-configuration");
+        try(var immediate=new LegacyNativeWebpCodec(Path.of(arguments[0]),arguments[1],Path.of(arguments[2]),arguments[3],Duration.ofNanos(1));
             var source=new NativeArgbRaster(13,17,policy)) {
             checkFailure(()->immediate.encode(source,work,policy),"codec-timeout");
         }
-        var closed=new NativeWebpCodec(Path.of(arguments[0]),arguments[1],Path.of(arguments[2]),arguments[3],Duration.ofSeconds(1));
+        var closed=new LegacyNativeWebpCodec(Path.of(arguments[0]),arguments[1],Path.of(arguments[2]),arguments[3],Duration.ofSeconds(1));
         closed.close();closed.close();
         checkFailure(()->closed.encode(null,work,policy),"codec-unavailable");
         try(var paths=Files.list(work)){check(paths.count()==1,"partial-file-leak");}

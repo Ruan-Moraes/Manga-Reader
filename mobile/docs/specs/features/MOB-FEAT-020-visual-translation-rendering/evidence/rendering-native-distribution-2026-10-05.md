@@ -1,5 +1,9 @@
 # Distribuição relocável e opt-in supervisionado — 2026-10-05
 
+> Registro histórico do desenho anterior. Em 2026-11-01, as classes
+> referenciadas retiradas de produção foram movidas para suporte de teste. Os
+> links acompanham essa localização; não indicam código produtivo atual.
+
 Parcela posterior a [FFM supervisionado](rendering-supervised-native-2026-10-05.md),
 TASK-002/007/008. Ruan escolheu manter libwebp com orçamento total medido.
 Preparação local de Java/compiler/headers/libwebp autorizada; sem C próprio,
@@ -13,7 +17,7 @@ Python, provider, ADC, mídia privada, cloud ou deploy. 020 in-progress/open,
   [testes Node](../../../../../../api/apps/translation-gateway/scripts/render-native-package.test.mjs).
 - [Admissão Java](../../../../../../api/apps/translation-gateway/src/main/java/com/toonlira/translationgateway/infrastructure/rendering/NativeCodecDistribution.java),
   [parser ELF limitado](../../../../../../api/apps/translation-gateway/src/main/java/com/toonlira/translationgateway/infrastructure/rendering/NativeCodecElf.java),
-  [configuração opt-in](../../../../../../api/apps/translation-gateway/src/main/java/com/toonlira/translationgateway/infrastructure/rendering/NativeRenderingConfiguration.java).
+  [configuração opt-in](../../../../../../api/apps/translation-gateway/src/test/java/com/toonlira/translationgateway/infrastructure/rendering/NativeRenderingConfiguration.java).
 - [Testes de pacote](../../../../../../api/apps/translation-gateway/src/test/java/com/toonlira/translationgateway/infrastructure/rendering/NativeCodecDistributionTest.java),
   [metadata ELF sintética](../../../../../../api/apps/translation-gateway/src/test/java/com/toonlira/translationgateway/infrastructure/rendering/NativeCodecElfTest.java),
   [configuração/regressões](../../../../../../api/apps/translation-gateway/src/test/java/com/toonlira/translationgateway/infrastructure/rendering/RenderingConfigurationTest.java),

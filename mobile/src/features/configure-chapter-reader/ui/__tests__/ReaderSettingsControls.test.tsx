@@ -143,3 +143,29 @@ it('separa categorias compactas e mantém ajuda e alteração de preferências',
     expect(onChange).toHaveBeenCalledWith({ background: 'PAPER' });
     expect(screen.getByRole('adjustable', { name: 'Saturação' })).toBeOnTheScreen();
 });
+
+describe('MOB-FEAT-063 categoria quick da folha do leitor', () => {
+    const quick = (reader = DEFAULT_USER_SETTINGS.reader) =>
+        render(
+            <ThemeProvider waitForPlatform={false}>
+                <ReaderSettingsControls category="quick" compact capabilities={{ high: true, low: true, medium: true }} onChange={jest.fn()} value={reader} />
+            </ThemeProvider>,
+        );
+
+    it('AC-006 mostra modo, direção, ajuste com Original, fundo e saturação, sem qualidade, pré-carregamento nem marcação', () => {
+        const view = quick({ ...DEFAULT_USER_SETTINGS.reader, mode: 'PAGED', direction: 'LTR' });
+        expect(view.getByRole('radio', { name: 'Paginado' })).toBeOnTheScreen();
+        expect(view.getByText('Original')).toBeOnTheScreen();
+        expect(view.getByRole('adjustable', { name: 'Saturação' })).toBeOnTheScreen();
+        expect(view.getByRole('radio', { name: 'Papel' })).toBeOnTheScreen();
+        expect(view.queryByRole('button', { name: /Qualidade/ })).toBeNull();
+        expect(view.queryByRole('adjustable', { name: 'Pré-carregamento' })).toBeNull();
+        expect(view.UNSAFE_queryByType(Switch)).toBeNull();
+        expect(view.queryByRole('adjustable', { name: 'Espaçamento' })).toBeNull();
+    });
+
+    it('AC-006 mostra o espaçamento só no fluxo vertical', () => {
+        const view = quick({ ...DEFAULT_USER_SETTINGS.reader, mode: 'VERTICAL' });
+        expect(view.getByRole('adjustable', { name: 'Espaçamento' })).toBeOnTheScreen();
+    });
+});

@@ -5,8 +5,9 @@
     "packageManager": "pnpm@11.10.0",
     "scripts": {
         "dev": "expo start --clear",
-        "android": "expo start --android",
-        "ios": "expo start --ios",
+        "android": "JAVA_HOME=$(/usr/libexec/java_home -v 17) expo run:android",
+        "android:apk": "cd android && JAVA_HOME=$(/usr/libexec/java_home -v 17) ./gradlew assembleRelease && (command -v open >/dev/null 2>&1 && open app/build/outputs/apk/release || xdg-open app/build/outputs/apk/release)",
+        "ios": "expo run:ios --device \"iPhone 18 Pro\"",
         "web": "expo start --web",
         "test": "jest --watch",
         "test:ci": "jest --ci --runInBand",
@@ -59,10 +60,12 @@
         "react-native-web": "~0.21.0",
         "react-native-worklets": "0.10.1",
         "tailwindcss": "^3.4.19",
+        "web-streams-polyfill": "4.3.0",
         "zod": "^4.4.3",
         "zustand": "^5.0.14"
     },
     "devDependencies": {
+        "@babel/plugin-transform-react-jsx": "^8.0.1",
         "@eslint/js": "^10.0.1",
         "@feature-sliced/steiger-plugin": "^0.6.0",
         "@testing-library/react-native": "^13.3.3",

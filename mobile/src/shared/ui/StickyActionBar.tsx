@@ -6,7 +6,7 @@ import { useTheme } from '@/shared/theme';
 
 export function StickyActionBar({ children }: { children: ReactNode }) {
     const insets = useSafeAreaInsets();
-    const { spacing, tokens } = useTheme();
+    const { layout, spacing, tokens } = useTheme();
     return (
         <View
             style={{
@@ -14,7 +14,8 @@ export function StickyActionBar({ children }: { children: ReactNode }) {
                 borderTopColor: tokens.separator,
                 borderTopWidth: 1,
                 gap: spacing.sm,
-                paddingBottom: Math.max(insets.bottom, spacing.sm),
+                paddingBottom: Math.max(insets.bottom, spacing.sm + 4),
+                paddingHorizontal: layout.screenGutter,
                 paddingTop: spacing.sm,
             }}
         >

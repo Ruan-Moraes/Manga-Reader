@@ -1,5 +1,6 @@
 {
     "actions": {
+        "resetZoom": "Restaurar tamaño original",
         "controlsHint": "Abre o cierra los controles y preferencias del lector",
         "exit": "Salir del lector",
         "hideControls": "Ocultar controles",
@@ -26,6 +27,10 @@
         "image": "No se pudo cargar esta página.",
         "progress": "El progreso está pendiente. Toca para intentarlo de nuevo.",
         "progressHydration": "No se pudo cargar tu progreso. La lectura sigue disponible."
+    },
+    "shortOptions": {
+        "LTR": "Izq → Der",
+        "RTL": "Der → Izq"
     },
     "options": {
         "AUTO": "Automática",
@@ -79,6 +84,7 @@
         "fit": "Ajuste",
         "gap": "Espaciado",
         "mode": "Modo",
+        "modeLong": "Modo de lectura",
         "preload": "Precarga",
         "quality": "Calidad",
         "saturation": "Saturación",
@@ -192,5 +198,39 @@
             "appearance": "Apariencia",
             "gestures": "Gestos"
         }
+    },
+    "kit": {
+        "settingsTitle": "Ajustes del lector",
+        "settingsDescription": "Los cambios se aplican al momento y se guardan en tus ajustes.",
+        "allSettings": "Todos los ajustes del lector",
+        "close": "Cerrar",
+        "chapterList": "Lista de capítulos",
+        "chapterListTitle": "Capítulos",
+        "currentChapter": "Capítulo actual",
+        "previousChapter": "Capítulo anterior",
+        "nextChapter": "Capítulo siguiente",
+        "previous": "Anterior",
+        "next": "Siguiente",
+        "version": "Versión de las páginas",
+        "translated": "Traducido",
+        "original": "Original",
+        "pageOfTotal": "{{page}} / {{total}}",
+        "endEyebrow": "Fin del capítulo",
+        "nextTitle": "Siguiente: {{name}}",
+        "upToDate": "Estás al día con {{name}}",
+        "upToDateUntitled": "Llegaste al final de este capítulo",
+        "readNext": "Leer el siguiente capítulo",
+        "backToWork": "Volver a la obra",
+        "back": "Volver",
+        "processingTitle": "Traducción en curso",
+        "processingText_one": "La página aparece aquí en cuanto esté lista. Mientras tanto puedes leer el original.",
+        "processingText_other": "Las {{count}} páginas aparecen aquí en cuanto estén listas. Mientras tanto puedes leer el original.",
+        "failedTitle": "No se pudo traducir",
+        "failedText": "La traducción se detuvo antes de terminar. No se volvió a enviar ninguna página.",
+        "retry": "Intentar de nuevo",
+        "readOriginal": "Leer original",
+        "retryTitle": "Intentar traducir de nuevo",
+        "retryDescription": "Solo se envían las páginas que fallaron, y solo después de que aceptes.",
+        "chapterUnavailable": "Este capítulo ya no está disponible."
     }
 }

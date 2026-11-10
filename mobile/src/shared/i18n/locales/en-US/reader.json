@@ -1,5 +1,6 @@
 {
     "actions": {
+        "resetZoom": "Reset zoom",
         "controlsHint": "Opens or closes reader controls and preferences",
         "exit": "Exit reader",
         "hideControls": "Hide controls",
@@ -26,6 +27,10 @@
         "image": "This page could not be loaded.",
         "progress": "Progress is pending. Tap to try again.",
         "progressHydration": "Your progress could not be loaded. Reading remains available."
+    },
+    "shortOptions": {
+        "LTR": "Left → Right",
+        "RTL": "Right → Left"
     },
     "options": {
         "AUTO": "Automatic",
@@ -79,6 +84,7 @@
         "fit": "Fit",
         "gap": "Gap",
         "mode": "Mode",
+        "modeLong": "Reading mode",
         "preload": "Preload",
         "quality": "Quality",
         "saturation": "Saturation",
@@ -192,5 +198,39 @@
             "appearance": "Appearance",
             "gestures": "Gestures"
         }
+    },
+    "kit": {
+        "settingsTitle": "Reader settings",
+        "settingsDescription": "Changes apply right away and are saved in your settings.",
+        "allSettings": "All reader settings",
+        "close": "Close",
+        "chapterList": "Chapter list",
+        "chapterListTitle": "Chapters",
+        "currentChapter": "Current chapter",
+        "previousChapter": "Previous chapter",
+        "nextChapter": "Next chapter",
+        "previous": "Previous",
+        "next": "Next",
+        "version": "Page version",
+        "translated": "Translated",
+        "original": "Original",
+        "pageOfTotal": "{{page}} / {{total}}",
+        "endEyebrow": "End of chapter",
+        "nextTitle": "Next: {{name}}",
+        "upToDate": "You are caught up with {{name}}",
+        "upToDateUntitled": "You reached the end of this chapter",
+        "readNext": "Read next chapter",
+        "backToWork": "Back to the work",
+        "back": "Back",
+        "processingTitle": "Translation in progress",
+        "processingText_one": "The page shows up here as soon as it is ready. You can read the original meanwhile.",
+        "processingText_other": "The {{count}} pages show up here as soon as they are ready. You can read the original meanwhile.",
+        "failedTitle": "Could not translate",
+        "failedText": "The translation stopped before finishing. No page was sent again.",
+        "retry": "Try again",
+        "readOriginal": "Read original",
+        "retryTitle": "Try translating again",
+        "retryDescription": "Only the pages that failed are sent, and only after you accept.",
+        "chapterUnavailable": "This chapter is no longer available."
     }
 }

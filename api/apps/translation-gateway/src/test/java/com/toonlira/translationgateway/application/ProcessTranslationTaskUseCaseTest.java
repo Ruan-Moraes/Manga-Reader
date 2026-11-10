@@ -1,5 +1,7 @@
 package com.toonlira.translationgateway.application;
 
+import com.toonlira.translationgateway.infrastructure.storage.LegacyStorageFixture;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -277,7 +279,7 @@ class ProcessTranslationTaskUseCaseTest {
         var source = Files.createTempFile(temporary, "ocr-source-", ".json");
         Files.write(source, encoded.bytes());
         var key = "private/ocr/fixture.json";
-        new LocalObjectStorageAdapter(properties).store(key, source, "application/json", encoded.sha256(), NOW);
+        new LegacyStorageFixture(properties).store(key, source, "application/json", encoded.sha256(), NOW);
         var job = new TranslationJobRepository.WorkItem(jobId, jobRef, JobStatus.TRANSLATING,
             "en", "pt-BR", key, encoded.sha256(), null, null);
         var persistence = mock(TranslationPersistenceUseCase.class);
@@ -289,7 +291,7 @@ class ProcessTranslationTaskUseCaseTest {
                                                   GatewayProperties properties) {
         when(persistence.originalAvailable(any(), any())).thenReturn(true);
         var mapper = GatewayJsonMapper.create();
-        return new ProcessTranslationTaskUseCase(persistence, new LocalObjectStorageAdapter(properties),
+        return new ProcessTranslationTaskUseCase(persistence, new LegacyStorageFixture(properties),
             new OcrManifestService(mapper), new TranslationManifestService(mapper), provider,
             properties, Clock.fixed(NOW, ZoneOffset.UTC), lifecycle);
     }

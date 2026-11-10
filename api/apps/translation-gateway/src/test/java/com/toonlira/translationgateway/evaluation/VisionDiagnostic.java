@@ -9,7 +9,6 @@ import com.google.cloud.vision.v1.BoundingPoly;
 import com.google.cloud.vision.v1.Paragraph;
 import com.google.cloud.vision.v1.TextAnnotation.TextProperty;
 import com.google.protobuf.Message;
-import com.toonlira.translationgateway.application.port.OcrPort;
 import com.toonlira.translationgateway.domain.OcrGeometry;
 import com.toonlira.translationgateway.domain.OcrManifest;
 import com.toonlira.translationgateway.infrastructure.ocr.VisionResponseMapper;
@@ -33,7 +32,7 @@ public final class VisionDiagnostic {
     public static ObjectNode inspect(byte[] raw, OcrManifest saved) throws Exception {
         require(raw.length <= MAX_RAW && "1.0".equals(saved.version()));
         var batch = BatchAnnotateImagesResponse.parseFrom(raw);
-        var command = new OcrPort.Command("local-diagnostic", saved.sourceLanguage(), saved.jobRef(), saved.widthPx(), saved.heightPx());
+        var command = new VisionResponseMapper.Context(saved.jobRef(), saved.widthPx(), saved.heightPx());
         var mapped = new VisionResponseMapper().map(batch, command);
         require(mapped.equals(saved.regions()));
         var result = JSON.createObjectNode();
@@ -80,7 +79,7 @@ public final class VisionDiagnostic {
         return result;
     }
 
-    private static String discardedReason(Paragraph paragraph, OcrPort.Command command) {
+    private static String discardedReason(Paragraph paragraph, VisionResponseMapper.Context command) {
         var symbols = new StringBuilder();
         paragraph.getWordsList().forEach(word -> word.getSymbolsList().forEach(symbol -> symbols.append(symbol.getText())));
         if (symbols.toString().isBlank()) return "blank";

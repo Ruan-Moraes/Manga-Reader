@@ -1,9 +1,9 @@
-import { Pressable, View } from 'react-native';
+import { View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import type { AppearanceSettings, DensityPreference, FontSizePreference, ThemePreference } from '@/entities/user-setting';
 import { darkTokens, lightTokens, useResponsiveLayout, useTheme } from '@/shared/theme';
-import { AppText, FormSection, SectionStack, SegmentedControl, StatusMessage, SwitchRow } from '@/shared/ui';
+import { AppText, FormSection, PressableBox as Pressable,SectionStack, SegmentedControl, StatusMessage, SwitchRow } from '@/shared/ui';
 
 import { useSettingsStore } from '../model/settingsStore';
 

@@ -15,7 +15,9 @@ import java.util.jar.JarFile;
 
 /** Explicit flat/Boot admission; native process/resource containment remains a separate boundary. */
 final class RenderJvmLauncher {
-    private static final String CHILD_MAIN = RenderChildMain.class.getName();
+    private static final String CHILD_MAIN = "com.toonlira.translationgateway.infrastructure.rendering.RenderChildMain";
+    private static final String TASK_MAIN = "com.toonlira.translationgateway.infrastructure.rendering.RenderingTaskChildMain";
+    private static final String VOLATILE_MAIN = VolatileRenderChildMain.class.getName();
     private static final String PARENT_LIMIT_MAIN = NativeWorkerParentLimitMain.class.getName();
     private static final String BOOT_MAIN = "com.toonlira.translationgateway.TranslationGatewayApplication";
     private static final String JAR_LAUNCHER = "org.springframework.boot.loader.launch.JarLauncher";
@@ -76,7 +78,8 @@ final class RenderJvmLauncher {
             var java = Path.of(System.getProperty("java.home"), "bin", "java").toRealPath();
             if (!Files.isExecutable(java)) throw new RenderFileException(CONFIGURATION);
             var command = new ArrayList<>(List.of(java.toString(), "-Xmx" + heapMiB + "m", "-Xms16m",
-                "-XX:+ExitOnOutOfMemoryError", "-Djava.awt.headless=true", "-Djava.io.tmpdir=" + directory.toRealPath()));
+                "-XX:+ExitOnOutOfMemoryError", "-XX:-HeapDumpOnOutOfMemoryError", "-XX:-CreateCoredumpOnCrash",
+                "-XX:ErrorFile=/dev/null", "-Djava.awt.headless=true", "-Djava.io.tmpdir=" + directory.toRealPath()));
             if (nativeAccess) command.add("--enable-native-access=ALL-UNNAMED");
             if (parentLimiter) command.addAll(List.of("-XX:MaxMetaspaceSize=64m", "-XX:CompressedClassSpaceSize=16m",
                 "-XX:ReservedCodeCacheSize=32m", "-XX:ActiveProcessorCount=1", "-XX:+UseSerialGC",
@@ -108,11 +111,12 @@ final class RenderJvmLauncher {
             if (Files.isRegularFile(path) && path.toString().endsWith(".jar")) {
                 try (var jar = new JarFile(path.toFile())) {
                     if (isBoot(jar)) {
-                        if (classpath.size() != 1 || !CHILD_MAIN.equals(mainClass) && !PARENT_LIMIT_MAIN.equals(mainClass))
+                        if (classpath.size() != 1 || !CHILD_MAIN.equals(mainClass) && !TASK_MAIN.equals(mainClass)
+                            && !VOLATILE_MAIN.equals(mainClass) && !PARENT_LIMIT_MAIN.equals(mainClass))
+                            throw new RenderFileException(CONFIGURATION);
+                        if (jar.getEntry(BOOT_CLASSES + mainClass.replace('.', '/') + ".class") == null)
                             throw new RenderFileException(CONFIGURATION);
                         validateBoot(jar);
-                        if (PARENT_LIMIT_MAIN.equals(mainClass) && jar.getEntry(BOOT_CLASSES + PARENT_LIMIT_MAIN.replace('.', '/') + ".class") == null)
-                            throw new RenderFileException(CONFIGURATION);
                         boot = true;
                     }
                 }
@@ -149,7 +153,6 @@ final class RenderJvmLauncher {
             || attributes.keySet().stream().anyMatch(key -> key.toString().equalsIgnoreCase("Class-Path")
                 || key.toString().regionMatches(true, 0, "Loader-", 0, 7))
             || jar.getEntry(BOOT_CLASSES) == null
-            || jar.getEntry(BOOT_CLASSES + CHILD_MAIN.replace('.', '/') + ".class") == null
             || jar.getEntry(PROPERTIES_LAUNCHER.replace('.', '/') + ".class") == null
             || jar.getEntry(NO_CONFIG) != null || jar.getEntry(BOOT_CLASSES + NO_CONFIG) != null
             || jar.stream().noneMatch(entry -> !entry.isDirectory() && entry.getName().startsWith(BOOT_LIB)

@@ -1,0 +1,22 @@
+# ai-memory — roteamento e política de captura deste repositório.
+# Guia: docs/ai-memory.md
+workspace = "default"
+project = "ruan-moraes-manga-reader"
+
+[capture]
+# Best effort: impede a captura de leituras/edições nesses caminhos.
+# Manter alinhado com os diretórios privados do .gitignore.
+ignore_paths = [
+  "**/.env",
+  "**/.env.*",
+  ".local/ocr-samples/**",
+  ".local/rendering-linux/**",
+  ".local/worker-isolation/**",
+  ".local/android-runtime/**",
+  ".local/android-gradle/**",
+  "api/apps/translation-gateway/infra/terraform/*.tfvars",
+  "api/apps/translation-gateway/infra/terraform/*.tfvars.json",
+  "**/.terraform/**",
+  "**/*.tfstate",
+  "**/*.tfstate.*",
+]

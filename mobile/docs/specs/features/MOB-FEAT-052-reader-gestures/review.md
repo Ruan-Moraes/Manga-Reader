@@ -1,7 +1,7 @@
 # Review — MOB-FEAT-052
 
 - Spec revisada: spec.md, plano humano aprovado em 2026-09-09.
-- Implementação/revisão: working-tree sha256:0197e775ac2875fd2619dc4a8a1a68162b97aa1591d460593588c2932c2d51b2
+- Implementação/revisão: working-tree sha256:751f485409b07f18d689b9d6ab37b2b133be8503c09c2e2ca570a8c5ac7bf1d3
 - Gate na entrada: open; MOB-FEAT-051 em verification-pending (dependência executada).
 - Verdict: `verification-pending`
 

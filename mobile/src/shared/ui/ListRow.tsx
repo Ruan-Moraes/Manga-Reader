@@ -80,7 +80,9 @@ export function ListRow({
                 gap: icon ? metrics.rhythm.itemGap : spacing.md,
                 minHeight: rowHeight,
                 padding: spacing.md,
-                paddingRight: trailing || onPress || loading ? spacing.md + 24 : spacing.md,
+                // Kit SettingsRow: 12 vertical com ícone (altura 64); sem chevron na linha de perigo.
+                paddingVertical: icon ? metrics.rhythm.itemGap : spacing.md,
+                paddingRight: trailing || loading || (onPress && tone !== 'danger') ? spacing.md + 24 : spacing.md,
                 position: 'relative',
                 opacity: disabled ? 0.58 : 1,
             }}
@@ -103,16 +105,9 @@ export function ListRow({
                 </View>
             ) : null}
             <View style={{ flex: 1, gap: spacing.xs, minWidth: 0 }}>
-                <View style={{ alignItems: 'center', flexDirection: 'row', gap: spacing.sm }}>
-                    <AppText numberOfLines={2} variant="label" tone={tone === 'danger' ? 'danger' : 'default'} style={{ flex: 1, minWidth: 0 }}>
-                        {title}
-                    </AppText>
-                    {meta && metaPlacement === 'inline' ? (
-                        <AppText numberOfLines={2} variant="caption" tone="muted" style={{ flexShrink: 1, maxWidth: '46%', textAlign: 'right' }}>
-                            {meta}
-                        </AppText>
-                    ) : null}
-                </View>
+                <AppText numberOfLines={2} variant="label" tone={tone === 'danger' ? 'danger' : 'default'}>
+                    {title}
+                </AppText>
                 {description ? (
                     <AppText variant="caption" tone="subtle">
                         {description}
@@ -130,12 +125,18 @@ export function ListRow({
                     </View>
                 ) : null}
             </View>
-            {trailing || onPress || loading ? (
+            {meta && metaPlacement === 'inline' ? (
+                // Kit SettingsRow: valor numa coluna própria, centrado com a seta.
+                <AppText numberOfLines={2} variant="caption" tone="muted" style={{ flexShrink: 1, maxWidth: '40%', textAlign: 'right' }}>
+                    {meta}
+                </AppText>
+            ) : null}
+            {trailing || loading || (onPress && tone !== 'danger') ? (
                 <View style={{ bottom: 0, justifyContent: 'center', position: 'absolute', right: spacing.md, top: 0 }}>
                     {loading ? (
                         <ActivityIndicator color={tokens.accentText} />
                     ) : (
-                        (trailing ?? <Icon name="chevron-forward" color={tokens.accentText} decorative />)
+                        (trailing ?? <Icon name="chevron-forward" size={metrics.icon.md} color={tokens.tertiary} decorative />)
                     )}
                 </View>
             ) : null}

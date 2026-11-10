@@ -95,6 +95,11 @@
         "confirm": "Confirm",
         "removes": "Removes",
         "preserves": "Preserves",
+        "success": {
+            "cache": { "title": "Cache cleared", "description": "Images and regenerable data were removed from this device." },
+            "offline": { "title": "Offline data removed", "description": "Local projects and files were deleted from this device." },
+            "history": { "title": "History cleared", "description": "Read chapters and activities were removed. Your current position was kept." }
+        },
         "storageUsage": "{{size}} in {{scope}}",
         "storageScopes": { "temporaryExports": "temporary exports controlled by the app" },
         "cache": {

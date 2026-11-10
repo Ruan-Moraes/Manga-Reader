@@ -1,6 +1,8 @@
 import { fetch as expoFetch } from 'expo/fetch';
 import { File } from 'expo-file-system';
 
+import { ensureReadableStream } from './webStreams';
+
 const DEFAULT_TIMEOUT_MS = 15_000;
 const DEFAULT_MAX_RESPONSE_BYTES = 64 * 1024;
 
@@ -54,7 +56,7 @@ function validatedOrigin(value: string | undefined): URL {
 }
 
 function safePath(path: string): string {
-    if (!path.startsWith('/v1/') || path.includes('://')) throw new RemoteGatewayTransportError('invalid-origin');
+    if (!/^\/v[12]\//.test(path) || path.includes('://')) throw new RemoteGatewayTransportError('invalid-origin');
 
     return path;
 }
@@ -62,7 +64,7 @@ function safePath(path: string): string {
 function requestUrl(path: string, origin: URL): string {
     const url = new URL(safePath(path), origin);
 
-    if (url.origin !== origin.origin || !url.pathname.startsWith('/v1/')) throw new RemoteGatewayTransportError('invalid-origin');
+    if (url.origin !== origin.origin || !/^\/v[12]\//.test(url.pathname)) throw new RemoteGatewayTransportError('invalid-origin');
 
     return url.toString();
 }
@@ -159,6 +161,7 @@ export function createRemoteGatewayTransport(
         const controlled = requestSignal(externalSignal, timeoutMs);
 
         try {
+            ensureReadableStream();
             const response = await fetcher(requestUrl(path, origin), {
                 ...init,
                 redirect: 'error',

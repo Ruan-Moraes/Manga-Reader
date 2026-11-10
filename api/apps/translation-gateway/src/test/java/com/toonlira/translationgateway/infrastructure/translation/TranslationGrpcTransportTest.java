@@ -116,6 +116,49 @@ class TranslationGrpcTransportTest {
         }
     }
 
+    @Test
+    void permitsExactlyThirtyThousandCodepointsIncludingMarkersAndRejectsTheNextBeforeRpc() throws Exception {
+        try (var server = new FakeTranslationServer(); var adapter = new CloudTranslationAdapter(server.client(DEADLINE), "test-project")) {
+            var regions = IntStream.range(0, 8).mapToObj(index -> new TranslationRequest.Region(UUID.randomUUID(), index,
+                "x".repeat(index == 0 ? 3695 : 3690))).toList();
+            var page = new TranslationRequest(UUID.randomUUID(), new LanguagePair("en", "pt-BR"), regions);
+            var translated = adapter.translate(page);
+            String content = server.lastRequest.getContents(0);
+            assertThat(content.codePointCount(0, content.length())).isEqualTo(30_000);
+            assertThat(server.calls).hasValue(1);
+            assertThat(translated.regions()).extracting(region -> region.translatedText())
+                .containsExactlyElementsOf(regions.stream().map(TranslationRequest.Region::sourceText).toList());
+            var exceeded = new java.util.ArrayList<>(regions);
+            exceeded.set(0, new TranslationRequest.Region(regions.getFirst().id(), 0, regions.getFirst().sourceText() + "x"));
+            assertCode(() -> adapter.translate(new TranslationRequest(page.jobRef(), page.pair(), exceeded)), GatewayErrorCode.TRANSLATION_INVALID_REQUEST);
+            assertThat(server.calls).hasValue(1);
+        }
+    }
+
+    @Test
+    void measuresEscapedHtmlRatherThanOnlyVisibleSourceText() throws Exception {
+        try (var server = new FakeTranslationServer(); var adapter = new CloudTranslationAdapter(server.client(DEADLINE), "test-project")) {
+            var regions = IntStream.range(0, 8).mapToObj(index -> new TranslationRequest.Region(UUID.randomUUID(), index, "&".repeat(750))).toList();
+            assertThat(regions.stream().mapToInt(region -> region.sourceText().length()).sum()).isEqualTo(6000);
+            assertCode(() -> adapter.translate(new TranslationRequest(UUID.randomUUID(), new LanguagePair("en", "pt-BR"), regions)),
+                GatewayErrorCode.TRANSLATION_INVALID_REQUEST);
+            assertThat(server.calls).hasValue(0);
+        }
+    }
+
+    @Test
+    void countsSupplementaryUnicodeAsCodepointsWithoutDiscardingText() throws Exception {
+        try (var server = new FakeTranslationServer(); var adapter = new CloudTranslationAdapter(server.client(DEADLINE), "test-project")) {
+            var regions = IntStream.range(0, 8).mapToObj(index -> new TranslationRequest.Region(UUID.randomUUID(), index, "😀".repeat(1900))).toList();
+            var translated = adapter.translate(new TranslationRequest(UUID.randomUUID(), new LanguagePair("en", "pt-BR"), regions));
+            String content = server.lastRequest.getContents(0);
+            assertThat(content.length()).isGreaterThan(30_000);
+            assertThat(content.codePointCount(0, content.length())).isLessThan(30_000);
+            assertThat(translated.regions()).extracting(region -> region.translatedText()).containsOnly("😀".repeat(1900));
+            assertThat(server.calls).hasValue(1);
+        }
+    }
+
     private static TranslationRequest request(String target) {
         return new TranslationRequest(UUID.randomUUID(), new LanguagePair("en", target), List.of(
             new TranslationRequest.Region(UUID.randomUUID(), 0, "first <opaque> & " + SECRET),

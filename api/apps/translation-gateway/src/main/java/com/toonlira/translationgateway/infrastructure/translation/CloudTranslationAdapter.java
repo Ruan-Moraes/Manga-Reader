@@ -18,7 +18,7 @@ import java.util.regex.Pattern;
 /** One billable call for one whole page; malformed responses never become partial translations. */
 public final class CloudTranslationAdapter implements TranslationPort, AutoCloseable {
     static final String ENDPOINT = "translate.googleapis.com:443";
-    private static final Pattern PROJECT = Pattern.compile("[a-z][a-z0-9-]{4,28}[a-z0-9]");
+    private static final Pattern PROJECT = Pattern.compile("(?:[a-z][a-z0-9-]{4,28}[a-z0-9]|[1-9][0-9]{0,19})");
 
     private final TranslationServiceClient client;
     private final String parent;

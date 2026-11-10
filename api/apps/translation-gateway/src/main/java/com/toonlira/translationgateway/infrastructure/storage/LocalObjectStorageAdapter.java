@@ -33,21 +33,8 @@ public class LocalObjectStorageAdapter implements ObjectStoragePort {
 
     @Override
     public void store(String objectKey, Path source, String mimeType, String sha256, Instant createdAt) {
-        try { OriginalObjectKey.validateForStore(objectKey, createdAt); ResultObjectKey.validateForStore(objectKey, createdAt); }
-        catch (IllegalArgumentException invalid) { throw new GatewayException(STORAGE_UNAVAILABLE, 503, true); }
-        var target = resolve(objectKey);
-        try {
-            Files.createDirectories(target.getParent());
-            Files.copy(source, target);
-            try {
-                Files.setPosixFilePermissions(target, Set.of(PosixFilePermission.OWNER_READ, PosixFilePermission.OWNER_WRITE));
-            } catch (UnsupportedOperationException ignored) { }
-            Files.setLastModifiedTime(target, FileTime.from(createdAt));
-        } catch (FileAlreadyExistsException conflict) {
-            throw new GatewayException(STORAGE_UNAVAILABLE, 503, true);
-        } catch (IOException error) {
-            throw new GatewayException(STORAGE_UNAVAILABLE, 503, true);
-        }
+        // Retained read/delete support is for retiring pre-volatile objects only.
+        throw new GatewayException(STORAGE_UNAVAILABLE, 410, false);
     }
 
     @Override

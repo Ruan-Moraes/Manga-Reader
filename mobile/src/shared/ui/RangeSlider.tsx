@@ -7,6 +7,7 @@ import { scheduleOnRN } from 'react-native-worklets';
 import { useTheme } from '@/shared/theme';
 
 import { AppText } from './AppText';
+import { HelpTooltip } from './HelpTooltip';
 
 export const RANGE_SLIDER_THUMB_SIZE = 24;
 export const RANGE_SLIDER_THUMB_RADIUS = RANGE_SLIDER_THUMB_SIZE / 2;
@@ -14,6 +15,8 @@ export const RANGE_SLIDER_THUMB_RADIUS = RANGE_SLIDER_THUMB_SIZE / 2;
 interface RangeSliderProps {
     label: string;
     description?: string;
+    /** "?" ao lado do rótulo que abre um balão com a explicação (062). */
+    help?: { label: string; description: string };
     value: number;
     minimum: number;
     maximum: number;
@@ -57,6 +60,7 @@ export function resolveRangeSliderThumbPosition(value: number, trackWidth: numbe
 export function RangeSlider({
     label,
     description,
+    help,
     value,
     minimum,
     maximum,
@@ -349,7 +353,10 @@ export function RangeSlider({
         <View style={{ gap: spacing.sm, opacity: disabled ? 0.5 : 1 }}>
             <View style={{ alignItems: 'center', flexDirection: 'row', flexWrap: 'wrap', gap: spacing.md }}>
                 <View style={{ flex: 1, gap: spacing.xs }}>
-                    <AppText variant="label">{label}</AppText>
+                    <View testID="range-slider-label-row" style={{ alignItems: 'center', flexDirection: 'row', gap: spacing.xs }}>
+                        <AppText variant="label">{label}</AppText>
+                        {help ? <HelpTooltip label={help.label} description={help.description} /> : null}
+                    </View>
                     {description ? (
                         <AppText variant="caption" tone="muted">
                             {description}

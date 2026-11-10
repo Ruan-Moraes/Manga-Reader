@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { normalizeReaderSettings, ReaderGestureControls, selectableQualities } from '@/features/configure-chapter-reader';
+import { normalizeReaderSettings, ReaderGestureControls } from '@/features/configure-chapter-reader';
 import { TextReaderControls } from '@/features/configure-text-reader';
 import { SettingsSyncStatus, useSettingsStore } from '@/features/manage-settings';
 import { navigateBackOrReplace, ROUTES } from '@/shared/navigation';
-import { BottomSheet, Button, FormSection, type IconName, ListRow, ScreenScaffold } from '@/shared/ui';
+import { BottomSheet, Button, Card, type IconName, ListRow, ScreenScaffold } from '@/shared/ui';
 import { ReaderPreferencesSection } from '@/widgets/chapter-reader';
 
 type ReaderSheet = 'navigation' | 'image' | 'behavior' | 'gestures' | 'text';
@@ -18,7 +18,6 @@ const SHEET_ICONS: Record<ReaderSheet, IconName> = {
     text: 'text-outline',
 };
 const SHEETS: readonly ReaderSheet[] = ['navigation', 'image', 'behavior', 'gestures', 'text'];
-const SETTINGS_PAGE_CAPABILITIES = { low: false, medium: false, high: false };
 
 export function SettingsReaderPage() {
     const { t } = useTranslation('settingsNavigation');
@@ -37,22 +36,16 @@ export function SettingsReaderPage() {
 
     const [openSheet, setOpenSheet] = useState<ReaderSheet | null>(null);
 
-    const qualities = selectableQualities(SETTINGS_PAGE_CAPABILITIES);
-    const quality = qualities.includes(value.quality) ? value.quality : 'AUTO';
-
     const updateReader = (patch: Parameters<typeof normalizeReaderSettings>[0]) =>
         void updateSettings(current => ({ ...current, reader: normalizeReaderSettings(patch, current) }), 'reader');
 
-    const sheetCopy: Record<ReaderSheet, { title: string; description: string; value?: string }> = {
-        navigation: {
-            title: tr('settings.sections.navigation.title'),
-            description: tr('settings.sections.navigation.description'),
-            value: tr(`options.${value.mode}`),
-        },
-        image: { title: tr('settings.sections.image.title'), description: tr('settings.sections.image.description'), value: tr(`options.${quality}`) },
+    // Linhas só com título, descrição e seta (pedido de 2026-11-09): nenhum valor ao lado da seta.
+    const sheetCopy: Record<ReaderSheet, { title: string; description: string }> = {
+        navigation: { title: tr('settings.sections.navigation.title'), description: tr('settings.sections.navigation.description') },
+        image: { title: tr('settings.sections.image.title'), description: tr('settings.sections.image.description') },
         behavior: { title: tr('settings.sections.behavior.title'), description: tr('settings.sections.behavior.description') },
         gestures: { title: tr('gestures.title'), description: tr('gestures.description') },
-        text: { title: tr('text.title'), description: tr('text.description'), value: tr('text.sizeValue', { size: textReader.fontSize }) },
+        text: { title: tr('text.title'), description: tr('text.description') },
     };
 
     const renderSheetContent = (sheet: ReaderSheet) => {
@@ -94,21 +87,20 @@ export function SettingsReaderPage() {
             onBack={() => navigateBackOrReplace(ROUTES.SETTINGS.INDEX)}
             title={t('sections.reader.editorialTitle')}
         >
-            <FormSection title={t('sections.reader.title')} description={t('readerSheets.groupDescription')} contentPadding="none">
+            {/* Kit: o grupo vem direto abaixo do topo, sem repetir "Leitor" como seção. */}
+            <Card padded={false} style={{ overflow: 'hidden' }}>
                 {SHEETS.map((sheet, index) => (
                     <ListRow
                         key={sheet}
-                        accessibilityLabel={sheetCopy[sheet].value ? `${sheetCopy[sheet].title}: ${sheetCopy[sheet].value}` : sheetCopy[sheet].title}
                         description={sheetCopy[sheet].description}
                         icon={SHEET_ICONS[sheet]}
-                        meta={sheetCopy[sheet].value}
                         onPress={() => setOpenSheet(sheet)}
                         showDivider={index < SHEETS.length - 1}
                         title={sheetCopy[sheet].title}
                         variant="plain"
                     />
                 ))}
-            </FormSection>
+            </Card>
             <SettingsSyncStatus group="reader" />
             <BottomSheet
                 visible={openSheet !== null}
@@ -118,7 +110,7 @@ export function SettingsReaderPage() {
                 description={openSheet ? sheetCopy[openSheet].description : undefined}
                 footer={
                     openSheet === 'text' ? (
-                        <Button variant="ghost" onPress={() => void resetTextReader()}>
+                        <Button size="compact" variant="ghost" onPress={() => void resetTextReader()}>
                             {tr('text.reset')}
                         </Button>
                     ) : undefined

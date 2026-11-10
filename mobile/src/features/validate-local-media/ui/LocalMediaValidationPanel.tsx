@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { isMediaValidationReady, type LocalMediaImportDraft, type LocalMediaImportItem } from '@/entities/local-media-import';
 import { MEDIA_VALIDATION_POLICY_VERSION } from '@/shared/media-inspection';
 import { useResponsiveLayout, useTheme } from '@/shared/theme';
-import { AppText, Button, Card, MediaPreviewSheet, SegmentedControl } from '@/shared/ui';
+import { AppText, Button, Card, MediaPreviewSheet, PrimaryAction, SegmentedControl } from '@/shared/ui';
 
 import { useValidateLocalMedia } from '../model/useValidateLocalMedia';
 import { type ValidateLocalMediaController, validateLocalMediaController } from '../model/validateLocalMedia';
@@ -21,6 +21,12 @@ interface Props {
     onContinue?: () => void;
     controller?: ValidateLocalMediaController;
     processingIssues?: ReadonlyMap<string, ValidationPresentationIssue>;
+    /** Starts validation once when shown with nothing validated yet (056: validation is no longer a step). */
+    autoStart?: boolean;
+    /** Shows only the status and the primary action while no page has an issue; the gallery appears to fix pages (056). */
+    issuesOnly?: boolean;
+    /** Removes an invalid page from the selection (the host owns page editing); offered beside "replace". */
+    onRemoveItem?: (item: LocalMediaImportItem) => Promise<void>;
 }
 
 interface ThumbnailProps {
@@ -155,7 +161,16 @@ function ValidationThumbnailCard({ item, total, uri, issue, replacing, disabled,
     );
 }
 
-export function LocalMediaValidationPanel({ draft, onDraftChange, onContinue, controller, processingIssues }: Props) {
+export function LocalMediaValidationPanel({
+    draft,
+    onDraftChange,
+    onContinue,
+    controller,
+    processingIssues,
+    autoStart = false,
+    issuesOnly = false,
+    onRemoveItem,
+}: Props) {
     const { t } = useTranslation('launcher');
     const { spacing, tokens } = useTheme();
     const responsive = useResponsiveLayout();
@@ -164,6 +179,7 @@ export function LocalMediaValidationPanel({ draft, onDraftChange, onContinue, co
     const previousIssueCount = useRef(0);
     const [filter, setFilter] = useState<ValidationFilter>('all');
     const [detailItem, setDetailItem] = useState<LocalMediaImportItem | null>(null);
+    const [removing, setRemoving] = useState(false);
 
     const issueFor = (item: LocalMediaImportItem) => validationIssueFor(item, processingIssues?.get(item.id));
     const issues = draft.items.filter(item => issueFor(item));
@@ -183,6 +199,13 @@ export function LocalMediaValidationPanel({ draft, onDraftChange, onContinue, co
         previousIssueCount.current = issues.length;
     }, [issues.length]);
 
+    const autoStarted = useRef(false);
+    useEffect(() => {
+        if (!autoStart || autoStarted.current || actions.busy || ready || issues.length > 0) return;
+        autoStarted.current = true;
+        void actions.validate();
+    }, [actions, autoStart, issues.length, ready]);
+
     const focusFirstIssue = () => {
         setFilter('issues');
         requestAnimationFrame(() => listRef.current?.scrollToOffset({ animated: true, offset: 0 }));
@@ -196,6 +219,38 @@ export function LocalMediaValidationPanel({ draft, onDraftChange, onContinue, co
     };
 
     const detailMessageKey = detailIssue ? `offline.validation.issueMessages.${detailIssue.code}` : null;
+
+    const primaryAction = (
+        <PrimaryAction>
+            {actions.busy ? (
+                <Button disabled leading={<ActivityIndicator color={tokens.muted} size="small" />}>
+                    {t('offline.validation.progress', { completed: displayedProgress.completed, total: displayedProgress.total })}
+                </Button>
+            ) : issues.length ? (
+                <Button onPress={focusFirstIssue}>{t('offline.validation.showIssues', { count: issues.length })}</Button>
+            ) : ready ? (
+                <Button onPress={onContinue}>{t('offline.validation.continue')}</Button>
+            ) : (
+                <Button onPress={() => void actions.validate()}>{t('offline.validation.action')}</Button>
+            )}
+        </PrimaryAction>
+    );
+
+    if (issuesOnly && issues.length === 0) {
+        return (
+            <View testID="local-media-validation" style={{ gap: spacing.sm }}>
+                {actions.error ? (
+                    <View accessibilityRole="alert" style={{ gap: spacing.sm }}>
+                        <AppText tone="danger">{t(`offline.validation.errors.${actions.error}`)}</AppText>
+                        <Button variant="outline" disabled={actions.busy} onPress={() => void actions.retry()}>
+                            {t('offline.validation.retry')}
+                        </Button>
+                    </View>
+                ) : null}
+                {primaryAction}
+            </View>
+        );
+    }
 
     return (
         <View testID="local-media-validation" style={{ flex: 1, gap: spacing.md, minHeight: 0 }}>
@@ -286,17 +341,19 @@ export function LocalMediaValidationPanel({ draft, onDraftChange, onContinue, co
             />
 
             <View style={{ borderTopColor: tokens.separator, borderTopWidth: 1, gap: spacing.sm, paddingTop: spacing.md }}>
-                {actions.busy ? (
-                    <Button disabled leading={<ActivityIndicator color={tokens.muted} size="small" />}>
-                        {t('offline.validation.progress', { completed: displayedProgress.completed, total: displayedProgress.total })}
-                    </Button>
-                ) : issues.length ? (
-                    <Button onPress={focusFirstIssue}>{t('offline.validation.fixIssues', { count: issues.length })}</Button>
-                ) : ready ? (
-                    <Button onPress={onContinue}>{t('offline.validation.continue')}</Button>
-                ) : (
-                    <Button onPress={() => void actions.validate()}>{t('offline.validation.action')}</Button>
-                )}
+                <PrimaryAction>
+                    {actions.busy ? (
+                        <Button disabled leading={<ActivityIndicator color={tokens.muted} size="small" />}>
+                            {t('offline.validation.progress', { completed: displayedProgress.completed, total: displayedProgress.total })}
+                        </Button>
+                    ) : issues.length ? (
+                        <Button onPress={focusFirstIssue}>{t('offline.validation.fixIssues', { count: issues.length })}</Button>
+                    ) : ready ? (
+                        <Button onPress={onContinue}>{t('offline.validation.continue')}</Button>
+                    ) : (
+                        <Button onPress={() => void actions.validate()}>{t('offline.validation.action')}</Button>
+                    )}
+                </PrimaryAction>
             </View>
 
             <MediaPreviewSheet
@@ -327,14 +384,33 @@ export function LocalMediaValidationPanel({ draft, onDraftChange, onContinue, co
                 }
                 actions={
                     detailItem && detailIssue ? (
-                        <Button
-                            loading={actions.replacingItemId === detailItem.id}
-                            disabled={actions.busy}
-                            onPress={() => void replaceItem(detailItem)}
-                            accessibilityLabel={t('offline.validation.replacePageLabel', { page: detailItem.position + 1 })}
-                        >
-                            {t('offline.validation.replace')}
-                        </Button>
+                        <View style={{ gap: spacing.sm }}>
+                            <Button
+                                loading={actions.replacingItemId === detailItem.id}
+                                disabled={actions.busy || removing}
+                                onPress={() => void replaceItem(detailItem)}
+                                accessibilityLabel={t('offline.validation.replacePageLabel', { page: detailItem.position + 1 })}
+                            >
+                                {t('offline.validation.replace')}
+                            </Button>
+                            {onRemoveItem ? (
+                                <Button
+                                    variant="outline"
+                                    tone="danger"
+                                    loading={removing}
+                                    disabled={actions.busy}
+                                    onPress={() => {
+                                        setRemoving(true);
+                                        void onRemoveItem(detailItem)
+                                            .then(() => setDetailItem(null))
+                                            .finally(() => setRemoving(false));
+                                    }}
+                                    accessibilityLabel={t('offline.validation.removePageLabel', { page: detailItem.position + 1 })}
+                                >
+                                    {t('offline.validation.removePage')}
+                                </Button>
+                            ) : null}
+                        </View>
                     ) : undefined
                 }
             />

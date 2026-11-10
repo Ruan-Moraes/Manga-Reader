@@ -27,10 +27,9 @@ Implementado:
 - preparação local de projeto privado com páginas ordenadas, snapshot validado,
   SQLite v6, estados canônicos e restauração determinística validada em Android
   físico;
-- fundação do processamento remoto com SQLite v7, capabilities validadas,
-  consentimento contextual trilíngue, identidade anônima no SecureStore,
-  submissão idempotente da primeira página, retomada e cancelamento; o upload
-  permanece fail-closed enquanto o gateway estiver desabilitado;
+- fundação do processamento remoto com tentativas e consentimento versionado
+  em SQLite, capabilities validadas e identidade anônima no SecureStore;
+  integração volátil em verificação, desabilitada enquanto o gateway não for admitido;
 - simulador de tradução estritamente de desenvolvimento, com resultados e
   regiões marcados permanentemente como demonstração e sem chamadas remotas;
 - controles do leitor sobrepostos e compactos, toque/deslize configuráveis e navegação lateral opcional nos modos paginado/duplo; controles visíveis em repouso são uma opção acessível e ocultam durante a rolagem;
@@ -39,9 +38,10 @@ Implementado:
   vertical em largura integral, modos paginado/duplo preservados, overlay
   demonstrativo sobre a imagem, comparação global e retomada offline;
 - preview textual virtualizado de novels, disponível somente em desenvolvimento;
-- SQLite v9 para resultados, regiões, progresso e metadados opcionais de
-  versão/modelo da tradução, com migração aditiva de v8 e integridade por FK/hash,
-  reconciliação de arquivos e backup automático Android desabilitado;
+- SQLite v10 preserva resultados, regiões, progresso e metadados de tradução
+  da v9 e adiciona o último estado de recibo volátil conhecido, com migrations
+  aditivas, integridade por FK/hash, reconciliação de arquivos e backup
+  automático Android desabilitado;
 - migração SQLite v1/v2/v3→v4 preservando drafts, itens, ordem, idiomas e resultados por página;
 - draft ativo durável com metadados em SQLite e arquivos no diretório privado do app;
 - cancelamento, substituição atômica, recuperação do resultado pendente Android e erros localizados, sem tradução simulada;
@@ -57,36 +57,21 @@ Implementado:
 - TanStack Query e componentes básicos reutilizáveis;
 - testes automatizados para os riscos centrais de fundação, auth e navegação.
 
-Ainda não implementado:
+Em verificação ou ainda não implementado:
 
-- fluxo real completo OCR→tradução→renderização→leitor no aplicativo. O gateway
-  OCR da `MOB-FEAT-018` já foi executado e auditado, com status `verification-pending`
-  por qualidade independente e operação ainda abertas. A 019 está em verificação
-  com contratos/validadores, adapter e worker Java testados offline e fundação
-  local de metadados em SQLite, pares operacionais nas capabilities e parser
-  estrito do manifesto traduzido `1.0` vinculado ao OCR. A entrada de bytes já
-  adquiridos verifica SHA-256, teto de 4 MiB e UTF-8 estrito antes do JSON;
-  exige hash esperado de metadados confiáveis. Não faz download, gravação
-  remota ou ACK. Consulta/cancelamento validam vínculo de job/versão e aceitam
-  erros sanitizados de OCR/tradução sem registrar conteúdo do provider.
-  O mapper local associa traduções às regiões OCR em snapshots imutáveis,
-  preservando texto, ordem, vértices e metadados, sem gravar resultado ou
-  calcular overflow/`READY`.
-  O adapter de escrita dessas regiões está preparado para a transação futura
-  de aquisição: exige pai remoto/job/par corretos, valida o manifesto e grava
-  texto/metadados/vértices em lotes limitados. Não possui chamador de produção,
-  não cria resultado pai, não altera estado e não envia ACK.
-  A aceitação server-side do ACK e a limpeza durável estão codificadas;
-  não produzem `READY` real nem substituem download/commit/ACK do aplicativo.
-  Ver a [evidência da retenção](docs/specs/features/MOB-FEAT-019-contextual-language-pair-translation/evidence/translation-result-ack-2026-10-03.md).
-  Execução real de tradução,
-  integração final ainda não foram implementadas. O renderer Java produz WebP
-  e manifesto privados em testes do worker local opt-in, com OCR/tradução falsos;
-  A expiração consultável/cleanup durável e entrega privada de READY nas consultas
-  estão codificadas/testadas offline. O parser valida os metadados limitados,
-  sem baixar arquivos ou persistir URLs; assinatura continua disabled por padrão
-  e a aquisição mobile permanece pendente. O simulador
-  local não implementa nem desbloqueia esses contratos;
+- validação completa do fluxo OCR→tradução→renderização→leitor com a nova resposta
+  direta. A [DEC-008](docs/decisions/MOB-DEC-008-volatile-processing.md), aprovada
+  em 2026-11-01, exige processamento de conteúdo em memória no servidor e
+  armazenamento privado no aparelho. A 017 integra consentimento versionado,
+  submissão binária, recibos sem conteúdo, interrupção local e ambiguidade sem
+  reenvio automático. As revisões técnicas
+  017–019 estão em verificação, com qualidade humana e admissão abertas. As
+  etapas 020/021 têm gates abertos após essa revisão; a aquisição direta e o
+  commit local da 021 estão tecnicamente prontos em verification-pending,
+  com ciclo nativo/offline ainda sem prova. A 020 continua em execução, com
+  provas locais da candidata6 e admissão AMD64 pendente. Evidências de aquisição
+  pelo transporte anterior são históricas. O resultado só pode ser
+  `READY` após validação e commit local. O simulador não libera esse fluxo;
 - catálogo, detalhes de obras e biblioteca sincronizada com conta;
 - fórum, perfil e outras tabs com dados;
 - testes E2E;
@@ -184,6 +169,11 @@ pnpm android
 pnpm ios       # requer macOS/Xcode
 pnpm web
 ```
+
+O workflow CNG mantém `ios/` e `android/` gerados somente no dispositivo local,
+fora do Git, da cobertura SDD, do ESLint e do Prettier. Esses arquivos não devem
+ser apagados para executar os gates. Código próprio permanece em `src/`, com
+classificação individual obrigatória no manifesto de cobertura.
 
 ## Configuração da API
 
@@ -285,34 +275,12 @@ login obrigatório, dependência da Core ou placeholders em requisitos futuros.
 
 1. **Entrada local:** revisão, ordenação, idiomas independentes e validação da mídia.
 2. **Prova ponta a ponta:** consentimento remoto, gateway separado, OCR,
-   tradução, renderização e reader local. `MOB-FEAT-017..021` estão aprovadas;
-   017/018/019 estão em verificação; na 019, as tasks técnicas foram auditadas e
-   a TASK-006 de qualidade/operação permanece aberta. A 020 está `in-progress/open`
-   com contratos/serialização Java, fontes verificadas e composição raster
-   e renderer integrado ao worker local opt-in, com expiração consultável de READY.
-   URLs/metadados estão integrados às consultas e ao parser, sem download no app.
-   Pacote local fixado/relocável e opt-in FFM supervisionado foram testados em Linux;
-   a filha selecionada tem limites self-only antes do decode, sem admitir
-   memória agregada ou resolver o teto cloud atual de 1 GiB;
-   a prova Spring/SQL/storage com providers falsos está
-   [registrada](docs/specs/features/MOB-FEAT-020-visual-translation-rendering/evidence/rendering-worker-linux-2026-10-07.md):
-   máxima com texto excedeu o candidato local de 2 GiB; diagnóstico a 4 GiB
-   concluiu o fluxo, sem admitir recursos de produção.
-   A [parcela x86_64](docs/specs/features/MOB-FEAT-020-visual-translation-rendering/evidence/rendering-amd64-2026-10-07.md)
-   admite pacotes/ELF vinculados ao runtime e foi executada sob emulação local,
-   com worker/banco/storage reais e providers falsos; não é aprovação cloud ou
-   solução de OOM compartilhado.
-   A [consolidação corrente](docs/specs/features/MOB-FEAT-020-visual-translation-rendering/evidence/runtime-consolidation-2026-10-11.md)
-   distingue aquelas fotografias da candidata local Java 25/Boot 4, com matriz
-   de formatos/dimensões, SDKs loopback, layout experimental e recuperação já
-   executados. Entrega/retenção privadas têm código e provas locais; segurança
-   residual, distribuição/admissão operacional, revisão adequada e profiling
-   no ambiente alvo permanecem pendentes.
-   A [consolidação de 2026-10-12](docs/specs/features/MOB-FEAT-020-visual-translation-rendering/evidence/rendering-consolidation-2026-10-12.md)
-   registra a correção do cleanup por referência e a repetição da matriz no
-   pacote novo, separada da galeria sintética e das pendências operacionais.
-   a 021 continua bloqueada. Não há tradução
-   real integrada ao aplicativo.
+   tradução, renderização e reader local. O contrato vigente 017–021 é volátil:
+   nenhum conteúdo persistido no servidor, entrega na mesma sessão e validação/
+   commit no aparelho antes da leitura. 017–019 e 021 estão em verification-pending;
+   020 está in-progress e os gates de 020/021 estão abertos. As revisões e o
+   [registry](docs/specs/registry.md) identificam
+   as provas atuais e as pendências, sem herdar aceites do transporte anterior.
 3. **Continuidade:** processamento incremental e retry; biblioteca e retomada
    offline locais estão implementadas com verificação física pendente.
 4. **Qualidade e proteção:** edição, benchmark, identidade anônima, quotas e controle de abuso.

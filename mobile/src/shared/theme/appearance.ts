@@ -13,7 +13,7 @@ export type SpacingRole = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl';
 export type TypographyScale = Record<TypographyRole, number>;
 export type SpacingScale = Record<SpacingRole, number>;
 export type RadiusRole = 'sm' | 'control' | 'card' | 'feature' | 'pill';
-export type TypographyStyleRole = 'display' | 'title' | 'section' | 'body' | 'label' | 'caption' | 'eyebrow' | 'button';
+export type TypographyStyleRole = 'display' | 'title' | 'section' | 'heading' | 'body' | 'label' | 'caption' | 'eyebrow' | 'button';
 
 export type RadiusScale = Record<RadiusRole, number>;
 export interface LayoutScale {
@@ -106,6 +106,8 @@ export function createTypographyStyles(scale: TypographyScale): TypographyStyleS
         display: { fontFamily: FONTS.extrabold, fontSize: scale.h1, lineHeight: scale.h1 * 1.12, letterSpacing: -0.7 },
         title: { fontFamily: FONTS.bold, fontSize: scale.h2, lineHeight: scale.h2 * 1.18, letterSpacing: -0.35 },
         section: { fontFamily: FONTS.bold, fontSize: scale.h3, lineHeight: scale.h3 * 1.25, letterSpacing: -0.15 },
+        // Screen title inside a navigation bar (header "Entrar", reader chapter title).
+        heading: { fontFamily: FONTS.bold, fontSize: scale.h4 + 1, lineHeight: (scale.h4 + 1) * 1.3, letterSpacing: -0.1 },
         body: { fontFamily: FONTS.regular, fontSize: scale.body, lineHeight: scale.body * 1.5, letterSpacing: 0 },
         label: { fontFamily: FONTS.bold, fontSize: scale.body, lineHeight: scale.body * 1.35, letterSpacing: 0 },
         caption: { fontFamily: FONTS.regular, fontSize: scale.small, lineHeight: scale.small * 1.45, letterSpacing: 0 },

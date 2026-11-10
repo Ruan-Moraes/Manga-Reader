@@ -8,14 +8,27 @@ import { Icon, type IconName } from './Icon';
 interface IconButtonProps extends Omit<PressableProps, 'children' | 'style'> {
     icon: IconName;
     accessibilityLabel: string;
-    tone?: 'accent' | 'danger' | 'inverse';
+    /** `default` uses the text color (reader bars, 063/D20). */
+    tone?: 'accent' | 'danger' | 'inverse' | 'default';
+    iconSize?: number;
+    /** Sem fundo ao pressionar (ex.: "⋯" dos cartões); o retorno vem pela opacidade. */
+    bare?: boolean;
     surface?: 'transparent' | 'overlay' | 'surface';
 }
 
-export function IconButton({ icon, accessibilityLabel, tone = 'accent', surface = 'transparent', disabled, ...props }: IconButtonProps) {
+export function IconButton({
+    icon,
+    accessibilityLabel,
+    tone = 'accent',
+    iconSize = 20,
+    surface = 'transparent',
+    bare = false,
+    disabled,
+    ...props
+}: IconButtonProps) {
     const { minimumTouchTarget, radii, tokens } = useTheme();
 
-    const color = tone === 'danger' ? tokens.danger : tone === 'inverse' ? tokens.inverseText : tokens.accentText;
+    const color = tone === 'danger' ? tokens.danger : tone === 'inverse' ? tokens.inverseText : tone === 'default' ? tokens.text : tokens.accentText;
 
     const [focused, setFocused] = useState(false);
     const [pressed, setPressed] = useState(false);
@@ -46,23 +59,18 @@ export function IconButton({ icon, accessibilityLabel, tone = 'accent', surface 
             hitSlop={4}
             style={{
                 alignItems: 'center',
-                backgroundColor: pressed
-                    ? tokens.surfacePressed
-                    : surface === 'overlay'
-                      ? tokens.overlay
-                      : surface === 'surface'
-                        ? tokens.surface
-                        : 'transparent',
+                backgroundColor:
+                    pressed && !bare ? tokens.surfacePressed : surface === 'overlay' ? tokens.overlay : surface === 'surface' ? tokens.surface : 'transparent',
                 borderColor: focused ? tokens.focus : surface === 'surface' ? tokens.separator : 'transparent',
                 borderRadius: radii.control,
                 borderWidth: focused ? 2 : surface === 'surface' ? 1 : 0,
                 justifyContent: 'center',
                 minHeight: minimumTouchTarget,
                 minWidth: minimumTouchTarget,
-                opacity: disabled ? 0.56 : 1,
+                opacity: disabled ? 0.56 : bare && pressed ? 0.6 : 1,
             }}
         >
-            <Icon name={icon} size={20} color={color} />
+            <Icon name={icon} size={iconSize} color={color} />
         </Pressable>
     );
 }

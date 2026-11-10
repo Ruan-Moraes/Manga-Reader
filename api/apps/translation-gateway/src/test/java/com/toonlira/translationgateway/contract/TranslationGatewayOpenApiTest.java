@@ -11,157 +11,117 @@ import org.junit.jupiter.api.Test;
 import org.yaml.snakeyaml.Yaml;
 
 class TranslationGatewayOpenApiTest {
+    private static final Path CONTRACT = Path.of("openapi", "translation-gateway-v2.yaml");
+    private static final Path IDENTITY = Path.of("openapi", "translation-gateway-v1.yaml");
 
-    private static final Path CONTRACT_PATH = Path.of("openapi", "translation-gateway-v1.yaml");
-
-    @Test
-    void shouldExposeRecoveryAndKeepSubmissionPayloadMinimal() throws IOException {
-        var contract = loadContract();
+    @Test void publishesDirectBinaryExecutionAndMetadataOnlyRecovery() throws IOException {
+        var contract = load(CONTRACT);
         var paths = map(contract.get("paths"));
-
-        assertThat(paths).containsKeys(
-            "/v1/capabilities",
-            "/v1/anonymous/installations",
-            "/v1/anonymous/sessions",
-            "/v1/page-jobs",
-            "/v1/page-jobs/by-idempotency/{idempotencyKey}",
-            "/v1/page-jobs/{jobRef}",
-            "/v1/page-jobs/{jobRef}/cancel",
-            "/v1/page-jobs/{jobRef}/ack"
-        );
-
-        var pageSubmission = schema(contract, "PageSubmission");
-        var properties = map(pageSubmission.get("properties"));
-        assertThat(properties).containsKeys(
-            "page",
-            "mimeType",
-            "byteSize",
-            "widthPx",
-            "heightPx",
-            "sourceLanguage",
-            "targetLanguage",
-            "disclosureVersion",
-            "attemptRef"
-        );
-        assertThat(properties).doesNotContainKeys("filename", "uri", "path", "projectId", "pageId", "accountId", "provider");
-
-        var idempotencyHeader = parameter(contract, "IdempotencyKey");
-        assertThat(idempotencyHeader).containsEntry("in", "header").containsEntry("required", true);
-        assertThat(map(idempotencyHeader.get("schema"))).containsEntry("format", "uuid");
+        assertThat(paths).containsOnlyKeys("/v1/anonymous/installations", "/v1/anonymous/sessions", "/v2/capabilities",
+            "/v2/page-translations", "/v2/page-translations/by-idempotency/{key}");
+        var post = map(map(paths.get("/v2/page-translations")).get("post"));
+        assertThat(map(map(post.get("requestBody")).get("content")))
+            .containsOnlyKeys("image/jpeg", "image/png", "image/webp");
+        var result = map(map(map(post.get("responses")).get("200")).get("content"));
+        assertThat(result).containsOnlyKeys("application/vnd.toonlira.translation+binary");
+        var key = map(map(map(contract.get("components")).get("parameters")).get("IdempotencyKey"));
+        assertThat(key).containsEntry("in", "header").containsEntry("required", true);
+        assertThat(map(key.get("schema")).get("pattern").toString()).contains("-7", "89abAB");
+        var receipt = schema(contract, "Receipt");
+        assertThat(receipt).containsEntry("additionalProperties", false);
+        assertThat(map(receipt.get("properties"))).containsOnlyKeys("operationRef", "status", "createdAt", "finishedAt", "errorCode");
+        assertThat(map(map(schema(contract, "ReceiptEnvelope").get("properties")).get("contentRecoverable")))
+            .containsEntry("const", false);
+        assertThat(list(schema(contract, "ReceiptStatus").get("enum"))).containsExactly("STARTED", "FINISHED", "FAILED");
     }
 
-    @Test
-    void shouldResolveEveryInternalReference() throws IOException {
-        var contract = loadContract();
-        assertInternalReferencesResolve(contract, contract);
+    @Test void publishesTruthfulVolatileDisclosureAndAbsoluteReceiptValidity() throws IOException {
+        var properties = map(schema(load(CONTRACT), "LegalDisclosure").get("properties"));
+        for (var entry : Map.of("ocrRegion", "us", "translationLocation", "global", "contentProcessing", "in-memory-only",
+            "resultStorage", "user-device", "idempotencyKeyFormat", "uuid-v7").entrySet())
+            assertThat(map(properties.get(entry.getKey()))).containsEntry("const", entry.getValue());
+        assertThat(map(properties.get("sanitizedOperationalLogs"))).containsEntry("const", true);
+        assertThat(map(properties.get("receiptValiditySeconds"))).containsEntry("const", 604800);
+        assertThat(properties).doesNotContainKeys("originalRetentionSeconds", "resultRetentionSeconds", "metadataRetentionDays");
     }
 
-    @Test
-    void shouldPublishExactlyTheApprovedLanguagesAndRemoteStatuses() throws IOException {
-        var contract = loadContract();
-
+    @Test void preservesLimitsLanguagesAndExplicitOperationalPairs() throws IOException {
+        var contract = load(CONTRACT);
         assertThat(list(schema(contract, "TranslationLanguage").get("enum")))
             .containsExactly("ja", "en", "es", "ko", "zh-Hans", "zh-Hant", "pt-BR");
-        assertThat(list(schema(contract, "RemoteJobStatus").get("enum")))
-            .containsExactly("QUEUED", "OCR", "TRANSLATING", "RENDERING", "READY", "FAILED", "CANCEL_PENDING", "CANCELLED", "RESULT_EXPIRED");
-    }
-
-    @Test
-    void shouldDistinguishRegionalOcrFromGlobalTranslation() throws IOException {
-        var disclosure = schema(loadContract(), "LegalDisclosure");
-        var properties = map(disclosure.get("properties"));
-        assertThat(list(disclosure.get("required"))).contains("gatewayRegion", "ocrRegion", "translationLocation")
-            .doesNotContain("processingRegions");
-        assertThat(properties).doesNotContainKey("processingRegions");
-        assertThat(map(properties.get("ocrRegion"))).containsEntry("const", "us");
-        assertThat(map(properties.get("translationLocation"))).containsEntry("const", "global");
-    }
-
-    @Test
-    void shouldAllowAnEmptyOperationalSetOnlyForADisabledGateway() throws IOException {
-        var capabilities = schema(loadContract(), "Capabilities");
-        var pairs = map(map(capabilities.get("properties")).get("supportedPairs"));
+        var limits = map(schema(contract, "MediaLimits").get("properties"));
+        for (var entry : Map.of("maxBytes", 12582912, "maxPixels", 80000000, "maxWidthPx", 12000,
+            "maxHeightPx", 12000, "maxResultBytes", 67108864, "maxManifestBytes", 4194304).entrySet())
+            assertThat(map(limits.get(entry.getKey()))).containsEntry("maximum", entry.getValue());
+        var caps = schema(contract, "Capabilities");
+        var pairs = map(map(caps.get("properties")).get("supportedPairs"));
         assertThat(pairs).containsEntry("minItems", 0).containsEntry("maxItems", 42).containsEntry("uniqueItems", true);
-        var conditional = map(list(capabilities.get("allOf")).iterator().next());
-        assertThat(map(map(map(conditional.get("if")).get("properties")).get("enabled"))).containsEntry("const", true);
-        assertThat(map(map(map(conditional.get("then")).get("properties")).get("supportedPairs"))).containsEntry("minItems", 1);
+        var rule = map(list(caps.get("allOf")).iterator().next());
+        assertThat(map(map(map(rule.get("then")).get("properties")).get("supportedPairs"))).containsEntry("minItems", 1);
     }
 
-    @Test
-    void readyQueriesRequireCompletePrivateArtifactsWithoutChangingRoutesOrVersion() throws IOException {
-        var contract = loadContract();
-        assertThat(map(contract.get("paths"))).hasSize(8);
-        var result = schema(contract, "ReadyResult");
-        assertThat(list(result.get("required"))).containsExactly("manifestVersion", "widthPx", "heightPx", "expiresAt", "image", "manifest");
-        assertThat(map(map(result.get("properties")).get("manifestVersion"))).containsEntry("const", "1.0");
-        var download = schema(contract, "PrivateResultDownload");
-        assertThat(list(download.get("required"))).containsExactly("url", "mimeType", "byteSize", "sha256", "expiresAt");
-        assertThat(download).containsEntry("additionalProperties", false);
-        assertThat(map(map(download.get("properties")).get("url"))).containsEntry("maxLength", 8192);
+    @Test void protectsExecutionAndReceiptsAndForbidsResponseCaching() throws IOException {
+        var paths = map(load(CONTRACT).get("paths"));
+        for (var entry : Map.of("/v2/capabilities", "get", "/v2/page-translations", "post", "/v2/page-translations/by-idempotency/{key}", "get").entrySet()) {
+            var operation = map(map(paths.get(entry.getKey())).get(entry.getValue()));
+            if (!entry.getKey().endsWith("capabilities"))
+                assertThat(map(list(operation.get("security")).iterator().next())).containsKey("anonymousSession");
+            var success = map(map(operation.get("responses")).get("200"));
+            assertThat(map(map(map(success.get("headers")).get("Cache-Control")).get("schema"))).containsEntry("const", "no-store");
+        }
+    }
+
+    @Test void retiredV1ContentRoutesOnlyAdvertiseGoneAndKeepIdentity() throws IOException {
+        var contract = load(IDENTITY);
         var paths = map(contract.get("paths"));
-        for (var path : new String[] {"/v1/page-jobs/{jobRef}", "/v1/page-jobs/by-idempotency/{idempotencyKey}"}) {
-            var responses = map(map(map(paths.get(path)).get("get")).get("responses"));
-            var json = map(map(map(responses.get("200")).get("content")).get("application/json"));
-            assertThat(map(json.get("schema"))).containsEntry("$ref", "#/components/schemas/PageJobQueryEnvelope");
-        }
-        assertThat(list(schema(contract, "PageJobQueryEnvelope").get("allOf"))).hasSize(2);
-    }
-
-    @Test
-    void jobQueriesDoNotCacheAvailabilityAfterAckOrTtl() throws IOException {
-        var paths = map(loadContract().get("paths"));
-        for (var path : new String[] {"/v1/page-jobs/{jobRef}", "/v1/page-jobs/by-idempotency/{idempotencyKey}"}) {
-            var response = map(map(map(paths.get(path)).get("get")).get("responses"));
-            var header = map(map(map(response.get("200")).get("headers")).get("Cache-Control"));
-            assertThat(map(header.get("schema"))).containsEntry("const", "no-store");
-        }
-    }
-
-    private Map<String, Object> loadContract() throws IOException {
-        try (var reader = Files.newBufferedReader(CONTRACT_PATH)) {
-            return map(new Yaml().load(reader));
-        }
-    }
-
-    private Map<String, Object> schema(Map<String, Object> contract, String name) {
-        return map(map(map(contract.get("components")).get("schemas")).get(name));
-    }
-
-    private Map<String, Object> parameter(Map<String, Object> contract, String name) {
-        return map(map(map(contract.get("components")).get("parameters")).get(name));
-    }
-
-    private void assertInternalReferencesResolve(Object node, Map<String, Object> root) {
-        if (node instanceof Map<?, ?> entries) {
-            entries.forEach((key, value) -> {
-                if ("$ref".equals(key) && value instanceof String reference && reference.startsWith("#/")) {
-                    assertThat(resolveReference(root, reference)).as(reference).isNotNull();
-                }
-                assertInternalReferencesResolve(value, root);
+        assertThat(paths).containsKeys("/v1/anonymous/installations", "/v1/anonymous/sessions");
+        paths.forEach((path, value) -> {
+            if (path.startsWith("/v1/anonymous/")) return;
+            map(value).forEach((method, operation) -> {
+                if (method.equals("parameters")) return;
+                var gone = map(operation);
+                assertThat(gone).containsEntry("deprecated", true).doesNotContainKey("requestBody");
+                assertThat(map(gone.get("responses"))).containsOnlyKeys("410");
             });
+        });
+        assertThat(map(map(contract.get("components")).get("schemas")))
+            .doesNotContainKeys("ReadyResult", "PrivateResultDownload", "PageSubmission");
+    }
+
+    @Test void resolvesAllReferencesInBothCurrentContracts() throws IOException {
+        for (var path : new Path[]{CONTRACT, IDENTITY}) assertReferences(load(path), load(path));
+    }
+
+    private Map<String, Object> load(Path path) throws IOException {
+        try (var reader = Files.newBufferedReader(path)) { return map(new Yaml().load(reader)); }
+    }
+    private Map<String, Object> schema(Map<String, Object> root, String name) {
+        return map(map(map(root.get("components")).get("schemas")).get(name));
+    }
+    private void assertReferences(Object node, Map<String, Object> root) throws IOException {
+        if (node instanceof Map<?, ?> entries) {
+            for (var entry : entries.entrySet()) {
+                if ("$ref".equals(entry.getKey())) {
+                    var reference = entry.getValue().toString();
+                    var target = root;
+                    if (!reference.startsWith("#/")) {
+                        assertThat(reference).startsWith("./translation-gateway-v1.yaml#/");
+                        target = load(IDENTITY); reference = reference.substring(reference.indexOf('#'));
+                    }
+                    Object current = target;
+                    for (var segment : reference.substring(2).split("/")) current = map(current).get(segment.replace("~1", "/").replace("~0", "~"));
+                    assertThat(current).as(reference).isNotNull();
+                }
+                assertReferences(entry.getValue(), root);
+            }
         } else if (node instanceof Collection<?> values) {
-            values.forEach(value -> assertInternalReferencesResolve(value, root));
+            for (var value : values) assertReferences(value, root);
         }
     }
-
-    private Object resolveReference(Map<String, Object> root, String reference) {
-        Object current = root;
-        for (var segment : reference.substring(2).split("/")) {
-            if (!(current instanceof Map<?, ?> map)) return null;
-            current = map.get(segment.replace("~1", "/").replace("~0", "~"));
-        }
-        return current;
+    @SuppressWarnings("unchecked") private Map<String, Object> map(Object value) {
+        assertThat(value).isInstanceOf(Map.class); return (Map<String, Object>) value;
     }
-
-    @SuppressWarnings("unchecked")
-    private Map<String, Object> map(Object value) {
-        assertThat(value).isInstanceOf(Map.class);
-        return (Map<String, Object>) value;
-    }
-
-    @SuppressWarnings("unchecked")
-    private <T> Collection<T> list(Object value) {
-        assertThat(value).isInstanceOf(Collection.class);
-        return (Collection<T>) value;
+    @SuppressWarnings("unchecked") private <T> Collection<T> list(Object value) {
+        assertThat(value).isInstanceOf(Collection.class); return (Collection<T>) value;
     }
 }

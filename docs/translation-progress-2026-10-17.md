@@ -1,8 +1,40 @@
+> Atualização 2026-10-26: 021 `implemented`, review aprovado e tasks concluídas.
+> Aquisição/leitura nativas verificadas em iOS simulado e Android físico;
+> nomes falados e Ver original confirmados pelo usuário com TalkBack.
+> A 020 segue em andamento; produção pública desabilitada.
+> [Evidência corrente](../mobile/docs/specs/features/MOB-FEAT-021-local-translation-result-reader/evidence/android-physical-2026-10-26.md).
+> As seções datadas anteriores preservam o histórico, não o status corrente.
+
 # Tradução de obras — mapa de progresso em 2026-10-17
+
+## Primeira página com providers reais — 2026-10-24
+
+Uma chamada Vision US e uma Translation LLM global, autorizadas por Ruan,
+produziram resposta real para a página sintética própria. A comparação de modelo
+por ID textual revelou incompatibilidade com a normalização numérica do Google;
+a regressão e o pin do número canônico corrigem a configuração. O replay da
+resposta capturada, sem nova chamada paga, chegou a READY no worker ARM64 local:
+WebP 900 × 600, português legível, zero overflow, hashes/manifesto e retirada
+conferidos. Ver a [evidência e os limites](translation-real-page-2026-10-24.md).
+
+Não é uma rodada cloud integrada com providers reais ou entrega ao app. A 020
+continua em andamento e a 021 bloqueada. A [revisão proposta da 021](translation-reader-revision-2026-10-24.md)
+aguarda aprovação humana para reconciliar leitor/SQLite atuais e dependências.
+A reserva máxima de US$ 1 dos providers não renova US$ 5/US$ 100 nem representa
+medição confirmada de faturamento. Produção continua desabilitada.
+
+## Retomada delimitada — 2026-10-24
+
+Ruan autorizou recuperar os gates locais e uma validação cloud simples com uma
+página sintética. Estado e evidências atuais ficam no
+[registro desta execução](translation-validation-2026-10-24.md). Essa autorização
+não habilita produção ou providers reais. O orçamento atual é US$ 100 para o
+piloto completo e US$ 5 para a rodada, sem renovar os valores históricos abaixo.
 
 ## Organização do repositório — 2026-10-24
 
-A implementação e o piloto cloud estão pausados por solicitação do proprietário.
+Na organização descrita abaixo, a implementação e o piloto cloud foram pausados
+por solicitação do proprietário; a retomada delimitada posterior está acima.
 Os commits de organização preservam o código existente; não concluem features
 nem autorizam upload, chamadas pagas, provisionamento ou publicação. Os valores
 e autorizações descritos nas fotografias abaixo não são autorização vigente

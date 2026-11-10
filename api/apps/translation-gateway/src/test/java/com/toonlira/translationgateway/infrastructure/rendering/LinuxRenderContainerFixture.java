@@ -41,15 +41,24 @@ final class LinuxRenderContainerFixture implements AutoCloseable {
     private Path layoutModel, layoutLibraries;
 
     LinuxRenderContainerFixture(Path root) throws Exception {
+        this(root, false);
+    }
+
+    LinuxRenderContainerFixture(Path root, boolean imageWorkerOnly) throws Exception {
         endpoint = validateEndpoint(System.getProperty("renderer.linux.docker.host"));
         docker = requireDocker(Path.of(System.getProperty("renderer.linux.docker.path", "/usr/local/bin/docker")));
         archive = requireFile(Path.of(System.getProperty("renderer.archive.path", "target/translation-gateway-0.0.1-SNAPSHOT.jar"))
             .toAbsolutePath());
-        var configured = System.getProperty("renderer.linux.codec.directory");
-        if (configured == null || configured.isBlank()) invalid();
-        codecs = Path.of(configured);
-        requireBinary(codecs.resolve("cwebp"), ENCODER_SHA256);
-        requireBinary(codecs.resolve("dwebp"), DECODER_SHA256);
+        if (imageWorkerOnly) {
+            // The selected image contains the native codec; this worker never invokes the CLI tools.
+            codecs = Files.createTempDirectory(root, "unused-codecs-");
+        } else {
+            var configured = System.getProperty("renderer.linux.codec.directory");
+            if (configured == null || configured.isBlank()) invalid();
+            codecs = Path.of(configured);
+            requireBinary(codecs.resolve("cwebp"), ENCODER_SHA256);
+            requireBinary(codecs.resolve("dwebp"), DECODER_SHA256);
+        }
         configuration = Files.createTempDirectory(root, "docker-config-",
             PosixFilePermissions.asFileAttribute(PosixFilePermissions.fromString("rwx------")));
     }
@@ -309,6 +318,10 @@ final class LinuxRenderContainerFixture implements AutoCloseable {
     }
 
     private Path prepareMaximumAlternateFormat(String format) throws Exception {
+        return prepareMaximumAlternateFormat(format, null, null);
+    }
+
+    Path prepareMaximumAlternateFormat(String format, String nativeImageId, String manifestHash) throws Exception {
         var directory = Files.createDirectory(configuration.resolve("fixture-" + UUID.randomUUID()));
         var probe = configuration.resolve("fixture-probe");
         var input = archive;
@@ -323,6 +336,17 @@ final class LinuxRenderContainerFixture implements AutoCloseable {
                 "-Dloader.home=/work", "-Dloader.path=/probe,BOOT-INF/classes/,BOOT-INF/lib/",
                 "-Dloader.config.location=classpath:/META-INF/render-child-no-config.properties",
                 "-cp", "/app/gateway.jar", "org.springframework.boot.loader.launch.PropertiesLauncher", "10000", "8000");
+        } else if (nativeImageId != null) {
+            input = SyntheticResourcePng.multicolor(configuration.resolve("fixture-source-" + UUID.randomUUID() + ".png"), 10000, 8000);
+            mountClassTree(probe, VolatileWebpFixtureProbe.class);
+            entrypoint = NativeImageTestRuntime.configuredExecutable(nativeImageId);
+            invocation = List.of("--enable-native-access=ALL-UNNAMED", "-Xmx256m", "-Xms16m", "-XX:+ExitOnOutOfMemoryError",
+                "-XX:ActiveProcessorCount=1", "-XX:+UseSerialGC", "-XX:MaxMetaspaceSize=96m", "-XX:CompressedClassSpaceSize=32m",
+                "-XX:ReservedCodeCacheSize=64m", "-XX:MaxDirectMemorySize=384m", "-XX:-HeapDumpOnOutOfMemoryError",
+                "-XX:-CreateCoredumpOnCrash", "-XX:ErrorFile=/dev/null", "-Djava.awt.headless=true", "-Djava.io.tmpdir=/tmp",
+                "-Dloader.main=" + VolatileWebpFixtureProbe.class.getName(), "-Dloader.home=/work",
+                "-Dloader.path=/probe,BOOT-INF/classes/,BOOT-INF/lib/", "-Dloader.config.location=classpath:/META-INF/render-child-no-config.properties",
+                "-cp", "/app/gateway.jar", "org.springframework.boot.loader.launch.PropertiesLauncher", manifestHash);
         } else {
             input = SyntheticResourcePng.multicolor(configuration.resolve("fixture-source-" + UUID.randomUUID() + ".png"), 10000, 8000);
             entrypoint = "/codecs/cwebp";
@@ -332,11 +356,12 @@ final class LinuxRenderContainerFixture implements AutoCloseable {
         var name = "toonlira-render-fixture-" + UUID.randomUUID();
         // Preparation always uses cached ARM64 tools, even when an emulated AMD64 worker consumes its output.
         var arguments = new ArrayList<>(createArguments(name, user, archive, codecs, input, directory, entrypoint, invocation));
+        if (nativeImageId != null) arguments.set(arguments.indexOf(IMAGE), format.equals("jpeg") ? GLIBC_ARM64_IMAGE : nativeImageId);
         arguments.set(arguments.indexOf("--memory=1g"), "--memory=2g");
         arguments.set(arguments.indexOf("--memory-swap=1g"), "--memory-swap=2g");
         arguments.addAll(arguments.indexOf("--entrypoint"), List.of("--ulimit", "fsize=12582912:12582912", "--ulimit", "core=0:0",
             "--ulimit", "nofile=64:64"));
-        if (format.equals("jpeg")) arguments.addAll(arguments.indexOf("--entrypoint"), List.of("--mount", mount(probe, "/probe", true)));
+        if (format.equals("jpeg") || nativeImageId != null) arguments.addAll(arguments.indexOf("--entrypoint"), List.of("--mount", mount(probe, "/probe", true)));
         var stateFile = directory.resolve("fixture-state.json");
         try {
             command(arguments, Duration.ofSeconds(30));
@@ -365,25 +390,35 @@ final class LinuxRenderContainerFixture implements AutoCloseable {
 
     private ProbeState workerResourceProbe(Path staging, Path distribution, String manifestHash, String networkId,
                                           String scenario, int memoryMiB, String image, boolean imageArtifacts) throws Exception {
+        var requestedScenario = scenario;
+        if (scenario.startsWith("session-")) scenario = scenario.substring("session-".length());
+        if (scenario.startsWith("volatile-")) scenario = scenario.substring("volatile-".length());
         boolean scripts = scenario.startsWith("runtime-script-") && SyntheticWorkerText.languages().contains(scenario.substring("runtime-script-".length()))
             || scenario.startsWith("runtime-painted-") && SyntheticWorkerText.languages().contains(scenario.substring("runtime-painted-".length()));
         boolean dimensions = List.of("runtime-dimension-wide", "runtime-dimension-tall", "runtime-dimension-row", "runtime-dimension-column").contains(scenario);
         boolean alternateFormat = List.of("runtime-format-jpeg", "runtime-format-webp").contains(scenario);
         boolean layout = scenario.equals("runtime-sdk-layout");
-        if (scripts || dimensions || alternateFormat || layout || scenario.equals("parent-bounded") || scenario.equals("runtime-parent") || scenario.equals("runtime-sdk") || scenario.equals("runtime-memory-fault") || scenario.equals("runtime-disk-fault") || scenario.equals("runtime-timeout") || scenario.equals("runtime-cancel")) { if (memoryMiB != 8192) invalid(); }
+        if (scripts || dimensions || alternateFormat || layout || scenario.equals("runtime-private-delivery") || scenario.equals("runtime-gcs-private-delivery") || scenario.equals("parent-bounded") || scenario.equals("runtime-parent") || scenario.equals("runtime-sdk") || scenario.equals("runtime-memory-fault") || scenario.equals("runtime-disk-fault") || scenario.equals("runtime-timeout") || scenario.equals("runtime-cancel")) { if (memoryMiB != 8192) invalid(); }
         else workerMemoryMiB(Integer.toString(memoryMiB));
-        if (networkId == null || !networkId.matches("[a-f0-9]{64}") || !(scripts || dimensions || alternateFormat || layout || List.of("small", "maximum", "memory-fault", "address-bounded", "parent-bounded", "runtime-parent", "runtime-sdk", "runtime-memory-fault", "runtime-disk-fault", "runtime-timeout", "runtime-cancel").contains(scenario))
+        if (networkId == null || !networkId.matches("[a-f0-9]{64}") || !(scripts || dimensions || alternateFormat || layout || List.of("small", "maximum", "memory-fault", "address-bounded", "parent-bounded", "runtime-parent", "runtime-sdk", "runtime-private-delivery", "runtime-gcs-private-delivery", "runtime-memory-fault", "runtime-disk-fault", "runtime-timeout", "runtime-cancel").contains(scenario))
             || manifestHash == null || !manifestHash.matches("[a-f0-9]{64}")) invalid();
         var directory = staging.toRealPath();
         var originalPath = configuration.resolve("worker-original-" + UUID.randomUUID() + ".png");
         int width = switch (scenario) { case "runtime-dimension-wide", "runtime-dimension-row" -> 12000; case "runtime-dimension-tall" -> 6666;
-            case "runtime-dimension-column" -> 1; case "small" -> 320; default -> 10000; };
+            case "runtime-dimension-column" -> 1; case "small", "runtime-private-delivery", "runtime-gcs-private-delivery" -> 320; default -> 10000; };
         int height = switch (scenario) { case "runtime-dimension-tall", "runtime-dimension-column" -> 12000; case "runtime-dimension-wide" -> 6666;
-            case "runtime-dimension-row" -> 1; case "small" -> 220; default -> 8000; };
-        var original = alternateFormat ? prepareMaximumAlternateFormat(scenario.substring("runtime-format-".length()))
+            case "runtime-dimension-row" -> 1; case "small", "runtime-private-delivery", "runtime-gcs-private-delivery" -> 220; default -> 8000; };
+        var original = alternateFormat ? prepareMaximumAlternateFormat(scenario.substring("runtime-format-".length()), imageArtifacts ? image : null, manifestHash)
             : SyntheticResourcePng.multicolor(originalPath, width, height);
         var probe = configuration.resolve("worker-probe");
         mountClassTree(probe, NativeRenderingWorkerProbe.class); mountClass(probe, RenderResourceMetrics.class); mountClass(probe, SyntheticWorkerText.class);
+        if (requestedScenario.startsWith("volatile-")) {
+            mountClassTree(probe, VolatileNativeProbe.class);
+            mountClassTree(probe, VolatilePixelComparator.class);
+        }
+        mountClassTree(probe, PrivateDeliveryProbe.class);
+        mountClassTree(probe, CloudPrivateDeliveryProbe.class);
+        mountClassTree(probe, RecordedWorkerPage.class);
         // Spring reflects Providers' field/method types even when its SDK branch is disabled.
         // Supplying classes does not construct servers or initialize credentials.
         mountClass(probe, LoopbackWorkerProviders.class);
@@ -392,6 +427,8 @@ final class LinuxRenderContainerFixture implements AutoCloseable {
         // FakeVisionServer's overload references this type even when no capture is requested.
         mountClassTree(probe, EvaluationVisionCapture.class);
         if (scenario.equals("runtime-memory-fault") || scenario.equals("runtime-disk-fault") || scenario.equals("runtime-timeout") || scenario.equals("runtime-cancel")) mountClass(probe, AdmittedRenderFaults.class);
+        if (requestedScenario.startsWith("session-") && (scenario.equals("runtime-memory-fault") || scenario.equals("runtime-disk-fault")))
+            mountClassTree(probe, RenderingSessionFaultChildMain.class);
         if (scenario.equals("parent-bounded")) mountClassTree(probe, OwnedParentAddressProbe.class);
         var springTest = supportJar(MockMvc.class, "6ce8fc116f5d309b9ac50a6738bd1b15ea4012a4a5563c0ee89b795bfc9af0dc");
         var securityTest = supportJar(SecurityMockMvcConfigurers.class, "85a8804e13e47186c86ce224954645b20df9d340e8c000e158050adc61c61d5a");
@@ -402,11 +439,22 @@ final class LinuxRenderContainerFixture implements AutoCloseable {
             executable, List.of("-Xmx512m", "-Xms16m", "-XX:+ExitOnOutOfMemoryError",
                 "-XX:ActiveProcessorCount=1", "-XX:+UseSerialGC", "-XX:MaxMetaspaceSize=192m",
                 "-Djava.awt.headless=true", "-Djava.io.tmpdir=/work/tmp",
-                "-Dloader.main=" + NativeRenderingWorkerProbe.class.getName(), "-Dloader.home=/work",
+                "-Dloader.main=" + (requestedScenario.startsWith("volatile-") ? VolatileNativeProbe.class.getName() : NativeRenderingWorkerProbe.class.getName()), "-Dloader.home=/work",
                 "-Dloader.path=/probe,/support/spring-test.jar,/support/security-test.jar,BOOT-INF/classes/,BOOT-INF/lib/",
                 "-Dloader.config.location=classpath:/META-INF/render-child-no-config.properties",
-                "-cp", "/app/gateway.jar", "org.springframework.boot.loader.launch.PropertiesLauncher", scenario, manifestHash)));
+                "-cp", "/app/gateway.jar", "org.springframework.boot.loader.launch.PropertiesLauncher", requestedScenario, manifestHash)));
         arguments.set(arguments.indexOf("--network=none"), "--network=" + networkId);
+        if (requestedScenario.startsWith("volatile-")) {
+            arguments.addAll(arguments.indexOf("--entrypoint"), List.of("--ulimit", "core=0:0"));
+            arguments.addAll(arguments.indexOf("-Djava.awt.headless=true"), List.of("-XX:-HeapDumpOnOutOfMemoryError",
+                "-XX:-CreateCoredumpOnCrash", "-XX:ErrorFile=/dev/null"));
+        }
+        if (scenario.equals("runtime-gcs-private-delivery")) {
+            var cloud = CloudPrivateDeliveryProbe.configuration(System.getenv());
+            arguments.addAll(arguments.indexOf("--entrypoint"), List.of("--env", "MOB020_GCS_TEST=1",
+                "--env", "MOB020_GCP_PROJECT=" + cloud.project(), "--env", "MOB020_GCS_BUCKET=" + cloud.bucket(),
+                "--env", "MOB020_GCS_SIGNER=" + cloud.signer()));
+        }
         if (imageArtifacts) {
             if (image == null || !image.matches("sha256:[a-f0-9]{64}")) invalid();
             arguments.set(arguments.indexOf(IMAGE), image);

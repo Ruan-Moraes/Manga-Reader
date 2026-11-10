@@ -5,21 +5,26 @@ import { useTheme } from '@/shared/theme';
 
 import { Icon } from './Icon';
 
+const BACK_BUTTON_SIZE = 40;
+
 export type BackButtonAppearance = 'transparent' | 'surface' | 'scrim';
-export type BackButtonTone = 'default' | 'inverse';
+export type BackButtonTone = 'default' | 'inverse' | 'neutral';
+export type BackButtonShape = 'pill' | 'control';
 
 interface BackButtonProps extends Omit<PressableProps, 'accessibilityLabel' | 'children' | 'style'> {
     accessibilityLabel: string;
     appearance?: BackButtonAppearance;
     tone?: BackButtonTone;
+    shape?: BackButtonShape;
 }
 
-export function BackButton({ accessibilityLabel, appearance = 'transparent', tone = 'default', disabled, ...props }: BackButtonProps) {
+// Padrão único (2026-11-09): quadrado com fundo e borda, igual ao botão de fechar das folhas.
+export function BackButton({ accessibilityLabel, appearance = 'surface', tone = 'default', shape = 'control', disabled, ...props }: BackButtonProps) {
     const { minimumTouchTarget, radii, tokens } = useTheme();
     const [focused, setFocused] = useState(false);
     const [pressed, setPressed] = useState(false);
-    const normalBackground = appearance === 'surface' ? tokens.surfaceElevated : appearance === 'scrim' ? tokens.scrim : 'transparent';
-    const iconColor = tone === 'inverse' ? tokens.inverseText : tokens.accentText;
+    const normalBackground = appearance === 'surface' ? tokens.surface : appearance === 'scrim' ? tokens.scrim : 'transparent';
+    const iconColor = tone === 'inverse' ? tokens.inverseText : tone === 'neutral' ? tokens.text : tokens.accentText;
 
     return (
         <Pressable
@@ -28,7 +33,8 @@ export function BackButton({ accessibilityLabel, appearance = 'transparent', ton
             accessibilityRole="button"
             accessibilityState={{ disabled: !!disabled }}
             disabled={disabled}
-            hitSlop={4}
+            // Compact visual box; the hit area still reaches the platform minimum touch target.
+            hitSlop={Math.max(4, (minimumTouchTarget - BACK_BUTTON_SIZE) / 2)}
             onBlur={event => {
                 setFocused(false);
                 props.onBlur?.(event);
@@ -49,16 +55,16 @@ export function BackButton({ accessibilityLabel, appearance = 'transparent', ton
                 alignItems: 'center',
                 backgroundColor: pressed ? (appearance === 'scrim' ? tokens.overlay : tokens.surfacePressed) : normalBackground,
                 borderColor: focused ? tokens.focus : appearance === 'surface' ? tokens.separator : 'transparent',
-                borderRadius: radii.pill,
+                borderRadius: shape === 'control' ? radii.control : radii.pill,
                 borderWidth: focused || appearance === 'surface' ? 1 : 0,
                 justifyContent: 'center',
-                minHeight: minimumTouchTarget,
-                minWidth: minimumTouchTarget,
+                height: BACK_BUTTON_SIZE,
                 opacity: disabled ? 0.5 : 1,
+                width: BACK_BUTTON_SIZE,
                 ...(pressed && !disabled ? { transform: [{ scale: 0.96 }] } : {}),
             }}
         >
-            <Icon name="chevron-back" size={22} color={iconColor} />
+            <Icon name="chevron-back" size={20} color={iconColor} />
         </Pressable>
     );
 }

@@ -32,7 +32,8 @@ public class SessionAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
-        return !request.getRequestURI().startsWith("/v1/page-jobs");
+        return !request.getRequestURI().startsWith("/v1/page-jobs")
+            && !request.getRequestURI().startsWith("/v2/page-translations");
     }
 
     @Override

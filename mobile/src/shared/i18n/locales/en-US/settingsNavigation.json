@@ -110,7 +110,6 @@
         "externalLink": "Unable to open the external link. Try again."
     },
     "readerSheets": {
-        "close": "Close",
-        "groupDescription": "Choose an area to adjust."
+        "close": "Close"
     }
 }

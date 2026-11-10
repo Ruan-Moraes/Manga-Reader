@@ -1,5 +1,7 @@
 package com.toonlira.translationgateway.application;
 
+import com.toonlira.translationgateway.infrastructure.storage.LegacyStorageFixture;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
@@ -195,7 +197,7 @@ class CleanupGatewayUseCaseTest {
         Files.writeString(source, "synthetic source");
         var properties = new GatewayProperties();
         properties.getStorage().setLocalDirectory(directory);
-        var storage = new LocalObjectStorageAdapter(properties);
+        var storage = new LegacyStorageFixture(properties);
         var key = OriginalObjectKey.create(NOW.minusSeconds(1), 1);
         storage.store(key, source, "image/png", "a".repeat(64), NOW.minusSeconds(1));
         var originals = mock(OriginalExpirationUseCase.class);

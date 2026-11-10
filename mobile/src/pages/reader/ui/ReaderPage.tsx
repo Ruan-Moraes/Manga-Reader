@@ -1,12 +1,13 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { View } from 'react-native';
+import { router } from 'expo-router';
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 
 import { chapterReaderQueryOptions, getImageVariantCapabilities } from '@/entities/chapter';
 import { getReadingProgress, type ReadingProgress, readingProgressQueryKeys, reportInvalidReadingProgress } from '@/entities/reading-progress';
 import { useSessionStore } from '@/entities/session';
-import { normalizeReaderSettings, ReaderGestureControls, ReaderSettingsControls } from '@/features/configure-chapter-reader';
+import { normalizeReaderSettings, ReaderSettingsControls } from '@/features/configure-chapter-reader';
 import { useSettingsStore } from '@/features/manage-settings';
 import { clampLogicalPage } from '@/features/navigate-chapter-reader';
 import { createProgressSnapshot, isReadingProgressValidForChapter, ProgressSynchronizer, resolveResumeChoice } from '@/features/track-reading-progress';
@@ -31,9 +32,6 @@ function IdentityReaderPage({ titleId, requestedChapter, identityEpoch, isAuthen
     const settings = useSettingsStore(state => state.settings);
     const updateSettings = useSettingsStore(state => state.updateSettings);
     const readerGestures = useSettingsStore(state => state.readerGestures);
-    const updateReaderGestures = useSettingsStore(state => state.updateReaderGestures);
-    const localError = useSettingsStore(state => state.localError);
-    const retryReaderGesturesPersistence = useSettingsStore(state => state.retryReaderGesturesPersistence);
     const synchronizer = useRef(new ProgressSynchronizer()).current;
     const [chapterNumber, setChapterNumber] = useState(requestedChapter);
     const [currentPage, setCurrentPage] = useState(1);
@@ -214,48 +212,18 @@ function IdentityReaderPage({ titleId, requestedChapter, identityEpoch, isAuthen
             settings={settings.reader}
             gesturePreferences={readerGestures}
             location={{ itemId: chapterQuery.data.pages[logicalPage - 1].id, index: logicalPage - 1 }}
-            controlSections={[
-                {
-                    id: 'reading',
-                    title: t('panel.tabs.reading'),
-                    content: (
-                        <ReaderSettingsControls
-                            compact
-                            category="reading"
-                            value={settings.reader}
-                            capabilities={getImageVariantCapabilities(chapterQuery.data.pages)}
-                            onChange={patch => void updateSettings(current => ({ ...current, reader: normalizeReaderSettings(patch, current) }), 'reader')}
-                        />
-                    ),
-                },
-                {
-                    id: 'appearance',
-                    title: t('panel.tabs.appearance'),
-                    content: (
-                        <ReaderSettingsControls
-                            compact
-                            category="appearance"
-                            value={settings.reader}
-                            capabilities={getImageVariantCapabilities(chapterQuery.data.pages)}
-                            onChange={patch => void updateSettings(current => ({ ...current, reader: normalizeReaderSettings(patch, current) }), 'reader')}
-                        />
-                    ),
-                },
-                {
-                    id: 'gestures',
-                    title: t('panel.tabs.gestures'),
-                    content: (
-                        <ReaderGestureControls
-                            compact
-                            value={readerGestures}
-                            onChange={patch => void updateReaderGestures(patch)}
-                            sideNavigationAvailable={settings.reader.mode !== 'VERTICAL' && settings.reader.direction !== 'WEBTOON'}
-                            persistenceError={!!localError}
-                            onRetry={() => void retryReaderGesturesPersistence()}
-                        />
-                    ),
-                },
-            ]}
+            settingsSheet={{
+                content: (
+                    <ReaderSettingsControls
+                        compact
+                        category="quick"
+                        value={settings.reader}
+                        capabilities={getImageVariantCapabilities(chapterQuery.data.pages)}
+                        onChange={patch => void updateSettings(current => ({ ...current, reader: normalizeReaderSettings(patch, current) }), 'reader')}
+                    />
+                ),
+                onOpenAllSettings: () => router.push(ROUTES.SETTINGS.READER as never),
+            }}
             statusContent={
                 <>
                     {isAuthenticated && progressQuery.isError ? (

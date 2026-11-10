@@ -4,7 +4,29 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.verify;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
+import com.google.api.core.ApiClock;
+import com.google.auth.ServiceAccountSigner;
+import com.google.cloud.NoCredentials;
+import com.google.cloud.storage.Blob;
+import com.google.cloud.storage.BlobId;
+import com.google.cloud.storage.BlobInfo;
+import com.google.cloud.storage.Storage;
+import com.google.cloud.storage.StorageOptions;
+import com.google.cloud.storage.StorageException;
+import com.google.api.gax.paging.Page;
 import com.toonlira.translationgateway.application.GetJobResultUseCase;
 import com.toonlira.translationgateway.application.OcrPersistenceUseCase;
 import com.toonlira.translationgateway.application.RenderingPersistenceUseCase;
@@ -12,7 +34,11 @@ import com.toonlira.translationgateway.application.ReserveJobUseCase;
 import com.toonlira.translationgateway.application.TranslationPersistenceUseCase;
 import com.toonlira.translationgateway.application.config.GatewayProperties;
 import com.toonlira.translationgateway.application.port.GatewayRepository;
+import com.toonlira.translationgateway.application.port.CredentialHasher;
 import com.toonlira.translationgateway.application.port.PrivateDownloadPort;
+import com.toonlira.translationgateway.application.port.ObjectStoragePort;
+import com.toonlira.translationgateway.domain.GatewayException;
+import com.toonlira.translationgateway.domain.GatewayErrorCode;
 import com.toonlira.translationgateway.application.port.RenderingJobRepository;
 import com.toonlira.translationgateway.application.port.ResultDownloadRepository;
 import com.toonlira.translationgateway.domain.JobStatus;
@@ -22,7 +48,17 @@ import com.toonlira.translationgateway.domain.rendering.PrivateDownloadRequest;
 import com.toonlira.translationgateway.domain.rendering.RenderedImage;
 import com.toonlira.translationgateway.domain.rendering.ResultObjectKey;
 import com.toonlira.translationgateway.domain.rendering.RenderValidationException;
+import com.toonlira.translationgateway.infrastructure.storage.GoogleCloudPrivateDownloadAdapter;
+import com.toonlira.translationgateway.infrastructure.storage.EvaluationStorageFactory;
+import com.toonlira.translationgateway.infrastructure.json.GatewayJsonMapper;
 import java.net.URI;
+import java.security.KeyPairGenerator;
+import java.security.Signature;
+import java.util.ArrayList;
+import java.util.HexFormat;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.List;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.OffsetDateTime;
@@ -38,6 +74,7 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
@@ -45,6 +82,7 @@ import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.support.TransactionTemplate;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
@@ -52,7 +90,8 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 @Tag("testcontainers")
 @Testcontainers
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@SpringBootTest
+@AutoConfigureMockMvc
 class ResultRetentionPersistenceTest {
     @Container static final PostgreSQLContainer<?> POSTGRES = new PostgreSQLContainer<>("postgres:17-alpine");
     @DynamicPropertySource static void database(DynamicPropertyRegistry r) {
@@ -69,12 +108,15 @@ class ResultRetentionPersistenceTest {
     @Autowired TransactionTemplate transaction;
     @Autowired GatewayProperties properties;
     @Autowired JdbcClient jdbc;
+    @Autowired MockMvc mvc;
+    @Autowired CredentialHasher hasher;
     @MockitoBean Clock clock;
     @MockitoBean PrivateDownloadPort signer;
+    @MockitoBean ObjectStoragePort objectStorage;
     private Instant now;
     @BeforeEach void clean() {
         jdbc.sql("DELETE FROM anonymous_installations").update();
-        reset(clock, signer); now = Instant.now().truncatedTo(ChronoUnit.MICROS);
+        reset(clock, signer, objectStorage); now = Instant.now().truncatedTo(ChronoUnit.MICROS);
         when(clock.instant()).thenReturn(now); properties.getDisclosure().setResultRetentionSeconds(3600);
         when(signer.sign(any())).thenAnswer(call -> {
             PrivateDownloadRequest request = call.getArgument(0);
@@ -193,7 +235,7 @@ class ResultRetentionPersistenceTest {
         assertThat(rendering.find(job.jobRef()).artifacts()).isNull();
     }
 
-    @Test void v8UpgradeAddsOnlyV9AndNeverRenewsLegacyCompletionDeadline() {
+    @Test void v8UpgradeAppliesLaterMigrationsWithoutRenewingLegacyCompletionDeadline() {
         var job = prepare(3600);
         var legacyArtifacts = new RenderingJobRepository.Artifacts("private/rendering/legacy/image", new RenderedImage("image/webp", 32, 1, 1, "c".repeat(64)),
             "private/rendering/legacy/manifest", "d".repeat(64));
@@ -209,7 +251,7 @@ class ResultRetentionPersistenceTest {
         copyLegacy(legacy, schema, "processing_job_dispatches", "job_id", job.id());
         var migration = Flyway.configure().dataSource(POSTGRES.getJdbcUrl(), POSTGRES.getUsername(), POSTGRES.getPassword())
             .schemas(schema).defaultSchema(schema).load().migrate();
-        assertThat(migration.migrationsExecuted).isEqualTo(1);
+        assertThat(migration.migrationsExecuted).isEqualTo(3);
         assertThat(legacy.sql("SELECT result_retention_seconds FROM processing_jobs WHERE id=:id").param("id", job.id()).query(Integer.class).single()).isEqualTo(3600);
         var boundary = new JdbcResultDownloadRepository(legacy);
         var legacyTx = new TransactionTemplate(new DataSourceTransactionManager(dataSource));

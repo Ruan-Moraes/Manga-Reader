@@ -95,6 +95,11 @@
         "confirm": "Confirmar",
         "removes": "Elimina",
         "preserves": "Conserva",
+        "success": {
+            "cache": { "title": "Caché borrada", "description": "Se quitaron las imágenes y los datos regenerables de este dispositivo." },
+            "offline": { "title": "Datos sin conexión eliminados", "description": "Los proyectos y archivos locales se borraron de este dispositivo." },
+            "history": { "title": "Historial borrado", "description": "Se quitaron los capítulos leídos y las actividades. Tu posición actual se mantuvo." }
+        },
         "storageUsage": "{{size}} en {{scope}}",
         "storageScopes": { "temporaryExports": "exportaciones temporales controladas por la aplicación" },
         "cache": {

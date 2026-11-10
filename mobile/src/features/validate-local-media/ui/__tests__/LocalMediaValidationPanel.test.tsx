@@ -89,6 +89,16 @@ describe('MOB-FEAT-045 validation gallery', () => {
         expect(onDraftChange).toHaveBeenCalledWith(next);
     });
 
+    it('a página inválida também pode ser removida da seleção (2026-11-10)', async () => {
+        const current = draft([valid('item-1', 0), invalid('item-2', 1)]);
+        const onRemoveItem = jest.fn().mockResolvedValue(undefined);
+        render(<LocalMediaValidationPanel draft={current} onDraftChange={jest.fn()} controller={controller()} onRemoveItem={onRemoveItem} />);
+
+        fireEvent.press(screen.getByRole('button', { name: 'Página 2 de 2. Ação necessária.' }));
+        fireEvent.press(await screen.findByRole('button', { name: 'Remover a página 2 da seleção' }));
+        await waitFor(() => expect(onRemoveItem).toHaveBeenCalledWith(current.items[1]));
+    });
+
     it('shows success without an exhaustive list and advances only from the ready CTA', () => {
         const current = draft([valid('item-1', 0), valid('item-2', 1)]);
         const onContinue = jest.fn();

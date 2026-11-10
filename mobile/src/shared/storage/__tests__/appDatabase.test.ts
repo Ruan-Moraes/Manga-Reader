@@ -33,8 +33,9 @@ describe('app database schema version', () => {
 
         expect(openDatabaseAsync).toHaveBeenCalledTimes(1);
         expect(openDatabaseAsync).toHaveBeenCalledWith('toonlira-local.db');
-        expect(execAsync).toHaveBeenCalledTimes(1);
+        expect(execAsync).toHaveBeenCalledTimes(2);
         expect(execAsync).toHaveBeenCalledWith('PRAGMA foreign_keys = ON;');
+        expect(execAsync).toHaveBeenCalledWith('PRAGMA journal_mode = WAL;');
     });
 
     it('advances an older schema and reads the persisted version', async () => {
@@ -83,4 +84,43 @@ describe('app database schema version', () => {
         await Promise.all([first, second]);
         expect(order).toEqual(['first:start', 'first:end', 'second:start', 'second:end']);
     });
+});
+
+it('enables foreign keys on the dedicated connection before BEGIN, and closes it after commit', async () => {
+    resetAppDatabaseForTests();
+    let enabled = false,
+        inside = false;
+    const order: string[] = [];
+    const connection = {
+        execAsync: jest.fn(async (sql: string) => {
+            order.push(sql);
+            if (sql.includes('foreign_keys') && !inside) enabled = true;
+            if (sql.startsWith('BEGIN')) inside = true;
+            if (sql === 'COMMIT' || sql === 'ROLLBACK') inside = false;
+        }),
+        getFirstAsync: jest.fn(async () => ({ foreign_keys: enabled ? 1 : 0 })),
+        closeAsync: jest.fn(async () => {
+            order.push('close');
+        }),
+    };
+    const base = {
+        execAsync: jest.fn(async () => undefined),
+        withExclusiveTransactionAsync: async (task: (tx: typeof connection) => Promise<void>) => {
+            inside = true;
+            await task(connection);
+        },
+    };
+    jest.mocked(openDatabaseAsync)
+        .mockResolvedValueOnce(base as never)
+        .mockResolvedValueOnce(connection as never);
+    const database = await openAppDatabase();
+    await database.withExclusiveTransactionAsync(async tx => {
+        expect(await tx.getFirstAsync('PRAGMA foreign_keys')).toEqual({ foreign_keys: 1 });
+        order.push('write');
+    });
+    expect(openDatabaseAsync).toHaveBeenLastCalledWith('toonlira-local.db', { useNewConnection: true });
+    expect(order.indexOf('write')).toBeGreaterThan(order.indexOf('BEGIN IMMEDIATE'));
+    expect(order).toContain('COMMIT');
+    expect(order.at(-1)).toBe('close');
+    resetAppDatabaseForTests();
 });

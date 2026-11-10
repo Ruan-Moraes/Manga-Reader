@@ -36,7 +36,8 @@ describe('MOB-FEAT-057 BottomSheet', () => {
         expect(screen.getByText('Valem na hora.')).toBeOnTheScreen();
         expect(screen.getByText('Corpo')).toBeOnTheScreen();
         expect(StyleSheet.flatten(screen.getByTestId('bottom-sheet-footer').props.style)).toEqual(
-            expect.objectContaining({ borderTopWidth: 1, paddingTop: 16 }),
+            // Rodapé colado (pedido do usuário, 2026-11-09): 8 acima da ação; embaixo só a safe area.
+            expect.objectContaining({ borderTopWidth: 1, paddingTop: 8 }),
         );
 
         const sheet = StyleSheet.flatten(screen.getByTestId('bottom-sheet').props.style);

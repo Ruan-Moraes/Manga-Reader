@@ -26,6 +26,8 @@ interface SwatchPickerProps<T extends string> {
     options: readonly T[];
     optionLabel: (option: T) => string;
     optionColor: (option: T) => string;
+    /** Two colors for a split swatch, e.g. "Seguir aplicativo" (claro | escuro). */
+    optionSplit?: (option: T) => readonly [string, string] | undefined;
     onChange: (option: T) => void;
     disabled?: boolean;
 }
@@ -37,6 +39,7 @@ export function SwatchPicker<T extends string>({
     options,
     optionLabel,
     optionColor,
+    optionSplit,
     onChange,
     disabled = false,
 }: SwatchPickerProps<T>) {
@@ -138,9 +141,20 @@ export function SwatchPicker<T extends string>({
                                     opacity: disabled ? 0.5 : 1,
                                     outlineColor: tokens.accentSoft,
                                     outlineWidth: selected ? SWATCH_BORDER_WIDTH : 0,
+                                    overflow: 'hidden',
                                     width: optionWidth,
                                 }}
                             >
+                                {optionSplit?.(option) ? (
+                                    <View
+                                        accessibilityElementsHidden
+                                        pointerEvents="none"
+                                        style={{ bottom: 0, flexDirection: 'row', left: 0, position: 'absolute', right: 0, top: 0 }}
+                                    >
+                                        <View style={{ backgroundColor: optionSplit(option)![0], flex: 1 }} />
+                                        <View style={{ backgroundColor: optionSplit(option)![1], flex: 1 }} />
+                                    </View>
+                                ) : null}
                                 {selected ? (
                                     <View
                                         accessibilityElementsHidden

@@ -1,5 +1,9 @@
 # Limites Linux da filha supervisionada — 2026-10-05
 
+> Registro histórico do desenho anterior. Em 2026-11-01, as classes
+> referenciadas retiradas de produção foram movidas para suporte de teste. Os
+> links acompanham essa localização; não indicam código produtivo atual.
+
 Parcela de TASK-002/007/008 posterior à
 [distribuição relocável](rendering-native-distribution-2026-10-05.md).
 Ruan escolheu manter libwebp lossless/exact e autorizou preparação/testes locais.
@@ -12,10 +16,10 @@ cloud ou deploy. 020 in-progress/open, verdict changes-requested; 021 blocked.
 - [Limites imutáveis](../../../../../../api/apps/translation-gateway/src/main/java/com/toonlira/translationgateway/infrastructure/rendering/NativeProcessLimits.java),
   [variante explícita](../../../../../../api/apps/translation-gateway/src/main/java/com/toonlira/translationgateway/infrastructure/rendering/BoundedNativeRenderChildSettings.java),
   [guard Linux Java/FFM](../../../../../../api/apps/translation-gateway/src/main/java/com/toonlira/translationgateway/infrastructure/rendering/LinuxNativeProcessGuard.java).
-- [IPC privado](../../../../../../api/apps/translation-gateway/src/main/java/com/toonlira/translationgateway/infrastructure/rendering/RenderSubprocessProtocol.java),
+- [IPC privado](../../../../../../api/apps/translation-gateway/src/test/java/com/toonlira/translationgateway/infrastructure/rendering/RenderSubprocessProtocol.java),
   [launcher](../../../../../../api/apps/translation-gateway/src/main/java/com/toonlira/translationgateway/infrastructure/rendering/RenderJvmLauncher.java),
-  [ordem na filha](../../../../../../api/apps/translation-gateway/src/main/java/com/toonlira/translationgateway/infrastructure/rendering/RenderChildMain.java),
-  [seleção do bean](../../../../../../api/apps/translation-gateway/src/main/java/com/toonlira/translationgateway/infrastructure/rendering/NativeRenderingConfiguration.java).
+  [ordem na filha](../../../../../../api/apps/translation-gateway/src/test/java/com/toonlira/translationgateway/infrastructure/rendering/RenderChildMain.java),
+  [seleção do bean](../../../../../../api/apps/translation-gateway/src/test/java/com/toonlira/translationgateway/infrastructure/rendering/NativeRenderingConfiguration.java).
 - [Política/negação/releitura](../../../../../../api/apps/translation-gateway/src/test/java/com/toonlira/translationgateway/infrastructure/rendering/NativeProcessLimitsTest.java),
   [IPC/reservas/controlado](../../../../../../api/apps/translation-gateway/src/test/java/com/toonlira/translationgateway/infrastructure/rendering/NativeRenderIntegrationTest.java),
   [Linux real](../../../../../../api/apps/translation-gateway/src/test/java/com/toonlira/translationgateway/infrastructure/rendering/RenderLinuxLimitsTest.java),

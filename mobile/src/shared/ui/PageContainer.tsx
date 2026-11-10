@@ -8,9 +8,11 @@ interface Props {
     children: ReactNode;
     scroll?: boolean;
     padded?: boolean;
+    /** Rendered below the content area; it owns the bottom safe area, e.g. `StickyActionBar`. */
+    stickyFooter?: ReactNode;
 }
 
-export function PageContainer({ children, scroll = false, padded = true }: Props) {
+export function PageContainer({ children, scroll = false, padded = true, stickyFooter }: Props) {
     const { layout, tokens } = useTheme();
     const insets = useSafeAreaInsets();
 
@@ -22,7 +24,7 @@ export function PageContainer({ children, scroll = false, padded = true }: Props
                 flexGrow: scroll ? 1 : undefined,
                 backgroundColor: tokens.bg,
                 paddingTop: scroll ? 0 : insets.top,
-                paddingBottom: scroll ? 0 : insets.bottom,
+                paddingBottom: scroll || stickyFooter ? 0 : insets.bottom,
                 paddingHorizontal: padded ? layout.screenGutter : 0,
             }}
         >
@@ -32,7 +34,10 @@ export function PageContainer({ children, scroll = false, padded = true }: Props
 
     if (scroll) {
         return (
-            <View testID="page-container-safe-frame" style={{ flex: 1, backgroundColor: tokens.bg, paddingBottom: insets.bottom, paddingTop: insets.top }}>
+            <View
+                testID="page-container-safe-frame"
+                style={{ flex: 1, backgroundColor: tokens.bg, paddingBottom: stickyFooter ? 0 : insets.bottom, paddingTop: insets.top }}
+            >
                 <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
                     <ScrollView
                         automaticallyAdjustKeyboardInsets
@@ -43,7 +48,23 @@ export function PageContainer({ children, scroll = false, padded = true }: Props
                     >
                         {inner}
                     </ScrollView>
+                    {stickyFooter ? (
+                        <View testID="page-container-sticky-footer">
+                            {stickyFooter}
+                        </View>
+                    ) : null}
                 </KeyboardAvoidingView>
+            </View>
+        );
+    }
+
+    if (stickyFooter) {
+        return (
+            <View testID="page-container-fixed-frame" style={{ flex: 1, backgroundColor: tokens.bg }}>
+                {inner}
+                <View testID="page-container-sticky-footer">
+                    {stickyFooter}
+                </View>
             </View>
         );
     }

@@ -1,10 +1,10 @@
-import { Pressable, View } from 'react-native';
+import { View } from 'react-native';
 import { useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 
 import { SUPPORTED_CONTENT_LANGUAGES } from '@/entities/content-language-preference';
 import { FONTS, useTheme } from '@/shared/theme';
-import { AppText, FormSection, Icon, IconButton, type IconName, SectionStack, StatusMessage } from '@/shared/ui';
+import { AppText, FormSection, Icon, IconButton, type IconName, PressableBox as Pressable,SectionStack, StatusMessage } from '@/shared/ui';
 
 import { hydrateContentLanguages } from '../model/contentLanguagesHydration';
 import { useContentLanguagesStore } from '../model/contentLanguagesStore';

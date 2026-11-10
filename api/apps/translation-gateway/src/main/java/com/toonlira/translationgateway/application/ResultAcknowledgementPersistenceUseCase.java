@@ -16,6 +16,22 @@ public class ResultAcknowledgementPersistenceUseCase {
     }
 
     @Transactional
+    public void request(UUID installationId, UUID jobRef, Instant now) {
+        repository.request(installationId, jobRef, now);
+    }
+
+    @Transactional
+    public List<ResultAcknowledgementRepository.CleanupClaim> claimForJob(UUID installationId, UUID jobRef,
+                                                                           Instant now, Instant leaseUntil) {
+        return repository.claimForJob(installationId, jobRef, now, leaseUntil);
+    }
+
+    @Transactional(readOnly = true)
+    public boolean completedForJob(UUID installationId, UUID jobRef) {
+        return repository.completedForJob(installationId, jobRef);
+    }
+
+    @Transactional
     public List<ResultAcknowledgementRepository.CleanupClaim> claim(int limit, Instant now, Instant leaseUntil) {
         return repository.claim(limit, now, leaseUntil);
     }

@@ -1,10 +1,10 @@
 import { type ReactNode, useState } from 'react';
-import { Modal, Pressable, ScrollView, useWindowDimensions, View } from 'react-native';
+import { Modal, ScrollView, useWindowDimensions, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useTheme } from '@/shared/theme';
-import { AppText, IconButton } from '@/shared/ui';
+import { AppText, IconButton, PressableBox as Pressable, resolveSheetFooterBottom } from '@/shared/ui';
 
 export interface ReaderControlSection {
     id: string;
@@ -18,10 +18,17 @@ interface Props {
     onClose(): void;
     sections?: readonly ReaderControlSection[];
     children?: ReactNode;
+    /** Single-sheet mode (063): supporting line under the title. */
+    description?: string;
+    /** Fixed below the scrollable content, e.g. "All reader settings". */
+    footer?: ReactNode;
 }
 
-export function ReaderPanel({ visible, title, onClose, sections, children }: Props) {
-    const { tokens, spacing, radii, minimumTouchTarget, decorativeMotionEnabled, fontScale } = useTheme();
+export function ReaderPanel({ visible, title, onClose, sections, children, description, footer }: Props) {
+    const { tokens, spacing, radii, layout, minimumTouchTarget, decorativeMotionEnabled, fontScale } = useTheme();
+    // Folha única do kit (063): alça, margem lateral da tela e 24 entre grupos; abas antigas mantêm o layout da 052.
+    const kitSheet = !!description;
+    const gutter = kitSheet ? layout.screenGutter : spacing.md;
     const insets = useSafeAreaInsets();
     const { height } = useWindowDimensions();
     const { t } = useTranslation('reader');
@@ -47,20 +54,47 @@ export function ReaderPanel({ visible, title, onClose, sections, children }: Pro
                     testID="reader-panel-sheet"
                     accessibilityViewIsModal
                     style={{
-                        height: usableHeight * (fullHeight ? 1 : 0.7),
+                        height: usableHeight * (fullHeight ? 1 : kitSheet ? 0.88 : 0.7),
                         backgroundColor: tokens.surface,
                         borderTopLeftRadius: radii.card,
                         borderTopRightRadius: radii.card,
-                        paddingBottom: insets.bottom,
+                        paddingBottom: footer ? 0 : insets.bottom,
                         paddingLeft: insets.left,
                         paddingRight: insets.right,
                         overflow: 'hidden',
                     }}
                 >
-                    <View className="flex-row items-center" style={{ gap: spacing.xs, paddingHorizontal: spacing.md, paddingVertical: spacing.sm }}>
-                        <AppText accessibilityRole="header" variant="label" className="flex-1">
-                            {title}
-                        </AppText>
+                    {kitSheet ? (
+                        <View style={{ alignItems: 'center', paddingTop: spacing.sm }}>
+                            <View
+                                testID="reader-panel-handle"
+                                style={{ backgroundColor: tokens.borderStrong, borderRadius: radii.pill, height: 5, width: 44 }}
+                            />
+                        </View>
+                    ) : null}
+                    <View
+                        className="flex-row"
+                        style={{
+                            alignItems: kitSheet ? 'flex-start' : 'center',
+                            gap: spacing.xs,
+                            paddingHorizontal: gutter,
+                            paddingTop: spacing.sm,
+                            // Como nas demais folhas: respiro e divisor sob o cabeçalho (as abas já têm a própria borda).
+                            ...(sections?.length
+                                ? { paddingBottom: spacing.sm }
+                                : { borderBottomColor: tokens.separator, borderBottomWidth: 1, paddingBottom: spacing.md }),
+                        }}
+                    >
+                        <View className="flex-1" style={{ gap: spacing.xs / 2, minWidth: 0 }}>
+                            <AppText accessibilityRole="header" variant={description ? 'section' : 'label'}>
+                                {title}
+                            </AppText>
+                            {description ? (
+                                <AppText testID="reader-panel-description" variant="caption" tone="muted">
+                                    {description}
+                                </AppText>
+                            ) : null}
+                        </View>
                         {!forcedExpanded ? (
                             <IconButton
                                 icon={expanded ? 'chevron-down' : 'chevron-up'}
@@ -98,9 +132,23 @@ export function ReaderPanel({ visible, title, onClose, sections, children }: Pro
                             ))}
                         </View>
                     ) : null}
-                    <ScrollView key={active?.id ?? 'content'} contentContainerStyle={{ gap: spacing.md, padding: spacing.md }}>
+                    <ScrollView key={active?.id ?? 'content'} contentContainerStyle={{ gap: kitSheet ? spacing.lg : spacing.md, padding: gutter }}>
                         {active ? active.content : children}
                     </ScrollView>
+                    {footer ? (
+                        <View
+                            testID="reader-panel-footer"
+                            style={{
+                                borderTopColor: tokens.separator,
+                                borderTopWidth: 1,
+                                paddingBottom: resolveSheetFooterBottom(insets.bottom, spacing),
+                                paddingHorizontal: gutter,
+                                paddingTop: spacing.sm,
+                            }}
+                        >
+                            {footer}
+                        </View>
+                    ) : null}
                 </View>
             </View>
         </Modal>

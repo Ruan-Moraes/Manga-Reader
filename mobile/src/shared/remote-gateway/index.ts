@@ -5,3 +5,9 @@ export {
     type RemoteGatewayTransport,
     RemoteGatewayTransportError,
 } from './remoteGatewayTransport';
+export {
+    createVolatileTranslationTransport,
+    type UnverifiedVolatileResponse,
+    type VolatileTranslationRequest,
+    VolatileTranslationTransportError,
+} from './volatileTranslationTransport';

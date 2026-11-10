@@ -79,7 +79,7 @@ export function ModuleSelector({ authenticated, copy, onOpenModule, onOpenSettin
                 })}
             </View>
             <View style={{ alignItems: 'center' }}>
-                <TextAction icon="library-outline" label={copy.library} onPress={onOpenLibrary} />
+                <TextAction icon="library-outline" iconTile align="center" label={copy.library} onPress={onOpenLibrary} />
             </View>
         </View>
     );

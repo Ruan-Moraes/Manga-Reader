@@ -15,7 +15,7 @@ function listFiles(root) {
 export function implementationChecksum(mobileRoot) {
     const files = [resolve(mobileRoot, 'assets'), resolve(mobileRoot, 'docs'), resolve(mobileRoot, 'scripts'), resolve(mobileRoot, 'src')]
         .flatMap(listFiles)
-        .filter(path => !path.endsWith('/review.md') && !path.endsWith('/drift-audit.md'))
+        .filter(path => !path.endsWith('/.DS_Store') && !path.endsWith('/review.md') && !path.endsWith('/drift-audit.md'))
         .concat(
             ['app.json', 'babel.config.js', 'eslint.config.mjs', 'jest.config.js', 'package.json', 'pnpm-workspace.yaml', 'tsconfig.json']
                 .map(path => resolve(mobileRoot, path))

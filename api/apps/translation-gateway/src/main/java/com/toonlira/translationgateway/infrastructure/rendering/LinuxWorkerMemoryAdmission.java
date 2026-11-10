@@ -105,6 +105,16 @@ final class LinuxWorkerMemoryAdmission {
         } catch (Throwable ignored) { throw new RenderFileException(CONFIGURATION); }
     }
 
+    static void requireTemporaryFilesOnScratch(Path scratch) {
+        try {
+            // The JDK may cache its temporary directory, so inspecting the property alone is insufficient.
+            var probe = Files.createTempFile("render-admission-", ".tmp");
+            try {
+                if (!Files.getFileStore(probe).equals(Files.getFileStore(scratch))) invalid();
+            } finally { Files.delete(probe); }
+        } catch (Throwable ignored) { throw new RenderFileException(CONFIGURATION); }
+    }
+
     private static void invalid() { throw new RenderFileException(CONFIGURATION); }
     @Override public String toString() { return "LinuxWorkerMemoryAdmission[redacted]"; }
 
@@ -117,6 +127,7 @@ final class LinuxWorkerMemoryAdmission {
     private record SystemAccess(Path temporaryDirectory, boolean preparing) implements Access {
         @Override public Snapshot snapshot() {
             try {
+                requireTemporaryFilesOnScratch(temporaryDirectory);
                 var store = Files.getFileStore(temporaryDirectory);
                 return new Snapshot(ProcessHandle.current().pid(), read("/proc/self/cgroup", CONTROL_BYTES).strip(),
                     finite(read("/sys/fs/cgroup/memory.max", CONTROL_BYTES), false),

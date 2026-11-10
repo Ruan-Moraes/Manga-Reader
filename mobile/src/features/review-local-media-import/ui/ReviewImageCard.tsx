@@ -135,6 +135,28 @@ export function ReviewImageCard({
                     />
                 )}
             </Surface>
+            {grid ? (
+                <View
+                    pointerEvents="none"
+                    testID={`review-page-badge-${testId}`}
+                    style={{
+                        alignItems: 'center',
+                        backgroundColor: tokens.overlay,
+                        borderRadius: radii.pill,
+                        height: 22,
+                        justifyContent: 'center',
+                        left: spacing.xs + 2,
+                        minWidth: 22,
+                        paddingHorizontal: spacing.xs,
+                        position: 'absolute',
+                        top: spacing.xs + 2,
+                    }}
+                >
+                    <AppText variant="caption" style={{ color: tokens.text }} accessibilityElementsHidden>
+                        {page}
+                    </AppText>
+                </View>
+            ) : null}
         </View>
     );
 

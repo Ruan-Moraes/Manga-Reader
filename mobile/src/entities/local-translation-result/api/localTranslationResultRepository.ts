@@ -17,6 +17,7 @@ import {
 } from '@/shared/storage';
 
 import { isLocalResultSource, type LocalTranslationResult, type NewLocalTranslationResult, type TextRegion } from '../model/localTranslationResult';
+import { withLocalTranslationResultFiles } from '../model/localTranslationResultFiles';
 
 export const TRANSLATION_RESULT_NAMESPACE = 'translation-results';
 const CURRENT_SCHEMA_VERSION = 9;
@@ -115,6 +116,7 @@ export interface LocalTranslationLibraryItem {
     project: TranslationProject;
     readyPages: number;
     currentPosition: number | null;
+    progressUpdatedAt: number | null;
     coverUri: string;
     demo: boolean;
 }
@@ -453,14 +455,20 @@ export function createSqliteLocalTranslationResultRepository(
 
             const projectsById = new Map((await projects.listAll()).map(project => [project.id, project]));
 
-            const rows = await db.getAllAsync<{ id: string; ready_pages: number; current_position: number | null; demo: number }>(
-                `SELECT pr.id, COUNT(r.page_id) AS ready_pages, progress.page_position AS current_position,
+            const rows = await db.getAllAsync<{
+                id: string;
+                ready_pages: number;
+                current_position: number | null;
+                progress_updated_at: number | null;
+                demo: number;
+            }>(
+                `SELECT pr.id, COUNT(r.page_id) AS ready_pages, progress.page_position AS current_position, progress.updated_at AS progress_updated_at,
                         MAX(CASE WHEN r.source_kind = 'DEMO' THEN 1 ELSE 0 END) AS demo
                  FROM translation_projects pr
                  LEFT JOIN translation_pages p ON p.project_id = pr.id
                  LEFT JOIN translation_page_results r ON r.page_id = p.id
                  LEFT JOIN local_translation_reading_progress progress ON progress.project_id = pr.id
-                 GROUP BY pr.id, progress.page_position
+                 GROUP BY pr.id, progress.page_position, progress.updated_at
                  ORDER BY pr.updated_at DESC, pr.id DESC`,
                 [],
             );
@@ -478,6 +486,7 @@ export function createSqliteLocalTranslationResultRepository(
                     project,
                     readyPages: row.ready_pages,
                     currentPosition: row.current_position,
+                    progressUpdatedAt: row.progress_updated_at,
                     coverUri: files.fileUri(TRANSLATION_PROJECT_NAMESPACE, project.id, first.originalFilename),
                     demo: row.demo === 1,
                 });
@@ -499,32 +508,38 @@ export function createSqliteLocalTranslationResultRepository(
             await (await database()).runAsync('DELETE FROM translation_projects WHERE id = ?', [projectId]);
         },
         async reconcileFiles() {
-            const db = await database();
+            return withLocalTranslationResultFiles(async () => {
+                const db = await database();
 
-            const projects = await db.getAllAsync<{ project_id: string }>(
-                `SELECT DISTINCT p.project_id FROM translation_page_results r JOIN translation_pages p ON p.id = r.page_id`,
-                [],
-            );
-
-            const validProjects = new Set(projects.map(row => row.project_id));
-
-            await files.reconcile(TRANSLATION_RESULT_NAMESPACE, validProjects);
-
-            for (const projectId of validProjects) {
-                const rows = await db.getAllAsync<{ page_id: string; rendered_filename: string }>(
-                    `SELECT r.page_id, r.rendered_filename FROM translation_page_results r
-                     JOIN translation_pages p ON p.id = r.page_id WHERE p.project_id = ?`,
-                    [projectId],
+                const projects = await db.getAllAsync<{ project_id: string }>(
+                    `SELECT DISTINCT p.project_id FROM translation_page_results r JOIN translation_pages p ON p.id = r.page_id`,
+                    [],
                 );
 
-                await files.reconcileBatch(TRANSLATION_RESULT_NAMESPACE, projectId, new Set(rows.map(row => row.rendered_filename)));
+                const validProjects = new Set(projects.map(row => row.project_id));
 
-                for (const row of rows) {
-                    const exists = await files.fileExists(TRANSLATION_RESULT_NAMESPACE, projectId, row.rendered_filename);
+                await files.reconcile(TRANSLATION_RESULT_NAMESPACE, validProjects);
 
-                    if (!exists) await db.withExclusiveTransactionAsync(transaction => invalidateResult(transaction, row.page_id, Date.now()));
+                for (const projectId of validProjects) {
+                    const rows = await db.getAllAsync<{ page_id: string; rendered_filename: string }>(
+                        `SELECT r.page_id, r.rendered_filename FROM translation_page_results r
+                     JOIN translation_pages p ON p.id = r.page_id WHERE p.project_id = ?`,
+                        [projectId],
+                    );
+
+                    await files.reconcileBatch(
+                        TRANSLATION_RESULT_NAMESPACE,
+                        projectId,
+                        new Set(rows.flatMap(row => [row.rendered_filename, `${row.rendered_filename}_manifest`])),
+                    );
+
+                    for (const row of rows) {
+                        const exists = await files.fileExists(TRANSLATION_RESULT_NAMESPACE, projectId, row.rendered_filename);
+
+                        if (!exists) await db.withExclusiveTransactionAsync(transaction => invalidateResult(transaction, row.page_id, Date.now()));
+                    }
                 }
-            }
+            });
         },
         async measureBytes() {
             const row = await (

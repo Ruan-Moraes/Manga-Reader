@@ -96,3 +96,21 @@ describe('MOB-FEAT-016 project UI', () => {
         expect(await screen.findByRole('button')).toBeEnabled();
     });
 });
+
+it.each([
+    ['pt-BR', 'As páginas e os idiomas estão salvos neste aparelho.'],
+    ['en-US', 'The pages and language pair are saved on this device.'],
+    ['es-ES', 'Las páginas y los idiomas están guardados en este dispositivo.'],
+])('does not claim processing has not started for an already READY project in %s', async (locale, description) => {
+    await i18n.changeLanguage(locale);
+    const ready: TranslationProject = { ...project, status: 'READY', pages: project.pages.map(page => ({ ...page, status: 'READY' })) };
+    render(
+        <CreateTranslationProjectPanel
+            draft={null}
+            onDraftConsumed={jest.fn()}
+            controller={{ initialize: jest.fn(async () => ready), prepare: jest.fn(async () => ready) }}
+        />,
+    );
+    expect(await screen.findByText(description)).toBeOnTheScreen();
+    expect(screen.queryByText(i18n.t('launcher:offline.project.preparedDescription'))).toBeNull();
+});

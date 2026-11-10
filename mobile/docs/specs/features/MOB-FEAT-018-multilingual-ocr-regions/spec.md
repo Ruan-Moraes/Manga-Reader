@@ -6,158 +6,163 @@ status: verification-pending
 implementation_gate: open
 blocked_by: [MOB-FEAT-017]
 created: 2026-08-15
-updated: 2026-09-27
+updated: 2026-11-02
 supersedes: []
 superseded_by: []
 ---
 
 # MOB-FEAT-018 — OCR multilíngue e regiões de texto
 
+## Decisão vigente e aprovação da revisão
+
+Esta versão substitui integralmente as regras anteriores deste arquivo sobre
+conteúdo remoto. A direção foi aprovada explicitamente por Ruan em
+2026-11-01: processamento volátil em memória, entrega ao cliente e manutenção
+de logs operacionais sanitizados. A solicitação inclui substituir o conteúdo
+anterior das especificações. Não se trata de aprovação da implementação.
+
+Referências normativas: [MOB-DEC-008](../../../decisions/MOB-DEC-008-volatile-processing.md)
+e [arquitetura do gateway](../../../../../docs/volatile-processing-architecture.md).
+A [versão anterior](evidence/pre-volatile-spec-2026-11-01.md) e as provas
+anteriores permanecem históricas, sem herdar seus aceites para este transporte.
+
 ## Objetivo
 
-Transformar a primeira página aceita pelo gateway em regiões de texto
-estruturadas, ordenadas e vinculadas à página, usando o idioma de origem
-confirmado sem inventar detecção automática.
+Transformar os bytes da primeira página aceitos na sessão em regiões OCR
+estruturadas e ordenadas, usando o idioma confirmado, sem persistir a imagem
+ou o texto no servidor.
 
 ## Contexto e contratos relacionados
 
-- Depende de `MOB-FEAT-017`, que define consentimento, sessão anônima,
-  idempotência, upload, consulta e cancelamento.
+- Depende da revisão volátil da `MOB-FEAT-017`; tradução e renderização
+  pertencem a `MOB-FEAT-019/020`.
 - Atende RF-TRN-001..008 e controla RSK-001/002/024/033.
-- Usa Cloud Vision `DOCUMENT_TEXT_DETECTION` pelo worker separado; o mobile não
-  conhece credenciais, endpoint ou payload nativo do provider.
-- Os idiomas de origem são `ja`, `en`, `es`, `ko`, `zh-Hans`, `zh-Hant` e
-  `pt-BR`. A origem selecionada vira language hint; não há troca silenciosa.
-- Esta spec produz regiões e estágio OCR; tradução pertence a `MOB-FEAT-019`.
+- Usa Vision online `DOCUMENT_TEXT_DETECTION` regional `us` com bytes inline.
+  O mobile não conhece credenciais ou payload nativo do provider.
+- Os códigos de origem são `ja`, `en`, `es`, `ko`, `zh-Hans`, `zh-Hant`,
+  `pt-BR`; seleção explícita vira hint, sem troca silenciosa de origem.
 
 ## Requisitos e regras
 
-- O worker revalida assinatura, MIME, bytes e dimensões antes de chamar OCR.
-- A chamada é online e usa endpoint regional dos EUA, fato refletido no
-  disclosure de `MOB-FEAT-017`.
-- Resposta do provider é tratada como não confiável: limites de blocos, texto,
-  vértices, coordenadas e payload total são aplicados antes do mapeamento.
-- Cada região recebe ID opaco estável no job, ordem inteira única, texto fonte e
-  polígono de quatro vértices normalizado ao espaço da imagem original.
-- Blocos/parágrafos do provider são a unidade inicial. Nenhuma heurística afirma
-  detectar balão, personagem ou onomatopeia.
-- A ordem preserva a sequência estrutural página/bloco/parágrafo do provider;
-  após filtragem, a ordem é contígua e os IDs são determinísticos por job e
-  posição estrutural. Não há desempate direcional, reordenação por geometria
-  ou consumo do layout experimental neste contrato.
-- Texto horizontal e vertical são aceitos quando o provider os retornar. A
-  qualidade de japonês vertical permanece `verification-pending` até benchmark.
-- Região vazia, fora dos limites, duplicada ou com polígono degenerado é
-  rejeitada individualmente; inconsistência que impeça associação segura falha
-  a etapa inteira.
-- Página sem texto é resultado válido com lista vazia e segue para tradução e
-  renderização sem ser marcada `FAILED`.
-- O manifesto efêmero contém somente regiões necessárias. PostgreSQL e logs não
-  armazenam texto; o original remoto é apagado ao terminar ou falhar o OCR, com
-  failsafe máximo de uma hora.
-- O gateway publica estágio `OCR` somente enquanto essa etapa estiver ativa e
-  avança para `TRANSLATING` apenas após manifesto íntegro persistido.
+- Revalidar assinatura, formato real, tamanho, dimensões e pixels antes do OCR.
+  O decoder e a entrada não podem criar arquivos de mídia no servidor.
+- Usar somente operação online síncrona com imagem inline em memória, sem URI
+  de conteúdo remoto, batch assíncrono ou exportação de resultados do provider.
+- Tratar resposta como não confiável: limites de blocos, texto, vértices,
+  coordenadas e payload total são aplicados antes do mapeamento.
+- Cada região recebe ID opaco estável dentro da operação, ordem inteira única,
+  texto fonte e quatro vértices normalizados ao espaço do original.
+- Preservar sequência estrutural página/bloco/parágrafo do provider. Após
+  filtragem, ordem é contígua e IDs são determinísticos por operação e posição;
+  sem desempate direcional, reordenação geométrica ou layout experimental.
+- Blocos/parágrafos são a unidade inicial; não afirmar detecção de balão,
+  personagem ou onomatopeia. Escritas horizontal e vertical são aceitas quando
+  retornadas; qualidade vertical depende de benchmark e avaliação humana.
+- Região vazia, fora dos limites, duplicada ou degenerada é rejeitada
+  individualmente; inconsistência que impeça associação segura falha a etapa.
+- Página sem texto é resultado válido vazio e continua sem erro.
+- Original e regiões permanecem em memória somente enquanto necessários à
+  mesma sessão OCR→tradução→render. Não existe manifesto OCR recuperável em
+  disco/banco/bucket/fila/cache. Nenhum conteúdo entra em logs ou analytics.
+- Nenhuma chamada OCR é repetida automaticamente por replay, timeout ou
+  restart. Recibo sanitizado permite auditoria e idempotência da operação.
+- Só iniciar tradução após validar integralmente o OCR em memória. Progresso
+  comunicado reflete etapas confirmadas; não inventar atualização indisponível.
 
-## Plano de persistência
+## Dados e posse
 
-No gateway, texto/regiões ficam em manifesto privado efêmero no bucket. A tabela
-`processing_job_stages` guarda estado, timestamps, erro sanitizado, chave opaca
-do manifesto e seu SHA-256; não guarda o conteúdo textual.
+O servidor conserva apenas recibos operacionais da 017. Texto e geometria são
+valores limitados em memória com vida vinculada à sessão e ao seu dono; crash
+encerra essa posse, sem promessa de recuperação do conteúdo.
 
-No mobile, a persistência final é normalizada por `MOB-FEAT-019/021`:
-`text_regions` possui PK própria e `UNIQUE(page_id, reading_order)`;
-`text_region_vertices` usa PK `(region_id, vertex_index)` e FK cascade. Polígono
-não usa JSON porque vértices têm ordem e integridade próprias.
+No aparelho, persistência final das regiões segue `MOB-FEAT-019/021`, com
+`text_regions` e vértices normalizados por região/ordem. Não gravar OCR parcial
+como resultado local pronto. Os originais privados do app são preservados.
 
 ## Casos de erro
 
-- Language hint ausente/incompatível falha antes do provider.
-- Timeout ou indisponibilidade produz erro `ocr-unavailable`, sem traduzir ou
-  renderizar dados parciais.
-- Resposta excedente, coordenada inválida ou texto sem região produz
-  `ocr-invalid-response` e preserva original local.
-- Cancelamento solicitado durante a chamada é observado assim que o provider
-  retorna; nenhuma etapa seguinte começa.
-- Cleanup remove original e manifesto parcial mesmo em crash/reentrega.
+- Hint ausente/incompatível falha antes do provider.
+- Timeout/indisponibilidade ou resposta hostil falha com código sanitizado,
+  sem tradução/render de dados parciais e sem retry cobrado automático.
+- Cancelamento observado impede etapas seguintes; abort local não comprova que
+  o provider interrompeu uma chamada já iniciada.
+- Encerramento/restart perde buffers da sessão e não relê conteúdo remoto.
 
 ## Critérios de aceite
 
 ### AC-001 — OCR usa a origem confirmada
 
-Cada um dos sete códigos é convertido explicitamente para o hint suportado, sem
-auto-detecção ou fallback silencioso.
+Cada um dos sete códigos é convertido explicitamente para o hint suportado,
+sem detecção ou fallback silencioso; a chamada online recebe bytes inline.
 
 ### AC-002 — Regiões estruturadas e estáveis
 
-Texto, ID, ordem e quatro vértices válidos permanecem associados à mesma página
-e sobrevivem ao envelope entre OCR e tradução.
+Texto, ID, ordem e quatro vértices válidos permanecem associados à operação e
+à página durante a passagem em memória para tradução.
 
 ### AC-003 — Escritas horizontal e vertical
 
-Fixtures autorizadas provam mapeamento das duas orientações; qualidade real de
-japonês vertical fica pendente até avaliação humana.
+Fixtures autorizadas provam o mapeamento das duas orientações e os sete códigos;
+qualidade real de japonês vertical exige avaliação humana identificada.
 
 ### AC-004 — Página sem texto é válida
 
-Uma imagem decodificável sem regiões produz manifesto vazio e continua sem erro.
+Imagem decodificável sem regiões produz lista vazia válida e segue no pipeline,
+sem provider de tradução desnecessário ou resultado fictício.
 
 ### AC-005 — Falha fechada e localizada
 
-Timeout, payload hostil ou geometria inválida não produzem texto parcial nem
-alteram páginas além da primeira.
+Timeout, payload hostil, geometria incompatível ou interrupção impedem entrega
+parcial e etapas seguintes, preservam o original local e não afetam outra página.
 
-### AC-006 — Conteúdo efêmero e observabilidade segura
+### AC-006 — Conteúdo volátil e observabilidade segura
 
-Imagem/texto não entram no PostgreSQL ou logs; original é apagado após OCR e os
-eventos contêm apenas etapa, duração em bucket e código sanitizado.
+Imagem e regiões não são persistidas no servidor. Logs/recibos mantêm somente
+metadados permitidos e restart/replay não recupera conteúdo nem repete o OCR.
 
 ## Estratégia de evidência
 
-| Critério | Teste/evidência esperada                                              |
-| -------- | --------------------------------------------------------------------- |
-| AC-001   | unitário parametrizado dos sete hints e recusa de código desconhecido |
-| AC-002   | contract test Vision→manifesto com IDs, ordem e polígonos             |
-| AC-003   | fixtures horizontal/vertical + revisão humana Android                 |
-| AC-004   | fixture arte-only produz zero regiões e sucesso                       |
-| AC-005   | fault injection de timeout/payload/geometria e cancelamento           |
-| AC-006   | integração de cleanup e inspeção de banco/logs                        |
+| Critério | Teste/evidência esperada                                          |
+| -------- | ----------------------------------------------------------------- |
+| AC-001   | sete hints, bytes inline e recusa de batch/URI                    |
+| AC-002   | mapeamento, geometria, IDs/ordem e associação em memória          |
+| AC-003   | fixtures horizontal/vertical e revisão humana independente        |
+| AC-004   | fixture sem texto e zero chamada desnecessária                    |
+| AC-005   | timeouts, payloads hostis, interrupção e isolamento entre sessões |
+| AC-006   | inspeção I/O/logs, restart e replay sem conteúdo ou nova chamada  |
+
+Provas do fluxo anterior são referências históricas e exigem revalidação quando
+a interface, o ciclo de vida ou a posse dos buffers mudar. Aprovação visual ou
+linguística anterior pode orientar fixtures, sem comprovar privacidade, entrega
+ou recuperação da sessão atual.
 
 ## Gate de implementação
 
-- Estado: `open` em 2026-09-24, por autorização do plano de implementação deste marco.
-- Dependência: `MOB-FEAT-017` implementada ou em verificação.
-- `MOB-FEAT-017` está em `verification-pending`; a fundação do gateway fornece
-  sessão, upload idempotente e ambiente de teste. O adapter Vision v1 regional
-  `us`, hints e mapeamento estão codificados, testados com gRPC local e exercitados
-  em capturas reais dos sete idiomas. A auditoria de 2026-09-27 confirmou os seis
-  critérios técnicos; benchmark independente, qualidade linguística e operação
-  cloud completa permanecem abertos. Após autorização do plano de transição
-  documental, a 018 passa a `verification-pending`, com TASK-004/005 abertas.
-  O bloqueio anterior de tasks da 019 é resolvido pelo planejamento autorizado;
-  `gateway.ocr.mode=disabled` e upload real fechado continuam defaults.
-  Ver [consolidação](evidence/ocr-consolidation.md) e [drift](drift-audit.md).
+- Estado: `open` em 2026-11-02; dependência: `MOB-FEAT-017` em `verification-pending`.
+- A revisão independente da ponte 017 e seus gates documentais/técnicos foram
+  executados; o código está pronto com verificações reais explícitas abertas.
+  A abertura sequencial aplica a autorização de continuidade de Ruan e DEC-008.
+  Não aprova ambiente público, benchmark ou aquisição 021.
+- A aprovação do requisito não comprova OCR real ou admissão operacional.
+  O novo `tasks.md` deriva os critérios da revisão vigente, preservando provas
+  antigas somente como referências a avaliar.
+- A autorização de continuidade de Ruan permite abrir o gate e planejar a
+  execução quando todas as dependências atingirem `implemented` ou
+  `verification-pending`, com evidência da revisão vigente. Não declarar
+  código ausente como verificação pendente para abrir a cadeia.
 
 ## Fora de escopo
 
-- Tradução, glossário, correção humana ou detecção automática de idioma.
-- Detecção semântica de balões/personagens/onomatopeias.
-- Renderização, reader, scheduler multi-page e retry cobrado.
-- Metas numéricas de qualidade antes do benchmark.
+- Tradução/renderização dentro desta feature, detecção de balões ou reordenação por layout.
+- Glossário, edição, lote, retry automático pago ou provider direto no mobile.
 
 ## Aprovação humana
 
 - Aprovador: Ruan Moraes
-- Data: 2026-08-15
+- Data: 2026-11-01
 
-Aprovação registrada junto ao plano do vertical slice. A abertura posterior
-do gate decorre da execução técnica de `MOB-FEAT-017` em verificação.
-
-Em 2026-09-27, Ruan aprovou explicitamente preservar a sequência do Vision em
-vez da frase antiga de desempate direcional e autorizou a consolidação/auditoria.
-A alteração é normativa e documentada; não muda o mapper. A autorização para
-abrir a 019 é condicionada à implementação auditada e aos gates aprovados,
-sem iniciar tradução, encerrar verificações externas ou habilitar uploads.
-
-Ainda em 2026-09-27, Ruan aprovou o plano de transição documental e criação das
-tasks da 019. Hashes da consolidação reconferidos antes da promoção, sem nova
-execução OCR. Esta autorização não aprova qualidade linguística nem operação.
+Ruan aprovou explicitamente implementar processamento estritamente volátil,
+retorno ao cliente e logs operacionais padrão sanitizados; depois pediu substituir
+as especificações antigas por esse requisito. Aprovação inicial do slice em
+2026-08-15 permanece no histórico. Esta revisão não autoriza deploy, chamadas
+pagas, nova infraestrutura ou publicação de textos legais sem o fluxo pertinente.

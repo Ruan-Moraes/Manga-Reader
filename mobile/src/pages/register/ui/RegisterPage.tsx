@@ -161,7 +161,6 @@ export function RegisterPage() {
                     </View>
                 )}
 
-                <View style={{ height: spacing.sm }} />
                 <Button onPress={submit} loading={loading}>
                     {t('signUp.submit')}
                 </Button>

@@ -16,6 +16,7 @@ contêm instruções operacionais específicas.
 | [`testing.md`](testing.md)                           | Antes de escrever ou alterar testes                                                                       |
 | [`i18n-guide.md`](i18n-guide.md)                     | Para UI multilíngue, conteúdo localizado e labels de domínio                                              |
 | [`documentation-policy.md`](documentation-policy.md) | Para decidir quais documentos atualizar em cada tipo de mudança                                           |
+| [`ai-memory.md`](ai-memory.md)                       | Para retomar trabalho entre agentes e decidir o que salvar (ou não) na memória compartilhada              |
 
 ## Operação e evolução
 
@@ -23,6 +24,8 @@ contêm instruções operacionais específicas.
 | -------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
 | [`deployment-plan.md`](deployment-plan.md)                                                               | Plano de deploy, infraestrutura, CI/CD e segurança                                                |
 | [`translation-gateway-plan.md`](translation-gateway-plan.md)                                             | Plano aprovado do gateway separado, contrato, Cloud, schemas, privacidade e vertical slice mobile |
+| [Primeira página real](translation-real-page-2026-10-24.md) | Vision/Translation reais capturados, renderer isolado, integridade e limites; aquisição mobile pendente |
+| [`translation-validation-2026-10-24.md`](translation-validation-2026-10-24.md)                              | Gates recuperados e validação de uma página sintética na cloud, com artefatos e retirada verificados |
 | [`behavior-analytics.md`](behavior-analytics.md)                                                         | Política, thresholds, contratos e inventário da telemetria privada                                |
 | [`tech-debt.md`](tech-debt.md)                                                                           | Resumo ativo e histórico das dívidas `DT-NN`; fonte única para pendências técnicas                |
 | [`audits/2026-07-18-mangahost-config-audit.md`](audits/2026-07-18-mangahost-config-audit.md)             | Auditoria completa de configurações do produto, clientes, persistência e operação em 18/07/2026   |

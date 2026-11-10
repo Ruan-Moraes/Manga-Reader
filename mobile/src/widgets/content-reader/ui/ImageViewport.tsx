@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { memo, type ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { FlatList, type NativeScrollEvent, type NativeSyntheticEvent, ScrollView, useWindowDimensions, View, type ViewToken } from 'react-native';
 import { Image } from 'expo-image';
 
@@ -28,6 +28,8 @@ interface ImageViewportProps {
     onLocationChange(location: ReaderLocation): void;
     onValidateItem?(itemId: string): Promise<boolean>;
     onScrollPhase?: ReaderScrollHandler;
+    /** Rendered after the last page in the vertical flow (063 end of chapter). */
+    footer?: ReactNode;
 }
 
 export const ImageViewport = memo(function ImageViewport({
@@ -38,6 +40,7 @@ export const ImageViewport = memo(function ImageViewport({
     onLocationChange,
     onValidateItem,
     onScrollPhase,
+    footer,
 }: ImageViewportProps) {
     const dimensions = useWindowDimensions();
     const [viewport, setViewport] = useState({ width: dimensions.width, height: dimensions.height });
@@ -179,6 +182,7 @@ export const ImageViewport = memo(function ImageViewport({
                 initialScrollIndex={page.index}
                 getItemLayout={(_, index) => ({ length: layouts[index].height, offset: layouts[index].y, index })}
                 ItemSeparatorComponent={() => <View style={{ height: settings.gap }} />}
+                ListFooterComponent={footer ? <>{footer}</> : null}
                 onViewableItemsChanged={info => visibleChanged.current(info)}
                 viewabilityConfig={{ viewAreaCoveragePercentThreshold: 1 }}
                 onScroll={(event: NativeSyntheticEvent<NativeScrollEvent>) => updateFromOffset(event.nativeEvent.contentOffset.y)}

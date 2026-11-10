@@ -111,6 +111,33 @@ public class JdbcResultAcknowledgementRepository implements ResultAcknowledgemen
                 FROM candidates c WHERE a.job_id = c.job_id RETURNING a.job_id
                 """).param("now", timestamp(now)).param("leaseUntil", timestamp(leaseUntil)).param("limit", limit)
             .query(UUID.class).list();
+        return claims(ids, leaseUntil);
+    }
+
+    @Override
+    public List<CleanupClaim> claimForJob(UUID installationId, UUID jobRef, Instant now, Instant leaseUntil) {
+        if (!leaseUntil.isAfter(now)) throw new IllegalArgumentException("Invalid cleanup claim");
+        var ids = jdbc.sql("""
+                UPDATE processing_job_result_acknowledgements a SET next_attempt_at = :leaseUntil
+                FROM processing_jobs j
+                WHERE j.id = a.job_id AND j.installation_id = :owner AND j.job_ref = :ref
+                    AND a.completed_at IS NULL AND a.next_attempt_at <= :now
+                RETURNING a.job_id
+                """).param("owner", installationId).param("ref", jobRef)
+            .param("now", timestamp(now)).param("leaseUntil", timestamp(leaseUntil)).query(UUID.class).list();
+        return claims(ids, leaseUntil);
+    }
+
+    @Override
+    public boolean completedForJob(UUID installationId, UUID jobRef) {
+        return jdbc.sql("""
+                SELECT EXISTS (SELECT 1 FROM processing_job_result_acknowledgements a
+                    JOIN processing_jobs j ON j.id = a.job_id
+                    WHERE j.installation_id = :owner AND j.job_ref = :ref AND a.completed_at IS NOT NULL)
+                """).param("owner", installationId).param("ref", jobRef).query(Boolean.class).single();
+    }
+
+    private List<CleanupClaim> claims(List<UUID> ids, Instant leaseUntil) {
         if (ids.isEmpty()) return List.of();
         var keys = new LinkedHashMap<UUID, List<String>>();
         ids.forEach(id -> keys.put(id, new ArrayList<>()));

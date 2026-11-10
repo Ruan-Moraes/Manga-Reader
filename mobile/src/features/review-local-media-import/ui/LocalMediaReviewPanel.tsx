@@ -1,11 +1,10 @@
 import { type ReactNode, useEffect, useRef, useState } from 'react';
 import { View } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 
 import type { LocalMediaImportDraft, LocalMediaImportItem } from '@/entities/local-media-import';
 import { useResponsiveLayout, useTheme } from '@/shared/theme';
-import { AppText, Button, MediaPreviewSheet, SegmentedControl } from '@/shared/ui';
+import { AppText, Button, Icon, MediaPreviewSheet, PressableBox, PrimaryAction, SectionAction, TextAction } from '@/shared/ui';
 
 import type { ReviewViewMode } from '../config/reviewLayout';
 import { possibleDuplicateItemIds, type ReviewLocalMediaImportController, reviewLocalMediaImportController } from '../model/reviewLocalMediaImport';
@@ -20,15 +19,19 @@ interface Props {
     controller?: ReviewLocalMediaImportController;
     afterReview?: ReactNode;
     renderItemMeta?: (item: LocalMediaImportItem) => ReactNode;
+    /** With the order already confirmed, the primary action moves on instead of being a disabled "confirmed" state. */
+    onContinue?: () => void;
+    /** "Clear and start over": the host confirms and discards the selection. */
+    onRestart?: () => void;
 }
 
 const VIEW_MODES = ['grid', 'list'] as const;
 const normalizePositions = (items: LocalMediaImportItem[]): LocalMediaImportItem[] => items.map((item, position) => ({ ...item, position }));
 
-export function LocalMediaReviewPanel({ draft, onDraftChange, controller, afterReview, renderItemMeta }: Props) {
+export function LocalMediaReviewPanel({ draft, onDraftChange, controller, afterReview, renderItemMeta, onContinue, onRestart }: Props) {
     const { t } = useTranslation('launcher');
 
-    const { spacing, tokens } = useTheme();
+    const { metrics, radii, spacing, tokens } = useTheme();
     const { reviewColumns } = useResponsiveLayout();
 
     const reviewController = controller ?? reviewLocalMediaImportController;
@@ -93,23 +96,31 @@ export function LocalMediaReviewPanel({ draft, onDraftChange, controller, afterR
                 <AppText tone="muted">{t('offline.review.editing')}</AppText>
             )}
             <View style={{ gap: spacing.sm }}>
-                <Button
-                    variant="outline"
-                    disabled={actions.busy || draggingId !== null}
-                    onPress={() => void actions.addImages()}
-                    accessibilityLabel={t('offline.review.add')}
-                    leading={<Ionicons name="add-circle-outline" size={20} color={tokens.accentText} accessibilityElementsHidden />}
-                >
-                    {t('offline.review.add')}
-                </Button>
-                <Button
-                    disabled={actions.busy || draggingId !== null || !!draft.confirmedAt}
-                    loading={actions.busy}
-                    onPress={() => void actions.confirm()}
-                    accessibilityLabel={draft.confirmedAt ? t('offline.review.confirmedAction') : t('offline.review.confirm')}
-                >
-                    {draft.confirmedAt ? t('offline.review.confirmedAction') : t('offline.review.confirm')}
-                </Button>
+                <PrimaryAction>
+                    {draft.confirmedAt && onContinue ? (
+                        <Button disabled={actions.busy || draggingId !== null} onPress={onContinue} testID="review-continue">
+                            {t('offline.review.continue')}
+                        </Button>
+                    ) : (
+                        <Button
+                            disabled={actions.busy || draggingId !== null || !!draft.confirmedAt}
+                            loading={actions.busy}
+                            onPress={() => void actions.confirm()}
+                            accessibilityLabel={draft.confirmedAt ? t('offline.review.confirmedAction') : t('offline.review.confirm')}
+                        >
+                            {draft.confirmedAt ? t('offline.review.confirmedAction') : t('offline.review.confirm')}
+                        </Button>
+                    )}
+                </PrimaryAction>
+                {onRestart ? (
+                    <TextAction
+                        align="center"
+                        icon="refresh"
+                        label={t('offline.review.restart')}
+                        disabled={actions.busy || draggingId !== null}
+                        onPress={onRestart}
+                    />
+                ) : null}
             </View>
             {afterReview}
         </View>
@@ -118,15 +129,54 @@ export function LocalMediaReviewPanel({ draft, onDraftChange, controller, afterR
     return (
         <>
             <View style={{ flex: 1, gap: spacing.sm, minHeight: 0 }}>
-                <SegmentedControl
-                    label={t('offline.review.viewLabel')}
-                    description={t('offline.review.dragHint')}
-                    value={viewMode}
-                    options={VIEW_MODES}
-                    optionLabel={mode => (mode === 'grid' ? t('offline.review.viewGrid') : t('offline.review.viewList'))}
-                    onChange={setViewMode}
-                    disabled={actions.busy || draggingId !== null}
-                />
+                <View testID="local-media-review-header" style={{ alignItems: 'center', flexDirection: 'row', gap: spacing.sm }}>
+                    <AppText variant="label" style={{ flex: 1, minWidth: 0 }}>
+                        {t('offline.review.pageCount', { count: orderedItems.length })}
+                    </AppText>
+                    <SectionAction
+                        tone="accent"
+                        icon="add"
+                        label={t('offline.review.addShort')}
+                        accessibilityLabel={t('offline.review.add')}
+                        disabled={actions.busy || draggingId !== null}
+                        onPress={() => void actions.addImages()}
+                    />
+                    <View
+                        accessibilityRole="radiogroup"
+                        accessibilityLabel={t('offline.review.viewLabel')}
+                        style={{ backgroundColor: tokens.surfaceMuted, borderColor: tokens.separator, borderRadius: radii.pill, borderWidth: 1, flexDirection: 'row', padding: 3 }}
+                    >
+                        {VIEW_MODES.map(mode => {
+                            const selected = viewMode === mode;
+                            const disabled = actions.busy || draggingId !== null;
+                            return (
+                                <PressableBox
+                                    key={mode}
+                                    accessibilityRole="radio"
+                                    accessibilityLabel={mode === 'grid' ? t('offline.review.viewGrid') : t('offline.review.viewList')}
+                                    accessibilityState={{ selected, disabled }}
+                                    disabled={disabled}
+                                    onPress={() => setViewMode(mode)}
+                                    hitSlop={4}
+                                    style={{
+                                        alignItems: 'center',
+                                        backgroundColor: selected ? tokens.accent : 'transparent',
+                                        borderRadius: radii.pill,
+                                        height: 32,
+                                        justifyContent: 'center',
+                                        opacity: disabled ? 0.56 : 1,
+                                        width: 36,
+                                    }}
+                                >
+                                    <Icon name={mode === 'grid' ? 'grid-outline' : 'list-outline'} size={metrics.icon.sm} color={selected ? tokens.onAccent : tokens.muted} />
+                                </PressableBox>
+                            );
+                        })}
+                    </View>
+                </View>
+                <AppText variant="caption" tone="subtle">
+                    {t('offline.review.dragHint')}
+                </AppText>
                 <SortableReviewList
                     items={orderedItems}
                     mode={viewMode}

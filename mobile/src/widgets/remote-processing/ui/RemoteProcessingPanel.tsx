@@ -1,32 +1,63 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { View } from 'react-native';
+import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 
+import { type AcquireRemoteTranslationResultController, useAcquireRemoteTranslationResult } from '@/features/acquire-remote-translation-result';
 import { type CancelRemoteProcessingController, cancelRemoteProcessingController } from '@/features/cancel-remote-processing';
 import { type StartRemoteProcessingController, useStartRemoteProcessing } from '@/features/start-remote-processing';
 import { externalLinks } from '@/shared/config';
+import { ROUTES } from '@/shared/navigation';
 import { useTheme } from '@/shared/theme';
-import { AppDialog, AppText, Button, Card, StatusMessage } from '@/shared/ui';
+import { AppDialog, AppText, Button, Card, ProgressSteps, StatusMessage } from '@/shared/ui';
 
 interface Props {
     startController?: StartRemoteProcessingController;
     cancelController?: CancelRemoteProcessingController;
+    acquisitionController?: AcquireRemoteTranslationResultController;
+    onActivityChange?(active: boolean): void;
 }
 
-export function RemoteProcessingPanel({ startController, cancelController = cancelRemoteProcessingController }: Props) {
+function openReader(projectId: string) {
+    router.push({ pathname: ROUTES.TRANSLATION_READER, params: { projectId } });
+}
+
+export function RemoteProcessingPanel({
+    startController,
+    cancelController = cancelRemoteProcessingController,
+    acquisitionController,
+    onActivityChange,
+}: Props) {
     const { t } = useTranslation('remoteProcessing');
     const { spacing } = useTheme();
     const remote = useStartRemoteProcessing(startController);
+    const acquired = useAcquireRemoteTranslationResult(remote.attempt?.status === 'ACCEPTED' ? remote.attempt.id : null, acquisitionController, openReader);
     const [disclosureOpen, setDisclosureOpen] = useState(false);
     const [cancelling, setCancelling] = useState(false);
     const [cancelError, setCancelError] = useState<string | null>(null);
+    const active = remote.busy || acquired?.status === 'waiting' || (remote.attempt?.status === 'ACCEPTED' && acquired === null);
+
+    useEffect(() => {
+        onActivityChange?.(active);
+        return () => onActivityChange?.(false);
+    }, [active, onActivityChange]);
 
     if (remote.loading || !remote.project) return null;
 
     const capability = remote.capabilities;
     const attempt = remote.attempt;
-    const canStart = remote.project.status === 'DRAFT' && capability?.enabled === true && !remote.error;
+    const firstPage = [...remote.project.pages].sort((a, b) => a.position - b.position)[0];
+    const canStart =
+        (remote.project.status === 'DRAFT' ||
+            remote.project.status === 'FAILED' ||
+            (['QUEUED', 'PROCESSING'].includes(remote.project.status) && firstPage?.status === 'FAILED')) &&
+        firstPage &&
+        ['DRAFT', 'FAILED'].includes(firstPage.status) &&
+        capability?.enabled === true &&
+        remote.error !== 'capabilities-unavailable';
+    const isNewExecution = attempt?.status === 'REJECTED' || attempt?.status === 'FAILED';
     const statusKey = attempt ? `status.${attempt.status}` : remote.error ? `errors.${remote.error}` : null;
+    const readyProjectId = acquired?.status === 'ready' ? acquired.projectId : null;
 
     const cancel = async () => {
         if (!attempt) return;
@@ -50,41 +81,72 @@ export function RemoteProcessingPanel({ startController, cancelController = canc
                     <AppText tone="muted">{t('description')}</AppText>
                 </View>
 
-                {statusKey ? (
+                {readyProjectId ? (
+                    <StatusMessage tone="success" title={t('acquisition.ready')} description={t('acquisition.readyDescription')} />
+                ) : statusKey ? (
                     <StatusMessage
-                        tone={attempt?.status === 'ACCEPTED' ? 'success' : attempt?.status === 'CANCELLED' ? 'info' : 'warning'}
+                        tone={attempt?.status === 'ACCEPTED' || attempt?.status === 'CANCELLED' ? 'info' : 'warning'}
                         title={t(statusKey)}
-                        description={attempt?.remoteStatus ? t(`remoteStatus.${attempt.remoteStatus}`) : undefined}
+                        description={
+                            attempt?.gatewayContractVersion === '2.0' && attempt.status !== 'CREATED'
+                                ? t(`volatileReceipt.${attempt.volatileReceiptStatus ?? 'UNKNOWN'}`)
+                                : attempt?.remoteStatus
+                                  ? t(`remoteStatus.${attempt.remoteStatus}`)
+                                  : undefined
+                        }
                     />
                 ) : null}
+                {acquired && acquired.stage >= 0 ? (
+                    <ProgressSteps
+                        steps={['received', 'saved'].map(id => ({ id, label: t(`acquisition.stages.${id}`) }))}
+                        currentIndex={acquired.stage}
+                        accessibilityLabel={t('acquisition.progress')}
+                    />
+                ) : null}
+                {acquired?.error ? <StatusMessage tone="warning" title={t('acquisition.error')} description={t('acquisition.recover')} /> : null}
+                {acquired?.status === 'failed' || acquired?.status === 'cancelled' ? (
+                    <Button onPress={() => void remote.reconcile()} variant="outline">
+                        {t('actions.refresh')}
+                    </Button>
+                ) : null}
+                {readyProjectId ? <Button onPress={() => openReader(readyProjectId)}>{t('actions.openReader')}</Button> : null}
                 {cancelError ? (
                     <AppText accessibilityRole="alert" tone="danger">
                         {t(`errors.${cancelError}`)}
                     </AppText>
                 ) : null}
 
-                {!attempt && canStart ? <Button onPress={() => setDisclosureOpen(true)}>{t('actions.start')}</Button> : null}
-                {(attempt?.status === 'UNKNOWN' || attempt?.status === 'CANCEL_PENDING') && (
+                {remote.busy ? (
+                    <>
+                        <Button loading accessibilityLabel={t('actions.processing')}>
+                            {t('actions.processing')}
+                        </Button>
+                        <Button onPress={remote.interrupt} tone="danger" variant="outline">
+                            {t('actions.cancel')}
+                        </Button>
+                    </>
+                ) : null}
+                {!attempt && canStart && !remote.busy ? <Button onPress={() => setDisclosureOpen(true)}>{t('actions.start')}</Button> : null}
+                {!remote.busy && (attempt?.status === 'UNKNOWN' || attempt?.status === 'CANCEL_PENDING') && (
                     <Button loading={remote.busy} onPress={() => void remote.reconcile()} variant="outline">
                         {t('actions.check')}
                     </Button>
                 )}
-                {(attempt?.status === 'ACCEPTED' || attempt?.status === 'CANCEL_PENDING') && (
-                    <Button disabled={cancelling} loading={cancelling} onPress={() => void cancel()} tone="danger" variant="outline">
-                        {t('actions.cancel')}
-                    </Button>
-                )}
-                {(attempt?.status === 'REJECTED' || attempt?.status === 'FAILED') && (
-                    <Button loading={remote.busy} onPress={() => void remote.retry()}>
-                        {t('actions.retry')}
-                    </Button>
-                )}
+                {!remote.busy &&
+                    attempt &&
+                    ['CREATED', 'SUBMITTING', 'ACCEPTED', 'UNKNOWN', 'CANCEL_PENDING'].includes(attempt.status) &&
+                    acquired?.status !== 'ready' && (
+                        <Button disabled={cancelling} loading={cancelling} onPress={() => void cancel()} tone="danger" variant="outline">
+                            {t('actions.cancel')}
+                        </Button>
+                    )}
+                {isNewExecution && canStart && !remote.busy && <Button onPress={() => setDisclosureOpen(true)}>{t('actions.retry')}</Button>}
 
                 {capability ? (
                     <AppDialog
                         visible={disclosureOpen}
                         title={t('disclosure.title')}
-                        description={t('disclosure.description', { page: 1 })}
+                        description={t(isNewExecution ? 'disclosure.newExecution' : 'disclosure.description', { page: 1 })}
                         confirmLabel={t('disclosure.accept')}
                         cancelLabel={t('disclosure.decline')}
                         onCancel={() => setDisclosureOpen(false)}
@@ -109,13 +171,7 @@ export function RemoteProcessingPanel({ startController, cancelController = canc
                                     translation: capability.disclosure.translationLocation,
                                 })}
                             </AppText>
-                            <AppText>
-                                {t('disclosure.retention', {
-                                    originalMinutes: Math.ceil(capability.disclosure.originalRetentionSeconds / 60),
-                                    resultMinutes: Math.ceil(capability.disclosure.resultRetentionSeconds / 60),
-                                    metadataDays: capability.disclosure.metadataRetentionDays,
-                                })}
-                            </AppText>
+                            <AppText>{t('disclosure.retention')}</AppText>
                             <AppText>{t('disclosure.training', { policy: capability.disclosure.providerTrainingPolicy })}</AppText>
                             <AppText>{t('disclosure.cancellation')}</AppText>
                             <View style={{ gap: spacing.xs }}>

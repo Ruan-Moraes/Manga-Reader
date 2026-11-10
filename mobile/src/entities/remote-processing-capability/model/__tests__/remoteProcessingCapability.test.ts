@@ -2,18 +2,27 @@ import { capabilitiesAreUsable, capabilityAcceptsMedia, capabilitySupportsPair, 
 
 function fixture() {
     return {
-        contractVersion: '1.0',
+        contractVersion: '2.0',
+        transport: 'volatile-direct-response',
         gatewayKey: 'gateway-alpha',
         generatedAt: '2026-09-02T12:00:00.000Z',
         validUntil: '2026-09-02T12:05:00.000Z',
         enabled: true,
         supportedLanguages: ['ja', 'en', 'es', 'ko', 'zh-Hans', 'zh-Hant', 'pt-BR'],
         supportedPairs: [{ source: 'ja', target: 'pt-BR' }],
-        mediaLimits: { mimeTypes: ['image/jpeg'], maxBytes: 100, maxWidthPx: 100, maxHeightPx: 200, maxPixels: 20_000 },
+        mediaLimits: {
+            mimeTypes: ['image/jpeg'],
+            maxBytes: 100,
+            maxWidthPx: 100,
+            maxHeightPx: 200,
+            maxPixels: 20_000,
+            maxResultBytes: 67108864,
+            maxManifestBytes: 4194304,
+        },
         dailyInstallationQuota: 20,
         dailyGlobalQuota: 100,
         disclosure: {
-            version: 'legal-v1',
+            version: 'volatile-1',
             operatorName: 'Toonlira',
             operatorContact: 'privacy@toonlira.com',
             privacyPolicyUrl: 'https://toonlira.com/privacy',
@@ -21,16 +30,29 @@ function fixture() {
             gatewayRegion: 'southamerica-east1',
             ocrRegion: 'us',
             translationLocation: 'global',
-            originalRetentionSeconds: 3600,
-            resultRetentionSeconds: 3600,
-            metadataRetentionDays: 7,
+            contentProcessing: 'in-memory-only',
+            resultStorage: 'user-device',
+            sanitizedOperationalLogs: true,
+            idempotencyKeyFormat: 'uuid-v7',
+            receiptValiditySeconds: 604800,
             providerTrainingPolicy: 'No provider training.',
         },
     };
 }
 
 describe('MOB-FEAT-017 remote processing capabilities', () => {
-    it('parses the strict v1 contract and gates pair, media and expiry', () => {
+    it('accepts a small server clock lead without extending capability expiration', () => {
+        const parsed = remoteProcessingCapabilitiesSchema.parse(fixture());
+        const generated = Date.parse(parsed.generatedAt);
+        const expires = Date.parse(parsed.validUntil);
+
+        expect(capabilitiesAreUsable(parsed, generated - 200)).toBe(true);
+        expect(capabilitiesAreUsable(parsed, generated - 5_000)).toBe(true);
+        expect(capabilitiesAreUsable(parsed, generated - 5_001)).toBe(false);
+        expect(capabilitiesAreUsable(parsed, expires)).toBe(false);
+    });
+
+    it('parses the strict v2 contract and gates pair, media and expiry', () => {
         const parsed = remoteProcessingCapabilitiesSchema.parse(fixture());
 
         expect(capabilitiesAreUsable(parsed, Date.parse('2026-09-02T12:01:00.000Z'))).toBe(true);
@@ -57,7 +79,7 @@ describe('MOB-FEAT-017 remote processing capabilities', () => {
     it.each([
         ['unknown field', { extra: true }],
         ['http legal URL', { disclosure: { ...fixture().disclosure, privacyPolicyUrl: 'http://unsafe.test/privacy' } }],
-        ['unknown contract', { contractVersion: '2.0' }],
+        ['unknown contract', { contractVersion: '3.0' }],
         ['superseded disclosure', { disclosure: { ...fixture().disclosure, version: '2026-09-07.v1' } }],
         [
             'legacy location disclosure',

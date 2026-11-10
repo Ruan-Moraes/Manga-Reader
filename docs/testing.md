@@ -109,6 +109,24 @@ class UserControllerTest {
 
 ### Known Test Limitations
 
+
+Snapshots temporários com recuperação após reinício exigem prova entre JVMs
+reais: abandonar arquivo, encerrar o dono, reiniciar e só então admitir nova
+inspeção. Estado estático ou uma segunda instância na mesma JVM não comprova
+recuperação de processo. Conferir lock ocupado, exclusão recusada, symlink e
+resíduo legado sem posse demonstrável; não varrer nem apagar o tmp global.
+No deadline de I/O, distinguir interrupção, fechamento do stream e término
+observado da leitura. O timer deve cobrir também o render; posse e cleanup
+permanecem com o executor até a operação efetivamente terminar.
+
+
+Adapters Spring com construtor de produção e outro construtor para testes
+precisam de uma prova de criação do bean na configuração real. Instanciar o
+adapter com `new` não verifica a seleção de construtor pelo container. Usar
+`ApplicationContextRunner` com a property correspondente e SDK/cliente simulado,
+sem credenciais ou rede; indicar explicitamente o construtor injetado quando
+há mais de uma alternativa. Essa regressão cobre o bootstrap GCS da 020.
+
 Em renderização multilíngue, manifesto que preserva texto completo pode vir
 de fallback sem glyph desenhado. Separar testes dos limites/overflow de
 controles que exigem `overflow=false`, texto íntegro e imagem modificada.

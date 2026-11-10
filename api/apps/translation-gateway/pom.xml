@@ -20,6 +20,7 @@
 
     <properties>
         <java.version>25</java.version>
+        <project.build.outputTimestamp>2026-01-01T00:00:00Z</project.build.outputTimestamp>
         <testcontainers.version>1.21.4</testcontainers.version>
         <!-- Coordinated security patches not yet supplied by the Boot BOM. -->
         <jackson-bom.version>3.1.7</jackson-bom.version>

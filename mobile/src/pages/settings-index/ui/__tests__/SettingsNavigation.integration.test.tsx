@@ -119,7 +119,7 @@ describe('MOB-FEAT-008 Router/pages integration', () => {
     it('mantém fundo e intervalos do leitor após a interação nas folhas (MOB-FEAT-062 AC-006)', async () => {
         render(shell(<SettingsReaderPage />));
 
-        fireEvent.press(screen.getByRole('button', { name: 'Imagem: Automática' }));
+        fireEvent.press(screen.getByRole('button', { name: 'Imagem' }));
         fireEvent.press(within(screen.getByLabelText('Fundo')).getByRole('radio', { name: 'Papel' }));
         fireEvent(screen.getByRole('adjustable', { name: 'Saturação' }), 'accessibilityAction', {
             nativeEvent: { actionName: 'decrement' },

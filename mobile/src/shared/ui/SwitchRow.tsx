@@ -1,11 +1,13 @@
 import { useState } from 'react';
-import { Pressable, Switch, View } from 'react-native';
+import { Switch, View } from 'react-native';
 
 import { useTheme } from '@/shared/theme';
 
 import { AppText } from './AppText';
+import { PressableBox as Pressable } from './PressableBox';
 
-const SWITCH_CONTROL_WIDTH = 52;
+// O UISwitch do iOS 26 tem ~62 pt (51 antes); 64 cabe em iOS e Android sem vazar da margem.
+const SWITCH_CONTROL_WIDTH = 64;
 
 interface SwitchRowProps {
     label: string;
@@ -35,6 +37,8 @@ export function SwitchRow({ label, description, value, onChange, accessibilityHi
                 borderColor: focused ? tokens.focus : 'transparent',
                 borderRadius: radii.control,
                 borderWidth: 2,
+                // O anel de foco fica fora da coluna: o texto e o switch alinham com os demais rótulos.
+                marginHorizontal: -(spacing.xs + 2),
                 minHeight: minimumTouchTarget,
                 opacity: disabled ? 0.56 : 1,
                 paddingHorizontal: spacing.xs,

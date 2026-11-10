@@ -2,8 +2,8 @@
 id: MOB-FEAT-060
 type: feature
 title: Biblioteca em grade e tela da obra
-status: approved
-implementation_gate: blocked
+status: verification-pending
+implementation_gate: open
 blocked_by: [MOB-FEAT-055, MOB-FEAT-057]
 created: 2026-11-08
 updated: 2026-11-08
@@ -206,11 +206,10 @@ i18n e FSD desta spec passam, com arquivos mapeados no `coverage.json`.
 
 ## Gate de implementação
 
-- Estado: `blocked`
-- Dependências: MOB-FEAT-055 (`in-progress`) e MOB-FEAT-057 (`verification-pending`).
-- Motivo: a 055 está implementando obras, capítulos e lote nos mesmos arquivos (`widgets/local-translation-library`,
-  `features/manage-local-works`). O gate só abre quando a 055 chegar a `implemented` ou `verification-pending` e uma
-  pessoa abrir o gate.
+- Estado: `open` (2026-11-08)
+- Dependências: MOB-FEAT-055 e MOB-FEAT-057, ambas em `verification-pending`.
+- Abertura: Ruan Moraes, mensagem “Vamos fazer tudo, depois eu verifico se esta oK”, depois de a 055 chegar a
+  `verification-pending`. Antes disso o gate estava `blocked` porque a 055 mexia nos mesmos arquivos.
 
 ## Fora de escopo
 

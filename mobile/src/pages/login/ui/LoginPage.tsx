@@ -85,7 +85,6 @@ export function LoginPage() {
                     }
                 />
 
-                <View style={{ height: spacing.sm }} />
                 <Button onPress={submit} loading={loading} disabled={!email.trim() || !password}>
                     {t('login.submit')}
                 </Button>

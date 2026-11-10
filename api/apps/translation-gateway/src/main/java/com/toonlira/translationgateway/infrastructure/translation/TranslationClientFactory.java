@@ -2,6 +2,7 @@ package com.toonlira.translationgateway.infrastructure.translation;
 
 import com.google.cloud.translate.v3.TranslationServiceClient;
 import com.google.cloud.translate.v3.TranslationServiceSettings;
+import com.google.api.gax.core.InstantiatingExecutorProvider;
 import io.grpc.ManagedChannelBuilder;
 import java.io.IOException;
 import java.time.Duration;
@@ -17,6 +18,7 @@ public class TranslationClientFactory {
 
     static TranslationServiceSettings.Builder settings() {
         var settings = TranslationServiceSettings.newBuilder().setEndpoint(CloudTranslationAdapter.ENDPOINT)
+            .setExecutorProvider(InstantiatingExecutorProvider.newBuilder().setExecutorThreadCount(2).build())
             .setTransportChannelProvider(TranslationServiceSettings.defaultGrpcTransportProviderBuilder()
                 .setMaxInboundMessageSize(MAX_RESPONSE_BYTES)
                 .setChannelConfigurator(TranslationClientFactory::configureChannel).build());

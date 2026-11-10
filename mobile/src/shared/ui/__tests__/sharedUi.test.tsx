@@ -417,8 +417,15 @@ describe('shared ui', () => {
         const view = withTheme(<BackButton accessibilityLabel="Voltar" appearance="scrim" tone="inverse" onPress={jest.fn()} />);
         const back = view.getByRole('button', { name: 'Voltar' });
 
-        expect(back.props.style).toEqual(expect.objectContaining({ minHeight: 44, minWidth: 44, backgroundColor: 'rgba(0,0,0,0.72)' }));
+        expect(back.props.style).toEqual(expect.objectContaining({ height: 40, width: 40, backgroundColor: 'rgba(0,0,0,0.72)' }));
+        expect(40 + back.props.hitSlop * 2).toBeGreaterThanOrEqual(44);
         expect(back.props.accessibilityState).toEqual({ disabled: false });
+    });
+
+    it('usa o mesmo raio de controle do botão de ação quando solicitado', () => {
+        const view = withTheme(<BackButton accessibilityLabel="Voltar" shape="control" onPress={jest.fn()} />);
+
+        expect(view.getByRole('button', { name: 'Voltar' })).toHaveStyle({ borderRadius: 12 });
     });
 
     it('renderiza descrições em opções empilhadas sem perder seleção', () => {
@@ -566,19 +573,21 @@ describe('shared ui', () => {
         const trigger = view.getByTestId('select-field-trigger');
 
         expect(trigger.props.style).toEqual(expect.objectContaining({ minHeight: 64, backgroundColor: '#1B1B18', borderColor: '#3A3932' }));
-        expect(view.getByTestId('select-field-leading-icon')).toBeOnTheScreen();
+        // Campo limpo (pedido do usuário, 2026-11-09): sem tile à esquerda nem caixa na seta.
+        expect(view.queryByTestId('select-field-leading-icon')).toBeNull();
         expect(StyleSheet.flatten(view.getByTestId('select-field-trigger-content').props.style)).toEqual(
             expect.objectContaining({ alignItems: 'center', flexDirection: 'row', minWidth: 0, width: '100%' }),
         );
-        expect(StyleSheet.flatten(view.getByTestId('select-field-expand-affordance').props.style)).toEqual(
-            expect.objectContaining({ borderWidth: 1, height: 40, width: 40 }),
-        );
+        const affordance = StyleSheet.flatten(view.getByTestId('select-field-expand-affordance').props.style);
+        expect(affordance).toEqual(expect.objectContaining({ height: 24, width: 24 }));
+        expect(affordance.borderWidth).toBeUndefined();
         fireEvent.press(trigger);
 
         const modal = view.UNSAFE_getByType(Modal);
         expect(modal.props).toEqual(
             expect.objectContaining({
-                animationType: 'slide',
+                // A folha anima sozinha; o fundo escuro só faz fade (não desliza mais junto).
+                animationType: 'none',
                 navigationBarTranslucent: true,
                 presentationStyle: 'overFullScreen',
                 statusBarTranslucent: true,
@@ -712,7 +721,8 @@ describe('shared ui', () => {
             expect(copyStyle).toEqual(expect.objectContaining({ flexGrow: 0, flexShrink: 0, minWidth: 0, width: '100%' }));
             expect(switchStyle.alignSelf).toBe('flex-end');
         }
-        expect(switchStyle).toEqual(expect.objectContaining({ flexShrink: 0, minWidth: 52, width: 52 }));
+        // 64: o UISwitch do iOS 26 mede ~62 pt e vazava da coluna de 52 (validado no iPhone 18 Pro).
+        expect(switchStyle).toEqual(expect.objectContaining({ flexShrink: 0, minWidth: 64, width: 64 }));
         expect(switchStyle.position).toBeUndefined();
         expect(onChange).toHaveBeenCalledWith(true);
     });

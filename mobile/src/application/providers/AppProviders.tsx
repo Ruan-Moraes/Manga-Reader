@@ -9,8 +9,10 @@ import { registerLocalTranslationResultDataParticipant } from '@/entities/local-
 import { registerRemoteProcessingIdentityDataParticipant } from '@/entities/remote-processing-identity';
 import { registerTranslationProjectDataParticipant } from '@/entities/translation-project';
 import { themePreferenceToColorScheme } from '@/entities/user-setting';
+import { registerLocalWorkDataParticipant } from '@/features/manage-local-works';
 import { useSettingsStore } from '@/features/manage-settings';
 import { ThemeProvider, useTheme } from '@/shared/theme';
+import { ToastHost } from '@/shared/ui';
 
 import { LocalTranslationRecoveryGate, RemoteProcessingRecoveryGate } from '../gates';
 import { QueryProvider } from './QueryProvider';
@@ -30,6 +32,7 @@ function ThemedApplicationSurface({ children }: PropsWithChildren) {
                     <LocalTranslationRecoveryGate>{children}</LocalTranslationRecoveryGate>
                 </RemoteProcessingRecoveryGate>
             </QueryProvider>
+            <ToastHost />
         </SafeAreaProvider>
     );
 }
@@ -44,10 +47,12 @@ export function AppProviders({ children }: PropsWithChildren) {
         const unregisterImports = registerLocalMediaImportDataParticipant();
         const unregisterResults = registerLocalTranslationResultDataParticipant();
         const unregisterProjects = registerTranslationProjectDataParticipant();
+        const unregisterWorks = registerLocalWorkDataParticipant();
         const unregisterRemoteIdentity = registerRemoteProcessingIdentityDataParticipant();
 
         return () => {
             unregisterRemoteIdentity();
+            unregisterWorks();
             unregisterResults();
             unregisterProjects();
             unregisterImports();

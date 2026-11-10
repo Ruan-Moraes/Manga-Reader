@@ -26,6 +26,7 @@ export interface LocalTranslationReaderSnapshot {
 export interface OpenLocalTranslationResultController {
     load(projectId: string): Promise<LocalTranslationReaderSnapshot | null>;
     validate(projectId: string, result: LocalTranslationResult): Promise<boolean>;
+    validateOriginal(project: TranslationProject, position: number): Promise<boolean>;
     resultUri(projectId: string, result: LocalTranslationResult): string;
     originalUri(project: TranslationProject, position: number): string | null;
 }
@@ -46,6 +47,10 @@ export function createOpenLocalTranslationResultController(dependencies: Depende
             if (exists && (await dependencies.hash(uri)) === result.sha256) return true;
             await dependencies.results.invalidate(result.pageId, dependencies.now());
             return false;
+        },
+        async validateOriginal(project, position) {
+            const page = project.pages.find(candidate => candidate.position === position);
+            return page ? dependencies.files.fileExists(TRANSLATION_PROJECT_NAMESPACE, project.id, page.originalFilename) : false;
         },
         resultUri(projectId, result) {
             return dependencies.files.fileUri(TRANSLATION_RESULT_NAMESPACE, projectId, result.renderedFilename);

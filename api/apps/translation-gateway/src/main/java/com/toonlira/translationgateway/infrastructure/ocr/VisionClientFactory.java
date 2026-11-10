@@ -3,6 +3,7 @@ package com.toonlira.translationgateway.infrastructure.ocr;
 import com.google.cloud.vision.v1.ImageAnnotatorClient;
 import com.google.cloud.vision.v1.ImageAnnotatorSettings;
 import com.toonlira.translationgateway.domain.OcrLimits;
+import com.google.api.gax.core.InstantiatingExecutorProvider;
 import io.grpc.ManagedChannelBuilder;
 import java.io.IOException;
 import java.time.Duration;
@@ -18,6 +19,7 @@ public class VisionClientFactory {
 
     static ImageAnnotatorSettings.Builder settings() {
         var settings = ImageAnnotatorSettings.newBuilder().setEndpoint(ENDPOINT)
+            .setExecutorProvider(InstantiatingExecutorProvider.newBuilder().setExecutorThreadCount(2).build())
             .setTransportChannelProvider(ImageAnnotatorSettings.defaultGrpcTransportProviderBuilder()
                 .setMaxInboundMessageSize(OcrLimits.MAX_RESPONSE_BYTES)
                 .setChannelConfigurator(VisionClientFactory::configureChannel).build());

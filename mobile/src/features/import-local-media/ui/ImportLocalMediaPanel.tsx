@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 import type { LocalMediaImportDraft } from '@/entities/local-media-import';
 import { useTheme } from '@/shared/theme';
-import { AppText, Button, Card, Icon } from '@/shared/ui';
+import { AppText, Button, Card, Icon, PrimaryAction } from '@/shared/ui';
 
 import { type LocalMediaImportController } from '../model/importLocalMedia';
 import { useLocalMediaImport } from '../model/useLocalMediaImport';
@@ -14,11 +14,13 @@ interface Props {
     draft?: LocalMediaImportDraft | null;
     onDraftChange?: (draft: LocalMediaImportDraft | null) => void;
     onContinue?: () => void;
+    /** Also offers "Select images" as the screen's primary action (056 fixed footer). */
+    footerSelect?: boolean;
 }
 
-export function ImportLocalMediaPanel({ controller, draft, onDraftChange, onContinue }: Props) {
+export function ImportLocalMediaPanel({ controller, draft, onDraftChange, onContinue, footerSelect = false }: Props) {
     const { t } = useTranslation('launcher');
-    const { spacing, tokens } = useTheme();
+    const { metrics, radii, spacing, tokens } = useTheme();
     const { state, selectImages, retry } = useLocalMediaImport(controller, onDraftChange);
     const visibleDraft = draft === undefined ? state.draft : draft;
     const busy = state.status === 'loading' || state.status === 'importing';
@@ -26,9 +28,11 @@ export function ImportLocalMediaPanel({ controller, draft, onDraftChange, onCont
     const [pressed, setPressed] = useState(false);
     const continueAction =
         visibleDraft && visibleDraft.items.length > 0 && onContinue ? (
-            <Button onPress={onContinue} disabled={busy} accessibilityLabel={t('offline.import.continueAction')}>
-                {t('offline.import.continueAction')}
-            </Button>
+            <PrimaryAction>
+                <Button onPress={onContinue} disabled={busy} accessibilityLabel={t('offline.import.continueAction')}>
+                    {t('offline.import.continueAction')}
+                </Button>
+            </PrimaryAction>
         ) : null;
 
     if (visibleDraft && !errorKey) {
@@ -67,14 +71,14 @@ export function ImportLocalMediaPanel({ controller, draft, onDraftChange, onCont
                 onPressOut={() => setPressed(false)}
                 style={{
                     alignItems: 'center',
-                    backgroundColor: pressed ? tokens.surfacePressed : tokens.accentSoft,
-                    borderColor: tokens.accentBorder,
-                    borderRadius: 24,
+                    backgroundColor: pressed ? tokens.surfacePressed : 'transparent',
+                    borderColor: tokens.borderStrong,
+                    borderRadius: radii.card,
                     borderStyle: 'dashed',
-                    borderWidth: 1,
-                    gap: spacing.sm,
+                    borderWidth: 1.5,
+                    gap: metrics.rhythm.itemGap,
                     justifyContent: 'center',
-                    minHeight: 164,
+                    minHeight: 220,
                     opacity: busy ? 0.62 : 1,
                     padding: spacing.lg,
                 }}
@@ -82,20 +86,31 @@ export function ImportLocalMediaPanel({ controller, draft, onDraftChange, onCont
                 <View
                     style={{
                         alignItems: 'center',
-                        backgroundColor: tokens.accent,
-                        borderRadius: 14,
+                        backgroundColor: tokens.accentSoft,
+                        borderRadius: radii.pill,
                         height: 52,
                         justifyContent: 'center',
                         width: 52,
                     }}
                 >
-                    <Icon name="add" size={28} color={tokens.onAccent} />
+                    <Icon name="images-outline" size={metrics.icon.lg} color={tokens.accentText} />
                 </View>
-                <AppText variant="section">{t('offline.import.selectAction')}</AppText>
-                <AppText variant="caption" tone="muted" style={{ textAlign: 'center' }}>
+                <AppText variant="label">{t('offline.import.selectAction')}</AppText>
+                <AppText variant="caption" tone="subtle" style={{ textAlign: 'center' }}>
                     {t('offline.import.formats')}
                 </AppText>
             </Pressable>
+            {footerSelect && !visibleDraft ? (
+                <PrimaryAction>
+                    <Button
+                        disabled={busy}
+                        leading={<Icon name="images-outline" size={metrics.icon.md} color={tokens.onAccent} />}
+                        onPress={() => void selectImages()}
+                    >
+                        {t('offline.import.selectAction')}
+                    </Button>
+                </PrimaryAction>
+            ) : null}
 
             {state.status === 'loading' && (
                 <View accessibilityRole="progressbar" accessibilityLabel={t('offline.import.loading')} style={{ alignItems: 'center', gap: spacing.sm }}>

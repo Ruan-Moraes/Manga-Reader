@@ -1,7 +1,8 @@
 import { useTranslation } from 'react-i18next';
 
 import type { TextReaderPreferences } from '@/entities/user-setting';
-import { Button, ChoiceCards, FormSection, RangeSlider, SegmentedControl, StatusMessage } from '@/shared/ui';
+import { darkTokens, lightTokens } from '@/shared/theme';
+import { Button, FormSection, RangeSlider, SegmentedControl, StatusMessage, SwatchPicker } from '@/shared/ui';
 
 interface Props {
     value: TextReaderPreferences;
@@ -19,6 +20,13 @@ const FAMILIES = ['APP', 'SERIF'] as const;
 const SPACING = ['COMPACT', 'COMFORTABLE', 'WIDE'] as const;
 const MARGINS = ['NARROW', 'MEDIUM', 'WIDE'] as const;
 const BACKGROUNDS = ['APP', 'LIGHT', 'PAPER', 'DARK'] as const;
+// Mesmas cores do leitor de texto (`textReaderPalette`): Papel usa a superfície suave do tema claro.
+const TEXT_BACKGROUND_COLORS: Record<(typeof BACKGROUNDS)[number], string> = {
+    APP: darkTokens.bg,
+    LIGHT: lightTokens.bg,
+    PAPER: lightTokens.surfaceMuted,
+    DARK: darkTokens.bg,
+};
 
 export function TextReaderControls({ value, onChange, onReset, persistenceError, onRetry, compact = false, showReset = true }: Props) {
     const { t } = useTranslation('reader');
@@ -57,12 +65,14 @@ export function TextReaderControls({ value, onChange, onReset, persistenceError,
                 optionLabel={option => t(`text.margins.${option}`)}
                 onChange={margins => onChange({ margins })}
             />
-            <ChoiceCards
+            {/* Kit: amostras que mostram a cor; "Seguir aplicativo" aparece dividido entre claro e escuro. */}
+            <SwatchPicker
                 label={t('text.background')}
                 value={value.background}
                 options={BACKGROUNDS}
-                layout="stacked"
                 optionLabel={option => t(`text.backgrounds.${option}`)}
+                optionColor={option => TEXT_BACKGROUND_COLORS[option]}
+                optionSplit={option => (option === 'APP' ? ([lightTokens.bg, darkTokens.bg] as const) : undefined)}
                 onChange={background => onChange({ background })}
             />
             {showReset ? (

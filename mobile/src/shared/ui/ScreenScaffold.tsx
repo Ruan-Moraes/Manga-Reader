@@ -5,12 +5,14 @@ import { useTheme } from '@/shared/theme';
 import { useResponsiveLayout } from '@/shared/theme';
 
 import { AppText } from './AppText';
+import type { BackButtonShape } from './BackButton';
 import { NavigationHeader } from './NavigationHeader';
 import { PageContainer } from './PageContainer';
 
 interface ScreenScaffoldProps {
     title: string;
     backLabel: string;
+    backShape?: BackButtonShape;
     children: ReactNode;
     onBack: () => void;
     scroll?: boolean;
@@ -19,12 +21,15 @@ interface ScreenScaffoldProps {
     eyebrow?: string;
     description?: string;
     footer?: ReactNode;
+    /** Fixed below the scroll area; use `StickyActionBar` for the single primary action. */
+    stickyFooter?: ReactNode;
     contentWidth?: 'form' | 'page';
 }
 
 export function ScreenScaffold({
     title,
     backLabel,
+    backShape,
     children,
     onBack,
     scroll = true,
@@ -33,6 +38,7 @@ export function ScreenScaffold({
     eyebrow,
     description,
     footer,
+    stickyFooter,
     contentWidth = 'page',
 }: ScreenScaffoldProps) {
     const { layout, spacing } = useTheme();
@@ -40,7 +46,7 @@ export function ScreenScaffold({
     const responsive = useResponsiveLayout();
 
     return (
-        <PageContainer scroll={scroll}>
+        <PageContainer scroll={scroll} stickyFooter={stickyFooter}>
             <View
                 testID="screen-scaffold-content"
                 style={{
@@ -53,7 +59,7 @@ export function ScreenScaffold({
                     width: '100%',
                 }}
             >
-                <NavigationHeader backLabel={backLabel} onBack={onBack} title={compact ? title : undefined} action={headerAction} />
+                <NavigationHeader backLabel={backLabel} backShape={backShape} onBack={onBack} title={compact ? title : undefined} action={headerAction} />
                 <View style={{ display: compact ? 'none' : 'flex', gap: spacing.sm }}>
                     {eyebrow ? (
                         <AppText variant="eyebrow" tone="accent">

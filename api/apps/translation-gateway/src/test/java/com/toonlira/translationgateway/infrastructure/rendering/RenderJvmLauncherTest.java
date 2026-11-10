@@ -78,6 +78,18 @@ class RenderJvmLauncherTest {
         assertThat(builder.environment()).isEmpty();
     }
 
+    @Test void volatileBootArchiveNeedsOnlyItsSelectedChildAndNoRetiredContentMain() throws Exception {
+        var content = new ArrayList<>(CONTENT);
+        content.remove("BOOT-INF/classes/" + CHILD.replace('.', '/') + ".class");
+        var memoryMain = VolatileRenderChildMain.class.getName();
+        content.add("BOOT-INF/classes/" + memoryMain.replace('.', '/') + ".class");
+        var jar = archive(manifest(), content);
+        var builder = RenderJvmLauncher.builder(temporary, 256, memoryMain, List.of(jar), true);
+        assertThat(builder.command()).contains("-Dloader.main=" + memoryMain).doesNotContain("-Dloader.main=" + CHILD);
+        assertThat(builder.environment()).isEmpty();
+        rejects(List.of(jar), CHILD);
+    }
+
     @ParameterizedTest
     @ValueSource(strings = {"3.4.3", "3.5.15", "3.5.16", "4.0.0", "4.1.0", "4.1.2"})
     void unsupportedBootVersionNeverFallsBackToAnotherLauncher(String version) throws Exception {

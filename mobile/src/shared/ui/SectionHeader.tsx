@@ -12,9 +12,11 @@ interface SectionHeaderProps {
     /** Usually `SectionAction` chips. */
     children?: ReactNode;
     testID?: string;
+    /** Smaller gap to the content right below (grids whose cards already carry their own spacing). */
+    dense?: boolean;
 }
 
-export function SectionHeader({ title, count, children, testID = 'section-header' }: SectionHeaderProps) {
+export function SectionHeader({ title, count, children, testID = 'section-header', dense = false }: SectionHeaderProps) {
     const { metrics, minimumTouchTarget, radii, spacing, tokens } = useTheme();
 
     return (
@@ -25,7 +27,7 @@ export function SectionHeader({ title, count, children, testID = 'section-header
                 flexDirection: 'row',
                 gap: metrics.rhythm.itemGap,
                 justifyContent: 'space-between',
-                marginBottom: metrics.rhythm.itemGap,
+                marginBottom: dense ? spacing.xs : metrics.rhythm.itemGap,
                 minHeight: minimumTouchTarget,
             }}
         >

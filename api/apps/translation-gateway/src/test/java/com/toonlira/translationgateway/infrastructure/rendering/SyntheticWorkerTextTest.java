@@ -9,6 +9,14 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 class SyntheticWorkerTextTest {
+    @Test void cloudSmokeUsesOneKnownPortugueseSentence() {
+        var providers = new NativeRenderingWorkerProbe.Providers();
+        providers.cloudSmoke = true;
+        providers.outputChars = 8192;
+        assertThat(providers.outputText()).isEqualTo("Olá, ação e café.");
+        assertThat(providers.targetLanguage).isEqualTo("pt-BR");
+    }
+
     @ParameterizedTest @ValueSource(strings = {"ja", "en", "es", "ko", "zh-Hans", "zh-Hant", "pt-BR"})
     void createsExactUtf16LimitShapesWithRealScriptCharactersAndBreaks(String language) {
         for (int length : new int[] {32, 512, 8192}) {

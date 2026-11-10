@@ -4,16 +4,19 @@
     "actions": {
         "start": "Iniciar procesamiento",
         "check": "Comprobar envío",
-        "cancel": "Cancelar procesamiento",
-        "retry": "Intentar de nuevo"
+        "cancel": "Interrumpir en este dispositivo",
+        "retry": "Iniciar un nuevo procesamiento",
+        "openReader": "Abrir lector",
+        "processing": "Procesando y esperando la respuesta",
+        "refresh": "Actualizar estado local"
     },
     "status": {
-        "CREATED": "Preparando el envío",
+        "CREATED": "El envío aún no ha comenzado",
         "SUBMITTING": "Enviando página",
-        "ACCEPTED": "Página aceptada por el gateway",
+        "ACCEPTED": "Respuesta recibida, verificando en el dispositivo",
         "REJECTED": "El gateway rechazó el envío",
-        "UNKNOWN": "Confirmando el envío",
-        "FAILED": "No se pudo enviar",
+        "UNKNOWN": "Estado del envío desconocido",
+        "FAILED": "La entrega no se completó en este dispositivo",
         "CANCEL_PENDING": "Cancelación pendiente",
         "CANCELLED": "Procesamiento cancelado"
     },
@@ -22,7 +25,7 @@
         "OCR": "El procesamiento remoto ya comenzó.",
         "TRANSLATING": "El procesamiento remoto ya comenzó.",
         "RENDERING": "El procesamiento remoto ya comenzó.",
-        "READY": "El gateway informa que el resultado está listo; la lectura se implementará más adelante.",
+        "READY": "El resultado fue producido; la página solo estará lista tras verificarla y guardarla en este dispositivo.",
         "FAILED": "El procesamiento remoto falló.",
         "CANCEL_PENDING": "El gateway todavía está confirmando la cancelación.",
         "CANCELLED": "El gateway confirmó la cancelación.",
@@ -33,25 +36,131 @@
         "unsupported-pair": "Este par de idiomas no está disponible para procesamiento remoto.",
         "capabilities-unavailable": "El procesamiento remoto no está disponible o está desactivado.",
         "network-required": "Conéctate a internet para usar el procesamiento remoto.",
-        "submission-unknown": "Aún no se puede confirmar si se recibió la página.",
+        "submission-unknown": "La entrega no se confirmó. El contenido no puede recuperarse del servidor; consultar el recibo no repite el procesamiento.",
         "gateway-rejected": "El gateway rechazó la página sin cambiar el proyecto local.",
         "cancellation-pending": "La solicitud se envió, pero la cancelación aún no está confirmada.",
-        "cancellation-unavailable": "El procesamiento comenzó, terminó o ya no se puede cancelar.",
+        "cancellation-unavailable": "No se pudo interrumpir la entrega local. Una llamada externa ya iniciada puede continuar.",
         "storage-unavailable": "No se pudo guardar el estado seguro en este dispositivo."
     },
     "disclosure": {
         "title": "¿Autorizar el envío de la primera página?",
         "description": "La página {{page}} se enviará para reconocer texto, traducirlo y preparar una imagen traducida.",
         "network": "Se requiere internet. El procesamiento no ocurre completamente en este dispositivo.",
-        "data": "Se envían los bytes de la imagen, MIME, dimensiones, idiomas e identificadores opacos del intento. No se envían nombre, ruta, cuenta ni diálogo.",
+        "data": "Enviamos los bytes de la imagen, incluido el texto visible, MIME, dimensiones, idiomas e identificadores del intento. El texto reconocido se usa para traducir. La aplicación no añade el nombre del archivo, la ruta local ni la cuenta a la solicitud; la propia imagen puede contener datos personales.",
         "operator": "Operación: {{operator}} ({{contact}}), usando servicios de Google Cloud.",
-        "regions": "El gateway y los datos temporales permanecen en {{gateway}}. El OCR usa la región estadounidense {{ocr}}. La traducción usa el endpoint {{translation}}, sin garantía de procesamiento en EE. UU. ni en otra región específica.",
-        "retention": "El original y el resultado se conservan hasta {{originalMinutes}} y {{resultMinutes}} minutos; metadatos saneados hasta {{metadataDays}} días.",
+        "regions": "El gateway opera en {{gateway}}. El OCR usa la región estadounidense {{ocr}}. La traducción usa el endpoint {{translation}}, sin garantía de permanecer en una región específica.",
+        "retention": "La imagen, el OCR, la traducción y el resultado pasan solo por la memoria del servidor durante la sesión. La aplicación guarda el original y el resultado en este dispositivo. Mantenemos logs operativos saneados y recibos mínimos de seguridad e idempotencia, sin imágenes ni textos. La clave del recibo tiene una validez absoluta de siete días. La limpieza física depende del vencimiento de la clave, la antigüedad del recibo y la disponibilidad de la base de datos; los registros siguen una política propia.",
         "training": "Política de entrenamiento del proveedor: {{policy}}",
-        "cancellation": "Después de iniciar el procesamiento, la cancelación y eliminación pueden no ser inmediatas o posibles.",
+        "cancellation": "Desconectar no confirma la cancelación de una llamada externa en curso. Si falla la entrega, no hay contenido recuperable en el servidor; un nuevo procesamiento requiere tu decisión y puede volver a consumir los servicios.",
         "privacy": "Abrir política de privacidad",
         "terms": "Abrir términos",
         "accept": "Aceptar y enviar",
-        "decline": "Ahora no"
+        "decline": "Ahora no",
+        "newExecution": "Se iniciará una nueva ejecución de la página {{page}}, con un nuevo intento y posibles costes adicionales de los servicios. El contenido de una ejecución anterior no puede recuperarse del servidor."
+    },
+    "acquisition": {
+        "progress": "Procesamiento de la página",
+        "stages": {
+            "received": "Respuesta recibida",
+            "saved": "Guardada en el dispositivo"
+        },
+        "error": "El resultado todavía no se ha guardado",
+        "recover": "Tu original se conserva. Consultar el recibo no recupera contenido ni repite el procesamiento.",
+        "ready": "Página guardada en el dispositivo",
+        "readyDescription": "La página y el original están disponibles para leer sin conexión."
+    },
+    "volatileReceipt": {
+        "STARTED": "El último recibo indica procesamiento en curso. Esto no confirma la entrega en este dispositivo.",
+        "FINISHED": "El servidor produjo el resultado, pero esto no confirma que se guardara en este dispositivo. El contenido no se puede recuperar del servidor.",
+        "FAILED": "El recibo confirma un fallo del procesamiento remoto. Esto no es un resultado listo en este dispositivo.",
+        "UNKNOWN": "No se pudo confirmar el estado remoto. Consultar el recibo no repite el procesamiento."
+    },
+    "batch": {
+        "title": "Traducir páginas del capítulo",
+        "description": "Elige las páginas y se envían una a una. Un fallo en una página no detiene las demás.",
+        "ready": "{{ready}} de {{total}} páginas listas",
+        "progress": "Páginas terminadas: {{done}} de {{total}}",
+        "page": "Página {{page}}",
+        "stop": "Detener tras la página actual",
+        "start_one": "Traducir {{count}} página",
+        "start_other": "Traducir {{count}} páginas",
+        "disclosureTitle": "¿Autorizar el envío de las páginas seleccionadas?",
+        "disclosureDescription_one": "Se enviará {{count}} página, una a la vez, para reconocer texto, traducir y preparar una imagen traducida.",
+        "disclosureDescription_other": "Se enviarán {{count}} páginas, una a la vez, para reconocer texto, traducir y preparar una imagen traducida.",
+        "cost": "Cada página enviada puede usar los servicios y tener costo. Las páginas con resultado incierto nunca se reenvían automáticamente.",
+        "status": {
+            "idle": "en espera",
+            "pending": "en cola",
+            "processing": "procesando",
+            "saved": "guardada",
+            "failed": "falló",
+            "unknown": "resultado incierto",
+            "ready": "lista"
+        },
+        "consentTitle": "Antes de enviar",
+        "consentDetails": "Ver detalles",
+        "consentHideDetails": "Ocultar detalles",
+        "links": {
+            "intro": "Lee la ",
+            "privacy": "política de privacidad",
+            "join": " y los ",
+            "terms": "términos de uso",
+            "end": "."
+        },
+        "consentItem": {
+            "leaves": "Qué sale del dispositivo",
+            "retention": "Retención",
+            "uncertain": "Respuestas inciertas"
+        },
+        "consent": {
+            "leaves": "Las páginas elegidas salen del dispositivo, una por vez, para reconocer el texto y traducirlo. Se necesita internet.",
+            "retention": "El servidor no guarda imágenes ni textos: solo pasan por la memoria durante la sesión. Original y resultado quedan en este dispositivo.",
+            "uncertain": "Si una respuesta queda incierta, la página no se vuelve a enviar sola. Tú decides después."
+        },
+        "pageCount_one": "{{count}} página",
+        "pageCount_other": "{{count}} páginas",
+        "selectedCount_zero": "Ninguna seleccionada",
+        "selectedCount_one": "1 seleccionada",
+        "selectedCount_other": "{{count}} seleccionadas",
+        "row": {
+            "selected": "Lista para traducir",
+            "skipped": "Fuera de esta traducción",
+            "processing": "Traduciendo…",
+            "saved": "Guardada en este dispositivo",
+            "failed": "Falló. Solo esta página se reenviará.",
+            "unknown": "Respuesta incierta. Nada se reenvía solo."
+        },
+        "selectAll": "Seleccionar todas",
+        "selectNone": "Borrar selección",
+        "stopping": "Deteniendo tras la página actual…",
+        "cancelNow": "Cancelar ahora",
+        "cancelTitle": "¿Cancelar el envío ahora?",
+        "cancelDescription": "La página que se está enviando queda con resultado incierto y no se reenvía sola. Las siguientes páginas no se enviarán.",
+        "cancelConfirm": "Cancelar envío",
+        "keepSending": "Seguir enviando",
+        "uncertainTitle_one": "{{count}} página con resultado incierto",
+        "uncertainTitle_other": "{{count}} páginas con resultado incierto",
+        "uncertainDescription": "Vuelve a consultar al servidor antes de decidir. Nada se reenvía solo.",
+        "recheck": "Consultar de nuevo",
+        "closeTitle": "¿Cerrar durante el envío?",
+        "closeDescription": "Cerrar ahora interrumpe la página que se está enviando, que queda con resultado incierto.",
+        "closeConfirm": "Cerrar de todos modos"
+    },
+    "pageRetry": {
+        "running": "Traduciendo esta página",
+        "failed": "La traducción de esta página falló; se muestra el original",
+        "notTranslated": "Esta página aún no se tradujo; se muestra el original",
+        "unknown": "El resultado de esta página es incierto; no se reenviará automáticamente",
+        "action": "Toca para reintentar traducir solo esta página",
+        "stillFailed": "Aún no fue posible traducir. Se mantuvo el original.",
+        "notice": {
+            "running": "Traduciendo esta página…",
+            "failed": "La traducción falló",
+            "notTranslated": "Página sin traducir",
+            "unknown": "Resultado incierto",
+            "retry": "Toca para intentarlo de nuevo",
+            "stillFailed": "Volvió a fallar; se mantiene el original",
+            "recheck": "Toca para consultar de nuevo"
+        }
     }
 }

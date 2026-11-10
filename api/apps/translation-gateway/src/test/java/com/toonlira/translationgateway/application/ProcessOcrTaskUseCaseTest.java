@@ -1,5 +1,7 @@
 package com.toonlira.translationgateway.application;
 
+import com.toonlira.translationgateway.infrastructure.storage.LegacyStorageFixture;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
@@ -318,7 +320,7 @@ class ProcessOcrTaskUseCaseTest {
         when(persistence.originalAvailable(any(), any())).thenReturn(true);
         var properties = new GatewayProperties();
         properties.getStorage().setLocalDirectory(temporary);
-        return new ProcessOcrTaskUseCase(persistence, new LocalObjectStorageAdapter(properties),
+        return new ProcessOcrTaskUseCase(persistence, new LegacyStorageFixture(properties),
             new MediaInspectionService(), ocr, new OcrManifestService(GatewayJsonMapper.create()), properties,
             Clock.fixed(NOW, ZoneOffset.UTC), lifecycle);
     }

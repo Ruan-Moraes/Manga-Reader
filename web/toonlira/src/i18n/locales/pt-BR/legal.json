@@ -45,8 +45,8 @@
     "terms": {
         "title": "Termos de uso",
         "sub": "As regras de convívio, os limites do serviço e os seus direitos como usuário da plataforma.",
-        "updated": "07/09/2026",
-        "version": "Versão 1.0",
+        "updated": "01/11/2026",
+        "version": "Versão 1.1",
         "toc": {
             "aceite": "01. Aceite e quem somos",
             "conta": "02. Sua conta",
@@ -90,7 +90,7 @@
                 "title": "Direitos autorais",
                 "tldr": "Respeitamos os direitos dos criadores. Se você é titular de direitos e identificou violação, consulte nossa política DMCA.",
                 "p1": "O Toonlira respeita os direitos de propriedade intelectual e espera que os usuários façam o mesmo. Conteúdo disponibilizado na plataforma deve obedecer às licenças aplicáveis.",
-                "p2": "Ao selecionar uma imagem para tradução, você declara possuir os direitos, a licença ou outra autorização necessária para processá-la. O recurso se destina ao uso privado do usuário e não concede direito de publicar, distribuir ou explorar a obra traduzida."
+                "p2": "Ao selecionar uma imagem para tradução, você declara possuir os direitos, a licença ou outra autorização necessária para processá-la. O recurso se destina ao uso privado do usuário e não concede direito de publicar, distribuir ou explorar a obra traduzida. Quando habilitado, o recurso processa a imagem em memória e devolve o resultado ao aplicativo para armazenamento no aparelho. Não oferece hospedagem ou recuperação posterior desse conteúdo no servidor. Essa definição não afasta as obrigações legais do usuário ou do operador."
             },
             "pagamentos": {
                 "title": "Apoio e pagamentos",
@@ -132,8 +132,8 @@
     "privacy": {
         "title": "Política de Privacidade",
         "sub": "O que coletamos, por quê, e como você manda no que é seu.",
-        "updated": "07/09/2026",
-        "version": "Versão 1.0",
+        "updated": "01/11/2026",
+        "version": "Versão 1.1",
         "toc": {
             "tldr": "01. Resumo rápido",
             "coleta": "02. Dados coletados",
@@ -238,7 +238,7 @@
             "retencao": {
                 "title": "Retenção e exclusão",
                 "p1": "Mantemos dados de conta pelo tempo necessário às finalidades descritas ou ao cumprimento de obrigação legal. Solicitações de acesso, correção, anonimização, bloqueio, portabilidade, oposição, revogação ou exclusão podem ser enviadas ao contato desta política.",
-                "p2": "No fluxo de tradução, a imagem original remota é removida após o OCR ou, como limite de segurança, em até uma hora. O resultado e o manifesto são removidos após a confirmação de download ou em até uma hora após ficarem prontos. Metadados técnicos sanitizados do gateway são mantidos por até sete dias; originais e resultados persistidos localmente permanecem no armazenamento privado do dispositivo até serem removidos pelo usuário."
+                "p2": "No fluxo volátil, imagem, pixels, OCR, tradução e manifesto são processados em memória e entregues ao aplicativo na sessão, sem gravação de conteúdo em disco, banco, bucket ou cache persistente do servidor. O aplicativo guarda original e resultado no armazenamento privado do aparelho, sob controle do usuário. Mantemos logs operacionais sanitizados e recibos mínimos de segurança, auditoria e idempotência; eles não contêm imagens ou textos processados. A chave do recibo vale por sete dias absolutos; depois disso, a consulta retorna ausência. O recibo torna-se elegível para remoção física após sete dias de sua criação, desde que a chave também tenha vencido; a limpeza depende da disponibilidade do banco e ocorre em lotes. Logs operacionais seguem política própria, sem promessa de exclusão nesse mesmo prazo."
             },
             "seguranca": {
                 "title": "Segurança",
@@ -252,7 +252,7 @@
             },
             "internacional": {
                 "title": "Transferências internacionais",
-                "p1": "A infraestrutura principal do gateway, banco e armazenamento temporário é planejada para São Paulo, Brasil. Para OCR e tradução, a imagem e o texto extraído podem ser processados por serviços do Google Cloud nas regiões dos Estados Unidos indicadas no consentimento. A transferência ocorre para executar o serviço solicitado, com as salvaguardas contratuais e de segurança aplicáveis ao Google Cloud."
+                "p1": "O gateway é planejado para São Paulo, Brasil. O OCR síncrono usa o endpoint regional us do Cloud Vision. A tradução usa o endpoint global do Cloud Translation, sem garantia de permanência em uma região específica. O consentimento identifica esses subprocessadores e localidades antes do envio."
             },
             "dpo": {
                 "title": "Contato de privacidade",

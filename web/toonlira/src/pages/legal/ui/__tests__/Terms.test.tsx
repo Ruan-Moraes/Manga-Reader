@@ -52,8 +52,8 @@ describe('Terms', () => {
 
     it('renders version and date badges', () => {
         renderWithProviders(<Terms />);
-        expect(screen.getByText(/^versão 1\.0$/i)).toBeInTheDocument();
-        expect(screen.getByText(/07\/09\/2026/i)).toBeInTheDocument();
+        expect(screen.getByText(/^versão 1\.1$/i)).toBeInTheDocument();
+        expect(screen.getByText(/01\/11\/2026/i)).toBeInTheDocument();
     });
 
     it('renders cross-links nav', () => {

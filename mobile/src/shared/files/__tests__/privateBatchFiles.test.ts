@@ -28,6 +28,13 @@ describe('MOB-FEAT-012 private batch files', () => {
         jest.mocked(FileSystem.readDirectoryAsync).mockResolvedValue([]);
     });
 
+    it('checks whether a private batch directory remains after deletion', async () => {
+        expect(await appPrivateBatchFiles.batchExists!('local-work-covers', 'work-1')).toBe(true);
+        expect(FileSystem.getInfoAsync).toHaveBeenCalledWith('file:///documents/toonlira-private/local-work-covers/work-1/');
+        expect(await appPrivateBatchFiles.namespaceExists!('local-work-covers')).toBe(true);
+        expect(await appPrivateBatchFiles.fileSize!('local-work-covers', 'work-1', 'cover-1')).toBe(25);
+    });
+
     it('copies files sequentially without reading base64 and promotes the staging directory', async () => {
         const order: string[] = [];
         jest.mocked(FileSystem.copyAsync).mockImplementation(async ({ from }) => {

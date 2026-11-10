@@ -21,9 +21,9 @@ public class GatewaySecurityConfig {
             .requestCache(cache -> cache.disable())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/v1/capabilities", "/v1/anonymous/installations", "/v1/anonymous/sessions",
+                .requestMatchers("/v1/capabilities", "/v2/capabilities", "/v1/anonymous/installations", "/v1/anonymous/sessions",
                     "/actuator/health", "/actuator/health/**").permitAll()
-                .requestMatchers("/v1/page-jobs/**").authenticated()
+                .requestMatchers("/v1/page-jobs/**", "/v2/page-translations", "/v2/page-translations/**").authenticated()
                 .anyRequest().denyAll())
             .addFilterBefore(sessionFilter, AnonymousAuthenticationFilter.class)
             .build();

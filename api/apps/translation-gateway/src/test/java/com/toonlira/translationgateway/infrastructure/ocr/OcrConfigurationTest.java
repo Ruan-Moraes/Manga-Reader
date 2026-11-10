@@ -17,7 +17,7 @@ import org.springframework.context.annotation.Configuration;
 class OcrConfigurationTest {
     private final VisionClientFactory factory = mock(VisionClientFactory.class);
     private final ApplicationContextRunner context = new ApplicationContextRunner()
-        .withUserConfiguration(Binding.class, OcrConfiguration.class)
+        .withUserConfiguration(Binding.class, LegacyOcrConfiguration.class)
         .withBean(VisionClientFactory.class, () -> factory);
 
     @Test
@@ -73,7 +73,7 @@ class OcrConfigurationTest {
             "gateway.ocr.project-id=test-project", "gateway.storage.mode=gcs", "gateway.storage.bucket=private-fixtures")
             .run(application -> {
                 assertThat(application).hasNotFailed();
-                assertThat(application.getBean(OcrPort.class)).isInstanceOf(VisionOcrAdapter.class);
+                assertThat(application.getBean(OcrPort.class)).isInstanceOf(LegacyVisionOcrAdapter.class);
             });
         verify(factory).create();
         verify(client).close();

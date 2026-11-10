@@ -20,11 +20,11 @@ export interface TranslationPage {
 }
 
 const ALLOWED_TRANSITIONS: Readonly<Record<TranslationState, readonly TranslationState[]>> = {
-    DRAFT: ['QUEUED', 'CANCELLED'],
+    DRAFT: ['QUEUED', 'PROCESSING', 'FAILED', 'CANCELLED'],
     QUEUED: ['PROCESSING', 'FAILED', 'CANCELLED'],
     PROCESSING: ['READY', 'FAILED', 'CANCELLED'],
     READY: [],
-    FAILED: ['QUEUED', 'CANCELLED'],
+    FAILED: ['QUEUED', 'PROCESSING', 'CANCELLED'],
     CANCELLED: [],
 };
 

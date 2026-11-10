@@ -83,7 +83,26 @@
                     "title": "¿Listo para preparar?",
                     "description": "Revisa los detalles antes de crear el proyecto en el dispositivo."
                 }
-            }
+            },
+            "exitTitle": "¿Salir durante el procesamiento?",
+            "exitDescription": "El envío o guardado puede interrumpirse. Lo guardado permanecerá en este dispositivo y no se reenviará automáticamente.",
+            "exitConfirm": "Salir",
+            "exitCancel": "Continuar",
+            "cancel": "Cancelar traducción",
+            "leaveTitle": "¿Salir de la traducción?",
+            "leaveDescription": "Las páginas elegidas quedan guardadas como borrador en este dispositivo. Puedes continuar después o descartarlas ahora.",
+            "leaveKeep": "Salir y conservar borrador",
+            "leaveDiscard": "Descartar páginas",
+            "leaveStay": "Seguir aquí",
+            "draftTitle": "Hay una selección anterior",
+            "draftDescription": "Tienes {{count}} páginas elegidas de una traducción que no se envió. ¿Quieres usarlas en este capítulo?",
+            "draftKeep": "Usar esas páginas",
+            "draftDiscard": "Empezar de cero",
+            "restartTitle": "¿Limpiar y empezar de nuevo?",
+            "restartDescription": "Las páginas elegidas y su orden se descartarán de este dispositivo.",
+            "restartConfirm": "Limpiar",
+            "discarded": "Selección descartada",
+            "backPlain": "Volver"
         },
         "import": {
             "title": "Elige tus páginas",
@@ -107,6 +126,9 @@
             }
         },
         "review": {
+            "pageCount_one": "{{count}} página",
+            "pageCount_other": "{{count}} páginas",
+            "addShort": "Añadir",
             "title": "Revisa tus páginas",
             "description_one": "Revisa y organiza {{count}} página antes de confirmar.",
             "description_other": "Revisa y organiza {{count}} páginas antes de confirmar.",
@@ -137,7 +159,9 @@
             "confirmedAction": "Orden confirmado",
             "editing": "Revisa el orden y confirma cuando esté listo.",
             "confirmedTitle": "Lote revisado",
-            "confirmedDescription": "El orden está guardado en este dispositivo. Elige abajo los idiomas de traducción.",
+            "confirmedDescription": "El orden está guardado. Si cambias las páginas, confirma el orden de nuevo.",
+            "continue": "Continuar",
+            "restart": "Limpiar y empezar de nuevo",
             "errorTitle": "No se pudo actualizar el lote",
             "retry": "Intentar de nuevo",
             "errors": {
@@ -146,7 +170,61 @@
                 "storage-unavailable": "No se pudo guardar el cambio. Se restauró el último estado seguro."
             }
         },
+        "flow3": {
+            "change": "Cambiar",
+            "chapterOf": "Capítulo del {{date}}",
+            "translatePages_one": "Traducir {{count}} página",
+            "translatePages_other": "Traducir {{count}} páginas",
+            "nothingLeaves": "Nada sale del dispositivo hasta que aceptes el envío.",
+            "editPages": "Editar páginas",
+            "rowPages": "Páginas",
+            "rowLanguages": "Idiomas",
+            "rowValidation": "Revisión",
+            "validationCount": "{{ready}} de {{total}} listas",
+            "validationLater": "Después de los idiomas",
+            "confirmOnContinue": "Los idiomas se confirman al continuar.",
+            "title": { "pages": "Elige las páginas", "languages": "Confirma los idiomas", "translate": "Traducir capítulo" },
+            "description": {
+                "import": "Importa las imágenes del capítulo. Se quedan solo en este dispositivo hasta que traduzcas.",
+                "organize": "Toca una página para cambiar el orden o corregirla."
+            },
+            "steps": {
+                "pages": "Páginas",
+                "languages": "Idiomas",
+                "translate": "Traducir"
+            },
+            "counter": "Paso {{current}} de {{total}}",
+            "hint": {
+                "pages": "Elige las páginas del capítulo y revisa el orden.",
+                "languages": "Del idioma de las páginas al idioma de lectura.",
+                "translate": "Revisa dónde se guarda y traduce el capítulo."
+            },
+            "resume": "Retomar el último capítulo",
+            "summaryTitle": "Resumen",
+            "summaryPages_one": "{{count}} página",
+            "summaryPages_other": "{{count}} páginas",
+            "summaryLanguages": "{{source}} → {{target}}",
+            "summaryValidation": "Páginas revisadas",
+            "prepareAndTranslate": "Preparar y traducir",
+            "saveIn": "Guardar en: {{name}}",
+            "saveInMeta": "{{source}} → {{target}}",
+            "noWork": "Sin obra",
+            "saveTitle": "Guardar en",
+            "saveDescription": "Elige la obra que recibirá este capítulo.",
+            "saveConfirm": "Usar esta obra",
+            "chapterName": "Número o nombre del capítulo",
+            "saveChange": "Cambiar destino",
+            "linkFailed": "El capítulo se preparó, pero no entró en la obra.",
+            "linkRetry": "Intentar vincular de nuevo",
+            "close": "Cerrar"
+        },
         "languages": {
+            "shortOptions": { "pt-BR": "Portugués (BR)", "zh-Hans": "Chino simpl.", "zh-Hant": "Chino trad." },
+            "fromShort": "De",
+            "toShort": "A",
+            "swap": "Intercambiar origen y destino",
+            "usedAsTarget": "Ya elegido como destino",
+            "usedAsSource": "Ya elegido como origen",
             "title": "Elige los idiomas",
             "description": "La selección inicial es una sugerencia. La app aún no ha analizado las imágenes.",
             "source": "Idioma de origen",
@@ -199,6 +277,10 @@
             "noIssues": "Ninguna página tiene problemas.",
             "fixIssues_one": "Corregir 1 imagen",
             "fixIssues_other": "Corregir {{count}} imágenes",
+            "showIssues_one": "Ver 1 imagen con problema",
+            "showIssues_other": "Ver {{count}} imágenes con problema",
+            "removePage": "Quitar página",
+            "removePageLabel": "Quitar la página {{page}} de la selección",
             "continue": "Continuar a revisión",
             "detailEyebrow": "PÁGINA {{page}}",
             "detailIssueTitle": "Esta imagen necesita atención",
@@ -264,12 +346,15 @@
                 "file-copy-failed": "No fue posible proteger todos los archivos del proyecto.",
                 "storage-unavailable": "No fue posible guardar el proyecto en este dispositivo.",
                 "project-conflict": "Ya existe un proyecto diferente con esta identidad. Tus datos fueron preservados."
-            }
+            },
+            "preparedRetainedDescription": "Las páginas y los idiomas están guardados en este dispositivo.",
+            "chapterLinkFailed": "Proyecto preparado, pero no se pudo vincular al capítulo. Vincúlalo desde la biblioteca."
         }
     },
     "navigation": {
         "selector": "Módulos",
-        "backToSelector": "Volver a los módulos"
+        "backToSelector": "Volver a los módulos",
+        "home": "Inicio"
     },
     "sync": {
         "local": "Preferencias guardadas en este dispositivo",

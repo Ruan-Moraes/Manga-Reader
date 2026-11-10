@@ -36,6 +36,8 @@ describe('MOB-FEAT-010 public and auth routes', () => {
             ROUTES.OFFLINE_TRANSLATION,
             ROUTES.TRANSLATION_LIBRARY,
             ROUTES.TRANSLATION_READER,
+            ROUTES.WORK,
+            ROUTES.WORK_MANAGE,
             ...SETTINGS_ROUTES,
         ]);
         expect(PUBLIC_ROUTES).not.toContain(ROUTES.PLATFORM.STATUS);

@@ -1,5 +1,5 @@
-import { useContext } from 'react';
-import { Modal, Platform, Pressable, ScrollView, useWindowDimensions, View } from 'react-native';
+import { useContext, useEffect, useRef, useState } from 'react';
+import { Animated, Easing, Modal, Platform, Pressable, ScrollView, useWindowDimensions, View } from 'react-native';
 import type { ReactNode } from 'react';
 import { SafeAreaInsetsContext } from 'react-native-safe-area-context';
 
@@ -7,6 +7,7 @@ import { createShadowStyle, useTheme } from '@/shared/theme';
 
 import { AppText } from './AppText';
 import { IconButton } from './IconButton';
+import { useKeyboardOverlap } from './useKeyboardInset';
 
 export const BOTTOM_SHEET_DEFAULT_MAX_RATIO = 0.85;
 const HANDLE_AREA_HEIGHT = 24;
@@ -30,6 +31,14 @@ const DEFAULT_TEST_IDS: BottomSheetTestIDs = {
     scroll: 'bottom-sheet-scroll',
     footer: 'bottom-sheet-footer',
 };
+
+/**
+ * Espaço sob a ação do rodapé das folhas: a safe area menos 16 (a barra de início ocupa só os ~13 pt finais), nunca
+ * menos que 8; sem safe area, 16. Mantém a ação colada embaixo sem invadir a área do gesto.
+ */
+export function resolveSheetFooterBottom(insetBottom: number, spacing: { sm: number; md: number }): number {
+    return insetBottom > 0 ? Math.max(insetBottom - spacing.md, spacing.sm) : spacing.md;
+}
 
 export interface BottomSheetProps {
     visible: boolean;
@@ -65,7 +74,7 @@ export function BottomSheet({
     closeLabel,
     title,
     description,
-    headerDivider = false,
+    headerDivider = true,
     footer,
     children,
     height,
@@ -78,17 +87,48 @@ export function BottomSheet({
 
     const insets = useContext(SafeAreaInsetsContext) ?? { bottom: 0, left: 0, right: 0, top: 0 };
 
-    const { effectiveReduceMotion, layout, radii, spacing, tokens } = useTheme();
+    const { effectiveReduceMotion, layout, motion, radii, spacing, tokens } = useTheme();
 
     const ids = { ...DEFAULT_TEST_IDS, ...testIDs };
-    const maxHeight = resolveBottomSheetMaxHeight(viewportHeight, insets.top, maxHeightRatio);
+    // Teclado aberto: a folha sobe por cima dele e encolhe para caber no espaço livre; o corpo rola e o rodapé
+    // (a ação) fica sempre visível acima do teclado.
+    const { overlap: keyboard, onLayerLayout } = useKeyboardOverlap();
+    const maxHeight = Math.min(
+        resolveBottomSheetMaxHeight(viewportHeight, insets.top, maxHeightRatio),
+        keyboard > 0 ? Math.max(0, viewportHeight - insets.top - keyboard - spacing.md) : Number.POSITIVE_INFINITY,
+    );
     const hasHeader = Boolean(title || description);
-    const bottomPadding = Math.max(insets.bottom, spacing.lg);
+    const bottomPadding = keyboard > 0 ? spacing.lg : Math.max(insets.bottom, spacing.lg);
+    const footerBottomPadding = keyboard > 0 ? spacing.sm : resolveSheetFooterBottom(insets.bottom, spacing);
     const shadow = createShadowStyle('sheet', tokens.overlay);
+
+    // Animação própria (pedido de 2026-11-09): o fundo escuro só faz fade; apenas a folha sobe e desce.
+    // O Modal segue montado até a saída terminar; com redução de movimento tudo é instantâneo.
+    const [mounted, setMounted] = useState(visible);
+    const progress = useRef(new Animated.Value(0)).current;
+    const travel = height === undefined ? maxHeight : Math.min(Math.max(0, height), maxHeight);
+    useEffect(() => {
+        if (visible) setMounted(true);
+        if (effectiveReduceMotion) {
+            progress.setValue(visible ? 1 : 0);
+            if (!visible) setMounted(false);
+            return;
+        }
+        const animation = Animated.timing(progress, {
+            toValue: visible ? 1 : 0,
+            duration: visible ? motion.sheet : motion.base,
+            easing: visible ? Easing.out(Easing.cubic) : Easing.in(Easing.cubic),
+            useNativeDriver: true,
+        });
+        animation.start(({ finished }) => {
+            if (finished && !visible) setMounted(false);
+        });
+        return () => animation.stop();
+    }, [effectiveReduceMotion, motion.base, motion.sheet, progress, visible]);
 
     return (
         <Modal
-            animationType={effectiveReduceMotion ? 'none' : 'slide'}
+            animationType="none"
             navigationBarTranslucent
             onDismiss={onDismiss}
             onShow={onShow}
@@ -96,17 +136,28 @@ export function BottomSheet({
             presentationStyle="overFullScreen"
             statusBarTranslucent
             transparent
-            visible={visible}
+            visible={mounted || visible}
         >
-            <View accessibilityViewIsModal onAccessibilityEscape={onClose} style={{ flex: 1 }} testID={ids.layer}>
-                <Pressable
-                    testID={ids.backdrop}
-                    accessibilityLabel={closeLabel}
-                    accessibilityRole="button"
-                    onPress={onClose}
-                    style={{ backgroundColor: tokens.scrim, bottom: 0, left: 0, position: 'absolute', right: 0, top: 0 }}
-                />
-                <View
+            <View
+                accessibilityViewIsModal={visible}
+                accessibilityElementsHidden={!visible}
+                importantForAccessibility={visible ? 'auto' : 'no-hide-descendants'}
+                onAccessibilityEscape={onClose}
+                onLayout={onLayerLayout}
+                pointerEvents={visible ? 'auto' : 'none'}
+                style={{ flex: 1 }}
+                testID={ids.layer}
+            >
+                <Animated.View pointerEvents="box-none" style={{ bottom: 0, left: 0, opacity: progress, position: 'absolute', right: 0, top: 0 }}>
+                    <Pressable
+                        testID={ids.backdrop}
+                        accessibilityLabel={closeLabel}
+                        accessibilityRole="button"
+                        onPress={onClose}
+                        style={{ backgroundColor: tokens.scrim, bottom: 0, left: 0, position: 'absolute', right: 0, top: 0 }}
+                    />
+                </Animated.View>
+                <Animated.View
                     testID={ids.sheet}
                     style={{
                         backgroundColor: tokens.surface,
@@ -114,13 +165,14 @@ export function BottomSheet({
                         borderTopLeftRadius: radii.feature,
                         borderTopRightRadius: radii.feature,
                         borderTopWidth: 1,
-                        bottom: 0,
+                        bottom: keyboard,
                         left: 0,
                         position: 'absolute',
                         right: 0,
                         ...(height === undefined ? { maxHeight } : { height: Math.min(Math.max(0, height), maxHeight), maxHeight }),
                         ...shadow,
                         elevation: Platform.OS === 'android' ? shadow.elevation : undefined,
+                        transform: [{ translateY: progress.interpolate({ inputRange: [0, 1], outputRange: [travel, 0] }) }],
                     }}
                 >
                     <View style={{ alignItems: 'center', height: HANDLE_AREA_HEIGHT, justifyContent: 'center' }}>
@@ -143,7 +195,7 @@ export function BottomSheet({
                                 </AppText>
                             ) : null}
                             {description ? (
-                                <AppText variant="caption" tone="muted" numberOfLines={headerDivider ? 2 : undefined}>
+                                <AppText variant="caption" tone="muted">
                                     {description}
                                 </AppText>
                             ) : null}
@@ -172,15 +224,16 @@ export function BottomSheet({
                                 borderTopColor: tokens.separator,
                                 borderTopWidth: 1,
                                 gap: spacing.sm,
-                                paddingBottom: bottomPadding,
+                                // Rodapé colado: ver resolveSheetFooterBottom; 8 acima da ação.
+                                paddingBottom: footerBottomPadding,
                                 paddingHorizontal: layout.screenGutter,
-                                paddingTop: spacing.md,
+                                paddingTop: spacing.sm,
                             }}
                         >
                             {footer}
                         </View>
                     ) : null}
-                </View>
+                </Animated.View>
             </View>
         </Modal>
     );

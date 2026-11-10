@@ -1,6 +1,7 @@
 const DEVELOPMENT_APP_URL = 'http://localhost:5173';
 
 const PRODUCTION_APP_URL = 'https://toonlira-rm.firebaseapp.com';
+const LEGAL_BASE_URL = 'https://toonlira-rm.web.app/legal';
 
 const DEFAULT_APP_URL = import.meta.env.DEV
     ? DEVELOPMENT_APP_URL
@@ -42,7 +43,7 @@ export const APP_LINKS = {
     help: appHref('/help'),
     contact: appHref('/legal/contact'),
     status: appHref('/help'),
-    terms: appHref('/legal/terms'),
-    privacy: appHref('/legal/privacy'),
-    cookies: appHref('/legal/privacy#cookies'),
+    terms: `${LEGAL_BASE_URL}/terms`,
+    privacy: `${LEGAL_BASE_URL}/privacy`,
+    cookies: `${LEGAL_BASE_URL}/privacy#cookies`,
 } as const;

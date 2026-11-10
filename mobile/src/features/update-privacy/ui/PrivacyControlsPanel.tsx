@@ -12,7 +12,7 @@ import {
     usePrivacySettingsStore,
 } from '@/entities/user';
 import { useTheme } from '@/shared/theme';
-import { AppText, ChoiceCards, ConfirmSheet, FormSection, SectionStack, SegmentedControl, StatusMessage, SwitchRow } from '@/shared/ui';
+import { AppText, ChoiceCards, ConfirmDialog, FormSection, SectionStack, SegmentedControl, StatusMessage, SwitchRow } from '@/shared/ui';
 
 import { usePrivacyMutationStore } from '../model/privacyMutationStore';
 import { changeHistoryVisibility, retryPrivacyConsumers, retryPrivacyUpdate, updatePrivacy } from '../model/updatePrivacy';
@@ -37,7 +37,7 @@ export function PrivacyControlsPanel() {
 
     const closeConfirm = () => {
         setPendingConfirm(null);
-        // ConfirmSheet closes before confirming; defer the cancel so a confirmation settles first.
+        // ConfirmDialog closes before confirming; defer the cancel so a confirmation settles first.
         void Promise.resolve().then(() => settleDnt(false));
     };
 
@@ -134,8 +134,10 @@ export function PrivacyControlsPanel() {
                     tone="danger"
                 />
             )}
-            <ConfirmSheet
+            <ConfirmDialog
                 visible={pendingConfirm !== null}
+                tone="accent"
+                icon="shield-checkmark-outline"
                 onClose={closeConfirm}
                 onConfirm={confirmPending}
                 closeLabel={t('navigation.dismiss')}

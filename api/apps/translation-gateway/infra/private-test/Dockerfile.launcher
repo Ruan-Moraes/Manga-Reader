@@ -1,0 +1,4 @@
+FROM docker/compose-bin:v2.40.3@sha256:e39da8206cc48c6e2c99ce371935eef9d7eff7db600a993fd357de8b75621edf AS compose
+FROM docker:27.5.1-cli@sha256:851f91d241214e7c6db86513b270d58776379aacc5eb9c4a87e5b47115e3065c
+COPY --from=compose /docker-compose /usr/local/lib/docker/cli-plugins/docker-compose
+ENTRYPOINT ["docker", "compose"]

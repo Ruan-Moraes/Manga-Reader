@@ -1,0 +1,102 @@
+{
+  "files": [
+    {
+      "name": "tools/Dockerfile.native",
+      "path": "Dockerfile.native",
+      "sha256": "36b07b4d1fc30c445858ca94519222c1aa49b0ef662f6f4d5355b1bad8a936f5",
+      "source": "repo"
+    },
+    {
+      "name": "README.txt",
+      "path": "docs/offline-native-security-refresh-readme.txt",
+      "sha256": "be687853bc9a5253eb82179a3b6bbd44794c315f372c95156d71220e07324379",
+      "source": "repo"
+    },
+    {
+      "name": "tools/scripts/offline-oci-archive.py",
+      "path": "scripts/offline-oci-archive.py",
+      "sha256": "b93eaa885e8043ea7acb6f6c62298d32c2167dc78295c00140f17f6c3a0e87a2",
+      "source": "repo"
+    },
+    {
+      "name": "tools/scripts/rebuild-native-arm64.mjs",
+      "path": "scripts/rebuild-native-arm64.mjs",
+      "sha256": "30c046cb5ee2a6a1ab36c519711f54df64ed8298799288bdbac50e164d8b9b87",
+      "source": "repo"
+    },
+    {
+      "name": "tools/scripts/render-native-image.mjs",
+      "path": "scripts/render-native-image.mjs",
+      "sha256": "68255900da3538a40c4f35130542e42a20a90df2b262e8e63970415a34305511",
+      "source": "repo"
+    },
+    {
+      "name": "tools/scripts/render-native-package.mjs",
+      "path": "scripts/render-native-package.mjs",
+      "sha256": "2e58dd6a89655701151464d377f8cdf3ad019d956fb374568dc3e906a63fb1d6",
+      "source": "repo"
+    },
+    {
+      "name": "tools/scripts/ubuntu-base-update.mjs",
+      "path": "scripts/ubuntu-base-update.mjs",
+      "sha256": "c42cac55f35d87a0fb0e54817f954f30ae53861fdddb9158013710c94afa56b9",
+      "source": "repo"
+    },
+    {
+      "name": "tools/scripts/single-jre-proof.mjs",
+      "path": "scripts/single-jre-proof.mjs",
+      "sha256": "24557af4a6e53340ee7bdae4d1217678306ea7828b6368a1ee5d08c50141f985",
+      "source": "repo"
+    },
+    {
+      "name": "tools/scripts/single-jre-policy.mjs",
+      "path": "scripts/single-jre-policy.mjs",
+      "sha256": "647eb889500dd44ca73aa80583ff2e1fdaac399687ddd4788fa59d192f0fab94",
+      "source": "repo"
+    },
+    {
+      "name": "tools/scripts/rootfs-archive-audit.mjs",
+      "path": "scripts/rootfs-archive-audit.mjs",
+      "sha256": "d029a4d7be1da6d8293251c41137e1a349843e0e9338783d02f640e9b6d01260",
+      "source": "repo"
+    },
+    {
+      "name": "builder-arm64.tar",
+      "path": "builder-arm64.tar",
+      "sha256": "75914164b07694835ff2d7dc66a41e51a98351d73a4584a45e4c501e1e0c58d2",
+      "source": "inputs"
+    },
+    {
+      "name": "security-refresh-base-arm64.tar",
+      "path": "security-refresh-base-arm64-2026-10-27.tar",
+      "sha256": "088521b89cabaf0c6080db0a97365b8db6622f2dc2359a5b04e12b2b54cfd023",
+      "source": "inputs"
+    },
+    {
+      "name": "libwebp-1.6.0.tar.gz",
+      "path": "libwebp-1.6.0.tar.gz",
+      "sha256": "e4ab7009bf0629fd11982d4c2aa83964cf244cffba7347ecd39019a9e38c4564",
+      "source": "inputs"
+    },
+    {
+      "name": "security-refresh-proof.json",
+      "path": "security-refresh-retry-2026-10-27/result.json",
+      "readonly": true,
+      "sha256": "cf74729e761e995493ccb475609c3a3b0eef1fb5a8743e19fc00fbb629e2013d",
+      "source": "inputs"
+    },
+    {
+      "name": "tools/scripts/render-security-refresh-image.mjs",
+      "path": "scripts/render-security-refresh-image.mjs",
+      "sha256": "bad82f26e2d8186c3edd90981a93061dd77da677dc6e4f4ebdc8e2e6f6645bd5",
+      "source": "repo"
+    },
+    {
+      "name": "tools/scripts/ubuntu-security-refresh.mjs",
+      "path": "scripts/ubuntu-security-refresh.mjs",
+      "sha256": "f4bd86e2f8b039dd100146a1ad3bf420c05c4b398a2f7be1634d6fa32c612740",
+      "source": "repo"
+    }
+  ],
+  "format": "toonlira-offline-native-arm64-1"
+}

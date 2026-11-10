@@ -27,6 +27,25 @@ const BASES = Object.freeze({
   amd64:
     "eclipse-temurin@sha256:78498f30dd330b06755c1b134039dcbf8324bedb385136819dd519b842a3816a",
 });
+export const SECURITY_REFRESH = Object.freeze({
+  bases: Object.freeze({
+    arm64: "sha256:9b8d3a18dc0a468f690cd993a5de1e8020ba25c75d4d5c3dbb9c00f4edb5d82d",
+  }),
+  updates: Object.freeze({
+    libbrotli1: Object.freeze({ before: "1.1.0-2build2", after: "1.1.0-2ubuntu0.1" }),
+    zlib1g: Object.freeze({ before: "1:1.3.dfsg-3.1ubuntu2.2", after: "1:1.3.dfsg-3.1ubuntu2.3" }),
+  }),
+  hashes: Object.freeze({
+    libbrotli1: "911411fb6fdfb4ab91dd4242f5a0a5e1f47b38e003a25c8dc7730238cb323e18",
+    zlib1g: "84536bcf440cf0f988899b24b6c7df32cb9ff9f0dfa97d5e7efcc2dc088d15dc",
+  }),
+});
+const ORIGINAL = Object.freeze({ bases: BASES, updates: UPDATES });
+function selectedPolicy(profile) {
+  if (profile === "original") return ORIGINAL;
+  if (profile === "security-refresh-2026-10-27") return SECURITY_REFRESH;
+  fail();
+}
 const SECURE_APT = [
   "-o",
   "Acquire::AllowInsecureRepositories=false",
@@ -61,8 +80,9 @@ export function verifyDockerConfig(text) {
   }
 }
 
-export function verifyPlan(text, arch) {
-  if (!Object.hasOwn(BASES, arch)) fail();
+export function verifyPlan(text, arch, profile = "original") {
+  const { bases, updates } = selectedPolicy(profile);
+  if (!Object.hasOwn(bases, arch)) fail();
   const installed = new Set(),
     configured = new Set();
   for (const line of text.split("\n")) {
@@ -74,14 +94,14 @@ export function verifyPlan(text, arch) {
     if (!match) fail();
     const [, action, name, qualifier, old, version, architecture] = match;
     if (
-      !Object.hasOwn(UPDATES, name) ||
+      !Object.hasOwn(updates, name) ||
       architecture !== arch ||
       (qualifier && qualifier !== arch) ||
-      version !== UPDATES[name].after
+      version !== updates[name].after
     )
       fail();
     const seen = action === "Inst" ? installed : configured;
-    if (seen.has(name) || (action === "Inst" && old !== UPDATES[name].before))
+    if (seen.has(name) || (action === "Inst" && old !== updates[name].before))
       fail();
     seen.add(name);
   }
@@ -105,8 +125,9 @@ function inventory(text) {
   }
   return result;
 }
-export function verifyInventory(beforeText, afterText, arch) {
-  if (!Object.hasOwn(BASES, arch)) fail();
+export function verifyInventory(beforeText, afterText, arch, profile = "original") {
+  const { bases, updates } = selectedPolicy(profile);
+  if (!Object.hasOwn(bases, arch)) fail();
   const before = inventory(beforeText),
     after = inventory(afterText),
     changes = [];
@@ -118,9 +139,9 @@ export function verifyInventory(beforeText, afterText, arch) {
       ? name.slice(0, -arch.length - 1)
       : name;
     if (
-      !Object.hasOwn(UPDATES, packageName) ||
-      version !== UPDATES[packageName].before ||
-      after.get(name) !== UPDATES[packageName].after
+      !Object.hasOwn(updates, packageName) ||
+      version !== updates[packageName].before ||
+      after.get(name) !== updates[packageName].after
     )
       fail();
     changes.push({ package: name, before: version, after: after.get(name) });
@@ -132,8 +153,9 @@ export function verifyInventory(beforeText, afterText, arch) {
     fail();
   return changes;
 }
-export function verifyPackage(text, name, arch, actualHash) {
-  if (!Object.hasOwn(UPDATES, name) || !Object.hasOwn(BASES, arch)) fail();
+export function verifyPackage(text, name, arch, actualHash, profile = "original") {
+  const { bases, updates, hashes } = selectedPolicy(profile);
+  if (!Object.hasOwn(updates, name) || !Object.hasOwn(bases, arch)) fail();
   const fields = {};
   for (const line of text.split("\n")) {
     const match = line.match(
@@ -145,7 +167,7 @@ export function verifyPackage(text, name, arch, actualHash) {
   }
   if (
     fields.Package !== name ||
-    fields.Version !== UPDATES[name].after ||
+    fields.Version !== updates[name].after ||
     fields.Architecture !== arch ||
     !/^pool\/main\/[a-zA-Z0-9/_.+-]+\.deb$/.test(fields.Filename ?? "") ||
     fields.Filename.includes("..") ||
@@ -153,7 +175,8 @@ export function verifyPackage(text, name, arch, actualHash) {
     Number(fields.Size) < 1 ||
     Number(fields.Size) > 8 * 1024 * 1024 ||
     !/^[0-9a-f]{64}$/.test(fields.SHA256 ?? "") ||
-    actualHash !== fields.SHA256
+    actualHash !== fields.SHA256 ||
+    (hashes && actualHash !== hashes[name])
   )
     fail();
   return {
@@ -167,7 +190,8 @@ export function verifyPackage(text, name, arch, actualHash) {
 }
 
 /** Explicit opt-in only. Creates a new local container/image; never upgrades host or existing images. */
-export async function prepareBase(options) {
+export async function prepareBase(options, profile = "original") {
+  const { bases, updates } = selectedPolicy(profile);
   const keys = [
     "architecture",
     "destination",
@@ -179,7 +203,7 @@ export async function prepareBase(options) {
     !options ||
     Object.keys(options).length !== keys.length ||
     keys.some((key) => !Object.hasOwn(options, key)) ||
-    !Object.hasOwn(BASES, options.architecture) ||
+    !Object.hasOwn(bases, options.architecture) ||
     options["approve-two-package-install"] !== "yes" ||
     !/^unix:\/\/\/[^\n]+$/.test(options["docker-host"])
   )
@@ -250,7 +274,7 @@ export async function prepareBase(options) {
       throw new Error("base-update-command-failed");
     return result.stdout;
   };
-  const base = BASES[options.architecture];
+  const base = bases[options.architecture];
   let id, imageId, changes, proofs;
   try {
     const original = JSON.parse(
@@ -278,6 +302,8 @@ export async function prepareBase(options) {
           "--cap-add=SETGID",
           "--pids-limit=128",
           "--memory=512m",
+          "--tmpfs",
+          "/tmp:rw,nosuid,nodev,size=64m",
           "--entrypoint",
           "/bin/sh",
           base,
@@ -337,7 +363,7 @@ export async function prepareBase(options) {
       "release-signatures.log",
     );
     if ((signatures.match(/\[GNUPG:\] VALIDSIG /g) ?? []).length < 3) fail();
-    const pins = Object.entries(UPDATES).map(
+    const pins = Object.entries(updates).map(
       ([name, versions]) => `${name}=${versions.after}`,
     );
     const installArgs = [
@@ -350,7 +376,7 @@ export async function prepareBase(options) {
       ["apt-get", ...SECURE_APT, "--simulate", ...installArgs],
       "apt-plan.log",
     );
-    verifyPlan(plan, options.architecture);
+    verifyPlan(plan, options.architecture, profile);
     await exec(
       [
         "apt-get",
@@ -368,13 +394,13 @@ export async function prepareBase(options) {
     const rows = hashes.trim().split("\n");
     if (rows.length !== 2) fail();
     proofs = [];
-    for (const [name, versions] of Object.entries(UPDATES)) {
+    for (const [name, versions] of Object.entries(updates)) {
       const row = rows.find((line) =>
-        line.includes(`/${name}_${versions.after}_${options.architecture}.deb`),
+        line.includes(`/${name}_${versions.after.replace(":", "%3a")}_${options.architecture}.deb`),
       );
       if (
         !row ||
-        !/^[0-9a-f]{64}  \/tmp\/approved-packages\/[a-zA-Z0-9_.+-]+\.deb$/.test(
+        !/^[0-9a-f]{64}  \/tmp\/approved-packages\/[a-zA-Z0-9_.+%-]+\.deb$/.test(
           row,
         )
       )
@@ -384,7 +410,7 @@ export async function prepareBase(options) {
         `${name}-metadata.txt`,
       );
       proofs.push(
-        verifyPackage(metadata, name, options.architecture, row.slice(0, 64)),
+        verifyPackage(metadata, name, options.architecture, row.slice(0, 64), profile),
       );
     }
     await save("approved-plan.json", {
@@ -407,7 +433,7 @@ export async function prepareBase(options) {
       "apt-install.log",
     );
     const after = await exec(invArgs, "packages-after.tsv");
-    changes = verifyInventory(before, after, options.architecture);
+    changes = verifyInventory(before, after, options.architecture, profile);
     const jreAfter = await exec(jreCommand, "jre-after.sha256");
     if (jreAfter !== jreBefore) fail();
     imageId = (
@@ -439,7 +465,7 @@ export async function prepareBase(options) {
         fail();
     if (updated.Architecture !== original.Architecture) fail();
     await save("result.json", {
-      format: "toonlira-local-base-update-1",
+      format: profile === "original" ? "toonlira-local-base-update-1" : "toonlira-local-security-refresh-1",
       recordedAt: new Date().toISOString(),
       base,
       architecture: options.architecture,

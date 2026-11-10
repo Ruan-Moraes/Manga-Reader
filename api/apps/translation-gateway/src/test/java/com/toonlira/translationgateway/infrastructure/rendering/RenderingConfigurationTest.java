@@ -17,6 +17,10 @@ class RenderingConfigurationTest {
     private final ApplicationContextRunner context = new ApplicationContextRunner()
         .withUserConfiguration(PropertiesConfiguration.class, RenderingConfiguration.class, NativeRenderingConfiguration.class);
 
+    @Test void storageSessionRequiresExplicitSelection() {
+        assertThat(new GatewayProperties().getRendering().isStorageProcessEnabled()).isFalse();
+    }
+
     @Test void defaultNativeHeapLeavesAddressSpaceForTheMaximumJpegEncoder() throws Exception {
         var configuration = new GatewayProperties().getRendering();
         assertThat(configuration.getChildHeapMiB()).isEqualTo(128);

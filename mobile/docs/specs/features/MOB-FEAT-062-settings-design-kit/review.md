@@ -57,6 +57,81 @@
 
 - Nenhuma. Nenhuma opção, rota, request ou regra de persistência foi removida ou criada.
 
+## Ajuste visual posterior (2026-11-09, sem commit)
+
+A pedido do usuário, na tela Configurações > Leitor (escuro, iPhone 18 Pro):
+
+- O valor das linhas ("Vertical", "Automática", "18 sp") saiu da linha do título e virou coluna à direita, centrada com
+  a seta, como o `SettingsRow` do kit. A mudança é da `ListRow` e vale para todas as telas que a usam.
+- O grupo vem direto abaixo do topo, sem repetir "Leitor / Escolha uma área para ajustar." (o kit não tem); a chave
+  `settingsNavigation.readerSheets.groupDescription` foi removida dos três idiomas.
+- Linhas mais altas nesta tela: `ListRow size="large"` (20 de padding vertical e tile de 48). As alturas mínimas do
+  057/AC-012 continuam valendo para o tamanho padrão.
+
+Opções, rotas e persistência não mudaram. Captura: `docs/ui-captures/dark/design-kit-phase2-iphone18pro/062-settings-reader.png`.
+
+Padronização das folhas de Leitor (mesmo dia, a pedido), escala de 4/8:
+
+- **Rótulo e controle:** rótulo `label`, descrição `caption`, 4 entre eles e 8 até o controle (já vigente; conferido em
+  todos os controles).
+- **Entre controles:** 24 (`FormSection` compacto passou de 16 com borda inferior para 24 sem borda; a linha solta no
+  fim de cada folha sumiu). Seções vizinhas continuam separadas pelo `SectionStack`.
+- **Escolhas (Modo, Direção, Exibir controles):** o `ChoiceCards` compacto ignorava `layout="stacked"` e montava grade
+  2 + 1 com alturas diferentes; agora empilha, com 2 px de borda (como o modo normal e o `ChoiceGroup`), raio 12,
+  16 × 12 de padding e altura mínima de 56.
+- **Select:** variante padrão com 16 de padding vertical (cerca de 75 pt de altura, antes 64), raio 12 e seta para
+  baixo quando fechado (estava invertida). Testes de contrato do select seguem valendo.
+- **Switch:** texto alinhado à margem dos rótulos (anel de foco fora da coluna) e coluna do switch de 52 → 64, porque o
+  UISwitch do iOS 26 mede cerca de 62 pt e vazava da margem. O teste da `SwitchRow` foi atualizado para 64 com essa
+  justificativa.
+- O espaço visual maior em volta dos sliders vem do chip de 36 e da trilha de 44 (área de toque); mantido.
+
+Capturas: `062-sheet-navigation.png`, `062-sheet-image.png`, `062-sheet-gestures.png`, `062-sheet-text.png`.
+
+Rodapé das folhas colado à safe area (a pedido): `BottomSheet` e `ReaderPanel` passam a usar 8 acima da ação e, embaixo,
+só a safe area (16 sem ela); botões só de texto no rodapé ("Restaurar ajustes do texto", "Todos os ajustes do leitor")
+usam a altura compacta de 44. Rodapé da folha Texto: 102 → 86 pt. O teste 057/AC-003 do rodapé foi atualizado de 16
+para 8 com essa justificativa.
+
+Mais dois ajustes a pedido:
+
+- **Fundo do leitor de texto** em amostras de cor (`SwatchPicker`), como o Fundo da imagem e o kit: Claro, Papel e
+  Escuro com as cores do `textReaderPalette`; "Seguir aplicativo" dividido entre claro e escuro (`optionSplit`, novo e
+  opcional no `SwatchPicker`).
+- **Cabeçalho das folhas** com 16 de respiro e divisor: `headerDivider` do `BottomSheet` passou a valer por padrão e o
+  `ReaderPanel` ganhou o mesmo divisor (com abas, a borda das abas já separa). A descrição não é mais cortada em duas
+  linhas.
+
+Ajuda em balão e rodapé (a pedido):
+
+- **Ajuda dos sliders:** o `ControlHelp` (linha "ⓘ Sobre X" abaixo do controle) foi substituído pelo `HelpTooltip`: "?"
+  ao lado do rótulo (`RangeSlider` ganhou `help`), que abre um balão ancorado no ícone; toque fora ou no "?" fecha, e o
+  texto é anunciado ao leitor de tela. Vale para Saturação, Espaçamento e Pré-carregamento nas folhas compactas. O nome
+  acessível segue "Sobre X" (054/AC-002); `ControlHelp` foi removido e o `coverage.json` aponta para o componente novo.
+- **Rodapé:** a rodada anterior ainda deixava 56 pt sob o texto do botão. Agora o espaço sob a ação é a safe area menos
+  16 (18 pt no iPhone; a barra de início ocupa os ~13 pt finais), mínimo 8, e 16 sem safe area
+  (`resolveSheetFooterBottom`, usado pelo `BottomSheet` e pelo `ReaderPanel`). Rodapé da folha Texto: 102 → 72 pt.
+
+Rodada seguinte (a pedido):
+
+- **Select limpo:** a variante padrão do `SelectField` perdeu o tile de ícone à esquerda e a caixa da seta; fica o valor
+  e uma seta simples (24), centrados na vertical. O campo "Qualidade" continua (062/AC-006: Automática e Original).
+- **Animação das folhas:** o `Modal` do `BottomSheet` usava `slide`, que levava o fundo escuro junto com a folha. Agora o
+  `Modal` não anima; o fundo faz fade e só a folha sobe (240 ms, desacelerando) e desce (180 ms). Durante a saída a
+  camada fica oculta para acessibilidade e sem toque; com redução de movimento é instantâneo.
+- **Ícones de Configurações > Leitor:** tile de 40, igual a Configurações (o tamanho `large` saiu da `ListRow`).
+- **Voltar ("<"):** `BackButton` passa a ser quadrado com fundo `surface` e borda por padrão, igual ao fechar das folhas,
+  em todas as telas (Entrar, Cadastrar, Esqueci a senha, Configurações, biblioteca, obra); o voltar do leitor ganhou o
+  mesmo fundo. `NavigationHeader` tem 16 de respiro embaixo para nada encostar no botão.
+- **Atalhos com ícone em fundo:** `TextAction` ganhou `iconTile` (ícone num quadro de 32 com fundo suave, centrado com o
+  texto) e `align`; usado em "Abrir biblioteca local" (centralizado, como no kit) e "Retomar último capítulo".
+
+Os testes do `SelectField` (tile, caixa da seta e `animationType`) foram atualizados com essa justificativa.
+
+Depois, a pedido: as cinco linhas de Configurações > Leitor não mostram mais valor ao lado da seta ("Vertical",
+"Automática", "18 sp"); o nome acessível passou a ser só o título e o teste de AC-006 foi ajustado. "Retomar último
+capítulo" ficou centralizado.
+
 ## Conclusão
 
 Os 11 critérios estão implementados com evidência automatizada. Verdict `verification-pending` porque TASK-012

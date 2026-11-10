@@ -1,5 +1,9 @@
 # Evidência parcial — worker de tradução offline — 2026-10-02
 
+> Registro histórico do desenho anterior. Em 2026-11-01, as classes
+> referenciadas retiradas de produção foram movidas para suporte de teste. Os
+> links acompanham essa localização; não indicam código produtivo atual.
+
 Esta parcela acrescenta código e testes determinísticos. Não há chamada real ao
 Cloud Translation, uso de ADC, imagem enviada, deploy ou habilitação do gateway.
 O provider em testes é falso; isso não demonstra qualidade linguística nem
@@ -11,7 +15,7 @@ compatibilidade operacional do envelope HTML com o modelo real.
   e [testes](../../../../../../api/apps/translation-gateway/src/test/java/com/toonlira/translationgateway/infrastructure/translation/CloudTranslationAdapterTest.java):
   uma operação por página, modelo explícito, pares direcionais e preflight de
   30.000 pontos de código. Resposta sem IDs íntegros ou de outro modelo falha.
-- [Worker](../../../../../../api/apps/translation-gateway/src/main/java/com/toonlira/translationgateway/application/ProcessTranslationTaskUseCase.java)
+- [Worker](../../../../../../api/apps/translation-gateway/src/test/java/com/toonlira/translationgateway/application/ProcessTranslationTaskUseCase.java)
   e [testes](../../../../../../api/apps/translation-gateway/src/test/java/com/toonlira/translationgateway/application/ProcessTranslationTaskUseCaseTest.java):
   hash OCR conferido, claim único, página vazia sem provider, manifesto privado,
   cancelamento e falha sem segunda chamada.

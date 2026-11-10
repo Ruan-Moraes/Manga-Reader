@@ -198,7 +198,6 @@ export function ForgotPage() {
                     helperText={t('forgotPassword.emailHint')}
                 />
 
-                <View style={{ height: spacing.sm }} />
                 <Button onPress={() => void submit()} loading={loading}>
                     {t('forgotPassword.submitAction')}
                 </Button>

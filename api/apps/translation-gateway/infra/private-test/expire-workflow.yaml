@@ -1,0 +1,187 @@
+# Intended for a dedicated least-privilege identity. Deploy with VM_ID set to
+# the immutable Compute instance and address IDs before enabling the schedule.
+# A dry run reads state only. Control-plane cleanup remains separate.
+main:
+  params: [input]
+  steps:
+    - init:
+        assign:
+          - dry: ${default(map.get(input, "dryRun"), true)}
+          - vmId: ${sys.get_env("VM_ID")}
+          - ipId: ${sys.get_env("IP_ID")}
+          - ipAddress: ${sys.get_env("IP_ADDRESS")}
+          - denyFwId: ${sys.get_env("DENY_FW_ID")}
+          - allowFwId: ${sys.get_env("ALLOW_FW_ID")}
+          - denyFwUrl: https://compute.googleapis.com/compute/v1/projects/toonlira-rm/global/firewalls/tl-translate-deny-1103
+          - allowFwUrl: https://compute.googleapis.com/compute/v1/projects/toonlira-rm/global/firewalls/tl-translate-https-1103
+          - ipUrl: https://compute.googleapis.com/compute/v1/projects/toonlira-rm/regions/southamerica-east1/addresses/tl-translate-test-1103
+          - vmUrl: https://compute.googleapis.com/compute/v1/projects/toonlira-rm/zones/southamerica-east1-a/instances/tl-translate-test-1103
+          - repoUrl: https://artifactregistry.googleapis.com/v1/projects/toonlira-rm/locations/southamerica-east1/repositories/toonlira-translate-test-1103
+    - time_gate:
+        switch:
+          - condition: ${not dry and sys.now() < 1796569200}
+            raise: Expiry deadline has not arrived
+    - check_vm:
+        call: optional_get
+        args:
+          url: ${vmUrl}
+        result: vm
+    - validate_vm:
+        switch:
+          - condition: ${vm != null and (string(vm.id) != vmId or map.get(vm.labels, "toonlira_test") != "translation")}
+            raise: VM identity mismatch
+          - condition: ${vm != null and not dry}
+            next: delete_vm
+        next: check_ip
+    - delete_vm:
+        call: http.delete
+        args:
+          url: ${vmUrl}
+          auth:
+            type: OAuth2
+        next: wait_vm
+    - wait_vm:
+        call: wait_absent
+        args:
+          url: ${vmUrl}
+    - check_ip:
+        call: optional_get
+        args:
+          url: ${ipUrl}
+        result: ip
+    - validate_ip:
+        switch:
+          - condition: ${ip != null and (string(ip.id) != ipId or ip.description != "toonlira-translation-test-20261103" or ip.addressType != "EXTERNAL" or ip.address != ipAddress)}
+            raise: Address identity mismatch
+          - condition: ${ip != null and not dry and ip.status != "RESERVED"}
+            raise: Address still in use or not ready
+          - condition: ${ip != null and not dry}
+            next: delete_ip
+        next: check_allow_fw
+    - delete_ip:
+        call: http.delete
+        args:
+          url: ${ipUrl}
+          auth:
+            type: OAuth2
+    - wait_ip:
+        call: wait_absent
+        args:
+          url: ${ipUrl}
+    - check_allow_fw:
+        call: optional_get
+        args:
+          url: ${allowFwUrl}
+        result: allowFw
+    - validate_allow_fw:
+        switch:
+          - condition: ${allowFw != null and (string(allowFw.id) != allowFwId or allowFw.description != "toonlira-translation-test-20261103")}
+            raise: Allow firewall identity mismatch
+          - condition: ${allowFw != null and not dry}
+            next: delete_allow_fw
+        next: check_deny_fw
+    - delete_allow_fw:
+        call: http.delete
+        args:
+          url: ${allowFwUrl}
+          auth:
+            type: OAuth2
+    - wait_allow_fw:
+        call: wait_absent
+        args:
+          url: ${allowFwUrl}
+    - check_deny_fw:
+        call: optional_get
+        args:
+          url: ${denyFwUrl}
+        result: denyFw
+    - validate_deny_fw:
+        switch:
+          - condition: ${denyFw != null and (string(denyFw.id) != denyFwId or denyFw.description != "toonlira-translation-test-20261103")}
+            raise: Deny firewall identity mismatch
+          - condition: ${denyFw != null and not dry}
+            next: delete_deny_fw
+        next: check_repo
+    - delete_deny_fw:
+        call: http.delete
+        args:
+          url: ${denyFwUrl}
+          auth:
+            type: OAuth2
+    - wait_deny_fw:
+        call: wait_absent
+        args:
+          url: ${denyFwUrl}
+    - check_repo:
+        call: optional_get
+        args:
+          url: ${repoUrl}
+        result: repo
+    - validate_repo:
+        switch:
+          - condition: ${repo != null and (repo.createTime != "2026-11-03T11:49:27.843265Z" or map.get(repo.labels, "toonlira-test") != "translation")}
+            raise: Registry identity mismatch
+          - condition: ${repo != null and not dry}
+            next: delete_repo
+        next: done
+    - delete_repo:
+        call: http.delete
+        args:
+          url: ${repoUrl}
+          auth:
+            type: OAuth2
+    - wait_repo:
+        call: wait_absent
+        args:
+          url: ${repoUrl}
+    - done:
+        return: ${"dryRun=" + string(dry)}
+
+optional_get:
+  params: [url]
+  steps:
+    - request:
+        try:
+          call: http.get
+          args:
+            url: ${url}
+            auth:
+              type: OAuth2
+          result: response
+        except:
+          as: e
+          steps:
+            - missing:
+                switch:
+                  - condition: ${map.get(e, "code") == 404}
+                    return: null
+            - fail:
+                raise: ${e}
+    - found:
+        return: ${response.body}
+
+wait_absent:
+  params: [url]
+  steps:
+    - initialize:
+        assign:
+          - attempts: 0
+    - poll:
+        call: optional_get
+        args:
+          url: ${url}
+        result: current
+    - check:
+        switch:
+          - condition: ${current == null}
+            return: absent
+          - condition: ${attempts >= 40}
+            raise: Resource deletion not confirmed
+    - pause:
+        call: sys.sleep
+        args:
+          seconds: 15
+    - count:
+        assign:
+          - attempts: ${attempts + 1}
+        next: poll

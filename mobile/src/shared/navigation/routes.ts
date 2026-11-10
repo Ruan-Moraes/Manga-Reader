@@ -4,6 +4,8 @@ export const ROUTES = {
     OFFLINE_TRANSLATION: '/offline-translation',
     TRANSLATION_LIBRARY: '/translation-library',
     TRANSLATION_READER: '/translation-reader/[projectId]',
+    WORK: '/work/[workId]',
+    WORK_MANAGE: '/work/[workId]/manage',
     READER_PREVIEW_NOVEL: '/reader-preview/novel',
     PLATFORM: {
         STATUS: '/platform/status',
@@ -47,6 +49,8 @@ export const PUBLIC_ROUTES = [
     ROUTES.OFFLINE_TRANSLATION,
     ROUTES.TRANSLATION_LIBRARY,
     ROUTES.TRANSLATION_READER,
+    ROUTES.WORK,
+    ROUTES.WORK_MANAGE,
     ...SETTINGS_ROUTES,
 ] as const;
 export type SettingsRoute = (typeof SETTINGS_ROUTES)[number];

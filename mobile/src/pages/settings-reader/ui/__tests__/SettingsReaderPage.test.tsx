@@ -44,21 +44,25 @@ describe('MOB-FEAT-062 Configurações > Leitor', () => {
         });
     });
 
-    it('AC-006 mostra cinco linhas com tile e o valor atual', () => {
+    // Sem valor ao lado da seta (pedido do usuário, 2026-11-09): as linhas mostram só título e descrição.
+    it('AC-006 mostra cinco linhas com tile, sem valor ao lado da seta', () => {
         render(shell(<SettingsReaderPage />));
 
-        expect(screen.getByRole('button', { name: 'Navegação: Vertical' })).toBeOnTheScreen();
-        expect(screen.getByRole('button', { name: 'Imagem: Automática' })).toBeOnTheScreen();
+        expect(screen.getByRole('button', { name: 'Navegação' })).toBeOnTheScreen();
+        expect(screen.queryByText('Vertical')).toBeNull();
+        expect(screen.getByRole('button', { name: 'Imagem' })).toBeOnTheScreen();
+        expect(screen.queryByText('Automática')).toBeNull();
         expect(screen.getByRole('button', { name: 'Comportamento' })).toBeOnTheScreen();
         expect(screen.getByRole('button', { name: 'Gestos do leitor' })).toBeOnTheScreen();
-        expect(screen.getByRole('button', { name: /^Texto e aparência: \d+ sp$/ })).toBeOnTheScreen();
+        expect(screen.getByRole('button', { name: 'Texto e aparência' })).toBeOnTheScreen();
+        expect(screen.queryByText(/^\d+ sp$/)).toBeNull();
         expect(screen.queryByTestId('reader-settings-sheet')).toBeNull();
     });
 
     it('AC-006 Navegação mantém modo, direção e o ajuste Original', () => {
         render(shell(<SettingsReaderPage />));
 
-        openSheet('Navegação: Vertical');
+        openSheet('Navegação');
         expect(screen.getByRole('header', { name: 'Navegação' })).toBeOnTheScreen();
         expect(screen.getByRole('radio', { name: 'Paginado' })).toBeOnTheScreen();
         expect(screen.getByRole('radio', { name: 'Webtoon' })).toBeOnTheScreen();
@@ -70,7 +74,7 @@ describe('MOB-FEAT-062 Configurações > Leitor', () => {
     it('AC-006 Imagem mantém a qualidade disponível de hoje e o fundo', () => {
         render(shell(<SettingsReaderPage />));
 
-        openSheet('Imagem: Automática');
+        openSheet('Imagem');
         fireEvent.press(screen.getByRole('button', { name: 'Qualidade: Automática' }));
 
         expect(screen.getByRole('radio', { name: 'Original' })).toBeOnTheScreen();
@@ -93,7 +97,7 @@ describe('MOB-FEAT-062 Configurações > Leitor', () => {
         useSettingsStore.setState({ textReader: { ...useSettingsStore.getState().textReader, fontSize: 24 } });
         render(shell(<SettingsReaderPage />));
 
-        openSheet('Texto e aparência: 24 sp');
+        openSheet('Texto e aparência');
 
         expect(screen.getByTestId('bottom-sheet-footer')).toBeOnTheScreen();
         expect(within(screen.getByTestId('bottom-sheet-footer')).getByRole('button', { name: 'Restaurar ajustes do texto' })).toBeOnTheScreen();

@@ -182,4 +182,14 @@ describe('MOB-FEAT-012 local media import controller', () => {
         await expect(setup.files.fileExists('local-media-imports', outcome.draft.id, outcome.draft.items[0].localFilename)).resolves.toBe(true);
         expect(outcome.draft.items[0]).not.toHaveProperty('uri');
     });
+
+    it('descarta a seleção não enviada: rascunho e arquivos privados (2026-11-10)', async () => {
+        const { controller, files, repository, getActive } = fixture({ active: previousDraft });
+
+        await controller.discard?.();
+
+        expect(repository.clear).toHaveBeenCalledTimes(1);
+        expect(files.removeBatch).toHaveBeenCalledWith('local-media-imports', 'draft-old');
+        expect(getActive()).toBeNull();
+    });
 });

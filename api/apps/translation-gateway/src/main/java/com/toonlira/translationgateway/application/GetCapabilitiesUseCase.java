@@ -94,6 +94,10 @@ public class GetCapabilitiesUseCase {
     }
 
     private void validateConfiguration() {
+        if (properties.isVolatileProcessingEnabled()) {
+            VolatileGatewayPolicy.validate(properties);
+            return;
+        }
         var disclosure = properties.getDisclosure();
         boolean valid = GATEWAY_KEY.matcher(properties.getKey()).matches()
             && positiveDurations()

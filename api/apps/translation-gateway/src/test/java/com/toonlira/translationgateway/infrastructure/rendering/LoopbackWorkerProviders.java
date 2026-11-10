@@ -16,7 +16,7 @@ import com.toonlira.translationgateway.domain.OcrManifest;
 import com.toonlira.translationgateway.domain.translation.TranslationRequest;
 import com.toonlira.translationgateway.domain.translation.TranslationResponse;
 import com.toonlira.translationgateway.infrastructure.ocr.FakeVisionServer;
-import com.toonlira.translationgateway.infrastructure.ocr.VisionOcrAdapter;
+import com.toonlira.translationgateway.infrastructure.ocr.LegacyVisionOcrAdapter;
 import com.toonlira.translationgateway.infrastructure.translation.CloudTranslationAdapter;
 import com.toonlira.translationgateway.infrastructure.translation.FakeTranslationServer;
 import java.nio.charset.StandardCharsets;
@@ -32,7 +32,7 @@ final class LoopbackWorkerProviders implements AutoCloseable {
     private static final Pattern REGION = Pattern.compile("(<p data-region=\"[0-9a-f-]{36}\">)[^<>]*(</p>)");
     private final FakeVisionServer visionServer;
     private final FakeTranslationServer translationServer;
-    private final VisionOcrAdapter vision;
+    private final LegacyVisionOcrAdapter vision;
     private final CloudTranslationAdapter translation;
     private volatile BatchAnnotateImagesResponse response;
     private volatile String outputText;
@@ -42,7 +42,7 @@ final class LoopbackWorkerProviders implements AutoCloseable {
         try {
             translationServer = new FakeTranslationServer();
             try {
-                vision = new VisionOcrAdapter(visionServer.client(DEADLINE), "test-project", "private-fixtures");
+                vision = new LegacyVisionOcrAdapter(visionServer.client(DEADLINE), "test-project", "private-fixtures");
                 try {
                     translation = new CloudTranslationAdapter(translationServer.client(DEADLINE), "test-project");
                 } catch (Throwable error) { vision.close(); throw error; }

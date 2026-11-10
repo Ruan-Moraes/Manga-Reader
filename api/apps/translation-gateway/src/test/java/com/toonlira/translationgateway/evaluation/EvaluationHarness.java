@@ -1,5 +1,7 @@
 package com.toonlira.translationgateway.evaluation;
 
+import com.toonlira.translationgateway.infrastructure.storage.LegacyStorageFixture;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.reset;
@@ -34,7 +36,7 @@ import com.toonlira.translationgateway.domain.OcrManifest;
 import com.toonlira.translationgateway.infrastructure.ocr.FakeVisionServer;
 import com.toonlira.translationgateway.infrastructure.ocr.EvaluationVisionCapture;
 import com.toonlira.translationgateway.infrastructure.ocr.VisionClientFactory;
-import com.toonlira.translationgateway.infrastructure.ocr.VisionOcrAdapter;
+import com.toonlira.translationgateway.infrastructure.ocr.LegacyVisionOcrAdapter;
 import com.toonlira.translationgateway.infrastructure.storage.EvaluationStorageFactory;
 import com.toonlira.translationgateway.infrastructure.storage.LocalObjectStorageAdapter;
 import io.grpc.Status;
@@ -82,7 +84,8 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @SpringBootTest(properties = {"gateway.enabled=false", "gateway.ocr.mode=disabled", "gateway.storage.mode=local",
     "gateway.dispatch.mode=disabled", "spring.main.banner-mode=off", "logging.level.root=OFF",
     "spring.jpa.show-sql=false", "spring.flyway.enabled=true"})
-@AutoConfigureMockMvc(print = org.springframework.boot.webmvc.test.autoconfigure.MockMvcPrint.NONE)
+// Historical controller/provider fixture only; current ingress retirement is verified separately.
+@AutoConfigureMockMvc(addFilters = false, print = org.springframework.boot.webmvc.test.autoconfigure.MockMvcPrint.NONE)
 @Import(EvaluationHarness.Configuration.class)
 abstract class EvaluationHarness {
     @Container static final PostgreSQLContainer<?> DATABASE = new PostgreSQLContainer<>("postgres:17-alpine");
@@ -137,7 +140,7 @@ abstract class EvaluationHarness {
         result.put("credentialMode", mode.equals("vision") ? "explicit-impersonated-service-account" : "none");
         var capture = new EvaluationVisionCapture(output, mode.equals("offline"));
         FakeVisionServer server = null;
-        VisionOcrAdapter adapter = null;
+        LegacyVisionOcrAdapter adapter = null;
         Path local = null;
         var inspector = new MediaInspectionService();
         storage.reset(output, mapper);
@@ -156,7 +159,7 @@ abstract class EvaluationHarness {
                     if (mode.equals("offline")) {
                         local = Files.createTempDirectory("toonlira-ocr-evaluation-");
                         properties.getStorage().setLocalDirectory(local);
-                        storage.delegate = new LocalObjectStorageAdapter(properties);
+                        storage.delegate = new LegacyStorageFixture(properties);
                         storage.local = local;
                         server = new FakeVisionServer();
                         var response = syntheticResponse(media.widthPx(), media.heightPx());
@@ -172,7 +175,7 @@ abstract class EvaluationHarness {
                             observer.onNext(scenario.equals("invalid-response") ? BatchAnnotateImagesResponse.getDefaultInstance() : response);
                             observer.onCompleted();
                         };
-                        adapter = new VisionOcrAdapter(server.client(scenario.equals("timeout") ? Duration.ofMillis(200) : VisionClientFactory.DEADLINE, capture), "test-project", "private-fixtures");
+                        adapter = new LegacyVisionOcrAdapter(server.client(scenario.equals("timeout") ? Duration.ofMillis(200) : VisionClientFactory.DEADLINE, capture), "test-project", "private-fixtures");
                     } else {
                         var credentials = EvaluationCredentials.load(credentialsFile, repository, project, serviceAccount);
                         result.put("serviceAccount", credentials.getAccount());
@@ -188,7 +191,7 @@ abstract class EvaluationHarness {
                         }
                         properties.getStorage().setBucket(bucket);
                         storage.delegate = EvaluationStorageFactory.adapter(storage.cloud, bucket);
-                        adapter = new VisionOcrAdapter(EvaluationVisionCapture.client(credentials, capture), project, bucket);
+                        adapter = new LegacyVisionOcrAdapter(EvaluationVisionCapture.client(credentials, capture), project, bucket);
                     }
                     ocr.delegate = adapter;
                     phase = "job-preparation";
@@ -227,7 +230,7 @@ abstract class EvaluationHarness {
                             throw new IllegalStateException("injected-ack-loss");
                         }).when(persistence).complete(any(), any(), any(), any());
                     }
-                    if (mvc.perform(get("/v1/capabilities")).andReturn().getResponse().getStatus() != 403) throw new IllegalStateException();
+                    // Current ingress retirement/security is tested independently; this fixture isolates historical stages.
                     phase = "worker-request";
                     int http = deliver(job.jobRef());
                     result.put("httpStatus", http);

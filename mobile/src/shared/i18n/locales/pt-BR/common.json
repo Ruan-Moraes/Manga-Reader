@@ -95,6 +95,11 @@
         "confirm": "Confirmar",
         "removes": "Remove",
         "preserves": "Preserva",
+        "success": {
+            "cache": { "title": "Cache limpo", "description": "Imagens e dados regeneráveis foram removidos deste aparelho." },
+            "offline": { "title": "Dados offline removidos", "description": "Os projetos e arquivos locais foram apagados deste aparelho." },
+            "history": { "title": "Histórico limpo", "description": "Capítulos lidos e atividades foram removidos. Sua posição atual foi mantida." }
+        },
         "storageUsage": "{{size}} em {{scope}}",
         "storageScopes": { "temporaryExports": "exportações temporárias controladas pelo app" },
         "cache": {

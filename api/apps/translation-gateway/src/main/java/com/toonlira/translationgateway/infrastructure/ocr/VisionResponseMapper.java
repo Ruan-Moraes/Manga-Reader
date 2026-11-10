@@ -9,7 +9,6 @@ import com.google.cloud.vision.v1.BatchAnnotateImagesResponse;
 import com.google.cloud.vision.v1.BoundingPoly;
 import com.google.cloud.vision.v1.Paragraph;
 import com.google.cloud.vision.v1.TextAnnotation.DetectedBreak;
-import com.toonlira.translationgateway.application.port.OcrPort;
 import com.toonlira.translationgateway.domain.GatewayErrorCode;
 import com.toonlira.translationgateway.domain.GatewayException;
 import com.toonlira.translationgateway.domain.OcrGeometry;
@@ -21,7 +20,7 @@ import java.util.List;
 import java.util.UUID;
 
 public final class VisionResponseMapper {
-    public List<OcrManifest.Region> map(BatchAnnotateImagesResponse batch, OcrPort.Command command) {
+    public List<OcrManifest.Region> map(BatchAnnotateImagesResponse batch, Context command) {
         if (batch == null || batch.getSerializedSize() > MAX_RESPONSE_BYTES || batch.getResponsesCount() != 1) invalid();
         var response = batch.getResponses(0);
         if (response.hasError() && response.getError().getCode() != 0) {
@@ -53,7 +52,7 @@ public final class VisionResponseMapper {
                 if (text.isBlank() || !OcrGeometry.valid(polygon)) continue;
                 if (!seen.add(new RegionContent(text, polygon))) continue;
                 // Structural position (not the text) gives stable opaque IDs within the job.
-                var identity = command.jobRef() + ":vision:0:" + blockIndex + ":" + paragraphIndex;
+                var identity = command.operationRef() + ":vision:0:" + blockIndex + ":" + paragraphIndex;
                 var id = UUID.nameUUIDFromBytes(identity.getBytes(StandardCharsets.UTF_8));
                 regions.add(new OcrManifest.Region(id, regions.size(), text, polygon));
             }
@@ -96,12 +95,18 @@ public final class VisionResponseMapper {
         });
     }
 
-    private List<OcrManifest.Vertex> polygon(BoundingPoly box, OcrPort.Command command) {
+    private List<OcrManifest.Vertex> polygon(BoundingPoly box, Context command) {
         if (box.getVerticesCount() != 4 || box.getNormalizedVerticesCount() != 0) return List.of();
         return box.getVerticesList().stream().map(vertex -> new OcrManifest.Vertex(
             (double) vertex.getX() / command.widthPx(), (double) vertex.getY() / command.heightPx())).toList();
     }
 
     private void invalid() { throw new GatewayException(GatewayErrorCode.OCR_INVALID_RESPONSE, 422, false); }
+    public record Context(UUID operationRef, int widthPx, int heightPx) {
+        public Context {
+            if (operationRef == null || widthPx <= 0 || heightPx <= 0)
+                throw new GatewayException(GatewayErrorCode.OCR_INVALID_MEDIA, 422, false);
+        }
+    }
     private record RegionContent(String text, List<OcrManifest.Vertex> polygon) { }
 }

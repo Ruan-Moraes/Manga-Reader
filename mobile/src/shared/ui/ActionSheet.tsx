@@ -1,4 +1,4 @@
-import { Pressable, View } from 'react-native';
+import { View } from 'react-native';
 
 import { useTheme } from '@/shared/theme';
 
@@ -6,6 +6,7 @@ import { AppText } from './AppText';
 import { BottomSheet } from './BottomSheet';
 import { Button } from './Button';
 import { Icon, type IconName } from './Icon';
+import { PressableBox as Pressable } from './PressableBox';
 
 export interface ActionSheetAction {
     key: string;

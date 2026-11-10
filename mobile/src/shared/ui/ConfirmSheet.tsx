@@ -3,15 +3,16 @@ import { View } from 'react-native';
 import { useTheme } from '@/shared/theme';
 
 import { AppText } from './AppText';
-import { BottomSheet } from './BottomSheet';
 import { Button } from './Button';
+import { CenterDialog, DialogAction } from './CenterDialog';
 import { Icon, type IconName } from './Icon';
 
-interface ConfirmSheetProps {
+export interface ConfirmDialogProps {
     visible: boolean;
-    /** Called by cancel, close, scrim and Android back; never confirms. */
+    /** Called by cancel, scrim, Android back and the escape gesture; never confirms. */
     onClose: () => void;
     onConfirm: () => void;
+    /** Accessible label of the scrim. */
     closeLabel: string;
     cancelLabel: string;
     confirmLabel: string;
@@ -20,11 +21,43 @@ interface ConfirmSheetProps {
     /** Heading of the "what will be removed" list. */
     itemsTitle?: string;
     items?: readonly string[];
+    /** Heading of the "what stays" list, shown beside the removed items. */
+    preservedTitle?: string;
+    preservedItems?: readonly string[];
     icon?: IconName;
+    /** `danger` for destructive actions (default); `accent` for confirmations that remove nothing. */
+    tone?: 'danger' | 'accent';
 }
 
-/** Destructive confirmation: cancel and confirm are separate buttons and only the confirm button confirms. */
-export function ConfirmSheet({
+function ItemList({ testID, title, items, icon, color }: { testID: string; title?: string; items: readonly string[]; icon: IconName; color: string }) {
+    const { metrics, radii, spacing, tokens } = useTheme();
+    return (
+        <View
+            testID={testID}
+            style={{ backgroundColor: tokens.surfaceMuted, borderRadius: radii.control, flexBasis: 140, flexGrow: 1, gap: spacing.xs, padding: spacing.sm + 4 }}
+        >
+            {title ? (
+                <AppText variant="eyebrow" tone="subtle" style={{ marginBottom: 2 }}>
+                    {title}
+                </AppText>
+            ) : null}
+            {items.map(item => (
+                <View key={item} style={{ alignItems: 'flex-start', flexDirection: 'row', gap: spacing.xs + 2 }}>
+                    <Icon name={icon} size={metrics.icon.sm} color={color} decorative style={{ marginTop: 1 }} />
+                    <AppText variant="caption" style={{ flex: 1 }}>
+                        {item}
+                    </AppText>
+                </View>
+            ))}
+        </View>
+    );
+}
+
+/**
+ * Confirmation in a centered dialog (2026-11-10): what is removed and what stays side by side when they fit, cancel and
+ * confirm as separate buttons; only the confirm button confirms.
+ */
+export function ConfirmDialog({
     visible,
     onClose,
     onConfirm,
@@ -35,9 +68,12 @@ export function ConfirmSheet({
     description,
     itemsTitle,
     items,
-    icon = 'trash-outline',
-}: ConfirmSheetProps) {
-    const { metrics, radii, spacing, tokens } = useTheme();
+    preservedTitle,
+    preservedItems,
+    icon,
+    tone = 'danger',
+}: ConfirmDialogProps) {
+    const { spacing, tokens } = useTheme();
 
     const confirm = () => {
         onClose();
@@ -45,63 +81,49 @@ export function ConfirmSheet({
     };
 
     return (
-        <BottomSheet
+        <CenterDialog
             visible={visible}
             onClose={onClose}
             closeLabel={closeLabel}
-            testIDs={{ sheet: 'confirm-sheet', backdrop: 'confirm-sheet-backdrop', layer: 'confirm-sheet-layer' }}
+            title={title}
+            description={description}
+            icon={icon ?? (tone === 'danger' ? 'trash-outline' : 'help-circle-outline')}
+            tone={tone}
+            testIDs={{ layer: 'confirm-sheet-layer', backdrop: 'confirm-sheet-backdrop', card: 'confirm-sheet', icon: 'confirm-sheet-icon' }}
+            actions={
+                <>
+                    <DialogAction>
+                        <Button variant="outline" onPress={onClose} testID="confirm-sheet-cancel">
+                            {cancelLabel}
+                        </Button>
+                    </DialogAction>
+                    <DialogAction>
+                        <Button tone={tone} onPress={confirm} testID="confirm-sheet-confirm">
+                            {confirmLabel}
+                        </Button>
+                    </DialogAction>
+                </>
+            }
         >
-            <View style={{ alignItems: 'center', gap: spacing.sm }}>
-                <View
-                    testID="confirm-sheet-icon"
-                    style={{
-                        alignItems: 'center',
-                        backgroundColor: tokens.dangerSoft,
-                        borderRadius: radii.pill,
-                        height: metrics.control.comfortable,
-                        justifyContent: 'center',
-                        width: metrics.control.comfortable,
-                    }}
-                >
-                    <Icon name={icon} size={metrics.icon.lg} color={tokens.danger} decorative />
-                </View>
-                <AppText accessibilityRole="header" variant="section" style={{ textAlign: 'center' }}>
-                    {title}
-                </AppText>
-                {description ? (
-                    <AppText tone="muted" style={{ textAlign: 'center' }}>
-                        {description}
-                    </AppText>
-                ) : null}
-            </View>
-            {items?.length ? (
-                <View
-                    testID="confirm-sheet-items"
-                    style={{ backgroundColor: tokens.surfaceMuted, borderRadius: radii.card, gap: spacing.sm, padding: metrics.rhythm.cardPadding }}
-                >
-                    {itemsTitle ? (
-                        <AppText variant="eyebrow" tone="subtle">
-                            {itemsTitle}
-                        </AppText>
+            {items?.length || preservedItems?.length ? (
+                <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm }}>
+                    {items?.length ? (
+                        <ItemList testID="confirm-sheet-items" title={itemsTitle} items={items} icon="remove-circle-outline" color={tokens.danger} />
                     ) : null}
-                    {items.map(item => (
-                        <View key={item} style={{ alignItems: 'center', flexDirection: 'row', gap: spacing.sm }}>
-                            <Icon name="remove-circle-outline" size={metrics.icon.sm} color={tokens.danger} decorative />
-                            <AppText variant="caption" style={{ flex: 1 }}>
-                                {item}
-                            </AppText>
-                        </View>
-                    ))}
+                    {preservedItems?.length ? (
+                        <ItemList
+                            testID="confirm-sheet-preserved"
+                            title={preservedTitle}
+                            items={preservedItems}
+                            icon="checkmark-circle-outline"
+                            color={tokens.success}
+                        />
+                    ) : null}
                 </View>
             ) : null}
-            <View style={{ gap: spacing.md }}>
-                <Button variant="outline" onPress={onClose} testID="confirm-sheet-cancel">
-                    {cancelLabel}
-                </Button>
-                <Button tone="danger" onPress={confirm} testID="confirm-sheet-confirm">
-                    {confirmLabel}
-                </Button>
-            </View>
-        </BottomSheet>
+        </CenterDialog>
     );
 }
+
+/** @deprecated Kept for existing call sites; renders the centered {@link ConfirmDialog}. */
+export const ConfirmSheet = ConfirmDialog;

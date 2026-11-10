@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 
@@ -6,7 +6,7 @@ import { useSessionStore } from '@/entities/session';
 import { type StorageMeasurementAdapter, temporaryExportStorageMeasurement } from '@/shared/files';
 import { formatByteSize } from '@/shared/locale';
 import { type LocalDataSummary, measureLocalData } from '@/shared/storage';
-import { AppText, ConfirmSheet, FormSection, ListRow, SectionStack, StatusMessage } from '@/shared/ui';
+import { AppText, ConfirmDialog, FormSection, ListRow, SectionStack, showToast } from '@/shared/ui';
 
 import {
     clearApplicationCache,
@@ -16,7 +16,7 @@ import {
     measureControlledStorage,
     shareAccountExport,
 } from '../model/dataControls';
-import { useDataControlsStore } from '../model/dataControlsStore';
+import { type DataControlAction, useDataControlsStore } from '../model/dataControlsStore';
 
 type ConfirmKind = keyof typeof DATA_CONTROL_CONFIRMATIONS;
 
@@ -33,7 +33,7 @@ export function DataControlsPanel({
 }: DataControlsPanelProps) {
     const queryClient = useQueryClient();
     const isAuthenticated = useSessionStore(state => state.isAuthenticated);
-    const { busyAction, errorKey, failedCategories, run } = useDataControlsStore();
+    const { busyAction, run } = useDataControlsStore();
     const { t } = useTranslation('common');
     const [pending, setPending] = useState<{ kind: ConfirmKind; operation: () => Promise<unknown> } | null>(null);
     const [storage, setStorage] = useState<{ usedBytes: number; scope: string } | null>(null);
@@ -51,13 +51,13 @@ export function DataControlsPanel({
         return () => {
             mounted = false;
         };
-    }, [storageMeasurement]);
+    }, [storageMeasurement, busyAction]);
 
     useEffect(() => {
         let mounted = true;
         void measureLocalData()
             .then(summary => {
-                if (mounted && summary.totalBytes > 0) setOfflineData(summary);
+                if (mounted) setOfflineData(summary);
             })
             .catch(() => {
                 if (mounted) setOfflineData(null);
@@ -67,8 +67,31 @@ export function DataControlsPanel({
         };
     }, [busyAction]);
 
-    const confirm = (kind: ConfirmKind, operation: () => Promise<unknown>) => setPending({ kind, operation });
-    const descriptor = pending ? DATA_CONTROL_CONFIRMATIONS[pending.kind] : null;
+    // Result of an action as a temporary toast (2026-11-10); the screen layout never moves.
+    const runWithFeedback = async (kind: DataControlAction, operation: () => Promise<unknown>) => {
+        const succeeded = await run(kind, operation);
+        const state = useDataControlsStore.getState();
+        if (succeeded) {
+            if (kind !== 'export') {
+                showToast({ tone: 'success', title: t(`dataControls.success.${kind}.title`), description: t(`dataControls.success.${kind}.description`) });
+            }
+        } else if (state.errorKey) {
+            showToast({
+                tone: 'danger',
+                title: t(state.errorKey),
+                description:
+                    state.failedCategories.length > 0 ? state.failedCategories.map(category => t(`dataControls.cache.${category}`)).join(', ') : undefined,
+            });
+        }
+    };
+
+    const confirm = (kind: ConfirmKind, operation: () => Promise<unknown>) => {
+        setPending({ kind, operation });
+    };
+    // Keep the last confirmation's text while the sheet animates out, so it never closes empty.
+    const lastKind = useRef<ConfirmKind | null>(null);
+    if (pending) lastKind.current = pending.kind;
+    const descriptor = lastKind.current ? DATA_CONTROL_CONFIRMATIONS[lastKind.current] : null;
 
     return (
         <SectionStack>
@@ -134,7 +157,9 @@ export function DataControlsPanel({
                     description={t('dataControls.export.description')}
                     icon="download-outline"
                     loading={busyAction === 'export'}
-                    onPress={() => (isAuthenticated ? void run('export', () => shareAccountExport(true, { queryClient })) : onAuthenticationRequired?.())}
+                    onPress={() =>
+                        isAuthenticated ? void runWithFeedback('export', () => shareAccountExport(true, { queryClient })) : onAuthenticationRequired?.()
+                    }
                     showDivider
                     title={t('dataControls.export.action')}
                     variant="plain"
@@ -154,30 +179,23 @@ export function DataControlsPanel({
                     variant="plain"
                 />
             </FormSection>
-            {errorKey && (
-                <StatusMessage
-                    description={failedCategories.length > 0 ? failedCategories.map(category => t(`dataControls.cache.${category}`)).join(', ') : undefined}
-                    title={t(errorKey)}
-                    tone="danger"
-                />
-            )}
-            <ConfirmSheet
+            <ConfirmDialog
                 visible={pending !== null}
                 onClose={() => setPending(null)}
                 onConfirm={() => {
-                    if (pending) void run(pending.kind, pending.operation);
+                    if (!pending) return;
+                    const { kind, operation } = pending;
+                    void runWithFeedback(kind, operation);
                 }}
                 closeLabel={t('navigation.dismiss')}
                 cancelLabel={t('dataControls.cancel')}
                 confirmLabel={t('dataControls.confirm')}
                 title={descriptor ? t(descriptor.titleKey) : ''}
-                description={
-                    descriptor
-                        ? `${t(descriptor.bodyKey)}\n\n${t('dataControls.preserves')}: ${descriptor.preservesKeys.map(key => t(key)).join(', ')}.`
-                        : undefined
-                }
+                description={descriptor ? t(descriptor.bodyKey) : undefined}
                 itemsTitle={t('dataControls.removes')}
                 items={descriptor ? descriptor.removesKeys.map(key => t(key)) : undefined}
+                preservedTitle={t('dataControls.preserves')}
+                preservedItems={descriptor ? descriptor.preservesKeys.map(key => t(key)) : undefined}
             />
         </SectionStack>
     );

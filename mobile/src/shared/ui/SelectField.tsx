@@ -1,5 +1,5 @@
 import { useContext, useEffect, useRef, useState } from 'react';
-import { AccessibilityInfo, Platform, Pressable, useWindowDimensions, View } from 'react-native';
+import { AccessibilityInfo, Platform, useWindowDimensions, View } from 'react-native';
 import { SafeAreaInsetsContext } from 'react-native-safe-area-context';
 
 import { useTheme } from '@/shared/theme';
@@ -7,6 +7,7 @@ import { useTheme } from '@/shared/theme';
 import { AppText } from './AppText';
 import { BottomSheet, type BottomSheetTestIDs } from './BottomSheet';
 import { Icon } from './Icon';
+import { PressableBox as Pressable } from './PressableBox';
 
 const SELECT_SHEET_MINIMUM_RATIO = 0.44;
 const SELECT_SHEET_MAXIMUM_RATIO = 0.82;
@@ -61,10 +62,17 @@ interface SelectFieldProps<T extends string> {
     options: readonly T[];
     optionLabel: (option: T) => string;
     optionDescription?: (option: T) => string | undefined;
+    /** Options shown but not selectable, e.g. the language already used on the other side. */
+    optionDisabled?: (option: T) => boolean;
     onChange: (option: T) => void;
     closeLabel: string;
     disabled?: boolean;
-    variant?: 'default' | 'input';
+    /** card: compact trigger for side-by-side pairs; the full label stays the accessible name. */
+    variant?: 'default' | 'input' | 'card';
+    /** Short visible label of the card variant. */
+    shortLabel?: string;
+    /** Text shown in the trigger instead of `optionLabel(value)`, e.g. a shorter name. */
+    valueLabel?: (option: T) => string;
 }
 
 export function SelectField<T extends string>({
@@ -74,10 +82,13 @@ export function SelectField<T extends string>({
     options,
     optionLabel,
     optionDescription,
+    optionDisabled,
     onChange,
     closeLabel,
     disabled = false,
     variant = 'default',
+    shortLabel,
+    valueLabel,
 }: SelectFieldProps<T>) {
     const { height } = useWindowDimensions();
 
@@ -85,7 +96,8 @@ export function SelectField<T extends string>({
 
     const { layout, minimumTouchTarget, radii, spacing, tokens } = useTheme();
 
-    const inputVariant = variant === 'input';
+    const cardVariant = variant === 'card';
+    const inputVariant = variant === 'input' || cardVariant;
     const triggerRef = useRef<View>(null);
     const selectedOptionRef = useRef<View>(null);
     const wasOpen = useRef(false);
@@ -125,7 +137,7 @@ export function SelectField<T extends string>({
 
     return (
         <View style={{ alignSelf: 'stretch', gap: spacing.sm, width: '100%' }}>
-            <View style={{ gap: spacing.xs }}>
+            <View style={{ display: cardVariant ? 'none' : 'flex', gap: spacing.xs }}>
                 <AppText variant="label">{label}</AppText>
                 {description ? (
                     <AppText variant="caption" tone="muted">
@@ -156,12 +168,14 @@ export function SelectField<T extends string>({
                                       ? tokens.surfaceSelected
                                       : tokens.inputBg,
                               borderColor: open || focused ? tokens.focus : tokens.inputBorder,
-                              borderRadius: radii.card,
+                              // Padrão de campo das folhas: raio de controle e 16 de respiro vertical (~72 pt com o tile de 40).
+                              borderRadius: radii.control,
                               borderWidth: 2,
+                              justifyContent: 'center',
                               minHeight: Math.max(minimumTouchTarget, 64),
                               opacity: disabled ? 0.56 : 1,
-                              paddingHorizontal: spacing.sm,
-                              paddingVertical: spacing.sm,
+                              paddingHorizontal: spacing.md,
+                              paddingVertical: spacing.md,
                               width: '100%',
                           })
                 }
@@ -180,55 +194,36 @@ export function SelectField<T extends string>({
                                 ? {
                                       backgroundColor: disabled ? tokens.disabledSurface : pressed ? tokens.surfacePressed : tokens.inputBg,
                                       borderColor: open || focused ? tokens.focus : tokens.inputBorder,
-                                      borderRadius: radii.control,
+                                      borderRadius: cardVariant ? radii.card : radii.control,
                                       borderWidth: open || focused ? 2 : 1,
-                                      minHeight: Math.max(minimumTouchTarget, layout.controlHeight),
+                                      gap: cardVariant ? spacing.xs : spacing.md,
+                                      minHeight: Math.max(minimumTouchTarget, cardVariant ? 56 : layout.controlHeight),
                                       opacity: disabled ? 0.56 : 1,
-                                      paddingHorizontal: spacing.md,
-                                      paddingVertical: spacing.md,
+                                      paddingHorizontal: cardVariant ? spacing.sm + 4 : spacing.md,
+                                      paddingVertical: cardVariant ? spacing.sm : spacing.md,
                                   }
                                 : {}),
                         }}
                     >
-                        {!inputVariant && (
-                            <View
-                                testID="select-field-leading-icon"
-                                style={{
-                                    alignItems: 'center',
-                                    backgroundColor: open ? tokens.accentSoft : tokens.surfaceMuted,
-                                    borderRadius: radii.control,
-                                    flexShrink: 0,
-                                    height: 40,
-                                    justifyContent: 'center',
-                                    width: 40,
-                                }}
-                            >
-                                <Icon name="list-outline" color={open ? tokens.accentText : tokens.muted} decorative size={20} />
-                            </View>
-                        )}
                         <View style={{ flex: 1, minWidth: 0 }}>
-                            <AppText variant="label" numberOfLines={inputVariant ? undefined : 2}>
-                                {optionLabel(value)}
+                            {cardVariant && shortLabel ? (
+                                <AppText variant="eyebrow" tone="subtle" numberOfLines={1}>
+                                    {shortLabel}
+                                </AppText>
+                            ) : null}
+                            <AppText variant="label" numberOfLines={cardVariant ? 1 : inputVariant ? undefined : 2}>
+                                {(valueLabel ?? optionLabel)(value)}
                             </AppText>
                         </View>
                         {inputVariant ? (
                             <Icon name={open ? 'chevron-up' : 'chevron-down'} color={tokens.muted} decorative size={20} />
                         ) : (
+                            // Campo limpo (pedido de 2026-11-09): só o valor e a seta, sem tile nem caixa.
                             <View
                                 testID="select-field-expand-affordance"
-                                style={{
-                                    alignItems: 'center',
-                                    backgroundColor: open ? tokens.accent : tokens.accentSoft,
-                                    borderColor: tokens.accentBorder,
-                                    borderRadius: radii.control,
-                                    borderWidth: 1,
-                                    flexShrink: 0,
-                                    height: 40,
-                                    justifyContent: 'center',
-                                    width: 40,
-                                }}
+                                style={{ alignItems: 'center', flexShrink: 0, height: 24, justifyContent: 'center', width: 24 }}
                             >
-                                <Icon name={open ? 'chevron-down' : 'chevron-up'} color={open ? tokens.onAccent : tokens.accentText} decorative size={20} />
+                                <Icon name={open ? 'chevron-up' : 'chevron-down'} color={open ? tokens.accentText : tokens.muted} decorative size={20} />
                             </View>
                         )}
                     </View>
@@ -276,6 +271,8 @@ export function SelectField<T extends string>({
 
                         const currentDescription = optionDescription?.(option);
 
+                        const unavailable = !selected && !!optionDisabled?.(option);
+
                         return (
                             <Pressable
                                 key={option}
@@ -283,12 +280,13 @@ export function SelectField<T extends string>({
                                 accessibilityLabel={optionLabel(option)}
                                 accessibilityHint={inputVariant ? currentDescription : undefined}
                                 accessibilityRole="radio"
-                                accessibilityState={{ selected }}
+                                accessibilityState={{ selected, disabled: unavailable }}
+                                disabled={unavailable}
                                 onBlur={() => setFocusedOption(current => (current === option ? null : current))}
                                 onFocus={() => setFocusedOption(option)}
                                 onPress={() => choose(option)}
                                 testID={`select-field-option-${option}`}
-                                style={{ borderRadius: radii.control }}
+                                style={{ borderRadius: radii.control, opacity: unavailable ? 0.56 : 1 }}
                             >
                                 {({ pressed }) => (
                                     <View

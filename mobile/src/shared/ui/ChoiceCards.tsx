@@ -47,9 +47,10 @@ export function ChoiceCards<T extends string>({
     compact = false,
 }: ChoiceCardsProps<T>) {
     const { sizeClass } = useResponsiveLayout();
-    const { fontScale, minimumTouchTarget, radii, spacing, tokens } = useTheme();
+    const { fontScale, metrics, minimumTouchTarget, radii, spacing, tokens } = useTheme();
     const [focusedOption, setFocusedOption] = useState<T | null>(null);
-    const stacked = compact ? fontScale >= 1.6 : resolveChoiceCardsStacked(layout, sizeClass, fontScale);
+    // Nas folhas (compact) o layout pedido também vale: opções empilhadas têm todas a mesma altura.
+    const stacked = compact ? layout === 'stacked' || fontScale >= 1.6 : resolveChoiceCardsStacked(layout, sizeClass, fontScale);
     const cardBasis = sizeClass === 'regular' ? '46%' : '29%';
 
     return (
@@ -92,12 +93,13 @@ export function ChoiceCards<T extends string>({
                                         backgroundColor: selected ? tokens.surfaceSelected : pressed ? tokens.surfacePressed : tokens.surfaceMuted,
                                         borderColor: focused ? tokens.focus : selected ? tokens.accentBorder : tokens.separator,
                                         borderRadius: compact ? radii.control : radii.card,
-                                        borderWidth: compact ? 1 : 2,
+                                        borderWidth: 2,
                                         flex: 1,
                                         gap: spacing.xs,
                                         justifyContent: 'center',
-                                        minHeight: minimumTouchTarget,
-                                        padding: compact ? spacing.sm : spacing.md,
+                                        minHeight: compact ? Math.max(minimumTouchTarget, metrics.row.single) : minimumTouchTarget,
+                                        paddingHorizontal: spacing.md,
+                                        paddingVertical: compact ? metrics.rhythm.itemGap : spacing.md,
                                     }}
                                 >
                                     <View testID={`choice-card-row-${option}`} style={{ alignItems: 'center', flexDirection: 'row', gap: spacing.md }}>
