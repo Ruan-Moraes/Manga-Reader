@@ -1,0 +1,8 @@
+# Perfil de desenvolvimento local. Ativado por padrão apenas em `spring-boot:run`
+# (ver pom.xml). Usa o Postgres do docker-compose.yml deste módulo (porta 5433).
+# Sobrescreva via SPRING_DATASOURCE_* se necessário.
+spring:
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5433/manga_translation_gateway}
+    username: ${SPRING_DATASOURCE_USERNAME:manga}
+    password: ${SPRING_DATASOURCE_PASSWORD:manga_secret}
