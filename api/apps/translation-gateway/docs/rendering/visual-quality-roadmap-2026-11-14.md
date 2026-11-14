@@ -19,6 +19,9 @@ Contrato do manifesto: [rendering-contracts.md](rendering-contracts.md).
 | Máscara do balão: limpa só o interior do balão + letras cercadas; arte, borda e SFX fora do balão ficam mesmo com polígono OCR maior que o balão | `BalloonMask`, `CleanBoxPainter.fillMasked` |
 | Original preservado quando a tradução é igual ao texto ("AKANE!", "FREEK" — sem `NEEDS_REVIEW`) ou o texto está sobre arte (<25% da tinta cercada pelo balão — com `NEEDS_REVIEW`) | `PageRasterPainter.preserveOriginal`, `UnchangedText`, `PageQuality` |
 | Sem quebra no meio da palavra ("YouTu / be", "Pesq / uisa") | `PageRasterPainter.compose` (`requireNextWord`) |
+| Espaço que o provedor põe entre termo protegido e pontuação removido ("Ubuntu!", "(wget)") | `TranslationEnvelopeCodec` |
+| Parágrafos com caixas sobrepostas (manuscrito inclinado) agrupados como um bloco | `OcrRegionGrouper` |
+| Balões do ONNX levados ao render (artefato de layout verificado por hash, mesma imagem e OCR): limitam fundo do balão e expansão de fonte, com folga de 15% | `ProcessRenderingTaskUseCase.bubbles`, `CleanBoxPainter.balloonLimit`, `BalloonMask` |
 | Inpainting LaMa (ONNX, CPU, ~0,85 s/região) para falas e legendas sobre arte no render local: arte reconstruída, tradução em preto com contorno; SFX preservados; só pixels alterados pelo modelo são escritos | `LamaInpainter`, `CaptionFilter`, `PageRasterPainter` |
 | Releitura do OCR: falas com palavras de baixa confiança ou fora do léxico são relidas em 4 variantes de imagem num mosaico (1 chamada extra ao Vision por página) e a votação (confiança + concordância + dicionário) escolhe a leitura; sem regra por obra/idioma | `OcrRereadService`, `OcrReread`, `RereadMosaicBuilder`, `lexicon/` |
 | `quality` na API: V10 grava as contagens de texto na etapa de render; `ReadyResult.quality` (opcional) derivado delas; mobile aceita o campo; selo "revisar" no `gateway-tester` | `RenderTextCounts`, `PageQuality.of`, `GatewayController.Quality`, V10 |
@@ -43,12 +46,14 @@ Não houve comparação antes/depois controlada nem teste com o original em japo
 ## Pendente (por prioridade)
 
 ### Qualidade visual
-2. **Agrupamento por layout ONNX** (feito, opcional): falta (a) avaliar em mais páginas e em mangá
-   japonês antes de virar padrão — as caixas do modelo nas páginas em inglês são imprecisas; (b) usar
-   os balões também para limitar máscara/layout no render (hoje o layout não chega ao render).
+2. **Agrupamento por layout ONNX** (avaliado — ver [layout-experimental.md](../ocr-evaluation/layout-experimental.md)):
+   balões melhores que a heurística em 10 de 12 páginas inglesas com diferença; os balões chegam ao
+   render e limitam máscara e expansão de fonte. Falta: **agrupar texto vertical CJK por balão** (72% dos
+   balões japoneses têm várias colunas traduzidas isoladas) e provisionar o modelo para usar `grouping`
+   em produção.
 3. **SFX/texto livre** (parcial): falas/legendas sobre arte agora são traduzidas com inpainting
-   ([inpainting.md](inpainting.md)); SFX preservados por decisão de produto. Falta: (b) letreiro desenhado à mão sobre fundo
-   liso ("GUI brigade!") é trocado por fonte comum pequena (13 px); (c) usar `regionKinds` no render exige
+   ([inpainting.md](inpainting.md)); SFX preservados por decisão de produto; letreiro manuscrito partido
+   em parágrafos sobrepostos agora vira uma fala só ("Podemos ser a Brigada da GUI!", 23 px). Falta: (c) usar `regionKinds` no render exige
    levar o layout até a requisição de render (hoje só no bucket privado).
 4. **Inpainting real** (parcial): LaMa em CPU para falas sobre arte, só no render `local`
    ([inpainting.md](inpainting.md)). Falta: levar aos modos isolado/nativo sem quebrar o isolamento;
@@ -65,8 +70,9 @@ Não houve comparação antes/depois controlada nem teste com o original em japo
 ### Verificação
 8. Comparação com a edição original (ep. 01, Hiroshi Seo) e diff por região.
 9. Regressão visual com asserções por região, estendendo `VisualRenderingFixture`.
-10. Validar mais páginas reais; calibrar fringe (4 px, distância de cor 120), piso (0,75×, fundo ≤ 30) e parâmetros do agrupador
-    (gap ≤ 0,8×altura, sobreposição ≥ 40%).
+10. Validar mais páginas reais (bancada offline com cache do Vision já existe para o agrupamento);
+    calibrar piso (0,75×, fundo ≤ 30), releitura (variação entre execuções: "WINDOWS 15 50" ora corrigido,
+    ora não) e inpainting.
 
 ## Próximo passo sugerido
 Item 4 (inpainting real para texto livre preservado) ou avaliar o modo `grouping` em mais páginas/mangá

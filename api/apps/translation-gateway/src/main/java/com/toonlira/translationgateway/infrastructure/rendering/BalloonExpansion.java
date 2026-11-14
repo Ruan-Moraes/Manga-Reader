@@ -31,11 +31,15 @@ final class BalloonExpansion {
             for (int side = 0; side < SIDES; side++) {
                 CleanBoxPainter.checkInterrupted();
                 if (!open[side]) continue;
+                // A detected balloon (with slack) bounds the growth like the image edge does.
+                var bound = region.limit();
+                int minX = bound == null ? 0 : bound.left(), maxX = bound == null ? image.getWidth() : bound.right();
+                int minY = bound == null ? 0 : bound.top(), maxY = bound == null ? image.getHeight() : bound.bottom();
                 boolean ok = switch (side) {
-                    case 0 -> left > 0 && scan.clearColumn(left - 1, top, bottom);
-                    case 1 -> right < image.getWidth() && scan.clearColumn(right, top, bottom);
-                    case 2 -> top > 0 && scan.clearRow(top - 1, left, right);
-                    default -> bottom < image.getHeight() && scan.clearRow(bottom, left, right);
+                    case 0 -> left > minX && scan.clearColumn(left - 1, top, bottom);
+                    case 1 -> right < maxX && scan.clearColumn(right, top, bottom);
+                    case 2 -> top > minY && scan.clearRow(top - 1, left, right);
+                    default -> bottom < maxY && scan.clearRow(bottom, left, right);
                 };
                 if (!ok) { open[side] = false; continue; }
                 switch (side) {

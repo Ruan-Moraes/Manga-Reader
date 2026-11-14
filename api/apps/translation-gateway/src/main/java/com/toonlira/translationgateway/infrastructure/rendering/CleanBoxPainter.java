@@ -46,9 +46,10 @@ final class CleanBoxPainter {
             others.remove(i);
             // Without any surrounding sample (region covered by others or by the page edge) there is no balloon
             // reference colour: the whole polygon is cleaned, as the plain clean-box policy does.
+            var limit = balloonLimit(request, request.regions().get(i), image.getWidth(), image.getHeight());
             var mask = hasSurroundings(image, polygons.get(i), polygons, padding)
-                ? BalloonMask.of(image, polygons.get(i), others, argb) : BalloonMask.polygonOnly(polygons.get(i));
-            prepared.add(new CleanRegion(request.regions().get(i), polygons.get(i), argb, mask));
+                ? BalloonMask.of(image, polygons.get(i), others, argb, limit) : BalloonMask.polygonOnly(polygons.get(i));
+            prepared.add(new CleanRegion(request.regions().get(i), polygons.get(i), argb, mask, limit));
         }
         // All surroundings refer to the same untouched raster; earlier paint cannot influence later color estimates.
         return List.copyOf(prepared);
@@ -156,6 +157,36 @@ final class CleanBoxPainter {
         return color;
     }
 
+    /** Detector boxes are loose: a region's balloon may extend this share of the box beyond each side. */
+    static final double BALLOON_SLACK = .15;
+    /** Share of the OCR polygon that must lie in a detected balloon for that balloon to bound it. */
+    static final double BALLOON_CONTAINMENT = .9;
+
+    /**
+     * Bounds of the smallest detected balloon containing the region, widened by {@link #BALLOON_SLACK}; null when
+     * no balloon (or no layout) contains it. Caps where the balloon interior may extend: a flat area that leaks
+     * through a gap in the balloon border stops here.
+     */
+    static RasterPolygon.Bounds balloonLimit(RenderRequest request, RenderRequest.Region region, int width, int height) {
+        com.toonlira.translationgateway.domain.layout.LayoutBox best = null;
+        for (var bubble : request.bubbles()) {
+            double containment;
+            try { containment = com.toonlira.translationgateway.domain.layout.LayoutGeometry.containment(region.polygon(), bubble); }
+            catch (RuntimeException invalid) { continue; }
+            if (containment < BALLOON_CONTAINMENT) continue;
+            if (best == null || area(bubble) < area(best)) best = bubble;
+        }
+        if (best == null) return null;
+        double dx = (best.right() - best.left()) * BALLOON_SLACK, dy = (best.bottom() - best.top()) * BALLOON_SLACK;
+        return new RasterPolygon.Bounds((int) Math.floor(Math.max(0, best.left() - dx) * width),
+            (int) Math.floor(Math.max(0, best.top() - dy) * height),
+            (int) Math.ceil(Math.min(1, best.right() + dx) * width), (int) Math.ceil(Math.min(1, best.bottom() + dy) * height));
+    }
+
+    private static double area(com.toonlira.translationgateway.domain.layout.LayoutBox box) {
+        return (box.right() - box.left()) * (box.bottom() - box.top());
+    }
+
     private static boolean hasSurroundings(BufferedImage image, RasterPolygon polygon, List<RasterPolygon> all, int padding) {
         var bounds = polygon.bounds();
         int left = bounds.left() - padding, right = bounds.right() - 1 + padding;
@@ -193,7 +224,8 @@ final class CleanBoxPainter {
         if (Thread.currentThread().isInterrupted()) throw new RenderPaintingException(CANCELLED);
     }
 
-    record CleanRegion(RenderRequest.Region region, RasterPolygon polygon, int argb, BalloonMask mask) {
+    /** {@code limit}: pixel bounds of the detected balloon holding the region (with slack), or null. */
+    record CleanRegion(RenderRequest.Region region, RasterPolygon polygon, int argb, BalloonMask mask, RasterPolygon.Bounds limit) {
         @Override public String toString() { return "CleanRegion[redacted]"; }
     }
 }

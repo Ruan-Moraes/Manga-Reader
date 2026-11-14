@@ -24,6 +24,12 @@ final class BalloonMask {
     }
 
     static BalloonMask of(BufferedImage image, RasterPolygon polygon, List<RasterPolygon> others, int argb) {
+        return of(image, polygon, others, argb, null);
+    }
+
+    /** {@code limit}: when a detected balloon bounds the region, flat pixels beyond it are not balloon interior. */
+    static BalloonMask of(BufferedImage image, RasterPolygon polygon, List<RasterPolygon> others, int argb,
+                          RasterPolygon.Bounds limit) {
         var bounds = polygon.bounds();
         int left = Math.max(0, bounds.left() - MARGIN_PX), right = Math.min(image.getWidth(), bounds.right() + MARGIN_PX);
         int top = Math.max(0, bounds.top() - MARGIN_PX), bottom = Math.min(image.getHeight(), bounds.bottom() + MARGIN_PX);
@@ -36,7 +42,9 @@ final class BalloonMask {
             var span = polygon.span(top + y);
             for (int x = 0; x < width; x++) {
                 int i = y * width + x, distance = CleanBoxPainter.distance(image.getRGB(left + x, top + y), argb);
-                if (distance <= CleanBoxPainter.BACKGROUND_DISTANCE) state[i] |= FLAT;
+                boolean inLimit = limit == null || left + x >= limit.left() && left + x < limit.right()
+                    && top + y >= limit.top() && top + y < limit.bottom();
+                if (distance <= CleanBoxPainter.BACKGROUND_DISTANCE && inLimit) state[i] |= FLAT;
                 inside[i] = span != null && left + x >= span.start() && left + x < span.end();
                 ink[i] = distance > CleanBoxPainter.INK_DISTANCE;
             }

@@ -353,6 +353,30 @@ class PageRasterPainterTest {
     }
 
     @Test
+    void detectedBalloonBoundsHowFarAShortLineMayGrow() {
+        var small = CleanBoxPainterTest.rectangle(.45, .72, .55, .77); // "Claro!" in an open flat area
+        var boxes = List.of(CleanBoxPainterTest.rectangle(.02, .02, .3, .3), CleanBoxPainterTest.rectangle(.35, .02, .63, .3),
+            CleanBoxPainterTest.rectangle(.68, .02, .96, .3), small);
+        var texts = List.of("Uma frase média aqui", "Outra frase média aqui", "Mais uma frase média", "Claro!");
+        var free = CleanBoxPainterTest.fixture(WIDTH, HEIGHT, 0xffffffff);
+        var unbounded = painter.paint(free, page(free, boxes, texts)).get(3);
+        var bounded = CleanBoxPainterTest.fixture(WIDTH, HEIGHT, 0xffffffff);
+        // A detected balloon hugging the line: growth stops at the balloon (+15% slack), so the text stays smaller.
+        var balloon = new com.toonlira.translationgateway.domain.layout.LayoutBox(.44, .70, .56, .79);
+        var request = page(bounded, boxes, texts).withBubbles(List.of(balloon));
+        var inBalloon = painter.paint(bounded, request).get(3);
+        assertThat(inBalloon.overflow()).isFalse();
+        assertThat(inBalloon.fontSizePx()).isLessThan(unbounded.fontSizePx());
+        int x0 = (int) Math.floor((.44 - .018) * WIDTH), x1 = (int) Math.ceil((.56 + .018) * WIDTH);
+        for (int y = 0; y < HEIGHT; y++) for (int x = 0; x < WIDTH; x++)
+            if (y > HEIGHT * .32 && (x < x0 || x >= x1)) assertThat(bounded.getRGB(x, y)).as("(%d,%d)", x, y).isEqualTo(0xffffffff);
+        // A balloon that does not contain the region changes nothing.
+        var elsewhere = CleanBoxPainterTest.fixture(WIDTH, HEIGHT, 0xffffffff);
+        var unrelated = page(elsewhere, boxes, texts).withBubbles(List.of(new com.toonlira.translationgateway.domain.layout.LayoutBox(.0, .0, .1, .1)));
+        assertThat(painter.paint(elsewhere, unrelated).get(3).fontSizePx()).isEqualTo(unbounded.fontSizePx());
+    }
+
+    @Test
     void speechOverArtworkIsInpaintedAndRetypedWithAnOutlineOnlyWhenHinted() {
         var polygon = CleanBoxPainterTest.rectangle(.3, .3, .7, .7); // x 108..252, y 66..154
         var calls = new java.util.ArrayList<int[]>();

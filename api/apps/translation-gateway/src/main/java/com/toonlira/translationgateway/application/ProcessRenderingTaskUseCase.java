@@ -29,6 +29,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.HexFormat;
+import java.util.List;
 import java.util.UUID;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.stereotype.Service;
@@ -49,6 +50,7 @@ public class ProcessRenderingTaskUseCase {
     private final ObjectProvider<RenderPort> renderer;
     private final GatewayProperties properties;
     private final Clock clock;
+    private static final tools.jackson.databind.ObjectMapper LAYOUT_JSON = new tools.jackson.databind.ObjectMapper();
     private final CleanupLifecycleObjectsUseCase lifecycle;
     private final com.toonlira.translationgateway.application.port.LexiconPort lexicons;
 
@@ -138,12 +140,37 @@ public class ProcessRenderingTaskUseCase {
             .map(region -> new TranslationRequest.Region(region.id(), region.readingOrder(), region.sourceText())).toList());
         var translationBytes = readVerified(job.translationObjectKey(), job.translationSha256(), MAX_TRANSLATION_MANIFEST_BYTES);
         var translation = translationManifests.decode(translationBytes, job.translationSha256(), translationRequest, job.ocrSha256());
-        var request = RenderRequest.create(job.source(), ocr, translation, job.ocrSha256(), job.translationSha256(), policy);
+        var request = RenderRequest.create(job.source(), ocr, translation, job.ocrSha256(), job.translationSha256(), policy)
+            .withBubbles(bubbles(job));
         // Which regions read as speech/captions (vs sound effects): a renderer that can inpaint may retype them
         // over reconstructed artwork; the others keep their lettering.
         if (lexicons == null) return request;
         return request.withCaptionHints(com.toonlira.translationgateway.domain.rendering.CaptionFilter.captions(
             request, lexicons.forLanguage(job.sourceLanguage())));
+    }
+
+    /**
+     * Balloon boxes of the layout artifact, only when it describes this very image and OCR manifest. Best effort:
+     * a missing, unreadable or foreign artifact gives no boxes and never fails rendering.
+     */
+    private List<com.toonlira.translationgateway.domain.layout.LayoutBox> bubbles(RenderingJobRepository.WorkItem job) {
+        if (job.layoutObjectKey() == null || job.layoutSha256() == null) return List.of();
+        try {
+            var bytes = readVerified(job.layoutObjectKey(), job.layoutSha256(), com.toonlira.translationgateway.domain.layout.LayoutParameters.MAX_BYTES);
+            var root = LAYOUT_JSON.readTree(bytes);
+            if (!job.source().sha256().equals(root.path("imageSha256").asText())
+                || !job.ocrSha256().equals(root.path("ocrManifestSha256").asText())) return List.of();
+            var boxes = new java.util.ArrayList<com.toonlira.translationgateway.domain.layout.LayoutBox>();
+            for (var bubble : root.path("bubbles")) {
+                var b = bubble.path("bounds");
+                boxes.add(new com.toonlira.translationgateway.domain.layout.LayoutBox(b.path("left").asDouble(),
+                    b.path("top").asDouble(), b.path("right").asDouble(), b.path("bottom").asDouble()));
+                if (boxes.size() > 256) return List.of();
+            }
+            return List.copyOf(boxes);
+        } catch (RuntimeException | IOException unusable) {
+            return List.of();
+        }
     }
 
     private RenderPolicy policy() {

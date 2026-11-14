@@ -25,8 +25,9 @@ public final class RenderRequest {
     private final RenderPolicy policy;
     private final List<Region> regions;
     private final Set<UUID> captionHints;
+    private final List<com.toonlira.translationgateway.domain.layout.LayoutBox> bubbles;
 
-    private RenderRequest(RenderRequest base, Set<UUID> captionHints) {
+    private RenderRequest(RenderRequest base, Set<UUID> captionHints, List<com.toonlira.translationgateway.domain.layout.LayoutBox> bubbles) {
         this.jobRef = base.jobRef;
         this.source = base.source;
         this.pair = base.pair;
@@ -35,6 +36,7 @@ public final class RenderRequest {
         this.policy = base.policy;
         this.regions = base.regions;
         this.captionHints = Set.copyOf(captionHints);
+        this.bubbles = List.copyOf(bubbles);
     }
 
     private RenderRequest(RenderSource source, OcrManifest ocr, TranslationResult translation,
@@ -49,6 +51,7 @@ public final class RenderRequest {
             region.sourceText(), translation.regions().get(region.readingOrder()).translatedText(),
             List.copyOf(region.polygon()))).toList();
         this.captionHints = Set.of();
+        this.bubbles = List.of();
     }
 
     /**
@@ -58,10 +61,22 @@ public final class RenderRequest {
     public RenderRequest withCaptionHints(Set<UUID> hints) {
         var ids = regions.stream().map(Region::id).collect(java.util.stream.Collectors.toSet());
         if (hints == null || !ids.containsAll(hints)) invalid();
-        return new RenderRequest(this, hints);
+        return new RenderRequest(this, hints, bubbles);
     }
 
     public Set<UUID> captionHints() { return captionHints; }
+
+    /**
+     * Speech balloons detected on this page (normalized boxes, from the layout artifact of the same image and OCR
+     * manifest). A hint that bounds where a region's balloon mask and layout may extend; empty when unknown.
+     */
+    public RenderRequest withBubbles(List<com.toonlira.translationgateway.domain.layout.LayoutBox> detected) {
+        // stream check: List.of(...).contains(null) itself throws on immutable lists.
+        if (detected == null || detected.size() > 256 || detected.stream().anyMatch(java.util.Objects::isNull)) invalid();
+        return new RenderRequest(this, captionHints, detected);
+    }
+
+    public List<com.toonlira.translationgateway.domain.layout.LayoutBox> bubbles() { return bubbles; }
 
     public static RenderRequest create(RenderSource source, OcrManifest ocr, TranslationResult translation,
                                        String ocrSha256, String translationSha256, RenderPolicy policy) {

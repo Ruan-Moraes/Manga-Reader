@@ -30,8 +30,16 @@ public interface RenderingJobRepository {
     record WorkItem(UUID id, UUID jobRef, JobStatus status, String originalObjectKey, RenderSource source,
                     String sourceLanguage, String targetLanguage, Instant createdAt,
                     String ocrObjectKey, String ocrSha256, String translationObjectKey, String translationSha256,
-                    Artifacts artifacts, int resultRetentionSeconds) {
+                    Artifacts artifacts, int resultRetentionSeconds, String layoutObjectKey, String layoutSha256) {
         public WorkItem { OriginalObjectKey.requireSeconds(resultRetentionSeconds); }
+        /** Without a layout artifact (layout disabled, failed, or not recorded). */
+        public WorkItem(UUID id, UUID jobRef, JobStatus status, String originalObjectKey, RenderSource source,
+                        String sourceLanguage, String targetLanguage, Instant createdAt,
+                        String ocrObjectKey, String ocrSha256, String translationObjectKey, String translationSha256,
+                        Artifacts artifacts, int resultRetentionSeconds) {
+            this(id, jobRef, status, originalObjectKey, source, sourceLanguage, targetLanguage, createdAt, ocrObjectKey,
+                ocrSha256, translationObjectKey, translationSha256, artifacts, resultRetentionSeconds, null, null);
+        }
         public WorkItem(UUID id, UUID jobRef, JobStatus status, String originalObjectKey, RenderSource source,
                         String sourceLanguage, String targetLanguage, Instant createdAt,
                         String ocrObjectKey, String ocrSha256, String translationObjectKey, String translationSha256, Artifacts artifacts) {

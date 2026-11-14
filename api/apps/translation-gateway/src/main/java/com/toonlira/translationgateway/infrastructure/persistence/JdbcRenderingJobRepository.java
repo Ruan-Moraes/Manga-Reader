@@ -44,11 +44,13 @@ public class JdbcRenderingJobRepository implements RenderingJobRepository {
                        r.output_object_key AS manifest_key, r.output_sha256 AS manifest_hash,
                        r.rendered_image_object_key AS image_key, r.rendered_image_sha256 AS image_hash,
                        r.rendered_image_byte_size AS image_bytes, r.result_expires_at,
-                       r.rendered_text_region_count AS text_regions, r.rendered_text_missing_count AS text_missing
+                       r.rendered_text_region_count AS text_regions, r.rendered_text_missing_count AS text_missing,
+                       l.output_object_key AS layout_key, l.output_sha256 AS layout_hash
                 FROM processing_jobs j
                 LEFT JOIN processing_job_stages o ON o.job_id = j.id AND o.stage = 'OCR' AND o.status = 'SUCCEEDED'
                 LEFT JOIN processing_job_stages t ON t.job_id = j.id AND t.stage = 'TRANSLATING' AND t.status = 'SUCCEEDED'
                 LEFT JOIN processing_job_stages r ON r.job_id = j.id AND r.stage = 'RENDERING'
+                LEFT JOIN processing_job_layouts l ON l.job_id = j.id AND l.status = 'SUCCEEDED'
                 WHERE j.job_ref = :jobRef
                 """).param("jobRef", jobRef).query((row, ignored) -> {
                 var artifacts = row.getString("image_key") == null ? null : new Artifacts(row.getString("image_key"),
@@ -66,7 +68,7 @@ public class JdbcRenderingJobRepository implements RenderingJobRepository {
                     row.getString("source_language"), row.getString("target_language"),
                     row.getObject("created_at", OffsetDateTime.class).toInstant(), row.getString("ocr_key"),
                     row.getString("ocr_hash"), row.getString("translation_key"), row.getString("translation_hash"), artifacts,
-                    row.getInt("result_retention_seconds"));
+                    row.getInt("result_retention_seconds"), row.getString("layout_key"), row.getString("layout_hash"));
             }).optional();
     }
 
