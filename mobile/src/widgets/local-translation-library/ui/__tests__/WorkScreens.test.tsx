@@ -150,12 +150,29 @@ describe('MOB-FEAT-060 tela da obra', () => {
         expect(screen.getByTestId('work-failed')).toHaveProp('accessibilityLabel', '1 falhou');
         expect(screen.getByTestId('work-processing')).toHaveProp('accessibilityLabel', '1 em tradução');
         expect(within(row).getByText('Parou na página 1 de 3')).toBeOnTheScreen();
-        expect(within(row).getByRole('button', { name: 'Continuar — Dois' })).toBeOnTheScreen();
+        const continueChapter = within(row).getByRole('button', { name: 'Continuar — Dois' });
+        const initialColor = row.props.style.backgroundColor;
+        fireEvent(continueChapter, 'pressIn');
+        expect(screen.getByTestId('chapter-row-b').props.style.backgroundColor).not.toBe(initialColor);
+        fireEvent(continueChapter, 'pressOut');
+        expect(screen.getByTestId('chapter-row-b')).toHaveStyle({ backgroundColor: initialColor });
         expect(screen.getByTestId('chapter-status-c')).toHaveProp('accessibilityLabel', 'Processando');
         expect(screen.queryByTestId('chapter-status-a')).toBeNull();
         expect(within(screen.getByTestId('chapter-row-a')).getByRole('button', { name: 'Ler — Prólogo' })).toBeOnTheScreen();
         fireEvent.press(within(screen.getByTestId('footer')).getByRole('button', { name: 'Continuar · cap. 2, pág. 1' }));
         expect(onOpenReader).toHaveBeenCalledWith('b');
+    });
+
+    it('mostra "Capítulo N" para nomes numéricos, nomes dos idiomas e menu "⋯" horizontal (revisão 2026-11-13)', async () => {
+        detail({ ...base, chapters: { ...base.chapters, w1: [link('a', 'w1', '3'), link('b', 'w1', 'Dois'), link('c', 'w1', 'Três')] } });
+        const row = await screen.findByTestId('chapter-row-a');
+        expect(within(row).getByText('Capítulo 3')).toBeOnTheScreen();
+        expect(within(screen.getByTestId('chapter-row-b')).getByText('Dois')).toBeOnTheScreen();
+        expect(screen.getByText('Japonês → Português (Brasil)')).toBeOnTheScreen();
+        expect(screen.queryByText('ja → pt-BR')).toBeNull();
+        const menu = within(row).getByRole('button', { name: /Ações de/ });
+        expect(screen.UNSAFE_queryAllByProps({ name: 'ellipsis-vertical' })).toHaveLength(0);
+        expect(menu).toBeOnTheScreen();
     });
 
     it('AC-006 alterna a ordem 1 → N / N → 1', async () => {
@@ -250,6 +267,15 @@ describe('MOB-FEAT-060 gerenciar obra', () => {
         return { ...deps, ...callbacks };
     }
 
+    it('mostra nomes dos idiomas e o nome da obra numa linha só na linha "Nome" (revisão 2026-11-13)', async () => {
+        manage(base);
+        await screen.findByRole('button', { name: 'Nome' });
+        expect(screen.getByText(/Japonês → Português \(Brasil\)/)).toBeOnTheScreen();
+        expect(screen.queryByText(/ja → pt-BR/)).toBeNull();
+        const values = screen.getAllByText('Beta').filter(node => node.props.numberOfLines === 1);
+        expect(values.length).toBeGreaterThan(0);
+    });
+
     it('AC-008 mostra informações, vínculo e zona de risco usando as operações da 055', async () => {
         const { controller, onViewChapters, onMissing } = manage(base);
         expect(await screen.findByRole('button', { name: 'Nome' })).toBeOnTheScreen();
@@ -281,6 +307,7 @@ describe('MOB-FEAT-060 gerenciar obra', () => {
         const inputs = screen.getAllByLabelText('Número ou nome do capítulo');
         expect(inputs.map(input => input.props.value)).toEqual(['4', '5']);
         fireEvent.changeText(inputs[1], 'Extra');
+        expect(screen.getByText('Vincular 2 capítulos')).toHaveProp('numberOfLines', 1);
         fireEvent.press(screen.getByRole('button', { name: 'Vincular 2 capítulos' }));
         await waitFor(() => expect(controller.attachChapter).toHaveBeenCalledTimes(2));
         expect(controller.attachChapter).toHaveBeenNthCalledWith(1, base.works[0], 'legacy', '4');

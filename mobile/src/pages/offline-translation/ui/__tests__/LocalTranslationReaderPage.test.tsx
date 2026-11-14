@@ -1,7 +1,8 @@
-import { act, fireEvent, render, screen, waitFor } from '@testing-library/react-native';
+import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import type { LocalTranslationReaderSnapshot, OpenLocalTranslationResultController, TrackLocalReadingProgressController } from '@/features/local-translation';
+import { useDeveloperMode } from '@/shared/config';
 import i18n from '@/shared/i18n';
 import { ThemeProvider } from '@/shared/theme';
 
@@ -84,7 +85,11 @@ const snapshot: LocalTranslationReaderSnapshot = {
 };
 
 describe('MOB-FEAT-051/AC-003/005 local reader page integration', () => {
-    beforeEach(() => i18n.changeLanguage('pt-BR'));
+    beforeEach(() => {
+        useDeveloperMode.setState({ enabled: true, hydrated: true });
+        return i18n.changeLanguage('pt-BR');
+    });
+    afterEach(() => useDeveloperMode.setState({ enabled: false }));
 
     it('adapts the offline snapshot, validates only visible pages and debounces progress', async () => {
         const open: OpenLocalTranslationResultController = {
@@ -126,7 +131,7 @@ describe('MOB-FEAT-051/AC-003/005 local reader page integration', () => {
     });
 });
 
-it('keeps the original visible when a page has no translated result', async () => {
+it('shows originals for missing results and saved demos while developer mode is off', async () => {
     const results = new Map(snapshot.results);
     results.delete('page-1');
     const open: OpenLocalTranslationResultController = {
@@ -145,7 +150,8 @@ it('keeps the original visible when a page has no translated result', async () =
         </SafeAreaProvider>,
     );
     const list = await screen.findByTestId('reader-vertical');
-    expect(list.props.data[1].primaryUri).toBe('file:///original-1.jpg');
+    expect(list.props.data.map((item: { primaryUri: string }) => item.primaryUri)).toEqual(['file:///original-0.jpg', 'file:///original-1.jpg']);
+    expect(screen.queryByText('Tradução simulada')).toBeNull();
     await act(async () => {
         list.props.onViewableItemsChanged({ viewableItems: [{ item: list.props.data[1], index: 1, isViewable: true }] });
     });
@@ -214,11 +220,40 @@ it.each([
             </ThemeProvider>
         </SafeAreaProvider>,
     );
-    expect(await screen.findByText(notice)).toBeOnTheScreen();
+    // Revisão 2026-11-13: o aviso fica no painel inferior e aparece com os controles; a leitura imersiva usa a tela toda.
+    const bottomBar = within(await screen.findByTestId('reader-bottom-bar', { includeHiddenElements: true }));
+    expect(bottomBar.getByText(notice, { includeHiddenElements: true })).toBeTruthy();
     expect(screen.queryByText(i18n.t('reader:actions.overflow'))).toBeNull();
     expect(screen.queryByText('Tradução simulada')).toBeNull();
     rendered.unmount();
     await i18n.changeLanguage('pt-BR');
+});
+
+it('capítulo sem obra usa o nome da biblioteca no título em vez de "Leitor local" (revisão 2026-11-13)', async () => {
+    const open: OpenLocalTranslationResultController = {
+        load: jest.fn(async () => snapshot),
+        validate: jest.fn(async () => true),
+        validateOriginal: jest.fn(async () => true),
+        resultUri: () => 'file:///result.webp',
+        originalUri: () => 'file:///original.png',
+    };
+    const progress: TrackLocalReadingProgressController = { load: jest.fn(), save: jest.fn(async () => undefined) };
+    render(
+        <SafeAreaProvider initialMetrics={{ frame: { x: 0, y: 0, width: 390, height: 844 }, insets: { top: 0, left: 0, right: 0, bottom: 0 } }}>
+            <ThemeProvider waitForPlatform={false}>
+                <LocalTranslationReaderPage
+                    projectId="project-1"
+                    openController={open}
+                    progressController={progress}
+                    loadOverview={async () => ({ works: [], unassigned: [] }) as never}
+                />
+            </ThemeProvider>
+        </SafeAreaProvider>,
+    );
+    const date = new Intl.DateTimeFormat('pt-BR').format(snapshot.project.createdAt);
+    expect(await screen.findByText(`Capítulo de ${date}`, { includeHiddenElements: true })).toBeTruthy();
+    expect(screen.getByText('Sem obra', { includeHiddenElements: true })).toBeTruthy();
+    expect(screen.queryByText('Leitor local', { includeHiddenElements: true })).toBeNull();
 });
 
 it('shows the retry marker only while the visible page has no translated result', async () => {
@@ -241,4 +276,35 @@ it('shows the retry marker only while the visible page has no translated result'
     );
     expect(await screen.findByTestId('page-retry-indicator')).toHaveTextContent('page-1');
     rendered.unmount();
+});
+
+it('enquanto abre, mostra o carregamento do leitor com saída visível em vez do cartão de status', async () => {
+    await i18n.changeLanguage('pt-BR');
+    const open: OpenLocalTranslationResultController = {
+        load: jest.fn(() => new Promise<never>(() => undefined)),
+        validate: jest.fn(async () => true),
+        validateOriginal: jest.fn(async () => true),
+        resultUri: () => 'file:///result.webp',
+        originalUri: () => 'file:///original.png',
+    };
+    const progress: TrackLocalReadingProgressController = { load: jest.fn(), save: jest.fn(async () => undefined) };
+    render(
+        <SafeAreaProvider initialMetrics={{ frame: { x: 0, y: 0, width: 390, height: 844 }, insets: { top: 0, left: 0, right: 0, bottom: 0 } }}>
+            <ThemeProvider waitForPlatform={false}>
+                <LocalTranslationReaderPage
+                    projectId="project-1"
+                    openController={open}
+                    progressController={progress}
+                    loadOverview={async () => ({ works: [], unassigned: [] }) as never}
+                />
+            </ThemeProvider>
+        </SafeAreaProvider>,
+    );
+
+    const loading = screen.getByTestId('local-reader-loading');
+    expect(loading.props.role).toBe('status');
+    expect(loading.props.accessibilityLabel).toBe('Abrindo o capítulo…');
+    expect(screen.getByTestId('local-reader-loading-dots')).toBeOnTheScreen();
+    expect(screen.getByRole('button', { name: 'Sair do leitor' })).toBeOnTheScreen();
+    await act(async () => undefined);
 });

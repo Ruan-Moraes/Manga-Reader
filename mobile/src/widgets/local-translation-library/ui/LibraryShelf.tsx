@@ -6,18 +6,20 @@ import { useTranslation } from 'react-i18next';
 import type { LocalTranslationResultRepository } from '@/entities/local-translation-result';
 import { type RemoveLocalTranslationProjectController, removeLocalTranslationProjectController } from '@/features/local-translation';
 import { type ManageLocalWorksController, manageLocalWorksController } from '@/features/manage-local-works';
+import { useDeveloperModeEnabled } from '@/shared/config';
 import { type LocalMediaPicker, systemLocalMediaPicker } from '@/shared/media-picker';
-import { useTheme } from '@/shared/theme';
-import { ActionSheet, Button, ConfirmDialog, Icon, IconButton, SectionAction, SectionHeader, StateView, StickyActionBar } from '@/shared/ui';
+import { MOTION_DURATIONS, useTheme } from '@/shared/theme';
+import { ActionSheet, Button, ConfirmDialog, Icon, IconButton, SectionAction, SectionHeader, StateView, StickyActionBar, useImageFade } from '@/shared/ui';
 
 import { chapterNumber, type LibraryChapter, type LibraryWork, sortWorks, type WorkSortOrder } from '../model/libraryOverview';
 import { useLibraryOperation } from '../model/useLibraryOperation';
 import { useLibraryOverview } from '../model/useLibraryOverview';
 import { ContinueReadingCard, ItemRow, LibrarySkeleton, NewWorkTile, WorkCard } from './LibraryParts';
+import { useLanguageNames } from './useLanguageNames';
 import { CoverSheet, MoveChapterSheet, NameSheet } from './LibrarySheets';
 
-/** iOS cannot present a modal while another one is dismissing; chained sheets wait for the close animation. */
-export const SHEET_CHAIN_DELAY_MS = Platform.OS === 'ios' ? 350 : 0;
+/** Safety net if iOS never reports the dismissal: the next sheet still opens after the exit animation plus a margin. */
+export const SHEET_CHAIN_FALLBACK_MS = MOTION_DURATIONS.exit + 500;
 
 export interface LibraryScaffoldSlots {
     children: ReactNode;
@@ -49,16 +51,34 @@ type Sheet =
     | { kind: 'move'; chapter: LibraryChapter }
     | { kind: 'deleteChapter'; chapter: LibraryChapter };
 
+/**
+ * One sheet at a time, where an action in one sheet can open the next. iOS cannot present a modal while another one
+ * is dismissing, so there the next sheet waits for the previous one to report it closed (`closed`, wired to the
+ * sheet's `onClosed`), with a fallback timer; other platforms open it right away.
+ */
 export function useChainedSheet<T>() {
     const [sheet, setSheet] = useState<T | null>(null);
+    const pending = useRef<T | null>(null);
     const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
     useEffect(() => () => (timer.current ? clearTimeout(timer.current) : undefined), []);
-    const chain = (next: T) => {
-        setSheet(null);
+    const closed = () => {
         if (timer.current) clearTimeout(timer.current);
-        timer.current = setTimeout(() => setSheet(next), SHEET_CHAIN_DELAY_MS);
+        timer.current = null;
+        const next = pending.current;
+        pending.current = null;
+        if (next !== null) setSheet(next);
     };
-    return { sheet, open: setSheet, close: () => setSheet(null), chain };
+    const chain = (next: T) => {
+        if (Platform.OS !== 'ios') {
+            setSheet(next);
+            return;
+        }
+        setSheet(null);
+        pending.current = next;
+        if (timer.current) clearTimeout(timer.current);
+        timer.current = setTimeout(closed, SHEET_CHAIN_FALLBACK_MS);
+    };
+    return { sheet, open: setSheet, close: () => setSheet(null), chain, closed };
 }
 
 export function LibraryShelf({
@@ -74,10 +94,12 @@ export function LibraryShelf({
     refreshToken,
 }: Props) {
     const { t, i18n } = useTranslation('localTranslation');
+    const developerModeEnabled = useDeveloperModeEnabled();
     const { layout, metrics, spacing, tokens, radii } = useTheme();
     const { overview, error, reload } = useLibraryOverview({ controller, projects });
     const operation = useLibraryOperation(reload);
     const sheets = useChainedSheet<Sheet>();
+    const imageFade = useImageFade();
     const [order, setOrder] = useState<WorkSortOrder>('recent');
     const [selecting, setSelecting] = useState(false);
     const [selected, setSelected] = useState<ReadonlySet<string>>(new Set());
@@ -92,8 +114,11 @@ export function LibraryShelf({
     }, [refreshToken, reload]);
 
     const works = useMemo(() => (overview ? sortWorks(overview.works, order, i18n.language) : []), [i18n.language, order, overview]);
-    const formatDate = (value: number) => new Intl.DateTimeFormat(i18n.language).format(value);
-    const unassignedTitle = (chapter: LibraryChapter) => t('shelf.unassignedTitle', { date: formatDate(chapter.createdAt) });
+    // Date and time: several chapters created on the same day stay distinguishable (revisão 2026-11-13).
+    const formatDateTime = (value: number) =>
+        new Intl.DateTimeFormat(i18n.language, { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }).format(value);
+    const unassignedTitle = (chapter: LibraryChapter) => t('shelf.unassignedTitle', { date: formatDateTime(chapter.createdAt) });
+    const { name: languageName } = useLanguageNames();
     const entryOf = (workId: string) => overview?.works.find(entry => entry.work.id === workId) ?? null;
 
     useEffect(() => {
@@ -186,14 +211,14 @@ export function LibraryShelf({
                 {resume && !selecting ? (
                     <ContinueReadingCard
                         entry={resume}
-                        coverUri={resume.work ? (controller.coverUri(resume.work) ?? '') : resume.chapter.coverUri}
+                        coverUri={resume.chapter.coverUri}
                         title={resume.work ? resume.work.name : unassignedTitle(resume.chapter)}
                         chapterNumber={resumeEntry ? chapterNumber(resumeEntry, resume.chapter.projectId) : null}
                         onPress={() => onOpenReader(resume.chapter.projectId)}
                     />
                 ) : null}
                 <View>
-                    <SectionHeader dense title={t('shelf.works')} count={overview.works.length}>
+                    <SectionHeader title={t('shelf.works')} count={overview.works.length}>
                         {overview.works.length > 1 && !selecting ? (
                             <SectionAction
                                 testID="sort-action"
@@ -218,7 +243,8 @@ export function LibraryShelf({
                                 {row.map(cell => (
                                     <View key={cell === 'new' ? 'new' : cell.work.id} style={{ flex: 1, minWidth: 0 }}>
                                         {cell === 'new' ? (
-                                            <NewWorkTile onPress={() => sheets.open({ kind: 'newWork' })} />
+                                            // Alone (no works yet) it becomes a slim full-width row instead of an empty 2:3 slot.
+                                            <NewWorkTile compact={works.length === 0} onPress={() => sheets.open({ kind: 'newWork' })} />
                                         ) : (
                                             <WorkCard
                                                 entry={cell}
@@ -233,7 +259,7 @@ export function LibraryShelf({
                                         )}
                                     </View>
                                 ))}
-                                {row.length === 1 ? <View style={{ flex: 1 }} /> : null}
+                                {row.length === 1 && works.length > 0 ? <View style={{ flex: 1 }} /> : null}
                             </View>
                         ))}
                     </View>
@@ -251,17 +277,18 @@ export function LibraryShelf({
                                         title={title}
                                         description={[
                                             t('shelf.unassignedMeta', {
-                                                source: chapter.sourceLanguage,
-                                                target: chapter.targetLanguage,
+                                                source: languageName(chapter.sourceLanguage),
+                                                target: languageName(chapter.targetLanguage),
                                                 ready: chapter.readyPages,
                                                 total: chapter.pages,
                                             }),
-                                            ...(chapter.demo ? [t('demo.badge')] : []),
+                                            ...(developerModeEnabled && chapter.demo ? [t('demo.badge')] : []),
                                         ].join(' · ')}
                                         leading={
                                             <Image
                                                 source={{ uri: chapter.coverUri }}
                                                 contentFit="cover"
+                                                transition={imageFade}
                                                 accessibilityIgnoresInvertColors
                                                 style={{ backgroundColor: tokens.surfaceMuted, borderRadius: radii.control, height: 48, width: 36 }}
                                             />
@@ -326,6 +353,7 @@ export function LibraryShelf({
                 }
             />
             <ActionSheet
+                onClosed={sheets.closed}
                 visible={sheet?.kind === 'workMenu'}
                 onClose={sheets.close}
                 closeLabel={t('menu.close')}
@@ -442,6 +470,7 @@ export function LibraryShelf({
                 }}
             />
             <ActionSheet
+                onClosed={sheets.closed}
                 visible={sheet?.kind === 'chapterMenu'}
                 onClose={sheets.close}
                 closeLabel={t('menu.close')}

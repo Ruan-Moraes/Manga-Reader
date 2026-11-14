@@ -7,11 +7,12 @@ import { isMediaValidationReady, type LocalMediaImportDraft } from '@/entities/l
 import type { TranslationProject } from '@/entities/translation-project';
 import { type CreateTranslationProjectController, CreateTranslationProjectPanel } from '@/features/create-translation-project';
 import { ImportLocalMediaPanel, type LocalMediaImportController, localMediaImportController } from '@/features/import-local-media';
-import { GenerateDemoTranslationPanel } from '@/features/local-translation';
+import { GenerateDemoTranslationPanel, openLocalTranslationResultController } from '@/features/local-translation';
 import { type ManageLocalWorksController, manageLocalWorksController } from '@/features/manage-local-works';
 import { LocalMediaReviewPanel, type ReviewLocalMediaImportController, reviewLocalMediaImportController } from '@/features/review-local-media-import';
 import { type SelectTranslationLanguagesController, TranslationLanguageSelectionPanel } from '@/features/select-translation-languages';
 import { LocalMediaValidationItemStatus, LocalMediaValidationPanel, type ValidateLocalMediaController } from '@/features/validate-local-media';
+import { useDeveloperModeEnabled } from '@/shared/config';
 import { MEDIA_VALIDATION_POLICY_VERSION } from '@/shared/media-inspection';
 import { navigateBackOrReplace, ROUTES, useLeaveGuard } from '@/shared/navigation';
 import { useTheme } from '@/shared/theme';
@@ -19,11 +20,13 @@ import {
     ActionSlotOutlet,
     ActionSlotProvider,
     AppText,
+    BottomSheet,
     Button,
     CenterDialog,
     ConfirmDialog,
     DialogAction,
     IconButton,
+    PrimaryAction,
     ScreenScaffold,
     showToast,
     StatusMessage,
@@ -71,6 +74,7 @@ export function OfflineTranslationPage({
     worksController = manageLocalWorksController,
 }: Props) {
     const { t, i18n } = useTranslation('launcher');
+    const developerModeEnabled = useDeveloperModeEnabled();
     const { spacing } = useTheme();
     const [draft, setDraft] = useState<LocalMediaImportDraft | null>(null);
     const [requestedStep, setRequestedStep] = useState<TranslationFlowStep | null>(null);
@@ -220,19 +224,22 @@ export function OfflineTranslationPage({
         </View>
     );
 
+    const correctingPages = !showPrepared && currentStep === 'validate' && draft?.items.some(item => item.mediaValidationStatus === 'INVALID');
+    const chapterCoverUri = () => {
+        try {
+            if (showPrepared && preparedProject) {
+                return openLocalTranslationResultController.originalUri(preparedProject, 0);
+            }
+            const first = draft?.items.find(item => item.position === 0);
+            return draft && first ? (reviewController ?? reviewLocalMediaImportController).itemUri(draft, first) : null;
+        } catch {
+            return null;
+        }
+    };
     const content = (() => {
         if (showPrepared && preparedProject) {
             return (
-                <View style={{ gap: spacing.md }}>
-                    <SaveDestination
-                        destination={destination}
-                        chapterTitle={t('offline.flow3.chapterOf', { date: new Intl.DateTimeFormat(i18n.language).format(Date.now()) })}
-                        languages={languagePair(preparedProject.sourceLanguage, preparedProject.targetLanguage)}
-                        // Antes de enviar, o destino ainda pode mudar; depois do vínculo ou durante o envio, fica fixo.
-                        locked={remoteBusy || linkedProjects.current.has(preparedProject.id)}
-                        controller={worksController}
-                        onChange={setDestination}
-                    />
+                <View style={{ flex: 1, minHeight: 0, gap: spacing.md }}>
                     {preparedProject.status !== 'DRAFT' ? (
                         // Projeto retomado já processado (012): não dizer que o processamento ainda não começou.
                         <StatusMessage tone="success" title={t('offline.project.preparedRetainedDescription')} />
@@ -245,11 +252,31 @@ export function OfflineTranslationPage({
                             onAction={() => link(preparedProject)}
                         />
                     ) : null}
-                    <ChapterBatchPanel onActivityChange={setRemoteBusy} onOpenReader={openReader} requestStart={preparedNow} />
-                    <AppText variant="caption" tone="subtle" style={{ marginHorizontal: spacing.xs }}>
-                        {t('offline.flow3.nothingLeaves')}
-                    </AppText>
-                    {__DEV__ ? (
+                    <ChapterBatchPanel
+                        projectId={preparedProject.id}
+                        headerContent={
+                            <SaveDestination
+                                destination={destination}
+                                coverUri={chapterCoverUri()}
+                                chapterTitle={t('offline.flow3.chapterOf', { date: new Intl.DateTimeFormat(i18n.language).format(Date.now()) })}
+                                languages={languagePair(preparedProject.sourceLanguage, preparedProject.targetLanguage)}
+                                // Antes de enviar, o destino ainda pode mudar; depois do vínculo ou durante o envio, fica fixo.
+                                locked={remoteBusy || linkedProjects.current.has(preparedProject.id)}
+                                controller={worksController}
+                                onChange={setDestination}
+                            />
+                        }
+                        onActivityChange={setRemoteBusy}
+                        onOpenReader={openReader}
+                        requestStart={preparedNow}
+                        renderLayout={(content, footer) => (
+                            <>
+                                {content}
+                                {footer ? <PrimaryAction>{footer}</PrimaryAction> : null}
+                            </>
+                        )}
+                    />
+                    {__DEV__ && developerModeEnabled ? (
                         <GenerateDemoTranslationPanel
                             project={preparedProject}
                             onGenerated={project => router.push({ pathname: ROUTES.TRANSLATION_READER, params: { projectId: project.id } } as never)}
@@ -294,13 +321,22 @@ export function OfflineTranslationPage({
         if (currentStep === 'languages' || currentStep === 'validate') {
             return (
                 <View style={{ flex: 1, gap: spacing.md, minHeight: 0 }}>
-                    <TranslationLanguageSelectionPanel draft={draft} onDraftChange={handleDraftChange} controller={languageController} hideConfirmedState />
-                    <FlowSummary
-                        draft={draft}
-                        languages={languagePair(draft.sourceLanguage, draft.targetLanguage)}
-                        itemUri={item => (reviewController ?? reviewLocalMediaImportController).itemUri(draft, item)}
-                        onEditPages={() => setRequestedStep('organize')}
-                    />
+                    {correctingPages ? null : (
+                        <>
+                            <TranslationLanguageSelectionPanel
+                                draft={draft}
+                                onDraftChange={handleDraftChange}
+                                controller={languageController}
+                                hideConfirmedState
+                            />
+                            <FlowSummary
+                                draft={draft}
+                                languages={languagePair(draft.sourceLanguage, draft.targetLanguage)}
+                                itemUri={item => (reviewController ?? reviewLocalMediaImportController).itemUri(draft, item)}
+                                onEditPages={() => setRequestedStep('organize')}
+                            />
+                        </>
+                    )}
                     {!draft.languagesConfirmedAt ? (
                         <AppText variant="caption" tone="subtle" style={{ marginHorizontal: spacing.xs }}>
                             {t('offline.flow3.confirmOnContinue')}
@@ -328,6 +364,7 @@ export function OfflineTranslationPage({
             <View style={{ gap: spacing.md }}>
                 <SaveDestination
                     destination={destination}
+                    coverUri={chapterCoverUri()}
                     chapterTitle={t('offline.flow3.chapterOf', { date: new Intl.DateTimeFormat(i18n.language).format(Date.now()) })}
                     languages={languagePair(draft.sourceLanguage, draft.targetLanguage)}
                     locked={remoteBusy}
@@ -347,24 +384,24 @@ export function OfflineTranslationPage({
                     actionLabel={t('offline.flow3.translatePages', { count: draft.items.length })}
                     bare
                 />
-                <AppText variant="caption" tone="subtle" style={{ marginHorizontal: spacing.xs }}>
-                    {t('offline.flow3.nothingLeaves')}
-                </AppText>
             </View>
         );
     })();
 
-    const validationIssues = !!draft && draft.items.some(item => item.mediaValidationStatus === 'INVALID');
-    const fixedLayout = currentStep === 'organize' || (currentStep === 'validate' && validationIssues);
+    const fixedLayout = showPrepared || currentStep === 'organize' || correctingPages;
     return (
         <ActionSlotProvider>
             <ScreenScaffold
                 compact
                 scroll={!fixedLayout}
+                contentBottomSpacing={!showPrepared && currentStep === 'organize' ? 0 : undefined}
                 title={t('offline.pageTitle')}
                 backShape="control"
                 backLabel={!showPrepared && draft && previousTranslationFlowStep(currentStep) ? t('offline.flow.back') : t('offline.flow.backPlain')}
                 onBack={goBack}
+                belowHeader={
+                    <StepBar steps={stageLabels} currentIndex={stageIndex} counterLabel={t('offline.flow3.counter', { current: stageIndex + 1, total: 3 })} />
+                }
                 headerAction={
                     <View style={{ flexDirection: 'row', gap: spacing.xs }}>
                         {draft && !showPrepared ? (
@@ -380,11 +417,10 @@ export function OfflineTranslationPage({
                 }
             >
                 <View style={{ gap: spacing.sm }}>
-                    <StepBar steps={stageLabels} currentIndex={stageIndex} counterLabel={t('offline.flow3.counter', { current: stageIndex + 1, total: 3 })} />
-                    <AppText accessibilityRole="header" variant="title" style={{ marginTop: spacing.md }}>
-                        {t(`offline.flow3.title.${stage}`)}
+                    <AppText accessibilityRole="header" variant="title">
+                        {correctingPages ? t('offline.validation.issueSummaryTitle') : t(`offline.flow3.title.${stage}`)}
                     </AppText>
-                    {stage === 'translate' ? null : (
+                    {stage === 'translate' || correctingPages ? null : (
                         <AppText tone="muted">
                             {stage === 'pages'
                                 ? t(draft?.items.length ? 'offline.flow3.description.organize' : 'offline.flow3.description.import')
@@ -396,18 +432,17 @@ export function OfflineTranslationPage({
                     {content}
                 </View>
             </ScreenScaffold>
-            <CenterDialog
-                visible={exitTarget !== null}
-                onClose={() => setExitTarget(null)}
-                closeLabel={remoteBusy ? t('offline.flow.exitCancel') : t('offline.flow.leaveStay')}
-                icon={remoteBusy ? 'warning-outline' : 'exit-outline'}
-                tone={remoteBusy ? 'warning' : 'accent'}
-                title={remoteBusy ? t('offline.flow.exitTitle') : t('offline.flow.leaveTitle')}
-                description={remoteBusy ? t('offline.flow.exitDescription') : t('offline.flow.leaveDescription')}
-                stackActions={!remoteBusy}
-                testIDs={{ card: 'flow-exit-dialog' }}
-                actions={
-                    remoteBusy ? (
+            {remoteBusy ? (
+                <CenterDialog
+                    visible={exitTarget !== null}
+                    onClose={() => setExitTarget(null)}
+                    closeLabel={t('offline.flow.exitCancel')}
+                    icon="warning-outline"
+                    tone="warning"
+                    title={t('offline.flow.exitTitle')}
+                    description={t('offline.flow.exitDescription')}
+                    testIDs={{ card: 'flow-exit-dialog' }}
+                    actions={
                         <>
                             <DialogAction>
                                 <Button variant="outline" onPress={() => setExitTarget(null)}>
@@ -420,14 +455,26 @@ export function OfflineTranslationPage({
                                 </Button>
                             </DialogAction>
                         </>
-                    ) : (
-                        <>
-                            <Button variant="ghost" onPress={() => setExitTarget(null)}>
-                                {t('offline.flow.leaveStay')}
-                            </Button>
+                    }
+                />
+            ) : (
+                <BottomSheet
+                    visible={exitTarget !== null}
+                    onClose={() => setExitTarget(null)}
+                    closeLabel={t('platform.closeSheet')}
+                    title={t('offline.flow.leaveTitle')}
+                    description={t('offline.flow.leaveDescription')}
+                    testIDs={{ sheet: 'flow-exit-sheet', scroll: 'flow-exit-actions' }}
+                >
+                    <View style={{ gap: spacing.sm }}>
+                        <Button onPress={() => exitTo(exitTarget ?? 'back')}>{t('offline.flow.leaveKeep')}</Button>
+                        <Button variant="outline" onPress={() => setExitTarget(null)}>
+                            {t('offline.flow.leaveStay')}
+                        </Button>
+                        <View style={{ paddingTop: spacing.xs }}>
                             <Button
-                                variant="outline"
                                 tone="danger"
+                                variant="ghost"
                                 onPress={() => {
                                     const target = exitTarget ?? 'back';
                                     setExitTarget(null);
@@ -436,21 +483,20 @@ export function OfflineTranslationPage({
                             >
                                 {t('offline.flow.leaveDiscard')}
                             </Button>
-                            <Button onPress={() => exitTo(exitTarget ?? 'back')}>{t('offline.flow.leaveKeep')}</Button>
-                        </>
-                    )
-                }
-            />
+                        </View>
+                    </View>
+                </BottomSheet>
+            )}
             <ConfirmDialog
                 visible={restartOpen}
                 onClose={() => setRestartOpen(false)}
                 onConfirm={() => void discardSelection()}
-                closeLabel={t('offline.flow.leaveStay')}
-                cancelLabel={t('offline.flow.leaveStay')}
+                closeLabel={t('offline.flow.restartKeep')}
+                cancelLabel={t('offline.flow.restartKeep')}
                 confirmLabel={t('offline.flow.restartConfirm')}
                 title={t('offline.flow.restartTitle')}
-                description={t('offline.flow.restartDescription')}
-                icon="refresh"
+                description={t('offline.flow.restartDescription', { count: draft?.items.length ?? 0 })}
+                icon="trash-outline"
             />
             <CenterDialog
                 visible={draftPromptOpen}

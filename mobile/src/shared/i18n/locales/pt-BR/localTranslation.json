@@ -44,7 +44,7 @@
     },
     "reader": {
         "title": "Leitor local",
-        "loading": "Abrindo o projeto…",
+        "loading": "Abrindo o capítulo…",
         "unavailableTitle": "Projeto indisponível",
         "unavailableDescription": "Este projeto não existe mais no aparelho.",
         "library": "Voltar à biblioteca",
@@ -228,10 +228,12 @@
         "retryTitle": "Tentar traduzir de novo",
         "retryDescription": "Só as páginas que falharam são enviadas, e só depois do seu aceite.",
         "chapterA11y": "Capítulo {{number}}: {{name}}",
+        "chapterNumbered": "Capítulo {{number}}",
         "translateTitle": "Traduzir capítulo",
         "translateDescription": "Escolha as páginas. Nada é enviado antes do seu aceite."
     },
     "status": {
+        "incomplete": "Incompleto",
         "waiting": "Aguardando",
         "processing": "Processando",
         "saved": "Salva",

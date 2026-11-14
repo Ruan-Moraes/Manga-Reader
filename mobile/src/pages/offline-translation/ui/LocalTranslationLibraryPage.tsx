@@ -1,8 +1,8 @@
-import { useCallback, useState } from 'react';
-import { router, useFocusEffect } from 'expo-router';
+import { useState } from 'react';
+import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 
-import { ROUTES } from '@/shared/navigation';
+import { ROUTES, useScreenRefocus } from '@/shared/navigation';
 import { IconButton, ScreenScaffold } from '@/shared/ui';
 import { LibraryShelf } from '@/widgets/local-translation-library';
 import { BatchRetrySheet } from '@/widgets/remote-processing';
@@ -11,7 +11,8 @@ export function LocalTranslationLibraryPage() {
     const { t } = useTranslation('localTranslation');
     const { t: launcher } = useTranslation('launcher');
     const [focusToken, setFocusToken] = useState(0);
-    useFocusEffect(useCallback(() => setFocusToken(value => value + 1), []));
+    // The shelf already loads on mount; only a return to this screen needs a reload (no double load on open).
+    useScreenRefocus(() => setFocusToken(value => value + 1));
     const [batchProject, setBatchProject] = useState<string | null>(null);
     const home = () => router.replace(ROUTES.ROOT as never);
     const openReader = (projectId: string) => router.push({ pathname: ROUTES.TRANSLATION_READER, params: { projectId } } as never);

@@ -242,6 +242,14 @@ async function invalidateResult(executor: SqlExecutor, pageId: string, updatedAt
 
     if (!page) return;
 
+    // A previously committed local result is proof that this attempt can be retired safely.
+    await executor.runAsync(
+        `UPDATE remote_processing_attempts SET status='FAILED',error_code='storage-unavailable',updated_at=?
+         WHERE page_id=? AND status='ACCEPTED'
+           AND id=(SELECT attempt_id FROM translation_page_results WHERE page_id=? AND source_kind='REMOTE')`,
+        [updatedAt, pageId, pageId],
+    );
+
     await executor.runAsync('DELETE FROM translation_page_results WHERE page_id = ?', [pageId]);
 
     await executor.runAsync(`UPDATE translation_pages SET status = 'FAILED', updated_at = ?, status_updated_at = ? WHERE id = ?`, [

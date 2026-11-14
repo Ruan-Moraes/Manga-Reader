@@ -104,6 +104,9 @@ export function ImportLocalMediaPanel({ controller, draft, onDraftChange, onCont
                 <PrimaryAction>
                     <Button
                         disabled={busy}
+                        // The system picker takes a moment to appear: show progress instead of a silently greyed button.
+                        loading={state.status === 'importing'}
+                        accessibilityLabel={t('offline.import.selectAction')}
                         leading={<Icon name="images-outline" size={metrics.icon.md} color={tokens.onAccent} />}
                         onPress={() => void selectImages()}
                     >

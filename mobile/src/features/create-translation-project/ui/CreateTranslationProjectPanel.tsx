@@ -6,7 +6,7 @@ import { isMediaValidationReady, type LocalMediaImportDraft } from '@/entities/l
 import type { TranslationProject } from '@/entities/translation-project';
 import { MEDIA_VALIDATION_POLICY_VERSION } from '@/shared/media-inspection';
 import { useTheme } from '@/shared/theme';
-import { AppText, Button, PrimaryAction } from '@/shared/ui';
+import { AppText, Button, Icon, PrimaryAction } from '@/shared/ui';
 
 import type { CreateTranslationProjectController } from '../model/createTranslationProject';
 import { useCreateTranslationProject } from '../model/useCreateTranslationProject';
@@ -25,7 +25,7 @@ interface Props {
 
 export function CreateTranslationProjectPanel({ draft, onDraftConsumed, controller, onProjectChange, actionLabel, bare = false }: Props) {
     const { t } = useTranslation('launcher');
-    const { spacing, tokens } = useTheme();
+    const { metrics, radii, spacing, tokens } = useTheme();
     const actions = useCreateTranslationProject(controller);
     const ready = draft ? isMediaValidationReady(draft, MEDIA_VALIDATION_POLICY_VERSION) : false;
 
@@ -40,19 +40,59 @@ export function CreateTranslationProjectPanel({ draft, onDraftConsumed, controll
             style={bare ? { gap: spacing.md } : { borderTopColor: tokens.separator, borderTopWidth: 1, gap: spacing.md, paddingTop: spacing.md }}
         >
             {actions.project && (
-                <View accessibilityRole="summary" style={{ gap: spacing.xs }}>
-                    <AppText variant="section">{t('offline.project.preparedTitle')}</AppText>
-                    <AppText tone="success">
-                        {t(actions.project.status === 'DRAFT' ? 'offline.project.preparedDescription' : 'offline.project.preparedRetainedDescription')}
-                    </AppText>
-                    <AppText variant="caption" tone="muted">
-                        {t('offline.project.summary', {
-                            count: actions.project.pages.length,
-                            source: t(`offline.languages.options.${actions.project.sourceLanguage}`),
-                            target: t(`offline.languages.options.${actions.project.targetLanguage}`),
-                            status: t(`offline.project.status.${actions.project.status}`),
-                        })}
-                    </AppText>
+                <View
+                    testID="translation-project-prepared"
+                    accessibilityRole="summary"
+                    style={{
+                        backgroundColor: tokens.surface,
+                        borderColor: tokens.separator,
+                        borderRadius: radii.card,
+                        borderWidth: 1,
+                        overflow: 'hidden',
+                    }}
+                >
+                    <View style={{ alignItems: 'flex-start', flexDirection: 'row', gap: spacing.md, padding: spacing.md }}>
+                        <View
+                            style={{
+                                alignItems: 'center',
+                                backgroundColor: tokens.successSoft,
+                                borderRadius: radii.pill,
+                                height: metrics.iconTile.default,
+                                justifyContent: 'center',
+                                width: metrics.iconTile.default,
+                            }}
+                        >
+                            <Icon name="shield-checkmark" size={metrics.icon.md} color={tokens.success} decorative />
+                        </View>
+                        <View style={{ flex: 1, gap: spacing.xs, minWidth: 0 }}>
+                            <AppText variant="label">{t('offline.project.preparedTitle')}</AppText>
+                            <AppText variant="caption" tone="muted">
+                                {t(actions.project.status === 'DRAFT' ? 'offline.project.preparedDescription' : 'offline.project.preparedRetainedDescription')}
+                            </AppText>
+                        </View>
+                    </View>
+                    <View
+                        style={{
+                            alignItems: 'center',
+                            backgroundColor: tokens.surfaceMuted,
+                            borderTopColor: tokens.separator,
+                            borderTopWidth: 1,
+                            flexDirection: 'row',
+                            gap: spacing.sm,
+                            paddingHorizontal: spacing.md,
+                            paddingVertical: spacing.sm,
+                        }}
+                    >
+                        <Icon name="language-outline" size={metrics.icon.sm} color={tokens.muted} decorative />
+                        <AppText variant="caption" tone="muted" style={{ flex: 1 }}>
+                            {t('offline.project.summary', {
+                                count: actions.project.pages.length,
+                                source: t(`offline.languages.options.${actions.project.sourceLanguage}`),
+                                target: t(`offline.languages.options.${actions.project.targetLanguage}`),
+                                status: t(`offline.project.status.${actions.project.status}`),
+                            })}
+                        </AppText>
+                    </View>
                 </View>
             )}
             {actions.loading && (

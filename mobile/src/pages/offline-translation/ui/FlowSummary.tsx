@@ -1,4 +1,4 @@
-import { View } from 'react-native';
+import { FlatList, View } from 'react-native';
 import { Image } from 'expo-image';
 import { useTranslation } from 'react-i18next';
 
@@ -12,8 +12,6 @@ interface Props {
     itemUri(item: LocalMediaImportItem): string;
     onEditPages(): void;
 }
-
-const MAX_THUMBNAILS = 5;
 
 /** "Resumo" card of the languages step (056, kit): page strip, pages, languages and validation. */
 export function FlowSummary({ draft, languages, itemUri, onEditPages }: Props) {
@@ -44,26 +42,33 @@ export function FlowSummary({ draft, languages, itemUri, onEditPages }: Props) {
                 <TextAction label={t('offline.flow3.editPages')} onPress={onEditPages} />
             </View>
             <View
-                accessibilityElementsHidden
-                importantForAccessibility="no-hide-descendants"
                 style={{
                     borderBottomColor: tokens.separator,
                     borderBottomWidth: 1,
                     borderTopColor: tokens.separator,
                     borderTopWidth: 1,
-                    flexDirection: 'row',
-                    gap: spacing.sm,
-                    padding: spacing.md,
                 }}
             >
-                {draft.items.slice(0, MAX_THUMBNAILS).map(item => (
-                    <Image
-                        key={item.id}
-                        source={{ uri: itemUri(item) }}
-                        contentFit="cover"
-                        style={{ aspectRatio: 2 / 3, backgroundColor: tokens.surfaceMuted, borderRadius: radii.sm, width: 52 }}
-                    />
-                ))}
+                <FlatList
+                    showsVerticalScrollIndicator={false}
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    data={draft.items}
+                    keyExtractor={item => item.id}
+                    windowSize={3}
+                    contentContainerStyle={{ gap: spacing.sm, padding: spacing.md }}
+                    renderItem={({ item, index }) => (
+                        <Image
+                            accessible
+                            accessibilityLabel={t('offline.flow3.thumbnailPage', { page: index + 1 })}
+                            source={{ uri: itemUri(item) }}
+                            recyclingKey={item.id}
+                            cachePolicy="memory"
+                            contentFit="cover"
+                            style={{ backgroundColor: tokens.surfaceMuted, borderRadius: radii.sm, height: 78, width: 52 }}
+                        />
+                    )}
+                />
             </View>
             {rows.map(([label, value, ok], index) => (
                 <View

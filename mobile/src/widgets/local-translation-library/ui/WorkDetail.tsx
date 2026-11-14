@@ -1,5 +1,6 @@
 import { type ReactNode, useEffect, useRef, useState } from 'react';
-import { View } from 'react-native';
+import { type PressableProps, useWindowDimensions, View } from 'react-native';
+import { Image } from 'expo-image';
 import { useTranslation } from 'react-i18next';
 
 import type { LocalTranslationResultRepository } from '@/entities/local-translation-result';
@@ -20,6 +21,7 @@ import {
     StateView,
     StatusChip,
     StickyActionBar,
+    useImageFade,
 } from '@/shared/ui';
 
 import type { LibraryChapter, LibraryWork } from '../model/libraryOverview';
@@ -29,6 +31,7 @@ import { WorkCover } from './LibraryParts';
 import { MoveChapterSheet, NameSheet } from './LibrarySheets';
 import type { LibraryScaffoldSlots } from './LibraryShelf';
 import { useChainedSheet } from './LibraryShelf';
+import { useLanguageNames } from './useLanguageNames';
 import { type WorkSheet, WorkSheets } from './WorkSheets';
 
 export interface WorkScaffoldSlots extends LibraryScaffoldSlots {
@@ -55,8 +58,10 @@ interface Props {
 
 type ChapterSheet = { kind: 'menu' | 'rename' | 'delete' | 'move' | 'unlink'; chapter: LibraryChapter } | { kind: 'new' } | { kind: 'work'; sheet: WorkSheet };
 
-function ChapterTile({ number, current }: { number: number; current: boolean }) {
+function ChapterTile({ number, current, uri }: { number: number; current: boolean; uri: string }) {
     const { metrics, radii, tokens } = useTheme();
+    const [failedUri, setFailedUri] = useState<string | null>(null);
+    const fade = useImageFade();
     return (
         <View
             style={{
@@ -65,42 +70,55 @@ function ChapterTile({ number, current }: { number: number; current: boolean }) 
                 borderRadius: radii.control,
                 height: metrics.control.default,
                 justifyContent: 'center',
+                overflow: 'hidden',
                 width: metrics.control.default,
             }}
         >
-            <AppText variant="label" style={{ color: current ? tokens.onAccent : tokens.text }}>
-                {number}
-            </AppText>
+            {uri && failedUri !== uri ? (
+                <Image source={{ uri }} contentFit="cover" transition={fade} onError={() => setFailedUri(uri)} style={{ height: '100%', width: '100%' }} />
+            ) : (
+                <AppText variant="label" style={{ color: current ? tokens.onAccent : tokens.text }}>
+                    {number}
+                </AppText>
+            )}
         </View>
     );
 }
 
+type ChapterPillProps = Pick<PressableProps, 'onPressIn' | 'onPressOut' | 'onFocus' | 'onBlur'> & {
+    label: string;
+    strong: boolean;
+    accessibilityLabel: string;
+    onPress(): void;
+};
+
+type RowInteractionProps = Pick<ChapterPillProps, 'onPressIn' | 'onPressOut' | 'onFocus' | 'onBlur'>;
+
 /** 32-high action pill inside a 44 touch target (kit: "Ler", "Continuar", "Ver"). */
-function ChapterPill({ label, strong, accessibilityLabel, onPress }: { label: string; strong: boolean; accessibilityLabel: string; onPress(): void }) {
+function ChapterPill({ label, strong, accessibilityLabel, onPress, ...interaction }: ChapterPillProps) {
     const { minimumTouchTarget, radii, spacing, tokens } = useTheme();
     return (
         <Pressable
+            {...interaction}
             accessibilityRole="button"
             accessibilityLabel={accessibilityLabel}
             onPress={onPress}
             style={{ justifyContent: 'center', minHeight: minimumTouchTarget }}
         >
-            {({ pressed }) => (
-                <View
-                    style={{
-                        alignItems: 'center',
-                        backgroundColor: strong ? tokens.accent : pressed ? tokens.surfacePressed : tokens.accentSoft,
-                        borderRadius: radii.pill,
-                        height: 32,
-                        justifyContent: 'center',
-                        paddingHorizontal: spacing.sm + 4,
-                    }}
-                >
-                    <AppText variant="button" style={{ color: strong ? tokens.onAccent : tokens.accentText }} numberOfLines={1}>
-                        {label}
-                    </AppText>
-                </View>
-            )}
+            <View
+                style={{
+                    alignItems: 'center',
+                    backgroundColor: strong ? tokens.accent : tokens.accentSoft,
+                    borderRadius: radii.pill,
+                    minHeight: 32,
+                    justifyContent: 'center',
+                    paddingHorizontal: spacing.sm + 4,
+                }}
+            >
+                <AppText variant="button" style={{ color: strong ? tokens.onAccent : tokens.accentText }}>
+                    {label}
+                </AppText>
+            </View>
         </Pressable>
     );
 }
@@ -119,11 +137,16 @@ export function WorkDetail({
     refreshToken,
 }: Props) {
     const { t, i18n } = useTranslation('localTranslation');
-    const { layout, metrics, radii, spacing, tokens } = useTheme();
+    const { fontScale, layout, metrics, radii, spacing, tokens } = useTheme();
+    const { width } = useWindowDimensions();
+    const stackChapterActions = width < 360 || fontScale >= 1.3;
     const { overview, error, reload } = useLibraryOverview({ controller, projects });
     const operation = useLibraryOperation(reload);
     const sheets = useChainedSheet<ChapterSheet>();
     const [descending, setDescending] = useState(false);
+    const [hoveredChapter, setHoveredChapter] = useState<string | null>(null);
+    const [pressedChapter, setPressedChapter] = useState<string | null>(null);
+    const [focusedChapter, setFocusedChapter] = useState<string | null>(null);
     const left = useRef(false);
     const first = useRef(true);
     const entry: LibraryWork | null = overview?.works.find(item => item.work.id === workId) ?? null;
@@ -144,9 +167,15 @@ export function WorkDetail({
         void reload();
     }, [refreshToken, reload]);
 
+    const languages = useLanguageNames();
     const formatDate = (value: number) => new Intl.DateTimeFormat(i18n.language).format(value);
     const numberOf = (chapter: LibraryChapter) => (entry ? entry.chapters.indexOf(chapter) + 1 : 0);
     const chapterName = (chapter: LibraryChapter) => chapter.label ?? '';
+    // A bare number reads as "Capítulo 3" in the row; named chapters keep their own name (revisão 2026-11-13).
+    const chapterTitle = (chapter: LibraryChapter) => {
+        const name = chapterName(chapter).trim();
+        return /^\d+([.,]\d+)?$/.test(name) ? t('work.chapterNumbered', { number: name }) : name;
+    };
 
     if (error && !overview) {
         return (
@@ -204,7 +233,7 @@ export function WorkDetail({
     const pill = (chapter: LibraryChapter) =>
         chapter.state === 'failed' && chapter.readyPages === 0
             ? t('work.pillView')
-            : entry.lastRead?.projectId === chapter.projectId
+            : chapter.currentPage !== null
               ? t('work.pillContinue')
               : chapter.state === 'failed'
                 ? t('work.pillView')
@@ -227,7 +256,7 @@ export function WorkDetail({
                             borderRadius: radii.pill,
                             borderWidth: 1,
                             bottom: -spacing.xs,
-                            height: 32,
+                            minHeight: 32,
                             justifyContent: 'center',
                             position: 'absolute',
                             right: -spacing.xs,
@@ -251,7 +280,12 @@ export function WorkDetail({
                         <View style={{ alignItems: 'center', flexDirection: 'row', gap: spacing.xs }}>
                             <Icon name="language-outline" size={metrics.icon.sm} color={tokens.muted} />
                             <AppText variant="caption" tone="muted" style={{ flex: 1 }}>
-                                {entry.languages.map(pair => pair.split('→').join(' → ')).join(' · ')}
+                                {entry.languages
+                                    .map(languagePair => {
+                                        const [source, target] = languagePair.split('→');
+                                        return target ? languages.pair(source, target) : languagePair;
+                                    })
+                                    .join(' · ')}
                             </AppText>
                         </View>
                     ) : null}
@@ -286,7 +320,7 @@ export function WorkDetail({
                         text={t('work.emptyText')}
                         actions={
                             overview!.unassigned.length ? (
-                                <Button variant="outline" onPress={() => sheets.open({ kind: 'work', sheet: 'link' })}>
+                                <Button variant="outline" singleLine onPress={() => sheets.open({ kind: 'work', sheet: 'link' })}>
                                     {t('work.linkPrevious')}
                                 </Button>
                             ) : undefined
@@ -298,36 +332,51 @@ export function WorkDetail({
                         style={{ backgroundColor: tokens.surface, borderColor: tokens.separator, borderRadius: radii.card, borderWidth: 1, overflow: 'hidden' }}
                     >
                         {visible.map((chapter, index) => {
-                            const number = numberOf(chapter);
+                            const id = chapter.projectId;
+                            // Pressionar usa surfacePressed; ponteiro ou foco de teclado usam surfaceHover (plano de animações, etapa 2).
+                            const pressed = pressedChapter === id;
+                            const hovered = hoveredChapter === id || focusedChapter === id;
                             const current = entry.lastRead?.projectId === chapter.projectId;
-                            const meta = current
-                                ? t('work.stoppedAtPage', { page: chapter.currentPage ?? 1, total: chapter.pages })
-                                : t('work.chapterMeta', {
-                                      pages: t('work.pageCount', { count: chapter.pages }),
-                                      date: formatDate(chapter.link?.updatedAt ?? chapter.createdAt),
-                                  });
+                            const rowBackground = pressed ? tokens.surfacePressed : hovered ? tokens.surfaceHover : current ? tokens.accentSoft : 'transparent';
+                            const interaction: RowInteractionProps = {
+                                onPressIn: () => setPressedChapter(id),
+                                onPressOut: () => setPressedChapter(previous => (previous === id ? null : previous)),
+                                onFocus: () => setFocusedChapter(id),
+                                onBlur: () => setFocusedChapter(previous => (previous === id ? null : previous)),
+                            };
+                            const number = numberOf(chapter);
+                            const meta =
+                                chapter.currentPage !== null
+                                    ? t('work.stoppedAtPage', { page: chapter.currentPage ?? 1, total: chapter.pages })
+                                    : t('work.chapterMeta', {
+                                          pages: t('work.pageCount', { count: chapter.pages }),
+                                          date: formatDate(chapter.link?.updatedAt ?? chapter.createdAt),
+                                      });
                             return (
                                 <View
                                     key={chapter.projectId}
                                     testID={`chapter-row-${chapter.projectId}`}
+                                    onPointerEnter={() => setHoveredChapter(id)}
+                                    onPointerLeave={() => setHoveredChapter(previous => (previous === id ? null : previous))}
                                     style={{
                                         alignItems: 'center',
-                                        backgroundColor: current ? tokens.accentSoft : 'transparent',
+                                        backgroundColor: rowBackground,
                                         borderTopColor: tokens.separator,
                                         borderTopWidth: index === 0 ? 0 : 1,
-                                        flexDirection: 'row',
-                                        gap: spacing.sm,
+                                        flexDirection: stackChapterActions ? 'column' : 'row',
+                                        gap: spacing.xs,
                                         paddingRight: spacing.xs,
                                     }}
                                 >
                                     <Pressable
+                                        {...interaction}
                                         accessibilityRole="button"
                                         accessibilityLabel={t('work.chapterA11y', { number, name: chapterName(chapter) })}
                                         onPress={() => onOpenReader(chapter.projectId)}
-                                        style={({ pressed }) => ({
+                                        style={{
                                             alignItems: 'center',
-                                            backgroundColor: pressed ? tokens.surfacePressed : 'transparent',
-                                            flex: 1,
+                                            flex: stackChapterActions ? undefined : 1,
+                                            alignSelf: 'stretch',
                                             flexDirection: 'row',
                                             gap: metrics.rhythm.itemGap,
                                             minHeight: metrics.row.double,
@@ -335,40 +384,42 @@ export function WorkDetail({
                                             paddingLeft: spacing.md,
                                             paddingRight: spacing.xs,
                                             paddingVertical: spacing.sm,
-                                        })}
+                                        }}
                                     >
-                                        <ChapterTile number={number} current={current} />
+                                        <ChapterTile number={number} current={current} uri={chapter.coverUri} />
                                         <View style={{ flex: 1, gap: 2, minWidth: 0 }}>
-                                            <AppText variant="label" numberOfLines={1}>
-                                                {chapterName(chapter)}
-                                            </AppText>
-                                            <AppText variant="caption" tone="subtle" numberOfLines={1}>
+                                            <AppText variant="label">{chapterTitle(chapter)}</AppText>
+                                            <AppText variant="caption" tone="subtle">
                                                 {meta}
                                             </AppText>
                                             {chapter.state !== 'saved' ? (
                                                 <View style={{ marginTop: 4 }}>
                                                     <StatusChip
                                                         testID={`chapter-status-${chapter.projectId}`}
-                                                        status={chapter.state}
+                                                        status={chapter.state === 'incomplete' ? 'waiting' : chapter.state}
                                                         label={t(`status.${chapter.state}`)}
                                                     />
                                                 </View>
                                             ) : null}
                                         </View>
                                     </Pressable>
-                                    <ChapterPill
-                                        label={pill(chapter)}
-                                        strong={current}
-                                        accessibilityLabel={`${pill(chapter)} — ${chapterName(chapter)}`}
-                                        onPress={() => onOpenReader(chapter.projectId)}
-                                    />
-                                    <IconButton
-                                        bare
-                                        tone="default"
-                                        icon="ellipsis-vertical"
-                                        accessibilityLabel={t('shelf.chapterMore', { name: chapterName(chapter) })}
-                                        onPress={() => sheets.open({ kind: 'menu', chapter })}
-                                    />
+                                    <View style={{ flexDirection: 'row', alignItems: 'center', alignSelf: stackChapterActions ? 'flex-end' : 'center' }}>
+                                        <ChapterPill
+                                            {...interaction}
+                                            label={pill(chapter)}
+                                            strong={current}
+                                            accessibilityLabel={`${pill(chapter)} — ${chapterName(chapter)}`}
+                                            onPress={() => onOpenReader(chapter.projectId)}
+                                        />
+                                        <IconButton
+                                            {...interaction}
+                                            bare
+                                            tone="default"
+                                            icon="ellipsis-horizontal"
+                                            accessibilityLabel={t('shelf.chapterMore', { name: chapterName(chapter) })}
+                                            onPress={() => sheets.open({ kind: 'menu', chapter })}
+                                        />
+                                    </View>
                                 </View>
                             );
                         })}
@@ -383,6 +434,7 @@ export function WorkDetail({
         <>
             {scaffold({ title: work.name, children: body, stickyFooter: footer, hasChapters: chapters.length > 0 })}
             <ActionSheet
+                onClosed={sheets.closed}
                 visible={sheet?.kind === 'menu'}
                 onClose={sheets.close}
                 closeLabel={t('menu.close')}
@@ -395,7 +447,7 @@ export function WorkDetail({
                               ...(target.failedPages > 0
                                   ? [{ key: 'retry', label: t('menu.retry'), icon: 'refresh' as const, onPress: () => onRetryChapter(target.projectId) }]
                                   : // Never sent (consent declined, left before sending): offer to translate it now (2026-11-10).
-                                    target.readyPages < target.pages && target.state === 'waiting'
+                                    target.readyPages < target.pages && (target.state === 'waiting' || target.state === 'incomplete')
                                     ? [
                                           {
                                               key: 'translate',

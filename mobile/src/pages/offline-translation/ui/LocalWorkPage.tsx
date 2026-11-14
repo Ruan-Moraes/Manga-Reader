@@ -1,9 +1,9 @@
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import { View } from 'react-native';
-import { router, useFocusEffect } from 'expo-router';
+import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 
-import { navigateBackOrReplace, ROUTES } from '@/shared/navigation';
+import { navigateBackOrReplace, ROUTES, useScreenRefocus } from '@/shared/navigation';
 import { useTheme } from '@/shared/theme';
 import { IconButton, ScreenScaffold } from '@/shared/ui';
 import { WorkDetail } from '@/widgets/local-translation-library';
@@ -16,7 +16,8 @@ export function LocalWorkPage({ workId }: { workId: string }) {
     const [focusToken, setFocusToken] = useState(0);
     const [retry, setRetry] = useState<string | null>(null);
     const [retryMode, setRetryMode] = useState<'retry' | 'translate'>('retry');
-    useFocusEffect(useCallback(() => setFocusToken(value => value + 1), []));
+    // WorkDetail already loads on mount; only a return to this screen needs a reload (no double load on open).
+    useScreenRefocus(() => setFocusToken(value => value + 1));
     const openReader = (projectId: string) => router.push({ pathname: ROUTES.TRANSLATION_READER, params: { projectId } } as never);
     const closeRetry = () => {
         setRetry(null);

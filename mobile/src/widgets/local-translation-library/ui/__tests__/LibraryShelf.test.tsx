@@ -1,4 +1,4 @@
-import { View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { fireEvent, render, screen, waitFor, within } from '@testing-library/react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
@@ -235,9 +235,11 @@ describe('MOB-FEAT-060 biblioteca', () => {
     it('AC-005 "Sem obra" lista capítulos por data, move para uma obra e exclui com confirmação', async () => {
         const { controller, removeProject, onOpenReader } = fixture(library);
         const section = await screen.findByTestId('unassigned-section');
-        const title = `Capítulo de ${new Intl.DateTimeFormat('pt-BR').format(library.items[2].project.createdAt)}`;
+        // Revisão 2026-11-13: data com hora (capítulos do mesmo dia se distinguem) e nomes dos idiomas em vez de códigos.
+        const dateTime = new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+        const title = `Capítulo de ${dateTime.format(library.items[2].project.createdAt)}`;
         expect(within(section).getByText(title)).toBeOnTheScreen();
-        expect(within(section).getByText('ja → pt-BR · 2 de 2 prontas')).toBeOnTheScreen();
+        expect(within(section).getByText('Japonês → Português (Brasil) · 2 de 2 prontas')).toBeOnTheScreen();
         fireEvent.press(within(section).getByText(title));
         expect(onOpenReader).toHaveBeenCalledWith('legacy');
 
@@ -253,6 +255,46 @@ describe('MOB-FEAT-060 biblioteca', () => {
         expect(await screen.findByText('2 páginas originais')).toBeOnTheScreen();
         fireEvent.press(screen.getByTestId('confirm-sheet-confirm'));
         await waitFor(() => expect(removeProject.remove).toHaveBeenCalledWith('legacy'));
+    });
+
+    it('capas e miniaturas entram com fade de motion.base (etapa 4 do plano de animações)', async () => {
+        fixture(library);
+        await screen.findByTestId('unassigned-section');
+        const { Image } = jest.requireMock<typeof import('expo-image')>('expo-image');
+        const remote = screen.UNSAFE_getAllByType(Image).filter(image => typeof image.props.source === 'object' && image.props.source?.uri);
+
+        expect(remote.length).toBeGreaterThan(0);
+        for (const image of remote) expect(image.props.transition).toBe(200);
+    });
+
+    it('linha "Sem obra" pinta toque e hover no cartão inteiro, incluindo a área do "⋯"', async () => {
+        fixture(library);
+        const row = await screen.findByTestId('unassigned-legacy');
+        const main = within(row).getAllByRole('button')[0];
+        const background = () => StyleSheet.flatten(screen.getByTestId('unassigned-legacy').props.style).backgroundColor;
+        const { darkTokens, lightTokens } = jest.requireActual('@/shared/theme');
+        const tokens = [darkTokens, lightTokens].find(candidate => candidate.surface === background())!;
+
+        fireEvent(main, 'pressIn');
+        expect(background()).toBe(tokens.surfacePressed);
+        expect(StyleSheet.flatten(main.props.style).backgroundColor).toBeUndefined();
+        fireEvent(main, 'pressOut');
+        expect(background()).toBe(tokens.surface);
+
+        fireEvent(row, 'pointerEnter');
+        expect(background()).toBe(tokens.surfaceHover);
+        fireEvent(row, 'pointerLeave');
+        expect(background()).toBe(tokens.surface);
+
+        fireEvent(main, 'focus');
+        expect(StyleSheet.flatten(main.props.style)).toEqual(expect.objectContaining({ outlineColor: tokens.focus, outlineWidth: 2 }));
+    });
+
+    it('sem obras, "Nova obra" vira uma faixa compacta na largura toda; com obras, continua na grade (revisão 2026-11-13)', async () => {
+        fixture({ ...library, works: [], chapters: {} });
+        const compact = StyleSheet.flatten((await screen.findByTestId('new-work-tile')).props.style);
+        expect(compact).toEqual(expect.objectContaining({ flexDirection: 'row', minHeight: 64 }));
+        expect(compact.aspectRatio).toBeUndefined();
     });
 
     it('AC-010 biblioteca vazia mostra o estado vazio com "Criar obra" e o atalho de tradução no rodapé', async () => {

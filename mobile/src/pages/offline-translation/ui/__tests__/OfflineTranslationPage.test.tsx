@@ -1,4 +1,5 @@
-import { fireEvent, render, screen, waitFor, within } from '@testing-library/react-native';
+import { FlatList } from 'react-native';
+import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react-native';
 import AxiosMockAdapter from 'axios-mock-adapter';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
@@ -9,8 +10,10 @@ import { type LocalMediaImportController, LocalMediaImportError } from '@/featur
 import type { ReviewLocalMediaImportController } from '@/features/review-local-media-import';
 import type { ValidateLocalMediaController } from '@/features/validate-local-media';
 import { api } from '@/shared/api';
+import { useDeveloperMode } from '@/shared/config';
 import i18n from '@/shared/i18n';
 
+import { FlowSummary } from '../FlowSummary';
 import { OfflineTranslationPage } from '../OfflineTranslationPage';
 
 const mockPush = jest.fn();
@@ -21,14 +24,14 @@ jest.mock('expo-router', () => ({
     router: { back: jest.fn(), canGoBack: () => false, push: (...args: unknown[]) => mockPush(...args), replace: (...args: unknown[]) => mockReplace(...args) },
 }));
 jest.mock('@expo/vector-icons', () => ({ Ionicons: () => null }));
-jest.mock('expo-image', () => ({ Image: () => null }));
+jest.mock('expo-image', () => ({ Image: jest.requireActual('react-native').View }));
 jest.mock('@/widgets/remote-processing', () => ({
-    ChapterBatchPanel: ({ onActivityChange }: { onActivityChange?: (active: boolean) => void }) => {
+    ChapterBatchPanel: ({ onActivityChange, headerContent }: { onActivityChange?: (active: boolean) => void; headerContent?: import('react').ReactNode }) => {
         const React = jest.requireActual<typeof import('react')>('react');
         React.useEffect(() => {
             onActivityChange?.(mockRemoteActivity);
         }, [onActivityChange]);
-        return null;
+        return headerContent ?? null;
     },
 }));
 
@@ -130,7 +133,8 @@ describe('MOB-FEAT-012 local media import page', () => {
         expect(screen.getByTestId('step-bar')).toHaveProp('accessibilityLabel', 'Etapa 1 de 3: Páginas');
         expect(screen.getByRole('button', { name: 'Confirmar ordem' })).toBeOnTheScreen();
         expect(screen.getByRole('button', { name: 'Início' })).toBeOnTheScreen();
-        expect(screen.getByTestId('screen-scaffold-content').props.style).toEqual(expect.objectContaining({ gap: 16, paddingBottom: 16, paddingTop: 4 }));
+        expect(screen.getByTestId('screen-scaffold-content').props.style).toEqual(expect.objectContaining({ paddingBottom: 0 }));
+        expect(screen.getByTestId('screen-scaffold-body').props.style).toEqual(expect.objectContaining({ gap: 16 }));
         expect(screen.queryByText('Voltar aos módulos')).toBeNull();
         expect(importController.selectImages).toHaveBeenCalledTimes(1);
         expect(apiMock.history.get).toHaveLength(0);
@@ -157,6 +161,13 @@ describe('MOB-FEAT-012 local media import page', () => {
         expect(await screen.findByTestId('translation-flow-step-organize')).toBeOnTheScreen();
         fireEvent.press(screen.getByRole('button', { name: 'Voltar' }));
         expect(await screen.findByText('Sair da tradução?')).toBeOnTheScreen();
+        expect(screen.getByTestId('flow-exit-sheet')).toBeOnTheScreen();
+        const actions = within(screen.getByTestId('flow-exit-actions'));
+        expect(actions.getAllByRole('button').map(button => button.props.accessibilityLabel ?? within(button).getByText(/.+/).props.children)).toEqual([
+            'Sair e manter rascunho',
+            'Continuar aqui',
+            'Descartar páginas',
+        ]);
         fireEvent.press(screen.getByRole('button', { name: 'Continuar aqui' }));
         await waitFor(() => expect(screen.queryByText('Sair da tradução?')).toBeNull());
         expect(mockReplace).not.toHaveBeenCalled();
@@ -172,7 +183,16 @@ describe('MOB-FEAT-012 local media import page', () => {
         renderPage(controller({ initialize: jest.fn().mockResolvedValueOnce(draft).mockResolvedValue(null), discard }));
         await screen.findByTestId('translation-flow-step-organize');
 
+        // Revisão 2026-11-13: confirmar vem primeiro; recomeçar é uma ação discreta abaixo dele.
+        const buttons = screen.getAllByRole('button');
+        const confirmIndex = buttons.indexOf(screen.getByRole('button', { name: 'Confirmar ordem' }));
+        expect(confirmIndex).toBeGreaterThan(-1);
+        expect(confirmIndex).toBeLessThan(buttons.indexOf(screen.getByRole('button', { name: 'Limpar e recomeçar' })));
+
         fireEvent.press(screen.getByRole('button', { name: 'Limpar e recomeçar' }));
+        // Revisão 2026-11-14: diz quantas páginas saem e mantém o cancelar explícito.
+        expect(await screen.findByText(/serão apagadas deste aparelho\. Não dá para desfazer\./)).toBeOnTheScreen();
+        expect(within(screen.getByTestId('confirm-sheet')).getByRole('button', { name: 'Manter páginas' })).toBeOnTheScreen();
         fireEvent.press(await screen.findByTestId('confirm-sheet-confirm'));
         await waitFor(() => expect(discard).toHaveBeenCalledTimes(1));
         expect(await screen.findByTestId('translation-flow-step-import')).toBeOnTheScreen();
@@ -204,6 +224,8 @@ describe('MOB-FEAT-012 local media import page', () => {
         await screen.findByTestId('translation-flow-step-validate');
         fireEvent.press(screen.getByRole('button', { name: 'Etapa anterior' }));
         expect(await screen.findByTestId('translation-flow-step-organize')).toBeOnTheScreen();
+        expect(within(screen.getByTestId('status-message')).getByText('Lote revisado')).toBeOnTheScreen();
+        expect(within(screen.getByTestId('local-media-review-footer')).queryByText('Lote revisado')).toBeNull();
         fireEvent.press(await screen.findByTestId('review-continue'));
         expect(await screen.findByTestId('translation-flow-step-validate')).toBeOnTheScreen();
     });
@@ -289,7 +311,13 @@ describe('MOB-FEAT-012 local media import page', () => {
         expect(await screen.findByTestId('translation-flow-step-review')).toBeOnTheScreen();
         expect(screen.getByTestId('step-bar')).toHaveProp('accessibilityLabel', 'Etapa 3 de 3: Traduzir');
         expect(screen.queryByText('Cada imagem é uma página.')).toBeNull();
-        expect(screen.getByRole('button', { name: 'Gerar resultado de demonstração' })).toBeOnTheScreen();
+        expect(screen.queryByRole('button', { name: 'Gerar resultado de demonstração' })).toBeNull();
+        act(() => useDeveloperMode.setState({ hydrated: true, enabled: true }));
+        try {
+            expect(screen.getByRole('button', { name: 'Gerar resultado de demonstração' })).toBeOnTheScreen();
+        } finally {
+            act(() => useDeveloperMode.setState({ enabled: false }));
+        }
         fireEvent.press(screen.getByRole('button', { name: 'Voltar' }));
         expect(mockReplace).toHaveBeenCalledWith('/');
     });
@@ -470,13 +498,31 @@ describe('MOB-FEAT-056 fluxo de tradução em três etapas', () => {
         expect(screen.getByTestId('step-bar')).toHaveProp('accessibilityLabel', 'Etapa 1 de 3: Páginas');
     });
 
+    it('abre a correção com a galeria acessível ao encontrar uma página inválida', async () => {
+        const confirmed = { ...draft, confirmedAt: 9, languagesConfirmedAt: 9 };
+        const validator = validationController();
+        jest.mocked(validator.validate).mockResolvedValue({
+            ...confirmed,
+            items: [{ ...confirmed.items[0], mediaValidationStatus: 'INVALID', mediaValidationError: 'CORRUPTED' }, confirmed.items[1]],
+        });
+        renderPage(controller({ initialize: jest.fn().mockResolvedValue(confirmed) }), reviewController(), validator);
+
+        const summary = within(await screen.findByTestId('validation-issue-summary'));
+        fireEvent.press(summary.getByRole('button', { name: 'Ir para correção' }));
+
+        expect(screen.getByTestId('page-container-fixed-frame')).toBeOnTheScreen();
+        expect(screen.getByTestId('validation-thumbnail-item-1')).toBeOnTheScreen();
+        expect(screen.queryByText('Confirme os idiomas')).toBeNull();
+        expect(screen.queryByText('Editar páginas')).toBeNull();
+    });
+
     it('AC-012 "Salvar em" escolhe a obra antes de traduzir e refaz o vínculo quando ele falha', async () => {
         const project = prepared(Date.now() + 1000);
         const attach = jest.fn().mockRejectedValueOnce(new Error('db')).mockResolvedValue(undefined);
         const projects = { initialize: jest.fn().mockResolvedValueOnce(null).mockResolvedValue(project), prepare: jest.fn().mockResolvedValue(project) };
         const works = {
             attachProjectToWork: attach,
-            initialize: jest.fn(async () => [{ id: 'w1', name: 'Obra A', coverFilename: null, createdAt: 1, updatedAt: 1 }]),
+            initialize: jest.fn(async () => [{ id: 'w1', name: 'Óbra A', coverFilename: null, createdAt: 1, updatedAt: 1 }]),
             listChapters: jest.fn(async () => [
                 { projectId: 'a', workId: 'w1', label: '1', createdAt: 1, updatedAt: 1 },
                 { projectId: 'b', workId: 'w1', label: '2', createdAt: 1, updatedAt: 1 },
@@ -500,17 +546,41 @@ describe('MOB-FEAT-056 fluxo de tradução em três etapas', () => {
         );
         expect(await screen.findByTestId('translation-flow-step-review')).toBeOnTheScreen();
         expect(screen.getByText(/Salvar em: Sem obra/)).toBeOnTheScreen();
+        expect(screen.getByTestId('save-destination-cover')).toHaveProp('source', { uri: 'file:///private/draft-1/item-1' });
         fireEvent.press(screen.getByTestId('save-destination'));
-        fireEvent.press(await screen.findByRole('radio', { name: 'Obra A' }));
+        await screen.findByRole('radio', { name: 'Óbra A' });
+        const search = screen.getByLabelText('Buscar obras');
+        // revisão 2026-11-13: no visible label repeating the placeholder, and the works under their own heading.
+        expect(screen.queryByText('Buscar obras')).toBeNull();
+        expect(screen.getByRole('header', { name: 'Suas obras' })).toBeOnTheScreen();
+        fireEvent.changeText(search, '  OBRA  ');
+        fireEvent.press(screen.getByText('Óbra A'));
+        expect(screen.getByRole('radio', { name: 'Óbra A' })).toBeChecked();
+        fireEvent.changeText(search, 'ausente');
+        expect(screen.getByText('Nenhuma obra encontrada.')).toBeOnTheScreen();
+        fireEvent.changeText(search, '');
+        expect(screen.getByRole('radio', { name: 'Óbra A' })).toBeChecked();
         await waitFor(() => expect(screen.getByLabelText('Número ou nome do capítulo')).toHaveProp('value', '3'));
         fireEvent.press(screen.getByRole('button', { name: 'Usar esta obra' }));
-        expect(await screen.findByText(/Salvar em: Obra A/)).toBeOnTheScreen();
+        expect(await screen.findByText(/Salvar em: Óbra A/)).toBeOnTheScreen();
 
         fireEvent.press(screen.getByRole('button', { name: 'Traduzir 2 páginas' }));
         await waitFor(() => expect(attach).toHaveBeenCalledWith('w1', 'project-new', '3'));
         fireEvent.press(await screen.findByRole('button', { name: 'Tentar vincular de novo' }));
         await waitFor(() => expect(attach).toHaveBeenCalledTimes(2));
         await waitFor(() => expect(screen.queryByText('O capítulo foi preparado, mas não entrou na obra.')).toBeNull());
+    });
+
+    it('keeps all the selected images in the virtualized summary in page order', () => {
+        const items = Array.from({ length: 33 }, (_, position) => ({ ...draft.items[0], id: `item-${position}`, position }));
+        const { UNSAFE_getByType } = render(
+            <FlowSummary draft={{ ...draft, items }} languages="Japonês → Português" itemUri={item => `file:///draft/${item.id}`} onEditPages={jest.fn()} />,
+        );
+        const list = UNSAFE_getByType(FlatList);
+        expect(list.props.horizontal).toBe(true);
+        expect(list.props.showsHorizontalScrollIndicator).toBe(false);
+        expect(list.props.windowSize).toBe(3);
+        expect(list.props.data).toEqual(items);
     });
 
     it('AC-009 a demonstração não aparece fora de __DEV__', async () => {

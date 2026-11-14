@@ -56,7 +56,7 @@ describe('MOB-FEAT-043 stable sortable geometry', () => {
 
     it('distinguishes a single-column grid from the horizontal list and accounts for constant borders', () => {
         expect(resolveReviewRowPitch('grid', 176, 8)).toBe(242);
-        expect(resolveReviewRowPitch('list', 176, 8)).toBeCloseTo(143.3333);
+        expect(resolveReviewRowPitch('list', 176, 8)).toBeCloseTo(106); // compact list rows: 60 pt thumbnail
         expect(resolveReviewRowPitch('grid', 360, 8)).toBeGreaterThan(resolveReviewRowPitch('list', 360, 8));
     });
 

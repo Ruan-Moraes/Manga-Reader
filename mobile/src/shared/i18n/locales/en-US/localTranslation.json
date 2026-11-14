@@ -44,7 +44,7 @@
     },
     "reader": {
         "title": "Local reader",
-        "loading": "Opening project…",
+        "loading": "Opening chapter…",
         "unavailableTitle": "Project unavailable",
         "unavailableDescription": "This project no longer exists on the device.",
         "library": "Back to library",
@@ -228,10 +228,12 @@
         "retryTitle": "Try translating again",
         "retryDescription": "Only the pages that failed are sent, and only after you accept.",
         "chapterA11y": "Chapter {{number}}: {{name}}",
+        "chapterNumbered": "Chapter {{number}}",
         "translateTitle": "Translate chapter",
         "translateDescription": "Choose the pages. Nothing is sent before you accept."
     },
     "status": {
+        "incomplete": "Incomplete",
         "waiting": "Waiting",
         "processing": "Processing",
         "saved": "Saved",

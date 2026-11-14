@@ -1,7 +1,7 @@
 import type { LocalTranslationLibraryItem } from '@/entities/local-translation-result';
 import type { LocalWork, LocalWorkChapter } from '@/entities/local-work';
 
-export type LibraryChapterState = 'waiting' | 'processing' | 'saved' | 'failed';
+export type LibraryChapterState = 'waiting' | 'processing' | 'saved' | 'failed' | 'incomplete';
 export type WorkSortOrder = 'recent' | 'alpha';
 
 export interface LibraryChapter {
@@ -46,17 +46,21 @@ export interface LibraryOverview {
     continueReading: ContinueReading | null;
 }
 
-function chapterState(item: LocalTranslationLibraryItem): LibraryChapterState {
+function chapterState(item: LocalTranslationLibraryItem, failedPages: number, attempted: boolean): LibraryChapterState {
     const statuses = item.project.pages.map(page => page.status);
-    if (statuses.includes('FAILED')) return 'failed';
+    if (failedPages > 0) return 'failed';
     if (statuses.some(status => status === 'QUEUED' || status === 'PROCESSING')) return 'processing';
     if (statuses.length > 0 && statuses.every(status => status === 'READY')) return 'saved';
-    return 'waiting';
+    return item.readyPages > 0 || attempted ? 'incomplete' : 'waiting';
 }
 
-export function libraryChapter(item: LocalTranslationLibraryItem, link: LocalWorkChapter | null): LibraryChapter {
+type ChapterAttempts = ReadonlyMap<string, { failedPages: number; attempted: boolean }>;
+
+export function libraryChapter(item: LocalTranslationLibraryItem, link: LocalWorkChapter | null, evidence?: ChapterAttempts): LibraryChapter {
     const pages = item.project.pages.length;
     const position = item.currentPosition;
+    const validPosition = position !== null && Number.isInteger(position) && position >= 0 && position < pages && item.progressUpdatedAt !== null;
+    const failedPages = evidence ? (evidence.get(item.project.id)?.failedPages ?? 0) : item.project.pages.filter(page => page.status === 'FAILED').length;
     return {
         projectId: item.project.id,
         label: link?.label ?? null,
@@ -64,10 +68,10 @@ export function libraryChapter(item: LocalTranslationLibraryItem, link: LocalWor
         createdAt: item.project.createdAt,
         pages,
         readyPages: item.readyPages,
-        failedPages: item.project.pages.filter(page => page.status === 'FAILED').length,
-        state: chapterState(item),
-        currentPage: position === null || pages === 0 ? null : Math.min(position + 1, pages),
-        progressUpdatedAt: position === null ? null : item.progressUpdatedAt,
+        failedPages,
+        state: chapterState(item, failedPages, evidence?.get(item.project.id)?.attempted ?? false),
+        currentPage: validPosition ? position + 1 : null,
+        progressUpdatedAt: validPosition ? item.progressUpdatedAt : null,
         coverUri: item.coverUri,
         sourceLanguage: item.project.sourceLanguage,
         targetLanguage: item.project.targetLanguage,
@@ -89,12 +93,13 @@ export function buildLibraryOverview(
     chaptersByWork: readonly (readonly LocalWorkChapter[])[],
     items: readonly LocalTranslationLibraryItem[],
     unassignedProjectIds: readonly string[],
+    evidence?: ChapterAttempts,
 ): LibraryOverview {
     const byProject = new Map(items.map(item => [item.project.id, item]));
     const libraryWorks = works.map((work, index): LibraryWork => {
         const chapters = (chaptersByWork[index] ?? []).flatMap(link => {
             const item = byProject.get(link.projectId);
-            return item ? [libraryChapter(item, link)] : [];
+            return item ? [libraryChapter(item, link, evidence)] : [];
         });
         const languages = [...new Set(chapters.map(chapter => `${chapter.sourceLanguage}→${chapter.targetLanguage}`))];
         return {
@@ -108,7 +113,7 @@ export function buildLibraryOverview(
         };
     });
     const unassignedIds = new Set(unassignedProjectIds);
-    const unassigned = items.filter(item => unassignedIds.has(item.project.id)).map(item => libraryChapter(item, null));
+    const unassigned = items.filter(item => unassignedIds.has(item.project.id)).map(item => libraryChapter(item, null, evidence));
 
     const candidates: ContinueReading[] = [
         ...libraryWorks.flatMap(entry => (entry.lastRead ? [{ work: entry.work, chapter: entry.lastRead }] : [])),

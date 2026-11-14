@@ -13,9 +13,10 @@ import {
     trackLocalReadingProgressController,
 } from '@/features/local-translation';
 import { useSettingsStore } from '@/features/manage-settings';
+import { useDeveloperModeEnabled } from '@/shared/config';
 import { navigateBackOrReplace, ROUTES } from '@/shared/navigation';
 import { useTheme } from '@/shared/theme';
-import { AppText, Button, EmptyState, Icon, PageContainer, StatusMessage } from '@/shared/ui';
+import { AppText, Button, EmptyState, Icon, LoadingBlock, NavigationHeader, PageContainer, StatusMessage } from '@/shared/ui';
 import { ContentReader, type ImageSequenceDocument, type ReaderLocation } from '@/widgets/content-reader';
 import { type LibraryOverview, loadLibraryOverview } from '@/widgets/local-translation-library';
 import { BatchRetrySheet, PageRetryIndicator } from '@/widgets/remote-processing';
@@ -44,7 +45,7 @@ function BlockingState({ state, pages, onRetry, onReadOriginal }: { state: 'proc
             <AppText tone="muted" style={{ textAlign: 'center' }}>
                 {state === 'processing' ? t('kit.processingText', { count: pages }) : t('kit.failedText')}
             </AppText>
-            <View style={{ gap: spacing.sm, marginTop: spacing.md, maxWidth: 320, width: '100%' }}>
+            <View style={{ gap: spacing.xs, marginTop: spacing.md, maxWidth: 320, width: '100%' }}>
                 {state === 'failed' ? (
                     <Button fullWidth onPress={onRetry}>
                         {t('kit.retry')}
@@ -64,7 +65,8 @@ export function LocalTranslationReaderPage({
     progressController = trackLocalReadingProgressController,
     loadOverview = loadLibraryOverview,
 }: Props) {
-    const { t } = useTranslation('localTranslation');
+    const { t, i18n } = useTranslation('localTranslation');
+    const developerModeEnabled = useDeveloperModeEnabled();
     const { t: reader } = useTranslation('reader');
     // Rótulo só numérico (055) vira "Capítulo N", como o título do kit; nomes livres ficam como estão.
     const chapterName = (label: string) => (/^\d+(?:[.,]\d+)?$/.test(label.trim()) ? reader('viewport.chapter', { chapter: label.trim() }) : label);
@@ -74,7 +76,11 @@ export function LocalTranslationReaderPage({
     const updateSettings = useSettingsStore(state => state.updateSettings);
     const readerGestures = useSettingsStore(state => state.readerGestures);
     const [overflowOpen, setOverflowOpen] = useState(false);
-    const [snapshot, setSnapshot] = useState<LocalTranslationReaderSnapshot | null | undefined>(undefined);
+    const [loadedSnapshot, setSnapshot] = useState<LocalTranslationReaderSnapshot | null | undefined>(undefined);
+    const snapshot = useMemo(() => {
+        if (!loadedSnapshot || developerModeEnabled) return loadedSnapshot;
+        return { ...loadedSnapshot, results: new Map([...loadedSnapshot.results].filter(([, result]) => result.sourceKind !== 'DEMO')) };
+    }, [developerModeEnabled, loadedSnapshot]);
     const [location, setLocation] = useState<ReaderLocation>({ itemId: '', index: 0 });
     const locationRef = useRef(location);
     const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -149,7 +155,12 @@ export function LocalTranslationReaderPage({
         };
     }, [flush]);
 
-    const documentTitle = workChapter?.label ? chapterName(workChapter.label) : t('reader.title');
+    // Chapters without a work read like their library row instead of "Leitor local"; the reader bar has one line, so the
+    // date goes in the title and "Sem obra" takes the subtitle line used by the work name (revisão 2026-11-13).
+    const unassignedTitle = snapshot
+        ? t('shelf.unassignedTitle', { date: new Intl.DateTimeFormat(i18n.language).format(snapshot.project.createdAt) })
+        : t('reader.title');
+    const documentTitle = workChapter?.label ? chapterName(workChapter.label) : workEntry ? t('reader.title') : unassignedTitle;
     const document = useMemo<ImageSequenceDocument | null>(() => {
         if (!snapshot) return null;
 
@@ -209,8 +220,10 @@ export function LocalTranslationReaderPage({
 
     if (snapshot === undefined) {
         return (
+            // Mesmo quadro do carregamento do leitor de capítulos: saída visível e o indicador que só aparece se a espera passa de 300 ms.
             <PageContainer>
-                <StatusMessage title={t('reader.loading')} tone="loading" />
+                <NavigationHeader backLabel={reader('actions.exit')} onBack={exit} />
+                <LoadingBlock label={t('reader.loading')} testID="local-reader-loading" />
             </PageContainer>
         );
     }
@@ -263,7 +276,15 @@ export function LocalTranslationReaderPage({
                         </View>
                     ) : undefined
                 }
-                subtitle={workEntry?.work.name}
+                subtitle={workEntry ? workEntry.work.name : overview ? t('shelf.unassigned') : undefined}
+                // Inside the bottom panel: it shows with the controls and immersive reading keeps the whole screen (revisão 2026-11-13).
+                statusContent={
+                    snapshot.results.get(location.itemId)?.sourceKind === 'REMOTE' && snapshot.results.get(location.itemId)?.regions.length === 0 ? (
+                        <View testID="reader-no-text" style={{ paddingTop: spacing.xs }}>
+                            <StatusMessage title={t('reader.noText')} />
+                        </View>
+                    ) : undefined
+                }
                 comparison={snapshot.results.size > 0}
                 chapters={
                     workEntry
@@ -301,7 +322,6 @@ export function LocalTranslationReaderPage({
                             compact
                             category="quick"
                             value={settings.reader}
-                            capabilities={{ low: false, medium: false, high: false }}
                             onChange={patch => void updateSettings(current => ({ ...current, reader: normalizeReaderSettings(patch, current) }), 'reader')}
                         />
                     ),
@@ -324,11 +344,6 @@ export function LocalTranslationReaderPage({
                 description={reader('kit.retryDescription')}
                 projectId={snapshot.project.id}
             />
-            {snapshot.results.get(location.itemId)?.sourceKind === 'REMOTE' && snapshot.results.get(location.itemId)?.regions.length === 0 ? (
-                <View style={{ padding: spacing.md, paddingBottom: Math.max(insets.bottom, spacing.md) }}>
-                    <StatusMessage title={t('reader.noText')} />
-                </View>
-            ) : null}
         </View>
     );
 }

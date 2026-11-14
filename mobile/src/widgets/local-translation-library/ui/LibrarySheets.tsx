@@ -88,7 +88,7 @@ export function CoverSheet({
             title={t('sheets.coverTitle')}
             description={t('sheets.coverDescription')}
             footer={
-                <View style={{ gap: spacing.sm }}>
+                <View style={{ gap: spacing.xs }}>
                     <Button fullWidth disabled={busy} onPress={onPick}>
                         {t('sheets.coverPick')}
                     </Button>
@@ -113,6 +113,7 @@ export function CoverSheet({
 function SelectRow({
     title,
     description,
+    coverUri,
     selected,
     role,
     onPress,
@@ -120,6 +121,7 @@ function SelectRow({
 }: {
     title: string;
     description?: string;
+    coverUri?: string;
     selected: boolean;
     role: 'radio' | 'checkbox';
     onPress(): void;
@@ -130,7 +132,7 @@ function SelectRow({
         <Pressable
             accessibilityRole={role}
             accessibilityLabel={accessibilityLabel ?? title}
-            accessibilityState={{ checked: selected }}
+            accessibilityState={role === 'radio' ? { selected, checked: selected } : { checked: selected }}
             onPress={onPress}
             style={({ pressed }) => ({
                 alignItems: 'center',
@@ -142,11 +144,10 @@ function SelectRow({
                 paddingHorizontal: spacing.sm,
             })}
         >
-            <Icon
-                name={role === 'radio' ? (selected ? 'radio-button-on' : 'radio-button-off') : selected ? 'checkbox' : 'square-outline'}
-                size={metrics.icon.lg}
-                color={selected ? tokens.accentText : tokens.muted}
-            />
+            {role === 'checkbox' ? (
+                <Icon name={selected ? 'checkbox' : 'square-outline'} size={metrics.icon.lg} color={selected ? tokens.accentText : tokens.muted} />
+            ) : null}
+            {coverUri ? <WorkCover uri={coverUri} label={title} width={metrics.control.compact} radius={radii.sm} /> : null}
             <View style={{ flex: 1, minWidth: 0 }}>
                 <AppText variant="label" numberOfLines={2}>
                     {title}
@@ -157,6 +158,7 @@ function SelectRow({
                     </AppText>
                 ) : null}
             </View>
+            {role === 'radio' && selected ? <Icon name="checkmark" size={metrics.icon.md} color={tokens.accentText} decorative /> : null}
         </Pressable>
     );
 }
@@ -271,7 +273,7 @@ export function LinkChaptersSheet({
             description={chapters.length ? t('sheets.linkDescription') : undefined}
             footer={
                 chapters.length ? (
-                    <Button fullWidth disabled={disabled} onPress={() => onLink(items)}>
+                    <Button fullWidth singleLine disabled={disabled} onPress={() => onLink(items)}>
                         {t('sheets.linkAction', { count: Math.max(1, items.length) })}
                     </Button>
                 ) : undefined
@@ -289,6 +291,7 @@ export function LinkChaptersSheet({
                                 <SelectRow
                                     role="checkbox"
                                     title={title}
+                                    coverUri={chapter.coverUri}
                                     accessibilityLabel={t('sheets.linkSelect', { name: title })}
                                     description={t('shelf.unassignedMeta', {
                                         source: chapter.sourceLanguage,

@@ -12,6 +12,7 @@ import { useLibraryOperation } from '../model/useLibraryOperation';
 import { useLibraryOverview } from '../model/useLibraryOverview';
 import { WorkCover } from './LibraryParts';
 import type { WorkScaffoldSlots } from './WorkDetail';
+import { useLanguageNames } from './useLanguageNames';
 import { type WorkSheet, WorkSheets } from './WorkSheets';
 
 interface Props {
@@ -56,6 +57,7 @@ export function WorkManage({
     const { t } = useTranslation('localTranslation');
     const { layout, radii, spacing } = useTheme();
     const { overview, error, reload } = useLibraryOverview({ controller, projects });
+    const languages = useLanguageNames();
     const operation = useLibraryOperation(reload);
     const [sheet, setSheet] = useState<WorkSheet | null>(null);
     const left = useRef(false);
@@ -100,12 +102,26 @@ export function WorkManage({
                         {work.name}
                     </AppText>
                     <AppText variant="caption" tone="subtle">
-                        {[t('shelf.chapterCount', { count: entry.chapters.length }), ...entry.languages.map(pair => pair.split('→').join(' → '))].join(' · ')}
+                        {[
+                            t('shelf.chapterCount', { count: entry.chapters.length }),
+                            ...entry.languages.map(pair => {
+                                const [source, target] = pair.split('→');
+                                return target ? languages.pair(source, target) : pair;
+                            }),
+                        ].join(' · ')}
                     </AppText>
                 </View>
             </View>
             <ManageGroup label={t('manage.info')}>
-                <ListRow variant="plain" icon="create-outline" title={t('manage.name')} meta={work.name} onPress={() => setSheet('rename')} />
+                {/* The full name is in the card above and in the rename sheet: one line is enough here (revisão 2026-11-13). */}
+                <ListRow
+                    variant="plain"
+                    icon="create-outline"
+                    title={t('manage.name')}
+                    meta={work.name}
+                    metaNumberOfLines={1}
+                    onPress={() => setSheet('rename')}
+                />
                 <ListRow
                     variant="plain"
                     showDivider={false}

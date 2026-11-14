@@ -1,6 +1,6 @@
 import { type ReactElement, useState } from 'react';
 import { AppState, StyleSheet, Text } from 'react-native';
-import { act, fireEvent, render, screen, waitFor } from '@testing-library/react-native';
+import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react-native';
 import { scrollTo } from 'react-native-reanimated';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { scheduleOnRN } from 'react-native-worklets';
@@ -14,6 +14,7 @@ import type { ReviewLocalMediaImportController, ReviewLocalMediaImportOutcome } 
 import { reorderReviewItems, resolveReviewColumnCount, resolveReviewDropIndex, resolveReviewItemShift } from '../../model/reviewSortGeometry';
 import { LocalMediaReviewPanel } from '../LocalMediaReviewPanel';
 
+const mockThumbnailMount = jest.fn();
 let mockDeferSettling = false;
 let mockScrollOffset = 0;
 let mockRejectLanding = false;
@@ -33,11 +34,18 @@ jest.mock('react-native-worklets', () => ({
 jest.mock('expo-image', () => {
     const React = jest.requireActual('react');
     const { View } = jest.requireActual('react-native');
-    return { Image: ({ accessibilityLabel }: { accessibilityLabel: string }) => React.createElement(View, { accessibilityLabel }) };
+    return {
+        Image: ({ accessibilityLabel, source }: { accessibilityLabel: string; source: { uri: string } }) => {
+            React.useEffect(() => {
+                mockThumbnailMount(source.uri);
+            }, [source]);
+            return React.createElement(View, { accessibilityLabel });
+        },
+    };
 });
 jest.mock('react-native-reanimated', () => {
     const React = jest.requireActual('react');
-    const { FlatList, View } = jest.requireActual('react-native');
+    const { FlatList, Pressable, View } = jest.requireActual('react-native');
     // Reanimated 4.1 forwards refs when the native child attaches, not when a new ref prop arrives.
     const AnimatedView = React.forwardRef((props: Record<string, unknown>, forwardedRef: unknown) => {
         const initialRef = React.useRef(forwardedRef);
@@ -58,10 +66,11 @@ jest.mock('react-native-reanimated', () => {
     return {
         __esModule: true,
         default: {
-            createAnimatedComponent:
-                () =>
-                ({ testID, ...props }: Record<string, unknown>) =>
-                    React.createElement(View, { ...props, testID }, React.createElement(FlatList, { ...props, testID: `${String(testID)}-native` })),
+            createAnimatedComponent: (component: unknown) =>
+                component === Pressable
+                    ? component
+                    : ({ testID, ...props }: Record<string, unknown>) =>
+                          React.createElement(View, { ...props, testID }, React.createElement(FlatList, { ...props, testID: `${String(testID)}-native` })),
             View: AnimatedView,
             FlatList: ({ testID, ...props }: Record<string, unknown>) =>
                 React.createElement(View, { ...props, testID }, React.createElement(FlatList, { ...props, testID: `${String(testID)}-native` })),
@@ -71,7 +80,10 @@ jest.mock('react-native-reanimated', () => {
         }),
         cancelAnimation: jest.fn(),
         measure: (ref: { current: { props?: { testID?: string } } }) => mockMeasure(ref.current?.props?.testID),
-        Easing: { out: (value: unknown) => value, cubic: 'cubic', linear: 'linear' },
+        Easing: { in: (value: unknown) => value, out: (value: unknown) => value, cubic: 'cubic', linear: 'linear', quad: 'quad' },
+        interpolate: (value: number, input: number[], output: number[]) => output[0] + ((output[1] - output[0]) * (value - input[0])) / (input[1] - input[0]),
+        interpolateColor: (value: number, _input: number[], output: string[]) => (value >= 1 ? output[1] : output[0]),
+
         useAnimatedRef: () => {
             const holder = React.useRef(null);
             if (!holder.current) {
@@ -119,6 +131,13 @@ jest.mock('react-native-gesture-handler', () => {
                 config.enabled = value;
                 return gesture;
             },
+            // Usados pelo arrasto do BottomSheet (MOB-FEAT-070), que o detector abaixo deixa de fora.
+            withTestId: (value: string) => {
+                config.testId = value;
+                return gesture;
+            },
+            activeOffsetY: () => gesture,
+            onEnd: () => gesture,
             activateAfterLongPress: (value: number) => {
                 config.longPressDelay = value;
                 return gesture;
@@ -166,8 +185,9 @@ jest.mock('react-native-gesture-handler', () => {
 
     return {
         Gesture: { Pan, Native: () => ({ ...Pan(), native: true }) },
+        GestureHandlerRootView: ({ children }: { children: ReactElement }) => children,
         GestureDetector: ({ children, gesture }: { children: ReactElement; gesture: ReturnType<typeof Pan> & { native?: boolean } }) =>
-            gesture.native
+            gesture.native || gesture.config.testId === 'bottom-sheet-drag'
                 ? children
                 : React.cloneElement(children, {
                       dragGestureConfig: gesture.config,
@@ -228,6 +248,10 @@ function StatefulPanel({ initialDraft, reviewer }: { initialDraft: LocalMediaImp
     return <LocalMediaReviewPanel draft={current} controller={reviewer} onDraftChange={next => next && setCurrent(next)} />;
 }
 
+function columnsFor(testID: string) {
+    return testID.endsWith('-grid') ? 2 : 1;
+}
+
 function mockMeasure(testID?: string) {
     if (mockMissingNativeRef) throw new Error('Value is null, expected an Object');
     if (mockRejectLanding) return null;
@@ -237,8 +261,8 @@ function mockMeasure(testID?: string) {
     const index = list.props.data.findIndex((item: { id: string }) => testID === `review-sortable-item-${item.id}`);
     const style = StyleSheet.flatten(screen.getByTestId(testID).props.style);
     return {
-        pageX: (index % list.props.numColumns) * (style.width + 8),
-        pageY: Math.floor(index / list.props.numColumns) * (style.minHeight + 8) - mockScrollOffset,
+        pageX: (index % columnsFor(list.props.testID)) * (style.width + 8),
+        pageY: Math.floor(index / columnsFor(list.props.testID)) * (style.minHeight + 8) - mockScrollOffset,
         width: style.width,
         height: style.minHeight,
     };
@@ -262,8 +286,8 @@ function fireDrag(handle: ReturnType<typeof screen.getByTestId>, event: string, 
             numberOfTouches: 1,
             allTouches: [
                 {
-                    x: (index % list.props.numColumns) * (style.width + 8) + 20,
-                    y: Math.floor(index / list.props.numColumns) * (style.minHeight + 8) + 20 - mockScrollOffset,
+                    x: (index % columnsFor(list.props.testID)) * (style.width + 8) + 20,
+                    y: Math.floor(index / columnsFor(list.props.testID)) * (style.minHeight + 8) + 20 - mockScrollOffset,
                 },
             ],
         });
@@ -274,6 +298,7 @@ function fireDrag(handle: ReturnType<typeof screen.getByTestId>, event: string, 
 
 describe('MOB-FEAT-043 page organization redesign', () => {
     beforeEach(async () => {
+        mockThumbnailMount.mockClear();
         mockDeferSettling = false;
         mockRejectLanding = false;
         mockMissingNativeRef = false;
@@ -527,7 +552,9 @@ describe('MOB-FEAT-043 page organization redesign', () => {
         render(<LocalMediaReviewPanel draft={draft()} controller={controller()} onDraftChange={jest.fn()} />);
 
         const list = screen.getByTestId('local-media-review-list-grid');
-        expect(list.props.numColumns).toBe(2);
+        expect(list.props.numColumns).toBeUndefined();
+        expect(list.props.getItemLayout(list.props.data, 0).offset).toBe(list.props.getItemLayout(list.props.data, 1).offset);
+        expect(list.props.getItemLayout(list.props.data, 2).offset).toBeGreaterThan(0);
         expect(REVIEW_DRAG_LONG_PRESS_MS).toBe(200);
         expect(screen.getByTestId('review-sortable-viewport').props.dragGestureConfig).toEqual(
             expect.objectContaining({ enabled: true, failOffsetX: [-32, 32], failOffsetY: [-32, 32], longPressDelay: 200, shouldCancelWhenOutside: false }),
@@ -543,8 +570,10 @@ describe('MOB-FEAT-043 page organization redesign', () => {
 
         fireEvent.press(screen.getByRole('button', { name: 'Abrir opções da página 1 de 3' }));
         expect(screen.getByTestId('review-image-actions-sheet')).toBeOnTheScreen();
-        expect(screen.getByText('Página 1 de 3')).toBeOnTheScreen();
-        expect(screen.getByText('Possível duplicata')).toBeOnTheScreen();
+        const header = within(screen.getByTestId('review-image-actions-header'));
+        expect(header.getByRole('header', { name: 'Página 1 de 3' })).toBeOnTheScreen();
+        expect(header.getByText('Possível duplicata')).toBeOnTheScreen();
+        expect(header.queryByRole('button', { name: 'Visualizar imagem' })).toBeNull();
         expect(screen.getByRole('button', { name: 'Visualizar imagem' })).toBeOnTheScreen();
         expect(screen.getByRole('button', { name: 'Excluir' })).toBeOnTheScreen();
     });
@@ -555,7 +584,7 @@ describe('MOB-FEAT-043 page organization redesign', () => {
         fireEvent.press(screen.getByRole('radio', { name: 'Lista' }));
 
         expect(screen.getByRole('radio', { name: 'Lista' }).props.accessibilityState.selected).toBe(true);
-        expect(screen.getByTestId('local-media-review-list-list').props.numColumns).toBe(1);
+        expect(screen.getByTestId('local-media-review-list-list').props.getItemLayout).toBeUndefined();
         expect(screen.getByTestId('local-media-review-list-list').props.initialNumToRender).toBe(6);
         expect(screen.getByText('Página 1 de 3')).toBeOnTheScreen();
         expect(screen.getByText('Página 3 de 3')).toBeOnTheScreen();
@@ -563,7 +592,7 @@ describe('MOB-FEAT-043 page organization redesign', () => {
         expect(screen.getByTestId('review-status-item-1')).toBeOnTheScreen();
         expect(screen.getByRole('button', { name: 'Remover página 1' })).toBeOnTheScreen();
         const deleteSurfaceStyle = StyleSheet.flatten(screen.getByTestId('review-delete-surface-1').props.style);
-        expect(deleteSurfaceStyle).toEqual(expect.objectContaining({ alignSelf: 'flex-start', justifyContent: 'center', padding: 4 }));
+        expect(deleteSurfaceStyle).toEqual(expect.objectContaining({ alignSelf: 'center', justifyContent: 'center', padding: 4 }));
         expect(deleteSurfaceStyle.height).toBeGreaterThanOrEqual(44);
         expect(deleteSurfaceStyle.width).toBe(deleteSurfaceStyle.height);
     });
@@ -577,7 +606,8 @@ describe('MOB-FEAT-043 page organization redesign', () => {
         expect(list.props.maxToRenderPerBatch).toBe(8);
         expect(list.props.windowSize).toBe(5);
         expect(list.props.removeClippedSubviews).toBe(false);
-        expect(list.props.ListFooterComponent).toBeTruthy();
+        expect(list.props.ListFooterComponent).toBeUndefined();
+        expect(screen.getByTestId('local-media-review-footer')).toBeOnTheScreen();
         expect(resolveReviewColumnCount('list', 4)).toBe(1);
         expect(resolveReviewColumnCount('grid', 2)).toBe(2);
         expect(resolveReviewColumnCount('grid', 4)).toBe(4);
@@ -596,6 +626,10 @@ describe('MOB-FEAT-043 page organization redesign', () => {
             expect(list.props.maxToRenderPerBatch).toBe(8);
         };
         expectSafeList();
+        expect(screen.getByTestId(listId).props).toMatchObject({
+            scrollEnabled: true,
+            showsVerticalScrollIndicator: false,
+        });
 
         const handle = screen.getByTestId('review-drag-handle-item-1');
         fireDrag(handle, 'gestureStart');
@@ -619,6 +653,8 @@ describe('MOB-FEAT-043 page organization redesign', () => {
         jest.mocked(reviewer.reorderItems).mockReturnValueOnce(new Promise(resolve => (resolveReorder = resolve)));
         render(<StatefulPanel initialDraft={current} reviewer={reviewer} />);
         const handle = screen.getByTestId('review-drag-handle-item-3');
+        const draggedUri = reviewer.itemUri(current, current.items[2]);
+        mockThumbnailMount.mockClear();
         fireDrag(handle, 'gestureStart');
         fireDrag(handle, 'gestureUpdate', { absoluteY: 300, translationX: 0, translationY: -500 });
         fireDrag(handle, 'gestureFinalize', { event: {}, success: true });
@@ -631,6 +667,8 @@ describe('MOB-FEAT-043 page organization redesign', () => {
 
         await act(async () => resolveReorder({ status: 'updated', draft: reorderedDraft(current, ['item-3', 'item-1', 'item-2']) }));
         await waitFor(() => expect(screen.getByRole('radio', { name: 'Grade' }).props.accessibilityState.disabled).toBe(false));
+        // Only the floating copy needs a new image view. The original grid cells retain their sources.
+        expect(mockThumbnailMount.mock.calls).toEqual([[draggedUri]]);
     });
 
     it('moves the intervening slot during drag and persists the final order once', async () => {

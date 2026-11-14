@@ -1,3 +1,4 @@
+import { StyleSheet } from 'react-native';
 import { fireEvent, render, screen } from '@testing-library/react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
@@ -52,6 +53,27 @@ describe('MOB-FEAT-055/AC-008 e MOB-FEAT-060 páginas da biblioteca', () => {
         await i18n.changeLanguage('pt-BR');
     });
 
+    it('a obra também não pede um segundo carregamento ao abrir (revisão 2026-11-13)', async () => {
+        render(
+            <SafeAreaProvider initialMetrics={frame}>
+                <LocalWorkPage workId="w1" />
+            </SafeAreaProvider>,
+        );
+        await screen.findByRole('button', { name: 'Voltar' });
+        expect(mockProps.detail.refreshToken).toBe(0);
+    });
+
+    it('não pede um segundo carregamento da estante ao abrir (revisão 2026-11-13)', async () => {
+        render(
+            <SafeAreaProvider initialMetrics={frame}>
+                <LocalTranslationLibraryPage />
+            </SafeAreaProvider>,
+        );
+        await screen.findByRole('button', { name: 'Voltar' });
+        // A estante já carrega ao montar; o token só muda quando a tela volta a ficar em foco.
+        expect(mockProps.shelf.refreshToken).toBe(0);
+    });
+
     it('renders back and Home with the same square geometry and both return to the root', async () => {
         render(
             <SafeAreaProvider initialMetrics={frame}>
@@ -63,7 +85,7 @@ describe('MOB-FEAT-055/AC-008 e MOB-FEAT-060 páginas da biblioteca', () => {
         expect(back).toHaveStyle({ borderRadius: 12 });
         expect(home).toHaveStyle({ borderRadius: 12 });
         // Voltar é compacto (40) mas o alvo de toque com hitSlop alcança o mínimo do "Início".
-        expect(back.props.style.width + back.props.hitSlop * 2).toBeGreaterThanOrEqual(home.props.style.minWidth);
+        expect(StyleSheet.flatten(back.props.style).width + back.props.hitSlop * 2).toBeGreaterThanOrEqual(StyleSheet.flatten(home.props.style).minWidth);
         fireEvent.press(home);
         expect(mockReplace).toHaveBeenCalledWith('/');
     });

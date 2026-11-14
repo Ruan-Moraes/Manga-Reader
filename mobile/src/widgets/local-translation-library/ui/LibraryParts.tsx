@@ -1,10 +1,10 @@
 import { View } from 'react-native';
 import { Image } from 'expo-image';
-import type { ReactNode } from 'react';
+import { type ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useTheme } from '@/shared/theme';
-import { AppText, Icon, IconButton, PressableBox as Pressable, Skeleton, StatusChip } from '@/shared/ui';
+import { AppText, Icon, IconButton, PressableBox as Pressable, ProgressFill, Skeleton, StatusChip, useImageFade } from '@/shared/ui';
 
 import type { ContinueReading, LibraryChapter, LibraryWork } from '../model/libraryOverview';
 
@@ -13,10 +13,18 @@ const DEFAULT_COVER = require('../../../../assets/images/logo.png');
 /** Cover at 2:3; without a custom cover it shows the packaged default cover (055, decision D15). */
 export function WorkCover({ uri, label, width, radius, testID }: { uri: string | null; label: string; width?: number; radius?: number; testID?: string }) {
     const { radii, tokens } = useTheme();
+    const fade = useImageFade();
     const shape = { aspectRatio: 2 / 3, borderRadius: radius ?? radii.card, width: width ?? ('100%' as const) };
     if (uri) {
         return (
-            <Image testID={testID} source={{ uri }} contentFit="cover" accessibilityLabel={label} style={{ ...shape, backgroundColor: tokens.surfaceMuted }} />
+            <Image
+                testID={testID}
+                source={{ uri }}
+                contentFit="cover"
+                transition={fade}
+                accessibilityLabel={label}
+                style={{ ...shape, backgroundColor: tokens.surfaceMuted }}
+            />
         );
     }
     // Default cover (055, D15): the packaged logo as a centred badge, so its own square never shows as bands.
@@ -37,7 +45,7 @@ function ProgressBar({ value, testID }: { value: number; testID?: string }) {
     const { tokens } = useTheme();
     return (
         <View testID={testID} style={{ backgroundColor: tokens.separator, borderRadius: 2, height: 4, overflow: 'hidden' }}>
-            <View style={{ backgroundColor: tokens.accent, height: '100%', width: `${Math.max(4, Math.min(100, value))}%` }} />
+            <ProgressFill value={Math.max(4, Math.min(100, value)) / 100} color={tokens.accent} />
         </View>
     );
 }
@@ -155,7 +163,7 @@ export function WorkCard({ entry, coverUri, chapterNumber, selecting, selected, 
     );
 }
 
-export function NewWorkTile({ onPress }: { onPress(): void }) {
+export function NewWorkTile({ onPress, compact = false }: { onPress(): void; compact?: boolean }) {
     const { t } = useTranslation('localTranslation');
     const { metrics, radii, spacing, tokens } = useTheme();
     return (
@@ -166,7 +174,7 @@ export function NewWorkTile({ onPress }: { onPress(): void }) {
             onPress={onPress}
             style={({ pressed }) => ({
                 alignItems: 'center',
-                aspectRatio: 2 / 3,
+                ...(compact ? { flexDirection: 'row' as const, minHeight: 64 } : { aspectRatio: 2 / 3 }),
                 width: '100%',
                 backgroundColor: pressed ? tokens.surfacePressed : 'transparent',
                 borderColor: tokens.borderStrong,
@@ -295,12 +303,19 @@ export function ItemRow({
     testID?: string;
 }) {
     const { metrics, radii, spacing, tokens } = useTheme();
+    // O fundo de toque e hover cobre o cartão inteiro, não só a área principal (as ações ficam dentro dele).
+    const [pressed, setPressed] = useState(false);
+    const [hovered, setHovered] = useState(false);
+    const [focused, setFocused] = useState(false);
+    const background = disabled ? tokens.surface : pressed ? tokens.surfacePressed : hovered ? tokens.surfaceHover : tokens.surface;
     return (
         <View
             testID={testID}
+            onPointerEnter={disabled ? undefined : () => setHovered(true)}
+            onPointerLeave={() => setHovered(false)}
             style={{
                 alignItems: 'center',
-                backgroundColor: tokens.surface,
+                backgroundColor: background,
                 borderColor: tokens.separator,
                 borderRadius: radii.card,
                 borderWidth: 1,
@@ -315,19 +330,25 @@ export function ItemRow({
                 accessibilityState={{ disabled }}
                 disabled={disabled}
                 onPress={onPress}
-                style={({ pressed }) => ({
+                onPressIn={() => setPressed(true)}
+                onPressOut={() => setPressed(false)}
+                onFocus={() => setFocused(true)}
+                onBlur={() => setFocused(false)}
+                style={{
                     alignItems: 'center',
                     alignSelf: 'stretch',
-                    backgroundColor: pressed ? tokens.surfacePressed : 'transparent',
                     borderRadius: radii.card,
                     flex: 1,
                     flexDirection: 'row',
                     gap: metrics.rhythm.itemGap,
                     minWidth: 0,
                     opacity: disabled ? 0.56 : 1,
+                    outlineColor: tokens.focus,
+                    outlineOffset: -2,
+                    outlineWidth: focused ? 2 : 0,
                     paddingHorizontal: spacing.md,
                     paddingVertical: spacing.sm,
-                })}
+                }}
             >
                 {leading}
                 <View style={{ flex: 1, gap: 2, minWidth: 0 }}>

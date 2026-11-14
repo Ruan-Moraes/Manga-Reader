@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 import type { LocalMediaImportDraft, LocalMediaImportItem } from '@/entities/local-media-import';
 import { useResponsiveLayout, useTheme } from '@/shared/theme';
-import { AppText, Button, Icon, MediaPreviewSheet, PressableBox, PrimaryAction, SectionAction, TextAction } from '@/shared/ui';
+import { AppText, Button, Icon, MediaPreviewSheet, PressableBox, PrimaryAction, SectionAction, StatusMessage } from '@/shared/ui';
 
 import type { ReviewViewMode } from '../config/reviewLayout';
 import { possibleDuplicateItemIds, type ReviewLocalMediaImportController, reviewLocalMediaImportController } from '../model/reviewLocalMediaImport';
@@ -26,7 +26,7 @@ interface Props {
 }
 
 const VIEW_MODES = ['grid', 'list'] as const;
-const normalizePositions = (items: LocalMediaImportItem[]): LocalMediaImportItem[] => items.map((item, position) => ({ ...item, position }));
+const normalizePositions = (items: LocalMediaImportItem[]): LocalMediaImportItem[] => items.map((item, position) => (item.position === position ? item : { ...item, position }));
 
 export function LocalMediaReviewPanel({ draft, onDraftChange, controller, afterReview, renderItemMeta, onContinue, onRestart }: Props) {
     const { t } = useTranslation('launcher');
@@ -63,12 +63,14 @@ export function LocalMediaReviewPanel({ draft, onDraftChange, controller, afterR
         const nextIds = nextItems.map(item => item.id);
         const currentIds = orderedItems.map(item => item.id);
 
-        if (nextIds.every((id, index) => id === currentIds[index])) return;
+        if (nextIds.length === currentIds.length && nextIds.every((id, index) => id === currentIds[index])) return;
 
         setOrderedItems(nextItems);
 
         void actions.reorderItems(nextIds).then(persisted => {
-            if (persisted === false) setOrderedItems(normalizePositions(draft.items));
+            if (persisted === false) {
+                setOrderedItems(current => (current === nextItems ? normalizePositions(draft.items) : current));
+            }
         });
     };
 
@@ -85,18 +87,9 @@ export function LocalMediaReviewPanel({ draft, onDraftChange, controller, afterR
                     </Button>
                 </View>
             ) : null}
-            {draft.confirmedAt ? (
-                <View accessibilityRole="summary" style={{ gap: spacing.xs }}>
-                    <AppText variant="section" tone="success">
-                        {t('offline.review.confirmedTitle')}
-                    </AppText>
-                    <AppText tone="muted">{t('offline.review.confirmedDescription')}</AppText>
-                </View>
-            ) : (
-                <AppText tone="muted">{t('offline.review.editing')}</AppText>
-            )}
-            <View style={{ gap: spacing.sm }}>
-                <PrimaryAction>
+            <PrimaryAction>
+                {/* Confirming is the main path; restarting is destructive, so it stays a quiet text action below it. */}
+                <View style={{ gap: spacing.xs }}>
                     {draft.confirmedAt && onContinue ? (
                         <Button disabled={actions.busy || draggingId !== null} onPress={onContinue} testID="review-continue">
                             {t('offline.review.continue')}
@@ -111,17 +104,13 @@ export function LocalMediaReviewPanel({ draft, onDraftChange, controller, afterR
                             {draft.confirmedAt ? t('offline.review.confirmedAction') : t('offline.review.confirm')}
                         </Button>
                     )}
-                </PrimaryAction>
-                {onRestart ? (
-                    <TextAction
-                        align="center"
-                        icon="refresh"
-                        label={t('offline.review.restart')}
-                        disabled={actions.busy || draggingId !== null}
-                        onPress={onRestart}
-                    />
-                ) : null}
-            </View>
+                    {onRestart ? (
+                        <Button size="compact" variant="ghost" tone="danger" disabled={actions.busy || draggingId !== null} onPress={onRestart}>
+                            {t('offline.review.restart')}
+                        </Button>
+                    ) : null}
+                </View>
+            </PrimaryAction>
             {afterReview}
         </View>
     );
@@ -129,6 +118,13 @@ export function LocalMediaReviewPanel({ draft, onDraftChange, controller, afterR
     return (
         <>
             <View style={{ flex: 1, gap: spacing.sm, minHeight: 0 }}>
+                {draft.confirmedAt ? (
+                    <StatusMessage
+                        tone="success"
+                        title={t('offline.review.confirmedTitle')}
+                        description={t('offline.review.confirmedDescription')}
+                    />
+                ) : null}
                 <View testID="local-media-review-header" style={{ alignItems: 'center', flexDirection: 'row', gap: spacing.sm }}>
                     <AppText variant="label" style={{ flex: 1, minWidth: 0 }}>
                         {t('offline.review.pageCount', { count: orderedItems.length })}
@@ -144,11 +140,20 @@ export function LocalMediaReviewPanel({ draft, onDraftChange, controller, afterR
                     <View
                         accessibilityRole="radiogroup"
                         accessibilityLabel={t('offline.review.viewLabel')}
-                        style={{ backgroundColor: tokens.surfaceMuted, borderColor: tokens.separator, borderRadius: radii.pill, borderWidth: 1, flexDirection: 'row', padding: 3 }}
+                        style={{
+                            backgroundColor: tokens.surfaceMuted,
+                            borderColor: tokens.separator,
+                            borderRadius: radii.pill,
+                            borderWidth: 1,
+                            flexDirection: 'row',
+                            padding: 3,
+                        }}
                     >
                         {VIEW_MODES.map(mode => {
                             const selected = viewMode === mode;
+
                             const disabled = actions.busy || draggingId !== null;
+
                             return (
                                 <PressableBox
                                     key={mode}
@@ -157,7 +162,6 @@ export function LocalMediaReviewPanel({ draft, onDraftChange, controller, afterR
                                     accessibilityState={{ selected, disabled }}
                                     disabled={disabled}
                                     onPress={() => setViewMode(mode)}
-                                    hitSlop={4}
                                     style={{
                                         alignItems: 'center',
                                         backgroundColor: selected ? tokens.accent : 'transparent',
@@ -168,7 +172,11 @@ export function LocalMediaReviewPanel({ draft, onDraftChange, controller, afterR
                                         width: 36,
                                     }}
                                 >
-                                    <Icon name={mode === 'grid' ? 'grid-outline' : 'list-outline'} size={metrics.icon.sm} color={selected ? tokens.onAccent : tokens.muted} />
+                                    <Icon
+                                        name={mode === 'grid' ? 'grid-outline' : 'list-outline'}
+                                        size={metrics.icon.sm}
+                                        color={selected ? tokens.onAccent : tokens.muted}
+                                    />
                                 </PressableBox>
                             );
                         })}
@@ -182,7 +190,6 @@ export function LocalMediaReviewPanel({ draft, onDraftChange, controller, afterR
                     mode={viewMode}
                     columns={reviewColumns}
                     busy={actions.busy}
-                    footer={footer}
                     onReorder={handleReorder}
                     onDragStart={item => {
                         dragGestureRef.current.active = true;
@@ -218,6 +225,7 @@ export function LocalMediaReviewPanel({ draft, onDraftChange, controller, afterR
                         />
                     )}
                 />
+                {footer}
             </View>
 
             <ReviewImageActionsSheet

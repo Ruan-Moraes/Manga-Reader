@@ -92,3 +92,10 @@ describe('MOB-FEAT-060 visão geral da biblioteca', () => {
         expect(overview.unassigned).toHaveLength(1);
     });
 });
+
+it('marks a partial chapter incomplete without failure evidence and ignores invalid reading progress', () => {
+    const partial = item('partial', ['READY', 'FAILED', 'DRAFT'], { position: 8, progressAt: 1, ready: 1 });
+    const evidence = new Map([['partial', { attempted: true, failedPages: 0 }]]);
+    const overview = buildLibraryOverview([], [], [partial], ['partial'], evidence);
+    expect(overview.unassigned[0]).toMatchObject({ state: 'incomplete', failedPages: 0, currentPage: null });
+});

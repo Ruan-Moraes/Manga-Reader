@@ -2,7 +2,7 @@ import { DatabaseSync, type SQLInputValue } from 'node:sqlite';
 
 import type { AppDatabase, SqlExecutor } from '@/shared/storage';
 
-import { CREATE_LOCAL_TRANSLATION_SCHEMA } from '../localTranslationResultRepository';
+import { CREATE_LOCAL_TRANSLATION_SCHEMA, createSqliteLocalTranslationResultRepository } from '../localTranslationResultRepository';
 import { createRemoteRenderedResultRepository } from '../remoteRenderedResultRepository';
 const PAGE = '10000000-0000-4000-8000-000000000001',
     ATTEMPT = '20000000-0000-4000-8000-000000000001',
@@ -12,10 +12,12 @@ function fixture(fail = false, abort?: AbortController) {
     const sql = new DatabaseSync(':memory:');
     sql.exec(`PRAGMA foreign_keys=ON; CREATE TABLE translation_projects(id TEXT PRIMARY KEY, source_language TEXT, target_language TEXT, status TEXT, updated_at INTEGER, status_updated_at INTEGER);
     CREATE TABLE translation_pages(id TEXT PRIMARY KEY, project_id TEXT, position INTEGER, status TEXT, width_px INTEGER, height_px INTEGER, updated_at INTEGER, status_updated_at INTEGER, UNIQUE(project_id,position));
-    CREATE TABLE remote_processing_attempts(id TEXT PRIMARY KEY, page_id TEXT, remote_job_ref TEXT, status TEXT, remote_status TEXT, gateway_contract_version TEXT, volatile_receipt_status TEXT);`);
+    CREATE TABLE remote_processing_attempts(id TEXT PRIMARY KEY, page_id TEXT, remote_job_ref TEXT, status TEXT, remote_status TEXT, gateway_contract_version TEXT, volatile_receipt_status TEXT, error_code TEXT, updated_at INTEGER);`);
     sql.prepare('INSERT INTO translation_projects VALUES (?, ?, ?, ?, ?, ?)').run(PROJECT, 'en', 'pt-BR', 'PROCESSING', 100, 100);
     sql.prepare('INSERT INTO translation_pages VALUES (?, ?, ?, ?, ?, ?, ?, ?)').run(PAGE, PROJECT, 0, 'PROCESSING', 900, 600, 100, 100);
-    sql.prepare('INSERT INTO remote_processing_attempts VALUES (?, ?, ?, ?, ?, ?, ?)').run(ATTEMPT, PAGE, JOB, 'ACCEPTED', 'READY', '2.0', 'FINISHED');
+    sql.prepare(
+        'INSERT INTO remote_processing_attempts(id,page_id,remote_job_ref,status,remote_status,gateway_contract_version,volatile_receipt_status) VALUES (?, ?, ?, ?, ?, ?, ?)',
+    ).run(ATTEMPT, PAGE, JOB, 'ACCEPTED', 'READY', '2.0', 'FINISHED');
     sql.exec(CREATE_LOCAL_TRANSLATION_SCHEMA);
     const executor: SqlExecutor = {
         execAsync: async s => sql.exec(s),
@@ -72,6 +74,7 @@ function fixture(fail = false, abort?: AbortController) {
     return {
         sql,
         command,
+        db,
         repository: createRemoteRenderedResultRepository(
             async () => db,
             async () => undefined,
@@ -95,6 +98,47 @@ it('atomically stores REMOTE and regions then READY, preserving original schema 
         await expect(f.repository.claimAutoOpen(PAGE, 201)).resolves.toBe(true);
         await expect(f.repository.claimAutoOpen(PAGE, 202)).resolves.toBe(false);
         await expect(f.repository.commit(f.command)).resolves.toBe(false);
+    } finally {
+        f.sql.close();
+    }
+});
+it('commits a pending page while preserving the saved result of a sibling', async () => {
+    const f = fixture();
+    try {
+        const otherPage = 'prior-page';
+        f.sql.prepare('INSERT INTO translation_pages VALUES (?, ?, ?, ?, ?, ?, ?, ?)').run(otherPage, PROJECT, 1, 'READY', 900, 600, 100, 100);
+        f.sql
+            .prepare(
+                `INSERT INTO translation_page_results(page_id,source_kind,rendered_filename,mime_type,byte_size,width_px,height_px,sha256,ready_at)
+            VALUES (?,'DEMO','prior-result','image/webp',100,900,600,?,150)`,
+            )
+            .run(otherPage, 'e'.repeat(64));
+        const read = () => f.sql.prepare('SELECT * FROM translation_page_results WHERE page_id=?').get(otherPage);
+        const saved = read();
+        expect(await f.repository.commit(f.command)).toBe(true);
+        expect(read()).toEqual(saved);
+        expect(f.sql.prepare('SELECT status FROM translation_pages WHERE id=?').get(otherPage)?.status).toBe('READY');
+    } finally {
+        f.sql.close();
+    }
+});
+it('retires the attempt of an invalidated local result and preserves an unrelated accepted attempt', async () => {
+    const f = fixture();
+    try {
+        expect(await f.repository.commit(f.command)).toBe(true);
+        f.sql.prepare("INSERT INTO remote_processing_attempts(id,page_id,status) VALUES ('other','other-page','ACCEPTED')").run();
+        const local = createSqliteLocalTranslationResultRepository(
+            async () => f.db,
+            { initialize: async () => undefined, listAll: async () => [] },
+            { initialize: async () => undefined },
+        );
+        await local.invalidate(PAGE, 300);
+        expect(f.sql.prepare('SELECT status,error_code FROM remote_processing_attempts WHERE id=?').get(ATTEMPT)).toMatchObject({
+            status: 'FAILED',
+            error_code: 'storage-unavailable',
+        });
+        expect(f.sql.prepare("SELECT status FROM remote_processing_attempts WHERE id='other'").get()).toMatchObject({ status: 'ACCEPTED' });
+        expect(f.sql.prepare('SELECT status FROM translation_pages WHERE id=?').get(PAGE)).toMatchObject({ status: 'FAILED' });
     } finally {
         f.sql.close();
     }

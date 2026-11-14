@@ -6,14 +6,15 @@ import { useTranslation } from 'react-i18next';
 
 import { isMediaValidationReady, type LocalMediaImportDraft, type LocalMediaImportItem } from '@/entities/local-media-import';
 import { MEDIA_VALIDATION_POLICY_VERSION } from '@/shared/media-inspection';
-import { useResponsiveLayout, useTheme } from '@/shared/theme';
-import { AppText, Button, Card, MediaPreviewSheet, PrimaryAction, SegmentedControl } from '@/shared/ui';
+import { useTheme } from '@/shared/theme';
+import { AppText, BottomSheet, Button, Card, Icon, MediaPreviewSheet, PageNumberBadge, PrimaryAction, SegmentedControl } from '@/shared/ui';
 
 import { useValidateLocalMedia } from '../model/useValidateLocalMedia';
 import { type ValidateLocalMediaController, validateLocalMediaController } from '../model/validateLocalMedia';
 import { validationIssueFor, type ValidationPresentationIssue } from '../model/validationPresentation';
 
 type ValidationFilter = 'issues' | 'all';
+const THUMBNAIL_ASPECT_RATIO = 3 / 4;
 
 interface Props {
     draft: LocalMediaImportDraft;
@@ -64,22 +65,24 @@ export function LocalMediaValidationItemStatus({ item }: { item: LocalMediaImpor
 
 function ValidationThumbnailCard({ item, total, uri, issue, replacing, disabled, onOpen, onReplace }: ThumbnailProps) {
     const { t } = useTranslation('launcher');
-    const { colorScheme, minimumTouchTarget, radii, spacing, tokens } = useTheme();
+    const { minimumTouchTarget, radii, spacing, tokens } = useTheme();
     const [imageFailed, setImageFailed] = useState(false);
     const page = item.position + 1;
     const status = issue ? 'INVALID' : item.mediaValidationStatus;
     const statusColor = status === 'VALID' ? tokens.success : status === 'INVALID' ? tokens.danger : tokens.muted;
     const statusIcon = status === 'VALID' ? 'checkmark-circle' : status === 'INVALID' ? 'alert-circle' : 'time-outline';
     const statusLabel = t(`offline.validation.badges.${status}`);
+    const issueReason = issue ? t(`offline.validation.itemErrors.${issue.code}`) : null;
+    const isReady = status === 'VALID';
 
     return (
         <View
             testID={`validation-thumbnail-${item.id}`}
             style={{
                 backgroundColor: tokens.surface,
-                borderColor: issue ? tokens.danger : tokens.separator,
+                borderColor: tokens.separator,
                 borderRadius: radii.card,
-                borderWidth: issue ? 2 : 1,
+                borderWidth: 1,
                 flex: 1,
                 gap: spacing.xs,
                 overflow: 'hidden',
@@ -98,7 +101,7 @@ function ValidationThumbnailCard({ item, total, uri, issue, replacing, disabled,
                         accessibilityElementsHidden
                         style={{
                             alignItems: 'center',
-                            aspectRatio: 0.72,
+                            aspectRatio: THUMBNAIL_ASPECT_RATIO,
                             backgroundColor: tokens.surfaceMuted,
                             borderRadius: radii.sm,
                             justifyContent: 'center',
@@ -110,53 +113,71 @@ function ValidationThumbnailCard({ item, total, uri, issue, replacing, disabled,
                     <Image
                         source={{ uri }}
                         contentFit="cover"
-                        cachePolicy="memory-disk"
+                        // Local private pages: keep them out of the disk cache, like the other flow thumbnails.
+                        cachePolicy="memory"
                         accessibilityElementsHidden
                         onError={() => setImageFailed(true)}
-                        style={{ aspectRatio: 0.72, borderRadius: radii.sm, width: '100%' }}
+                        style={{ aspectRatio: THUMBNAIL_ASPECT_RATIO, borderRadius: radii.sm, width: '100%' }}
                     />
                 )}
+                <PageNumberBadge testID={`validation-page-badge-${item.id}`}>{t('offline.validation.pageNumber', { page })}</PageNumberBadge>
+            </Pressable>
+            {issue ? (
+                <View style={{ gap: spacing.xs }}>
+                    <View style={{ backgroundColor: tokens.dangerSoft, borderRadius: radii.control }}>
+                        <Button
+                            variant="ghost"
+                            tone="danger"
+                            size="compact"
+                            leading={<Icon name="alert-circle-outline" size={18} color={tokens.danger} decorative />}
+                            accessibilityLabel={issueReason ?? statusLabel}
+                            accessibilityHint={t('offline.validation.openIssueHint')}
+                            onPress={onOpen}
+                        >
+                            {t('offline.validation.viewIssue')}
+                        </Button>
+                    </View>
+                    <View style={{ backgroundColor: tokens.accentSoft, borderRadius: radii.control }}>
+                        {replacing ? (
+                            <ActivityIndicator
+                                accessibilityLabel={t('offline.validation.replacePageLabel', { page })}
+                                color={tokens.accentText}
+                                size="small"
+                                style={{ minHeight: minimumTouchTarget }}
+                            />
+                        ) : (
+                            <Button
+                                variant="ghost"
+                                size="compact"
+                                leading={<Icon name="swap-horizontal-outline" size={18} color={tokens.accentText} decorative />}
+                                accessibilityLabel={t('offline.validation.replacePageLabel', { page })}
+                                disabled={disabled}
+                                onPress={onReplace}
+                            >
+                                {t('offline.validation.replaceShort')}
+                            </Button>
+                        )}
+                    </View>
+                </View>
+            ) : (
                 <View
-                    testID={`validation-page-badge-${item.id}`}
-                    accessibilityElementsHidden
                     style={{
-                        backgroundColor: colorScheme === 'dark' ? tokens.surfaceElevated : tokens.overlay,
-                        borderRadius: radii.pill,
-                        left: spacing.xs,
+                        alignItems: 'center',
+                        backgroundColor: isReady ? tokens.successSoft : tokens.surfaceMuted,
+                        borderRadius: radii.sm,
+                        flexDirection: 'row',
+                        gap: spacing.xs,
+                        justifyContent: 'center',
+                        minHeight: minimumTouchTarget,
                         paddingHorizontal: spacing.sm,
-                        paddingVertical: 2,
-                        position: 'absolute',
-                        top: spacing.xs,
                     }}
                 >
-                    <AppText variant="caption" tone={colorScheme === 'dark' ? 'default' : 'inverse'}>
-                        {t('offline.validation.pageNumber', { page })}
+                    <Ionicons accessibilityElementsHidden name={statusIcon} size={16} color={statusColor} />
+                    <AppText variant="label" style={{ color: statusColor, flexShrink: 1 }}>
+                        {statusLabel}
                     </AppText>
                 </View>
-            </Pressable>
-            <View style={{ alignItems: 'center', flexDirection: 'row', gap: spacing.xs, minHeight: 32 }}>
-                <Ionicons accessibilityElementsHidden name={statusIcon} size={16} color={statusColor} />
-                <AppText numberOfLines={2} variant="caption" style={{ color: statusColor, flex: 1 }}>
-                    {statusLabel}
-                </AppText>
-            </View>
-            {issue ? (
-                <Pressable
-                    accessibilityRole="button"
-                    accessibilityLabel={t('offline.validation.replacePageLabel', { page })}
-                    disabled={replacing || disabled}
-                    onPress={onReplace}
-                    style={{ alignItems: 'center', justifyContent: 'center', minHeight: minimumTouchTarget, paddingHorizontal: spacing.xs }}
-                >
-                    {replacing ? (
-                        <ActivityIndicator size="small" color={tokens.danger} />
-                    ) : (
-                        <AppText variant="caption" tone="danger">
-                            {t('offline.validation.replace')}
-                        </AppText>
-                    )}
-                </Pressable>
-            ) : null}
+            )}
         </View>
     );
 }
@@ -172,21 +193,24 @@ export function LocalMediaValidationPanel({
     onRemoveItem,
 }: Props) {
     const { t } = useTranslation('launcher');
-    const { spacing, tokens } = useTheme();
-    const responsive = useResponsiveLayout();
+    const { metrics, radii, spacing, tokens } = useTheme();
     const actions = useValidateLocalMedia(draft, onDraftChange, controller);
     const listRef = useRef<FlatList<LocalMediaImportItem>>(null);
     const previousIssueCount = useRef(0);
     const [filter, setFilter] = useState<ValidationFilter>('all');
+    const [issueSummaryOpen, setIssueSummaryOpen] = useState(false);
     const [detailItem, setDetailItem] = useState<LocalMediaImportItem | null>(null);
     const [removing, setRemoving] = useState(false);
 
     const issueFor = (item: LocalMediaImportItem) => validationIssueFor(item, processingIssues?.get(item.id));
-    const issues = draft.items.filter(item => issueFor(item));
+    const issueEntries = draft.items.flatMap(item => {
+        const issue = issueFor(item);
+        return issue ? [{ item, issue }] : [];
+    });
+    const issues = issueEntries.map(({ item }) => item);
     const valid = draft.items.filter(item => item.mediaValidationStatus === 'VALID' && !issueFor(item)).length;
     const pending = draft.items.length - valid - issues.length;
     const ready = isMediaValidationReady(draft, MEDIA_VALIDATION_POLICY_VERSION) && issues.length === 0;
-    const columns = responsive.sizeClass === 'compact' ? 2 : responsive.sizeClass === 'regular' ? 3 : 4;
     const visibleItems = filter === 'issues' ? issues : draft.items;
     const detailIssue = detailItem ? issueFor(detailItem) : null;
     const displayedProgress = actions.progress ?? { completed: 0, total: Math.max(1, pending + issues.length) };
@@ -194,10 +218,17 @@ export function LocalMediaValidationPanel({
     const itemUri = (item: LocalMediaImportItem) => activeController.itemUri(draft, item);
 
     useEffect(() => {
-        if (issues.length > 0 && previousIssueCount.current === 0) setFilter('issues');
-        if (issues.length === 0) setFilter('all');
+        if (actions.busy) return;
+        if (issues.length > 0 && previousIssueCount.current === 0) {
+            setFilter('issues');
+            setIssueSummaryOpen(true);
+        }
+        if (issues.length === 0) {
+            setFilter('all');
+            setIssueSummaryOpen(false);
+        }
         previousIssueCount.current = issues.length;
-    }, [issues.length]);
+    }, [actions.busy, issues.length]);
 
     const autoStarted = useRef(false);
     useEffect(() => {
@@ -207,6 +238,7 @@ export function LocalMediaValidationPanel({
     }, [actions, autoStart, issues.length, ready]);
 
     const focusFirstIssue = () => {
+        setIssueSummaryOpen(false);
         setFilter('issues');
         requestAnimationFrame(() => listRef.current?.scrollToOffset({ animated: true, offset: 0 }));
     };
@@ -227,7 +259,7 @@ export function LocalMediaValidationPanel({
                     {t('offline.validation.progress', { completed: displayedProgress.completed, total: displayedProgress.total })}
                 </Button>
             ) : issues.length ? (
-                <Button onPress={focusFirstIssue}>{t('offline.validation.showIssues', { count: issues.length })}</Button>
+                <Button onPress={() => setIssueSummaryOpen(true)}>{t('offline.validation.fixIssues', { count: issues.length })}</Button>
             ) : ready ? (
                 <Button onPress={onContinue}>{t('offline.validation.continue')}</Button>
             ) : (
@@ -259,11 +291,11 @@ export function LocalMediaValidationPanel({
                     <Ionicons
                         accessibilityElementsHidden
                         name={ready ? 'checkmark-circle' : issues.length ? 'alert-circle' : 'scan-circle-outline'}
-                        size={24}
+                        size={20}
                         color={ready ? tokens.success : issues.length ? tokens.danger : tokens.accentText}
                     />
                     <View style={{ flex: 1, gap: spacing.xs }}>
-                        <AppText variant="section">
+                        <AppText variant="label">
                             {issues.length
                                 ? t('offline.validation.summaryIssues', { valid, invalid: issues.length })
                                 : t('offline.validation.summaryReady', { valid, total: draft.items.length })}
@@ -283,22 +315,17 @@ export function LocalMediaValidationPanel({
             </Card>
 
             {issues.length ? (
-                <View accessibilityRole="alert" style={{ gap: spacing.sm }}>
-                    <AppText variant="label" tone="danger">
-                        {t('offline.validation.issueAlert', { count: issues.length })}
-                    </AppText>
-                    <SegmentedControl
-                        label={t('offline.validation.filterLabel')}
-                        value={filter}
-                        options={['issues', 'all'] as const}
-                        optionLabel={value =>
-                            value === 'issues'
-                                ? t('offline.validation.filterIssues', { count: issues.length })
-                                : t('offline.validation.filterAll', { count: draft.items.length })
-                        }
-                        onChange={setFilter}
-                    />
-                </View>
+                <SegmentedControl
+                    label={t('offline.validation.filterLabel')}
+                    value={filter}
+                    options={['issues', 'all'] as const}
+                    optionLabel={value =>
+                        value === 'issues'
+                            ? t('offline.validation.filterIssues', { count: issues.length })
+                            : t('offline.validation.filterAll', { count: draft.items.length })
+                    }
+                    onChange={setFilter}
+                />
             ) : null}
 
             {actions.error ? (
@@ -311,19 +338,20 @@ export function LocalMediaValidationPanel({
             ) : null}
 
             <FlatList
+                showsHorizontalScrollIndicator={false}
                 ref={listRef}
-                key={`validation-${columns}`}
                 testID="validation-thumbnail-grid"
                 data={visibleItems}
-                numColumns={columns}
+                numColumns={2}
+                showsVerticalScrollIndicator={false}
                 keyExtractor={item => item.id}
-                columnWrapperStyle={columns > 1 ? { gap: spacing.sm } : undefined}
+                columnWrapperStyle={{ gap: spacing.sm }}
                 contentContainerStyle={{ gap: spacing.sm, paddingBottom: spacing.xs }}
                 initialNumToRender={12}
                 maxToRenderPerBatch={12}
                 windowSize={5}
                 renderItem={({ item }) => (
-                    <View style={{ flex: 1 / columns, maxWidth: `${100 / columns}%` as `${number}%` }}>
+                    <View style={{ flex: 0.5, maxWidth: '50%' }}>
                         <ValidationThumbnailCard
                             item={item}
                             total={draft.items.length}
@@ -340,22 +368,40 @@ export function LocalMediaValidationPanel({
                 style={{ flex: 1, minHeight: 0 }}
             />
 
-            <View style={{ borderTopColor: tokens.separator, borderTopWidth: 1, gap: spacing.sm, paddingTop: spacing.md }}>
-                <PrimaryAction>
-                    {actions.busy ? (
-                        <Button disabled leading={<ActivityIndicator color={tokens.muted} size="small" />}>
-                            {t('offline.validation.progress', { completed: displayedProgress.completed, total: displayedProgress.total })}
-                        </Button>
-                    ) : issues.length ? (
-                        <Button onPress={focusFirstIssue}>{t('offline.validation.fixIssues', { count: issues.length })}</Button>
-                    ) : ready ? (
-                        <Button onPress={onContinue}>{t('offline.validation.continue')}</Button>
-                    ) : (
-                        <Button onPress={() => void actions.validate()}>{t('offline.validation.action')}</Button>
-                    )}
-                </PrimaryAction>
-            </View>
+            {/* The action renders in the sticky footer, which already draws its own top border. */}
+            {primaryAction}
 
+            <BottomSheet
+                visible={issueSummaryOpen && issues.length > 0}
+                onClose={() => setIssueSummaryOpen(false)}
+                closeLabel={t('offline.validation.close')}
+                title={t('offline.validation.issueSummaryTitle')}
+                description={t('offline.validation.summaryIssues', { valid, invalid: issues.length })}
+                testIDs={{ sheet: 'validation-issue-summary' }}
+                footer={<Button onPress={focusFirstIssue}>{t('offline.validation.reviewIssues')}</Button>}
+            >
+                <View style={{ gap: spacing.sm }}>
+                    {issueEntries.map(({ item, issue }) => (
+                        <Card key={item.id} variant="muted" style={{ alignItems: 'flex-start', flexDirection: 'row', gap: spacing.sm, padding: spacing.md }}>
+                            <View style={{ backgroundColor: tokens.dangerSoft, borderRadius: radii.pill, padding: spacing.sm }}>
+                                <Icon name="alert-circle-outline" size={metrics.icon.sm} color={tokens.danger} decorative />
+                            </View>
+                            <View style={{ flex: 1, gap: spacing.xs, minWidth: 0 }}>
+                                <AppText variant="eyebrow" tone="danger">
+                                    {t('offline.validation.pageNumber', { page: item.position + 1 })}
+                                </AppText>
+                                <AppText variant="label">{t(`offline.validation.issueMessages.${issue.code}`)}</AppText>
+                                {issue.technicalDetail ? (
+                                    <AppText tone="muted">{t(`offline.validation.technicalDetails.${issue.technicalDetail}`)}</AppText>
+                                ) : null}
+                                <AppText variant="caption" tone="muted">
+                                    {t(`offline.validation.issueOrigin.${issue.origin}`)}
+                                </AppText>
+                            </View>
+                        </Card>
+                    ))}
+                </View>
+            </BottomSheet>
             <MediaPreviewSheet
                 visible={!!detailItem}
                 uri={detailItem ? itemUri(detailItem) : null}
@@ -369,10 +415,13 @@ export function LocalMediaValidationPanel({
                 tone={detailIssue ? 'danger' : 'accent'}
                 details={
                     detailIssue ? (
-                        <Card style={{ gap: spacing.sm, padding: spacing.md }}>
-                            <AppText variant="section" tone="danger">
-                                {detailMessageKey ? t(detailMessageKey) : ''}
-                            </AppText>
+                        <Card style={{ backgroundColor: tokens.dangerSoft, gap: spacing.xs, padding: spacing.md }}>
+                            <View style={{ alignItems: 'flex-start', flexDirection: 'row', gap: spacing.sm }}>
+                                <Icon name="alert-circle-outline" size={metrics.icon.md} color={tokens.danger} decorative />
+                                <AppText variant="label" tone="danger" style={{ flex: 1 }}>
+                                    {detailMessageKey ? t(detailMessageKey) : ''}
+                                </AppText>
+                            </View>
                             <AppText variant="caption" tone="muted">
                                 {t(`offline.validation.issueOrigin.${detailIssue.origin}`)}
                             </AppText>
@@ -384,7 +433,7 @@ export function LocalMediaValidationPanel({
                 }
                 actions={
                     detailItem && detailIssue ? (
-                        <View style={{ gap: spacing.sm }}>
+                        <View style={{ gap: spacing.xs }}>
                             <Button
                                 loading={actions.replacingItemId === detailItem.id}
                                 disabled={actions.busy || removing}
@@ -395,7 +444,7 @@ export function LocalMediaValidationPanel({
                             </Button>
                             {onRemoveItem ? (
                                 <Button
-                                    variant="outline"
+                                    variant="ghost"
                                     tone="danger"
                                     loading={removing}
                                     disabled={actions.busy}

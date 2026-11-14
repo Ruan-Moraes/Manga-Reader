@@ -1,11 +1,11 @@
-import { type ReactNode, useState } from 'react';
+import { type ReactNode, useMemo, useState } from 'react';
 import { type AccessibilityActionEvent, Pressable, View } from 'react-native';
 import { Image } from 'expo-image';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 
 import { useTheme } from '@/shared/theme';
-import { AppText } from '@/shared/ui';
+import { AppText, PageNumberBadge } from '@/shared/ui';
 
 import { REVIEW_CARD_BORDER_WIDTH, REVIEW_IMAGE_ASPECT_RATIO, REVIEW_LIST_THUMBNAIL_WIDTH, type ReviewViewMode } from '../config/reviewLayout';
 
@@ -29,6 +29,7 @@ function DeleteButton({ page, busy, onRemove, overlay }: { page: number; busy: b
     const { t } = useTranslation('launcher');
 
     const { minimumTouchTarget, spacing, tokens } = useTheme();
+
     const Surface = overlay ? View : Pressable;
 
     return (
@@ -37,7 +38,7 @@ function DeleteButton({ page, busy, onRemove, overlay }: { page: number; busy: b
             style={{
                 height: minimumTouchTarget,
                 width: minimumTouchTarget,
-                alignSelf: 'flex-start',
+                alignSelf: 'center',
                 padding: spacing.xs,
                 justifyContent: 'center',
             }}
@@ -75,7 +76,8 @@ export function ReviewImageCard({
 
     const { radii, spacing, tokens } = useTheme();
 
-    const [failed, setFailed] = useState(false);
+    const [failedUri, setFailedUri] = useState<string>();
+    const imageSource = useMemo(() => ({ uri }), [uri]);
 
     const page = index + 1;
 
@@ -110,7 +112,7 @@ export function ReviewImageCard({
                 onPress={overlay ? undefined : grid ? onOpenActions : onPreview}
                 style={{ aspectRatio: REVIEW_IMAGE_ASPECT_RATIO, width: '100%' }}
             >
-                {failed ? (
+                {failedUri === uri ? (
                     <View
                         accessibilityRole="alert"
                         accessibilityLabel={t('offline.review.imageError', { page })}
@@ -126,37 +128,16 @@ export function ReviewImageCard({
                     </View>
                 ) : (
                     <Image
-                        source={{ uri }}
+                        source={imageSource}
                         contentFit="cover"
                         cachePolicy="memory"
                         accessibilityElementsHidden
-                        onError={() => setFailed(true)}
+                        onError={() => setFailedUri(uri)}
                         style={{ borderRadius: radii.card, height: '100%', width: '100%' }}
                     />
                 )}
             </Surface>
-            {grid ? (
-                <View
-                    pointerEvents="none"
-                    testID={`review-page-badge-${testId}`}
-                    style={{
-                        alignItems: 'center',
-                        backgroundColor: tokens.overlay,
-                        borderRadius: radii.pill,
-                        height: 22,
-                        justifyContent: 'center',
-                        left: spacing.xs + 2,
-                        minWidth: 22,
-                        paddingHorizontal: spacing.xs,
-                        position: 'absolute',
-                        top: spacing.xs + 2,
-                    }}
-                >
-                    <AppText variant="caption" style={{ color: tokens.text }} accessibilityElementsHidden>
-                        {page}
-                    </AppText>
-                </View>
-            ) : null}
+            {grid ? <PageNumberBadge testID={`review-page-badge-${testId}`}>{page}</PageNumberBadge> : null}
         </View>
     );
 
@@ -182,14 +163,14 @@ export function ReviewImageCard({
             {image}
             {grid ? null : (
                 <>
-                    <View style={{ flex: 1, gap: spacing.sm, justifyContent: 'center', minWidth: 0 }}>
-                        <View style={{ flexDirection: 'column', flexWrap: 'wrap', gap: spacing.sm }}>
+                    <View style={{ flex: 1, gap: spacing.xs, justifyContent: 'center', minWidth: 0 }}>
+                        <View style={{ alignItems: 'flex-start', flexDirection: 'column', flexWrap: 'wrap', gap: spacing.xs }}>
                             {duplicate ? (
                                 <AppText accessibilityRole="text" numberOfLines={2} variant="caption" style={{ color: tokens.warn }}>
                                     {t('offline.review.possibleDuplicate')}
                                 </AppText>
                             ) : null}
-                            <AppText numberOfLines={1} variant="section" style={{ flexShrink: 1 }}>
+                            <AppText numberOfLines={1} variant="label" style={{ flexShrink: 1 }}>
                                 {t('offline.review.page', { page, total })}
                             </AppText>
                             {itemMeta ? (
