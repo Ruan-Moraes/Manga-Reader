@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { type AcquireRemoteTranslationResultController, useAcquireRemoteTranslationResult } from '@/features/acquire-remote-translation-result';
 import { type CancelRemoteProcessingController, cancelRemoteProcessingController } from '@/features/cancel-remote-processing';
 import { type StartRemoteProcessingController, useStartRemoteProcessing } from '@/features/start-remote-processing';
-import { externalLinks } from '@/shared/config';
+import { useExternalLinkOpener } from '@/shared/config';
 import { ROUTES } from '@/shared/navigation';
 import { useTheme } from '@/shared/theme';
 import { AppDialog, AppText, Button, Card, ProgressSteps, StatusMessage } from '@/shared/ui';
@@ -33,6 +33,7 @@ export function RemoteProcessingPanel({
     const remote = useStartRemoteProcessing(startController);
     const acquired = useAcquireRemoteTranslationResult(remote.attempt?.status === 'ACCEPTED' ? remote.attempt.id : null, acquisitionController, openReader);
     const [disclosureOpen, setDisclosureOpen] = useState(false);
+    const legalLink = useExternalLinkOpener();
     const [cancelling, setCancelling] = useState(false);
     const [cancelError, setCancelError] = useState<string | null>(null);
     const active = remote.busy || acquired?.status === 'waiting' || (remote.attempt?.status === 'ACCEPTED' && acquired === null);
@@ -117,14 +118,14 @@ export function RemoteProcessingPanel({
                 ) : null}
 
                 {remote.busy ? (
-                    <>
+                    <View style={{ gap: spacing.xs }}>
                         <Button loading accessibilityLabel={t('actions.processing')}>
                             {t('actions.processing')}
                         </Button>
                         <Button onPress={remote.interrupt} tone="danger" variant="outline">
                             {t('actions.cancel')}
                         </Button>
-                    </>
+                    </View>
                 ) : null}
                 {!attempt && canStart && !remote.busy ? <Button onPress={() => setDisclosureOpen(true)}>{t('actions.start')}</Button> : null}
                 {!remote.busy && (attempt?.status === 'UNKNOWN' || attempt?.status === 'CANCEL_PENDING') && (
@@ -175,12 +176,20 @@ export function RemoteProcessingPanel({
                             <AppText>{t('disclosure.training', { policy: capability.disclosure.providerTrainingPolicy })}</AppText>
                             <AppText>{t('disclosure.cancellation')}</AppText>
                             <View style={{ gap: spacing.xs }}>
-                                <Button onPress={() => void externalLinks.open(capability.disclosure.privacyPolicyUrl)} variant="ghost">
+                                <Button onPress={() => void legalLink.open(capability.disclosure.privacyPolicyUrl)} variant="ghost">
                                     {t('disclosure.privacy')}
                                 </Button>
-                                <Button onPress={() => void externalLinks.open(capability.disclosure.termsUrl)} variant="ghost">
+                                <Button onPress={() => void legalLink.open(capability.disclosure.termsUrl)} variant="ghost">
                                     {t('disclosure.terms')}
                                 </Button>
+                                {legalLink.failedUrl ? (
+                                    <StatusMessage
+                                        tone="danger"
+                                        title={t('disclosure.linkError')}
+                                        actionLabel={t('disclosure.linkRetry')}
+                                        onAction={legalLink.retry}
+                                    />
+                                ) : null}
                             </View>
                         </View>
                     </AppDialog>

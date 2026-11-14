@@ -1,4 +1,11 @@
 export {
+    type BatchItemState,
+    type BatchRun,
+    type BatchRunState,
+    chapterBatchQueueRepository,
+    createChapterBatchQueueRepository,
+} from './api/chapterBatchQueueRepository';
+export {
     CREATE_REMOTE_PROCESSING_SCHEMA,
     createSqliteRemoteProcessingAttemptRepository,
     type NewRemoteProcessingAttempt,
@@ -6,6 +13,7 @@ export {
     remoteProcessingAttemptRepository,
 } from './api/remoteProcessingAttemptRepository';
 export {
+    hasProvenPageFailure,
     isAmbiguousRemoteAttempt,
     isRemoteAttemptStatus,
     isRemoteJobStatus,

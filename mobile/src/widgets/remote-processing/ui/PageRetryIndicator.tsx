@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ActivityIndicator, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
@@ -19,71 +19,39 @@ export function PageRetryIndicator({ pageId, onTranslated, ...options }: Props) 
     const { metrics, minimumTouchTarget, radii, spacing, tokens } = useTheme();
     const batch = useChapterBatch(options);
     const [open, setOpen] = useState(false);
-    const [failedRetry, setFailedRetry] = useState(false);
-    const wasRunning = useRef(false);
-    const page = batch.project?.pages.find(candidate => candidate.id === pageId);
-    const saved = batch.progress?.statuses[pageId] === 'saved';
+    const status = batch.statusOf(pageId);
+    const translated = status === 'saved' || status === 'ready';
 
     useEffect(() => {
-        if (batch.running) wasRunning.current = true;
-        else if (wasRunning.current) {
-            wasRunning.current = false;
-            if (saved) onTranslated?.();
-            else setFailedRetry(true);
-        }
-    }, [batch.running, onTranslated, saved]);
+        if (status === 'saved') onTranslated?.();
+    }, [onTranslated, status]);
 
-    if (batch.loading || !page || page.status === 'READY') return null;
-    const canRetry = batch.eligible.includes(pageId) && batch.capabilities?.enabled === true;
-    // Uncertain page: never resent here, but the user can ask the gateway again about it (2026-11-10).
-    const uncertain = batch.uncertain.has(pageId) || (!batch.eligible.includes(pageId) && page.status === 'FAILED');
-    const canRecheck = !canRetry && uncertain && !batch.checking;
-    const label = batch.running
-        ? t('pageRetry.running')
-        : !batch.eligible.includes(pageId) && page.status === 'FAILED'
-          ? t('pageRetry.unknown')
-          : failedRetry || page.status === 'FAILED'
-            ? t('pageRetry.failed')
-            : t('pageRetry.notTranslated');
-    const headline = batch.running
-        ? t('pageRetry.notice.running')
-        : !batch.eligible.includes(pageId) && page.status === 'FAILED'
-          ? t('pageRetry.notice.unknown')
-          : failedRetry || page.status === 'FAILED'
-            ? t('pageRetry.notice.failed')
-            : t('pageRetry.notice.notTranslated');
-    const hint = batch.running
-        ? null
-        : failedRetry
-          ? t('pageRetry.notice.stillFailed')
-          : canRetry
-            ? t('pageRetry.notice.retry')
-            : canRecheck
-              ? t('pageRetry.notice.recheck')
-              : null;
-    const actionable = (canRetry || canRecheck) && !batch.running;
+    if (batch.loading || !batch.project?.pages.some(page => page.id === pageId) || translated) return null;
+    const processing = status === 'processing';
+    const failed = status === 'failed';
+    const uncertain = status === 'unknown';
+    const canSend = !uncertain && batch.isEligible(pageId) && batch.capabilities?.enabled === true && !batch.otherBatchRunning && !batch.pausedRun;
+    const canRecheck = uncertain && !batch.checking;
+    const label = t(`pageRetry.notice.${processing ? 'running' : uncertain ? 'unknown' : failed ? 'failed' : 'notTranslated'}`);
+    const hint = canRecheck ? t('pageRetry.notice.recheck') : canSend && !processing ? t(failed ? 'pageRetry.notice.retry' : 'pageRetry.translate') : null;
+    const actionable = (canSend || canRecheck) && !batch.running;
 
     return (
         <View testID="page-retry-indicator">
             <PressableBox
                 testID="page-retry-notice"
                 accessibilityRole="button"
-                accessibilityLabel={[
-                    failedRetry && !batch.running ? t('pageRetry.stillFailed') : label,
-                    canRetry ? t('pageRetry.action') : canRecheck ? t('pageRetry.notice.recheck') : null,
-                ]
-                    .filter(Boolean)
-                    .join('. ')}
-                accessibilityState={{ disabled: !actionable, busy: batch.running || batch.checking }}
+                accessibilityLabel={hint ? `${label}. ${hint}` : label}
+                accessibilityState={{ disabled: !actionable, busy: processing || (uncertain && batch.checking) }}
                 accessibilityLiveRegion="polite"
                 disabled={!actionable}
-                onPress={() => (canRetry ? setOpen(true) : void batch.recheck())}
+                onPress={() => (canRecheck ? void batch.recheck() : setOpen(true))}
                 style={({ pressed }) => ({
                     alignItems: 'center',
                     backgroundColor: pressed ? tokens.surfacePressed : tokens.surfaceElevated,
                     borderBottomLeftRadius: radii.card,
                     borderColor: tokens.borderStrong,
-                    borderLeftColor: tokens.danger,
+                    borderLeftColor: failed ? tokens.danger : tokens.borderStrong,
                     borderLeftWidth: 3,
                     borderRightWidth: 0,
                     borderTopLeftRadius: radii.card,
@@ -101,25 +69,25 @@ export function PageRetryIndicator({ pageId, onTranslated, ...options }: Props) 
                 <View
                     style={{
                         alignItems: 'center',
-                        backgroundColor: tokens.dangerSoft,
+                        backgroundColor: failed ? tokens.dangerSoft : tokens.surfaceMuted,
                         borderRadius: radii.pill,
                         height: 32,
                         justifyContent: 'center',
                         width: 32,
                     }}
                 >
-                    {batch.running ? (
-                        <ActivityIndicator size="small" color={tokens.danger} />
+                    {processing ? (
+                        <ActivityIndicator size="small" color={tokens.accentText} />
                     ) : (
-                        <Icon name={canRetry ? 'refresh' : 'alert-circle-outline'} size={metrics.icon.md} color={tokens.danger} />
+                        <Icon name={failed ? 'alert-circle-outline' : uncertain ? 'time-outline' : 'document-outline'} size={metrics.icon.md} color={failed ? tokens.danger : tokens.muted} />
                     )}
                 </View>
                 <View style={{ flexShrink: 1, gap: 2 }}>
                     <AppText variant="label" numberOfLines={2}>
-                        {headline}
+                        {label}
                     </AppText>
                     {hint ? (
-                        <AppText variant="caption" numberOfLines={2} style={{ color: failedRetry ? tokens.danger : tokens.accentText }}>
+                        <AppText variant="caption" numberOfLines={2} style={{ color: tokens.accentText }}>
                             {hint}
                         </AppText>
                     ) : null}
@@ -133,7 +101,6 @@ export function PageRetryIndicator({ pageId, onTranslated, ...options }: Props) 
                     onCancel={() => setOpen(false)}
                     onConfirm={() => {
                         setOpen(false);
-                        setFailedRetry(false);
                         void batch.start(pageId);
                     }}
                 />

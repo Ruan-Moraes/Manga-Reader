@@ -120,3 +120,8 @@ export function isRemoteProcessingErrorCode(value: unknown): value is RemoteProc
 export function isAmbiguousRemoteAttempt(attempt: RemoteProcessingAttempt): boolean {
     return attempt.status === 'SUBMITTING' || attempt.status === 'UNKNOWN' || attempt.status === 'CANCEL_PENDING';
 }
+
+/** A page's local FAILED flag can also be written before the remote submission starts. */
+export function hasProvenPageFailure(attempt: RemoteProcessingAttempt | null): boolean {
+    return attempt?.status === 'REJECTED' || (attempt?.status === 'FAILED' && attempt.submittedAt !== null);
+}

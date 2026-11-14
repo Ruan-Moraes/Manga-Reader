@@ -1,9 +1,10 @@
-import { fireEvent, render, screen, waitFor, within } from '@testing-library/react-native';
+import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react-native';
 
 import type { RemoteProcessingCapabilities } from '@/entities/remote-processing-capability';
 import type { TranslationPage } from '@/entities/translation-page';
 import type { TranslationProject } from '@/entities/translation-project';
 import type { StartRemoteProcessingController } from '@/features/start-remote-processing';
+import { externalLinks } from '@/shared/config';
 import i18n from '@/shared/i18n';
 
 import { ChapterBatchPanel } from '../ChapterBatchPanel';
@@ -133,5 +134,21 @@ describe('MOB-FEAT-056 lote e consentimento em camadas', () => {
         expect(run).not.toHaveBeenCalled();
         fireEvent.press(screen.getByRole('button', { name: 'Aceitar e enviar' }));
         await waitFor(() => expect(run).toHaveBeenCalledTimes(1));
+    });
+
+    it('MOB-FEAT-064 AC-004 links do lote abrem os destinos da capability e oferecem nova tentativa na falha', async () => {
+        const open = jest.spyOn(externalLinks, 'open').mockRejectedValueOnce(new Error('open-failed')).mockResolvedValue();
+        render(<ChapterBatchPanel startController={start} batchController={{ run: jest.fn() }} {...repositories} />);
+        fireEvent.press(await screen.findByRole('button', { name: 'Traduzir 2 páginas' }));
+        fireEvent.press(await screen.findByRole('button', { name: 'Ver detalhes' }));
+        const links = screen.getByTestId('batch-consent-links');
+
+        await act(async () => fireEvent.press(within(links).getByRole('link', { name: 'termos de uso' })));
+        expect(screen.getByText('Não foi possível abrir o link.')).toBeOnTheScreen();
+
+        await act(async () => fireEvent.press(screen.getByRole('button', { name: 'Tentar abrir de novo' })));
+        expect(open.mock.calls).toEqual([['https://toonlira.com/terms'], ['https://toonlira.com/terms']]);
+        expect(screen.queryByText('Não foi possível abrir o link.')).toBeNull();
+        open.mockRestore();
     });
 });

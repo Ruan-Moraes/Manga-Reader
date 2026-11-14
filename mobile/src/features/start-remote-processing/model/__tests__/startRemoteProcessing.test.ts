@@ -7,7 +7,7 @@ import {
 import type { RemoteProcessingIdentity } from '@/entities/remote-processing-identity';
 import type { TranslationProject, TranslationProjectRepository } from '@/entities/translation-project';
 import type { PrivateBatchFiles } from '@/shared/files';
-import type { RemoteGatewayTransport } from '@/shared/remote-gateway';
+import { type RemoteGatewayTransport, VolatileTranslationTransportError } from '@/shared/remote-gateway';
 
 import { createStartRemoteProcessingController } from '../startRemoteProcessing';
 
@@ -119,6 +119,7 @@ function setup(options: { consent?: boolean; enabled?: boolean; exists?: boolean
         listRecoverable: jest.fn(async () => (attempt ? [attempt] : [])),
         markSubmitting: jest.fn(async () => (attempt = { ...attempt!, status: 'SUBMITTING' })),
         markUnknown: jest.fn(async () => (attempt = { ...attempt!, status: 'UNKNOWN' })),
+        markRejected: jest.fn(async () => (attempt = { ...attempt!, status: 'REJECTED' })),
         observeVolatileReceipt: jest.fn(async (_id, receipt) => {
             if (receipt && receipt.status !== 'STARTED') project.pages[0]!.status = 'FAILED';
             return (attempt = {
@@ -184,15 +185,16 @@ function setup(options: { consent?: boolean; enabled?: boolean; exists?: boolean
 }
 afterEach(() => interruptVolatileDelivery('attempt'));
 
-it('submits only the requested eligible page of an already active chapter', async () => {
+it.each(['PROCESSING', 'READY'] as const)('submits the requested page when the chapter is %s', async chapterStatus => {
     const d = setup();
     const second: TranslationProject['pages'][number] = { ...d.project.pages[0]!, id: 'page-2', position: 1, originalFilename: 'second', status: 'DRAFT' };
     d.project.pages[0]!.status = 'READY';
-    d.project.status = 'PROCESSING';
+    d.project.status = chapterStatus;
     d.project.pages.push(second);
     d.setAttempt({ ...d.created, pageId: 'page-2' });
     d.attempts.acceptDirectResponse.mockImplementation(async () => {
         second.status = 'PROCESSING';
+        d.project.status = 'PROCESSING';
         const accepted = { ...d.created, pageId: 'page-2', status: 'ACCEPTED' as const, remoteStatus: 'READY' as const, remoteJobRef: OPERATION };
         d.setAttempt(accepted);
         return accepted;
@@ -260,6 +262,24 @@ it('keeps the same attempted identity UNKNOWN after an ambiguous request without
     expect(result.error).toBe('submission-unknown');
     expect(d.processPage).toHaveBeenCalledTimes(1);
     await d.controller.submit('project');
+    expect(d.processPage).toHaveBeenCalledTimes(1);
+});
+it('stops at a quota refusal during capabilities without creating an attempt', async () => {
+    const d = setup();
+    d.request.mockResolvedValue({ status: 429, headers: new Headers(), body: d.body });
+    await expect(d.controller.initialize()).resolves.toMatchObject({ error: 'quota-exceeded' });
+    await expect(d.controller.submit('project')).resolves.toMatchObject({ error: 'quota-exceeded' });
+    expect(d.attempts.createOrGetActive).not.toHaveBeenCalled();
+    expect(d.processPage).not.toHaveBeenCalled();
+});
+it('records a quota refusal during submission as rejected without changing the page', async () => {
+    const d = setup();
+    d.processPage.mockRejectedValueOnce(new VolatileTranslationTransportError('quota-exceeded'));
+    const result = await d.controller.submit('project');
+    expect(result).toMatchObject({ attempt: { status: 'REJECTED' }, error: 'quota-exceeded' });
+    expect(d.attempts.markRejected).toHaveBeenCalledWith('attempt', NOW, 'gateway-rejected');
+    expect(d.attempts.markUnknown).not.toHaveBeenCalled();
+    expect(d.project.pages[0]?.status).toBe('DRAFT');
     expect(d.processPage).toHaveBeenCalledTimes(1);
 });
 it.each(['STARTED', 'FINISHED', 'FAILED', 'missing'])('reconciles %s only through metadata, never a new upload', async status => {

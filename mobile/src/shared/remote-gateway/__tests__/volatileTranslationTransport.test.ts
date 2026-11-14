@@ -89,6 +89,23 @@ it('does not retry ambiguous failures, refuses redirects and honors abort before
     await expect(createVolatileTranslationTransport(origin, fetcher).process(command, aborted.signal)).rejects.toThrow('aborted');
     expect(fetcher).not.toHaveBeenCalled();
 });
+it('reports HTTP 429 as an explicit quota refusal and never retries it', async () => {
+    const fixture = response([], { status: 429 });
+    const fetcher = jest.fn(async () => fixture.response);
+    await expect(createVolatileTranslationTransport(origin, fetcher as typeof fetch).process(command)).rejects.toThrow('quota-exceeded');
+    expect(fetcher).toHaveBeenCalledTimes(1);
+});
+it('retains only a bounded gateway error code and correlation reference without retrying', async () => {
+    const fixture = response([], { status: 503 });
+    fixture.response.headers.set('x-toonlira-error', 'ocr-unavailable');
+    fixture.response.headers.set('x-toonlira-correlation', '12345678-1234-1234-1234-123456789abc');
+    const fetcher = jest.fn(async () => fixture.response);
+    await expect(createVolatileTranslationTransport(origin, fetcher as typeof fetch).process(command)).rejects.toMatchObject({
+        code: 'ambiguous',
+        diagnostic: 'ocr-unavailable (12345678-1234-1234-1234-123456789abc)',
+    });
+    expect(fetcher).toHaveBeenCalledTimes(1);
+});
 it('aborts an uncooperative final read without waiting for cancel or exposing the completed frames', async () => {
     const bytes = wire();
     let reached!: () => void;

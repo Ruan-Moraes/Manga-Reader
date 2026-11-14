@@ -28,7 +28,10 @@ export interface UnverifiedVolatileResponse {
     dispose(): void;
 }
 export class VolatileTranslationTransportError extends Error {
-    constructor(readonly code: 'invalid-request' | 'invalid-response' | 'ambiguous' | 'aborted' | 'receipt-exists' | 'unauthorized') {
+    constructor(
+        readonly code: 'invalid-request' | 'invalid-response' | 'ambiguous' | 'aborted' | 'receipt-exists' | 'unauthorized' | 'quota-exceeded',
+        readonly diagnostic?: string,
+    ) {
         super(code);
     }
 }
@@ -173,9 +176,23 @@ export function createVolatileTranslationTransport(origin: string, fetcher: type
                 });
                 reader = response.body?.getReader();
                 if (response.url && response.url !== url) throw invalid();
-                if (response.status === 401) throw new VolatileTranslationTransportError('unauthorized');
-                if (response.status === 409) throw new VolatileTranslationTransportError('receipt-exists');
-                if (response.status !== 200) throw new VolatileTranslationTransportError('ambiguous');
+                if (response.status !== 200) {
+                    const code = response.headers.get('x-toonlira-error');
+                    const ref = response.headers.get('x-toonlira-correlation');
+                    const diagnostic =
+                        code && /^[a-z][a-z0-9-]{0,63}$/.test(code)
+                            ? `${code}${ref && /^[0-9a-f-]{36}$/i.test(ref) ? ` (${ref})` : ''}`
+                            : `HTTP ${response.status}`;
+                    const kind =
+                        response.status === 401
+                            ? 'unauthorized'
+                            : response.status === 409
+                              ? 'receipt-exists'
+                              : response.status === 429
+                                ? 'quota-exceeded'
+                                : 'ambiguous';
+                    throw new VolatileTranslationTransportError(kind, diagnostic);
+                }
                 if (
                     response.headers.get('content-type')?.split(';')[0]?.trim().toLowerCase() !== CONTENT_TYPE ||
                     !response.headers

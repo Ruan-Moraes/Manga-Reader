@@ -105,6 +105,8 @@ export interface RemoteProcessingAttemptRepository {
     getById(id: string): Promise<RemoteProcessingAttempt | null>;
     getActiveByPage(pageId: string): Promise<RemoteProcessingAttempt | null>;
     getLatestByPage(pageId: string): Promise<RemoteProcessingAttempt | null>;
+    /** Latest attempt of each page in one query per chunk; pages without attempts are absent from the map. */
+    listLatestByPages(pageIds: readonly string[]): Promise<ReadonlyMap<string, RemoteProcessingAttempt>>;
     getProjectIdForPage(pageId: string): Promise<string | null>;
     listRecoverable(): Promise<RemoteProcessingAttempt[]>;
     markSubmitting(id: string, now: number): Promise<RemoteProcessingAttempt>;
@@ -118,6 +120,8 @@ export interface RemoteProcessingAttemptRepository {
     markCancelPending(id: string, now: number): Promise<RemoteProcessingAttempt>;
     confirmCancelled(id: string, projectId: string, pageId: string, now: number): Promise<RemoteProcessingAttempt>;
 }
+
+const LATEST_BY_PAGES_CHUNK = 500;
 
 const ATTEMPT_COLUMNS = `id, page_id, attempt_number, idempotency_key, gateway_key, gateway_contract_version,
     status, remote_status, remote_job_ref, volatile_receipt_status, error_code, created_at, updated_at, submitted_at, accepted_at,
@@ -181,7 +185,7 @@ async function failVolatileInTransaction(tx: SqlExecutor, attempt: RemoteProcess
     if (
         !page ||
         ['READY', 'CANCELLED'].includes(page.status) ||
-        ['READY', 'CANCELLED'].includes(page.project_status) ||
+        page.project_status === 'CANCELLED' ||
         ['FAILED', 'REJECTED', 'CANCELLED'].includes(attempt.status)
     )
         return;
@@ -325,6 +329,29 @@ export function createSqliteRemoteProcessingAttemptRepository(
                 ),
             );
         },
+        async listLatestByPages(pageIds) {
+            const latest = new Map<string, RemoteProcessingAttempt>();
+            const unique = [...new Set(pageIds)];
+            if (unique.length === 0) return latest;
+            const db = await database();
+            // Stay well under SQLite's bound-parameter limit; (page_id, attempt_number) is indexed by its UNIQUE constraint.
+            for (let start = 0; start < unique.length; start += LATEST_BY_PAGES_CHUNK) {
+                const chunk = unique.slice(start, start + LATEST_BY_PAGES_CHUNK);
+                const rows = await db.getAllAsync<AttemptRow>(
+                    `SELECT ${ATTEMPT_COLUMNS} FROM remote_processing_attempts AS attempt
+                     WHERE attempt.page_id IN (${chunk.map(() => '?').join(', ')})
+                       AND attempt.attempt_number = (
+                           SELECT MAX(latest.attempt_number) FROM remote_processing_attempts AS latest WHERE latest.page_id = attempt.page_id
+                       )`,
+                    chunk,
+                );
+                for (const row of rows) {
+                    const attempt = mapAttempt(row);
+                    if (attempt) latest.set(attempt.pageId, attempt);
+                }
+            }
+            return latest;
+        },
         async getProjectIdForPage(pageId) {
             const row = await (
                 await database()
@@ -398,11 +425,7 @@ export function createSqliteRemoteProcessingAttemptRepository(
                 if (
                     !page ||
                     !['DRAFT', 'FAILED'].includes(page.page_status) ||
-                    !(
-                        page.project_status === 'DRAFT' ||
-                        page.project_status === 'FAILED' ||
-                        (['QUEUED', 'PROCESSING'].includes(page.project_status) && page.page_status === 'FAILED')
-                    ) ||
+                    page.project_status === 'CANCELLED' ||
                     page.language_review_required !== 0
                 ) {
                     throw new Error('remoteProcessing.staleProject');
@@ -423,7 +446,7 @@ export function createSqliteRemoteProcessingAttemptRepository(
 
                 await transaction.runAsync(
                     `UPDATE translation_projects SET status = 'PROCESSING', updated_at = ?, status_updated_at = ?
-                     WHERE id = ? AND status IN ('DRAFT','QUEUED','FAILED','PROCESSING') AND language_review_required = 0`,
+                     WHERE id = ? AND status <> 'CANCELLED' AND language_review_required = 0`,
                     [now, now, projectId],
                 );
             });

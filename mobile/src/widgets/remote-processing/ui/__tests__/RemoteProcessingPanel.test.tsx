@@ -6,6 +6,7 @@ import type { RemoteProcessingCapabilities } from '@/entities/remote-processing-
 import type { TranslationProject } from '@/entities/translation-project';
 import type { AcquireRemoteTranslationResultController } from '@/features/acquire-remote-translation-result';
 import type { StartRemoteProcessingController } from '@/features/start-remote-processing';
+import { externalLinks } from '@/shared/config';
 import i18n from '@/shared/i18n';
 import { ROUTES } from '@/shared/navigation';
 
@@ -109,6 +110,20 @@ describe('MOB-FEAT-017 disclosure UI', () => {
 
         expect(start.acceptConsent).not.toHaveBeenCalled();
         expect(start.submit).not.toHaveBeenCalled();
+    });
+
+    it('MOB-FEAT-064 AC-004 opens the capability links and offers a retry when the browser fails', async () => {
+        const open = jest.spyOn(externalLinks, 'open').mockRejectedValueOnce(new Error('open-failed')).mockResolvedValue();
+        render(<RemoteProcessingPanel startController={controller()} />);
+        fireEvent.press(await screen.findByRole('button', { name: 'Iniciar processamento' }));
+
+        fireEvent.press(screen.getByRole('button', { name: 'Abrir política de privacidade' }));
+        expect(await screen.findByText('Não foi possível abrir o link.')).toBeOnTheScreen();
+
+        fireEvent.press(screen.getByRole('button', { name: 'Tentar abrir de novo' }));
+        await waitFor(() => expect(screen.queryByText('Não foi possível abrir o link.')).toBeNull());
+        expect(open.mock.calls).toEqual([['https://toonlira.com/privacy'], ['https://toonlira.com/privacy']]);
+        open.mockRestore();
     });
 
     it('requires affirmative acceptance before persisting consent and submitting', async () => {

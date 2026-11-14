@@ -37,7 +37,7 @@ const project: TranslationProject = {
     updatedAt: 1,
     statusUpdatedAt: 1,
     languageReviewRequired: false,
-    pages: [page('p1', 0, 'READY'), page('p2', 1, 'FAILED'), page('p3', 2, 'FAILED')],
+    pages: [page('p1', 0, 'READY'), page('p2', 1, 'FAILED'), page('p3', 2, 'FAILED'), page('p4', 3, 'FAILED')],
 };
 const capabilities: RemoteProcessingCapabilities = {
     contractVersion: '2.0',
@@ -100,7 +100,7 @@ describe('MOB-FEAT-055 page retry indicator', () => {
         const onTranslated = jest.fn();
         render(<PageRetryIndicator pageId="p2" startController={start} batchController={{ run }} onTranslated={onTranslated} {...repositories} />);
 
-        const marker = await screen.findByRole('button', { name: /A tradução desta página falhou.*somente esta página/ });
+        const marker = await screen.findByRole('button', { name: /Tradução falhou.*Tentar novamente/ });
         expect(run).not.toHaveBeenCalled();
         fireEvent.press(marker);
         fireEvent.press(await screen.findByRole('button', { name: 'Aceitar e enviar' }));
@@ -108,18 +108,38 @@ describe('MOB-FEAT-055 page retry indicator', () => {
         await waitFor(() => expect(run).toHaveBeenCalledTimes(1));
         expect(run.mock.calls[0][0].pageIds).toEqual(['p2']);
         await waitFor(() => expect(onTranslated).toHaveBeenCalledTimes(1));
+        expect(screen.queryByTestId('page-retry-indicator')).toBeNull();
     });
 
     it('keeps the original and says so when the retry fails again, without calling onTranslated', async () => {
         const run = jest.fn(async () => ({ statuses: { p2: 'failed' as const }, stoppedBy: null }));
         const onTranslated = jest.fn();
         render(<PageRetryIndicator pageId="p2" startController={start} batchController={{ run }} onTranslated={onTranslated} {...repositories} />);
-        fireEvent.press(await screen.findByRole('button', { name: /A tradução desta página falhou/ }));
+        fireEvent.press(await screen.findByRole('button', { name: /Tradução falhou/ }));
         fireEvent.press(await screen.findByRole('button', { name: 'Aceitar e enviar' }));
-        expect(await screen.findByText('Ainda falhou; original mantido')).toBeOnTheScreen();
-        expect(screen.getByRole('button', { name: /^Ainda não foi possível traduzir\. O original foi mantido\./ })).toBeOnTheScreen();
+        expect(screen.getByRole('button', { name: /Tradução falhou.*Tentar novamente/ })).toBeOnTheScreen();
         expect(screen.getByTestId('page-retry-notice')).toHaveStyle({ borderRightWidth: 0, borderLeftWidth: 3 });
         expect(onTranslated).not.toHaveBeenCalled();
+    });
+
+    it('offers a first translation for a legacy FAILED flag without a submitted attempt', async () => {
+        const run = jest.fn<ReturnType<ChapterBatchController['run']>, Parameters<ChapterBatchController['run']>>(async input => {
+            await input.onProgress?.({ statuses: { p2: 'processing' }, completed: 0, total: 1 });
+            return { statuses: { p2: 'failed' }, stoppedBy: null };
+        });
+        const { rerender } = render(<PageRetryIndicator pageId="p2" startController={start} batchController={{ run }} {...repositories} />);
+        fireEvent.press(await screen.findByRole('button', { name: /Tradução falhou/ }));
+        fireEvent.press(await screen.findByRole('button', { name: 'Aceitar e enviar' }));
+        await waitFor(() => expect(run).toHaveBeenCalledTimes(1));
+        rerender(<PageRetryIndicator pageId="p4" startController={start} batchController={{ run }} {...repositories} />);
+        const firstTranslation = await screen.findByRole('button', { name: 'Página não traduzida. Traduzir esta página' });
+        expect(firstTranslation).toBeEnabled();
+        expect(screen.queryByText('Tradução falhou')).toBeNull();
+        fireEvent.press(firstTranslation);
+        expect(run).toHaveBeenCalledTimes(1);
+        fireEvent.press(await screen.findByRole('button', { name: 'Aceitar e enviar' }));
+        await waitFor(() => expect(run).toHaveBeenCalledTimes(2));
+        expect(run.mock.calls[1][0].pageIds).toEqual(['p4']);
     });
 
     it('never offers a resend for an uncertain page and hides on translated pages', async () => {
@@ -127,7 +147,7 @@ describe('MOB-FEAT-055 page retry indicator', () => {
         const reconcile = jest.fn(async () => ({ project, capabilities, attempt: null, error: null }));
         const checking = { ...start, reconcile } as unknown as StartRemoteProcessingController;
         const { rerender } = render(<PageRetryIndicator pageId="p3" startController={checking} batchController={{ run }} {...repositories} />);
-        const uncertain = await screen.findByRole('button', { name: /resultado desta página é incerto/ });
+        const uncertain = await screen.findByRole('button', { name: /Resultado incerto/ });
         // 2026-11-10: tocar só consulta o servidor de novo (recibo); nada é reenviado.
         expect(uncertain.props.accessibilityState.disabled).toBe(false);
         fireEvent.press(uncertain);

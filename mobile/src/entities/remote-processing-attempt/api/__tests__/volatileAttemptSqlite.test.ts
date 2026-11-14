@@ -27,6 +27,37 @@ function database() {
     };
     return { sql, db };
 }
+it.each(['PROCESSING', 'READY'] as const)('accepts a pending page beside a saved page in a %s project', async chapterStatus => {
+    const { sql, db } = database();
+    try {
+        const projects = createSqliteTranslationProjectRepository(async () => db);
+        const attempts = createSqliteRemoteProcessingAttemptRepository(async () => db, projects);
+        await attempts.initialize();
+        sql.exec(
+            "INSERT INTO translation_projects(id,source_language,target_language,status,created_at,updated_at,status_updated_at) VALUES('project','ja','pt-BR','PROCESSING',1,1,1)",
+        );
+        sql.exec(
+            "INSERT INTO translation_pages(id,project_id,position,original_filename,original_byte_size,original_mime_type,width_px,height_px,media_validated_at,media_validation_policy_version,status,created_at,updated_at,status_updated_at) VALUES('first','project',0,'first',10,'image/png',32,16,1,1,'READY',1,1,1),('second','project',1,'second',10,'image/png',32,16,1,1,'DRAFT',1,1,1)",
+        );
+        sql.prepare('UPDATE translation_projects SET status=?').run(chapterStatus);
+        const attempt = await attempts.createOrGetActive({
+            id: 'second-attempt',
+            pageId: 'second',
+            idempotencyKey: 'second-key',
+            gatewayKey: 'gateway',
+            gatewayContractVersion: '2.0',
+            createdAt: 2,
+        });
+        await attempts.markSubmitting(attempt.id, 3);
+        await expect(attempts.acceptDirectResponse(attempt.id, 'project', 'second', 'operation', 4)).resolves.toMatchObject({ status: 'ACCEPTED' });
+        expect(sql.prepare('SELECT status FROM translation_projects').get()).toMatchObject({ status: 'PROCESSING' });
+        expect(sql.prepare("SELECT status FROM translation_pages WHERE id='first'").get()).toMatchObject({ status: 'READY' });
+        expect(sql.prepare("SELECT status FROM translation_pages WHERE id='second'").get()).toMatchObject({ status: 'PROCESSING' });
+    } finally {
+        sql.close();
+    }
+});
+
 it('binds direct delivery atomically without a queue and preserves the original on interruption', async () => {
     const { sql, db } = database();
     try {
@@ -248,6 +279,37 @@ it('rolls back receipt, operation binding and local failure together if the page
         await expect(attempts.observeVolatileReceipt('attempt', { operationRef: 'operation', status: 'FINISHED' }, 4)).rejects.toThrow();
         expect(await attempts.getById('attempt')).toMatchObject({ status: 'SUBMITTING', remoteJobRef: null, volatileReceiptStatus: null });
         expect(sql.prepare('SELECT status FROM translation_pages').get()).toMatchObject({ status: 'DRAFT' });
+    } finally {
+        sql.close();
+    }
+});
+
+it('returns the latest attempt of many pages in one batch, leaving pages without attempts out (revisão 2026-11-13)', async () => {
+    const { sql, db } = database();
+    try {
+        const projects = createSqliteTranslationProjectRepository(async () => db);
+        const attempts = createSqliteRemoteProcessingAttemptRepository(async () => db, projects);
+        await attempts.initialize();
+        sql.exec(
+            "INSERT INTO translation_projects(id,source_language,target_language,status,created_at,updated_at,status_updated_at) VALUES('project','ja','pt-BR','PROCESSING',1,1,1)",
+        );
+        sql.exec(
+            "INSERT INTO translation_pages(id,project_id,position,original_filename,original_byte_size,original_mime_type,width_px,height_px,media_validated_at,media_validation_policy_version,status,created_at,updated_at,status_updated_at) VALUES('first','project',0,'first',10,'image/png',32,16,1,1,'DRAFT',1,1,1),('second','project',1,'second',10,'image/png',32,16,1,1,'DRAFT',1,1,1),('third','project',2,'third',10,'image/png',32,16,1,1,'DRAFT',1,1,1)",
+        );
+        const create = (id: string, pageId: string) =>
+            attempts.createOrGetActive({ id, pageId, idempotencyKey: `${id}-key`, gatewayKey: 'gateway', gatewayContractVersion: '2.0', createdAt: 2 });
+        const firstTry = await create('second-1', 'second');
+        await attempts.failVolatileAttempt(firstTry.id, 3, 'submission-unknown');
+        await create('second-2', 'second');
+        await create('third-1', 'third');
+
+        const latest = await attempts.listLatestByPages(['first', 'second', 'third', 'second']);
+
+        expect([...latest.keys()].sort()).toEqual(['second', 'third']);
+        expect(latest.get('second')?.id).toBe('second-2');
+        expect(latest.get('third')?.id).toBe('third-1');
+        for (const pageId of ['first', 'second', 'third']) expect(latest.get(pageId) ?? null).toEqual(await attempts.getLatestByPage(pageId));
+        expect((await attempts.listLatestByPages([])).size).toBe(0);
     } finally {
         sql.close();
     }

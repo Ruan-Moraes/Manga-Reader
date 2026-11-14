@@ -58,7 +58,7 @@ export const remoteProcessingCapabilitiesSchema = z
                     .max(4 * 1024 * 1024),
             })
             .strict(),
-        dailyInstallationQuota: z.literal(20),
+        dailyInstallationQuota: z.literal([0, 20]),
         dailyGlobalQuota: z.literal(100),
         disclosure: legalDisclosureSchema,
     })

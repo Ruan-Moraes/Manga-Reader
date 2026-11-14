@@ -30,13 +30,19 @@ import { appPrivateBatchFiles, type PrivateBatchFiles, sha256Bytes } from '@/sha
 import { type SupportedLanguage } from '@/shared/i18n';
 import { randomUuid } from '@/shared/lib';
 import { MEDIA_VALIDATION_POLICY_VERSION, parseImageStructure } from '@/shared/media-inspection';
-import { createRemoteGatewayTransport, createVolatileTranslationTransport, type RemoteGatewayTransport } from '@/shared/remote-gateway';
+import {
+    createRemoteGatewayTransport,
+    createVolatileTranslationTransport,
+    type RemoteGatewayTransport,
+    VolatileTranslationTransportError,
+} from '@/shared/remote-gateway';
 
 export interface RemoteProcessingSnapshot {
     project: TranslationProject | null;
     capabilities: RemoteProcessingCapabilities | null;
     attempt: RemoteProcessingAttempt | null;
-    error: RemoteProcessingErrorCode | null;
+    error: RemoteProcessingErrorCode | 'quota-exceeded' | null;
+    diagnostic?: string;
 }
 export interface StartRemoteProcessingController {
     initialize(signal?: AbortSignal): Promise<RemoteProcessingSnapshot>;
@@ -57,16 +63,30 @@ interface Dependencies {
     now(): number;
     uuid(): string;
 }
-async function snapshot(d: Dependencies, capabilities: RemoteProcessingCapabilities | null, error: RemoteProcessingErrorCode | null, projectId?: string, pageId?: string) {
+async function snapshot(
+    d: Dependencies,
+    capabilities: RemoteProcessingCapabilities | null,
+    error: RemoteProcessingSnapshot['error'],
+    projectId?: string,
+    pageId?: string,
+) {
     const project = projectId ? await d.projects.getById(projectId) : await d.projects.getLatest();
-    const page = project ? (pageId ? project.pages.find(candidate => candidate.id === pageId) : [...project.pages].sort((a, b) => a.position - b.position)[0]) : undefined;
+    const page = project
+        ? pageId
+            ? project.pages.find(candidate => candidate.id === pageId)
+            : [...project.pages].sort((a, b) => a.position - b.position)[0]
+        : undefined;
     return { project, capabilities, attempt: page ? await d.attempts.getLatestByPage(page.id) : null, error };
 }
 function validateProject(project: TranslationProject | null, capabilities: RemoteProcessingCapabilities, now: number, pageId?: string) {
-    const page = project ? (pageId ? project.pages.find(candidate => candidate.id === pageId) : [...project.pages].sort((a, b) => a.position - b.position)[0]) : undefined;
+    const page = project
+        ? pageId
+            ? project.pages.find(candidate => candidate.id === pageId)
+            : [...project.pages].sort((a, b) => a.position - b.position)[0]
+        : undefined;
     if (
         !project ||
-        !(project.status === 'DRAFT' || project.status === 'FAILED' || (['QUEUED', 'PROCESSING'].includes(project.status) && (page?.status === 'FAILED' || (!!pageId && page?.status === 'DRAFT')))) ||
+        project.status === 'CANCELLED' ||
         project.languageReviewRequired ||
         !page ||
         !['DRAFT', 'FAILED'].includes(page.status) ||
@@ -93,7 +113,8 @@ const deliveryHeader = z
     .passthrough();
 
 export function createStartRemoteProcessingController(d: Dependencies): StartRemoteProcessingController {
-    let submission: { projectId: string; pageId: string | undefined; signal: AbortSignal | undefined; promise: Promise<RemoteProcessingSnapshot> } | null = null;
+    let submission: { projectId: string; pageId: string | undefined; signal: AbortSignal | undefined; promise: Promise<RemoteProcessingSnapshot> } | null =
+        null;
     const reconciliations = new Map<AbortSignal | undefined, Promise<RemoteProcessingSnapshot>>();
     const load = async (signal?: AbortSignal) => {
         const transport = d.createTransport();
@@ -105,8 +126,8 @@ export function createStartRemoteProcessingController(d: Dependencies): StartRem
                 await Promise.all([d.projects.initialize(), d.attempts.initialize()]);
                 const { capabilities } = await load(signal);
                 return snapshot(d, capabilities, capabilitiesAreUsable(capabilities, d.now()) ? null : 'capabilities-unavailable');
-            } catch {
-                return snapshot(d, null, 'capabilities-unavailable');
+            } catch (error) {
+                return snapshot(d, null, error instanceof Error && error.message === 'quota-exceeded' ? 'quota-exceeded' : 'capabilities-unavailable');
             }
         },
         async acceptConsent(projectId, capabilities, locale, pageId) {
@@ -116,8 +137,9 @@ export function createStartRemoteProcessingController(d: Dependencies): StartRem
         submit(projectId, signal, pageId) {
             if (submission)
                 return submission.projectId === projectId && submission.pageId === pageId && submission.signal === signal
-                    ? submission.promise : snapshot(d, null, 'capabilities-unavailable', projectId, pageId);
-            const targetSnapshot = (capabilities: RemoteProcessingCapabilities | null, error: RemoteProcessingErrorCode | null) =>
+                    ? submission.promise
+                    : snapshot(d, null, 'capabilities-unavailable', projectId, pageId);
+            const targetSnapshot = (capabilities: RemoteProcessingCapabilities | null, error: RemoteProcessingSnapshot['error']) =>
                 snapshot(d, capabilities, error, projectId, pageId);
             const promise = (async () => {
                 let capabilities: RemoteProcessingCapabilities | null = null;
@@ -228,7 +250,7 @@ export function createStartRemoteProcessingController(d: Dependencies): StartRem
                     if (
                         abort.signal.aborted ||
                         delivered.project?.id !== projectId ||
-                        delivered.project.status !== 'PROCESSING' ||
+                        delivered.project.status === 'CANCELLED' ||
                         delivered.attempt?.id !== attempt.id ||
                         delivered.attempt.status !== 'ACCEPTED' ||
                         delivered.attempt.remoteJobRef !== attempt.remoteJobRef ||
@@ -243,9 +265,18 @@ export function createStartRemoteProcessingController(d: Dependencies): StartRem
                     if (deposited && attempt) await d.attempts.failVolatileAttempt(attempt.id, d.now(), 'submission-unknown').catch(() => undefined);
                     if (attempt?.status === 'CREATED') await d.attempts.failVolatileAttempt(attempt.id, d.now(), 'storage-unavailable').catch(() => undefined);
                     if (attempt?.status === 'SUBMITTING') {
+                        if (error instanceof VolatileTranslationTransportError && error.code === 'quota-exceeded') {
+                            const rejected = await d.attempts.markRejected(attempt.id, d.now(), 'gateway-rejected').catch(() => null);
+                            if (rejected?.status === 'REJECTED')
+                                return { ...(await targetSnapshot(capabilities, 'quota-exceeded')), diagnostic: error.diagnostic };
+                        }
                         await d.attempts.markUnknown(attempt.id, d.now()).catch(() => undefined);
-                        return targetSnapshot(capabilities, 'submission-unknown');
+                        return {
+                            ...(await targetSnapshot(capabilities, 'submission-unknown')),
+                            diagnostic: error instanceof VolatileTranslationTransportError ? error.diagnostic : undefined,
+                        };
                     }
+                    if (error instanceof Error && error.message === 'quota-exceeded') return targetSnapshot(capabilities, 'quota-exceeded');
                     const code =
                         error instanceof Error && ['unsupported-pair', 'storage-unavailable'].includes(error.message)
                             ? (error.message as RemoteProcessingErrorCode)

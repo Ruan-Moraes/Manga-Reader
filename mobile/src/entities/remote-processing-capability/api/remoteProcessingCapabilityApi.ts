@@ -5,6 +5,7 @@ import { type RemoteProcessingCapabilities, remoteProcessingCapabilitiesSchema }
 export async function getRemoteProcessingCapabilities(transport: RemoteGatewayTransport, signal?: AbortSignal): Promise<RemoteProcessingCapabilities> {
     const response = await transport.request('/v2/capabilities', { signal });
 
+    if (response.status === 429) throw new Error('quota-exceeded');
     if (response.status !== 200) throw new Error('capabilities-unavailable');
 
     const parsed = remoteProcessingCapabilitiesSchema.safeParse(response.body);

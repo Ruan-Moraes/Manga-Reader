@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useState, useSyncExternalStore } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { BottomSheet, ConfirmDialog } from '@/shared/ui';
 
+import { backgroundBatchManager } from '../model/backgroundBatchManager';
 import { ChapterBatchPanel } from './ChapterBatchPanel';
 
 interface Props {
@@ -23,12 +24,18 @@ export function BatchRetrySheet({ visible, onClose, closeLabel, title, descripti
     const { t } = useTranslation('remoteProcessing');
     const [busy, setBusy] = useState(false);
     const [confirmClose, setConfirmClose] = useState(false);
-    const requestClose = () => (busy ? setConfirmClose(true) : onClose());
+    const background = useSyncExternalStore(backgroundBatchManager.subscribe, backgroundBatchManager.getSnapshot, backgroundBatchManager.getSnapshot);
+    const requestClose = () => (busy && !(background.projectId === projectId && background.notificationActive) ? setConfirmClose(true) : onClose());
     return (
         <>
-            <BottomSheet visible={visible} onClose={requestClose} closeLabel={closeLabel} title={title} description={description}>
-                {visible ? <ChapterBatchPanel projectId={projectId} onActivityChange={setBusy} onOpenReader={onOpenReader} /> : null}
-            </BottomSheet>
+            {visible ? (
+                <ChapterBatchPanel projectId={projectId} onActivityChange={setBusy} onOpenReader={onOpenReader}
+                    renderLayout={(content, footer) => (
+                        <BottomSheet scroll={false} visible={visible} onClose={requestClose} closeLabel={closeLabel} title={title} description={description} footer={footer}>
+                            {content}
+                        </BottomSheet>
+                    )} />
+            ) : null}
             <ConfirmDialog
                 visible={confirmClose}
                 onClose={() => setConfirmClose(false)}

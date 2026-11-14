@@ -70,6 +70,12 @@ describe('MOB-FEAT-017 remote processing capabilities', () => {
         expect(remoteProcessingCapabilitiesSchema.safeParse({ ...fixture(), supportedPairs: [] }).success).toBe(false);
     });
 
+    it('accepts zero installation quota for the controlled gateway while requiring the global quota', () => {
+        const testCapabilities = { ...fixture(), dailyInstallationQuota: 0 };
+        expect(remoteProcessingCapabilitiesSchema.parse(testCapabilities).dailyInstallationQuota).toBe(0);
+        expect(remoteProcessingCapabilitiesSchema.safeParse({ ...testCapabilities, dailyGlobalQuota: 0 }).success).toBe(false);
+    });
+
     it('preserves the direction of the two Chinese variants in a partial matrix', () => {
         const parsed = remoteProcessingCapabilitiesSchema.parse({ ...fixture(), supportedPairs: [{ source: 'zh-Hant', target: 'zh-Hans' }] });
         expect(capabilitySupportsPair(parsed, 'zh-Hant', 'zh-Hans')).toBe(true);

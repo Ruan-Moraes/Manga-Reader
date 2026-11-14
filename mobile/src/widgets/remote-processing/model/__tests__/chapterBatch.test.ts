@@ -51,8 +51,10 @@ it('keeps going after a known failure and keeps earlier saved pages', async () =
     );
     const run = jest.fn(async (id: string) => ready(id.replace('attempt-', '')));
     const { controller, start } = setup(submit, run);
-    const result = await controller.run(base(['a', 'b', 'c']));
+    const onProgress = jest.fn();
+    const result = await controller.run(base(['a', 'b', 'c'], onProgress));
     expect(result.statuses).toEqual({ a: 'saved', b: 'failed', c: 'saved' });
+    expect(onProgress).toHaveBeenLastCalledWith(expect.objectContaining({ completed: 2, total: 3 }));
     expect(start.submit).toHaveBeenCalledTimes(3);
 });
 
@@ -62,20 +64,20 @@ it('marks an ambiguous submission as unknown, never resubmits it and continues',
     );
     const run = jest.fn(async (id: string) => ready(id.replace('attempt-', '')));
     const { controller, start } = setup(submit, run);
-    const result = await controller.run(base(['a', 'b']));
+    const onProgress = jest.fn();
+    const result = await controller.run(base(['a', 'b'], onProgress));
     expect(result.statuses).toEqual({ a: 'unknown', b: 'saved' });
+    expect(onProgress).toHaveBeenLastCalledWith(expect.objectContaining({ completed: 1, total: 2 }));
     expect(start.submit.mock.calls.filter(call => call[2] === 'a')).toHaveLength(1);
 });
 
-it('stops on a global condition and leaves the rest unsent (back to their stored state)', async () => {
-    const submit = jest.fn(async (_p: string, _s: AbortSignal | undefined, pageId: string) =>
-        pageId === 'b' ? failed('capabilities-unavailable', 'FAILED') : accepted(pageId),
-    );
+it.each(['capabilities-unavailable', 'quota-exceeded'] as const)('stops on %s and leaves the rest unsent', async error => {
+    const submit = jest.fn(async (_p: string, _s: AbortSignal | undefined, pageId: string) => (pageId === 'b' ? failed(error, 'REJECTED') : accepted(pageId)));
     const run = jest.fn(async (id: string) => ready(id.replace('attempt-', '')));
     const { controller } = setup(submit, run);
     const result = await controller.run(base(['a', 'b', 'c']));
     expect(result.statuses).toEqual({ a: 'saved', b: 'failed' });
-    expect(result.stoppedBy).toBe('capabilities-unavailable');
+    expect(result.stoppedBy).toBe(error);
 });
 
 it('stops without submitting more pages when aborted', async () => {
@@ -86,10 +88,45 @@ it('stops without submitting more pages when aborted', async () => {
     });
     const run = jest.fn(async (id: string) => ready(id.replace('attempt-', '')));
     const { controller } = setup(submit, run);
-    const result = await controller.run(base(['a', 'b'], undefined, abort.signal));
+    const onProgress = jest.fn();
+    const result = await controller.run(base(['a', 'b'], onProgress, abort.signal));
     expect(submit).toHaveBeenCalledTimes(1);
     expect(result.statuses.b).toBeUndefined();
-    expect(result.statuses.a).not.toBe('saved');
+    expect(result.statuses.a).toBe('unknown');
+    expect(onProgress).toHaveBeenLastCalledWith(expect.objectContaining({ cancelledPageIds: ['b'] }));
+});
+
+it('cancels selected pages before sending when interrupted at the first progress notification', async () => {
+    const abort = new AbortController();
+    const submit = jest.fn();
+    const { controller } = setup(submit, jest.fn());
+    const progress: ChapterBatchProgress[] = [];
+    await controller.run(
+        base(
+            ['a', 'b'],
+            value => {
+                progress.push(value);
+                abort.abort();
+            },
+            abort.signal,
+        ),
+    );
+    expect(submit).not.toHaveBeenCalled();
+    expect(progress.at(-1)).toMatchObject({ statuses: {}, cancelledPageIds: ['a', 'b'] });
+});
+
+it('cancels without submission when interrupted while recording consent', async () => {
+    const abort = new AbortController();
+    const submit = jest.fn();
+    const { controller, start } = setup(submit, jest.fn());
+    start.acceptConsent.mockImplementationOnce(async () => {
+        abort.abort();
+        return undefined as never;
+    });
+    const onProgress = jest.fn();
+    await controller.run(base(['a'], onProgress, abort.signal));
+    expect(submit).not.toHaveBeenCalled();
+    expect(onProgress).toHaveBeenLastCalledWith(expect.objectContaining({ statuses: {}, cancelledPageIds: ['a'] }));
 });
 
 it('treats an acquisition that never completes as unknown instead of resending', async () => {
@@ -104,9 +141,19 @@ it('treats an acquisition that never completes as unknown instead of resending',
 
 it('selects never-tried pages and known-failed pages, never ambiguous or ready ones', () => {
     const page = (id: string, status: string, position: number) => ({ id, status, position }) as never;
-    const pages = [page('a', 'DRAFT', 0), page('b', 'FAILED', 1), page('c', 'READY', 2), page('d', 'FAILED', 3), page('e', 'PROCESSING', 4)];
-    const attempts: Record<string, string> = { b: 'REJECTED', d: 'UNKNOWN' };
-    expect(selectBatchPages(pages, id => (attempts[id] ?? null) as never)).toEqual(['a', 'b']);
+    const pages = [
+        page('a', 'DRAFT', 0),
+        page('b', 'FAILED', 1),
+        page('c', 'READY', 2),
+        page('d', 'FAILED', 3),
+        page('e', 'PROCESSING', 4),
+        page('f', 'DRAFT', 5),
+        page('g', 'DRAFT', 6),
+        page('h', 'DRAFT', 7),
+        page('i', 'FAILED', 8),
+    ];
+    const attempts: Record<string, string> = { b: 'REJECTED', d: 'UNKNOWN', f: 'UNKNOWN', g: 'SUBMITTING', h: 'CREATED', i: 'CREATED' };
+    expect(selectBatchPages(pages, id => (attempts[id] ?? null) as never)).toEqual(['a', 'b', 'h', 'i']);
 });
 
 it('"Parar após a página atual" deixa a página em envio terminar e não envia as próximas (2026-11-10)', async () => {
