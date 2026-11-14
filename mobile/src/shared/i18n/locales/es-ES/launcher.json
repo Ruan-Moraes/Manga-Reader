@@ -1,5 +1,6 @@
 {
     "startup": {
+        "opening": "Abriendo Toonlira…",
         "settings": "Cargando tus preferencias…",
         "session": "Comprobando la sesión…",
         "error": "No se pudieron cargar las preferencias guardadas. La aplicación está usando valores seguros por ahora.",
@@ -90,7 +91,7 @@
             "exitCancel": "Continuar",
             "cancel": "Cancelar traducción",
             "leaveTitle": "¿Salir de la traducción?",
-            "leaveDescription": "Las páginas elegidas quedan guardadas como borrador en este dispositivo. Puedes continuar después o descartarlas ahora.",
+            "leaveDescription": "Guarda el borrador para retomar la traducción en este dispositivo.",
             "leaveKeep": "Salir y conservar borrador",
             "leaveDiscard": "Descartar páginas",
             "leaveStay": "Seguir aquí",
@@ -99,7 +100,9 @@
             "draftKeep": "Usar esas páginas",
             "draftDiscard": "Empezar de cero",
             "restartTitle": "¿Limpiar y empezar de nuevo?",
-            "restartDescription": "Las páginas elegidas y su orden se descartarán de este dispositivo.",
+            "restartDescription_one": "La página elegida se borrará de este dispositivo. No se puede deshacer.",
+            "restartDescription_other": "Las {{count}} páginas elegidas y su orden se borrarán de este dispositivo. No se puede deshacer.",
+            "restartKeep": "Mantener páginas",
             "restartConfirm": "Limpiar",
             "discarded": "Selección descartada",
             "backPlain": "Volver"
@@ -157,7 +160,6 @@
             "add": "Añadir imágenes",
             "confirm": "Confirmar orden",
             "confirmedAction": "Orden confirmado",
-            "editing": "Revisa el orden y confirma cuando esté listo.",
             "confirmedTitle": "Lote revisado",
             "confirmedDescription": "El orden está guardado. Si cambias las páginas, confirma el orden de nuevo.",
             "continue": "Continuar",
@@ -186,7 +188,7 @@
             "title": { "pages": "Elige las páginas", "languages": "Confirma los idiomas", "translate": "Traducir capítulo" },
             "description": {
                 "import": "Importa las imágenes del capítulo. Se quedan solo en este dispositivo hasta que traduzcas.",
-                "organize": "Toca una página para cambiar el orden o corregirla."
+                "organize": "Comprueba que las páginas estén en el orden de lectura del capítulo."
             },
             "steps": {
                 "pages": "Páginas",
@@ -200,6 +202,10 @@
                 "translate": "Revisa dónde se guarda y traduce el capítulo."
             },
             "resume": "Retomar el último capítulo",
+            "thumbnailPage": "Página {{page}}",
+            "searchWorks": "Buscar obras",
+            "clearSearch": "Borrar búsqueda",
+            "noMatchingWorks": "No se encontraron obras.",
             "summaryTitle": "Resumen",
             "summaryPages_one": "{{count}} página",
             "summaryPages_other": "{{count}} páginas",
@@ -209,6 +215,7 @@
             "saveIn": "Guardar en: {{name}}",
             "saveInMeta": "{{source}} → {{target}}",
             "noWork": "Sin obra",
+            "yourWorks": "Tus obras",
             "saveTitle": "Guardar en",
             "saveDescription": "Elige la obra que recibirá este capítulo.",
             "saveConfirm": "Usar esta obra",
@@ -261,10 +268,10 @@
             "badges": { "PENDING": "Validando", "VALID": "Lista", "INVALID": "Acción necesaria" },
             "summaryReady": "{{valid}} de {{total}} listas",
             "summaryIssues": "{{valid}} listas · {{invalid}} con problema",
+            "issueSummaryTitle": "Páginas con problemas",
+            "reviewIssues": "Ir a las páginas afectadas",
             "pendingCount_one": "1 página espera validación",
             "pendingCount_other": "{{count}} páginas esperan validación",
-            "issueAlert_one": "Corrige la página destacada para continuar.",
-            "issueAlert_other": "Corrige las {{count}} páginas destacadas para continuar.",
             "filterLabel": "Filtrar páginas",
             "filterIssues": "Con problema ({{count}})",
             "filterAll": "Todas ({{count}})",
@@ -273,17 +280,17 @@
             "openIssueHint": "Abre el problema y las acciones de esta página.",
             "openPreviewHint": "Abre una vista ampliada de la imagen.",
             "replace": "Sustituir archivo",
+            "replaceShort": "Sustituir",
+            "viewIssue": "Ver problema",
             "replacePageLabel": "Sustituir el archivo de la página {{page}}",
             "noIssues": "Ninguna página tiene problemas.",
             "fixIssues_one": "Corregir 1 imagen",
             "fixIssues_other": "Corregir {{count}} imágenes",
-            "showIssues_one": "Ver 1 imagen con problema",
-            "showIssues_other": "Ver {{count}} imágenes con problema",
             "removePage": "Quitar página",
             "removePageLabel": "Quitar la página {{page}} de la selección",
             "continue": "Continuar a revisión",
             "detailEyebrow": "PÁGINA {{page}}",
-            "detailIssueTitle": "Esta imagen necesita atención",
+            "detailIssueTitle": "Corregir imagen",
             "detailPreviewTitle": "Ver imagen",
             "close": "Cerrar",
             "previewUnavailable": "Vista previa no disponible",
@@ -315,7 +322,9 @@
                 "FILE_CHANGED": "archivo modificado",
                 "UNSUPPORTED_FORMAT": "formato no compatible",
                 "CORRUPTED": "archivo dañado",
-                "DIMENSIONS_UNSAFE": "tamaño o dimensiones fuera del límite"
+                "DIMENSIONS_UNSAFE": "tamaño o dimensiones fuera del límite",
+                "WHITE_OUTLINE": "contornos blancos",
+                "TRANSPARENT_BACKGROUND_FAILED": "fallo en el fondo transparente"
             },
             "errors": {
                 "prerequisite-required": "Confirma el orden y los idiomas antes de validar.",

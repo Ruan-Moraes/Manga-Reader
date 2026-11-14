@@ -8,7 +8,7 @@ import { navigateBackOrReplace, ROUTES } from '@/shared/navigation';
 import { FONTS, useTheme } from '@/shared/theme';
 import { AppText, Button, Card, Input, NavigationHeader, PageContainer, TextAction } from '@/shared/ui';
 
-const MASCOT_PENSANDO = require('../../../../assets/images/mascot-pensando.png');
+const MASCOT_PENSANDO = require('../../../../assets/images/mascot-pensando.webp');
 const SENT_ILLUSTRATION_SIZE = 132;
 const TEXT_MAX_WIDTH = 320;
 
@@ -71,8 +71,12 @@ export function ForgotPage() {
 
         return (
             <PageContainer scroll>
-                <View style={{ alignSelf: 'center', flex: 1, maxWidth: 440, paddingBottom: spacing.xl, paddingTop: spacing.sm, width: '100%' }}>
-                    <NavigationHeader backLabel={t('forgotPassword.backToLoginLink')} onBack={() => navigateBackOrReplace(ROUTES.AUTH.LOGIN)} />
+                <View style={{ alignSelf: 'center', flex: 1, maxWidth: 440, paddingBottom: spacing.xl, width: '100%' }}>
+                    <NavigationHeader
+                        backLabel={t('forgotPassword.backToLoginLink')}
+                        onBack={() => navigateBackOrReplace(ROUTES.AUTH.LOGIN)}
+                        title={t('navigation.forgot')}
+                    />
                     <View style={{ alignItems: 'center', gap: spacing.md, paddingVertical: spacing.lg }}>
                         <Image
                             testID="forgot-sent-illustration"
@@ -175,11 +179,14 @@ export function ForgotPage() {
                     alignSelf: 'center',
                     maxWidth: 440,
                     paddingBottom: spacing.xl,
-                    paddingTop: spacing.sm,
                     width: '100%',
                 }}
             >
-                <NavigationHeader backLabel={t('forgotPassword.backToLoginLink')} onBack={() => navigateBackOrReplace(ROUTES.AUTH.LOGIN)} />
+                <NavigationHeader
+                    backLabel={t('forgotPassword.backToLoginLink')}
+                    onBack={() => navigateBackOrReplace(ROUTES.AUTH.LOGIN)}
+                    title={t('navigation.forgot')}
+                />
 
                 <AuthHeader layout="minimal" eyebrow={t('forgotPassword.eyebrow')} title={t('forgotPassword.title')} sub={t('forgotPassword.subtitle')} />
 
@@ -188,6 +195,11 @@ export function ForgotPage() {
                     leading={<MRIcon name="mail" size={18} color={tokens.tertiary} />}
                     keyboardType="email-address"
                     autoCapitalize="none"
+                    // Offers the saved account and sends from the keyboard (revisão 2026-11-13).
+                    autoComplete="email"
+                    textContentType="username"
+                    returnKeyType="send"
+                    onSubmitEditing={() => void submit()}
                     value={email}
                     onChange={v => {
                         setEmail(v);

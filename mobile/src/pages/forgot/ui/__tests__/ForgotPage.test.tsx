@@ -72,4 +72,20 @@ describe('MOB-FEAT-061 Esqueci a senha', () => {
         expect(screen.getByText(i18n.t('auth:forgotPassword.sentExpiryUnknown'))).toBeOnTheScreen();
         expect(screen.getByText(/Se essa conta existir/)).toBeOnTheScreen();
     });
+
+    it('revisão 2026-11-13: título no cabeçalho, autofill do e-mail e tecla Enviar', async () => {
+        mockRequestReset.mockResolvedValue({ message: 'ok', expiresInSeconds: 900 });
+        renderPage();
+
+        expect(screen.getByRole('header', { name: 'Recuperar senha' })).toBeOnTheScreen();
+        const email = screen.getByPlaceholderText(i18n.t('auth:forgotPassword.emailPlaceholder'));
+        expect(email.props).toEqual(expect.objectContaining({ autoComplete: 'email', textContentType: 'username', returnKeyType: 'send' }));
+
+        fireEvent.changeText(email, 'leitor@toonlira.app');
+        fireEvent(email, 'submitEditing');
+
+        expect(await screen.findByRole('header', { name: 'Verifique seu e-mail' })).toBeOnTheScreen();
+        expect(mockRequestReset).toHaveBeenCalledWith('leitor@toonlira.app');
+        expect(screen.getByRole('header', { name: 'Recuperar senha' })).toBeOnTheScreen();
+    });
 });

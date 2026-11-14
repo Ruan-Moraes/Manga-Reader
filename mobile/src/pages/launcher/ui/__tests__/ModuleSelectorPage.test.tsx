@@ -3,6 +3,7 @@ import { act, fireEvent, render, screen } from '@testing-library/react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { useSessionStore } from '@/entities/session';
+import { useDeveloperMode } from '@/shared/config';
 import { darkTokens, ThemeProvider } from '@/shared/theme';
 
 import { ModuleSelectorPage } from '../ModuleSelectorPage';
@@ -73,6 +74,15 @@ describe('MOB-FEAT-059 Início no padrão do kit', () => {
         );
     });
 
+    it('esconde a imagem decorativa dos leitores de tela no iOS e no Android, sem descrição fixa', () => {
+        renderPage();
+
+        const hero = screen.getByTestId('launcher-hero', { includeHiddenElements: true });
+        expect(hero.props.accessibilityElementsHidden).toBe(true);
+        expect(hero.props.importantForAccessibility).toBe('no-hide-descendants');
+        expect(screen.queryByLabelText(/Garota lendo/, { includeHiddenElements: true })).toBeNull();
+    });
+
     it('AC-002 cartões com tile de 48, status real com ponto e altura mínima de 88', () => {
         renderPage();
 
@@ -120,6 +130,19 @@ describe('MOB-FEAT-059 Início no padrão do kit', () => {
         fireEvent.press(screen.getByRole('button', { name: 'Abrir biblioteca local' }));
 
         expect(mockPush).toHaveBeenCalledWith('/translation-library');
+    });
+
+    it('exibe o atalho de prévia apenas com o modo desenvolvedor ativado', () => {
+        renderPage();
+        const label = 'Abrir preview de novel (desenvolvimento)';
+        expect(screen.queryByText(label)).toBeNull();
+
+        act(() => useDeveloperMode.setState({ hydrated: true, enabled: true }));
+        try {
+            expect(screen.getByText(label)).toBeOnTheScreen();
+        } finally {
+            act(() => useDeveloperMode.setState({ enabled: false }));
+        }
     });
 
     it('AC-005 sem __DEV__ não mostra atalho de desenvolvimento', () => {

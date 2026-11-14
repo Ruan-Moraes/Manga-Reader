@@ -1,7 +1,9 @@
 import { StyleSheet } from 'react-native';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react-native';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react-native';
+import { getAnimatedStyle } from 'react-native-reanimated';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
+import { externalLinks } from '@/shared/config';
 import i18n from '@/shared/i18n';
 import { darkTokens, ThemeProvider } from '@/shared/theme';
 
@@ -59,12 +61,77 @@ describe('MOB-FEAT-061 Entrar', () => {
         fireEvent.press(screen.getByRole('button', { name: 'Entrar' }));
 
         await waitFor(() => expect(mockSignIn).toHaveBeenCalledWith({ email: 'leitor@toonlira.app', password: 'segredo123' }));
-        expect(await screen.findByText(i18n.t('auth:login.invalidCredentials'))).toBeOnTheScreen();
+        const alert = await screen.findByRole('alert');
+        expect(alert).toHaveTextContent(i18n.t('auth:login.invalidCredentials'));
+        expect(screen.getAllByRole('alert')).toEqual([alert]);
+    });
+
+    it('oferece preenchimento automático, envia pela tecla "Ir" e usa dica de texto na senha (revisão 2026-11-13)', async () => {
+        mockSignIn.mockResolvedValueOnce(undefined);
+        renderPage();
+
+        const email = screen.getByPlaceholderText('voce@email.com');
+        const password = screen.getByPlaceholderText('Sua senha');
+        expect(screen.queryByPlaceholderText('••••••••')).toBeNull();
+        expect(email.props).toEqual(expect.objectContaining({ autoComplete: 'email', textContentType: 'username' }));
+        expect(password.props).toEqual(expect.objectContaining({ autoComplete: 'current-password', textContentType: 'password', returnKeyType: 'go' }));
+
+        fireEvent(password, 'submitEditing');
+        expect(mockSignIn).not.toHaveBeenCalled();
+
+        fireEvent.changeText(email, 'leitor@toonlira.app');
+        fireEvent.changeText(password, 'segredo123');
+        fireEvent(password, 'submitEditing');
+        await waitFor(() => expect(mockSignIn).toHaveBeenCalledWith({ email: 'leitor@toonlira.app', password: 'segredo123' }));
+
+        const artwork = screen.getByTestId('auth-header-artwork', { includeHiddenElements: true });
+        expect(artwork.props).toEqual(expect.objectContaining({ accessibilityElementsHidden: true, importantForAccessibility: 'no-hide-descendants' }));
+    });
+
+    it('alterna a visibilidade da senha com feedback no ícone e fundo transparente', () => {
+        // O estilo animado do Reanimated só avança com o relógio controlado desde a montagem.
+        jest.useFakeTimers();
+        renderPage();
+
+        const showPassword = screen.getByRole('button', { name: i18n.t('auth:resetPassword.showPassword') });
+        const password = screen.getByPlaceholderText(i18n.t('auth:login.passwordPlaceholder'));
+
+        expect(password).toHaveProp('secureTextEntry', true);
+        fireEvent(showPassword, 'pressIn');
+        act(() => jest.advanceTimersByTime(200));
+        // Ícone sem fundo: o toque responde pela opacidade e o fundo continua transparente (alfa 0).
+        expect(getAnimatedStyle(showPassword)).toEqual(expect.objectContaining({ opacity: 0.6, backgroundColor: expect.stringMatching(/, 0\)$/) }));
+        fireEvent(showPassword, 'pressOut');
+        act(() => jest.advanceTimersByTime(200));
+        jest.useRealTimers();
+        fireEvent.press(showPassword);
+        expect(password).toHaveProp('secureTextEntry', false);
+        expect(screen.getByRole('button', { name: i18n.t('auth:resetPassword.hidePassword') })).toBeOnTheScreen();
     });
 
     it('AC-005 não mostra controles sem comportamento aprovado', () => {
         renderPage();
 
         expect(screen.queryByText(i18n.t('auth:login.rememberSession'))).toBeNull();
+    });
+
+    it('MOB-FEAT-064 AC-001 links legais abrem no navegador e o formulário continua preenchido', async () => {
+        jest.spyOn(externalLinks, 'read').mockReturnValue({
+            terms: 'https://toonlira-rm.web.app/legal/terms',
+            privacy: 'https://toonlira-rm.web.app/legal/privacy',
+        });
+        const open = jest.spyOn(externalLinks, 'open').mockResolvedValue();
+        mockSignIn.mockResolvedValue(undefined);
+        renderPage();
+        fireEvent.changeText(screen.getByPlaceholderText('voce@email.com'), 'leitor@toonlira.app');
+        fireEvent.changeText(screen.getByPlaceholderText('Sua senha'), 'segredo123');
+
+        await act(async () => fireEvent.press(screen.getByRole('link', { name: 'Termos de uso' })));
+        await act(async () => fireEvent.press(screen.getByRole('link', { name: 'Política de privacidade' })));
+        expect(open.mock.calls).toEqual([['https://toonlira-rm.web.app/legal/terms'], ['https://toonlira-rm.web.app/legal/privacy']]);
+
+        fireEvent.press(screen.getByRole('button', { name: 'Entrar' }));
+        await waitFor(() => expect(mockSignIn).toHaveBeenCalledWith({ email: 'leitor@toonlira.app', password: 'segredo123' }));
+        jest.restoreAllMocks();
     });
 });

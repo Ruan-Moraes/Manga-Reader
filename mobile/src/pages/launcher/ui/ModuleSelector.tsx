@@ -27,16 +27,19 @@ interface ModuleSelectorProps {
 }
 
 export function ModuleSelector({ authenticated, copy, onOpenModule, onOpenSettings, onOpenLibrary, recovery }: ModuleSelectorProps) {
-    const { radii, spacing } = useTheme();
+    const { spacing } = useTheme();
 
     const responsive = useResponsiveLayout();
+
+    // 2026-11-14: logo quadrado de 36 com cantos de ícone de app (~25% do lado), recortado na própria imagem.
+    const logoSize = 36;
 
     return (
         <View
             style={{
                 alignSelf: 'center',
                 flex: 1,
-                gap: spacing.lg,
+                gap: spacing.md,
                 maxWidth: responsive.contentMaxWidth,
                 paddingBottom: spacing.xl,
                 paddingTop: spacing.md,
@@ -44,7 +47,7 @@ export function ModuleSelector({ authenticated, copy, onOpenModule, onOpenSettin
             }}
         >
             <View style={{ alignItems: 'center', flexDirection: 'row' }}>
-                <Image source={LOGO} style={{ borderRadius: radii.sm, height: 34, width: 34 }} contentFit="cover" />
+                <Image source={LOGO} style={{ borderRadius: logoSize / 4, height: logoSize, width: logoSize }} contentFit="cover" />
                 <AppText variant="title" style={{ flex: 1, marginLeft: spacing.sm }}>
                     Toonlira
                 </AppText>

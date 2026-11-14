@@ -2,14 +2,18 @@ import { useState } from 'react';
 import { View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-import { AuthCheckbox, AuthFooter, AuthHeader, MRIcon, signUp, StrengthMeter } from '@/features/authenticate';
+import { AuthCheckbox, AuthFooter, AuthHeader, LegalLink, LegalLinkError, MRIcon, signUp, StrengthMeter, useLegalLinks } from '@/features/authenticate';
 import { navigateBackOrReplace, ROUTES } from '@/shared/navigation';
 import { useTheme } from '@/shared/theme';
 import { AppText, Button, IconButton, Input, NavigationHeader, PageContainer } from '@/shared/ui';
 
+/** MOB-FEAT-068: one `@`, no spaces and a dot in the domain; the server stays the final check. */
+const EMAIL_FORMAT = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 export function RegisterPage() {
     const { metrics, spacing, tokens } = useTheme();
     const { t } = useTranslation('auth');
+    const legal = useLegalLinks();
 
     const [email, setEmail] = useState('');
     const [name, setName] = useState('');
@@ -33,9 +37,12 @@ export function RegisterPage() {
         if (loading) return;
         const next: Record<string, string> = {};
         if (!email.trim()) next.email = t('validation.emailRequired');
+        else if (!EMAIL_FORMAT.test(email.trim())) next.email = t('validation.emailInvalid');
         if (!name.trim()) next.name = t('validation.nameRequired');
         if (pw.length < 8) next.pw = t('validation.passwordMin');
-        if (!pw2 || pw2 !== pw) next.pw2 = t('validation.passwordsDoNotMatch');
+        // MOB-FEAT-068: the confirmation only complains once the password itself is valid.
+        else if (!pw2) next.pw2 = t('validation.confirmPasswordRequired');
+        else if (pw2 !== pw) next.pw2 = t('validation.passwordsDoNotMatch');
         if (!terms) next.terms = t('signUp.termsError');
         setErrors(next);
         if (Object.keys(next).length) return;
@@ -57,11 +64,10 @@ export function RegisterPage() {
                     alignSelf: 'center',
                     maxWidth: 440,
                     paddingBottom: spacing.xl,
-                    paddingTop: spacing.sm,
                     width: '100%',
                 }}
             >
-                <NavigationHeader backLabel={t('navigation.back')} onBack={() => navigateBackOrReplace(ROUTES.AUTH.LOGIN)} />
+                <NavigationHeader backLabel={t('navigation.back')} onBack={() => navigateBackOrReplace(ROUTES.AUTH.LOGIN)} title={t('navigation.register')} />
                 <AuthHeader eyebrow={t('signUp.eyebrow')} title={t('signUp.title')} sub={t('signUp.subtitle')} />
 
                 <Input
@@ -69,6 +75,9 @@ export function RegisterPage() {
                     leading={<MRIcon name="mail" size={18} color={tokens.tertiary} />}
                     keyboardType="email-address"
                     autoCapitalize="none"
+                    // Autofill hints: the password manager saves the new account (revisão 2026-11-13).
+                    autoComplete="email"
+                    textContentType="username"
                     value={email}
                     onChange={v => {
                         setEmail(v);
@@ -88,6 +97,8 @@ export function RegisterPage() {
                     }}
                     placeholder={t('signUp.namePlaceholder')}
                     autoCapitalize="words"
+                    autoComplete="name"
+                    textContentType="name"
                     error={errors.name}
                 />
 
@@ -95,6 +106,8 @@ export function RegisterPage() {
                     label={t('signUp.passwordLabel')}
                     leading={<MRIcon name="lock" size={18} color={tokens.tertiary} />}
                     secureTextEntry={!showPw}
+                    autoComplete="new-password"
+                    textContentType="newPassword"
                     value={pw}
                     onChange={v => {
                         setPw(v);
@@ -104,6 +117,7 @@ export function RegisterPage() {
                     error={errors.pw}
                     trailing={
                         <IconButton
+                            bare
                             icon={showPw ? 'eye-off-outline' : 'eye-outline'}
                             accessibilityLabel={showPw ? t('resetPassword.hidePassword') : t('resetPassword.showPassword')}
                             onPress={() => setShowPw(s => !s)}
@@ -116,6 +130,10 @@ export function RegisterPage() {
                     label={t('signUp.confirmPasswordLabel')}
                     leading={<MRIcon name="lock" size={18} color={tokens.tertiary} />}
                     secureTextEntry={!showPw}
+                    autoComplete="new-password"
+                    textContentType="newPassword"
+                    returnKeyType="go"
+                    onSubmitEditing={() => void submit()}
                     value={pw2}
                     onChange={v => {
                         setPw2(v);
@@ -135,9 +153,9 @@ export function RegisterPage() {
                     }}
                     error={errors.terms}
                 >
-                    <AppText tone={errors.terms ? 'danger' : 'muted'}>
-                        {t('signUp.termsPrefix')} {t('signUp.termsLinkLabel')} {t('signUp.termsAnd')} {t('signUp.privacyLinkLabel')}.
-                    </AppText>
+                    {/* Only the policy names are links (revisão 2026-11-13); the rest of the sentence ticks the box. */}
+                    {t('signUp.termsPrefix')} <LegalLink legal={legal} kind="terms" label={t('signUp.termsLinkLabel')} /> {t('signUp.termsAnd')}{' '}
+                    <LegalLink legal={legal} kind="privacy" label={t('signUp.privacyLinkLabel')} />.
                 </AuthCheckbox>
 
                 {errors.terms && (
@@ -151,6 +169,8 @@ export function RegisterPage() {
                         </AppText>
                     </View>
                 )}
+
+                <LegalLinkError legal={legal} />
 
                 {errors.root && (
                     <View accessibilityRole="alert" style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.sm, marginBottom: spacing.md }}>

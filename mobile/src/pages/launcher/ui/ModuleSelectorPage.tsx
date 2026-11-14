@@ -1,17 +1,24 @@
 import { useState } from 'react';
+import { View } from 'react-native';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 
 import { useSessionStore } from '@/entities/session';
 import { useSettingsStore } from '@/features/manage-settings';
+import { useDeveloperModeEnabled } from '@/shared/config';
 import { ROUTES } from '@/shared/navigation';
+import { useTheme } from '@/shared/theme';
 import { AppText, BottomSheet, Button, PageContainer } from '@/shared/ui';
 
 import type { AppModuleId } from '../model/modules';
 import { ModuleSelector } from './ModuleSelector';
 
 export function ModuleSelectorPage() {
+    const developerModeEnabled = useDeveloperModeEnabled();
+
     const { t } = useTranslation('launcher');
+
+    const { spacing } = useTheme();
 
     const authenticated = useSessionStore(state => state.isAuthenticated);
     const localError = useSettingsStore(state => state.localError);
@@ -37,6 +44,7 @@ export function ModuleSelectorPage() {
 
             return;
         }
+
         router.push({ pathname: ROUTES.AUTH.LOGIN, params: { returnTo: ROUTES.PLATFORM.STATUS } } as never);
     };
 
@@ -71,7 +79,7 @@ export function ModuleSelectorPage() {
                 onOpenLibrary={() => router.push(ROUTES.TRANSLATION_LIBRARY as never)}
                 recovery={localError ? { message: t('startup.error'), action: t('startup.retry'), onRetry: () => void retryLocalHydration() } : undefined}
             />
-            {__DEV__ ? (
+            {__DEV__ && developerModeEnabled ? (
                 <Button variant="outline" onPress={() => router.push(ROUTES.READER_PREVIEW_NOVEL as never)}>
                     {t('selector.novelPreview')}
                 </Button>
@@ -84,10 +92,12 @@ export function ModuleSelectorPage() {
                 testIDs={{ sheet: 'platform-sheet', backdrop: 'platform-sheet-backdrop', layer: 'platform-sheet-layer' }}
             >
                 <AppText tone="muted">{t('platform.constructionDescription')}</AppText>
-                <Button onPress={enterPlatform}>{t('platform.loginAction')}</Button>
-                <Button variant="ghost" onPress={() => setPlatformSheetOpen(false)}>
-                    {t('platform.notNow')}
-                </Button>
+                <View style={{ gap: spacing.xs }}>
+                    <Button onPress={enterPlatform}>{t('platform.loginAction')}</Button>
+                    <Button variant="ghost" onPress={() => setPlatformSheetOpen(false)}>
+                        {t('platform.notNow')}
+                    </Button>
+                </View>
             </BottomSheet>
         </PageContainer>
     );

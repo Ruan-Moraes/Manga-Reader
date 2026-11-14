@@ -20,6 +20,7 @@ interface AppModuleCardProps {
 
 export function AppModuleCard({ module, title, description, availabilityLabel, actionLabel, onPress }: AppModuleCardProps) {
     const { metrics, radii, spacing, tokens } = useTheme();
+
     const [focused, setFocused] = useState(false);
     const [pressed, setPressed] = useState(false);
 

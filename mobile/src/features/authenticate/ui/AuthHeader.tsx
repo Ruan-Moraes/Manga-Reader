@@ -5,8 +5,8 @@ import { useTranslation } from 'react-i18next';
 import { useTheme } from '@/shared/theme';
 import { AppText } from '@/shared/ui';
 
-const LOGIN_HERO = require('../../../../assets/images/login-hero.png');
-const LOGIN_HERO_LIGHT = require('../../../../assets/images/login-hero-light.png');
+const LOGIN_HERO = require('../../../../assets/images/login-hero.webp');
+const LOGIN_HERO_LIGHT = require('../../../../assets/images/login-hero-light.webp');
 
 const ARTWORK_HEIGHT = 152;
 
@@ -31,7 +31,9 @@ export function AuthHeader({ layout = 'mascote', artwork = false, eyebrow, title
             {showArtwork ? (
                 <View
                     testID="auth-header-artwork"
+                    // Decorative: hidden from VoiceOver (iOS) and TalkBack (Android) (revisão 2026-11-13).
                     accessibilityElementsHidden
+                    importantForAccessibility="no-hide-descendants"
                     style={{
                         backgroundColor: tokens.heroSurface,
                         borderColor: tokens.separator,

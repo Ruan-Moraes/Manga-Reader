@@ -1,5 +1,6 @@
 {
     "startup": {
+        "opening": "Opening Toonlira…",
         "settings": "Loading your preferences…",
         "session": "Checking your session…",
         "error": "Saved preferences could not be loaded. The app is using safe values for now.",
@@ -86,7 +87,7 @@
             "exitCancel": "Stay",
             "cancel": "Cancel translation",
             "leaveTitle": "Leave translation?",
-            "leaveDescription": "The chosen pages stay saved as a draft on this device. You can continue later or discard them now.",
+            "leaveDescription": "Keep the draft to resume your translation on this device.",
             "leaveKeep": "Leave and keep draft",
             "leaveDiscard": "Discard pages",
             "leaveStay": "Stay here",
@@ -95,7 +96,9 @@
             "draftKeep": "Use those pages",
             "draftDiscard": "Start over",
             "restartTitle": "Clear and start over?",
-            "restartDescription": "The chosen pages and their order will be discarded from this device.",
+            "restartDescription_one": "The chosen page will be removed from this device. This can't be undone.",
+            "restartDescription_other": "The {{count}} chosen pages and their order will be removed from this device. This can't be undone.",
+            "restartKeep": "Keep pages",
             "restartConfirm": "Clear",
             "discarded": "Selection discarded",
             "backPlain": "Back"
@@ -153,7 +156,6 @@
             "add": "Add images",
             "confirm": "Confirm order",
             "confirmedAction": "Order confirmed",
-            "editing": "Review the order and confirm when it is ready.",
             "confirmedTitle": "Batch reviewed",
             "confirmedDescription": "The order is saved. If you change the pages, confirm the order again.",
             "continue": "Continue",
@@ -182,7 +184,7 @@
             "title": { "pages": "Choose the pages", "languages": "Confirm the languages", "translate": "Translate chapter" },
             "description": {
                 "import": "Import the chapter images. They stay only on this device until you translate.",
-                "organize": "Tap a page to change the order or fix it."
+                "organize": "Check that the pages are in the chapter’s reading order."
             },
             "steps": {
                 "pages": "Pages",
@@ -196,6 +198,10 @@
                 "translate": "Check where it is saved and translate the chapter."
             },
             "resume": "Resume last chapter",
+            "thumbnailPage": "Page {{page}}",
+            "searchWorks": "Search works",
+            "clearSearch": "Clear search",
+            "noMatchingWorks": "No matching works.",
             "summaryTitle": "Summary",
             "summaryPages_one": "{{count}} page",
             "summaryPages_other": "{{count}} pages",
@@ -205,6 +211,7 @@
             "saveIn": "Save in: {{name}}",
             "saveInMeta": "{{source}} → {{target}}",
             "noWork": "No work",
+            "yourWorks": "Your works",
             "saveTitle": "Save in",
             "saveDescription": "Choose the work that will receive this chapter.",
             "saveConfirm": "Use this work",
@@ -257,10 +264,10 @@
             "badges": { "PENDING": "Validating", "VALID": "Ready", "INVALID": "Action needed" },
             "summaryReady": "{{valid}} of {{total}} ready",
             "summaryIssues": "{{valid}} ready · {{invalid}} with an issue",
+            "issueSummaryTitle": "Pages with issues",
+            "reviewIssues": "Go to affected pages",
             "pendingCount_one": "1 page is waiting for validation",
             "pendingCount_other": "{{count}} pages are waiting for validation",
-            "issueAlert_one": "Fix the highlighted page to continue.",
-            "issueAlert_other": "Fix the {{count}} highlighted pages to continue.",
             "filterLabel": "Filter pages",
             "filterIssues": "With issues ({{count}})",
             "filterAll": "All ({{count}})",
@@ -269,17 +276,17 @@
             "openIssueHint": "Opens this page's issue and actions.",
             "openPreviewHint": "Opens a larger image preview.",
             "replace": "Replace file",
+            "replaceShort": "Replace",
+            "viewIssue": "View issue",
             "replacePageLabel": "Replace the file for page {{page}}",
             "noIssues": "No pages have issues.",
             "fixIssues_one": "Fix 1 image",
             "fixIssues_other": "Fix {{count}} images",
-            "showIssues_one": "Show 1 image with a problem",
-            "showIssues_other": "Show {{count}} images with a problem",
             "removePage": "Remove page",
             "removePageLabel": "Remove page {{page}} from the selection",
             "continue": "Continue to review",
             "detailEyebrow": "PAGE {{page}}",
-            "detailIssueTitle": "This image needs attention",
+            "detailIssueTitle": "Fix image",
             "detailPreviewTitle": "View image",
             "close": "Close",
             "previewUnavailable": "Preview unavailable",
@@ -311,7 +318,9 @@
                 "FILE_CHANGED": "file changed",
                 "UNSUPPORTED_FORMAT": "unsupported format",
                 "CORRUPTED": "corrupted file",
-                "DIMENSIONS_UNSAFE": "size or dimensions exceed the limit"
+                "DIMENSIONS_UNSAFE": "size or dimensions exceed the limit",
+                "WHITE_OUTLINE": "white outlines",
+                "TRANSPARENT_BACKGROUND_FAILED": "transparent background failed"
             },
             "errors": {
                 "prerequisite-required": "Confirm the order and languages before validation.",

@@ -68,6 +68,12 @@
         ],
         "experiments": {
             "typedRoutes": true
+        },
+        "extra": {
+            "externalLinks": {
+                "terms": "https://toonlira-rm.web.app/legal/terms",
+                "privacy": "https://toonlira-rm.web.app/legal/privacy"
+            }
         }
     }
 }
