@@ -40,6 +40,7 @@ export function PageContainer({ children, scroll = false, padded = true, stickyF
             >
                 <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
                     <ScrollView
+                        showsHorizontalScrollIndicator={false}
                         automaticallyAdjustKeyboardInsets
                         style={{ flex: 1 }}
                         contentContainerStyle={{ flexGrow: 1 }}

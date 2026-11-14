@@ -78,15 +78,11 @@
     "forum": {
         "comingSoon": "Próximamente: temas de la comunidad"
     },
-    "modal": {
-        "title": "Modal"
-    },
     "user": {
         "logout": "Cerrar sesión"
     },
     "dataControls": {
         "title": "Datos y almacenamiento",
-        "storageLabel": "Uso temporal",
         "sections": {
             "device": { "title": "En este dispositivo", "description": "Libera espacio sin eliminar tu cuenta ni tus preferencias." },
             "account": { "title": "Datos de la cuenta", "description": "Exporta tu información o elimina la actividad rastreada." }
@@ -100,8 +96,7 @@
             "offline": { "title": "Datos sin conexión eliminados", "description": "Los proyectos y archivos locales se borraron de este dispositivo." },
             "history": { "title": "Historial borrado", "description": "Se quitaron los capítulos leídos y las actividades. Tu posición actual se mantuvo." }
         },
-        "storageUsage": "{{size}} en {{scope}}",
-        "storageScopes": { "temporaryExports": "exportaciones temporales controladas por la aplicación" },
+        "storageScopes": { "temporaryExports": "Exportaciones temporales" },
         "cache": {
             "action": "Limpiar caché",
             "description": "Elimina imágenes y datos que se pueden descargar de nuevo.",
@@ -130,6 +125,7 @@
             "action": "Limpiar datos sin conexión ({{size}})",
             "description": "Elimina proyectos y archivos locales registrados en este dispositivo.",
             "empty": "No hay proyectos ni archivos sin conexión almacenados en este dispositivo.",
+            "measureError": "No se pudieron medir los datos sin conexión de este dispositivo.",
             "confirmTitle": "¿Limpiar datos sin conexión?",
             "confirmBody": "Los proyectos y archivos sin conexión registrados se eliminarán de este dispositivo.",
             "projects": "proyectos y archivos sin conexión"
@@ -168,6 +164,7 @@
     },
     "privacy": {
         "title": "Privacidad y contenido sensible",
+        "loading": "Cargando tus preferencias de privacidad…",
         "comments": "Comentarios",
         "history": "Historial",
         "library": "Biblioteca",
@@ -254,7 +251,7 @@
                     "DARK": "Fondo oscuro para ambientes con poca luz."
                 },
                 "options": {
-                    "SYSTEM": "Seguir el sistema",
+                    "SYSTEM": "Sistema",
                     "LIGHT": "Claro",
                     "DARK": "Oscuro"
                 }

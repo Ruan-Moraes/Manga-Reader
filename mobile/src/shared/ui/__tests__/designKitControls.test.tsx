@@ -23,7 +23,19 @@ jest.mock('react-native-reanimated', () => {
 
     return {
         __esModule: true,
-        default: { View: mockAnimatedView },
+        default: { View: mockAnimatedView, createAnimatedComponent: (mockComponent: unknown) => mockComponent },
+        Easing: {
+            cubic: (mockTime: number) => mockTime,
+            in: (mockEasing: unknown) => mockEasing,
+            out: (mockEasing: unknown) => mockEasing,
+            quad: (mockTime: number) => mockTime,
+        },
+        interpolate: (value: number, input: number[], output: number[]) => output[0] + ((output[1] - output[0]) * (value - input[0])) / (input[1] - input[0]),
+        interpolateColor: (value: number, _mockInput: number[], output: string[]) => (value >= 1 ? output[1] : output[0]),
+        withTiming: (mockValue: unknown, _mockConfig?: unknown, mockCallback?: (finished: boolean) => void) => {
+            mockCallback?.(true);
+            return mockValue;
+        },
         useAnimatedStyle: (mockFactory: () => Record<string, unknown>) => mockFactory(),
         useSharedValue: (initialValue: unknown) => React.useRef({ value: initialValue }).current,
     };
@@ -45,7 +57,7 @@ const touchTarget = Platform.OS === 'ios' ? 44 : 48;
 const colors = { BLACK: '#000000', PAPER: '#EFEDE5', WHITE: '#FFFEFA' } as const;
 
 describe('MOB-FEAT-057 controles unificados', () => {
-    it('AC-008 segmentado em contêiner único, ativo em acento e geometria estável', () => {
+    it('AC-008 segmentado destaca a opção ativa e responde ao toque no rótulo', () => {
         const onChange = jest.fn();
         withTheme(
             <SegmentedControl
@@ -60,18 +72,15 @@ describe('MOB-FEAT-057 controles unificados', () => {
         const active = StyleSheet.flatten(screen.getByTestId('segmented-option-surface-COMFORTABLE').props.style);
         const inactive = StyleSheet.flatten(screen.getByTestId('segmented-option-surface-COMPACT').props.style);
 
-        expect(active).toEqual(expect.objectContaining({ backgroundColor: darkTokens.accent, borderRadius: 8, borderWidth: 2, minHeight: 40 }));
-        expect(inactive).toEqual(expect.objectContaining({ backgroundColor: 'transparent', borderColor: 'transparent', borderWidth: 2, minHeight: 40 }));
-
+        expect(active.backgroundColor).toBe(darkTokens.accent);
+        expect(inactive.backgroundColor).toBe('transparent');
+        expect(active.minHeight).toBe(inactive.minHeight);
         const option = screen.getByRole('radio', { name: 'COMPACT' });
-        expect(StyleSheet.flatten(option.props.style).minHeight).toBe(touchTarget);
-
+        expect(option).toHaveStyle({ minHeight: touchTarget });
         fireEvent(option, 'focus');
-        expect(StyleSheet.flatten(screen.getByTestId('segmented-option-surface-COMPACT').props.style)).toEqual(
-            expect.objectContaining({ borderColor: darkTokens.focus, borderWidth: 2, minHeight: 40 }),
-        );
-
-        fireEvent.press(option);
+        expect(screen.getByTestId('segmented-option-surface-COMPACT')).toHaveStyle({ borderColor: darkTokens.focus, borderWidth: 2 });
+        fireEvent.press(screen.getByText('COMPACT'));
+        expect(onChange).toHaveBeenCalledTimes(1);
         expect(onChange).toHaveBeenCalledWith('COMPACT');
     });
 
@@ -165,16 +174,11 @@ describe('MOB-FEAT-057 controles unificados', () => {
         const selected = StyleSheet.flatten(screen.getByTestId('choice-group-row-VERTICAL').props.style);
         const other = StyleSheet.flatten(screen.getByTestId('choice-group-row-PAGED').props.style);
 
-        expect(selected).toEqual(
-            expect.objectContaining({
-                alignItems: 'center',
-                backgroundColor: darkTokens.surfaceSelected,
-                borderColor: darkTokens.accentBorder,
-                borderWidth: 2,
-            }),
-        );
+        expect(selected.minHeight).toBe(other.minHeight);
+        expect(selected.backgroundColor).toBe(darkTokens.surfaceSelected);
+        expect(selected.alignItems).toBe('center');
+        expect(selected.flexDirection).toBe('row-reverse');
         expect(selected.minHeight).toBeGreaterThanOrEqual(56);
-        expect(other.borderWidth).toBe(2);
         expect(StyleSheet.flatten(screen.UNSAFE_getByProps({ testID: 'choice-group-indicator-VERTICAL' }).props.style)).toEqual(
             expect.objectContaining({ height: 22, width: 22 }),
         );

@@ -1,9 +1,10 @@
 import { useState } from 'react';
-import { Pressable, type PressableProps } from 'react-native';
+import { type PressableProps } from 'react-native';
 
 import { useTheme } from '@/shared/theme';
 
 import { Icon, type IconName } from './Icon';
+import { AnimatedPressable, usePressFeedback } from './usePressFeedback';
 
 interface IconButtonProps extends Omit<PressableProps, 'children' | 'style'> {
     icon: IconName;
@@ -31,11 +32,25 @@ export function IconButton({
     const color = tone === 'danger' ? tokens.danger : tone === 'inverse' ? tokens.inverseText : tone === 'default' ? tokens.text : tokens.accentText;
 
     const [focused, setFocused] = useState(false);
-    const [pressed, setPressed] = useState(false);
+    const restingBackground = surface === 'overlay' ? tokens.overlay : surface === 'surface' ? tokens.surface : 'transparent';
+    // Sem fundo (`bare`): o toque responde pela opacidade; o hover desenha um círculo atrás do ícone.
+    const feedback = usePressFeedback(
+        {
+            background: restingBackground,
+            pressedBackground: bare ? restingBackground : tokens.surfacePressed,
+            hoverBackground: tokens.surfaceHover,
+            pressedScale: bare || disabled ? 1 : 0.97,
+            pressedOpacity: bare ? 0.6 : 1,
+            opacity: disabled ? 0.56 : 1,
+            disabled: !!disabled,
+        },
+        props,
+    );
 
     return (
-        <Pressable
+        <AnimatedPressable
             {...props}
+            {...feedback.handlers}
             accessibilityLabel={accessibilityLabel}
             accessibilityRole="button"
             accessibilityState={{ disabled: !!disabled }}
@@ -48,29 +63,21 @@ export function IconButton({
                 setFocused(false);
                 props.onBlur?.(event);
             }}
-            onPressIn={event => {
-                setPressed(true);
-                props.onPressIn?.(event);
-            }}
-            onPressOut={event => {
-                setPressed(false);
-                props.onPressOut?.(event);
-            }}
             hitSlop={4}
-            style={{
-                alignItems: 'center',
-                backgroundColor:
-                    pressed && !bare ? tokens.surfacePressed : surface === 'overlay' ? tokens.overlay : surface === 'surface' ? tokens.surface : 'transparent',
-                borderColor: focused ? tokens.focus : surface === 'surface' ? tokens.separator : 'transparent',
-                borderRadius: radii.control,
-                borderWidth: focused ? 2 : surface === 'surface' ? 1 : 0,
-                justifyContent: 'center',
-                minHeight: minimumTouchTarget,
-                minWidth: minimumTouchTarget,
-                opacity: disabled ? 0.56 : bare && pressed ? 0.6 : 1,
-            }}
+            style={[
+                {
+                    alignItems: 'center',
+                    borderColor: focused ? tokens.focus : surface === 'surface' ? tokens.separator : 'transparent',
+                    borderRadius: bare ? radii.pill : radii.control,
+                    borderWidth: focused ? 2 : surface === 'surface' ? 1 : 0,
+                    justifyContent: 'center',
+                    minHeight: minimumTouchTarget,
+                    minWidth: minimumTouchTarget,
+                },
+                feedback.animatedStyle,
+            ]}
         >
             <Icon name={icon} size={iconSize} color={color} />
-        </Pressable>
+        </AnimatedPressable>
     );
 }

@@ -6,7 +6,7 @@ import { darkTokens, ThemeProvider } from '@/shared/theme';
 
 import { EmptyState } from '../EmptyState';
 import { ListSkeleton } from '../ListSkeleton';
-import { LoadingBlock } from '../LoadingBlock';
+import { LOADING_SHOW_DELAY_MS, LoadingBlock } from '../LoadingBlock';
 import { StateView } from '../StateView';
 
 jest.mock('react-native/Libraries/Utilities/useWindowDimensions', () => ({
@@ -146,6 +146,35 @@ describe('MOB-FEAT-057 carregamento', () => {
         expect(block.props.role).toBe('status');
         expect(block.props.accessibilityLabel).toBe('Carregando capítulo');
         expect(screen.getByText('Carregando capítulo')).toBeOnTheScreen();
+    });
+
+    it('LoadingBlock só aparece depois do atraso, com fade de motion.base e pontos pulsando', () => {
+        const timing = jest.spyOn(Animated, 'timing');
+        const delay = jest.spyOn(Animated, 'delay');
+        withTheme(<LoadingBlock label="Carregando capítulo" />);
+        const opacity = () => StyleSheet.flatten(screen.getByTestId('loading-block-content').props.style).opacity;
+
+        expect(screen.getByTestId('loading-block').props.accessibilityLabel).toBe('Carregando capítulo');
+        expect(screen.getByTestId('loading-block-dots').children).toHaveLength(3);
+        expect(delay).toHaveBeenCalledWith(LOADING_SHOW_DELAY_MS);
+        expect(timing).toHaveBeenCalledWith(expect.anything(), expect.objectContaining({ toValue: 1, duration: 200 }));
+        expect(timing).toHaveBeenCalledWith(expect.anything(), expect.objectContaining({ duration: 600 }));
+        // Começa invisível; o fade roda no driver nativo, que não reflete nas props do Jest.
+        expect(opacity()).toBe(0);
+        timing.mockRestore();
+        delay.mockRestore();
+    });
+
+    it('LoadingBlock com movimento reduzido mantém o atraso, sem fade e com pontos parados', () => {
+        const timing = jest.spyOn(Animated, 'timing');
+        const delay = jest.spyOn(Animated, 'delay');
+        withTheme(<LoadingBlock label="Carregando" />, true);
+
+        expect(delay).toHaveBeenCalledWith(LOADING_SHOW_DELAY_MS);
+        expect(timing).toHaveBeenCalledTimes(1);
+        expect(timing).toHaveBeenCalledWith(expect.anything(), expect.objectContaining({ toValue: 1, duration: 0 }));
+        timing.mockRestore();
+        delay.mockRestore();
     });
 
     it('AC-006 ListSkeleton desenha linhas de 64 com rótulo acessível', () => {

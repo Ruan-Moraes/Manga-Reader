@@ -7,6 +7,7 @@ import {
     lightHighContrastTokens,
     METRIC_SCALES,
     MOTION_DURATIONS,
+    MOTION_EASING,
     resolveMotionDurations,
     SHADOWS,
 } from '../appearance';
@@ -85,8 +86,27 @@ describe('MOB-FEAT-057 design kit tokens', () => {
             shadowRadius: 22,
             elevation: 18,
         });
-        expect(MOTION_DURATIONS).toEqual({ fast: 140, base: 180, sheet: 240, pulse: 700 });
-        expect(resolveMotionDurations(true)).toEqual({ fast: 0, base: 0, sheet: 0, pulse: 0 });
+        expect(MOTION_DURATIONS).toEqual({ instant: 0, fast: 120, base: 200, sheet: 280, exit: 180, pulse: 1200, screen: 140, screenSlide: 220 });
+        expect(resolveMotionDurations(false)).toBe(MOTION_DURATIONS);
+    });
+
+    it('AC-009 zera todas as durações com movimento reduzido e mantém a saída mais curta que a entrada', () => {
+        const reduced = resolveMotionDurations(true);
+
+        expect(Object.keys(reduced).sort()).toEqual(Object.keys(MOTION_DURATIONS).sort());
+        expect(Object.values(reduced).every(duration => duration === 0)).toBe(true);
+        expect(MOTION_DURATIONS.exit).toBeLessThan(MOTION_DURATIONS.sheet);
+        expect(Object.values(MOTION_DURATIONS).every(duration => duration <= 300 || duration === MOTION_DURATIONS.pulse)).toBe(true);
+    });
+
+    it('define curvas de movimento que começam em 0 e terminam em 1', () => {
+        expect(Object.keys(MOTION_EASING).sort()).toEqual(['enter', 'exit', 'pulse', 'standard']);
+        for (const easing of Object.values(MOTION_EASING)) {
+            expect(easing(0)).toBeCloseTo(0);
+            expect(easing(1)).toBeCloseTo(1);
+        }
+        expect(MOTION_EASING.enter(0.5)).toBeGreaterThan(0.5);
+        expect(MOTION_EASING.exit(0.5)).toBeLessThan(0.5);
     });
 
     it('AC-001 entrega medidas e movimento pelo contexto do tema', () => {
@@ -99,7 +119,7 @@ describe('MOB-FEAT-057 design kit tokens', () => {
 
         expect(result.current.metrics).toBe(METRIC_SCALES.COMPACT);
         expect(result.current.shadows).toBe(SHADOWS);
-        expect(result.current.motion).toEqual({ fast: 0, base: 0, sheet: 0, pulse: 0 });
+        expect(result.current.motion).toEqual({ instant: 0, fast: 0, base: 0, sheet: 0, exit: 0, pulse: 0, screen: 0, screenSlide: 0 });
 
         const comfortable = renderHook(() => useTheme(), { wrapper: ({ children }: PropsWithChildren) => <ThemeProvider>{children}</ThemeProvider> });
 
@@ -121,5 +141,15 @@ describe('MOB-FEAT-057 design kit tokens', () => {
 
             expect(contrast(parseColor(tone).rgb, background)).toBeGreaterThanOrEqual(4.5);
         });
+    });
+
+    it.each(palettes)('superfície de hover fica entre surface e surfacePressed com texto AA na paleta %s', (_name, tokens) => {
+        const brightness = (color: string) => luminance(parseColor(color).rgb);
+        const [low, high] = [brightness(tokens.surface), brightness(tokens.surfacePressed)].sort((a, b) => a - b);
+
+        expect(brightness(tokens.surfaceHover)).toBeGreaterThan(low);
+        expect(brightness(tokens.surfaceHover)).toBeLessThan(high);
+        expect(contrast(parseColor(tokens.text).rgb, parseColor(tokens.surfaceHover).rgb)).toBeGreaterThanOrEqual(4.5);
+        expect(contrast(parseColor(tokens.accentText).rgb, parseColor(tokens.surfaceHover).rgb)).toBeGreaterThanOrEqual(4.5);
     });
 });

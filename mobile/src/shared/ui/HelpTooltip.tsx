@@ -1,5 +1,6 @@
-import { useRef, useState } from 'react';
-import { AccessibilityInfo, Modal, Pressable, useWindowDimensions, View } from 'react-native';
+import { useContext, useRef, useState } from 'react';
+import { AccessibilityInfo, Modal, Pressable, ScrollView, View } from 'react-native';
+import { SafeAreaInsetsContext } from 'react-native-safe-area-context';
 
 import { createShadowStyle, useTheme } from '@/shared/theme';
 
@@ -27,27 +28,47 @@ interface HelpTooltipProps {
  * closes it; screen readers hear the text as soon as it opens.
  */
 export function HelpTooltip({ label, description }: HelpTooltipProps) {
-    const { metrics, radii, spacing, tokens } = useTheme();
-    const { width: screenWidth } = useWindowDimensions();
+    const { effectiveReduceMotion, metrics, radii, spacing, tokens } = useTheme();
+    const insets = useContext(SafeAreaInsetsContext);
     const triggerRef = useRef<View>(null);
+    const layerRef = useRef<View>(null);
     const [open, setOpen] = useState(false);
     const [anchor, setAnchor] = useState<Anchor | null>(null);
+    const [layer, setLayer] = useState<Anchor | null>(null);
+    const [bubbleHeight, setBubbleHeight] = useState(0);
 
     const show = () => {
+        setAnchor(null);
+        setLayer(null);
+        setBubbleHeight(0);
         setOpen(true);
         AccessibilityInfo.announceForAccessibility(description);
+    };
+
+    const measure = () => {
+        layerRef.current?.measureInWindow?.((x, y, width, height) => setLayer({ x, y, width, height }));
         triggerRef.current?.measureInWindow?.((x, y, width, height) => setAnchor({ x, y, width, height }));
     };
 
     const gutter = spacing.md;
-    const bubbleWidth = Math.min(TOOLTIP_MAX_WIDTH, screenWidth - gutter * 2);
-    const left = anchor ? Math.min(Math.max(gutter, anchor.x + anchor.width / 2 - bubbleWidth / 2), screenWidth - gutter - bubbleWidth) : gutter;
-    const top = anchor ? anchor.y + anchor.height + spacing.sm : 0;
+    const minLeft = (insets?.left ?? 0) + gutter;
+    const maxRight = (layer?.width ?? 0) - (insets?.right ?? 0) - gutter;
+    const bubbleWidth = layer ? Math.min(TOOLTIP_MAX_WIDTH, Math.max(0, maxRight - minLeft)) : TOOLTIP_MAX_WIDTH;
+    const left = anchor && layer ? Math.min(Math.max(minLeft, anchor.x - layer.x), maxRight - bubbleWidth) : minLeft;
+    const minTop = (insets?.top ?? 0) + gutter;
+    const maxBottom = (layer?.height ?? 0) - (insets?.bottom ?? 0) - gutter;
+    const anchorTop = anchor && layer ? anchor.y - layer.y : minTop;
+    const belowTop = anchorTop + (anchor?.height ?? 0) + spacing.xs;
+    const spaceAbove = Math.max(0, anchorTop - spacing.xs - minTop);
+    const spaceBelow = Math.max(0, maxBottom - belowTop);
+    const above = bubbleHeight > spaceBelow && spaceAbove > spaceBelow;
+    const top = above ? Math.max(minTop, anchorTop - spacing.xs - bubbleHeight) : Math.max(minTop, belowTop);
 
     return (
         <>
             <Pressable
                 ref={triggerRef}
+                collapsable={false}
                 accessibilityRole="button"
                 accessibilityLabel={label}
                 accessibilityState={{ expanded: open }}
@@ -57,33 +78,48 @@ export function HelpTooltip({ label, description }: HelpTooltipProps) {
             >
                 <Icon name="help-circle-outline" size={metrics.icon.md} color={open ? tokens.accentText : tokens.muted} decorative />
             </Pressable>
-            <Modal visible={open} transparent animationType="fade" onRequestClose={() => setOpen(false)}>
-                <Pressable
-                    testID="help-tooltip-backdrop"
-                    accessibilityElementsHidden
-                    importantForAccessibility="no-hide-descendants"
-                    onPress={() => setOpen(false)}
-                    style={{ bottom: 0, left: 0, position: 'absolute', right: 0, top: 0 }}
-                />
-                <View
-                    testID="help-tooltip"
-                    accessibilityRole="text"
-                    style={{
-                        backgroundColor: tokens.surfaceElevated,
-                        borderColor: tokens.borderStrong,
-                        borderRadius: radii.control,
-                        borderWidth: 1,
-                        left,
-                        opacity: anchor ? 1 : 0,
-                        paddingHorizontal: spacing.sm + spacing.xs,
-                        paddingVertical: spacing.sm,
-                        position: 'absolute',
-                        top,
-                        width: bubbleWidth,
-                        ...createShadowStyle('card', tokens.overlay),
-                    }}
-                >
-                    <AppText variant="caption">{description}</AppText>
+            <Modal
+                visible={open}
+                transparent
+                statusBarTranslucent
+                navigationBarTranslucent
+                animationType={effectiveReduceMotion ? 'none' : 'fade'}
+                onRequestClose={() => setOpen(false)}
+            >
+                <View ref={layerRef} testID="help-tooltip-layer" collapsable={false} onLayout={measure} style={{ flex: 1 }}>
+                    <Pressable
+                        testID="help-tooltip-backdrop"
+                        accessibilityElementsHidden
+                        importantForAccessibility="no-hide-descendants"
+                        onPress={() => setOpen(false)}
+                        style={{ bottom: 0, left: 0, position: 'absolute', right: 0, top: 0 }}
+                    />
+                    <View
+                        testID="help-tooltip"
+                        onLayout={event => setBubbleHeight(event.nativeEvent.layout.height)}
+                        style={{
+                            backgroundColor: tokens.surfaceElevated,
+                            borderColor: tokens.borderStrong,
+                            borderRadius: radii.control,
+                            borderWidth: 1,
+                            left,
+                            maxHeight: layer ? Math.max(spaceAbove, spaceBelow) : undefined,
+                            opacity: anchor && layer && bubbleHeight > 0 ? 1 : 0,
+                            position: 'absolute',
+                            top,
+                            width: bubbleWidth,
+                            ...createShadowStyle('card', tokens.overlay),
+                        }}
+                    >
+                        <ScrollView
+                            bounces={false}
+                            showsVerticalScrollIndicator={false}
+                            showsHorizontalScrollIndicator={false}
+                            contentContainerStyle={{ paddingHorizontal: spacing.sm + spacing.xs, paddingVertical: spacing.sm }}
+                        >
+                            <AppText variant="caption">{description}</AppText>
+                        </ScrollView>
+                    </View>
                 </View>
             </Modal>
         </>

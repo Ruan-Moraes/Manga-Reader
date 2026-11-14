@@ -94,7 +94,7 @@ export function SelectField<T extends string>({
 
     const insets = useContext(SafeAreaInsetsContext) ?? { bottom: 0, left: 0, right: 0, top: 0 };
 
-    const { layout, minimumTouchTarget, radii, spacing, tokens } = useTheme();
+    const { layout, metrics, minimumTouchTarget, radii, spacing, tokens } = useTheme();
 
     const cardVariant = variant === 'card';
     const inputVariant = variant === 'input' || cardVariant;
@@ -235,7 +235,6 @@ export function SelectField<T extends string>({
                 closeLabel={closeLabel}
                 title={label}
                 description={optionLabel(value)}
-                headerDivider
                 height={sheetHeight}
                 maxHeightRatio={SELECT_SHEET_MAXIMUM_RATIO}
                 onDismiss={inputVariant ? restoreFocus : undefined}
@@ -298,7 +297,8 @@ export function SelectField<T extends string>({
                                             borderWidth: 2,
                                             justifyContent: 'center',
                                             paddingHorizontal: spacing.md,
-                                            paddingVertical: spacing.md,
+                                            minHeight: Math.max(minimumTouchTarget, metrics.row.single),
+                                            paddingVertical: spacing.sm,
                                         }}
                                     >
                                         <View

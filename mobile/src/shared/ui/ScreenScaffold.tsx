@@ -18,12 +18,14 @@ interface ScreenScaffoldProps {
     scroll?: boolean;
     compact?: boolean;
     headerAction?: ReactNode;
+    belowHeader?: ReactNode;
     eyebrow?: string;
     description?: string;
     footer?: ReactNode;
     /** Fixed below the scroll area; use `StickyActionBar` for the single primary action. */
     stickyFooter?: ReactNode;
     contentWidth?: 'form' | 'page';
+    contentBottomSpacing?: number;
 }
 
 export function ScreenScaffold({
@@ -35,11 +37,13 @@ export function ScreenScaffold({
     scroll = true,
     compact = false,
     headerAction,
+    belowHeader,
     eyebrow,
     description,
     footer,
     stickyFooter,
     contentWidth = 'page',
+    contentBottomSpacing,
 }: ScreenScaffoldProps) {
     const { layout, spacing } = useTheme();
 
@@ -52,27 +56,38 @@ export function ScreenScaffold({
                 style={{
                     alignSelf: 'center',
                     flex: 1,
-                    gap: compact ? spacing.md : layout.sectionGap,
                     maxWidth: contentWidth === 'form' ? responsive.formMaxWidth : responsive.contentMaxWidth,
-                    paddingBottom: compact ? spacing.md : spacing.xl,
-                    paddingTop: compact ? spacing.xs : spacing.md,
+                    paddingBottom: contentBottomSpacing ?? (compact ? spacing.md : spacing.xl),
                     width: '100%',
                 }}
             >
-                <NavigationHeader backLabel={backLabel} backShape={backShape} onBack={onBack} title={compact ? title : undefined} action={headerAction} />
-                <View style={{ display: compact ? 'none' : 'flex', gap: spacing.sm }}>
-                    {eyebrow ? (
-                        <AppText variant="eyebrow" tone="accent">
-                            {eyebrow}
-                        </AppText>
-                    ) : null}
-                    <AppText accessibilityRole="header" variant={compact ? 'title' : 'display'}>
-                        {title}
-                    </AppText>
-                    {description ? <AppText tone="muted">{description}</AppText> : null}
+                {/* The header sets its own spacing (revisão 2026-11-14); the section gap only applies below it. */}
+                <View style={{ marginBottom: belowHeader ? spacing.md : 0 }}>
+                    <NavigationHeader
+                        backLabel={backLabel}
+                        backShape={backShape}
+                        onBack={onBack}
+                        title={compact ? title : undefined}
+                        action={headerAction}
+                        bottomSpacing={belowHeader ? spacing.xs : undefined}
+                    />
+                    {belowHeader}
                 </View>
-                {children}
-                {footer}
+                <View testID="screen-scaffold-body" style={{ flex: 1, gap: compact ? spacing.md : layout.sectionGap }}>
+                    <View style={{ display: compact ? 'none' : 'flex', gap: spacing.sm }}>
+                        {eyebrow ? (
+                            <AppText variant="eyebrow" tone="accent">
+                                {eyebrow}
+                            </AppText>
+                        ) : null}
+                        <AppText accessibilityRole="header" variant={compact ? 'title' : 'display'}>
+                            {title}
+                        </AppText>
+                        {description ? <AppText tone="muted">{description}</AppText> : null}
+                    </View>
+                    {children}
+                    {footer}
+                </View>
             </View>
         </PageContainer>
     );

@@ -13,7 +13,7 @@ export function StickyActionBar({ children }: { children: ReactNode }) {
                 backgroundColor: tokens.bg,
                 borderTopColor: tokens.separator,
                 borderTopWidth: 1,
-                gap: spacing.sm,
+                gap: spacing.xs,
                 paddingBottom: Math.max(insets.bottom, spacing.sm + 4),
                 paddingHorizontal: layout.screenGutter,
                 paddingTop: spacing.sm,

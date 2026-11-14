@@ -12,7 +12,16 @@ interface IconProps extends Omit<ComponentProps<typeof Ionicons>, 'color' | 'nam
     decorative?: boolean;
 }
 
-export function Icon({ name, size = 20, color, decorative = true, ...props }: IconProps) {
+export function Icon({ name, size = 20, color, decorative = true, importantForAccessibility, ...props }: IconProps) {
     const { tokens } = useTheme();
-    return <Ionicons {...props} name={name} size={size} color={color ?? tokens.accentText} accessibilityElementsHidden={decorative} />;
+    return (
+        <Ionicons
+            {...props}
+            name={name}
+            size={size}
+            color={color ?? tokens.accentText}
+            accessibilityElementsHidden={decorative}
+            importantForAccessibility={decorative ? 'no-hide-descendants' : importantForAccessibility}
+        />
+    );
 }

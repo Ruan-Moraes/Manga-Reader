@@ -1,9 +1,9 @@
 import { useContext, useEffect, useRef, useState } from 'react';
-import { Animated, Easing, Modal, Pressable, ScrollView, useWindowDimensions, View } from 'react-native';
+import { Animated, Modal, Pressable, ScrollView, useWindowDimensions, View } from 'react-native';
 import type { ReactNode } from 'react';
 import { SafeAreaInsetsContext } from 'react-native-safe-area-context';
 
-import { createShadowStyle, useTheme } from '@/shared/theme';
+import { createShadowStyle, MOTION_EASING, useTheme } from '@/shared/theme';
 
 import { AppText } from './AppText';
 import { Icon, type IconName } from './Icon';
@@ -17,6 +17,7 @@ export interface CenterDialogTestIDs {
     layer: string;
     backdrop: string;
     card: string;
+    header: string;
     icon: string;
     actions: string;
 }
@@ -25,6 +26,7 @@ const DEFAULT_TEST_IDS: CenterDialogTestIDs = {
     layer: 'center-dialog-layer',
     backdrop: 'center-dialog-backdrop',
     card: 'center-dialog',
+    header: 'center-dialog-header',
     icon: 'center-dialog-icon',
     actions: 'center-dialog-actions',
 };
@@ -44,12 +46,15 @@ export interface CenterDialogProps {
     actions?: ReactNode;
     /** Stack the actions (long labels, three actions). */
     stackActions?: boolean;
+    contentBottomSpacing?: number;
+    /** Line under the header; defaults to on only when there is content between the header and the actions. */
+    showHeaderDivider?: boolean;
     testIDs?: Partial<CenterDialogTestIDs>;
 }
 
 /**
  * Centered modal for confirmations and consent (2026-11-10). Visual rhythm shared by every dialog: card padding `lg`,
- * 16 between content and actions, 8 between actions; icon tile 48 on the tone's soft surface; title `section`,
+ * 16 between content and actions, 4 between stacked actions; icon tile 48 on the tone's soft surface; title `section`,
  * description `body` muted. Content scrolls inside the card when it is taller than the free space (keyboard included).
  */
 export function CenterDialog({
@@ -63,6 +68,8 @@ export function CenterDialog({
     children,
     actions,
     stackActions = false,
+    contentBottomSpacing,
+    showHeaderDivider: headerDivider,
     testIDs,
 }: CenterDialogProps) {
     const { effectiveReduceMotion, fontScale, metrics, motion, radii, spacing, tokens } = useTheme();
@@ -74,6 +81,7 @@ export function CenterDialog({
     const soft = tone === 'danger' ? tokens.dangerSoft : tone === 'success' ? tokens.successSoft : tone === 'warning' ? tokens.warnSoft : tokens.accentSoft;
     const maxHeight = Math.max(0, viewportHeight - insets.top - Math.max(insets.bottom, keyboard) - spacing.xl * 2);
     const stacked = stackActions || fontScale > 1.3;
+    const showHeaderDivider = headerDivider ?? (children != null && children !== false);
 
     const [mounted, setMounted] = useState(visible);
     const progress = useRef(new Animated.Value(0)).current;
@@ -86,15 +94,15 @@ export function CenterDialog({
         }
         const animation = Animated.timing(progress, {
             toValue: visible ? 1 : 0,
-            duration: motion.base,
-            easing: visible ? Easing.out(Easing.cubic) : Easing.in(Easing.cubic),
+            duration: visible ? motion.base : motion.exit,
+            easing: visible ? MOTION_EASING.enter : MOTION_EASING.exit,
             useNativeDriver: true,
         });
         animation.start(({ finished }) => {
             if (finished && !visible) setMounted(false);
         });
         return () => animation.stop();
-    }, [effectiveReduceMotion, motion.base, progress, visible]);
+    }, [effectiveReduceMotion, motion.base, motion.exit, progress, visible]);
 
     return (
         <Modal animationType="none" navigationBarTranslucent onRequestClose={onClose} statusBarTranslucent transparent visible={mounted || visible}>
@@ -142,13 +150,28 @@ export function CenterDialog({
                     }}
                 >
                     <ScrollView
+                        showsHorizontalScrollIndicator={false}
                         bounces={false}
                         keyboardShouldPersistTaps="handled"
                         showsVerticalScrollIndicator={false}
                         style={{ flexShrink: 1 }}
-                        contentContainerStyle={{ gap: spacing.md, padding: spacing.lg, paddingBottom: actions ? spacing.md : spacing.lg }}
+                        contentContainerStyle={{
+                            gap: spacing.md,
+                            padding: spacing.lg,
+                            paddingBottom: contentBottomSpacing ?? (actions ? spacing.md : spacing.lg),
+                        }}
                     >
-                        <View style={{ alignItems: 'center', gap: spacing.sm }}>
+                        <View
+                            testID={ids.header}
+                            style={{
+                                alignItems: 'center',
+                                borderBottomColor: tokens.separator,
+                                borderBottomWidth: showHeaderDivider ? 1 : 0,
+                                gap: spacing.sm,
+                                paddingBottom: showHeaderDivider ? spacing.md : 0,
+                                paddingTop: icon ? spacing.xs : 0,
+                            }}
+                        >
                             {icon ? (
                                 <View
                                     testID={ids.icon}
@@ -164,7 +187,7 @@ export function CenterDialog({
                                     <Icon name={icon} size={metrics.icon.lg} color={color} decorative />
                                 </View>
                             ) : null}
-                            <AppText accessibilityRole="header" variant="section" style={{ textAlign: 'center' }}>
+                            <AppText accessibilityRole="header" variant="section" style={{ marginTop: icon ? spacing.xs : 0, textAlign: 'center' }}>
                                 {title}
                             </AppText>
                             {description ? (
@@ -180,7 +203,7 @@ export function CenterDialog({
                             testID={ids.actions}
                             style={{
                                 flexDirection: stacked ? 'column-reverse' : 'row',
-                                gap: spacing.sm,
+                                gap: stacked ? spacing.xs : spacing.sm,
                                 paddingBottom: spacing.lg,
                                 paddingHorizontal: spacing.lg,
                                 paddingTop: spacing.sm,

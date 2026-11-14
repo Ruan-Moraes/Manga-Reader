@@ -8,6 +8,8 @@ export interface ThemeTokens {
     surface: string;
     surfaceMuted: string;
     surfaceElevated: string;
+    /** Ponteiro ou foco sobre um controle; fica entre `surface` e `surfacePressed`. */
+    surfaceHover: string;
     surfacePressed: string;
     surfaceSelected: string;
     disabledSurface: string;
@@ -55,6 +57,7 @@ export const darkTokens: ThemeTokens = {
     surface: '#1B1B18',
     surfaceMuted: '#24231F',
     surfaceElevated: '#2B2A25',
+    surfaceHover: '#282722',
     surfacePressed: '#34332D',
     surfaceSelected: 'rgba(230,224,55,0.12)',
     disabledSurface: '#24231F',
@@ -98,6 +101,7 @@ export const lightTokens: ThemeTokens = {
     surface: '#FFFEFA',
     surfaceMuted: '#EFEDE5',
     surfaceElevated: '#FFFFFF',
+    surfaceHover: '#F2EFE8',
     surfacePressed: '#E5E1D7',
     surfaceSelected: 'rgba(220,214,41,0.16)',
     disabledSurface: '#EFEDE5',

@@ -32,15 +32,16 @@ const validDate = (value: DateInput): Date | null => {
 };
 
 const dateParts = (date: Date, language: SupportedLanguage, timezone: string, dateFormat: DateFormatPreference) => {
-    const formatter = new Intl.DateTimeFormat(language, {
-        day: 'numeric',
-        month: dateFormat === 'D_M' ? 'numeric' : 'short',
-        year: 'numeric',
-        timeZone: timezone,
-    });
-    const parts = formatter.formatToParts(date);
-    const part = (type: Intl.DateTimeFormatPartTypes): string => parts.find(item => item.type === type)?.value ?? '';
-    return { day: part('day'), month: part('month'), year: part('year') };
+    if (dateFormat === 'D_M') {
+        const formatter = new Intl.DateTimeFormat(language, { day: 'numeric', month: 'numeric', year: 'numeric', timeZone: timezone });
+        const parts = formatter.formatToParts(date);
+        const part = (type: Intl.DateTimeFormatPartTypes): string => parts.find(item => item.type === type)?.value ?? '';
+        return { day: part('day'), month: part('month'), year: part('year') };
+    }
+    // Hermes labels the "de" in "8 de nov." as the month part, so the named month is formatted on its own
+    // (revisão 2026-11-13).
+    const single = (options: Intl.DateTimeFormatOptions) => new Intl.DateTimeFormat(language, { ...options, timeZone: timezone }).format(date);
+    return { day: single({ day: 'numeric' }), month: single({ month: 'short' }), year: single({ year: 'numeric' }) };
 };
 
 export function formatDate(value: DateInput, options: DateFormattingOptions = {}): string {

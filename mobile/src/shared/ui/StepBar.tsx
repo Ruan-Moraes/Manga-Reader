@@ -25,23 +25,24 @@ export function StepBar({ steps, currentIndex, counterLabel, testID = 'step-bar'
             accessibilityValue={{ min: 1, max: steps.length, now: currentIndex + 1 }}
             style={{ gap: spacing.xs }}
         >
-            <View style={{ flexDirection: 'row', gap: spacing.xs }}>
+            <View style={{ alignItems: 'flex-end', flexDirection: 'row', gap: spacing.xs }}>
                 {steps.map((step, index) => (
-                    <View
-                        key={step}
-                        testID={`${testID}-segment-${index}`}
-                        style={{ backgroundColor: index <= currentIndex ? tokens.accent : tokens.separator, borderRadius: radii.pill, flex: 1, height: 4 }}
-                    />
+                    <View key={step} testID={`${testID}-column-${index}`} style={{ flex: 1, gap: spacing.xs }}>
+                        {index === currentIndex ? (
+                            <AppText variant="caption" tone="accent" style={{ textAlign: 'center' }}>
+                                {current}
+                            </AppText>
+                        ) : null}
+                        <View
+                            testID={`${testID}-segment-${index}`}
+                            style={{ backgroundColor: index <= currentIndex ? tokens.accent : tokens.separator, borderRadius: radii.pill, height: 4 }}
+                        />
+                    </View>
                 ))}
             </View>
-            <View style={{ alignItems: 'baseline', flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm }}>
-                <AppText variant="eyebrow" tone="accent">
-                    {counterLabel}
-                </AppText>
-                <AppText variant="caption" tone="subtle">
-                    {current}
-                </AppText>
-            </View>
+            <AppText variant="eyebrow" tone="accent">
+                {counterLabel}
+            </AppText>
         </View>
     );
 }

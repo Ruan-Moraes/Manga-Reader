@@ -78,15 +78,11 @@
     "forum": {
         "comingSoon": "Em breve: tópicos da comunidade"
     },
-    "modal": {
-        "title": "Modal"
-    },
     "user": {
         "logout": "Sair"
     },
     "dataControls": {
         "title": "Dados e armazenamento",
-        "storageLabel": "Uso temporário",
         "sections": {
             "device": { "title": "Neste dispositivo", "description": "Libere espaço sem remover sua conta ou preferências." },
             "account": { "title": "Dados da conta", "description": "Exporte suas informações ou remova atividades rastreadas." }
@@ -100,8 +96,7 @@
             "offline": { "title": "Dados offline removidos", "description": "Os projetos e arquivos locais foram apagados deste aparelho." },
             "history": { "title": "Histórico limpo", "description": "Capítulos lidos e atividades foram removidos. Sua posição atual foi mantida." }
         },
-        "storageUsage": "{{size}} em {{scope}}",
-        "storageScopes": { "temporaryExports": "exportações temporárias controladas pelo app" },
+        "storageScopes": { "temporaryExports": "Exportações temporárias" },
         "cache": {
             "action": "Limpar cache",
             "description": "Remove imagens e dados que podem ser baixados novamente.",
@@ -130,6 +125,7 @@
             "action": "Limpar dados offline ({{size}})",
             "description": "Remove projetos e arquivos locais registrados neste aparelho.",
             "empty": "Nenhum projeto ou arquivo offline foi armazenado neste aparelho.",
+            "measureError": "Não foi possível medir os dados offline deste aparelho.",
             "confirmTitle": "Limpar dados offline?",
             "confirmBody": "Projetos e arquivos offline registrados serão removidos deste aparelho.",
             "projects": "projetos e arquivos offline"
@@ -168,6 +164,7 @@
     },
     "privacy": {
         "title": "Privacidade e conteúdo sensível",
+        "loading": "Carregando suas preferências de privacidade…",
         "comments": "Comentários",
         "history": "Histórico",
         "library": "Biblioteca",
@@ -254,7 +251,7 @@
                     "DARK": "Fundo escuro para ambientes com pouca luz."
                 },
                 "options": {
-                    "SYSTEM": "Seguir o sistema",
+                    "SYSTEM": "Sistema",
                     "LIGHT": "Claro",
                     "DARK": "Escuro"
                 }

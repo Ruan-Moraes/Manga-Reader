@@ -78,15 +78,11 @@
     "forum": {
         "comingSoon": "Coming soon: community topics"
     },
-    "modal": {
-        "title": "Modal"
-    },
     "user": {
         "logout": "Sign out"
     },
     "dataControls": {
         "title": "Data and storage",
-        "storageLabel": "Temporary usage",
         "sections": {
             "device": { "title": "On this device", "description": "Free up space without removing your account or preferences." },
             "account": { "title": "Account data", "description": "Export your information or remove tracked activity." }
@@ -100,8 +96,7 @@
             "offline": { "title": "Offline data removed", "description": "Local projects and files were deleted from this device." },
             "history": { "title": "History cleared", "description": "Read chapters and activities were removed. Your current position was kept." }
         },
-        "storageUsage": "{{size}} in {{scope}}",
-        "storageScopes": { "temporaryExports": "temporary exports controlled by the app" },
+        "storageScopes": { "temporaryExports": "Temporary exports" },
         "cache": {
             "action": "Clear cache",
             "description": "Removes images and data that can be downloaded again.",
@@ -130,6 +125,7 @@
             "action": "Clear offline data ({{size}})",
             "description": "Removes registered local projects and files from this device.",
             "empty": "No offline projects or files are stored on this device.",
+            "measureError": "Couldn't measure the offline data on this device.",
             "confirmTitle": "Clear offline data?",
             "confirmBody": "Registered offline projects and files will be removed from this device.",
             "projects": "offline projects and files"
@@ -168,6 +164,7 @@
     },
     "privacy": {
         "title": "Privacy and sensitive content",
+        "loading": "Loading your privacy preferences…",
         "comments": "Comments",
         "history": "History",
         "library": "Library",
@@ -254,7 +251,7 @@
                     "DARK": "Dark background for low-light environments."
                 },
                 "options": {
-                    "SYSTEM": "Follow system",
+                    "SYSTEM": "System",
                     "LIGHT": "Light",
                     "DARK": "Dark"
                 }

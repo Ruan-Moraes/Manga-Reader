@@ -1,9 +1,10 @@
 import { useState } from 'react';
-import { Pressable, type PressableProps } from 'react-native';
+import { type PressableProps } from 'react-native';
 
 import { useTheme } from '@/shared/theme';
 
 import { Icon } from './Icon';
+import { AnimatedPressable, usePressFeedback } from './usePressFeedback';
 
 const BACK_BUTTON_SIZE = 40;
 
@@ -22,13 +23,24 @@ interface BackButtonProps extends Omit<PressableProps, 'accessibilityLabel' | 'c
 export function BackButton({ accessibilityLabel, appearance = 'surface', tone = 'default', shape = 'control', disabled, ...props }: BackButtonProps) {
     const { minimumTouchTarget, radii, tokens } = useTheme();
     const [focused, setFocused] = useState(false);
-    const [pressed, setPressed] = useState(false);
     const normalBackground = appearance === 'surface' ? tokens.surface : appearance === 'scrim' ? tokens.scrim : 'transparent';
+    const feedback = usePressFeedback(
+        {
+            background: normalBackground,
+            pressedBackground: appearance === 'scrim' ? tokens.overlay : tokens.surfacePressed,
+            hoverBackground: appearance === 'scrim' ? tokens.overlay : tokens.surfaceHover,
+            pressedScale: disabled ? 1 : 0.97,
+            opacity: disabled ? 0.5 : 1,
+            disabled: !!disabled,
+        },
+        props,
+    );
     const iconColor = tone === 'inverse' ? tokens.inverseText : tone === 'neutral' ? tokens.text : tokens.accentText;
 
     return (
-        <Pressable
+        <AnimatedPressable
             {...props}
+            {...feedback.handlers}
             accessibilityLabel={accessibilityLabel}
             accessibilityRole="button"
             accessibilityState={{ disabled: !!disabled }}
@@ -43,28 +55,20 @@ export function BackButton({ accessibilityLabel, appearance = 'surface', tone = 
                 setFocused(true);
                 props.onFocus?.(event);
             }}
-            onPressIn={event => {
-                setPressed(true);
-                props.onPressIn?.(event);
-            }}
-            onPressOut={event => {
-                setPressed(false);
-                props.onPressOut?.(event);
-            }}
-            style={{
-                alignItems: 'center',
-                backgroundColor: pressed ? (appearance === 'scrim' ? tokens.overlay : tokens.surfacePressed) : normalBackground,
-                borderColor: focused ? tokens.focus : appearance === 'surface' ? tokens.separator : 'transparent',
-                borderRadius: shape === 'control' ? radii.control : radii.pill,
-                borderWidth: focused || appearance === 'surface' ? 1 : 0,
-                justifyContent: 'center',
-                height: BACK_BUTTON_SIZE,
-                opacity: disabled ? 0.5 : 1,
-                width: BACK_BUTTON_SIZE,
-                ...(pressed && !disabled ? { transform: [{ scale: 0.96 }] } : {}),
-            }}
+            style={[
+                {
+                    alignItems: 'center',
+                    borderColor: focused ? tokens.focus : appearance === 'surface' ? tokens.separator : 'transparent',
+                    borderRadius: shape === 'control' ? radii.control : radii.pill,
+                    borderWidth: focused || appearance === 'surface' ? 1 : 0,
+                    justifyContent: 'center',
+                    height: BACK_BUTTON_SIZE,
+                    width: BACK_BUTTON_SIZE,
+                },
+                feedback.animatedStyle,
+            ]}
         >
             <Icon name="chevron-back" size={20} color={iconColor} />
-        </Pressable>
+        </AnimatedPressable>
     );
 }

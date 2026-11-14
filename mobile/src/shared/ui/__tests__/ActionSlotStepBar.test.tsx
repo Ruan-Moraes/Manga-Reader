@@ -69,5 +69,8 @@ describe('MOB-FEAT-056 StepBar', () => {
         expect(bar).toHaveProp('accessibilityLabel', 'Etapa 2 de 3: Idiomas');
         expect(bar).toHaveProp('accessibilityValue', { min: 1, max: 3, now: 2 });
         expect(screen.getAllByTestId(/^step-bar-segment-/)).toHaveLength(3);
+        expect(screen.getByTestId('step-bar-column-1')).toHaveTextContent('Idiomas');
+        expect(screen.getByText('Idiomas')).toHaveStyle({ textAlign: 'center' });
+        expect(screen.getByTestId('step-bar-column-0')).not.toHaveTextContent('Idiomas');
     });
 });

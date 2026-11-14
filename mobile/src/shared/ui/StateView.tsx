@@ -15,7 +15,7 @@ export interface StateViewAction {
 }
 
 const ILLUSTRATIONS: Record<StateViewKind, ImageSourcePropType> = {
-    empty: require('../../../assets/images/mascot-pensando.png'),
+    empty: require('../../../assets/images/mascot-pensando.webp'),
     error: require('../../../assets/images/mascot-triste.webp'),
     offline: require('../../../assets/images/mascot-duvida.webp'),
     notfound: require('../../../assets/images/mascot-404.webp'),
@@ -133,7 +133,7 @@ export function StateView(props: StateViewProps) {
                     testID={`${testID}-actions`}
                     style={{ alignSelf: 'stretch', alignItems: 'center', gap: spacing.sm, marginTop: inline ? spacing.sm : spacing.md }}
                 >
-                    <View style={{ gap: spacing.sm, maxWidth: ACTIONS_MAX_WIDTH, width: '100%' }}>
+                    <View style={{ gap: spacing.xs, maxWidth: ACTIONS_MAX_WIDTH, width: '100%' }}>
                         {primary}
                         {secondary}
                         {actions}

@@ -1,11 +1,11 @@
 import { Modal, StyleSheet, Text } from 'react-native';
-import { act, fireEvent, render, screen } from '@testing-library/react-native';
+import { act, fireEvent, render, screen, within } from '@testing-library/react-native';
 import type { ReactElement } from 'react';
 
 import { ThemeProvider } from '@/shared/theme';
 
 import { ActionSheet } from '../ActionSheet';
-import { BottomSheet, resolveBottomSheetMaxHeight } from '../BottomSheet';
+import { BottomSheet, resolveBottomSheetMaxHeight, resolveSheetFooterBottom } from '../BottomSheet';
 import { ConfirmSheet } from '../ConfirmSheet';
 
 const withTheme = (node: ReactElement, reduceMotion = false) =>
@@ -113,6 +113,18 @@ describe('MOB-FEAT-057 ActionSheet', () => {
 
         const height = StyleSheet.flatten(screen.getByTestId('action-sheet-action-delete').props.style).minHeight;
         expect(height).toBeGreaterThanOrEqual(52);
+
+        // 2026-11-14: excluir fica logo acima do cancelar, no mesmo bloco.
+        const group = within(screen.getByTestId('action-sheet-destructive-group'));
+        const labels = group.getAllByRole('button').map(button => within(button).getByText(/.+/).props.children);
+        expect(labels).toEqual(['Excluir obra', 'Cancelar']);
+    });
+
+    it('rodapé da folha nunca fica a menos de `md` do fim da tela (2026-11-14)', () => {
+        const spacing = { sm: 8, md: 16 };
+        expect(resolveSheetFooterBottom(0, spacing)).toBe(16);
+        expect(resolveSheetFooterBottom(20, spacing)).toBe(16);
+        expect(resolveSheetFooterBottom(34, spacing)).toBe(26);
     });
 
     it('AC-004 cancelar, scrim e voltar nunca executam ações', () => {

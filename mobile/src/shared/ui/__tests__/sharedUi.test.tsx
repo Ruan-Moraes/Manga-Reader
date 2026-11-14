@@ -2,13 +2,14 @@ import { AccessibilityInfo, Animated, Modal, ScrollView, StyleSheet, Switch, Vie
 import { act, fireEvent, render, within } from '@testing-library/react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
-import { ThemeProvider } from '@/shared/theme';
+import { darkTokens, ThemeProvider } from '@/shared/theme';
 
 import { BackButton } from '../BackButton';
 import { Button } from '../Button';
 import { ChoiceCards, resolveChoiceCardsStacked } from '../ChoiceCards';
 import { ChoiceGroup, resolveChoiceGroupStacked } from '../ChoiceGroup';
 import { FormSection } from '../FormSection';
+import { Icon } from '../Icon';
 import { IconButton } from '../IconButton';
 import { Input } from '../Input';
 import { ListRow } from '../ListRow';
@@ -16,12 +17,31 @@ import { NavigationHeader } from '../NavigationHeader';
 import { PageContainer } from '../PageContainer';
 import { ProgressSteps } from '../ProgressSteps';
 import { RANGE_SLIDER_THUMB_RADIUS, RANGE_SLIDER_THUMB_SIZE, RangeSlider, resolveRangeSliderThumbPosition, resolveRangeSliderValue } from '../RangeSlider';
+import { ScreenScaffold } from '../ScreenScaffold';
 import { resolveSegmentedControlStacked, SegmentedControl } from '../SegmentedControl';
 import { resolveSelectSheetHeight, SelectField } from '../SelectField';
 import { Skeleton } from '../Skeleton';
 import { StatusMessage } from '../StatusMessage';
 import { SwatchPicker } from '../SwatchPicker';
 import { resolveSwitchRowStacked, SwitchRow } from '../SwitchRow';
+
+jest.mock('@expo/vector-icons', () => {
+    const { View: MockView } = jest.requireActual('react-native');
+    return { Ionicons: (props: object) => <MockView {...props} /> };
+});
+
+it('hides decorative icons from both native accessibility trees', () => {
+    const { getByTestId } = render(
+        <View>
+            <Icon name="close" testID="decorative-icon" />
+            <Icon name="information-circle" decorative={false} accessibilityLabel="Informação" testID="informative-icon" />
+        </View>,
+    );
+
+    expect(getByTestId('decorative-icon', { includeHiddenElements: true })).toHaveProp('importantForAccessibility', 'no-hide-descendants');
+    expect(getByTestId('decorative-icon', { includeHiddenElements: true })).toHaveProp('accessibilityElementsHidden', true);
+    expect(getByTestId('informative-icon')).toHaveProp('accessibilityLabel', 'Informação');
+});
 
 jest.mock('react-native-worklets', () => ({
     scheduleOnRN: (callback: (...args: unknown[]) => void, ...args: unknown[]) => callback(...args),
@@ -36,7 +56,19 @@ jest.mock('react-native-reanimated', () => {
 
     return {
         __esModule: true,
-        default: { View: mockAnimatedView },
+        default: { View: mockAnimatedView, createAnimatedComponent: (mockComponent: unknown) => mockComponent },
+        Easing: {
+            cubic: (mockTime: number) => mockTime,
+            in: (mockEasing: unknown) => mockEasing,
+            out: (mockEasing: unknown) => mockEasing,
+            quad: (mockTime: number) => mockTime,
+        },
+        interpolate: (value: number, input: number[], output: number[]) => output[0] + ((output[1] - output[0]) * (value - input[0])) / (input[1] - input[0]),
+        interpolateColor: (value: number, _mockInput: number[], output: string[]) => (value >= 1 ? output[1] : output[0]),
+        withTiming: (mockValue: unknown, _mockConfig?: unknown, mockCallback?: (finished: boolean) => void) => {
+            mockCallback?.(true);
+            return mockValue;
+        },
         useAnimatedStyle: (mockFactory: () => Record<string, unknown>) => {
             const mockStyle: Record<string, unknown> = {};
             Object.keys(mockFactory()).forEach(mockKey => {
@@ -55,6 +87,8 @@ jest.mock('react-native-gesture-handler', () => {
         callbacks: Record<string, MockGestureCallback>;
         kind: 'pan' | 'tap';
         activeOffsetX: (value: number[]) => MockGesture;
+        activeOffsetY: (value: number[]) => MockGesture;
+        testId?: string;
         averageTouches: (value: boolean) => MockGesture;
         enabled: (value: boolean) => MockGesture;
         failOffsetY: (value: number[]) => MockGesture;
@@ -75,6 +109,7 @@ jest.mock('react-native-gesture-handler', () => {
             callbacks,
             kind,
             activeOffsetX: () => gesture,
+            activeOffsetY: () => gesture,
             averageTouches: () => gesture,
             enabled: () => gesture,
             failOffsetY: () => gesture,
@@ -101,7 +136,10 @@ jest.mock('react-native-gesture-handler', () => {
                 return gesture;
             },
             shouldCancelWhenOutside: () => gesture,
-            withTestId: () => gesture,
+            withTestId: value => {
+                gesture.testId = value;
+                return gesture;
+            },
         };
         return gesture;
     };
@@ -121,8 +159,11 @@ jest.mock('react-native-gesture-handler', () => {
             Race: (...gestures: MockGesture[]) => ({ gestures }),
             Tap: () => createGesture('tap'),
         },
+        GestureHandlerRootView: ({ children }: { children: unknown }) => children,
         GestureDetector: ({ children, gesture }: { children: unknown; gesture: MockGesture | { gestures: MockGesture[] } }) => {
             const gestures = 'gestures' in gesture ? gesture.gestures : [gesture];
+            // O arrasto do BottomSheet (MOB-FEAT-070) não é o gesto da régua que estes testes acionam.
+            if (gestures.some(candidate => candidate.testId === 'bottom-sheet-drag')) return children;
             const pan = gestures.find(candidate => candidate.kind === 'pan');
             const tap = gestures.find(candidate => candidate.kind === 'tap');
             return React.cloneElement(children, {
@@ -338,7 +379,7 @@ describe('shared ui', () => {
         expect(within(row).getByTestId('theme-preview')).toBeOnTheScreen();
         expect(within(row).getByTestId('choice-card-copy-SYSTEM')).toBeOnTheScreen();
         expect(StyleSheet.flatten(row.props.style)).toEqual(expect.objectContaining({ alignItems: 'center', flexDirection: 'row' }));
-        expect(StyleSheet.flatten(indicator.props.style)).toEqual(expect.objectContaining({ flexShrink: 0, height: 24, width: 24 }));
+        expect(StyleSheet.flatten(indicator.props.style)).toEqual(expect.objectContaining({ flexShrink: 0, height: 22, width: 22 }));
     });
 
     it('expõe icon button, progresso e status com semântica consistente', () => {
@@ -409,15 +450,38 @@ describe('shared ui', () => {
 
         fireEvent.press(view.getByRole('button', { name: 'Voltar' }));
         expect(onBack).toHaveBeenCalledTimes(1);
-        expect(view.getByRole('header').props.style).toEqual(expect.arrayContaining([expect.objectContaining({ maxWidth: '68%', textAlign: 'center' })]));
+        expect(view.getByRole('header').props.style).toEqual(expect.arrayContaining([expect.objectContaining({ textAlign: 'center' })]));
+        expect(view.getByRole('header').props.numberOfLines).toBe(2);
         expect(view.getByTestId('navigation-header').props.style).toEqual(expect.objectContaining({ position: 'relative' }));
+
+        // Revisão 2026-11-13: o título reserva dos dois lados a largura do lado mais largo (aqui, duas ações à direita).
+        fireEvent(view.getByTestId('navigation-header-back'), 'layout', { nativeEvent: { layout: { width: 44 } } });
+        fireEvent(view.getByTestId('navigation-header-action'), 'layout', { nativeEvent: { layout: { width: 96 } } });
+        const inset = StyleSheet.flatten(view.getByRole('header').props.style).marginHorizontal;
+        expect(inset).toBeGreaterThanOrEqual(96);
+    });
+
+    it('usa o mesmo espaço acima e abaixo do header em toda tela (revisão 2026-11-14)', () => {
+        const direct = withTheme(<NavigationHeader backLabel="Voltar" onBack={jest.fn()} />);
+        expect(direct.getByTestId('navigation-header').props.style).toEqual(expect.objectContaining({ marginTop: 8, marginBottom: 16 }));
+        direct.unmount();
+
+        const scaffold = withTheme(
+            <ScreenScaffold backLabel="Voltar" onBack={jest.fn()} title="Sobre">
+                <View />
+            </ScreenScaffold>,
+        );
+        expect(scaffold.getByTestId('navigation-header').props.style).toEqual(expect.objectContaining({ marginTop: 8, marginBottom: 16 }));
+        expect(StyleSheet.flatten(scaffold.getByTestId('screen-scaffold-content').props.style).paddingTop).toBeUndefined();
+        // The section gap starts below the header, so the title sits right after the header's own spacing.
+        expect(within(scaffold.getByTestId('screen-scaffold-body')).getByRole('header', { name: 'Sobre' })).toBeTruthy();
     });
 
     it('expõe contraste e alvo mínimo no retorno sobre scrim', () => {
         const view = withTheme(<BackButton accessibilityLabel="Voltar" appearance="scrim" tone="inverse" onPress={jest.fn()} />);
         const back = view.getByRole('button', { name: 'Voltar' });
 
-        expect(back.props.style).toEqual(expect.objectContaining({ height: 40, width: 40, backgroundColor: 'rgba(0,0,0,0.72)' }));
+        expect(StyleSheet.flatten(back.props.style)).toEqual(expect.objectContaining({ height: 40, width: 40, backgroundColor: 'rgba(0,0,0,0.72)' }));
         expect(40 + back.props.hitSlop * 2).toBeGreaterThanOrEqual(44);
         expect(back.props.accessibilityState).toEqual({ disabled: false });
     });
@@ -444,7 +508,7 @@ describe('shared ui', () => {
         expect(view.getByText('Fluxo contínuo')).toBeOnTheScreen();
         expect(view.getByRole('radio', { name: 'VERTICAL' }).props.accessibilityState.selected).toBe(true);
         expect(StyleSheet.flatten(view.getByTestId('choice-group-row-VERTICAL').props.style)).toEqual(
-            expect.objectContaining({ alignItems: 'center', borderWidth: 2, flexDirection: 'row' }),
+            expect.objectContaining({ alignItems: 'center', flexDirection: 'row-reverse' }),
         );
         expect(StyleSheet.flatten(view.UNSAFE_getByProps({ testID: 'choice-group-indicator-VERTICAL' }).props.style)).toEqual(
             expect.objectContaining({ flexShrink: 0, height: 22, width: 22 }),
@@ -506,10 +570,12 @@ describe('shared ui', () => {
         fireEvent(card, 'focus');
         fireEvent(select, 'focus');
 
-        expect(segment.findByType(View).props.style).toEqual(
-            expect.objectContaining({ backgroundColor: '#E6E037', borderColor: expect.not.stringMatching(/^transparent$/), borderWidth: 2 }),
+        expect(view.getByTestId('segmented-option-surface-AUTO').props.style).toEqual(
+            expect.objectContaining({ borderColor: expect.not.stringMatching(/^transparent$/), borderWidth: 2 }),
         );
-        expect(card.findByType(View).props.style).toEqual(expect.objectContaining({ borderColor: expect.not.stringMatching(/^transparent$/), borderWidth: 2 }));
+        expect(view.getByTestId('choice-card-surface-DARK').props.style).toEqual(
+            expect.objectContaining({ borderColor: expect.not.stringMatching(/^transparent$/), borderWidth: 2 }),
+        );
         expect(select.props.style).toEqual(expect.objectContaining({ borderColor: expect.not.stringMatching(/^transparent$/), borderWidth: 2 }));
     });
 
@@ -606,10 +672,10 @@ describe('shared ui', () => {
             expect.objectContaining({ borderRadius: 16, borderWidth: 1, gap: 8, padding: 4 }),
         );
         expect(StyleSheet.flatten(view.getByTestId('select-field-option-surface-AUTO').props.style)).toEqual(
-            expect.objectContaining({ borderWidth: 2, paddingHorizontal: 16, paddingVertical: 16 }),
+            expect.objectContaining({ paddingHorizontal: 16 }),
         );
         expect(StyleSheet.flatten(view.getByTestId('select-field-option-surface-ORIGINAL').props.style)).toEqual(
-            expect.objectContaining({ borderColor: 'transparent', paddingHorizontal: 16, paddingVertical: 16 }),
+            expect.objectContaining({ paddingHorizontal: 16 }),
         );
         expect(StyleSheet.flatten(view.getByTestId('select-field-option-indicator-AUTO').props.style)).toEqual(
             expect.objectContaining({ flexShrink: 0, height: 28, width: 28 }),
@@ -699,12 +765,17 @@ describe('shared ui', () => {
         expect(resolveSelectSheetHeight({ height: Number.NaN }, { bottom: -10, top: Number.POSITIVE_INFINITY }, 5)).toBe(0);
     });
 
-    it('permite alternar switch pela linha inteira e comunica disabled', () => {
+    it('alterna apenas pelo switch e mantém o texto inerte', () => {
         const onChange = jest.fn();
         const view = withTheme(<SwitchRow label="Contraste" description="Realça bordas" value={false} onChange={onChange} />);
         const control = view.getByRole('switch', { name: 'Contraste' });
 
         fireEvent.press(view.getByText('Contraste'));
+        fireEvent.press(view.getByText('Realça bordas'));
+        fireEvent.press(view.getByTestId('switch-row-content'));
+        expect(onChange).not.toHaveBeenCalled();
+        fireEvent(control, 'valueChange', true);
+        expect(onChange).toHaveBeenCalledTimes(1);
 
         expect(control.props.accessibilityState).toEqual({ checked: false, disabled: false });
         const contentStyle = StyleSheet.flatten(view.getByTestId('switch-row-content').props.style);
@@ -725,6 +796,14 @@ describe('shared ui', () => {
         expect(switchStyle).toEqual(expect.objectContaining({ flexShrink: 0, minWidth: 64, width: 64 }));
         expect(switchStyle.position).toBeUndefined();
         expect(onChange).toHaveBeenCalledWith(true);
+    });
+
+    it('revisão 2026-11-13: o fundo desligado do switch no iOS segue o tema do app, não o do aparelho', () => {
+        const view = withTheme(<SwitchRow label="Contraste" value={false} onChange={jest.fn()} />);
+
+        expect(view.UNSAFE_getByType(Switch).props).toEqual(
+            expect.objectContaining({ ios_backgroundColor: darkTokens.inputBorder, trackColor: { false: darkTokens.inputBorder, true: darkTokens.accent } }),
+        );
     });
 
     it('empilha o switch após a copy com fonte ampliada sem usar sobreposição absoluta', () => {

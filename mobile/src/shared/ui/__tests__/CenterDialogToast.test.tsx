@@ -1,12 +1,13 @@
-import { Keyboard, Text } from 'react-native';
+import { Keyboard, StyleSheet, Text } from 'react-native';
 import { act, fireEvent, render, screen } from '@testing-library/react-native';
 
-import { ThemeProvider } from '@/shared/theme';
+import { MOTION_DURATIONS, ThemeProvider } from '@/shared/theme';
 
 import { BottomSheet } from '../BottomSheet';
 import { CenterDialog } from '../CenterDialog';
 import { ConfirmDialog } from '../ConfirmSheet';
 import { showToast, TOAST_DURATION_MS, ToastHost, useToastStore } from '../toast';
+import { shouldDismissSwipe } from '../toast/ToastHost';
 
 jest.mock('@expo/vector-icons', () => ({ Ionicons: () => null }));
 
@@ -53,18 +54,54 @@ describe('diálogo central, confirmação, notificação e teclado (2026-11-10)'
         );
         expect(screen.getByTestId('confirm-sheet-items')).toHaveTextContent(/páginas/);
         expect(screen.getByTestId('confirm-sheet-preserved')).toHaveTextContent(/preferências/);
+        // A confirmação não separa o cabeçalho da lista com linha (2026-11-14).
+        expect(screen.getByTestId('center-dialog-header')).toHaveStyle({ borderBottomWidth: 0 });
         fireEvent.press(screen.getByTestId('confirm-sheet-cancel'));
         expect(onConfirm).not.toHaveBeenCalled();
         fireEvent.press(screen.getByTestId('confirm-sheet-confirm'));
         expect(onConfirm).toHaveBeenCalledTimes(1);
     });
 
+    it('divisória do cabeçalho só aparece quando há conteúdo antes das ações (2026-11-14)', () => {
+        const view = withTheme(<CenterDialog visible onClose={jest.fn()} closeLabel="Fechar" title="Título" description="Descrição" />);
+        expect(screen.getByTestId('center-dialog-header')).toHaveStyle({ borderBottomWidth: 0 });
+        view.rerender(
+            <ThemeProvider waitForPlatform={false}>
+                <CenterDialog visible onClose={jest.fn()} closeLabel="Fechar" title="Título">
+                    <Text>corpo</Text>
+                </CenterDialog>
+            </ThemeProvider>,
+        );
+        expect(screen.getByTestId('center-dialog-header')).toHaveStyle({ borderBottomWidth: 1 });
+    });
+
+    it('cancelar da confirmação é neutro e não disputa com a ação principal (2026-11-14)', () => {
+        withTheme(
+            <ConfirmDialog visible onClose={jest.fn()} onConfirm={jest.fn()} closeLabel="Fechar" cancelLabel="Manter" confirmLabel="Limpar" title="Limpar?" />,
+        );
+        const cancel = screen.getByTestId('confirm-sheet-cancel');
+        expect(cancel).toHaveStyle({ borderWidth: 1 });
+        expect(['#C9C3B5', '#3A3932']).toContain(StyleSheet.flatten(cancel.props.style).borderColor);
+    });
+
+    it('arrastar a notificação para a direita a dispensa só com distância ou velocidade suficientes (2026-11-14)', () => {
+        expect(shouldDismissSwipe(150, 0, 300)).toBe(true);
+        expect(shouldDismissSwipe(60, 0, 300)).toBe(false);
+        expect(shouldDismissSwipe(40, 0.9, 300)).toBe(true);
+        expect(shouldDismissSwipe(-40, 0.9, 300)).toBe(false);
+    });
+
     it('notificação aparece por cima da tela e some sozinha', () => {
         jest.useFakeTimers();
         withTheme(<ToastHost />);
         act(() => showToast({ tone: 'success', title: 'Cache limpo', description: 'Pronto.' }));
+        expect(screen.getByTestId('toast-layer')).toHaveStyle({ alignItems: 'flex-end', right: 0 });
         expect(screen.getByTestId('toast')).toHaveProp('accessibilityLabel', 'Cache limpo. Pronto.');
         act(() => jest.advanceTimersByTime(TOAST_DURATION_MS + 10));
+        // Sai animada: continua na tela, sem receber toques, até a animação de saída terminar.
+        expect(screen.getByTestId('toast')).toBeOnTheScreen();
+        expect(screen.getByTestId('toast-layer')).toHaveProp('pointerEvents', 'none');
+        act(() => jest.advanceTimersByTime(MOTION_DURATIONS.exit + 50));
         expect(screen.queryByTestId('toast')).toBeNull();
     });
 

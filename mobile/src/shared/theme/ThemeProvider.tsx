@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
-import { AccessibilityInfo, ActivityIndicator, useColorScheme, useWindowDimensions, View } from 'react-native';
+import { AccessibilityInfo, useColorScheme, useWindowDimensions, View } from 'react-native';
+import { Image } from 'expo-image';
 import { StatusBar } from 'expo-status-bar';
 
 import {
@@ -30,6 +31,10 @@ import {
     type TypographyStyleScale,
 } from './appearance';
 import { type ColorScheme, darkTokens, lightTokens, type ThemeTokens } from './tokens';
+
+/** Mesma imagem e largura do splash nativo (`expo-splash-screen` em `app.json`). */
+const SPLASH_LOGO = require('../../../assets/images/splash-icon.png');
+const SPLASH_LOGO_SIZE = 240;
 
 interface ThemeContextValue {
     tokens: ThemeTokens;
@@ -175,6 +180,7 @@ export function ThemeProvider({
     }, [initialOverride]);
 
     const supportedSystemScheme = systemScheme === 'dark' || systemScheme === 'light' ? systemScheme : null;
+
     const colorScheme = resolveColorScheme(override === 'dark' ? 'DARK' : override === 'light' ? 'LIGHT' : 'SYSTEM', supportedSystemScheme);
     const effectiveReduceMotion = resolveEffectiveReduceMotion(reduceMotion, systemReduceMotion);
     const effectiveHighContrast = resolveEffectiveHighContrast(highContrast, systemHighTextContrast || systemDarkerColors);
@@ -208,9 +214,10 @@ export function ThemeProvider({
 
     if (waitForPlatform && !platformReady) {
         return (
+            // Fica atrás do splash nativo: desenha o mesmo logo, tamanho e fundo, para nada piscar na troca.
             <View accessible accessibilityRole="progressbar" style={{ alignItems: 'center', backgroundColor: tokens.bg, flex: 1, justifyContent: 'center' }}>
                 <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
-                <ActivityIndicator color={tokens.accent} />
+                <Image source={SPLASH_LOGO} contentFit="contain" accessible={false} style={{ height: SPLASH_LOGO_SIZE, width: SPLASH_LOGO_SIZE }} />
             </View>
         );
     }
@@ -225,6 +232,8 @@ export function useTheme(): ThemeContextValue {
 /** Scope a palette without adding platform listeners or changing application preferences. */
 export function ThemePaletteProvider({ tokens, colorScheme, children }: { tokens: ThemeTokens; colorScheme: ColorScheme; children: React.ReactNode }) {
     const parent = useTheme();
+
     const value = useMemo(() => ({ ...parent, tokens, colorScheme }), [parent, tokens, colorScheme]);
+
     return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
 }

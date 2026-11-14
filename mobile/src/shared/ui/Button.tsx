@@ -1,12 +1,14 @@
 import { ReactNode, useState } from 'react';
-import { ActivityIndicator, Pressable, type PressableProps, View } from 'react-native';
+import { ActivityIndicator, type PressableProps, View } from 'react-native';
 
 import { useTheme } from '@/shared/theme';
 
 import { AppText } from './AppText';
+import { AnimatedPressable, usePressFeedback } from './usePressFeedback';
 
 type Variant = 'primary' | 'ghost' | 'outline';
-type ButtonTone = 'accent' | 'danger';
+/** `neutral`: secondary actions such as cancel, so they never compete with the main action. */
+type ButtonTone = 'accent' | 'danger' | 'neutral';
 type ButtonSize = 'compact' | 'default';
 
 interface Props extends Omit<PressableProps, 'children' | 'disabled' | 'onPress' | 'style'> {
@@ -20,6 +22,7 @@ interface Props extends Omit<PressableProps, 'children' | 'disabled' | 'onPress'
     loading?: boolean;
     disabled?: boolean;
     fullWidth?: boolean;
+    singleLine?: boolean;
 }
 
 export function Button({
@@ -33,27 +36,42 @@ export function Button({
     loading,
     disabled,
     fullWidth = true,
+    singleLine = false,
     ...pressableProps
 }: Props) {
     const { layout, minimumTouchTarget, radii, spacing, tokens } = useTheme();
     const off = loading || disabled;
-    const actionColor = tone === 'danger' ? tokens.danger : tokens.accent;
-    const actionTextColor = tone === 'danger' ? tokens.danger : tokens.accentText;
-    const primaryTextColor = tone === 'danger' ? tokens.inverseText : tokens.onAccent;
+    const actionColor = tone === 'danger' ? tokens.danger : tone === 'neutral' ? tokens.text : tokens.accent;
+    const actionTextColor = tone === 'danger' ? tokens.danger : tone === 'neutral' ? tokens.text : tokens.accentText;
+    const primaryTextColor = tone === 'accent' ? tokens.onAccent : tokens.inverseText;
     const height = size === 'compact' ? layout.compactControlHeight : layout.controlHeight;
 
     const bg = variant === 'primary' ? actionColor : 'transparent';
 
-    const borderColor = variant === 'outline' ? (off ? tokens.inputBorder : tone === 'danger' ? tokens.danger : tokens.accentBorder) : 'transparent';
+    const borderColor =
+        variant === 'outline' ? (off || tone === 'neutral' ? tokens.inputBorder : tone === 'danger' ? tokens.danger : tokens.accentBorder) : 'transparent';
 
-    const textTone = tone === 'danger' ? 'danger' : 'accent';
+    const textTone = tone === 'danger' ? 'danger' : tone === 'neutral' ? 'default' : 'accent';
     const [focused, setFocused] = useState(false);
-    const [pressed, setPressed] = useState(false);
-    const pressedBackground = variant === 'primary' ? (tone === 'danger' ? tokens.danger : tokens.accentBorder) : tokens.surfacePressed;
+    const pressedBackground = variant === 'primary' ? (tone === 'accent' ? tokens.accentBorder : actionColor) : tokens.surfacePressed;
+    // Primário: o hover usa o mesmo tom do pressionado (um cinza claro sobre a cor de destaque não serve).
+    const hoverBackground = variant === 'primary' ? pressedBackground : tokens.surfaceHover;
+    const feedback = usePressFeedback(
+        {
+            background: off ? tokens.disabledSurface : bg,
+            pressedBackground: off ? tokens.disabledSurface : pressedBackground,
+            hoverBackground: off ? tokens.disabledSurface : hoverBackground,
+            pressedScale: off ? 1 : 0.97,
+            opacity: off ? 0.62 : 1,
+            disabled: !!off,
+        },
+        pressableProps,
+    );
 
     const control = (
-        <Pressable
+        <AnimatedPressable
             {...pressableProps}
+            {...feedback.handlers}
             accessibilityRole="button"
             accessibilityState={{ disabled: !!off, busy: !!loading }}
             onPress={onPress}
@@ -65,31 +83,23 @@ export function Button({
                 setFocused(false);
                 pressableProps.onBlur?.(event);
             }}
-            onPressIn={event => {
-                setPressed(true);
-                pressableProps.onPressIn?.(event);
-            }}
-            onPressOut={event => {
-                setPressed(false);
-                pressableProps.onPressOut?.(event);
-            }}
             disabled={!!off}
-            style={{
-                alignItems: 'center',
-                backgroundColor: off ? tokens.disabledSurface : pressed ? pressedBackground : bg,
-                borderColor: focused ? tokens.focus : off && variant === 'primary' ? tokens.separator : borderColor,
-                borderRadius: radii.control,
-                borderWidth: focused ? 2 : variant === 'outline' || (off && variant === 'primary') ? 1 : 0,
-                flexDirection: 'row',
-                gap: spacing.sm,
-                justifyContent: 'center',
-                minHeight: Math.max(height, minimumTouchTarget),
-                opacity: off ? 0.62 : 1,
-                paddingHorizontal: size === 'compact' ? spacing.md : spacing.lg,
-                paddingVertical: spacing.sm,
-                width: fullWidth ? '100%' : undefined,
-                ...(pressed && !off ? { transform: [{ scale: 0.985 }] } : {}),
-            }}
+            style={[
+                {
+                    alignItems: 'center',
+                    borderColor: focused ? tokens.focus : off && variant === 'primary' ? tokens.separator : borderColor,
+                    borderRadius: radii.control,
+                    borderWidth: focused ? 2 : variant === 'outline' || (off && variant === 'primary') ? 1 : 0,
+                    flexDirection: 'row',
+                    gap: spacing.sm,
+                    justifyContent: 'center',
+                    minHeight: Math.max(height, minimumTouchTarget),
+                    paddingHorizontal: size === 'compact' ? spacing.md : spacing.lg,
+                    paddingVertical: spacing.sm,
+                    width: fullWidth ? '100%' : undefined,
+                },
+                feedback.animatedStyle,
+            ]}
         >
             {loading ? (
                 <ActivityIndicator size="small" color={variant === 'primary' ? primaryTextColor : actionTextColor} />
@@ -99,14 +109,22 @@ export function Button({
                     <AppText
                         variant="button"
                         tone={textTone}
-                        style={off ? { color: tokens.disabled } : variant === 'primary' ? { color: primaryTextColor } : undefined}
+                        numberOfLines={singleLine ? 1 : undefined}
+                        adjustsFontSizeToFit={singleLine}
+                        minimumFontScale={singleLine ? 0.75 : undefined}
+                        style={{
+                            width: fullWidth && !leading && !trailing ? '100%' : undefined,
+                            flexShrink: 1,
+                            textAlign: 'center',
+                            color: off ? tokens.disabled : variant === 'primary' ? primaryTextColor : actionTextColor,
+                        }}
                     >
                         {children}
                     </AppText>
                     {trailing}
                 </>
             )}
-        </Pressable>
+        </AnimatedPressable>
     );
 
     return fullWidth ? <View style={{ alignSelf: 'stretch', width: '100%' }}>{control}</View> : control;

@@ -31,7 +31,9 @@ describe('MOB-FEAT-057 SectionHeader e ações', () => {
         expect(StyleSheet.flatten(screen.getByTestId('section-header-count').props.style)).toEqual(
             expect.objectContaining({ backgroundColor: darkTokens.surfaceMuted, borderColor: darkTokens.separator, minHeight: 24 }),
         );
-        expect(StyleSheet.flatten(screen.getByTestId('section-header').props.style)).toEqual(expect.objectContaining({ minHeight: touchTarget }));
+        // 2026-11-14: o cabeçalho não força altura; a área de toque fica nas ações, e o título fica a `sm` do conteúdo.
+        expect(StyleSheet.flatten(screen.getByTestId('section-header').props.style)).toEqual(expect.objectContaining({ marginBottom: 8 }));
+        expect(StyleSheet.flatten(screen.getByTestId('section-header').props.style).minHeight).toBeUndefined();
 
         const action = screen.getByRole('button', { name: 'Recentes' });
         expect(StyleSheet.flatten(action.props.style)).toEqual(expect.objectContaining({ minHeight: touchTarget }));

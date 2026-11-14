@@ -1,9 +1,9 @@
-import { useState } from 'react';
-import { Pressable, View } from 'react-native';
+import { View } from 'react-native';
 
 import { useTheme } from '@/shared/theme';
 
 import { AppText } from './AppText';
+import { PressableBox as Pressable } from './PressableBox';
 
 const RADIO_SIZE = 22;
 const RADIO_DOT_SIZE = 10;
@@ -39,7 +39,6 @@ export function ChoiceGroup<T extends string>({
     hideLabel = false,
 }: ChoiceGroupProps<T>) {
     const { fontScale, metrics, minimumTouchTarget, radii, spacing, tokens } = useTheme();
-    const [focusedOption, setFocusedOption] = useState<T | null>(null);
     const stacked = resolveChoiceGroupStacked(layout, fontScale);
 
     return (
@@ -48,7 +47,6 @@ export function ChoiceGroup<T extends string>({
             <View style={{ flexDirection: stacked ? 'column' : 'row', flexWrap: stacked ? 'nowrap' : 'wrap', gap: spacing.sm }}>
                 {options.map(option => {
                     const selected = option === value;
-                    const focused = option === focusedOption;
                     return (
                         <Pressable
                             key={option}
@@ -57,8 +55,6 @@ export function ChoiceGroup<T extends string>({
                             accessibilityRole="radio"
                             accessibilityState={{ disabled, selected }}
                             disabled={disabled}
-                            onBlur={() => setFocusedOption(current => (current === option ? null : current))}
-                            onFocus={() => setFocusedOption(option)}
                             onPress={() => onChange(option)}
                             style={{
                                 minHeight: minimumTouchTarget,
@@ -68,21 +64,27 @@ export function ChoiceGroup<T extends string>({
                                 ...(stacked ? { alignSelf: 'stretch' } : {}),
                             }}
                         >
-                            {({ pressed }) => (
+                            {({ pressed, hovered, focused }) => (
                                 <View
                                     testID={`choice-group-row-${option}`}
                                     style={{
                                         alignItems: 'center',
-                                        backgroundColor: pressed ? tokens.surfacePressed : selected ? tokens.surfaceSelected : tokens.surface,
+                                        backgroundColor: pressed
+                                            ? tokens.surfacePressed
+                                            : hovered
+                                              ? tokens.surfaceHover
+                                              : selected
+                                                ? tokens.surfaceSelected
+                                                : tokens.surface,
                                         borderColor: focused ? tokens.focus : selected ? tokens.accentBorder : tokens.inputBorder,
                                         borderRadius: radii.control,
                                         borderWidth: 2,
-                                        flexDirection: 'row',
+                                        flexDirection: stacked ? 'row-reverse' : 'row',
                                         gap: stacked ? metrics.rhythm.itemGap : spacing.sm,
                                         maxWidth: '100%',
                                         minHeight: stacked ? Math.max(minimumTouchTarget, metrics.row.single) : minimumTouchTarget,
                                         paddingHorizontal: spacing.md,
-                                        paddingVertical: stacked ? metrics.rhythm.itemGap : spacing.sm,
+                                        paddingVertical: spacing.sm,
                                         width: stacked ? '100%' : undefined,
                                     }}
                                 >
@@ -111,7 +113,10 @@ export function ChoiceGroup<T extends string>({
                                             />
                                         ) : null}
                                     </View>
-                                    <View testID={`choice-group-copy-${option}`} style={{ flexShrink: 1, gap: spacing.xs, minWidth: 0 }}>
+                                    <View
+                                        testID={`choice-group-copy-${option}`}
+                                        style={{ flexGrow: stacked ? 1 : 0, flexShrink: 1, gap: spacing.xs, minWidth: 0 }}
+                                    >
                                         <AppText variant="label" tone={selected ? 'accent' : 'default'}>
                                             {optionLabel(option)}
                                         </AppText>

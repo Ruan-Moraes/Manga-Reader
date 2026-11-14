@@ -1,4 +1,4 @@
-import { Platform, type TextStyle } from 'react-native';
+import { Easing, Platform, type TextStyle } from 'react-native';
 
 import { FONTS } from './fonts';
 import type { ColorScheme, ThemeTokens } from './tokens';
@@ -93,13 +93,31 @@ export function createShadowStyle(role: ShadowRole, shadowColor: string) {
     };
 }
 
-export type MotionRole = 'fast' | 'base' | 'sheet' | 'pulse';
+export type MotionRole = 'instant' | 'fast' | 'base' | 'sheet' | 'exit' | 'pulse' | 'screen' | 'screenSlide';
 export type MotionScale = Record<MotionRole, number>;
 
-export const MOTION_DURATIONS: MotionScale = { fast: 140, base: 180, sheet: 240, pulse: 700 };
+/**
+ * Durações em ms. `fast`: toque, hover e foco. `base`: aparecer e sumir. `sheet`: entrada de folha e
+ * deslocamentos longos. `exit`: saída de folha e diálogo (sempre mais curta que a entrada).
+ * `pulse`: ciclo completo (ida e volta) do esqueleto de carregamento.
+ * `screen`: troca de tela com fade (troca de módulo, leitor, abas). `screenSlide`: tela que desliza (ir mais fundo no
+ * iOS, fluxo que sobe de baixo). As trocas de tela são mais curtas que os elementos da tela (pedido de 2026-11-14).
+ */
+export const MOTION_DURATIONS: MotionScale = { instant: 0, fast: 120, base: 200, sheet: 280, exit: 180, pulse: 1200, screen: 140, screenSlide: 220 };
 
-export const resolveMotionDurations = (effectiveReduceMotion: boolean): MotionScale =>
-    effectiveReduceMotion ? { fast: 0, base: 0, sheet: 0, pulse: 0 } : MOTION_DURATIONS;
+const REDUCED_MOTION_DURATIONS = Object.fromEntries(Object.keys(MOTION_DURATIONS).map(role => [role, 0])) as MotionScale;
+
+export const resolveMotionDurations = (effectiveReduceMotion: boolean): MotionScale => (effectiveReduceMotion ? REDUCED_MOTION_DURATIONS : MOTION_DURATIONS);
+
+export type MotionEasingRole = 'standard' | 'enter' | 'exit' | 'pulse';
+
+/** Curvas para `Animated` (react-native). Animações em worklet do Reanimated usam o `Easing` do Reanimated. */
+export const MOTION_EASING: Record<MotionEasingRole, (value: number) => number> = {
+    standard: Easing.out(Easing.quad),
+    enter: Easing.out(Easing.cubic),
+    exit: Easing.in(Easing.cubic),
+    pulse: Easing.inOut(Easing.sin),
+};
 
 export function createTypographyStyles(scale: TypographyScale): TypographyStyleScale {
     return {
@@ -135,6 +153,7 @@ export const darkHighContrastTokens: ThemeTokens = {
     surface: '#181818',
     surfaceMuted: '#0d0d0d',
     surfaceElevated: '#181818',
+    surfaceHover: '#262626',
     surfacePressed: '#333333',
     surfaceSelected: '#181818',
     disabledSurface: '#0d0d0d',
@@ -178,6 +197,7 @@ export const lightHighContrastTokens: ThemeTokens = {
     surface: '#ffffff',
     surfaceMuted: '#f5f5f5',
     surfaceElevated: '#f5f5f5',
+    surfaceHover: '#f2f2f2',
     surfacePressed: '#e5e5e5',
     surfaceSelected: '#f5f5f5',
     disabledSurface: '#f5f5f5',

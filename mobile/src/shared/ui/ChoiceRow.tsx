@@ -38,7 +38,7 @@ export function ChoiceRow<T extends string>({
     disabled = false,
     testID = 'choice-row',
 }: ChoiceRowProps<T>) {
-    const { metrics, minimumTouchTarget, spacing, tokens } = useTheme();
+    const { metrics, minimumTouchTarget, radii, spacing, tokens } = useTheme();
     const [open, setOpen] = useState(false);
 
     const choose = (option: T) => {
@@ -56,12 +56,20 @@ export function ChoiceRow<T extends string>({
                 accessibilityState={{ disabled, expanded: open }}
                 disabled={disabled}
                 onPress={() => setOpen(true)}
-                style={({ pressed }) => ({
+                // Fundo de toque e hover sangra `spacing.sm` para os lados sem mover o texto.
+                style={({ pressed, hovered, focused }) => ({
                     alignItems: 'center',
+                    backgroundColor: pressed ? tokens.surfacePressed : hovered ? tokens.surfaceHover : 'transparent',
+                    borderRadius: radii.control,
                     flexDirection: 'row',
                     gap: spacing.md,
+                    marginHorizontal: -spacing.sm,
                     minHeight: minimumTouchTarget,
-                    opacity: disabled ? 0.56 : pressed ? 0.72 : 1,
+                    opacity: disabled ? 0.56 : 1,
+                    outlineColor: tokens.focus,
+                    outlineOffset: -2,
+                    outlineWidth: focused ? 2 : 0,
+                    paddingHorizontal: spacing.sm,
                 })}
             >
                 <View style={{ flex: 1, gap: spacing.xs, minWidth: 0 }}>

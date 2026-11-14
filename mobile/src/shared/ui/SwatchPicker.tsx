@@ -179,7 +179,7 @@ export function SwatchPicker<T extends string>({
                 <View accessibilityElementsHidden style={{ flexDirection: 'row', gap: spacing.sm }}>
                     {options.map(option => (
                         <View key={option} style={{ alignItems: 'center', width: optionWidth }}>
-                            <AppText numberOfLines={2} variant="caption" tone={option === displayedValue ? 'accent' : 'muted'} style={{ textAlign: 'center' }}>
+                            <AppText numberOfLines={2} variant="caption" tone="muted" style={{ textAlign: 'center' }}>
                                 {optionLabel(option)}
                             </AppText>
                         </View>

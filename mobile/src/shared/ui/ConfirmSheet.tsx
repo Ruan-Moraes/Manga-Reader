@@ -89,11 +89,12 @@ export function ConfirmDialog({
             description={description}
             icon={icon ?? (tone === 'danger' ? 'trash-outline' : 'help-circle-outline')}
             tone={tone}
+            showHeaderDivider={false}
             testIDs={{ layer: 'confirm-sheet-layer', backdrop: 'confirm-sheet-backdrop', card: 'confirm-sheet', icon: 'confirm-sheet-icon' }}
             actions={
                 <>
                     <DialogAction>
-                        <Button variant="outline" onPress={onClose} testID="confirm-sheet-cancel">
+                        <Button variant="outline" tone="neutral" onPress={onClose} testID="confirm-sheet-cancel">
                             {cancelLabel}
                         </Button>
                     </DialogAction>

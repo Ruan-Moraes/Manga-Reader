@@ -12,12 +12,14 @@ interface SectionHeaderProps {
     /** Usually `SectionAction` chips. */
     children?: ReactNode;
     testID?: string;
-    /** Smaller gap to the content right below (grids whose cards already carry their own spacing). */
-    dense?: boolean;
 }
 
-export function SectionHeader({ title, count, children, testID = 'section-header', dense = false }: SectionHeaderProps) {
-    const { metrics, minimumTouchTarget, radii, spacing, tokens } = useTheme();
+/**
+ * Section title with optional count and actions. Title to content is always `spacing.sm` (2026-11-14), the same gap as
+ * {@link Section} and `FormSection`; the row only grows to the touch target when actions are present (they carry it).
+ */
+export function SectionHeader({ title, count, children, testID = 'section-header' }: SectionHeaderProps) {
+    const { metrics, radii, spacing, tokens } = useTheme();
 
     return (
         <View
@@ -27,8 +29,7 @@ export function SectionHeader({ title, count, children, testID = 'section-header
                 flexDirection: 'row',
                 gap: metrics.rhythm.itemGap,
                 justifyContent: 'space-between',
-                marginBottom: dense ? spacing.xs : metrics.rhythm.itemGap,
-                minHeight: minimumTouchTarget,
+                marginBottom: spacing.sm,
             }}
         >
             <View style={{ alignItems: 'center', flexDirection: 'row', flexShrink: 1, gap: spacing.sm, minWidth: 0 }}>

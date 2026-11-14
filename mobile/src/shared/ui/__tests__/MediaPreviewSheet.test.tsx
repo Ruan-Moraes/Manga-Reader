@@ -49,10 +49,11 @@ describe('MediaPreviewSheet', () => {
         const image = screen.getByTestId('preview-image');
         expect(image.props.source).toEqual({ uri: 'file:///private/page-1.png' });
         expect(image.props.contentFit).toBe('contain');
-        expect(image.props.contentPosition).toBe('top');
+        expect(image.props.contentPosition).toBe('center');
         expect(image.props.cachePolicy).toBe('memory-disk');
         expect(screen.getByTestId('details')).toBeOnTheScreen();
-        expect(screen.getByTestId('actions')).toBeOnTheScreen();
+        expect(screen.getByTestId('media-preview-footer')).toContainElement(screen.getByTestId('actions'));
+        expect(screen.getAllByRole('button', { name: 'Fechar' })).toHaveLength(1);
         expect(screen.queryByText(/file:\/\//)).toBeNull();
         expect(mockStatusBar).toHaveBeenLastCalledWith({ animated: true, hidden: false, style: 'dark' });
     });
