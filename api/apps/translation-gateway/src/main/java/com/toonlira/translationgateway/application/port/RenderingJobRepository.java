@@ -7,6 +7,7 @@ import com.toonlira.translationgateway.domain.JobStatus;
 import com.toonlira.translationgateway.domain.rendering.RenderPolicy;
 import com.toonlira.translationgateway.domain.rendering.RenderSource;
 import com.toonlira.translationgateway.domain.rendering.RenderValidationException;
+import com.toonlira.translationgateway.domain.rendering.RenderTextCounts;
 import com.toonlira.translationgateway.domain.rendering.RenderedImage;
 import com.toonlira.translationgateway.domain.rendering.ResultObjectKey;
 import com.toonlira.translationgateway.domain.OriginalObjectKey;
@@ -40,7 +41,12 @@ public interface RenderingJobRepository {
         @Override public String toString() { return "RenderingWorkItem[redacted]"; }
     }
 
-    record Artifacts(String imageObjectKey, RenderedImage image, String manifestObjectKey, String manifestSha256) {
+    /** {@code text} is null only for results rendered before quality was persisted. */
+    record Artifacts(String imageObjectKey, RenderedImage image, String manifestObjectKey, String manifestSha256,
+                     RenderTextCounts text) {
+        public Artifacts(String imageObjectKey, RenderedImage image, String manifestObjectKey, String manifestSha256) {
+            this(imageObjectKey, image, manifestObjectKey, manifestSha256, null);
+        }
         public Artifacts {
             if (!validKey(imageObjectKey) || !validKey(manifestObjectKey) || imageObjectKey.equals(manifestObjectKey)
                 || image == null || image.byteSize() > RenderPolicy.MAX_OUTPUT_BYTES

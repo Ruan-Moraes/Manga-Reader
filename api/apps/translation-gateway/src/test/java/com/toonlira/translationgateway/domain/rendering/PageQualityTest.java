@@ -37,4 +37,17 @@ class PageQualityTest {
         assertThat(PageQuality.evaluate(List.of(name, region(true))).issues())
             .containsExactly("TEXT_NOT_RENDERED", "ALL_TEXT_NOT_RENDERED");
     }
+
+    @Test
+    void persistedCountsDeriveTheSameQualityAsTheManifest() {
+        var regions = List.of(region(false), region(true),
+            new RenderManifest.Region(UUID.randomUUID(), 0, "AKANE!", "AKANE!", List.of(), true, 0));
+        var counts = RenderTextCounts.of(regions);
+        assertThat(counts).isEqualTo(new RenderTextCounts(2, 1));
+        assertThat(PageQuality.of(counts)).isEqualTo(PageQuality.evaluate(regions));
+        assertThat(new RenderTextCounts(0, 0).quality().status()).isEqualTo("OK");
+        assertThat(new RenderTextCounts(3, 3).quality().issues()).containsExactly("TEXT_NOT_RENDERED", "ALL_TEXT_NOT_RENDERED");
+        org.assertj.core.api.Assertions.assertThatThrownBy(() -> new RenderTextCounts(1, 2))
+            .isInstanceOf(RenderValidationException.class);
+    }
 }

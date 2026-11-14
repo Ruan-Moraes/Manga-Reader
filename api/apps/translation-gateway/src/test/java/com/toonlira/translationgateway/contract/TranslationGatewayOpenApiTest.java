@@ -108,6 +108,23 @@ class TranslationGatewayOpenApiTest {
     }
 
     @Test
+    void readyQualityIsOptionalAndMirrorsTheDomainValues() throws IOException {
+        var contract = loadContract();
+        var result = schema(contract, "ReadyResult");
+        assertThat(list(result.get("required"))).doesNotContain("quality");
+        assertThat(map(map(result.get("properties")).get("quality"))).containsEntry("$ref", "#/components/schemas/PageQuality");
+        var quality = schema(contract, "PageQuality");
+        assertThat(quality).containsEntry("additionalProperties", false);
+        var properties = map(quality.get("properties"));
+        assertThat(list(map(properties.get("status")).get("enum"))).containsExactly(
+            com.toonlira.translationgateway.domain.rendering.PageQuality.OK,
+            com.toonlira.translationgateway.domain.rendering.PageQuality.NEEDS_REVIEW);
+        assertThat(list(map(map(properties.get("issues")).get("items")).get("enum"))).containsExactly(
+            com.toonlira.translationgateway.domain.rendering.PageQuality.TEXT_NOT_RENDERED,
+            com.toonlira.translationgateway.domain.rendering.PageQuality.ALL_TEXT_NOT_RENDERED);
+    }
+
+    @Test
     void jobQueriesDoNotCacheAvailabilityAfterAckOrTtl() throws IOException {
         var paths = map(loadContract().get("paths"));
         for (var path : new String[] {"/v1/page-jobs/{jobRef}", "/v1/page-jobs/by-idempotency/{idempotencyKey}"}) {

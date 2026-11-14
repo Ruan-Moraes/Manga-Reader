@@ -199,8 +199,17 @@ class GatewayControllerTest {
                 .andExpect(jsonPath("$.result.manifest.mimeType").value("application/json"))
                 .andExpect(jsonPath("$.result.manifest.byteSize").value(2048))
                 .andExpect(jsonPath("$.result.image.objectKey").doesNotExist())
-                .andExpect(jsonPath("$.result.regions").doesNotExist());
+                .andExpect(jsonPath("$.result.regions").doesNotExist())
+                .andExpect(jsonPath("$.result.quality").doesNotExist());
         }
+        var reviewed = new GetJobResultUseCase.Result(ready, job.serverTime(), new GetJobResultUseCase.ReadyResult(100, 200,
+            job.serverTime().plusSeconds(3600), image, manifest,
+            new com.toonlira.translationgateway.domain.rendering.RenderTextCounts(4, 1).quality()));
+        when(getJob.byRef(installationId, job.jobRef())).thenReturn(reviewed);
+        mockMvc.perform(get("/v1/page-jobs/" + job.jobRef()).principal(authentication)).andExpect(status().isOk())
+            .andExpect(jsonPath("$.result.quality.status").value("NEEDS_REVIEW"))
+            .andExpect(jsonPath("$.result.quality.issues[0]").value("TEXT_NOT_RENDERED"))
+            .andExpect(jsonPath("$.result.quality.issues.length()").value(1));
     }
 
     @Test

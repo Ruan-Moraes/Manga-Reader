@@ -758,6 +758,34 @@ class RenderingPersistenceTest {
         System.out.println("Ready result projection EXPLAIN (synthetic local fixture):\n" + String.join("\n", plan));
     }
 
+    @Test
+    void renderedTextCountsArePersistedReadBackAndConstrained() {
+        var job = prepareRendering();
+        rendering.claim(job.jobRef(), now);
+        var counts = new com.toonlira.translationgateway.domain.rendering.RenderTextCounts(12, 3);
+        assertThat(rendering.complete(job.id(), new RenderingJobRepository.Artifacts("private/rendering/" + job.id() + "/image.webp",
+            new RenderedImage("image/webp", 1024, 100, 200, "c".repeat(64)),
+            "private/rendering/" + job.id() + "/manifest.json", "d".repeat(64), counts), now)).isTrue();
+        var reference = transaction.execute(ignored -> resultDownloads.findReady(job.installationId(), job.jobRef())).orElseThrow();
+        assertThat(reference.text()).isEqualTo(counts);
+        assertThat(reference.text().quality().status()).isEqualTo("NEEDS_REVIEW");
+        assertThat(rendering.find(job.jobRef()).artifacts().text()).isEqualTo(counts);
+        // Legacy rows (before V10) stay null and read back without quality.
+        var legacy = readyDownloadJob();
+        assertThat(transaction.execute(ignored -> resultDownloads.findReady(legacy.installationId(), legacy.jobRef()))
+            .orElseThrow().text()).isNull();
+        for (var invalid : new String[] {"rendered_text_region_count = 2, rendered_text_missing_count = 3",
+            "rendered_text_region_count = 2, rendered_text_missing_count = NULL",
+            "rendered_text_region_count = 1025, rendered_text_missing_count = 0"}) {
+            assertThatThrownBy(() -> jdbc.sql("UPDATE processing_job_stages SET " + invalid
+                + " WHERE job_id = :id AND stage = 'RENDERING'").param("id", job.id()).update())
+                .isInstanceOf(org.springframework.dao.DataIntegrityViolationException.class);
+        }
+        assertThatThrownBy(() -> jdbc.sql("UPDATE processing_job_stages SET rendered_text_region_count = 1, "
+            + "rendered_text_missing_count = 0 WHERE job_id = :id AND stage = 'OCR'").param("id", job.id()).update())
+            .isInstanceOf(org.springframework.dao.DataIntegrityViolationException.class);
+    }
+
     private ProcessingJob readyDownloadJob() {
         var job = prepareRendering();
         rendering.claim(job.jobRef(), now);
@@ -782,7 +810,7 @@ class RenderingPersistenceTest {
     @Test
     void cleanFlywayChainAndExistingPrimaryKeyCoverRenderingMetadata() {
         assertThat(jdbc.sql("SELECT version FROM flyway_schema_history WHERE success ORDER BY installed_rank")
-            .query(String.class).list()).containsExactly("1", "2", "3", "4", "5", "6", "7", "8", "9");
+            .query(String.class).list()).containsExactly("1", "2", "3", "4", "5", "6", "7", "8", "9", "10");
         assertThat(jdbc.sql("SELECT indexdef FROM pg_indexes WHERE schemaname = 'public' AND tablename = 'processing_job_stages'")
             .query(String.class).list()).hasSize(1).first().asString().contains("UNIQUE", "job_id, stage");
         var job = prepareRendering();
@@ -827,7 +855,7 @@ class RenderingPersistenceTest {
         assertThat(upgraded).isEqualTo(rendering.find(job.jobRef()));
         assertThat(upgraded.artifacts()).isNull();
         assertThat(legacy.sql("SELECT version FROM flyway_schema_history WHERE success AND version IS NOT NULL ORDER BY installed_rank")
-            .query(String.class).list()).containsExactly("1", "2", "3", "4", "5", "6", "7", "8", "9");
+            .query(String.class).list()).containsExactly("1", "2", "3", "4", "5", "6", "7", "8", "9", "10");
     }
 
     @Test
@@ -1337,7 +1365,7 @@ class RenderingPersistenceTest {
         assertThat(plan).anyMatch(line -> line.contains("Limit")).anyMatch(line -> line.contains("LockRows"));
         System.out.println("Result expiration EXPLAIN (synthetic local fixture):\n" + String.join("\n", plan));
         assertThat(jdbc.sql("SELECT version FROM flyway_schema_history WHERE success ORDER BY installed_rank")
-            .query(String.class).list()).containsExactly("1", "2", "3", "4", "5", "6", "7", "8", "9");
+            .query(String.class).list()).containsExactly("1", "2", "3", "4", "5", "6", "7", "8", "9", "10");
     }
 
     @Test

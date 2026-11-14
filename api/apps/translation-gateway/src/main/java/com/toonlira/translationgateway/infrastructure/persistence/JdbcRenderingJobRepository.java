@@ -43,7 +43,8 @@ public class JdbcRenderingJobRepository implements RenderingJobRepository {
                        t.output_object_key AS translation_key, t.output_sha256 AS translation_hash,
                        r.output_object_key AS manifest_key, r.output_sha256 AS manifest_hash,
                        r.rendered_image_object_key AS image_key, r.rendered_image_sha256 AS image_hash,
-                       r.rendered_image_byte_size AS image_bytes, r.result_expires_at
+                       r.rendered_image_byte_size AS image_bytes, r.result_expires_at,
+                       r.rendered_text_region_count AS text_regions, r.rendered_text_missing_count AS text_missing
                 FROM processing_jobs j
                 LEFT JOIN processing_job_stages o ON o.job_id = j.id AND o.stage = 'OCR' AND o.status = 'SUCCEEDED'
                 LEFT JOIN processing_job_stages t ON t.job_id = j.id AND t.stage = 'TRANSLATING' AND t.status = 'SUCCEEDED'
@@ -53,7 +54,7 @@ public class JdbcRenderingJobRepository implements RenderingJobRepository {
                 var artifacts = row.getString("image_key") == null ? null : new Artifacts(row.getString("image_key"),
                     new RenderedImage("image/webp", row.getLong("image_bytes"), row.getInt("width_px"),
                         row.getInt("height_px"), row.getString("image_hash")), row.getString("manifest_key"),
-                    row.getString("manifest_hash"));
+                    row.getString("manifest_hash"), JdbcResultDownloadRepository.textCounts(row));
                 if (artifacts != null && artifacts.resultExpiresAt().isPresent()
                     && !artifacts.resultExpiresAt().orElseThrow().equals(row.getObject("result_expires_at", OffsetDateTime.class).toInstant())) {
                     throw new RenderValidationException(INVALID_OUTPUT);
@@ -120,12 +121,15 @@ public class JdbcRenderingJobRepository implements RenderingJobRepository {
                 UPDATE processing_job_stages SET status = 'SUCCEEDED', completed_at = :now,
                     output_object_key = :manifestKey, output_sha256 = :manifestHash,
                     rendered_image_object_key = :imageKey, rendered_image_sha256 = :imageHash,
-                    rendered_image_byte_size = :imageBytes, result_expires_at = :deadline
+                    rendered_image_byte_size = :imageBytes, result_expires_at = :deadline,
+                    rendered_text_region_count = :textRegions, rendered_text_missing_count = :textMissing
                 WHERE job_id = :id AND stage = 'RENDERING' AND status = 'RUNNING'
                 """).param("id", jobId).param("now", timestamp(now))
             .param("manifestKey", artifacts.manifestObjectKey()).param("manifestHash", artifacts.manifestSha256())
             .param("imageKey", artifacts.imageObjectKey()).param("imageHash", artifacts.image().sha256())
-            .param("imageBytes", artifacts.image().byteSize()).param("deadline", timestamp(deadline)).update();
+            .param("imageBytes", artifacts.image().byteSize()).param("deadline", timestamp(deadline))
+            .param("textRegions", artifacts.text() == null ? null : artifacts.text().textRegions(), java.sql.Types.INTEGER)
+            .param("textMissing", artifacts.text() == null ? null : artifacts.text().missing(), java.sql.Types.INTEGER).update();
         if (updated != 1) return false;
         jdbc.sql("UPDATE processing_jobs SET status = 'READY', updated_at = GREATEST(updated_at, :now) WHERE id = :id")
             .param("id", jobId).param("now", timestamp(now)).update();

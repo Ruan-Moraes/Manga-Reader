@@ -16,13 +16,14 @@ public record PageQuality(String status, List<String> issues) {
     public PageQuality { issues = List.copyOf(issues); }
 
     public static PageQuality evaluate(List<RenderManifest.Region> regions) {
-        // An unchanged region keeps its original lettering on purpose; it is not missing text.
-        long notRendered = regions.stream().filter(region -> region.overflow()
-            && !UnchangedText.unchanged(region.sourceText(), region.translatedText())).count();
+        return of(RenderTextCounts.of(regions));
+    }
+
+    /** Derived from persisted counts too, so manifest and ReadyResult can never disagree. */
+    public static PageQuality of(RenderTextCounts counts) {
         var issues = new ArrayList<String>();
-        if (notRendered > 0) issues.add(TEXT_NOT_RENDERED);
-        if (notRendered > 0 && notRendered == regions.stream().filter(region ->
-            !UnchangedText.unchanged(region.sourceText(), region.translatedText())).count()) issues.add(ALL_TEXT_NOT_RENDERED);
+        if (counts.missing() > 0) issues.add(TEXT_NOT_RENDERED);
+        if (counts.missing() > 0 && counts.missing() == counts.textRegions()) issues.add(ALL_TEXT_NOT_RENDERED);
         return new PageQuality(issues.isEmpty() ? OK : NEEDS_REVIEW, issues);
     }
 }

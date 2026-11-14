@@ -204,7 +204,8 @@ public class GatewayController {
         var job = query.job();
         var result = query.result();
         var body = result == null ? null : new ReadyResult("1.0", result.widthPx(), result.heightPx(), result.expiresAt(),
-            download(result.image()), download(result.manifest()));
+            download(result.image()), download(result.manifest()),
+            result.quality() == null ? null : new Quality(result.quality().status(), result.quality().issues()));
         return new JobEnvelope("1.0", job.jobRef(), job.status().name(), query.serverTime(),
             job.errorCode() == null ? null : new JobError(job.errorCode(), false), body);
     }
@@ -220,9 +221,12 @@ public class GatewayController {
                               @JsonInclude(JsonInclude.Include.NON_NULL) ReadyResult result) {
         @Override public String toString() { return "JobEnvelope[redacted]"; }
     }
-    public record ReadyResult(String manifestVersion, int widthPx, int heightPx, Instant expiresAt, Download image, Download manifest) {
+    public record ReadyResult(String manifestVersion, int widthPx, int heightPx, Instant expiresAt, Download image, Download manifest,
+                              @JsonInclude(JsonInclude.Include.NON_NULL) Quality quality) {
         @Override public String toString() { return "ReadyResult[redacted]"; }
     }
+    /** Page quality: OK, or NEEDS_REVIEW when translated text kept the original (it never blocks READY). */
+    public record Quality(String status, java.util.List<String> issues) { }
     public record Download(URI url, String mimeType, long byteSize, String sha256, Instant expiresAt) {
         @Override public String toString() { return "Download[redacted]"; }
     }

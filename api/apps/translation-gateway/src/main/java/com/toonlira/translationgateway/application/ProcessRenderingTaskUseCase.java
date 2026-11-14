@@ -13,6 +13,7 @@ import com.toonlira.translationgateway.domain.OcrLimits;
 import com.toonlira.translationgateway.domain.rendering.RenderPolicy;
 import com.toonlira.translationgateway.domain.rendering.RenderRequest;
 import com.toonlira.translationgateway.domain.rendering.RenderSource;
+import com.toonlira.translationgateway.domain.rendering.RenderTextCounts;
 import com.toonlira.translationgateway.domain.rendering.RenderedImage;
 import com.toonlira.translationgateway.domain.rendering.ResultObjectKey;
 import com.toonlira.translationgateway.domain.translation.LanguagePair;
@@ -165,7 +166,8 @@ public class ProcessRenderingTaskUseCase {
             var resultDeadline = now().truncatedTo(ChronoUnit.MICROS).plusSeconds(job.resultRetentionSeconds());
             imageKey = ResultObjectKey.create(resultDeadline, "webp");
             manifestKey = ResultObjectKey.create(resultDeadline, "json");
-            artifacts = new RenderingJobRepository.Artifacts(imageKey, image, manifestKey, encoded.sha256());
+            artifacts = new RenderingJobRepository.Artifacts(imageKey, image, manifestKey, encoded.sha256(),
+                RenderTextCounts.of(output.manifest().regions()));
             // Upload the checked compressed snapshot, not a path that a renderer could modify after verification.
             storage.store(imageKey, inspectedOutput, image.mimeType(), image.sha256(), now());
             storage.store(manifestKey, manifestFile, "application/json", encoded.sha256(), now());

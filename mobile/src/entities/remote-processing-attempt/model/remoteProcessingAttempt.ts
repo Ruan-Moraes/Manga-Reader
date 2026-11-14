@@ -77,6 +77,16 @@ const downloadMetadata = {
 const MAX_RESULT_PIXELS = 80000000;
 const MAX_RESULT_LIFETIME_MS = 3600000;
 const MAX_DOWNLOAD_LIFETIME_MS = 300000;
+// Optional: absent for results rendered before the gateway persisted page quality. Never blocks READY.
+const pageQualitySchema = z
+    .object({
+        status: z.enum(['OK', 'NEEDS_REVIEW']),
+        issues: z.array(z.enum(['TEXT_NOT_RENDERED', 'ALL_TEXT_NOT_RENDERED'])).max(2),
+    })
+    .strict()
+    .refine(quality => new Set(quality.issues).size === quality.issues.length)
+    .refine(quality => (quality.status === 'OK') === (quality.issues.length === 0));
+
 const readyResultSchema = z
     .object({
         manifestVersion: z.literal('1.0'),
@@ -105,6 +115,7 @@ const readyResultSchema = z
                     .max(4 * 1024 * 1024),
             })
             .strict(),
+        quality: pageQualitySchema.optional(),
     })
     .strict();
 

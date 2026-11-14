@@ -79,6 +79,11 @@ JSON UTF-8, versão `1.0`, separado dos artefatos OCR/tradução existentes:
 - `quality`: `status` (`OK` | `NEEDS_REVIEW`) e `issues` (`TEXT_NOT_RENDERED`,
   `ALL_TEXT_NOT_RENDERED`), derivados de `overflow` e revalidados no decode.
   Não bloqueia a entrega: o job continua `READY`.
+- Exposto também em `ReadyResult.quality` (OpenAPI `PageQuality`, opcional). A V10 persiste na
+  etapa `RENDERING` só `rendered_text_region_count` (regiões cuja tradução difere do original) e
+  `rendered_text_missing_count` (dessas, quantas mantiveram o original); status e issues são
+  derivados por `PageQuality.of(RenderTextCounts)`, a mesma regra do manifesto. Resultados
+  renderizados antes da V10 não têm contagens e a API omite `quality`.
 
 Política de composição (`clean-box-1.1`, auditoria Ubunchu! 2026-11-14):
 região cujo texto não cabe (`overflow=true`) **não é limpa** — os pixels

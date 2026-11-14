@@ -86,8 +86,23 @@ describe('private ready result contract', () => {
         { ...result, image: { ...result.image, expiresAt: '2026-10-03T12:05:01.000Z' } },
         { ...result, expiresAt: '2026-10-03T12:01:00.000Z' },
         { ...result, expiresAt: '2026-10-03T13:00:01.000Z' },
+        { ...result, quality: { status: 'OK', issues: ['TEXT_NOT_RENDERED'] } },
+        { ...result, quality: { status: 'NEEDS_REVIEW', issues: [] } },
+        { ...result, quality: { status: 'NEEDS_REVIEW', issues: ['TEXT_NOT_RENDERED', 'TEXT_NOT_RENDERED'] } },
+        { ...result, quality: { status: 'BAD', issues: [] } },
+        { ...result, quality: { status: 'OK', issues: [], regions: 3 } },
     ])('rejects inconsistent or unbounded metadata %#', invalid => {
         expect(pageJobEnvelopeSchema.safeParse({ ...ready, result: invalid }).success).toBe(false);
+    });
+
+    it.each([
+        undefined,
+        { status: 'OK', issues: [] },
+        { status: 'NEEDS_REVIEW', issues: ['TEXT_NOT_RENDERED'] },
+        { status: 'NEEDS_REVIEW', issues: ['TEXT_NOT_RENDERED', 'ALL_TEXT_NOT_RENDERED'] },
+    ])('accepts optional page quality %#', quality => {
+        const withQuality = quality === undefined ? result : { ...result, quality };
+        expect(pageJobEnvelopeSchema.safeParse({ ...ready, result: withQuality }).success).toBe(true);
     });
 
     it.each([

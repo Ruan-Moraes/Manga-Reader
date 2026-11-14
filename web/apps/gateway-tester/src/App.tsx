@@ -234,6 +234,14 @@ export default function App() {
                         <p className="text-xs text-green-600 dark:text-green-300">
                           Dimensões: {currentJob.result.widthPx}x{currentJob.result.heightPx}
                         </p>
+                        {currentJob.result.quality?.status === 'NEEDS_REVIEW' && (
+                          <p
+                            className="text-xs font-semibold text-amber-700 dark:text-amber-300"
+                            title={currentJob.result.quality.issues.join(', ')}
+                          >
+                            ⚠ Revisar: parte do texto ficou no idioma original
+                          </p>
+                        )}
                       </div>
                     )}
 

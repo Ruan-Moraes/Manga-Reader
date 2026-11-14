@@ -1,5 +1,5 @@
 import { useCallback, useRef, useState } from 'react'
-import gatewayClient, { downloadResultImage, readImageSize } from '../services/gatewayClient'
+import gatewayClient, { downloadResultImage, readImageSize, type PageQuality } from '../services/gatewayClient'
 
 export type BatchItemStatus = 'pending' | 'submitting' | 'processing' | 'saving' | 'done' | 'error'
 
@@ -10,6 +10,7 @@ export interface BatchItem {
   gatewayStatus?: string
   jobRef?: string
   savedAs?: string
+  quality?: PageQuality
   error?: string
 }
 
@@ -108,7 +109,7 @@ export function useBatchTranslation() {
             const name = outputName(item.file.name, job.result.image.mimeType)
             await saveBlob(blob, name, config.directory)
             await gatewayClient.acknowledgeResult(config.accessToken, submitted.jobRef)
-            patch(item.id, { status: 'done', savedAs: name })
+            patch(item.id, { status: 'done', savedAs: name, quality: job.result.quality })
             return
           }
           await sleep(POLL_MS)

@@ -163,6 +163,14 @@ export default function BatchPanel({ accessToken, disclosureVersion, languages, 
                   <div className="min-w-0">
                     <p className="text-sm text-slate-800 dark:text-slate-200 truncate">{item.file.name}</p>
                     {item.savedAs && <p className="text-xs text-green-600 truncate">→ {item.savedAs}</p>}
+                    {item.quality?.status === 'NEEDS_REVIEW' && (
+                      <p
+                        className="text-xs font-semibold text-amber-700 dark:text-amber-300"
+                        title={item.quality.issues.join(', ')}
+                      >
+                        ⚠ Revisar: {item.quality.issues.includes('ALL_TEXT_NOT_RENDERED') ? 'nenhum texto traduzido foi desenhado' : 'parte do texto ficou no original'}
+                      </p>
+                    )}
                     {item.error && <p className="text-xs text-red-600 break-all">{item.error}</p>}
                   </div>
                   <span className={`text-xs font-semibold px-2 py-1 rounded-full shrink-0 ${STATUS_STYLE[item.status]}`}>

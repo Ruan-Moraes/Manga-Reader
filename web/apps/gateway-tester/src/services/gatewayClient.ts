@@ -27,6 +27,12 @@ export interface Capabilities {
   [key: string]: any
 }
 
+/** Page quality; absent for results rendered before the gateway persisted it. Never blocks READY. */
+export interface PageQuality {
+  status: 'OK' | 'NEEDS_REVIEW'
+  issues: Array<'TEXT_NOT_RENDERED' | 'ALL_TEXT_NOT_RENDERED'>
+}
+
 export interface Job {
   contractVersion: string
   jobRef: string
@@ -55,6 +61,7 @@ export interface Job {
       sha256: string
       expiresAt: string
     }
+    quality?: PageQuality
   }
 }
 

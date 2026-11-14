@@ -736,6 +736,28 @@ components:
                   const: application/json
                 byteSize:
                   maximum: 4194304
+        quality:
+          $ref: "#/components/schemas/PageQuality"
+
+    PageQuality:
+      type: object
+      additionalProperties: false
+      required: [status, issues]
+      description: >-
+        Qualidade da página renderizada, derivada das regiões cuja tradução difere do original. NEEDS_REVIEW
+        quando alguma delas manteve o texto original (não coube, ou texto sobre arte); nunca bloqueia READY.
+        Ausente em resultados renderizados antes de a qualidade ser persistida.
+      properties:
+        status:
+          type: string
+          enum: [OK, NEEDS_REVIEW]
+        issues:
+          type: array
+          uniqueItems: true
+          maxItems: 2
+          items:
+            type: string
+            enum: [TEXT_NOT_RENDERED, ALL_TEXT_NOT_RENDERED]
 
     PrivateResultDownload:
       type: object
