@@ -21,7 +21,7 @@ também itens resolvidos, decisões aceitas e medições históricas.
 | Arquitetura e persistência | DT-50 (resíduos da unificação de comentários), DT-52 (escrita cross-DB não atômica), DT-67 (sessões analytics multiaba/offline), DT-69 (outbox de eventos) e DT-70 (invalidação imediata de access tokens) |
 | Performance e escala | DT-71 (exportação de dados sem streaming) e DT-72 (filtro adulto da biblioteca em memória) |
 | Interface | DT-58 (tokens e portais de elementos flutuantes) |
-| Pipeline de tradução | DT-76 (urgente/P1: avaliar renderização híbrida sem interromper a implementação server-side) |
+| Pipeline de tradução | DT-76 (renderização híbrida) e DT-77 (cotas, benefícios e preços das assinaturas web/app) |
 
 O estado registrado no título de cada `DT-NN` prevalece sobre medições e
 descrições históricas mantidas no corpo do item.
@@ -1624,6 +1624,21 @@ nem altera a auditoria de performance mobile DT-75.
 **Conclusão:** revisão arquitetural/SDD de 020/021 e protótipo comparativo com
 orçamentos definidos previamente, qualidade e consumo aceitáveis nos dois lados.
 Não equivale a concluir a 020, liberar uploads ou autorizar novas chamadas pagas.
+
+---
+
+### DT-77: Cotas e preço de tradução nas assinaturas — **Bloqueia cobrança comercial**
+
+**Estado:** aberto, registrado em 2026-11-10. Implementar a franquia por
+assinatura com aplicação no gateway e exibição do saldo, benefícios e valores
+na web, no Android e no iOS. Separar a franquia dos limites de infraestrutura
+e do orçamento temporário de teste.
+
+**Critério de aceite:** validar compra e renovação por canal, impedir consumo
+duplicado e reconciliar o saldo de falhas. Aprovar franquia e preço com custos
+medidos, taxas e impostos por canal, usando cenários a custo e de margem baixa,
+média e alta. Mostrar valor e franquia antes da compra. Ver
+[requisitos e modelo de precificação](translation-subscription-quotas.md).
 
 ---
 
