@@ -68,6 +68,7 @@ ações no lugar certo (menu "⋯", folhas e confirmação descritiva).
   falharam" e "N em tradução" quando houver, e a ação textual "Editar nome".
 - **Capítulos:** `SectionHeader` com contagem e as ações "1 → N" / "N → 1" (ordem de exibição, só com mais de um
   capítulo) e "Novo", que abre o fluxo de tradução já vinculado à obra.
+- O fundo de interação cobre toda a linha do capítulo ao passar o ponteiro, pressionar ou focar um controle. Os botões de vínculo centralizam o rótulo em uma linha.
 - **Linha de capítulo (64):** tile com o número (em acento no capítulo atual), nome, meta ("Parou na página X de Y"
   no atual, senão "N páginas · atualizado"), selo de estado quando não estiver traduzido, pílula "Continuar", "Ler" ou
   "Ver" (falhou) e "⋯". Tocar abre o leitor.
@@ -236,3 +237,11 @@ As propostas abaixo foram aceitas como redigidas.
 - Evidência: resposta “Aprovo as cinco” à apresentação das Target Specs 058–062, aceitando as propostas dos pontos em aberto como redigidas. O gate de implementação segue `blocked`.
 
 Não criar `tasks.md` antes de status `approved` e aprovação preenchida.
+
+## Revisão aprovada — 2026-11-11
+
+Aprovação registrada pelo pedido de implementação do plano do leitor, capítulos e modo desenvolvedor.
+
+### AC-014 — Progresso e ações do capítulo
+
+Posição de leitura válida determina Ler ou Continuar. Título, status e menu permanecem legíveis e utilizáveis em largura reduzida e com fonte ampliada.

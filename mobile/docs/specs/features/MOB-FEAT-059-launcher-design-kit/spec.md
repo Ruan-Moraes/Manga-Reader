@@ -153,3 +153,7 @@ As propostas abaixo foram aceitas como redigidas.
 - Evidência: resposta “Aprovo as cinco” à apresentação das Target Specs 058–062, aceitando as propostas dos pontos em aberto como redigidas.
 
 Não criar `tasks.md` antes de status `approved` e aprovação preenchida.
+
+## Ajuste do cabeçalho em 2026-11-12
+
+O logo ocupa a altura da linha de marca, com recorte central das margens verticais do arquivo. O atalho da prévia exige uma build de desenvolvimento e modo desenvolvedor ativo.

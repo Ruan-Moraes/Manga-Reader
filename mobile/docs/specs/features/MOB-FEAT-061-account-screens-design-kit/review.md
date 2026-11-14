@@ -52,3 +52,7 @@
 
 Os 7 critérios estão implementados com evidência automatizada. Verdict `verification-pending` porque TASK-007
 (capturas no iOS Simulator) continua aberta. Review feita pelo próprio implementador, sem auditor externo.
+
+## Revisão do login em 2026-11-12
+
+AC-004. O alerta de credenciais fica abaixo da senha e os dois campos recebem o estado de erro. No emulador Android, o campo de senha descia 67 px no APK anterior e manteve a posição no APK corrigido. O teste do login verifica que há um único alerta e que o botão de visualizar a senha alterna a visibilidade com feedback de opacidade. A mensagem deixou de sugerir credenciais de demonstração nos três idiomas, resolvendo o primeiro finding.

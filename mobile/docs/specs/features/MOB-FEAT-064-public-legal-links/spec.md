@@ -2,11 +2,11 @@
 id: MOB-FEAT-064
 type: feature
 title: Links públicos de Termos de Uso e Política de Privacidade
-status: draft
+status: in-progress
 implementation_gate: open
 blocked_by: [MOB-FEAT-008, MOB-FEAT-017, MOB-FEAT-061]
 created: 2026-11-10
-updated: 2026-11-10
+updated: 2026-11-13
 supersedes: []
 superseded_by: []
 ---
@@ -59,11 +59,11 @@ capability com a versão já aceita preserva o aceite.
 
 ## Estratégia de evidência
 
-| Critério | Teste e evidência |
-| -------- | ---------------- |
-| AC-001   | Teste do login e abertura real em Android e iOS. |
-| AC-002   | Teste da independência dos links e do aceite e abertura real em Android e iOS. |
-| AC-003   | Teste de Sobre e abertura real em Android e iOS. |
+| Critério | Teste e evidência                                                                      |
+| -------- | -------------------------------------------------------------------------------------- |
+| AC-001   | Teste do login e abertura real em Android e iOS.                                       |
+| AC-002   | Teste da independência dos links e do aceite e abertura real em Android e iOS.         |
+| AC-003   | Teste de Sobre e abertura real em Android e iOS.                                       |
 | AC-004   | Testes de página única e lote, capability implantada e abertura real em Android e iOS. |
 
 ## Gate de implementação
@@ -76,5 +76,6 @@ Alterações na API de autenticação, persistência de aceite da conta e revis�
 
 ## Aprovação humana
 
-- Aprovador pendente.
-- Data pendente.
+- Aprovador: Ruan Moraes
+- Data: 2026-11-13
+- Evidência: resposta "Aprovo a 064 inteira" na revisão tela a tela (tela 11), escolhendo implementar Login, Cadastro, Sobre e consentimento de tradução de uma vez.

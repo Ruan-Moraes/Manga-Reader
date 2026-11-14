@@ -34,3 +34,7 @@ Nenhuma. Preservadas alterações locais anteriores, incluindo preferências tex
 Implementação disponível com inspeção iOS parcial. Manter verification-pending até executar TASK-004 e resolver os gates documentais com revisão das evidências afetadas.
 
 Rebase C06 (2026-09-12): referência global recalculada para a árvore local com recuperação compartilhada. Escopo (arquivo externo: `perfomance_app/mobile/docs/active/performance-evidence/recovery-2026-09-12/review.md`). Não altera verdict nem valida implementações locais de outras tarefas ou medições físicas.
+
+## Revisão de 2026-11-12
+
+AC-002. O teste `HelpTooltip.test.tsx` cobre alinhamento ao ícone com origens de janela diferentes, abertura acima quando falta espaço e fechamento pelo fundo. A captura no leitor permanece pendente na verificação nativa.

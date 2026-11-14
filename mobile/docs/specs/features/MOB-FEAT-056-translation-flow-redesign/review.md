@@ -65,6 +65,7 @@ relido.
 | AC-011   | sim          | `ChapterBatchKit.test.tsx` (três itens, detalhes, recusa)                               | pass                              |
 | AC-012   | sim          | `OfflineTranslationPage.test.tsx` (escolha, vínculo, falha e "Tentar vincular de novo") | pass                              |
 | AC-013   | sim          | `TranslationLanguageSelectionPanel.test.tsx` (desabilitado e trocar)                    | pass                              |
+| AC-014   | parcial      | OfflineTranslationPage.test.tsx e LocalMediaReviewPanel.test.tsx                        | verificação física pendente       |
 
 ## Gates
 
@@ -85,3 +86,11 @@ relido.
 ## Conclusão
 
 Os 13 critérios estão implementados com evidência automatizada; a divergência da AC-003 foi resolvida pela D4. Verdict `verification-pending` porque TASK-012 (verificação visual) continua aberta.
+
+## Revisão de 2026-11-11
+
+As miniaturas continuam na FlatList horizontal. O teste verifica que o indicador foi ocultado e a coleção permanece completa.
+
+## Diálogo de saída em 2026-11-12
+
+O emulador Android confirmou as duas colunas preenchidas e a ação de manter o rascunho em largura inteira. O teste do fluxo também verifica a ordem das ações e seus efeitos. [Captura do diálogo](../../../../../artifacts/auditoria-design-mobile/android-exit-draft.png).

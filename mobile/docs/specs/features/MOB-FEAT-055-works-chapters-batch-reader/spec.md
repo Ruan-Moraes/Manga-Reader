@@ -109,6 +109,10 @@ posição e conteúdo dos demais capítulos.
 
 ### AC-004 — Processamento em lote e progresso
 
+O banner do capítulo usa sua primeira imagem original. O painel de lote mostra
+o percentual de páginas salvas do capítulo inteiro, além do total de páginas,
+das falhas e do progresso da seleção processada.
+
 Uma ação inicia sequencialmente as páginas elegíveis e expõe estados individuais
 mais progresso agregado, respeitando limites e persistindo resultados prontos.
 
@@ -174,3 +178,15 @@ servidores de terceiros pelo app e fechamento formal das features anteriores.
 - Aprovador: Ruan Moraes
 - Data: 2026-11-04
 - Evidência: resposta “Aprovado.” à apresentação desta Target Spec.
+
+## Revisão aprovada — 2026-11-11
+
+Aprovação registrada pelo pedido de implementação do plano do leitor, capítulos e modo desenvolvedor.
+
+### AC-011 — Estados de tradução por página e capítulo
+
+Tentativas e resultados por página distinguem tradução não iniciada, falha comprovada, cancelamento e incerteza. Na obra, uma tradução interrompida com páginas restantes aparece como Incompleto.
+
+## Revisão solicitada em 2026-11-11
+
+Em capítulos ativos, a elegibilidade e as transições de tradução são validadas pela página selecionada, inclusive quando o agregado estiver READY. Tentativas incertas exigem reconciliação.

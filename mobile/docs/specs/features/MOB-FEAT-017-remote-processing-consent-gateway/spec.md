@@ -75,6 +75,10 @@ aparelho; o servidor funciona como intermediário de processamento e entrega.
 - Na validação local das capabilities, admite-se até cinco segundos de avanço
   do relógio do servidor na data de geração; a data de expiração continua
   absoluta, sem tolerância adicional. Fora desses limites o envio permanece bloqueado.
+- O ambiente de teste controlado pode anunciar `dailyInstallationQuota: 0`
+  quando a quota por instalação está desativada. O cliente aceita esse valor e
+  o valor padrão 20. A quota global continua anunciada como 100, e a decisão
+  de admissão e de orçamento continua no gateway.
 - A validade é absoluta: sete dias a partir do timestamp da chave. Após esse
   instante, a execução é recusada antes de qualquer provider e a consulta do
   recibo retorna ausência (`404`), mesmo que uma linha antiga ainda exista no

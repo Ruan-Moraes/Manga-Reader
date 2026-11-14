@@ -59,3 +59,7 @@ Consolidação documental (2026-09-06): checksum global atualizado após reconci
 Preparação de commit (2026-09-06): rebase global após excluir scripts avulsos de ensaio, listagens Git e metadados do sistema dos arquivos versionados, conforme solicitação humana. Resultados históricos preservados; runtime e verdict inalterados.
 
 Rebase C06 (2026-09-12): referência global recalculada para a árvore local com recuperação compartilhada. Escopo (arquivo externo: `perfomance_app/mobile/docs/active/performance-evidence/recovery-2026-09-12/review.md`). Não altera verdict nem valida implementações locais de outras tarefas ou medições físicas.
+
+## Revisão de 2026-11-11
+
+Badge opaco compartilhado na grade de revisão e na grade de validação, com o texto semântico do tema.

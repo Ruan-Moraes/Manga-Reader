@@ -65,3 +65,15 @@ porque TASK-016 continua aberta: capturas no iOS Simulator em claro e escuro, co
 ilustrações no aparelho e validação em Android físico. Review feita pelo próprio implementador, sem auditor
 externo. Próximo passo SDD: executar TASK-016 e, com ela concluída e o `specs:check` histórico resolvido por
 uma pessoa, promover a feature a `implemented`.
+
+## Revisão de 2026-11-11
+
+Rádio independente do rótulo e da superfície, com feedback e foco no controle. Testes de componentes, aparência, seleção de obra e privacidade exercitam a revisão.
+
+## Revisão de 2026-11-12
+
+DESIGN-001, P2, vinculado a AC-014. `Icon` declara a exclusão de glifos decorativos nos dois sistemas. O teste em `sharedUi.test.tsx` cobre ícones decorativos e informativos. O APK corrigido preservou o rótulo do botão de ajustes na árvore Android filtrada. O verdict permanece `verification-pending` e TASK-016 fica aberta para validação com leitores de tela. [Reprodução, build e evidências](../../../plans/auditoria-design-mobile-resultado.md).
+
+## Toast em 2026-11-12
+
+AC-014. `CenterDialogToast.test.tsx` cobre alinhamento à direita, rótulo acessível e expiração. O emulador Android exibiu “Cache limpo” rente à direita abaixo do botão de voltar. [Captura do toast](../../../../../artifacts/auditoria-design-mobile/android-toast-right.png). A validação iOS segue aberta.

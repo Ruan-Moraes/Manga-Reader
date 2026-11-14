@@ -35,3 +35,9 @@ Verificações feitas:
 - TASK-010: escuro e RTL do leitor local no iPhone 18 Pro feitos em 2026-11-09 (barras e folha de ajustes em
   `docs/ui-captures/dark/design-kit-phase2-iphone18pro/`); faltam o leitor da plataforma, claro, fonte ampliada,
   redução de movimento e Android físico.
+
+## Revisão de 2026-11-11
+
+AC-010 mapeado a tasks, review e evidências. Primeira tradução e retry no leitor revisado por inspeção e testes automatizados. A verificação física permanece aberta.
+
+O APK final foi instalado por atualização no emulador Android API 37 e preservou o capítulo sintético. O leitor anunciou Página original, apresentou a indicação neutra e abriu consentimento para uma única página. O envio foi recusado.

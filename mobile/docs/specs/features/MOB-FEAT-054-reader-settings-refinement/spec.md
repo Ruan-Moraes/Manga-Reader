@@ -39,6 +39,8 @@ Folha em 70% da altura útil, expansível, com expansão automática para fonte 
 
 Leitura agrupa modo, direção, ajuste, espaçamento, preload e marcação; Aparência agrupa qualidade, fundo, saturação e comparação disponível; Gestos agrupa controles e toque lateral. Seletores compactos, descrição selecionada, ajuda expansível e amostras separadas. Preservar limites, commit de sliders, erros e retry; configurações globais mantêm apresentação.
 
+O balão de ajuda abre junto ao ícone, abaixo dele quando houver espaço e acima quando necessário, dentro da área segura. O toque fora fecha o balão.
+
 ### AC-003 — Integração e imersão
 
 Seções tipadas no ContentReader e fallback controlsContent textual. Barras sobrepostas alinhadas com separadores e tokens. Não remontar viewport nem perder âncora ao abrir/fechar/trocar abas. Preservar gestos, modos, RTL, comparação, overflow, progresso e persistência.

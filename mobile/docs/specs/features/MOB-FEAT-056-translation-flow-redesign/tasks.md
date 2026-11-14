@@ -7,21 +7,22 @@
 
 ## Rastreabilidade
 
-| Critério | Tasks              | Evidência planejada                                             |
-| -------- | ------------------ | --------------------------------------------------------------- |
-| AC-001   | TASK-003, TASK-008 | modelo de etapas e teste da página com 3 etapas                 |
-| AC-002   | TASK-003           | confirmações gravadas só pela ação de cada etapa                |
-| AC-003   | TASK-008           | validação automática depois dos idiomas, inválida e retry       |
-| AC-004   | TASK-001, TASK-002 | slot de ação primária, rodapé fixo e barra "Etapa N de 3"       |
-| AC-005   | TASK-008           | voltar/avançar, Home e saída em processamento                   |
-| AC-006   | TASK-006           | consentimento antes de qualquer chamada                         |
-| AC-007   | TASK-009           | selos de estado, selecionar todas/nenhuma e progresso agregado  |
-| AC-008   | TASK-010, TASK-012 | chaves nos três locales; capturas pendentes                     |
-| AC-009   | TASK-008           | demonstração só com `__DEV__`                                   |
-| AC-010   | TASK-011, TASK-013 | testes ajustados, gates, `coverage.json`                        |
-| AC-011   | TASK-006           | folha "Antes de enviar", "Ver detalhes", recusa                 |
-| AC-012   | TASK-007           | cartão "Salvar em", folha de obras, bloqueio e falha de vínculo |
-| AC-013   | TASK-005           | seletores "De/Para", idioma do outro lado desabilitado, trocar  |
+| Critério | Tasks              | Evidência planejada                                                                         |
+| -------- | ------------------ | ------------------------------------------------------------------------------------------- |
+| AC-001   | TASK-003, TASK-008 | modelo de etapas e teste da página com 3 etapas                                             |
+| AC-002   | TASK-003           | confirmações gravadas só pela ação de cada etapa                                            |
+| AC-003   | TASK-008           | validação automática depois dos idiomas, inválida e retry                                   |
+| AC-004   | TASK-001, TASK-002 | slot de ação primária, rodapé fixo e barra "Etapa N de 3"                                   |
+| AC-005   | TASK-008           | voltar/avançar, Home e saída em processamento                                               |
+| AC-006   | TASK-006           | consentimento antes de qualquer chamada                                                     |
+| AC-007   | TASK-009           | selos de estado, selecionar todas/nenhuma e progresso agregado                              |
+| AC-008   | TASK-010, TASK-012 | chaves nos três locales; capturas pendentes                                                 |
+| AC-009   | TASK-008           | demonstração só com `__DEV__`                                                               |
+| AC-010   | TASK-011, TASK-013 | testes ajustados, gates, `coverage.json`                                                    |
+| AC-011   | TASK-006           | folha "Antes de enviar", "Ver detalhes", recusa                                             |
+| AC-012   | TASK-007           | cartão "Salvar em", folha de obras, bloqueio e falha de vínculo                             |
+| AC-013   | TASK-005           | seletores "De/Para", idioma do outro lado desabilitado, trocar                              |
+| AC-014   | TASK-014           | OfflineTranslationPage.test.tsx e LocalMediaReviewPanel.test.tsx; validação Android física. |
 
 ## Checklist
 
@@ -45,3 +46,5 @@
 
 - A validação (015) exige idiomas confirmados; por isso ela roda automaticamente na etapa Idiomas, logo depois da confirmação dos idiomas, e não depois da ordem.
 - Os painéis das features são reutilizados; só o lugar do botão principal muda.
+
+- [ ] TASK-014 — Resumo, rodapé e destino da tradução. Código e regressões preparados. Validar em Android físico.

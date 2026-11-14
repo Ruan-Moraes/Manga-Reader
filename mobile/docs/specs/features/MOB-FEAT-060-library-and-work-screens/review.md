@@ -65,6 +65,7 @@ da obra. Melhoria apontada: exibir "Capítulo N" quando o rótulo da 055 for só
 | AC-011   | sim          | `StatusChip.test.tsx`                                                            | pass                              |
 | AC-012   | sim          | `routes.test.ts`; páginas; `i18n.test.ts`; `fontScale` 2 do ambiente             | pass em teste; capturas pendentes |
 | AC-013   | sim          | suíte completa verde; gates abaixo; `coverage.json`                              | pass                              |
+| AC-014   | parcial      | libraryOverview.test.ts e WorkScreens.test.tsx                                   | verificação física pendente       |
 
 ## Gates
 

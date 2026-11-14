@@ -241,6 +241,11 @@ header `Accept-Language`.
 
 ## Qualidade
 
+No Android e no iOS, mantenha a rolagem por gesto e oculte os indicadores nativos
+por padrão com `showsVerticalScrollIndicator={false}` e
+`showsHorizontalScrollIndicator={false}`. Ative o indicador do eixo relevante
+explicitamente quando a interface precisar mostrar a posição da rolagem.
+
 Scripts disponíveis:
 
 ```bash

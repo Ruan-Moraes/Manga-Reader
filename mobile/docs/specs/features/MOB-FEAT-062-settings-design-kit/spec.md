@@ -65,7 +65,8 @@ todas as opções, regras de acesso e sincronização atuais.
 ### Aparência e acessibilidade
 
 - Tema: três tiles lado a lado (Sistema, Claro, Escuro), cada um com prévia e rótulo; a descrição da opção ativa
-  aparece abaixo dos tiles. Em tela estreita ou fonte ampliada, os tiles empilham.
+  aparece abaixo dos tiles. A seleção aparece na borda, no fundo e no rótulo do tile, e a prévia mostra apenas as cores do tema.
+  Em tela estreita ou fonte ampliada, os tiles empilham.
 - Tamanho do texto e densidade: segmentado da 057. Animações, reduzir movimento e alto contraste: switches, como hoje.
 
 ### Idioma e região
@@ -86,8 +87,7 @@ nenhuma opção:
 
 1. **Navegação** (valor: modo atual): modo e direção como escolhas empilhadas com descrição; ajuste como segmentado
    com Largura, Altura e Original (005).
-2. **Imagem** (valor: qualidade atual): qualidade em linha de escolha com as mesmas opções e a mesma regra de
-   disponibilidade de hoje (005/AC-004); fundo em amostras; saturação em controle deslizante.
+2. **Imagem**: fundo em amostras e saturação em controle deslizante. O carregamento de imagens é automático (005/AC-004).
 3. **Comportamento**: espaçamento, pré-carregamento e "Marcar automaticamente como lido".
 4. **Gestos** (preferências do aparelho): exibir controles como escolhas com descrição; "Áreas laterais de toque" com
    a mesma regra de desabilitar no modo vertical ou na direção Webtoon.
@@ -156,8 +156,7 @@ o fallback obrigatório, e adicionar usa linhas com "+ Adicionar".
 ### AC-006 — Leitor em cinco folhas
 
 Dada a página do leitor, quando o usuário abrir cada uma das cinco linhas, então encontra todos os controles atuais
-daquele grupo, incluindo o ajuste Original e a qualidade com a disponibilidade atual, com os mesmos limites e a mesma
-persistência; o painel dentro do leitor não muda.
+daquele grupo, incluindo o ajuste Original, com os mesmos limites e a mesma persistência. A folha Imagem não exibe um seletor de qualidade.
 
 ### AC-007 — Privacidade
 
@@ -216,8 +215,7 @@ passam e os arquivos estão mapeados no `coverage.json`.
 
 As propostas abaixo foram aceitas como redigidas.
 
-- Nenhum além dos herdados da 057. Observação: o kit mostra a qualidade com as cinco opções sempre; esta spec mantém a
-  regra atual de disponibilidade (005/AC-004).
+- A qualidade deixou de ser uma preferência; a imagem é carregada automaticamente (005/AC-004).
 
 - **D17 — tamanho do cache (2026-11-08, durante a execução):** o app não mede o cache, e a única medição existente é a
   das exportações temporárias, já mostrada em "Uso de armazenamento". Ruan Moraes decidiu remover o requisito de mostrar

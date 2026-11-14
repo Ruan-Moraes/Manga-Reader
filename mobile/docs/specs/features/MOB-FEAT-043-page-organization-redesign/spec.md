@@ -233,3 +233,17 @@ folha, prévia, banco ou API e sem mudança de dependências.
 - Data: 2026-08-29
 
 Não criar `tasks.md` antes de status `approved` e aprovação preenchida.
+
+## Revisão solicitada em 2026-11-11
+
+A numeração no grid usa superfície opaca e texto contrastante em ambos os temas.
+
+## Continuidade das miniaturas ao reordenar
+
+A grade preserva a célula e a fonte da miniatura por ID, inclusive nas trocas entre linhas. A posição e a numeração seguem a nova ordem sem recarregar as miniaturas já montadas. A verificação visual em Android e iOS usa arrastes na mesma linha e entre linhas, em grade e lista.
+
+### Cabeçalho das ações de página
+
+A folha contextual usa o cabeçalho compartilhado. Título e status ficam acima do divisor, e Visualizar imagem e Excluir ficam no corpo.
+
+O emulador Android confirmou o divisor, o status e os botões empilhados no tema claro em pt-BR. A matriz visual completa segue em `verification-pending`.

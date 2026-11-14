@@ -18,6 +18,7 @@
 | AC-007   | TASK-009           | suítes de 005/051/052/053/055 verdes, ajustadas só onde D2 muda a 054   |
 | AC-008   | TASK-008, TASK-010 | chaves nos três locales, RTL e redução de movimento; capturas pendentes |
 | AC-009   | TASK-011           | gates, `coverage.json`, review                                          |
+| AC-010   | TASK-012           | PageRetryIndicator.test.tsx; validação Android física.                  |
 
 ## Checklist
 
@@ -40,3 +41,5 @@
 
 - `ContentReader` é compartilhado por três leitores; os controles de obra só aparecem quando a página informa os capítulos.
 - A troca das abas pela folha única muda testes da 054; a review registra cada um.
+
+- [ ] TASK-012 — Primeira tradução e retry no leitor. Código e regressões preparados. Validar em Android físico.

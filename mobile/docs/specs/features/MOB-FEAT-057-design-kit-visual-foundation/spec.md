@@ -49,17 +49,17 @@ O tema passa a expor, por `useTheme()`, os grupos abaixo. Valores fixos independ
 densidade, exceto onde indicado. Nenhuma primitiva desta spec usa número literal para
 estas medidas.
 
-| Grupo                     | Papéis e valores                                                                                                            |
-| ------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
-| Ícones                    | `sm` 16 (inline e chips), `md` 20 (linhas, botões, controles), `lg` 24 (cabeçalhos e ações principais)                      |
-| Tile de ícone             | `default` 40, `feature` 48                                                                                                  |
-| Altura de linha de lista  | `single` 56, `double` 64                                                                                                    |
-| Altura de controle visual | `compact` 40, `default` 44, `comfortable` 52 (os dois últimos são `compactControlHeight` e `controlHeight` existentes)      |
-| Chips e pílulas           | `action` 36, `value` 28, `count` 24                                                                                         |
-| Ritmo                     | `itemGap` 12 (compacta 8), `groupGap` = `lg`, `cardPadding` = `md`                                                          |
-| Barra de acento           | 4 × 16, raio `pill`                                                                                                         |
-| Sombras                   | `card` (y 8, opacidade 0,12, raio 18) e `sheet` (y −8, opacidade 0,28, raio 22), sempre com `shadowColor` vindo de token    |
-| Movimento                 | `fast` 140, `base` 180, `sheet` 240, `pulse` 700 ms; zerados ou estáticos quando o movimento reduzido efetivo estiver ativo |
+| Grupo                     | Papéis e valores                                                                                                                                                                                                                                     |
+| ------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Ícones                    | `sm` 16 (inline e chips), `md` 20 (linhas, botões, controles), `lg` 24 (cabeçalhos e ações principais)                                                                                                                                               |
+| Tile de ícone             | `default` 40, `feature` 48                                                                                                                                                                                                                           |
+| Altura de linha de lista  | `single` 56, `double` 64                                                                                                                                                                                                                             |
+| Altura de controle visual | `compact` 40, `default` 44, `comfortable` 52 (os dois últimos são `compactControlHeight` e `controlHeight` existentes)                                                                                                                               |
+| Chips e pílulas           | `action` 36, `value` 28, `count` 24                                                                                                                                                                                                                  |
+| Ritmo                     | `itemGap` 12 (compacta 8), `groupGap` = `lg`, `cardPadding` = `md`                                                                                                                                                                                   |
+| Barra de acento           | 4 × 16, raio `pill`                                                                                                                                                                                                                                  |
+| Sombras                   | `card` (y 8, opacidade 0,12, raio 18) e `sheet` (y −8, opacidade 0,28, raio 22), sempre com `shadowColor` vindo de token                                                                                                                             |
+| Movimento                 | `instant` 0, `fast` 120, `base` 200, `sheet` 280, `exit` 180, `pulse` 1200 ms (ciclo completo), trocas de tela `screen` 140 e `screenSlide` 220 ms, e curvas `MOTION_EASING`; zerados ou estáticos quando o movimento reduzido efetivo estiver ativo |
 
 - **Altura visual × área de toque:** um controle pode ter altura visual 40, mas sua área
   de toque nunca fica abaixo de `minimumTouchTarget` (44 iOS / 48 Android). A diferença é
@@ -124,7 +124,8 @@ estas medidas.
 
 - **`SectionHeader`** (nova): título no papel `section`, contagem opcional em pílula
   `count` (superfície muted, borda `separator`, texto `caption` em negrito, tom muted) e
-  ações à direita, com altura mínima igual ao alvo de toque.
+  ações à direita. A área de toque mínima fica nas ações; o cabeçalho não força altura e
+  fica a `spacing.sm` do conteúdo, o mesmo espaço de `Section` e `FormSection` (2026-11-14).
 - **`SectionAction`** (nova): chip de altura `action` (36) e raio `pill`, ícone `sm`,
   dentro de área de toque mínima; tons `neutral` (superfície muted, texto muted, borda
   `separator`), `accent` (`accentSoft`, `accentText`) e `strong` (`accent`, `onAccent`).
@@ -133,21 +134,17 @@ estas medidas.
 
 ### Controles existentes
 
-- **`SegmentedControl`:** um único contêiner (superfície muted, borda `separator`, raio
-  `control`, padding `xs`, gap `xs`); segmentos com raio `sm` e altura visual `compact`;
-  ativo em `accent`/`onAccent`, inativos transparentes em tom muted. A borda dos segmentos
-  mantém espessura constante e só muda de cor (038). Regras de empilhamento da 032 e a
-  semântica de rádio são mantidas.
+- **`SegmentedControl`:** contêiner neutro com raio `control` e um rádio por opção.
+  A opção inteira recebe toque, seleção e foco; o segmento selecionado usa preenchimento de destaque.
+  As regras de empilhamento da 032 são mantidas.
 - **`RangeSlider`:** pílula de valor com altura `value` em `accentSoft`/`accentText` e
   números tabulares; trilho de 6 em superfície muted com borda `separator` e preenchimento
   `accent`; polegar de 24 preenchido em `accent`, com borda `surface` e anel
   `accentBorder`; rótulos de mínimo e máximo no papel `caption`. Todo o contrato de
   interação da 034/AC-004 é mantido.
 - **`SwatchPicker`:** ver AC-010.
-- **`ChoiceGroup` empilhado:** opções com altura mínima `single` (56), padding vertical
-  `itemGap` e horizontal `md`, raio `control`, rádio de 22 centralizado na opção (039),
-  descrição opcional por opção no papel `caption`; selecionada com `surfaceSelected`,
-  borda `accentBorder` de espessura constante e título em `accentText`.
+- **`ChoiceGroup` empilhado:** opções com altura mínima `single` (56), rádio de 22
+  centralizado à direita e descrição opcional no papel `caption`. A opção inteira recebe toque e foco.
 - **`ListRow`:** ganha tile de ícone opcional (tamanho `default`, raio `control`,
   `accentSoft`, ou `dangerSoft` no tom danger) com ícone `md`; altura mínima `single` ou
   `double` conforme haja descrição; status com ponto de 6 e texto `caption` nos tons
@@ -198,6 +195,8 @@ superfície suave do próprio tom com texto em contraste AA.
 
 ### AC-003 — Folha genérica
 
+Painéis e modais têm título em uma área separada do corpo por um divisor. Grupos de botões empilhados usam `spacing.xs` (4 dp), preservando altura e área de toque.
+
 Dado um `BottomSheet` aberto, quando for fechado por botão, scrim ou voltar do Android,
 então fechará com cabeçalho, ritmo, rodapé, raio, safe area e limite de altura desta spec;
 e `SelectField`, montado sobre ele, continuará cumprindo todos os critérios da 042.
@@ -230,9 +229,8 @@ o tom pedido, e `TextAction` mantém o alinhamento do texto com área de toque m
 ### AC-008 — Segmentado unificado
 
 Dado um `SegmentedControl`, quando uma opção for selecionada, pressionada ou focada, então
-o contêiner é único, o ativo fica em acento, a geometria não muda entre estados, a área de
-toque de cada segmento é pelo menos o alvo mínimo da plataforma e o empilhamento da 032
-continua valendo.
+a geometria permanece estável e o segmento inteiro mostra o estado. O alvo do segmento respeita
+o mínimo da plataforma e o empilhamento da 032 continua valendo.
 
 ### AC-009 — Controle deslizante
 
@@ -251,8 +249,8 @@ acento e o rótulo de cada opção aparece abaixo dela. Substitui a 034/AC-003.
 ### AC-011 — Escolhas empilhadas
 
 Dado um `ChoiceGroup` empilhado com descrições, quando uma opção for selecionada, então
-cada opção tem altura mínima de 56, rádio de 22 centralizado, descrição legível e
-seleção por fundo, borda e estado assistivo, sem mudar a geometria (038/039).
+cada opção tem altura mínima de 56, rádio de 22 centralizado e descrição legível.
+A opção inteira responde ao toque e informa a seleção visual e assistiva.
 
 ### AC-012 — Linha de lista com tile
 
@@ -337,3 +335,11 @@ testes; `pnpm lint:fsd`, `pnpm typecheck` e os testes passam.
 - Evidência: resposta “Aprovo a 057” à apresentação desta Target Spec, aceitando as propostas D4 e D9 como redigidas.
 
 Não criar `tasks.md` antes de status `approved` e aprovação preenchida.
+
+## Revisão solicitada em 2026-11-11
+
+Cada opção de escolha responde ao toque no cartão inteiro, incluindo o texto e a prévia. Em linhas de liga/desliga, apenas o interruptor nativo responde; o contêiner permanece estático e sem fundo pressionado. O cabeçalho das folhas centraliza título e descrição verticalmente em relação ao botão de fechar.
+
+## Revisão solicitada em 2026-11-12
+
+O toast existente fica rente à borda direita da área segura, abaixo dos controles superiores. O cartão usa cantos arredondados à esquerda, ícone em fundo semântico e preenchimento vertical maior, seguindo o aviso lateral de tradução do leitor. Mantém anúncio acessível, dispensa por toque e expiração automática.

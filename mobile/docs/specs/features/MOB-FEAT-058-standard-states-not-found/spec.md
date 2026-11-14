@@ -6,7 +6,7 @@ status: verification-pending
 implementation_gate: open
 blocked_by: [MOB-FEAT-057]
 created: 2026-11-08
-updated: 2026-11-08
+updated: 2026-11-13
 supersedes: []
 superseded_by: []
 ---
@@ -36,7 +36,8 @@ tenha a ação que resolve.
 - Usa `StateView kind="notfound"` em tela cheia: ilustração 404, eyebrow "Erro 404", título "Página não encontrada" e
   texto explicando que o endereço não existe ou foi removido.
 - Ação primária "Voltar ao início", sempre presente, que leva a `/` substituindo a rota atual.
-- Ação secundária "Voltar" somente quando houver tela anterior na pilha; sem histórico, ela não aparece.
+- Sem ação secundária "Voltar" no conteúdo: com tela anterior na pilha, o voltar fica só no botão do cabeçalho
+  (revisão tela a tela 2026-11-13, aprovada por Ruan Moraes, para não repetir o voltar na mesma tela).
 - O cabeçalho mantém o botão de voltar só quando houver histórico, sem título repetido (o título está no conteúdo).
 - O título do Stack continua traduzido.
 - Nenhuma ação "Buscar obras" ou outra capacidade inexistente.
@@ -80,8 +81,8 @@ ao início", que leva a `/` substituindo a rota, sem nenhuma ação para capacid
 
 ### AC-002 — Voltar só com histórico
 
-Dada a página não encontrada, quando houver tela anterior, então "Voltar" aparece e retorna a ela; sem tela anterior,
-nem a ação nem o botão de voltar do cabeçalho aparecem.
+Dada a página não encontrada, quando houver tela anterior, então o botão de voltar do cabeçalho aparece e retorna a
+ela, sem ação "Voltar" repetida no conteúdo; sem tela anterior, o botão do cabeçalho não aparece.
 
 ### AC-003 — Carregamento do leitor
 

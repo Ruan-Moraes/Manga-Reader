@@ -33,6 +33,7 @@
 | AC-008   | sim          | `OfflineTranslationPage.test.tsx`; `LocalTranslationLibraryPage.test.tsx`; `RemoteProcessingPanel.test.tsx` | pass                                     |
 | AC-009   | sim          | `chapterBatch.test.ts`; `RemoteProcessingPanel.test.tsx`; `localDataMigrationChain.test.ts`                 | pass                                     |
 | AC-010   | parcial      | gates abaixo; matriz em aparelho físico não executada                                                       | pendente (TASK-010)                      |
+| AC-011   | parcial      | PageRetryIndicator.test.tsx e libraryOverview.test.ts                                                       | verificação física pendente              |
 
 ## Gates
 
@@ -54,3 +55,7 @@
 
 Os critérios AC-001..AC-009 estão implementados com evidência automatizada. Verdict `verification-pending` porque
 TASK-010 (matriz em aparelho físico) continua aberta.
+
+## Revisão de 2026-11-11
+
+A admissão e o aceite SQLite usam o estado da página alvo. Testes exercitam projeto PROCESSING e READY com página irmã pronta, exclusão de tentativas incertas e preservação de um resultado prévio no commit.

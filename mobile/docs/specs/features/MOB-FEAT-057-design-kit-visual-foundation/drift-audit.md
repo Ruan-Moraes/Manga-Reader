@@ -38,3 +38,13 @@ Verificações feitas:
 
 - TASK-016: capturas no iOS Simulator em claro e escuro dos controles ajustados (Configurações > Aparência e Leitor),
   conferência visual das três ilustrações no aparelho e validação em Android físico.
+
+## Revisão de 2026-11-11
+
+Rádio independente do rótulo e da superfície, com feedback e foco no controle. Testes de componentes, aparência, seleção de obra e privacidade exercitam a revisão.
+
+No emulador Android API 37, tocar nos rótulos Claro e Escuro preservou a opção ativa. Tocar nos respectivos controles selecionou ambos os temas. A suíte completa de mobile passou com 1.283 testes.
+
+## Revisão de 2026-11-12
+
+DESIGN-001 era uma divergência de código em AC-014. A correção e seu teste estão mapeados individualmente em `coverage.json`. A intenção da spec e o gate foram preservados. `pnpm specs:check` continua reportando as mesmas 17 divergências de checksum do baseline em outras specs. A verificação nativa de anúncios permanece em TASK-016. [Registro da auditoria](../../../plans/auditoria-design-mobile-resultado.md).

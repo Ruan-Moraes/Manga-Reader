@@ -75,7 +75,7 @@ test('rejeita arquivo runtime novo sem mapa individual', () => {
 test('política CNG ignora projetos nativos gerados sem ocultar código runtime novo', () => {
     const { ignored } = JSON.parse(readFileSync(new URL('../../docs/specs/coverage.json', import.meta.url), 'utf8'));
     const { errors } = fixture({
-        extraFiles: ['ios/Podfile', 'ios/Pods/Example/Example.h', 'android/app/build/generated/Example.java', 'src/native/new-feature.ts'],
+        extraFiles: ['ios/Podfile', 'ios/Pods/Example/Example.h', 'android/app/build/generated/Example.java', 'modules/translation-background/android/build/generated/Example.java', 'src/native/new-feature.ts'],
         mutate: coverage => {
             coverage.ignored = ignored;
         },

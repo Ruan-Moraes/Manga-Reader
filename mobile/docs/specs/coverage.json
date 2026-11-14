@@ -1,6 +1,6 @@
 {
     "version": 1,
-    "ignored": ["**/.DS_Store", "**/*.tsbuildinfo", ".idea/**", "node_modules/**", ".expo/**", "coverage/**", "ios/**", "android/**", "docs/ui-captures/**", ".env.local"],
+    "ignored": ["**/.DS_Store", "**/*.tsbuildinfo", ".idea/**", "node_modules/**", ".expo/**", "coverage/**", "ios/**", "android/**", "modules/translation-background/android/build/**", "docs/ui-captures/**", ".env.local"],
     "patterns": [
         {
             "pattern": ".agents/**",
@@ -64,6 +64,96 @@
         }
     ],
     "entries": [
+        {
+            "path": "test-support/androidTranslationServiceProbe.ts",
+            "category": "evidence",
+            "specs": ["MOB-FEAT-066"],
+            "observations": ["MOB-FEAT-066/AC-002", "MOB-FEAT-066/AC-003"]
+        },
+        {
+            "path": "index.js",
+            "category": "infrastructure",
+            "specs": ["MOB-FEAT-066"],
+            "rationale": "Registra tarefa headless Android antes da entrada do Expo Router."
+        },
+        {
+            "path": "modules/translation-background/expo-module.config.json",
+            "category": "infrastructure",
+            "specs": ["MOB-FEAT-066"],
+            "rationale": "Autolinking do módulo Android de execução em primeiro plano."
+        },
+        {
+            "path": "modules/translation-background/android/build.gradle",
+            "category": "infrastructure",
+            "specs": ["MOB-FEAT-066"],
+            "rationale": "Build do módulo Android."
+        },
+        {
+            "path": "modules/translation-background/android/src/main/AndroidManifest.xml",
+            "category": "infrastructure",
+            "specs": ["MOB-FEAT-066"],
+            "rationale": "Permissões e declaração do serviço dataSync."
+        },
+        {
+            "path": "modules/translation-background/android/src/main/java/com/toonlira/translationbackground/TranslationBackgroundModule.kt",
+            "category": "behavior",
+            "specs": ["MOB-FEAT-066"],
+            "observations": ["MOB-FEAT-066/AC-002", "MOB-FEAT-066/AC-003"]
+        },
+        {
+            "path": "modules/translation-background/android/src/main/java/com/toonlira/translationbackground/TranslationForegroundService.kt",
+            "category": "behavior",
+            "specs": ["MOB-FEAT-066"],
+            "observations": ["MOB-FEAT-066/AC-002", "MOB-FEAT-066/AC-003", "MOB-FEAT-066/AC-004"]
+        },
+        {
+            "path": "src/widgets/remote-processing/model/__tests__/backgroundBatchManager.test.ts",
+            "category": "evidence",
+            "specs": ["MOB-FEAT-066"],
+            "observations": ["MOB-FEAT-066/AC-002", "MOB-FEAT-066/AC-003", "MOB-FEAT-066/AC-005"]
+        },
+        {
+            "path": "src/widgets/remote-processing/model/backgroundBatchManager.ts",
+            "category": "behavior",
+            "specs": ["MOB-FEAT-066"],
+            "observations": ["MOB-FEAT-066/AC-002", "MOB-FEAT-066/AC-003", "MOB-FEAT-066/AC-004"]
+        },
+        {
+            "path": "src/widgets/remote-processing/model/androidBatchService.ts",
+            "category": "behavior",
+            "specs": ["MOB-FEAT-066"],
+            "observations": ["MOB-FEAT-066/AC-002", "MOB-FEAT-066/AC-003"]
+        },
+        {
+            "path": "src/widgets/remote-processing/model/__tests__/androidBatchService.test.ts",
+            "category": "evidence",
+            "specs": ["MOB-FEAT-066"],
+            "observations": ["MOB-FEAT-066/AC-002", "MOB-FEAT-066/AC-003"]
+        },
+        {
+            "path": "src/widgets/remote-processing/model/durableChapterBatch.ts",
+            "category": "behavior",
+            "specs": ["MOB-FEAT-066"],
+            "observations": ["MOB-FEAT-066/AC-004", "MOB-FEAT-066/AC-005"]
+        },
+        {
+            "path": "src/widgets/remote-processing/model/__tests__/durableChapterBatch.test.ts",
+            "category": "evidence",
+            "specs": ["MOB-FEAT-066"],
+            "observations": ["MOB-FEAT-066/AC-004", "MOB-FEAT-066/AC-005"]
+        },
+        {
+            "path": "src/entities/remote-processing-attempt/api/chapterBatchQueueRepository.ts",
+            "category": "behavior",
+            "specs": ["MOB-FEAT-066"],
+            "observations": ["MOB-FEAT-066/AC-004", "MOB-FEAT-066/AC-005"]
+        },
+        {
+            "path": "src/entities/remote-processing-attempt/api/__tests__/chapterBatchQueueRepository.test.ts",
+            "category": "evidence",
+            "specs": ["MOB-FEAT-066"],
+            "observations": ["MOB-FEAT-066/AC-004", "MOB-FEAT-066/AC-005"]
+        },
         {
             "path": "docs/decisions/MOB-DEC-008-volatile-processing.md",
             "category": "governance",
@@ -775,8 +865,17 @@
         {
             "path": "app.json",
             "category": "behavior",
-            "specs": ["MOB-BASE-001", "MOB-FEAT-012", "MOB-FEAT-027", "MOB-FEAT-049"],
-            "observations": ["MOB-BASE-001/OBS-006", "MOB-BASE-001/OBS-007", "MOB-FEAT-012/AC-002", "MOB-FEAT-027/AC-003", "MOB-FEAT-049/AC-001"]
+            "specs": ["MOB-BASE-001", "MOB-FEAT-012", "MOB-FEAT-027", "MOB-FEAT-049", "MOB-FEAT-064"],
+            "observations": [
+                "MOB-BASE-001/OBS-006",
+                "MOB-BASE-001/OBS-007",
+                "MOB-FEAT-012/AC-002",
+                "MOB-FEAT-027/AC-003",
+                "MOB-FEAT-049/AC-001",
+                "MOB-FEAT-064/AC-001",
+                "MOB-FEAT-064/AC-002",
+                "MOB-FEAT-064/AC-003"
+            ]
         },
         {
             "path": "src/app/_layout.tsx",
@@ -796,8 +895,8 @@
         {
             "path": "src/app/(auth)/_layout.tsx",
             "category": "behavior",
-            "specs": ["MOB-BASE-006", "MOB-FEAT-002"],
-            "observations": ["MOB-BASE-006/OBS-002", "MOB-FEAT-002/AC-009", "MOB-FEAT-002/AC-010"]
+            "specs": ["MOB-BASE-006", "MOB-FEAT-002", "MOB-FEAT-069"],
+            "observations": ["MOB-BASE-006/OBS-002", "MOB-FEAT-002/AC-009", "MOB-FEAT-002/AC-010", "MOB-FEAT-069/AC-003"]
         },
         {
             "path": "src/app/(auth)/forgot.tsx",
@@ -827,19 +926,13 @@
             "path": "src/app/+not-found.tsx",
             "category": "behavior",
             "specs": ["MOB-BASE-008"],
-            "observations": ["MOB-BASE-008/OBS-004", "MOB-BASE-008/OBS-005"]
+            "observations": ["MOB-BASE-008/OBS-004", "MOB-BASE-008/OBS-005", "MOB-BASE-008/OBS-003"]
         },
         {
             "path": "src/app/index.tsx",
             "category": "behavior",
             "specs": ["MOB-FEAT-010"],
             "observations": ["MOB-FEAT-010/AC-001", "MOB-FEAT-010/AC-002"]
-        },
-        {
-            "path": "src/app/modal.tsx",
-            "category": "behavior",
-            "specs": ["MOB-BASE-008"],
-            "observations": ["MOB-BASE-008/OBS-003", "MOB-BASE-008/OBS-005"]
         },
         {
             "path": "src/app/offline-translation.tsx",
@@ -850,14 +943,14 @@
         {
             "path": "src/app/platform/_layout.tsx",
             "category": "behavior",
-            "specs": ["MOB-FEAT-010"],
-            "observations": ["MOB-FEAT-010/AC-004", "MOB-FEAT-010/AC-006"]
+            "specs": ["MOB-FEAT-010", "MOB-FEAT-069"],
+            "observations": ["MOB-FEAT-010/AC-004", "MOB-FEAT-010/AC-006", "MOB-FEAT-069/AC-003"]
         },
         {
             "path": "src/app/platform/(tabs)/_layout.tsx",
             "category": "behavior",
-            "specs": ["MOB-BASE-006", "MOB-FEAT-010"],
-            "observations": ["MOB-BASE-006/OBS-003", "MOB-FEAT-010/AC-004"]
+            "specs": ["MOB-BASE-006", "MOB-FEAT-010", "MOB-FEAT-069"],
+            "observations": ["MOB-BASE-006/OBS-003", "MOB-FEAT-010/AC-004", "MOB-FEAT-069/AC-003"]
         },
         {
             "path": "src/app/platform/(tabs)/forum.tsx",
@@ -892,8 +985,8 @@
         {
             "path": "src/app/reader/_layout.tsx",
             "category": "behavior",
-            "specs": ["MOB-FEAT-005"],
-            "observations": ["MOB-FEAT-005/AC-009"]
+            "specs": ["MOB-FEAT-005", "MOB-FEAT-069"],
+            "observations": ["MOB-FEAT-005/AC-009", "MOB-FEAT-069/AC-004"]
         },
         {
             "path": "src/app/reader/[titleId]/[number].tsx",
@@ -904,8 +997,8 @@
         {
             "path": "src/app/settings/_layout.tsx",
             "category": "behavior",
-            "specs": ["MOB-FEAT-008"],
-            "observations": ["MOB-FEAT-008/AC-002", "MOB-FEAT-008/AC-003", "MOB-FEAT-008/AC-008"]
+            "specs": ["MOB-FEAT-008", "MOB-FEAT-069"],
+            "observations": ["MOB-FEAT-008/AC-002", "MOB-FEAT-008/AC-003", "MOB-FEAT-008/AC-008", "MOB-FEAT-069/AC-003"]
         },
         {
             "path": "src/app/settings/about.tsx",
@@ -954,6 +1047,12 @@
             "category": "behavior",
             "specs": ["MOB-FEAT-008"],
             "observations": ["MOB-FEAT-008/AC-002", "MOB-FEAT-008/AC-006"]
+        },
+        {
+            "path": ".java-version",
+            "category": "infrastructure",
+            "specs": ["MOB-BASE-001"],
+            "rationale": "Versão do Java usada pelo ambiente de build Android."
         },
         {
             "path": "babel.config.js",
@@ -1263,8 +1362,14 @@
         {
             "path": "src/application/navigation/__tests__/RootNavigator.test.tsx",
             "category": "evidence",
-            "specs": ["MOB-FEAT-002", "MOB-FEAT-008"],
-            "observations": ["MOB-FEAT-002/AC-009", "MOB-FEAT-002/AC-010", "MOB-FEAT-008/AC-003"]
+            "specs": ["MOB-FEAT-002", "MOB-FEAT-008", "MOB-FEAT-069"],
+            "observations": ["MOB-FEAT-002/AC-009", "MOB-FEAT-002/AC-010", "MOB-FEAT-008/AC-003", "MOB-FEAT-069/AC-002", "MOB-FEAT-069/AC-004"]
+        },
+        {
+            "path": "src/application/navigation/__tests__/StackLayouts.integration.test.tsx",
+            "category": "evidence",
+            "specs": ["MOB-FEAT-069"],
+            "observations": ["MOB-FEAT-069/AC-003", "MOB-FEAT-069/AC-004"]
         },
         {
             "path": "src/application/navigation/index.ts",
@@ -1275,7 +1380,7 @@
         {
             "path": "src/application/navigation/RootNavigator.tsx",
             "category": "behavior",
-            "specs": ["MOB-BASE-006", "MOB-FEAT-002", "MOB-FEAT-005", "MOB-FEAT-008", "MOB-FEAT-010"],
+            "specs": ["MOB-BASE-006", "MOB-FEAT-002", "MOB-FEAT-005", "MOB-FEAT-008", "MOB-FEAT-010", "MOB-FEAT-069"],
             "observations": [
                 "MOB-BASE-006/OBS-001",
                 "MOB-FEAT-002/AC-009",
@@ -1284,7 +1389,9 @@
                 "MOB-FEAT-008/AC-002",
                 "MOB-FEAT-008/AC-003",
                 "MOB-FEAT-010/AC-001",
-                "MOB-FEAT-010/AC-004"
+                "MOB-FEAT-010/AC-004",
+                "MOB-FEAT-069/AC-002",
+                "MOB-FEAT-069/AC-004"
             ]
         },
         {
@@ -1768,8 +1875,8 @@
         {
             "path": "src/features/authenticate/index.ts",
             "category": "behavior",
-            "specs": ["MOB-BASE-004", "MOB-FEAT-011"],
-            "observations": ["MOB-BASE-004/OBS-004", "MOB-BASE-004/OBS-007", "MOB-FEAT-011/AC-008", "MOB-FEAT-011/AC-011"]
+            "specs": ["MOB-BASE-004", "MOB-FEAT-011", "MOB-FEAT-064"],
+            "observations": ["MOB-BASE-004/OBS-004", "MOB-BASE-004/OBS-007", "MOB-FEAT-011/AC-008", "MOB-FEAT-011/AC-011", "MOB-FEAT-064/AC-001"]
         },
         {
             "path": "src/features/authenticate/model/authenticate.ts",
@@ -1817,8 +1924,8 @@
         {
             "path": "src/features/authenticate/ui/index.ts",
             "category": "behavior",
-            "specs": ["MOB-BASE-004", "MOB-FEAT-011"],
-            "observations": ["MOB-BASE-004/OBS-007", "MOB-FEAT-011/AC-008", "MOB-FEAT-011/AC-011"]
+            "specs": ["MOB-BASE-004", "MOB-FEAT-011", "MOB-FEAT-064"],
+            "observations": ["MOB-BASE-004/OBS-007", "MOB-FEAT-011/AC-008", "MOB-FEAT-011/AC-011", "MOB-FEAT-064/AC-001"]
         },
         {
             "path": "src/features/authenticate/ui/MRIcon.tsx",
@@ -1854,7 +1961,26 @@
             "path": "src/features/configure-chapter-reader/ui/ReaderSettingsControls.tsx",
             "category": "behavior",
             "specs": ["MOB-FEAT-005", "MOB-FEAT-011", "MOB-FEAT-033", "MOB-FEAT-034", "MOB-FEAT-042", "MOB-FEAT-054", "MOB-FEAT-062", "MOB-FEAT-063"],
-            "observations": ["MOB-FEAT-005/AC-003", "MOB-FEAT-005/AC-004", "MOB-FEAT-005/AC-009", "MOB-FEAT-011/AC-007", "MOB-FEAT-011/AC-008", "MOB-FEAT-011/AC-009", "MOB-FEAT-011/AC-010", "MOB-FEAT-033/AC-002", "MOB-FEAT-033/AC-003", "MOB-FEAT-033/AC-006", "MOB-FEAT-034/AC-003", "MOB-FEAT-034/AC-006", "MOB-FEAT-042/AC-003", "MOB-FEAT-042/AC-005", "MOB-FEAT-054/AC-002", "MOB-FEAT-062/AC-006", "MOB-FEAT-063/AC-006", "MOB-FEAT-063/AC-007"]
+            "observations": [
+                "MOB-FEAT-005/AC-003",
+                "MOB-FEAT-005/AC-004",
+                "MOB-FEAT-005/AC-009",
+                "MOB-FEAT-011/AC-007",
+                "MOB-FEAT-011/AC-008",
+                "MOB-FEAT-011/AC-009",
+                "MOB-FEAT-011/AC-010",
+                "MOB-FEAT-033/AC-002",
+                "MOB-FEAT-033/AC-003",
+                "MOB-FEAT-033/AC-006",
+                "MOB-FEAT-034/AC-003",
+                "MOB-FEAT-034/AC-006",
+                "MOB-FEAT-042/AC-003",
+                "MOB-FEAT-042/AC-005",
+                "MOB-FEAT-054/AC-002",
+                "MOB-FEAT-062/AC-006",
+                "MOB-FEAT-063/AC-006",
+                "MOB-FEAT-063/AC-007"
+            ]
         },
         {
             "path": "src/features/authenticate/model/__tests__/authenticate.test.ts",
@@ -1922,7 +2048,18 @@
             "path": "src/features/create-translation-project/ui/CreateTranslationProjectPanel.tsx",
             "category": "behavior",
             "specs": ["MOB-FEAT-016", "MOB-FEAT-017", "MOB-FEAT-021", "MOB-FEAT-056"],
-            "observations": ["MOB-FEAT-016/AC-001", "MOB-FEAT-016/AC-009", "MOB-FEAT-016/AC-010", "MOB-FEAT-016/AC-012", "MOB-FEAT-017/AC-011", "MOB-FEAT-021/AC-001", "MOB-FEAT-021/AC-006", "MOB-FEAT-021/AC-008", "MOB-FEAT-056/AC-001", "MOB-FEAT-056/AC-004"]
+            "observations": [
+                "MOB-FEAT-016/AC-001",
+                "MOB-FEAT-016/AC-009",
+                "MOB-FEAT-016/AC-010",
+                "MOB-FEAT-016/AC-012",
+                "MOB-FEAT-017/AC-011",
+                "MOB-FEAT-021/AC-001",
+                "MOB-FEAT-021/AC-006",
+                "MOB-FEAT-021/AC-008",
+                "MOB-FEAT-056/AC-001",
+                "MOB-FEAT-056/AC-004"
+            ]
         },
         {
             "path": "src/features/data-controls/api/dataControlsApi.ts",
@@ -2076,7 +2213,23 @@
             "path": "src/features/import-local-media/ui/ImportLocalMediaPanel.tsx",
             "category": "behavior",
             "specs": ["MOB-FEAT-012", "MOB-FEAT-013", "MOB-FEAT-028", "MOB-FEAT-056"],
-            "observations": ["MOB-FEAT-012/AC-001", "MOB-FEAT-012/AC-007", "MOB-FEAT-012/AC-008", "MOB-FEAT-012/AC-009", "MOB-FEAT-012/AC-010", "MOB-FEAT-013/AC-001", "MOB-FEAT-013/AC-002", "MOB-FEAT-013/AC-009", "MOB-FEAT-013/AC-011", "MOB-FEAT-013/AC-012", "MOB-FEAT-028/AC-003", "MOB-FEAT-028/AC-004", "MOB-FEAT-028/AC-005", "MOB-FEAT-028/AC-013", "MOB-FEAT-056/AC-004"]
+            "observations": [
+                "MOB-FEAT-012/AC-001",
+                "MOB-FEAT-012/AC-007",
+                "MOB-FEAT-012/AC-008",
+                "MOB-FEAT-012/AC-009",
+                "MOB-FEAT-012/AC-010",
+                "MOB-FEAT-013/AC-001",
+                "MOB-FEAT-013/AC-002",
+                "MOB-FEAT-013/AC-009",
+                "MOB-FEAT-013/AC-011",
+                "MOB-FEAT-013/AC-012",
+                "MOB-FEAT-028/AC-003",
+                "MOB-FEAT-028/AC-004",
+                "MOB-FEAT-028/AC-005",
+                "MOB-FEAT-028/AC-013",
+                "MOB-FEAT-056/AC-004"
+            ]
         },
         {
             "path": "src/features/import-local-media/ui/__tests__/ImportLocalMediaPanel.test.tsx",
@@ -2165,7 +2318,7 @@
         {
             "path": "src/features/review-local-media-import/ui/__tests__/LocalMediaReviewPanel.test.tsx",
             "category": "evidence",
-            "specs": ["MOB-FEAT-013", "MOB-FEAT-043"],
+            "specs": ["MOB-FEAT-013", "MOB-FEAT-043", "MOB-FEAT-056"],
             "observations": [
                 "MOB-FEAT-013/AC-001",
                 "MOB-FEAT-013/AC-003",
@@ -2181,14 +2334,40 @@
                 "MOB-FEAT-043/AC-004",
                 "MOB-FEAT-043/AC-005",
                 "MOB-FEAT-043/AC-006",
-                "MOB-FEAT-043/AC-007"
+                "MOB-FEAT-043/AC-007",
+                "MOB-FEAT-056/AC-014"
             ]
         },
         {
             "path": "src/features/review-local-media-import/ui/LocalMediaReviewPanel.tsx",
             "category": "behavior",
             "specs": ["MOB-FEAT-013", "MOB-FEAT-014", "MOB-FEAT-015", "MOB-FEAT-043", "MOB-FEAT-056"],
-            "observations": ["MOB-FEAT-013/AC-001", "MOB-FEAT-013/AC-003", "MOB-FEAT-013/AC-004", "MOB-FEAT-013/AC-005", "MOB-FEAT-013/AC-006", "MOB-FEAT-013/AC-007", "MOB-FEAT-013/AC-008", "MOB-FEAT-013/AC-009", "MOB-FEAT-013/AC-011", "MOB-FEAT-013/AC-012", "MOB-FEAT-014/AC-005", "MOB-FEAT-014/AC-006", "MOB-FEAT-014/AC-009", "MOB-FEAT-015/AC-004", "MOB-FEAT-015/AC-012", "MOB-FEAT-043/AC-001", "MOB-FEAT-043/AC-002", "MOB-FEAT-043/AC-003", "MOB-FEAT-043/AC-004", "MOB-FEAT-043/AC-005", "MOB-FEAT-043/AC-006", "MOB-FEAT-043/AC-007", "MOB-FEAT-056/AC-004"]
+            "observations": [
+                "MOB-FEAT-013/AC-001",
+                "MOB-FEAT-013/AC-003",
+                "MOB-FEAT-013/AC-004",
+                "MOB-FEAT-013/AC-005",
+                "MOB-FEAT-013/AC-006",
+                "MOB-FEAT-013/AC-007",
+                "MOB-FEAT-013/AC-008",
+                "MOB-FEAT-013/AC-009",
+                "MOB-FEAT-013/AC-011",
+                "MOB-FEAT-013/AC-012",
+                "MOB-FEAT-014/AC-005",
+                "MOB-FEAT-014/AC-006",
+                "MOB-FEAT-014/AC-009",
+                "MOB-FEAT-015/AC-004",
+                "MOB-FEAT-015/AC-012",
+                "MOB-FEAT-043/AC-001",
+                "MOB-FEAT-043/AC-002",
+                "MOB-FEAT-043/AC-003",
+                "MOB-FEAT-043/AC-004",
+                "MOB-FEAT-043/AC-005",
+                "MOB-FEAT-043/AC-006",
+                "MOB-FEAT-043/AC-007",
+                "MOB-FEAT-056/AC-004",
+                "MOB-FEAT-056/AC-014"
+            ]
         },
         {
             "path": "src/features/review-local-media-import/ui/ReviewImageActionsSheet.tsx",
@@ -2243,13 +2422,41 @@
             "path": "src/features/select-translation-languages/ui/__tests__/TranslationLanguageSelectionPanel.test.tsx",
             "category": "evidence",
             "specs": ["MOB-FEAT-014", "MOB-FEAT-036", "MOB-FEAT-044", "MOB-FEAT-056"],
-            "observations": ["MOB-FEAT-014/AC-001", "MOB-FEAT-014/AC-002", "MOB-FEAT-014/AC-004", "MOB-FEAT-014/AC-005", "MOB-FEAT-014/AC-007", "MOB-FEAT-014/AC-009", "MOB-FEAT-036/AC-005", "MOB-FEAT-036/AC-006", "MOB-FEAT-044/AC-001", "MOB-FEAT-044/AC-002", "MOB-FEAT-044/AC-003", "MOB-FEAT-044/AC-004", "MOB-FEAT-056/AC-010", "MOB-FEAT-056/AC-013"]
+            "observations": [
+                "MOB-FEAT-014/AC-001",
+                "MOB-FEAT-014/AC-002",
+                "MOB-FEAT-014/AC-004",
+                "MOB-FEAT-014/AC-005",
+                "MOB-FEAT-014/AC-007",
+                "MOB-FEAT-014/AC-009",
+                "MOB-FEAT-036/AC-005",
+                "MOB-FEAT-036/AC-006",
+                "MOB-FEAT-044/AC-001",
+                "MOB-FEAT-044/AC-002",
+                "MOB-FEAT-044/AC-003",
+                "MOB-FEAT-044/AC-004",
+                "MOB-FEAT-056/AC-010",
+                "MOB-FEAT-056/AC-013"
+            ]
         },
         {
             "path": "src/features/select-translation-languages/ui/TranslationLanguageSelectionPanel.tsx",
             "category": "behavior",
             "specs": ["MOB-FEAT-014", "MOB-FEAT-044", "MOB-FEAT-056"],
-            "observations": ["MOB-FEAT-014/AC-001", "MOB-FEAT-014/AC-002", "MOB-FEAT-014/AC-004", "MOB-FEAT-014/AC-005", "MOB-FEAT-014/AC-007", "MOB-FEAT-014/AC-009", "MOB-FEAT-044/AC-001", "MOB-FEAT-044/AC-002", "MOB-FEAT-044/AC-003", "MOB-FEAT-044/AC-004", "MOB-FEAT-056/AC-004", "MOB-FEAT-056/AC-013"]
+            "observations": [
+                "MOB-FEAT-014/AC-001",
+                "MOB-FEAT-014/AC-002",
+                "MOB-FEAT-014/AC-004",
+                "MOB-FEAT-014/AC-005",
+                "MOB-FEAT-014/AC-007",
+                "MOB-FEAT-014/AC-009",
+                "MOB-FEAT-044/AC-001",
+                "MOB-FEAT-044/AC-002",
+                "MOB-FEAT-044/AC-003",
+                "MOB-FEAT-044/AC-004",
+                "MOB-FEAT-056/AC-004",
+                "MOB-FEAT-056/AC-013"
+            ]
         },
         {
             "path": "src/features/validate-local-media/index.ts",
@@ -2317,7 +2524,18 @@
             "path": "src/features/validate-local-media/ui/LocalMediaValidationPanel.tsx",
             "category": "behavior",
             "specs": ["MOB-FEAT-015", "MOB-FEAT-045", "MOB-FEAT-056"],
-            "observations": ["MOB-FEAT-015/AC-003", "MOB-FEAT-015/AC-005", "MOB-FEAT-015/AC-009", "MOB-FEAT-015/AC-012", "MOB-FEAT-045/AC-001", "MOB-FEAT-045/AC-002", "MOB-FEAT-045/AC-004", "MOB-FEAT-045/AC-005", "MOB-FEAT-056/AC-003", "MOB-FEAT-056/AC-004"]
+            "observations": [
+                "MOB-FEAT-015/AC-003",
+                "MOB-FEAT-015/AC-005",
+                "MOB-FEAT-015/AC-009",
+                "MOB-FEAT-015/AC-012",
+                "MOB-FEAT-045/AC-001",
+                "MOB-FEAT-045/AC-002",
+                "MOB-FEAT-045/AC-004",
+                "MOB-FEAT-045/AC-005",
+                "MOB-FEAT-056/AC-003",
+                "MOB-FEAT-056/AC-004"
+            ]
         },
         {
             "path": "src/features/manage-content-languages/api/manageContentLanguagesApi.ts",
@@ -2960,7 +3178,7 @@
         {
             "path": "src/pages/login/ui/LoginPage.tsx",
             "category": "behavior",
-            "specs": ["MOB-BASE-004", "MOB-FEAT-002", "MOB-FEAT-008", "MOB-FEAT-011", "MOB-FEAT-061"],
+            "specs": ["MOB-BASE-004", "MOB-FEAT-002", "MOB-FEAT-008", "MOB-FEAT-011", "MOB-FEAT-061", "MOB-FEAT-064"],
             "observations": [
                 "MOB-BASE-004/OBS-001",
                 "MOB-BASE-004/OBS-006",
@@ -2974,26 +3192,15 @@
                 "MOB-FEAT-011/AC-010",
                 "MOB-FEAT-061/AC-001",
                 "MOB-FEAT-061/AC-004",
-                "MOB-FEAT-061/AC-005"
+                "MOB-FEAT-061/AC-005",
+                "MOB-FEAT-064/AC-001"
             ]
         },
         {
             "path": "src/pages/login/ui/__tests__/LoginPage.test.tsx",
             "category": "evidence",
-            "specs": ["MOB-FEAT-061"],
-            "observations": ["MOB-FEAT-061/AC-001", "MOB-FEAT-061/AC-004", "MOB-FEAT-061/AC-005", "MOB-FEAT-061/AC-007"]
-        },
-        {
-            "path": "src/pages/modal/index.ts",
-            "category": "behavior",
-            "specs": ["MOB-BASE-008"],
-            "observations": ["MOB-BASE-008/OBS-003", "MOB-BASE-008/OBS-005"]
-        },
-        {
-            "path": "src/pages/modal/ui/ModalPage.tsx",
-            "category": "behavior",
-            "specs": ["MOB-BASE-008"],
-            "observations": ["MOB-BASE-008/OBS-003"]
+            "specs": ["MOB-FEAT-061", "MOB-FEAT-064"],
+            "observations": ["MOB-FEAT-061/AC-001", "MOB-FEAT-061/AC-004", "MOB-FEAT-061/AC-005", "MOB-FEAT-061/AC-007", "MOB-FEAT-064/AC-001"]
         },
         {
             "path": "src/pages/not-found/index.ts",
@@ -3023,26 +3230,123 @@
         {
             "path": "src/pages/offline-translation/ui/__tests__/OfflineTranslationPage.test.tsx",
             "category": "evidence",
-            "specs": ["MOB-FEAT-012", "MOB-FEAT-013", "MOB-FEAT-014", "MOB-FEAT-016", "MOB-FEAT-028", "MOB-FEAT-044", "MOB-FEAT-045", "MOB-FEAT-050", "MOB-FEAT-021", "MOB-FEAT-055", "MOB-FEAT-056"],
-            "observations": ["MOB-FEAT-012/AC-001", "MOB-FEAT-012/AC-003", "MOB-FEAT-012/AC-007", "MOB-FEAT-012/AC-008", "MOB-FEAT-012/AC-010", "MOB-FEAT-013/AC-001", "MOB-FEAT-013/AC-006", "MOB-FEAT-013/AC-009", "MOB-FEAT-014/AC-005", "MOB-FEAT-014/AC-008", "MOB-FEAT-014/AC-009", "MOB-FEAT-016/AC-010", "MOB-FEAT-016/AC-011", "MOB-FEAT-028/AC-003", "MOB-FEAT-028/AC-004", "MOB-FEAT-028/AC-008", "MOB-FEAT-028/AC-013", "MOB-FEAT-028/AC-014", "MOB-FEAT-044/AC-001", "MOB-FEAT-044/AC-003", "MOB-FEAT-045/AC-004", "MOB-FEAT-050/AC-002", "MOB-FEAT-050/AC-004", "MOB-FEAT-021/AC-001", "MOB-FEAT-021/AC-006", "MOB-FEAT-021/AC-008", "MOB-FEAT-055/AC-008", "MOB-FEAT-056/AC-001", "MOB-FEAT-056/AC-002", "MOB-FEAT-056/AC-003", "MOB-FEAT-056/AC-004", "MOB-FEAT-056/AC-005", "MOB-FEAT-056/AC-009", "MOB-FEAT-056/AC-010", "MOB-FEAT-056/AC-012"]
+            "specs": [
+                "MOB-FEAT-012",
+                "MOB-FEAT-013",
+                "MOB-FEAT-014",
+                "MOB-FEAT-016",
+                "MOB-FEAT-028",
+                "MOB-FEAT-044",
+                "MOB-FEAT-045",
+                "MOB-FEAT-050",
+                "MOB-FEAT-021",
+                "MOB-FEAT-055",
+                "MOB-FEAT-056"
+            ],
+            "observations": [
+                "MOB-FEAT-012/AC-001",
+                "MOB-FEAT-012/AC-003",
+                "MOB-FEAT-012/AC-007",
+                "MOB-FEAT-012/AC-008",
+                "MOB-FEAT-012/AC-010",
+                "MOB-FEAT-013/AC-001",
+                "MOB-FEAT-013/AC-006",
+                "MOB-FEAT-013/AC-009",
+                "MOB-FEAT-014/AC-005",
+                "MOB-FEAT-014/AC-008",
+                "MOB-FEAT-014/AC-009",
+                "MOB-FEAT-016/AC-010",
+                "MOB-FEAT-016/AC-011",
+                "MOB-FEAT-028/AC-003",
+                "MOB-FEAT-028/AC-004",
+                "MOB-FEAT-028/AC-008",
+                "MOB-FEAT-028/AC-013",
+                "MOB-FEAT-028/AC-014",
+                "MOB-FEAT-044/AC-001",
+                "MOB-FEAT-044/AC-003",
+                "MOB-FEAT-045/AC-004",
+                "MOB-FEAT-050/AC-002",
+                "MOB-FEAT-050/AC-004",
+                "MOB-FEAT-021/AC-001",
+                "MOB-FEAT-021/AC-006",
+                "MOB-FEAT-021/AC-008",
+                "MOB-FEAT-055/AC-008",
+                "MOB-FEAT-056/AC-001",
+                "MOB-FEAT-056/AC-002",
+                "MOB-FEAT-056/AC-003",
+                "MOB-FEAT-056/AC-004",
+                "MOB-FEAT-056/AC-005",
+                "MOB-FEAT-056/AC-009",
+                "MOB-FEAT-056/AC-010",
+                "MOB-FEAT-056/AC-012",
+                "MOB-FEAT-056/AC-014"
+            ]
         },
         {
             "path": "src/pages/offline-translation/ui/OfflineTranslationPage.tsx",
             "category": "behavior",
-            "specs": ["MOB-FEAT-012", "MOB-FEAT-013", "MOB-FEAT-014", "MOB-FEAT-015", "MOB-FEAT-016", "MOB-FEAT-017", "MOB-FEAT-028", "MOB-FEAT-045", "MOB-FEAT-050", "MOB-FEAT-021", "MOB-FEAT-055", "MOB-FEAT-056"],
-            "observations": ["MOB-FEAT-012/AC-001", "MOB-FEAT-012/AC-007", "MOB-FEAT-012/AC-010", "MOB-FEAT-013/AC-001", "MOB-FEAT-013/AC-006", "MOB-FEAT-013/AC-008", "MOB-FEAT-013/AC-009", "MOB-FEAT-014/AC-005", "MOB-FEAT-014/AC-008", "MOB-FEAT-014/AC-009", "MOB-FEAT-015/AC-009", "MOB-FEAT-015/AC-012", "MOB-FEAT-016/AC-001", "MOB-FEAT-016/AC-009", "MOB-FEAT-016/AC-010", "MOB-FEAT-016/AC-012", "MOB-FEAT-017/AC-011", "MOB-FEAT-017/AC-012", "MOB-FEAT-028/AC-003", "MOB-FEAT-028/AC-004", "MOB-FEAT-045/AC-004", "MOB-FEAT-050/AC-002", "MOB-FEAT-050/AC-004", "MOB-FEAT-021/AC-001", "MOB-FEAT-021/AC-006", "MOB-FEAT-021/AC-008", "MOB-FEAT-055/AC-008", "MOB-FEAT-056/AC-001", "MOB-FEAT-056/AC-002", "MOB-FEAT-056/AC-003", "MOB-FEAT-056/AC-004", "MOB-FEAT-056/AC-005", "MOB-FEAT-056/AC-009", "MOB-FEAT-056/AC-012"]
+            "specs": [
+                "MOB-FEAT-012",
+                "MOB-FEAT-013",
+                "MOB-FEAT-014",
+                "MOB-FEAT-015",
+                "MOB-FEAT-016",
+                "MOB-FEAT-017",
+                "MOB-FEAT-028",
+                "MOB-FEAT-045",
+                "MOB-FEAT-050",
+                "MOB-FEAT-021",
+                "MOB-FEAT-055",
+                "MOB-FEAT-056"
+            ],
+            "observations": [
+                "MOB-FEAT-012/AC-001",
+                "MOB-FEAT-012/AC-007",
+                "MOB-FEAT-012/AC-010",
+                "MOB-FEAT-013/AC-001",
+                "MOB-FEAT-013/AC-006",
+                "MOB-FEAT-013/AC-008",
+                "MOB-FEAT-013/AC-009",
+                "MOB-FEAT-014/AC-005",
+                "MOB-FEAT-014/AC-008",
+                "MOB-FEAT-014/AC-009",
+                "MOB-FEAT-015/AC-009",
+                "MOB-FEAT-015/AC-012",
+                "MOB-FEAT-016/AC-001",
+                "MOB-FEAT-016/AC-009",
+                "MOB-FEAT-016/AC-010",
+                "MOB-FEAT-016/AC-012",
+                "MOB-FEAT-017/AC-011",
+                "MOB-FEAT-017/AC-012",
+                "MOB-FEAT-028/AC-003",
+                "MOB-FEAT-028/AC-004",
+                "MOB-FEAT-045/AC-004",
+                "MOB-FEAT-050/AC-002",
+                "MOB-FEAT-050/AC-004",
+                "MOB-FEAT-021/AC-001",
+                "MOB-FEAT-021/AC-006",
+                "MOB-FEAT-021/AC-008",
+                "MOB-FEAT-055/AC-008",
+                "MOB-FEAT-056/AC-001",
+                "MOB-FEAT-056/AC-002",
+                "MOB-FEAT-056/AC-003",
+                "MOB-FEAT-056/AC-004",
+                "MOB-FEAT-056/AC-005",
+                "MOB-FEAT-056/AC-009",
+                "MOB-FEAT-056/AC-012"
+            ]
         },
         {
             "path": "src/pages/offline-translation/ui/SaveDestination.tsx",
             "category": "behavior",
             "specs": ["MOB-FEAT-056"],
-            "observations": ["MOB-FEAT-056/AC-012"]
+            "observations": ["MOB-FEAT-056/AC-012", "MOB-FEAT-056/AC-014"]
         },
         {
             "path": "src/pages/offline-translation/ui/FlowSummary.tsx",
             "category": "behavior",
             "specs": ["MOB-FEAT-056"],
-            "observations": ["MOB-FEAT-056/AC-001"]
+            "observations": ["MOB-FEAT-056/AC-001", "MOB-FEAT-056/AC-014"]
         },
         {
             "path": "src/pages/not-found/ui/NotFoundPage.tsx",
@@ -3129,7 +3433,16 @@
             "path": "src/pages/reader/ui/__tests__/ReaderPage.test.tsx",
             "category": "evidence",
             "specs": ["MOB-FEAT-003", "MOB-FEAT-005", "MOB-FEAT-052", "MOB-FEAT-063"],
-            "observations": ["MOB-FEAT-003/AC-006", "MOB-FEAT-005/AC-001", "MOB-FEAT-005/AC-005", "MOB-FEAT-005/AC-006", "MOB-FEAT-052/AC-004", "MOB-FEAT-063/AC-003", "MOB-FEAT-063/AC-007", "MOB-FEAT-063/AC-009"]
+            "observations": [
+                "MOB-FEAT-003/AC-006",
+                "MOB-FEAT-005/AC-001",
+                "MOB-FEAT-005/AC-005",
+                "MOB-FEAT-005/AC-006",
+                "MOB-FEAT-052/AC-004",
+                "MOB-FEAT-063/AC-003",
+                "MOB-FEAT-063/AC-007",
+                "MOB-FEAT-063/AC-009"
+            ]
         },
         {
             "path": "src/pages/reader/ui/__tests__/ReaderPageStates.test.tsx",
@@ -3141,7 +3454,23 @@
             "path": "src/pages/reader/ui/ReaderPage.tsx",
             "category": "behavior",
             "specs": ["MOB-FEAT-005", "MOB-FEAT-008", "MOB-FEAT-052", "MOB-FEAT-054", "MOB-FEAT-058", "MOB-FEAT-063"],
-            "observations": ["MOB-FEAT-005/AC-001", "MOB-FEAT-005/AC-003", "MOB-FEAT-005/AC-005", "MOB-FEAT-005/AC-006", "MOB-FEAT-005/AC-007", "MOB-FEAT-005/AC-008", "MOB-FEAT-005/AC-009", "MOB-FEAT-008/AC-005", "MOB-FEAT-052/AC-003", "MOB-FEAT-054/AC-003", "MOB-FEAT-058/AC-003", "MOB-FEAT-058/AC-004", "MOB-FEAT-058/AC-005", "MOB-FEAT-063/AC-006", "MOB-FEAT-063/AC-007"]
+            "observations": [
+                "MOB-FEAT-005/AC-001",
+                "MOB-FEAT-005/AC-003",
+                "MOB-FEAT-005/AC-005",
+                "MOB-FEAT-005/AC-006",
+                "MOB-FEAT-005/AC-007",
+                "MOB-FEAT-005/AC-008",
+                "MOB-FEAT-005/AC-009",
+                "MOB-FEAT-008/AC-005",
+                "MOB-FEAT-052/AC-003",
+                "MOB-FEAT-054/AC-003",
+                "MOB-FEAT-058/AC-003",
+                "MOB-FEAT-058/AC-004",
+                "MOB-FEAT-058/AC-005",
+                "MOB-FEAT-063/AC-006",
+                "MOB-FEAT-063/AC-007"
+            ]
         },
         {
             "path": "src/pages/register/index.ts",
@@ -3152,7 +3481,7 @@
         {
             "path": "src/pages/register/ui/RegisterPage.tsx",
             "category": "behavior",
-            "specs": ["MOB-BASE-004", "MOB-FEAT-002", "MOB-FEAT-011", "MOB-FEAT-061"],
+            "specs": ["MOB-BASE-004", "MOB-FEAT-002", "MOB-FEAT-011", "MOB-FEAT-061", "MOB-FEAT-064", "MOB-FEAT-068"],
             "observations": [
                 "MOB-BASE-004/OBS-002",
                 "MOB-BASE-004/OBS-006",
@@ -3165,14 +3494,27 @@
                 "MOB-FEAT-011/AC-010",
                 "MOB-FEAT-061/AC-001",
                 "MOB-FEAT-061/AC-002",
-                "MOB-FEAT-061/AC-005"
+                "MOB-FEAT-061/AC-005",
+                "MOB-FEAT-064/AC-002",
+                "MOB-FEAT-068/AC-001",
+                "MOB-FEAT-068/AC-002",
+                "MOB-FEAT-068/AC-003"
             ]
         },
         {
             "path": "src/pages/register/ui/__tests__/RegisterPage.test.tsx",
             "category": "evidence",
-            "specs": ["MOB-FEAT-061"],
-            "observations": ["MOB-FEAT-061/AC-001", "MOB-FEAT-061/AC-002", "MOB-FEAT-061/AC-005"]
+            "specs": ["MOB-FEAT-061", "MOB-FEAT-064", "MOB-FEAT-068"],
+            "observations": [
+                "MOB-FEAT-061/AC-001",
+                "MOB-FEAT-061/AC-002",
+                "MOB-FEAT-061/AC-005",
+                "MOB-FEAT-064/AC-002",
+                "MOB-FEAT-068/AC-001",
+                "MOB-FEAT-068/AC-002",
+                "MOB-FEAT-068/AC-003",
+                "MOB-FEAT-068/AC-004"
+            ]
         },
         {
             "path": "src/pages/settings-about/index.ts",
@@ -3183,20 +3525,21 @@
         {
             "path": "src/pages/settings-about/ui/__tests__/SettingsAboutPage.test.tsx",
             "category": "evidence",
-            "specs": ["MOB-FEAT-008", "MOB-FEAT-062"],
-            "observations": ["MOB-FEAT-008/AC-007", "MOB-FEAT-008/AC-009", "MOB-FEAT-062/AC-009", "MOB-FEAT-062/AC-011"]
+            "specs": ["MOB-FEAT-008", "MOB-FEAT-062", "MOB-FEAT-065"],
+            "observations": ["MOB-FEAT-008/AC-007", "MOB-FEAT-008/AC-009", "MOB-FEAT-062/AC-009", "MOB-FEAT-062/AC-011", "MOB-FEAT-065/AC-005"]
         },
         {
             "path": "src/pages/settings-about/ui/SettingsAboutPage.tsx",
             "category": "behavior",
-            "specs": ["MOB-FEAT-008", "MOB-FEAT-033", "MOB-FEAT-062"],
+            "specs": ["MOB-FEAT-008", "MOB-FEAT-033", "MOB-FEAT-062", "MOB-FEAT-065"],
             "observations": [
                 "MOB-FEAT-008/AC-002",
                 "MOB-FEAT-008/AC-007",
                 "MOB-FEAT-008/AC-009",
                 "MOB-FEAT-033/AC-004",
                 "MOB-FEAT-033/AC-005",
-                "MOB-FEAT-062/AC-009"
+                "MOB-FEAT-062/AC-009",
+                "MOB-FEAT-065/AC-005"
             ]
         },
         {
@@ -3410,6 +3753,12 @@
             "observations": ["MOB-FEAT-008/AC-007", "MOB-FEAT-008/AC-009"]
         },
         {
+            "path": "src/shared/config/developerMode.ts",
+            "category": "behavior",
+            "specs": ["MOB-FEAT-065"],
+            "observations": ["MOB-FEAT-065/AC-001", "MOB-FEAT-065/AC-003", "MOB-FEAT-065/AC-005"]
+        },
+        {
             "path": "src/shared/config/appMetadata.ts",
             "category": "behavior",
             "specs": ["MOB-FEAT-008"],
@@ -3424,8 +3773,8 @@
         {
             "path": "src/shared/config/index.ts",
             "category": "behavior",
-            "specs": ["MOB-FEAT-008"],
-            "observations": ["MOB-FEAT-008/AC-007"]
+            "specs": ["MOB-FEAT-008", "MOB-FEAT-064"],
+            "observations": ["MOB-FEAT-008/AC-007", "MOB-FEAT-064/AC-004"]
         },
         {
             "path": "src/shared/files/__tests__/jsonExport.test.ts",
@@ -3512,8 +3861,47 @@
         {
             "path": "src/shared/i18n/__tests__/i18n.test.ts",
             "category": "evidence",
-            "specs": ["MOB-FEAT-002", "MOB-FEAT-003", "MOB-FEAT-004", "MOB-FEAT-005", "MOB-FEAT-007", "MOB-FEAT-011", "MOB-FEAT-012", "MOB-FEAT-013", "MOB-FEAT-017", "MOB-FEAT-058", "MOB-FEAT-059", "MOB-FEAT-061", "MOB-FEAT-062", "MOB-FEAT-056", "MOB-FEAT-060", "MOB-FEAT-063"],
-            "observations": ["MOB-FEAT-002/AC-011", "MOB-FEAT-003/AC-001", "MOB-FEAT-003/AC-005", "MOB-FEAT-004/AC-005", "MOB-FEAT-004/AC-011", "MOB-FEAT-005/AC-009", "MOB-FEAT-007/AC-002", "MOB-FEAT-007/AC-008", "MOB-FEAT-011/AC-009", "MOB-FEAT-012/AC-010", "MOB-FEAT-013/AC-009", "MOB-FEAT-013/AC-011", "MOB-FEAT-013/AC-012", "MOB-FEAT-017/AC-011", "MOB-FEAT-058/AC-006", "MOB-FEAT-059/AC-006", "MOB-FEAT-061/AC-006", "MOB-FEAT-062/AC-010", "MOB-FEAT-056/AC-008", "MOB-FEAT-060/AC-012", "MOB-FEAT-063/AC-008"]
+            "specs": [
+                "MOB-FEAT-002",
+                "MOB-FEAT-003",
+                "MOB-FEAT-004",
+                "MOB-FEAT-005",
+                "MOB-FEAT-007",
+                "MOB-FEAT-011",
+                "MOB-FEAT-012",
+                "MOB-FEAT-013",
+                "MOB-FEAT-017",
+                "MOB-FEAT-058",
+                "MOB-FEAT-059",
+                "MOB-FEAT-061",
+                "MOB-FEAT-062",
+                "MOB-FEAT-056",
+                "MOB-FEAT-060",
+                "MOB-FEAT-063"
+            ],
+            "observations": [
+                "MOB-FEAT-002/AC-011",
+                "MOB-FEAT-003/AC-001",
+                "MOB-FEAT-003/AC-005",
+                "MOB-FEAT-004/AC-005",
+                "MOB-FEAT-004/AC-011",
+                "MOB-FEAT-005/AC-009",
+                "MOB-FEAT-007/AC-002",
+                "MOB-FEAT-007/AC-008",
+                "MOB-FEAT-011/AC-009",
+                "MOB-FEAT-012/AC-010",
+                "MOB-FEAT-013/AC-009",
+                "MOB-FEAT-013/AC-011",
+                "MOB-FEAT-013/AC-012",
+                "MOB-FEAT-017/AC-011",
+                "MOB-FEAT-058/AC-006",
+                "MOB-FEAT-059/AC-006",
+                "MOB-FEAT-061/AC-006",
+                "MOB-FEAT-062/AC-010",
+                "MOB-FEAT-056/AC-008",
+                "MOB-FEAT-060/AC-012",
+                "MOB-FEAT-063/AC-008"
+            ]
         },
         {
             "path": "src/shared/i18n/index.ts",
@@ -3531,8 +3919,8 @@
         {
             "path": "src/shared/i18n/locales/en-US/auth.json",
             "category": "behavior",
-            "specs": ["MOB-FEAT-003", "MOB-FEAT-061"],
-            "observations": ["MOB-FEAT-003/AC-005", "MOB-FEAT-061/AC-006"]
+            "specs": ["MOB-FEAT-003", "MOB-FEAT-061", "MOB-FEAT-064", "MOB-FEAT-068"],
+            "observations": ["MOB-FEAT-003/AC-005", "MOB-FEAT-061/AC-006", "MOB-FEAT-064/AC-001", "MOB-FEAT-068/AC-004"]
         },
         {
             "path": "src/shared/i18n/locales/en-US/common.json",
@@ -3554,14 +3942,65 @@
         {
             "path": "src/shared/i18n/locales/en-US/launcher.json",
             "category": "behavior",
-            "specs": ["MOB-FEAT-010", "MOB-FEAT-012", "MOB-FEAT-013", "MOB-FEAT-014", "MOB-FEAT-015", "MOB-FEAT-016", "MOB-FEAT-043", "MOB-FEAT-044", "MOB-FEAT-021", "MOB-FEAT-055", "MOB-FEAT-059", "MOB-FEAT-056"],
-            "observations": ["MOB-FEAT-010/AC-008", "MOB-FEAT-012/AC-001", "MOB-FEAT-012/AC-007", "MOB-FEAT-012/AC-008", "MOB-FEAT-012/AC-010", "MOB-FEAT-013/AC-009", "MOB-FEAT-013/AC-011", "MOB-FEAT-013/AC-012", "MOB-FEAT-043/AC-005", "MOB-FEAT-014/AC-002", "MOB-FEAT-014/AC-004", "MOB-FEAT-014/AC-005", "MOB-FEAT-014/AC-007", "MOB-FEAT-014/AC-009", "MOB-FEAT-015/AC-009", "MOB-FEAT-016/AC-010", "MOB-FEAT-016/AC-011", "MOB-FEAT-044/AC-001", "MOB-FEAT-044/AC-002", "MOB-FEAT-044/AC-004", "MOB-FEAT-021/AC-001", "MOB-FEAT-021/AC-003", "MOB-FEAT-021/AC-006", "MOB-FEAT-021/AC-008", "MOB-FEAT-055/AC-008", "MOB-FEAT-055/AC-009", "MOB-FEAT-059/AC-006", "MOB-FEAT-056/AC-008"]
+            "specs": [
+                "MOB-FEAT-010",
+                "MOB-FEAT-012",
+                "MOB-FEAT-013",
+                "MOB-FEAT-014",
+                "MOB-FEAT-015",
+                "MOB-FEAT-016",
+                "MOB-FEAT-043",
+                "MOB-FEAT-044",
+                "MOB-FEAT-021",
+                "MOB-FEAT-055",
+                "MOB-FEAT-059",
+                "MOB-FEAT-056"
+            ],
+            "observations": [
+                "MOB-FEAT-010/AC-008",
+                "MOB-FEAT-012/AC-001",
+                "MOB-FEAT-012/AC-007",
+                "MOB-FEAT-012/AC-008",
+                "MOB-FEAT-012/AC-010",
+                "MOB-FEAT-013/AC-009",
+                "MOB-FEAT-013/AC-011",
+                "MOB-FEAT-013/AC-012",
+                "MOB-FEAT-043/AC-005",
+                "MOB-FEAT-014/AC-002",
+                "MOB-FEAT-014/AC-004",
+                "MOB-FEAT-014/AC-005",
+                "MOB-FEAT-014/AC-007",
+                "MOB-FEAT-014/AC-009",
+                "MOB-FEAT-015/AC-009",
+                "MOB-FEAT-016/AC-010",
+                "MOB-FEAT-016/AC-011",
+                "MOB-FEAT-044/AC-001",
+                "MOB-FEAT-044/AC-002",
+                "MOB-FEAT-044/AC-004",
+                "MOB-FEAT-021/AC-001",
+                "MOB-FEAT-021/AC-003",
+                "MOB-FEAT-021/AC-006",
+                "MOB-FEAT-021/AC-008",
+                "MOB-FEAT-055/AC-008",
+                "MOB-FEAT-055/AC-009",
+                "MOB-FEAT-059/AC-006",
+                "MOB-FEAT-056/AC-008"
+            ]
         },
         {
             "path": "src/shared/i18n/locales/en-US/reader.json",
             "category": "behavior",
             "specs": ["MOB-FEAT-005", "MOB-FEAT-042", "MOB-FEAT-052", "MOB-FEAT-053", "MOB-FEAT-063"],
-            "observations": ["MOB-FEAT-005/AC-008", "MOB-FEAT-005/AC-009", "MOB-FEAT-042/AC-003", "MOB-FEAT-042/AC-005", "MOB-FEAT-052/AC-003", "MOB-FEAT-052/AC-004", "MOB-FEAT-053/AC-002", "MOB-FEAT-063/AC-008"]
+            "observations": [
+                "MOB-FEAT-005/AC-008",
+                "MOB-FEAT-005/AC-009",
+                "MOB-FEAT-042/AC-003",
+                "MOB-FEAT-042/AC-005",
+                "MOB-FEAT-052/AC-003",
+                "MOB-FEAT-052/AC-004",
+                "MOB-FEAT-053/AC-002",
+                "MOB-FEAT-063/AC-008"
+            ]
         },
         {
             "path": "src/shared/i18n/locales/en-US/settingsNavigation.json",
@@ -3581,8 +4020,8 @@
         {
             "path": "src/shared/i18n/locales/es-ES/auth.json",
             "category": "behavior",
-            "specs": ["MOB-FEAT-003", "MOB-FEAT-061"],
-            "observations": ["MOB-FEAT-003/AC-005", "MOB-FEAT-061/AC-006"]
+            "specs": ["MOB-FEAT-003", "MOB-FEAT-061", "MOB-FEAT-064", "MOB-FEAT-068"],
+            "observations": ["MOB-FEAT-003/AC-005", "MOB-FEAT-061/AC-006", "MOB-FEAT-064/AC-001", "MOB-FEAT-068/AC-004"]
         },
         {
             "path": "src/shared/i18n/locales/es-ES/common.json",
@@ -3604,14 +4043,65 @@
         {
             "path": "src/shared/i18n/locales/es-ES/launcher.json",
             "category": "behavior",
-            "specs": ["MOB-FEAT-010", "MOB-FEAT-012", "MOB-FEAT-013", "MOB-FEAT-014", "MOB-FEAT-015", "MOB-FEAT-016", "MOB-FEAT-043", "MOB-FEAT-044", "MOB-FEAT-021", "MOB-FEAT-055", "MOB-FEAT-059", "MOB-FEAT-056"],
-            "observations": ["MOB-FEAT-010/AC-008", "MOB-FEAT-012/AC-001", "MOB-FEAT-012/AC-007", "MOB-FEAT-012/AC-008", "MOB-FEAT-012/AC-010", "MOB-FEAT-013/AC-009", "MOB-FEAT-013/AC-011", "MOB-FEAT-013/AC-012", "MOB-FEAT-043/AC-005", "MOB-FEAT-014/AC-002", "MOB-FEAT-014/AC-004", "MOB-FEAT-014/AC-005", "MOB-FEAT-014/AC-007", "MOB-FEAT-014/AC-009", "MOB-FEAT-015/AC-009", "MOB-FEAT-016/AC-010", "MOB-FEAT-016/AC-011", "MOB-FEAT-044/AC-001", "MOB-FEAT-044/AC-002", "MOB-FEAT-044/AC-004", "MOB-FEAT-021/AC-001", "MOB-FEAT-021/AC-003", "MOB-FEAT-021/AC-006", "MOB-FEAT-021/AC-008", "MOB-FEAT-055/AC-008", "MOB-FEAT-055/AC-009", "MOB-FEAT-059/AC-006", "MOB-FEAT-056/AC-008"]
+            "specs": [
+                "MOB-FEAT-010",
+                "MOB-FEAT-012",
+                "MOB-FEAT-013",
+                "MOB-FEAT-014",
+                "MOB-FEAT-015",
+                "MOB-FEAT-016",
+                "MOB-FEAT-043",
+                "MOB-FEAT-044",
+                "MOB-FEAT-021",
+                "MOB-FEAT-055",
+                "MOB-FEAT-059",
+                "MOB-FEAT-056"
+            ],
+            "observations": [
+                "MOB-FEAT-010/AC-008",
+                "MOB-FEAT-012/AC-001",
+                "MOB-FEAT-012/AC-007",
+                "MOB-FEAT-012/AC-008",
+                "MOB-FEAT-012/AC-010",
+                "MOB-FEAT-013/AC-009",
+                "MOB-FEAT-013/AC-011",
+                "MOB-FEAT-013/AC-012",
+                "MOB-FEAT-043/AC-005",
+                "MOB-FEAT-014/AC-002",
+                "MOB-FEAT-014/AC-004",
+                "MOB-FEAT-014/AC-005",
+                "MOB-FEAT-014/AC-007",
+                "MOB-FEAT-014/AC-009",
+                "MOB-FEAT-015/AC-009",
+                "MOB-FEAT-016/AC-010",
+                "MOB-FEAT-016/AC-011",
+                "MOB-FEAT-044/AC-001",
+                "MOB-FEAT-044/AC-002",
+                "MOB-FEAT-044/AC-004",
+                "MOB-FEAT-021/AC-001",
+                "MOB-FEAT-021/AC-003",
+                "MOB-FEAT-021/AC-006",
+                "MOB-FEAT-021/AC-008",
+                "MOB-FEAT-055/AC-008",
+                "MOB-FEAT-055/AC-009",
+                "MOB-FEAT-059/AC-006",
+                "MOB-FEAT-056/AC-008"
+            ]
         },
         {
             "path": "src/shared/i18n/locales/es-ES/reader.json",
             "category": "behavior",
             "specs": ["MOB-FEAT-005", "MOB-FEAT-042", "MOB-FEAT-052", "MOB-FEAT-053", "MOB-FEAT-063"],
-            "observations": ["MOB-FEAT-005/AC-008", "MOB-FEAT-005/AC-009", "MOB-FEAT-042/AC-003", "MOB-FEAT-042/AC-005", "MOB-FEAT-052/AC-003", "MOB-FEAT-052/AC-004", "MOB-FEAT-053/AC-002", "MOB-FEAT-063/AC-008"]
+            "observations": [
+                "MOB-FEAT-005/AC-008",
+                "MOB-FEAT-005/AC-009",
+                "MOB-FEAT-042/AC-003",
+                "MOB-FEAT-042/AC-005",
+                "MOB-FEAT-052/AC-003",
+                "MOB-FEAT-052/AC-004",
+                "MOB-FEAT-053/AC-002",
+                "MOB-FEAT-063/AC-008"
+            ]
         },
         {
             "path": "src/shared/i18n/locales/es-ES/settingsNavigation.json",
@@ -3631,8 +4121,8 @@
         {
             "path": "src/shared/i18n/locales/pt-BR/auth.json",
             "category": "behavior",
-            "specs": ["MOB-FEAT-003", "MOB-FEAT-061"],
-            "observations": ["MOB-FEAT-003/AC-005", "MOB-FEAT-061/AC-006"]
+            "specs": ["MOB-FEAT-003", "MOB-FEAT-061", "MOB-FEAT-064", "MOB-FEAT-068"],
+            "observations": ["MOB-FEAT-003/AC-005", "MOB-FEAT-061/AC-006", "MOB-FEAT-064/AC-001", "MOB-FEAT-068/AC-004"]
         },
         {
             "path": "src/shared/i18n/locales/pt-BR/common.json",
@@ -3654,14 +4144,65 @@
         {
             "path": "src/shared/i18n/locales/pt-BR/launcher.json",
             "category": "behavior",
-            "specs": ["MOB-FEAT-010", "MOB-FEAT-012", "MOB-FEAT-013", "MOB-FEAT-014", "MOB-FEAT-015", "MOB-FEAT-016", "MOB-FEAT-043", "MOB-FEAT-044", "MOB-FEAT-021", "MOB-FEAT-055", "MOB-FEAT-059", "MOB-FEAT-056"],
-            "observations": ["MOB-FEAT-010/AC-008", "MOB-FEAT-012/AC-001", "MOB-FEAT-012/AC-007", "MOB-FEAT-012/AC-008", "MOB-FEAT-012/AC-010", "MOB-FEAT-013/AC-009", "MOB-FEAT-013/AC-011", "MOB-FEAT-013/AC-012", "MOB-FEAT-043/AC-005", "MOB-FEAT-014/AC-002", "MOB-FEAT-014/AC-004", "MOB-FEAT-014/AC-005", "MOB-FEAT-014/AC-007", "MOB-FEAT-014/AC-009", "MOB-FEAT-015/AC-009", "MOB-FEAT-016/AC-010", "MOB-FEAT-016/AC-011", "MOB-FEAT-044/AC-001", "MOB-FEAT-044/AC-002", "MOB-FEAT-044/AC-004", "MOB-FEAT-021/AC-001", "MOB-FEAT-021/AC-003", "MOB-FEAT-021/AC-006", "MOB-FEAT-021/AC-008", "MOB-FEAT-055/AC-008", "MOB-FEAT-055/AC-009", "MOB-FEAT-059/AC-006", "MOB-FEAT-056/AC-008"]
+            "specs": [
+                "MOB-FEAT-010",
+                "MOB-FEAT-012",
+                "MOB-FEAT-013",
+                "MOB-FEAT-014",
+                "MOB-FEAT-015",
+                "MOB-FEAT-016",
+                "MOB-FEAT-043",
+                "MOB-FEAT-044",
+                "MOB-FEAT-021",
+                "MOB-FEAT-055",
+                "MOB-FEAT-059",
+                "MOB-FEAT-056"
+            ],
+            "observations": [
+                "MOB-FEAT-010/AC-008",
+                "MOB-FEAT-012/AC-001",
+                "MOB-FEAT-012/AC-007",
+                "MOB-FEAT-012/AC-008",
+                "MOB-FEAT-012/AC-010",
+                "MOB-FEAT-013/AC-009",
+                "MOB-FEAT-013/AC-011",
+                "MOB-FEAT-013/AC-012",
+                "MOB-FEAT-043/AC-005",
+                "MOB-FEAT-014/AC-002",
+                "MOB-FEAT-014/AC-004",
+                "MOB-FEAT-014/AC-005",
+                "MOB-FEAT-014/AC-007",
+                "MOB-FEAT-014/AC-009",
+                "MOB-FEAT-015/AC-009",
+                "MOB-FEAT-016/AC-010",
+                "MOB-FEAT-016/AC-011",
+                "MOB-FEAT-044/AC-001",
+                "MOB-FEAT-044/AC-002",
+                "MOB-FEAT-044/AC-004",
+                "MOB-FEAT-021/AC-001",
+                "MOB-FEAT-021/AC-003",
+                "MOB-FEAT-021/AC-006",
+                "MOB-FEAT-021/AC-008",
+                "MOB-FEAT-055/AC-008",
+                "MOB-FEAT-055/AC-009",
+                "MOB-FEAT-059/AC-006",
+                "MOB-FEAT-056/AC-008"
+            ]
         },
         {
             "path": "src/shared/i18n/locales/pt-BR/reader.json",
             "category": "behavior",
             "specs": ["MOB-FEAT-005", "MOB-FEAT-042", "MOB-FEAT-052", "MOB-FEAT-053", "MOB-FEAT-063"],
-            "observations": ["MOB-FEAT-005/AC-008", "MOB-FEAT-005/AC-009", "MOB-FEAT-042/AC-003", "MOB-FEAT-042/AC-005", "MOB-FEAT-052/AC-003", "MOB-FEAT-052/AC-004", "MOB-FEAT-053/AC-002", "MOB-FEAT-063/AC-008"]
+            "observations": [
+                "MOB-FEAT-005/AC-008",
+                "MOB-FEAT-005/AC-009",
+                "MOB-FEAT-042/AC-003",
+                "MOB-FEAT-042/AC-005",
+                "MOB-FEAT-052/AC-003",
+                "MOB-FEAT-052/AC-004",
+                "MOB-FEAT-053/AC-002",
+                "MOB-FEAT-063/AC-008"
+            ]
         },
         {
             "path": "src/shared/i18n/locales/pt-BR/settingsNavigation.json",
@@ -3795,16 +4336,28 @@
             "observations": ["MOB-FEAT-029/AC-003", "MOB-FEAT-029/AC-004"]
         },
         {
+            "path": "src/shared/navigation/__tests__/transitions.test.ts",
+            "category": "evidence",
+            "specs": ["MOB-FEAT-069"],
+            "observations": ["MOB-FEAT-069/AC-001", "MOB-FEAT-069/AC-003", "MOB-FEAT-069/AC-004"]
+        },
+        {
             "path": "src/shared/navigation/back.ts",
             "category": "behavior",
             "specs": ["MOB-FEAT-029"],
             "observations": ["MOB-FEAT-029/AC-003", "MOB-FEAT-029/AC-004"]
         },
         {
+            "path": "src/shared/navigation/transitions.ts",
+            "category": "behavior",
+            "specs": ["MOB-FEAT-069"],
+            "observations": ["MOB-FEAT-069/AC-001", "MOB-FEAT-069/AC-003", "MOB-FEAT-069/AC-004"]
+        },
+        {
             "path": "src/shared/navigation/index.ts",
             "category": "behavior",
-            "specs": ["MOB-BASE-009"],
-            "observations": ["MOB-BASE-009/OBS-007"]
+            "specs": ["MOB-BASE-009", "MOB-FEAT-069"],
+            "observations": ["MOB-BASE-009/OBS-007", "MOB-FEAT-069/AC-001"]
         },
         {
             "path": "src/shared/navigation/routes.ts",
@@ -4056,6 +4609,18 @@
             "observations": ["MOB-FEAT-057/AC-015"]
         },
         {
+            "path": "src/shared/ui/__tests__/motionScale.test.tsx",
+            "category": "evidence",
+            "specs": ["MOB-FEAT-002", "MOB-FEAT-057"],
+            "observations": ["MOB-FEAT-002/AC-009", "MOB-FEAT-002/AC-010", "MOB-FEAT-057/AC-001", "MOB-FEAT-057/AC-003"]
+        },
+        {
+            "path": "src/shared/ui/__tests__/pressFeedback.test.tsx",
+            "category": "evidence",
+            "specs": ["MOB-FEAT-002", "MOB-FEAT-057"],
+            "observations": ["MOB-FEAT-002/AC-009", "MOB-FEAT-002/AC-010", "MOB-FEAT-057/AC-015"]
+        },
+        {
             "path": "src/shared/ui/__tests__/HelpTooltip.test.tsx",
             "category": "evidence",
             "specs": ["MOB-FEAT-054"],
@@ -4210,7 +4775,8 @@
                 "MOB-FEAT-044/AC-002",
                 "MOB-FEAT-044/AC-004",
                 "MOB-FEAT-057/AC-010",
-                "MOB-FEAT-057/AC-011"
+                "MOB-FEAT-057/AC-011",
+                "MOB-FEAT-057/AC-014"
             ]
         },
         {
@@ -4239,6 +4805,33 @@
         },
         {
             "path": "src/shared/ui/BottomSheet.tsx",
+            "category": "behavior",
+            "specs": ["MOB-FEAT-057", "MOB-FEAT-070"],
+            "observations": [
+                "MOB-FEAT-057/AC-003",
+                "MOB-FEAT-057/AC-014",
+                "MOB-FEAT-070/AC-001",
+                "MOB-FEAT-070/AC-002",
+                "MOB-FEAT-070/AC-003",
+                "MOB-FEAT-070/AC-004",
+                "MOB-FEAT-070/AC-005",
+                "MOB-FEAT-070/AC-006"
+            ]
+        },
+        {
+            "path": "src/shared/ui/__tests__/startupFeedback.test.tsx",
+            "category": "evidence",
+            "specs": ["MOB-FEAT-002", "MOB-FEAT-057"],
+            "observations": ["MOB-FEAT-002/AC-009", "MOB-FEAT-002/AC-010", "MOB-FEAT-057/AC-006"]
+        },
+        {
+            "path": "src/shared/ui/__tests__/bottomSheetDrag.test.tsx",
+            "category": "evidence",
+            "specs": ["MOB-FEAT-070"],
+            "observations": ["MOB-FEAT-070/AC-001", "MOB-FEAT-070/AC-002", "MOB-FEAT-070/AC-003", "MOB-FEAT-070/AC-004", "MOB-FEAT-070/AC-005"]
+        },
+        {
+            "path": "src/shared/ui/PanelHeader.tsx",
             "category": "behavior",
             "specs": ["MOB-FEAT-057"],
             "observations": ["MOB-FEAT-057/AC-003", "MOB-FEAT-057/AC-014"]
@@ -4300,8 +4893,31 @@
         {
             "path": "src/shared/ui/index.ts",
             "category": "behavior",
-            "specs": ["MOB-FEAT-003", "MOB-FEAT-011", "MOB-FEAT-031", "MOB-FEAT-033", "MOB-FEAT-043", "MOB-FEAT-045", "MOB-FEAT-057", "MOB-FEAT-062", "MOB-FEAT-060", "MOB-FEAT-056"],
-            "observations": ["MOB-FEAT-003/AC-006", "MOB-FEAT-003/AC-010", "MOB-FEAT-011/AC-011", "MOB-FEAT-031/AC-001", "MOB-FEAT-033/AC-003", "MOB-FEAT-043/AC-007", "MOB-FEAT-045/AC-005", "MOB-FEAT-057/AC-015", "MOB-FEAT-062/AC-002", "MOB-FEAT-060/AC-011", "MOB-FEAT-056/AC-004"]
+            "specs": [
+                "MOB-FEAT-003",
+                "MOB-FEAT-011",
+                "MOB-FEAT-031",
+                "MOB-FEAT-033",
+                "MOB-FEAT-043",
+                "MOB-FEAT-045",
+                "MOB-FEAT-057",
+                "MOB-FEAT-062",
+                "MOB-FEAT-060",
+                "MOB-FEAT-056"
+            ],
+            "observations": [
+                "MOB-FEAT-003/AC-006",
+                "MOB-FEAT-003/AC-010",
+                "MOB-FEAT-011/AC-011",
+                "MOB-FEAT-031/AC-001",
+                "MOB-FEAT-033/AC-003",
+                "MOB-FEAT-043/AC-007",
+                "MOB-FEAT-045/AC-005",
+                "MOB-FEAT-057/AC-015",
+                "MOB-FEAT-062/AC-002",
+                "MOB-FEAT-060/AC-011",
+                "MOB-FEAT-056/AC-004"
+            ]
         },
         {
             "path": "src/shared/ui/MediaPreviewSheet.tsx",
@@ -4358,16 +4974,43 @@
             "observations": ["MOB-FEAT-029/AC-002", "MOB-FEAT-029/AC-004"]
         },
         {
+            "path": "src/shared/ui/PageNumberBadge.tsx",
+            "category": "behavior",
+            "specs": ["MOB-FEAT-043", "MOB-FEAT-056"],
+            "observations": ["MOB-FEAT-043/AC-006", "MOB-FEAT-056/AC-008"]
+        },
+        {
             "path": "src/shared/ui/PageContainer.tsx",
             "category": "behavior",
             "specs": ["MOB-FEAT-002", "MOB-FEAT-011", "MOB-FEAT-034", "MOB-FEAT-060", "MOB-FEAT-056"],
-            "observations": ["MOB-FEAT-002/AC-006", "MOB-FEAT-002/AC-007", "MOB-FEAT-002/AC-008", "MOB-FEAT-011/AC-003", "MOB-FEAT-011/AC-008", "MOB-FEAT-011/AC-010", "MOB-FEAT-034/AC-006", "MOB-FEAT-060/AC-001", "MOB-FEAT-060/AC-006", "MOB-FEAT-056/AC-004"]
+            "observations": [
+                "MOB-FEAT-002/AC-006",
+                "MOB-FEAT-002/AC-007",
+                "MOB-FEAT-002/AC-008",
+                "MOB-FEAT-011/AC-003",
+                "MOB-FEAT-011/AC-008",
+                "MOB-FEAT-011/AC-010",
+                "MOB-FEAT-034/AC-006",
+                "MOB-FEAT-060/AC-001",
+                "MOB-FEAT-060/AC-006",
+                "MOB-FEAT-056/AC-004"
+            ]
         },
         {
             "path": "src/shared/ui/ScreenScaffold.tsx",
             "category": "behavior",
             "specs": ["MOB-FEAT-008", "MOB-FEAT-011", "MOB-FEAT-013", "MOB-FEAT-060"],
-            "observations": ["MOB-FEAT-008/AC-002", "MOB-FEAT-008/AC-008", "MOB-FEAT-011/AC-003", "MOB-FEAT-011/AC-008", "MOB-FEAT-011/AC-010", "MOB-FEAT-013/AC-001", "MOB-FEAT-013/AC-008", "MOB-FEAT-060/AC-001", "MOB-FEAT-060/AC-006"]
+            "observations": [
+                "MOB-FEAT-008/AC-002",
+                "MOB-FEAT-008/AC-008",
+                "MOB-FEAT-011/AC-003",
+                "MOB-FEAT-011/AC-008",
+                "MOB-FEAT-011/AC-010",
+                "MOB-FEAT-013/AC-001",
+                "MOB-FEAT-013/AC-008",
+                "MOB-FEAT-060/AC-001",
+                "MOB-FEAT-060/AC-006"
+            ]
         },
         {
             "path": "src/shared/ui/Section.tsx",
@@ -4545,7 +5188,15 @@
             "path": "src/pages/offline-translation/model/__tests__/translationFlow.test.ts",
             "category": "evidence",
             "specs": ["MOB-FEAT-028", "MOB-FEAT-056"],
-            "observations": ["MOB-FEAT-028/AC-003", "MOB-FEAT-028/AC-004", "MOB-FEAT-028/AC-008", "MOB-FEAT-028/AC-014", "MOB-FEAT-056/AC-001", "MOB-FEAT-056/AC-002", "MOB-FEAT-056/AC-005"]
+            "observations": [
+                "MOB-FEAT-028/AC-003",
+                "MOB-FEAT-028/AC-004",
+                "MOB-FEAT-028/AC-008",
+                "MOB-FEAT-028/AC-014",
+                "MOB-FEAT-056/AC-001",
+                "MOB-FEAT-056/AC-002",
+                "MOB-FEAT-056/AC-005"
+            ]
         },
         {
             "path": "src/pages/offline-translation/model/translationFlow.ts",
@@ -4574,8 +5225,8 @@
         {
             "path": "src/shared/ui/Icon.tsx",
             "category": "behavior",
-            "specs": ["MOB-FEAT-028"],
-            "observations": ["MOB-FEAT-028/AC-002", "MOB-FEAT-028/AC-005"]
+            "specs": ["MOB-FEAT-028", "MOB-FEAT-057"],
+            "observations": ["MOB-FEAT-028/AC-002", "MOB-FEAT-028/AC-005", "MOB-FEAT-057/AC-014"]
         },
         {
             "path": "src/shared/ui/IconButton.tsx",
@@ -4608,10 +5259,22 @@
             "observations": ["MOB-FEAT-060/AC-011"]
         },
         {
+            "path": "src/shared/ui/RadioControl.tsx",
+            "category": "behavior",
+            "specs": ["MOB-FEAT-057"],
+            "observations": ["MOB-FEAT-057/AC-008", "MOB-FEAT-057/AC-011"]
+        },
+        {
             "path": "src/shared/ui/PressableBox.tsx",
             "category": "behavior",
             "specs": ["MOB-FEAT-057"],
             "observations": ["MOB-FEAT-057/AC-015"]
+        },
+        {
+            "path": "src/shared/ui/usePressFeedback.ts",
+            "category": "behavior",
+            "specs": ["MOB-FEAT-002", "MOB-FEAT-057"],
+            "observations": ["MOB-FEAT-002/AC-009", "MOB-FEAT-002/AC-010", "MOB-FEAT-057/AC-015"]
         },
         {
             "path": "src/shared/ui/StepBar.tsx",
@@ -4720,8 +5383,59 @@
         {
             "path": "src/shared/ui/SelectField.tsx",
             "category": "behavior",
-            "specs": ["MOB-FEAT-031", "MOB-FEAT-032", "MOB-FEAT-034", "MOB-FEAT-035", "MOB-FEAT-038", "MOB-FEAT-039", "MOB-FEAT-041", "MOB-FEAT-042", "MOB-FEAT-044", "MOB-FEAT-057", "MOB-FEAT-056"],
-            "observations": ["MOB-FEAT-031/AC-001", "MOB-FEAT-031/AC-003", "MOB-FEAT-031/AC-007", "MOB-FEAT-032/AC-002", "MOB-FEAT-032/AC-004", "MOB-FEAT-034/AC-006", "MOB-FEAT-035/AC-001", "MOB-FEAT-035/AC-002", "MOB-FEAT-035/AC-003", "MOB-FEAT-035/AC-004", "MOB-FEAT-035/AC-005", "MOB-FEAT-035/AC-006", "MOB-FEAT-038/AC-001", "MOB-FEAT-038/AC-002", "MOB-FEAT-038/AC-003", "MOB-FEAT-038/AC-004", "MOB-FEAT-038/AC-005", "MOB-FEAT-038/AC-006", "MOB-FEAT-039/AC-001", "MOB-FEAT-039/AC-002", "MOB-FEAT-039/AC-003", "MOB-FEAT-039/AC-004", "MOB-FEAT-039/AC-005", "MOB-FEAT-041/AC-001", "MOB-FEAT-041/AC-002", "MOB-FEAT-041/AC-003", "MOB-FEAT-041/AC-004", "MOB-FEAT-041/AC-005", "MOB-FEAT-042/AC-001", "MOB-FEAT-042/AC-002", "MOB-FEAT-042/AC-003", "MOB-FEAT-042/AC-004", "MOB-FEAT-042/AC-005", "MOB-FEAT-044/AC-001", "MOB-FEAT-044/AC-002", "MOB-FEAT-044/AC-004", "MOB-FEAT-057/AC-003", "MOB-FEAT-056/AC-013"]
+            "specs": [
+                "MOB-FEAT-031",
+                "MOB-FEAT-032",
+                "MOB-FEAT-034",
+                "MOB-FEAT-035",
+                "MOB-FEAT-038",
+                "MOB-FEAT-039",
+                "MOB-FEAT-041",
+                "MOB-FEAT-042",
+                "MOB-FEAT-044",
+                "MOB-FEAT-057",
+                "MOB-FEAT-056"
+            ],
+            "observations": [
+                "MOB-FEAT-031/AC-001",
+                "MOB-FEAT-031/AC-003",
+                "MOB-FEAT-031/AC-007",
+                "MOB-FEAT-032/AC-002",
+                "MOB-FEAT-032/AC-004",
+                "MOB-FEAT-034/AC-006",
+                "MOB-FEAT-035/AC-001",
+                "MOB-FEAT-035/AC-002",
+                "MOB-FEAT-035/AC-003",
+                "MOB-FEAT-035/AC-004",
+                "MOB-FEAT-035/AC-005",
+                "MOB-FEAT-035/AC-006",
+                "MOB-FEAT-038/AC-001",
+                "MOB-FEAT-038/AC-002",
+                "MOB-FEAT-038/AC-003",
+                "MOB-FEAT-038/AC-004",
+                "MOB-FEAT-038/AC-005",
+                "MOB-FEAT-038/AC-006",
+                "MOB-FEAT-039/AC-001",
+                "MOB-FEAT-039/AC-002",
+                "MOB-FEAT-039/AC-003",
+                "MOB-FEAT-039/AC-004",
+                "MOB-FEAT-039/AC-005",
+                "MOB-FEAT-041/AC-001",
+                "MOB-FEAT-041/AC-002",
+                "MOB-FEAT-041/AC-003",
+                "MOB-FEAT-041/AC-004",
+                "MOB-FEAT-041/AC-005",
+                "MOB-FEAT-042/AC-001",
+                "MOB-FEAT-042/AC-002",
+                "MOB-FEAT-042/AC-003",
+                "MOB-FEAT-042/AC-004",
+                "MOB-FEAT-042/AC-005",
+                "MOB-FEAT-044/AC-001",
+                "MOB-FEAT-044/AC-002",
+                "MOB-FEAT-044/AC-004",
+                "MOB-FEAT-057/AC-003",
+                "MOB-FEAT-056/AC-013"
+            ]
         },
         {
             "path": "src/shared/ui/SwatchPicker.tsx",
@@ -4739,8 +5453,43 @@
         {
             "path": "src/features/configure-chapter-reader/ui/__tests__/ReaderSettingsControls.test.tsx",
             "category": "evidence",
-            "specs": ["MOB-FEAT-031", "MOB-FEAT-032", "MOB-FEAT-034", "MOB-FEAT-036", "MOB-FEAT-037", "MOB-FEAT-038", "MOB-FEAT-042", "MOB-FEAT-054", "MOB-FEAT-057", "MOB-FEAT-063"],
-            "observations": ["MOB-FEAT-031/AC-004", "MOB-FEAT-031/AC-007", "MOB-FEAT-032/AC-001", "MOB-FEAT-032/AC-004", "MOB-FEAT-032/AC-005", "MOB-FEAT-034/AC-003", "MOB-FEAT-034/AC-004", "MOB-FEAT-034/AC-006", "MOB-FEAT-036/AC-001", "MOB-FEAT-036/AC-002", "MOB-FEAT-036/AC-005", "MOB-FEAT-036/AC-006", "MOB-FEAT-037/AC-003", "MOB-FEAT-037/AC-004", "MOB-FEAT-037/AC-006", "MOB-FEAT-038/AC-005", "MOB-FEAT-038/AC-006", "MOB-FEAT-042/AC-003", "MOB-FEAT-042/AC-005", "MOB-FEAT-054/AC-002", "MOB-FEAT-057/AC-010", "MOB-FEAT-063/AC-006", "MOB-FEAT-063/AC-007"]
+            "specs": [
+                "MOB-FEAT-031",
+                "MOB-FEAT-032",
+                "MOB-FEAT-034",
+                "MOB-FEAT-036",
+                "MOB-FEAT-037",
+                "MOB-FEAT-038",
+                "MOB-FEAT-042",
+                "MOB-FEAT-054",
+                "MOB-FEAT-057",
+                "MOB-FEAT-063"
+            ],
+            "observations": [
+                "MOB-FEAT-031/AC-004",
+                "MOB-FEAT-031/AC-007",
+                "MOB-FEAT-032/AC-001",
+                "MOB-FEAT-032/AC-004",
+                "MOB-FEAT-032/AC-005",
+                "MOB-FEAT-034/AC-003",
+                "MOB-FEAT-034/AC-004",
+                "MOB-FEAT-034/AC-006",
+                "MOB-FEAT-036/AC-001",
+                "MOB-FEAT-036/AC-002",
+                "MOB-FEAT-036/AC-005",
+                "MOB-FEAT-036/AC-006",
+                "MOB-FEAT-037/AC-003",
+                "MOB-FEAT-037/AC-004",
+                "MOB-FEAT-037/AC-006",
+                "MOB-FEAT-038/AC-005",
+                "MOB-FEAT-038/AC-006",
+                "MOB-FEAT-042/AC-003",
+                "MOB-FEAT-042/AC-005",
+                "MOB-FEAT-054/AC-002",
+                "MOB-FEAT-057/AC-010",
+                "MOB-FEAT-063/AC-006",
+                "MOB-FEAT-063/AC-007"
+            ]
         },
         {
             "path": "docs/specs/features/MOB-FEAT-031-settings-input-controls/evidence/native-audit.md",
@@ -5226,7 +5975,7 @@
         {
             "path": "src/entities/remote-processing-attempt/model/remoteProcessingAttempt.ts",
             "category": "behavior",
-            "specs": ["MOB-FEAT-017", "MOB-FEAT-019", "MOB-FEAT-020"],
+            "specs": ["MOB-FEAT-017", "MOB-FEAT-019", "MOB-FEAT-020", "MOB-FEAT-055"],
             "observations": [
                 "MOB-FEAT-017/AC-004",
                 "MOB-FEAT-017/AC-006",
@@ -5235,7 +5984,8 @@
                 "MOB-FEAT-017/AC-009",
                 "MOB-FEAT-019/AC-004",
                 "MOB-FEAT-019/AC-005",
-                "MOB-FEAT-020/AC-005"
+                "MOB-FEAT-020/AC-005",
+                "MOB-FEAT-055/AC-011"
             ]
         },
         {
@@ -5358,20 +6108,50 @@
         {
             "path": "src/shared/i18n/locales/en-US/remoteProcessing.json",
             "category": "behavior",
-            "specs": ["MOB-FEAT-017", "MOB-FEAT-021", "MOB-FEAT-056"],
-            "observations": ["MOB-FEAT-017/AC-001", "MOB-FEAT-017/AC-011", "MOB-FEAT-021/AC-001", "MOB-FEAT-021/AC-003", "MOB-FEAT-021/AC-006", "MOB-FEAT-021/AC-008", "MOB-FEAT-056/AC-008"]
+            "specs": ["MOB-FEAT-017", "MOB-FEAT-021", "MOB-FEAT-056", "MOB-FEAT-067", "MOB-FEAT-064"],
+            "observations": [
+                "MOB-FEAT-017/AC-001",
+                "MOB-FEAT-017/AC-011",
+                "MOB-FEAT-021/AC-001",
+                "MOB-FEAT-021/AC-003",
+                "MOB-FEAT-021/AC-006",
+                "MOB-FEAT-021/AC-008",
+                "MOB-FEAT-056/AC-008",
+                "MOB-FEAT-067/AC-005",
+                "MOB-FEAT-064/AC-004"
+            ]
         },
         {
             "path": "src/shared/i18n/locales/es-ES/remoteProcessing.json",
             "category": "behavior",
-            "specs": ["MOB-FEAT-017", "MOB-FEAT-021", "MOB-FEAT-056"],
-            "observations": ["MOB-FEAT-017/AC-001", "MOB-FEAT-017/AC-011", "MOB-FEAT-021/AC-001", "MOB-FEAT-021/AC-003", "MOB-FEAT-021/AC-006", "MOB-FEAT-021/AC-008", "MOB-FEAT-056/AC-008"]
+            "specs": ["MOB-FEAT-017", "MOB-FEAT-021", "MOB-FEAT-056", "MOB-FEAT-067", "MOB-FEAT-064"],
+            "observations": [
+                "MOB-FEAT-017/AC-001",
+                "MOB-FEAT-017/AC-011",
+                "MOB-FEAT-021/AC-001",
+                "MOB-FEAT-021/AC-003",
+                "MOB-FEAT-021/AC-006",
+                "MOB-FEAT-021/AC-008",
+                "MOB-FEAT-056/AC-008",
+                "MOB-FEAT-067/AC-005",
+                "MOB-FEAT-064/AC-004"
+            ]
         },
         {
             "path": "src/shared/i18n/locales/pt-BR/remoteProcessing.json",
             "category": "behavior",
-            "specs": ["MOB-FEAT-017", "MOB-FEAT-021", "MOB-FEAT-056"],
-            "observations": ["MOB-FEAT-017/AC-001", "MOB-FEAT-017/AC-011", "MOB-FEAT-021/AC-001", "MOB-FEAT-021/AC-003", "MOB-FEAT-021/AC-006", "MOB-FEAT-021/AC-008", "MOB-FEAT-056/AC-008"]
+            "specs": ["MOB-FEAT-017", "MOB-FEAT-021", "MOB-FEAT-056", "MOB-FEAT-067", "MOB-FEAT-064"],
+            "observations": [
+                "MOB-FEAT-017/AC-001",
+                "MOB-FEAT-017/AC-011",
+                "MOB-FEAT-021/AC-001",
+                "MOB-FEAT-021/AC-003",
+                "MOB-FEAT-021/AC-006",
+                "MOB-FEAT-021/AC-008",
+                "MOB-FEAT-056/AC-008",
+                "MOB-FEAT-067/AC-005",
+                "MOB-FEAT-064/AC-004"
+            ]
         },
         {
             "path": "src/shared/lib/index.ts",
@@ -5416,56 +6196,87 @@
         {
             "path": "src/widgets/remote-processing/model/chapterBatch.ts",
             "category": "behavior",
-            "specs": ["MOB-FEAT-055"],
-            "observations": ["MOB-FEAT-055/AC-004", "MOB-FEAT-055/AC-005", "MOB-FEAT-055/AC-009"]
+            "specs": ["MOB-FEAT-055", "MOB-FEAT-066"],
+            "observations": ["MOB-FEAT-055/AC-004", "MOB-FEAT-055/AC-005", "MOB-FEAT-055/AC-009", "MOB-FEAT-055/AC-011", "MOB-FEAT-066/AC-006"]
         },
         {
             "path": "src/widgets/remote-processing/model/__tests__/chapterBatch.test.ts",
             "category": "evidence",
-            "specs": ["MOB-FEAT-055"],
-            "observations": ["MOB-FEAT-055/AC-004", "MOB-FEAT-055/AC-005", "MOB-FEAT-055/AC-009"]
+            "specs": ["MOB-FEAT-055", "MOB-FEAT-066"],
+            "observations": ["MOB-FEAT-055/AC-004", "MOB-FEAT-055/AC-005", "MOB-FEAT-055/AC-009", "MOB-FEAT-066/AC-006"]
         },
         {
             "path": "src/widgets/remote-processing/model/useChapterBatch.ts",
             "category": "behavior",
-            "specs": ["MOB-FEAT-055", "MOB-FEAT-056"],
-            "observations": ["MOB-FEAT-055/AC-004", "MOB-FEAT-055/AC-005", "MOB-FEAT-055/AC-009", "MOB-FEAT-056/AC-007"]
+            "specs": ["MOB-FEAT-055", "MOB-FEAT-056", "MOB-FEAT-066", "MOB-FEAT-067"],
+            "observations": [
+                "MOB-FEAT-055/AC-004",
+                "MOB-FEAT-055/AC-005",
+                "MOB-FEAT-055/AC-009",
+                "MOB-FEAT-056/AC-007",
+                "MOB-FEAT-055/AC-011",
+                "MOB-FEAT-066/AC-006",
+                "MOB-FEAT-067/AC-001",
+                "MOB-FEAT-067/AC-002",
+                "MOB-FEAT-067/AC-004"
+            ]
         },
         {
             "path": "src/widgets/remote-processing/ui/BatchDisclosureDialog.tsx",
             "category": "behavior",
-            "specs": ["MOB-FEAT-055", "MOB-FEAT-056"],
-            "observations": ["MOB-FEAT-055/AC-004", "MOB-FEAT-055/AC-009", "MOB-FEAT-056/AC-006", "MOB-FEAT-056/AC-011"]
+            "specs": ["MOB-FEAT-055", "MOB-FEAT-056", "MOB-FEAT-064"],
+            "observations": ["MOB-FEAT-055/AC-004", "MOB-FEAT-055/AC-009", "MOB-FEAT-056/AC-006", "MOB-FEAT-056/AC-011", "MOB-FEAT-064/AC-004"]
         },
         {
             "path": "src/widgets/remote-processing/ui/ChapterBatchPanel.tsx",
             "category": "behavior",
-            "specs": ["MOB-FEAT-055", "MOB-FEAT-056"],
-            "observations": ["MOB-FEAT-055/AC-004", "MOB-FEAT-055/AC-005", "MOB-FEAT-056/AC-004", "MOB-FEAT-056/AC-006", "MOB-FEAT-056/AC-007"]
+            "specs": ["MOB-FEAT-055", "MOB-FEAT-056", "MOB-FEAT-066", "MOB-FEAT-067"],
+            "observations": [
+                "MOB-FEAT-055/AC-004",
+                "MOB-FEAT-055/AC-005",
+                "MOB-FEAT-056/AC-004",
+                "MOB-FEAT-056/AC-006",
+                "MOB-FEAT-056/AC-007",
+                "MOB-FEAT-066/AC-006",
+                "MOB-FEAT-067/AC-001",
+                "MOB-FEAT-067/AC-002",
+                "MOB-FEAT-067/AC-003",
+                "MOB-FEAT-067/AC-004",
+                "MOB-FEAT-067/AC-005"
+            ]
         },
         {
             "path": "src/widgets/remote-processing/ui/PageRetryIndicator.tsx",
             "category": "behavior",
-            "specs": ["MOB-FEAT-055"],
-            "observations": ["MOB-FEAT-055/AC-005", "MOB-FEAT-055/AC-006"]
+            "specs": ["MOB-FEAT-055", "MOB-FEAT-063"],
+            "observations": ["MOB-FEAT-055/AC-005", "MOB-FEAT-055/AC-006", "MOB-FEAT-055/AC-011", "MOB-FEAT-063/AC-010"]
         },
         {
             "path": "src/widgets/remote-processing/ui/__tests__/ChapterBatchPanel.test.tsx",
             "category": "evidence",
-            "specs": ["MOB-FEAT-055"],
-            "observations": ["MOB-FEAT-055/AC-004", "MOB-FEAT-055/AC-005"]
+            "specs": ["MOB-FEAT-055", "MOB-FEAT-066", "MOB-FEAT-067"],
+            "observations": [
+                "MOB-FEAT-055/AC-004",
+                "MOB-FEAT-055/AC-005",
+                "MOB-FEAT-066/AC-006",
+                "MOB-FEAT-067/AC-001",
+                "MOB-FEAT-067/AC-002",
+                "MOB-FEAT-067/AC-003",
+                "MOB-FEAT-067/AC-004",
+                "MOB-FEAT-067/AC-005"
+            ]
         },
         {
             "path": "src/widgets/remote-processing/ui/__tests__/ChapterBatchKit.test.tsx",
             "category": "evidence",
-            "specs": ["MOB-FEAT-056"],
-            "observations": ["MOB-FEAT-056/AC-006", "MOB-FEAT-056/AC-007", "MOB-FEAT-056/AC-011"]
+            "specs": ["MOB-FEAT-056", "MOB-FEAT-064"],
+            "observations": ["MOB-FEAT-056/AC-006", "MOB-FEAT-056/AC-007", "MOB-FEAT-056/AC-011", "MOB-FEAT-064/AC-004"]
         },
         {
             "path": "src/widgets/remote-processing/ui/__tests__/PageRetryIndicator.test.tsx",
             "category": "evidence",
-            "specs": ["MOB-FEAT-055"],
-            "observations": ["MOB-FEAT-055/AC-005", "MOB-FEAT-055/AC-006"]
+            "specs": ["MOB-FEAT-055", "MOB-FEAT-063"],
+            "observations": ["MOB-FEAT-055/AC-005", "MOB-FEAT-055/AC-006", "MOB-FEAT-055/AC-011", "MOB-FEAT-063/AC-010"]
         },
         {
             "path": "src/widgets/remote-processing/index.ts",
@@ -5476,7 +6287,7 @@
         {
             "path": "src/widgets/remote-processing/ui/__tests__/RemoteProcessingPanel.test.tsx",
             "category": "evidence",
-            "specs": ["MOB-FEAT-017", "MOB-FEAT-021", "MOB-FEAT-055"],
+            "specs": ["MOB-FEAT-017", "MOB-FEAT-021", "MOB-FEAT-055", "MOB-FEAT-064"],
             "observations": [
                 "MOB-FEAT-017/AC-001",
                 "MOB-FEAT-017/AC-002",
@@ -5488,13 +6299,14 @@
                 "MOB-FEAT-021/AC-006",
                 "MOB-FEAT-021/AC-008",
                 "MOB-FEAT-055/AC-008",
-                "MOB-FEAT-055/AC-009"
+                "MOB-FEAT-055/AC-009",
+                "MOB-FEAT-064/AC-004"
             ]
         },
         {
             "path": "src/widgets/remote-processing/ui/RemoteProcessingPanel.tsx",
             "category": "behavior",
-            "specs": ["MOB-FEAT-017", "MOB-FEAT-021", "MOB-FEAT-055"],
+            "specs": ["MOB-FEAT-017", "MOB-FEAT-021", "MOB-FEAT-055", "MOB-FEAT-064"],
             "observations": [
                 "MOB-FEAT-017/AC-001",
                 "MOB-FEAT-017/AC-002",
@@ -5508,7 +6320,8 @@
                 "MOB-FEAT-021/AC-008",
                 "MOB-FEAT-021/AC-004",
                 "MOB-FEAT-055/AC-008",
-                "MOB-FEAT-055/AC-009"
+                "MOB-FEAT-055/AC-009",
+                "MOB-FEAT-064/AC-004"
             ]
         },
         {
@@ -5615,7 +6428,26 @@
             "path": "src/entities/local-translation-result/api/localTranslationResultRepository.ts",
             "category": "behavior",
             "specs": ["MOB-FEAT-019", "MOB-FEAT-025", "MOB-FEAT-026", "MOB-FEAT-027", "MOB-FEAT-050", "MOB-FEAT-021", "MOB-FEAT-060"],
-            "observations": ["MOB-FEAT-019/AC-003", "MOB-FEAT-019/AC-004", "MOB-FEAT-025/AC-001", "MOB-FEAT-025/AC-003", "MOB-FEAT-026/AC-001", "MOB-FEAT-026/AC-002", "MOB-FEAT-027/AC-001", "MOB-FEAT-027/AC-002", "MOB-FEAT-050/AC-002", "MOB-FEAT-050/AC-003", "MOB-FEAT-021/AC-002", "MOB-FEAT-021/AC-003", "MOB-FEAT-021/AC-004", "MOB-FEAT-021/AC-005", "MOB-FEAT-021/AC-006", "MOB-FEAT-021/AC-007", "MOB-FEAT-021/AC-008", "MOB-FEAT-060/AC-002"]
+            "observations": [
+                "MOB-FEAT-019/AC-003",
+                "MOB-FEAT-019/AC-004",
+                "MOB-FEAT-025/AC-001",
+                "MOB-FEAT-025/AC-003",
+                "MOB-FEAT-026/AC-001",
+                "MOB-FEAT-026/AC-002",
+                "MOB-FEAT-027/AC-001",
+                "MOB-FEAT-027/AC-002",
+                "MOB-FEAT-050/AC-002",
+                "MOB-FEAT-050/AC-003",
+                "MOB-FEAT-021/AC-002",
+                "MOB-FEAT-021/AC-003",
+                "MOB-FEAT-021/AC-004",
+                "MOB-FEAT-021/AC-005",
+                "MOB-FEAT-021/AC-006",
+                "MOB-FEAT-021/AC-007",
+                "MOB-FEAT-021/AC-008",
+                "MOB-FEAT-060/AC-002"
+            ]
         },
         {
             "path": "src/entities/local-translation-result/index.ts",
@@ -5717,7 +6549,15 @@
             "path": "src/pages/offline-translation/ui/LocalTranslationLibraryPage.tsx",
             "category": "behavior",
             "specs": ["MOB-FEAT-025", "MOB-FEAT-055", "MOB-FEAT-060"],
-            "observations": ["MOB-FEAT-025/AC-002", "MOB-FEAT-025/AC-004", "MOB-FEAT-055/AC-002", "MOB-FEAT-055/AC-003", "MOB-FEAT-060/AC-001", "MOB-FEAT-060/AC-009", "MOB-FEAT-060/AC-012"]
+            "observations": [
+                "MOB-FEAT-025/AC-002",
+                "MOB-FEAT-025/AC-004",
+                "MOB-FEAT-055/AC-002",
+                "MOB-FEAT-055/AC-003",
+                "MOB-FEAT-060/AC-001",
+                "MOB-FEAT-060/AC-009",
+                "MOB-FEAT-060/AC-012"
+            ]
         },
         {
             "path": "src/pages/offline-translation/ui/LocalWorkManagePage.tsx",
@@ -5735,7 +6575,23 @@
             "path": "src/pages/offline-translation/ui/LocalTranslationReaderPage.tsx",
             "category": "behavior",
             "specs": ["MOB-FEAT-026", "MOB-FEAT-052", "MOB-FEAT-054", "MOB-FEAT-021", "MOB-FEAT-055", "MOB-FEAT-063"],
-            "observations": ["MOB-FEAT-026/AC-001", "MOB-FEAT-026/AC-004", "MOB-FEAT-052/AC-003", "MOB-FEAT-054/AC-003", "MOB-FEAT-021/AC-004", "MOB-FEAT-021/AC-005", "MOB-FEAT-021/AC-007", "MOB-FEAT-021/AC-008", "MOB-FEAT-055/AC-006", "MOB-FEAT-063/AC-001", "MOB-FEAT-063/AC-002", "MOB-FEAT-063/AC-003", "MOB-FEAT-063/AC-004", "MOB-FEAT-063/AC-005", "MOB-FEAT-063/AC-006"]
+            "observations": [
+                "MOB-FEAT-026/AC-001",
+                "MOB-FEAT-026/AC-004",
+                "MOB-FEAT-052/AC-003",
+                "MOB-FEAT-054/AC-003",
+                "MOB-FEAT-021/AC-004",
+                "MOB-FEAT-021/AC-005",
+                "MOB-FEAT-021/AC-007",
+                "MOB-FEAT-021/AC-008",
+                "MOB-FEAT-055/AC-006",
+                "MOB-FEAT-063/AC-001",
+                "MOB-FEAT-063/AC-002",
+                "MOB-FEAT-063/AC-003",
+                "MOB-FEAT-063/AC-004",
+                "MOB-FEAT-063/AC-005",
+                "MOB-FEAT-063/AC-006"
+            ]
         },
         {
             "path": "src/shared/config/brand.generated.ts",
@@ -5753,37 +6609,81 @@
             "path": "src/shared/i18n/locales/en-US/localTranslation.json",
             "category": "behavior",
             "specs": ["MOB-FEAT-025", "MOB-FEAT-026", "MOB-FEAT-050", "MOB-FEAT-055", "MOB-FEAT-060"],
-            "observations": ["MOB-FEAT-025/AC-004", "MOB-FEAT-026/AC-004", "MOB-FEAT-050/AC-004", "MOB-FEAT-055/AC-002", "MOB-FEAT-055/AC-003", "MOB-FEAT-060/AC-012"]
+            "observations": [
+                "MOB-FEAT-025/AC-004",
+                "MOB-FEAT-026/AC-004",
+                "MOB-FEAT-050/AC-004",
+                "MOB-FEAT-055/AC-002",
+                "MOB-FEAT-055/AC-003",
+                "MOB-FEAT-060/AC-012"
+            ]
         },
         {
             "path": "src/shared/i18n/locales/es-ES/localTranslation.json",
             "category": "behavior",
             "specs": ["MOB-FEAT-025", "MOB-FEAT-026", "MOB-FEAT-050", "MOB-FEAT-055", "MOB-FEAT-060"],
-            "observations": ["MOB-FEAT-025/AC-004", "MOB-FEAT-026/AC-004", "MOB-FEAT-050/AC-004", "MOB-FEAT-055/AC-002", "MOB-FEAT-055/AC-003", "MOB-FEAT-060/AC-012"]
+            "observations": [
+                "MOB-FEAT-025/AC-004",
+                "MOB-FEAT-026/AC-004",
+                "MOB-FEAT-050/AC-004",
+                "MOB-FEAT-055/AC-002",
+                "MOB-FEAT-055/AC-003",
+                "MOB-FEAT-060/AC-012"
+            ]
         },
         {
             "path": "src/shared/i18n/locales/pt-BR/localTranslation.json",
             "category": "behavior",
             "specs": ["MOB-FEAT-025", "MOB-FEAT-026", "MOB-FEAT-050", "MOB-FEAT-055", "MOB-FEAT-060"],
-            "observations": ["MOB-FEAT-025/AC-004", "MOB-FEAT-026/AC-004", "MOB-FEAT-050/AC-004", "MOB-FEAT-055/AC-002", "MOB-FEAT-055/AC-003", "MOB-FEAT-060/AC-012"]
+            "observations": [
+                "MOB-FEAT-025/AC-004",
+                "MOB-FEAT-026/AC-004",
+                "MOB-FEAT-050/AC-004",
+                "MOB-FEAT-055/AC-002",
+                "MOB-FEAT-055/AC-003",
+                "MOB-FEAT-060/AC-012"
+            ]
         },
         {
             "path": "src/widgets/local-translation-library/index.ts",
             "category": "behavior",
             "specs": ["MOB-FEAT-025", "MOB-FEAT-055", "MOB-FEAT-060", "MOB-FEAT-063"],
-            "observations": ["MOB-FEAT-025/AC-001", "MOB-FEAT-055/AC-002", "MOB-FEAT-055/AC-003", "MOB-FEAT-060/AC-001", "MOB-FEAT-060/AC-006", "MOB-FEAT-060/AC-008", "MOB-FEAT-063/AC-001"]
+            "observations": [
+                "MOB-FEAT-025/AC-001",
+                "MOB-FEAT-055/AC-002",
+                "MOB-FEAT-055/AC-003",
+                "MOB-FEAT-060/AC-001",
+                "MOB-FEAT-060/AC-006",
+                "MOB-FEAT-060/AC-008",
+                "MOB-FEAT-063/AC-001"
+            ]
         },
         {
             "path": "src/widgets/local-translation-library/model/__tests__/libraryOverview.test.ts",
             "category": "evidence",
-            "specs": ["MOB-FEAT-060"],
-            "observations": ["MOB-FEAT-060/AC-001", "MOB-FEAT-060/AC-002", "MOB-FEAT-060/AC-003", "MOB-FEAT-060/AC-005"]
+            "specs": ["MOB-FEAT-060", "MOB-FEAT-055"],
+            "observations": [
+                "MOB-FEAT-060/AC-001",
+                "MOB-FEAT-060/AC-002",
+                "MOB-FEAT-060/AC-003",
+                "MOB-FEAT-060/AC-005",
+                "MOB-FEAT-055/AC-011",
+                "MOB-FEAT-060/AC-014"
+            ]
         },
         {
             "path": "src/widgets/local-translation-library/model/libraryOverview.ts",
             "category": "behavior",
-            "specs": ["MOB-FEAT-060"],
-            "observations": ["MOB-FEAT-060/AC-001", "MOB-FEAT-060/AC-002", "MOB-FEAT-060/AC-003", "MOB-FEAT-060/AC-005", "MOB-FEAT-060/AC-006"]
+            "specs": ["MOB-FEAT-060", "MOB-FEAT-055"],
+            "observations": [
+                "MOB-FEAT-060/AC-001",
+                "MOB-FEAT-060/AC-002",
+                "MOB-FEAT-060/AC-003",
+                "MOB-FEAT-060/AC-005",
+                "MOB-FEAT-060/AC-006",
+                "MOB-FEAT-055/AC-011",
+                "MOB-FEAT-060/AC-014"
+            ]
         },
         {
             "path": "src/widgets/local-translation-library/model/useLibraryOperation.ts",
@@ -5794,8 +6694,8 @@
         {
             "path": "src/widgets/local-translation-library/model/useLibraryOverview.ts",
             "category": "behavior",
-            "specs": ["MOB-FEAT-060", "MOB-FEAT-025", "MOB-FEAT-063"],
-            "observations": ["MOB-FEAT-060/AC-001", "MOB-FEAT-060/AC-010", "MOB-FEAT-025/AC-001", "MOB-FEAT-063/AC-001"]
+            "specs": ["MOB-FEAT-060", "MOB-FEAT-025", "MOB-FEAT-063", "MOB-FEAT-055"],
+            "observations": ["MOB-FEAT-060/AC-001", "MOB-FEAT-060/AC-010", "MOB-FEAT-025/AC-001", "MOB-FEAT-063/AC-001", "MOB-FEAT-055/AC-011"]
         },
         {
             "path": "src/widgets/local-translation-library/ui/LibraryParts.tsx",
@@ -5813,13 +6713,32 @@
             "path": "src/widgets/local-translation-library/ui/LibraryShelf.tsx",
             "category": "behavior",
             "specs": ["MOB-FEAT-060", "MOB-FEAT-025", "MOB-FEAT-055"],
-            "observations": ["MOB-FEAT-060/AC-001", "MOB-FEAT-060/AC-002", "MOB-FEAT-060/AC-003", "MOB-FEAT-060/AC-004", "MOB-FEAT-060/AC-005", "MOB-FEAT-060/AC-010", "MOB-FEAT-025/AC-001", "MOB-FEAT-025/AC-002", "MOB-FEAT-025/AC-003", "MOB-FEAT-055/AC-002", "MOB-FEAT-055/AC-003"]
+            "observations": [
+                "MOB-FEAT-060/AC-001",
+                "MOB-FEAT-060/AC-002",
+                "MOB-FEAT-060/AC-003",
+                "MOB-FEAT-060/AC-004",
+                "MOB-FEAT-060/AC-005",
+                "MOB-FEAT-060/AC-010",
+                "MOB-FEAT-025/AC-001",
+                "MOB-FEAT-025/AC-002",
+                "MOB-FEAT-025/AC-003",
+                "MOB-FEAT-055/AC-002",
+                "MOB-FEAT-055/AC-003"
+            ]
         },
         {
             "path": "src/widgets/local-translation-library/ui/WorkDetail.tsx",
             "category": "behavior",
             "specs": ["MOB-FEAT-060", "MOB-FEAT-055"],
-            "observations": ["MOB-FEAT-060/AC-006", "MOB-FEAT-060/AC-007", "MOB-FEAT-060/AC-010", "MOB-FEAT-060/AC-012", "MOB-FEAT-055/AC-003"]
+            "observations": [
+                "MOB-FEAT-060/AC-006",
+                "MOB-FEAT-060/AC-007",
+                "MOB-FEAT-060/AC-010",
+                "MOB-FEAT-060/AC-012",
+                "MOB-FEAT-055/AC-003",
+                "MOB-FEAT-060/AC-014"
+            ]
         },
         {
             "path": "src/widgets/local-translation-library/ui/WorkManage.tsx",
@@ -5834,22 +6753,52 @@
             "observations": ["MOB-FEAT-060/AC-004", "MOB-FEAT-060/AC-008", "MOB-FEAT-055/AC-002"]
         },
         {
+            "path": "src/widgets/local-translation-library/ui/useLanguageNames.ts",
+            "category": "behavior",
+            "specs": ["MOB-FEAT-060"],
+            "observations": ["MOB-FEAT-060/AC-005", "MOB-FEAT-060/AC-006", "MOB-FEAT-060/AC-012"]
+        },
+        {
             "path": "src/widgets/local-translation-library/ui/__tests__/LibraryShelf.test.tsx",
             "category": "evidence",
             "specs": ["MOB-FEAT-060", "MOB-FEAT-025", "MOB-FEAT-055"],
-            "observations": ["MOB-FEAT-060/AC-001", "MOB-FEAT-060/AC-002", "MOB-FEAT-060/AC-003", "MOB-FEAT-060/AC-004", "MOB-FEAT-060/AC-005", "MOB-FEAT-060/AC-009", "MOB-FEAT-060/AC-010", "MOB-FEAT-060/AC-013", "MOB-FEAT-025/AC-001", "MOB-FEAT-025/AC-002", "MOB-FEAT-025/AC-003", "MOB-FEAT-025/AC-004", "MOB-FEAT-055/AC-002", "MOB-FEAT-055/AC-003"]
+            "observations": [
+                "MOB-FEAT-060/AC-001",
+                "MOB-FEAT-060/AC-002",
+                "MOB-FEAT-060/AC-003",
+                "MOB-FEAT-060/AC-004",
+                "MOB-FEAT-060/AC-005",
+                "MOB-FEAT-060/AC-009",
+                "MOB-FEAT-060/AC-010",
+                "MOB-FEAT-060/AC-013",
+                "MOB-FEAT-025/AC-001",
+                "MOB-FEAT-025/AC-002",
+                "MOB-FEAT-025/AC-003",
+                "MOB-FEAT-025/AC-004",
+                "MOB-FEAT-055/AC-002",
+                "MOB-FEAT-055/AC-003"
+            ]
         },
         {
             "path": "src/widgets/local-translation-library/ui/__tests__/WorkScreens.test.tsx",
             "category": "evidence",
             "specs": ["MOB-FEAT-060", "MOB-FEAT-055"],
-            "observations": ["MOB-FEAT-060/AC-006", "MOB-FEAT-060/AC-007", "MOB-FEAT-060/AC-008", "MOB-FEAT-060/AC-010", "MOB-FEAT-060/AC-012", "MOB-FEAT-060/AC-013", "MOB-FEAT-055/AC-003"]
+            "observations": [
+                "MOB-FEAT-060/AC-006",
+                "MOB-FEAT-060/AC-007",
+                "MOB-FEAT-060/AC-008",
+                "MOB-FEAT-060/AC-010",
+                "MOB-FEAT-060/AC-012",
+                "MOB-FEAT-060/AC-013",
+                "MOB-FEAT-055/AC-003",
+                "MOB-FEAT-060/AC-014"
+            ]
         },
         {
             "path": "src/app/reader-preview/_layout.tsx",
             "category": "behavior",
-            "specs": ["MOB-FEAT-051"],
-            "observations": ["MOB-FEAT-051/AC-005"]
+            "specs": ["MOB-FEAT-051", "MOB-FEAT-069"],
+            "observations": ["MOB-FEAT-051/AC-005", "MOB-FEAT-069/AC-004"]
         },
         {
             "path": "src/app/reader-preview/novel.tsx",
@@ -5879,7 +6828,25 @@
             "path": "src/pages/offline-translation/ui/__tests__/LocalTranslationReaderPage.test.tsx",
             "category": "evidence",
             "specs": ["MOB-FEAT-026", "MOB-FEAT-050", "MOB-FEAT-051", "MOB-FEAT-052", "MOB-FEAT-021", "MOB-FEAT-055", "MOB-FEAT-063"],
-            "observations": ["MOB-FEAT-026/AC-001", "MOB-FEAT-026/AC-002", "MOB-FEAT-026/AC-003", "MOB-FEAT-050/AC-004", "MOB-FEAT-051/AC-003", "MOB-FEAT-051/AC-005", "MOB-FEAT-052/AC-004", "MOB-FEAT-021/AC-004", "MOB-FEAT-021/AC-005", "MOB-FEAT-021/AC-007", "MOB-FEAT-021/AC-008", "MOB-FEAT-055/AC-006", "MOB-FEAT-063/AC-003", "MOB-FEAT-063/AC-006", "MOB-FEAT-063/AC-007", "MOB-FEAT-063/AC-009"]
+            "observations": [
+                "MOB-FEAT-026/AC-001",
+                "MOB-FEAT-026/AC-002",
+                "MOB-FEAT-026/AC-003",
+                "MOB-FEAT-050/AC-004",
+                "MOB-FEAT-051/AC-003",
+                "MOB-FEAT-051/AC-005",
+                "MOB-FEAT-052/AC-004",
+                "MOB-FEAT-021/AC-004",
+                "MOB-FEAT-021/AC-005",
+                "MOB-FEAT-021/AC-007",
+                "MOB-FEAT-021/AC-008",
+                "MOB-FEAT-055/AC-006",
+                "MOB-FEAT-063/AC-003",
+                "MOB-FEAT-063/AC-006",
+                "MOB-FEAT-063/AC-007",
+                "MOB-FEAT-063/AC-009",
+                "MOB-FEAT-063/AC-010"
+            ]
         },
         {
             "path": "src/pages/offline-translation/ui/__tests__/LocalTranslationReaderKit.test.tsx",
@@ -5891,7 +6858,16 @@
             "path": "src/widgets/content-reader/index.ts",
             "category": "behavior",
             "specs": ["MOB-FEAT-005", "MOB-FEAT-026", "MOB-FEAT-051", "MOB-FEAT-063"],
-            "observations": ["MOB-FEAT-051/AC-001", "MOB-FEAT-051/AC-002", "MOB-FEAT-051/AC-003", "MOB-FEAT-051/AC-004", "MOB-FEAT-063/AC-001", "MOB-FEAT-063/AC-002", "MOB-FEAT-063/AC-004", "MOB-FEAT-063/AC-006"]
+            "observations": [
+                "MOB-FEAT-051/AC-001",
+                "MOB-FEAT-051/AC-002",
+                "MOB-FEAT-051/AC-003",
+                "MOB-FEAT-051/AC-004",
+                "MOB-FEAT-063/AC-001",
+                "MOB-FEAT-063/AC-002",
+                "MOB-FEAT-063/AC-004",
+                "MOB-FEAT-063/AC-006"
+            ]
         },
         {
             "path": "src/widgets/content-reader/model/__tests__/contentReader.test.ts",
@@ -5922,8 +6898,8 @@
         {
             "path": "src/widgets/content-reader/ui/ImageSurface.tsx",
             "category": "behavior",
-            "specs": ["MOB-FEAT-051", "MOB-FEAT-052"],
-            "observations": ["MOB-FEAT-051/AC-001", "MOB-FEAT-051/AC-003", "MOB-FEAT-052/AC-002"]
+            "specs": ["MOB-FEAT-051", "MOB-FEAT-052", "MOB-FEAT-063"],
+            "observations": ["MOB-FEAT-051/AC-001", "MOB-FEAT-051/AC-003", "MOB-FEAT-052/AC-002", "MOB-FEAT-063/AC-010"]
         },
         {
             "path": "src/widgets/content-reader/model/zoom.ts",
@@ -5965,13 +6941,57 @@
             "path": "src/widgets/content-reader/ui/ReaderPanel.tsx",
             "category": "behavior",
             "specs": ["MOB-FEAT-051", "MOB-FEAT-052", "MOB-FEAT-054", "MOB-FEAT-063"],
-            "observations": ["MOB-FEAT-051/AC-005", "MOB-FEAT-052/AC-001", "MOB-FEAT-052/AC-004", "MOB-FEAT-054/AC-001", "MOB-FEAT-054/AC-004", "MOB-FEAT-063/AC-006"]
+            "observations": [
+                "MOB-FEAT-051/AC-005",
+                "MOB-FEAT-052/AC-001",
+                "MOB-FEAT-052/AC-004",
+                "MOB-FEAT-054/AC-001",
+                "MOB-FEAT-054/AC-004",
+                "MOB-FEAT-063/AC-006"
+            ]
         },
         {
             "path": "src/widgets/content-reader/ui/ContentReader.tsx",
             "category": "behavior",
-            "specs": ["MOB-FEAT-005", "MOB-FEAT-026", "MOB-FEAT-050", "MOB-FEAT-051", "MOB-FEAT-052", "MOB-FEAT-053", "MOB-FEAT-054", "MOB-FEAT-021", "MOB-FEAT-063"],
-            "observations": ["MOB-FEAT-005/AC-002", "MOB-FEAT-005/AC-003", "MOB-FEAT-005/AC-008", "MOB-FEAT-026/AC-001", "MOB-FEAT-026/AC-003", "MOB-FEAT-050/AC-004", "MOB-FEAT-051/AC-001", "MOB-FEAT-051/AC-002", "MOB-FEAT-051/AC-003", "MOB-FEAT-051/AC-004", "MOB-FEAT-052/AC-001", "MOB-FEAT-052/AC-004", "MOB-FEAT-053/AC-002", "MOB-FEAT-054/AC-003", "MOB-FEAT-021/AC-004", "MOB-FEAT-021/AC-005", "MOB-FEAT-021/AC-007", "MOB-FEAT-021/AC-008", "MOB-FEAT-063/AC-001", "MOB-FEAT-063/AC-002", "MOB-FEAT-063/AC-003", "MOB-FEAT-063/AC-004", "MOB-FEAT-063/AC-005", "MOB-FEAT-063/AC-006", "MOB-FEAT-063/AC-007", "MOB-FEAT-063/AC-008"]
+            "specs": [
+                "MOB-FEAT-005",
+                "MOB-FEAT-026",
+                "MOB-FEAT-050",
+                "MOB-FEAT-051",
+                "MOB-FEAT-052",
+                "MOB-FEAT-053",
+                "MOB-FEAT-054",
+                "MOB-FEAT-021",
+                "MOB-FEAT-063"
+            ],
+            "observations": [
+                "MOB-FEAT-005/AC-002",
+                "MOB-FEAT-005/AC-003",
+                "MOB-FEAT-005/AC-008",
+                "MOB-FEAT-026/AC-001",
+                "MOB-FEAT-026/AC-003",
+                "MOB-FEAT-050/AC-004",
+                "MOB-FEAT-051/AC-001",
+                "MOB-FEAT-051/AC-002",
+                "MOB-FEAT-051/AC-003",
+                "MOB-FEAT-051/AC-004",
+                "MOB-FEAT-052/AC-001",
+                "MOB-FEAT-052/AC-004",
+                "MOB-FEAT-053/AC-002",
+                "MOB-FEAT-054/AC-003",
+                "MOB-FEAT-021/AC-004",
+                "MOB-FEAT-021/AC-005",
+                "MOB-FEAT-021/AC-007",
+                "MOB-FEAT-021/AC-008",
+                "MOB-FEAT-063/AC-001",
+                "MOB-FEAT-063/AC-002",
+                "MOB-FEAT-063/AC-003",
+                "MOB-FEAT-063/AC-004",
+                "MOB-FEAT-063/AC-005",
+                "MOB-FEAT-063/AC-006",
+                "MOB-FEAT-063/AC-007",
+                "MOB-FEAT-063/AC-008"
+            ]
         },
         {
             "path": "src/widgets/content-reader/ui/__tests__/ContentReader.test.tsx",
@@ -6004,7 +7024,15 @@
             "path": "src/widgets/content-reader/ui/__tests__/ContentReaderKit.test.tsx",
             "category": "evidence",
             "specs": ["MOB-FEAT-063"],
-            "observations": ["MOB-FEAT-063/AC-001", "MOB-FEAT-063/AC-002", "MOB-FEAT-063/AC-003", "MOB-FEAT-063/AC-004", "MOB-FEAT-063/AC-005", "MOB-FEAT-063/AC-006", "MOB-FEAT-063/AC-008"]
+            "observations": [
+                "MOB-FEAT-063/AC-001",
+                "MOB-FEAT-063/AC-002",
+                "MOB-FEAT-063/AC-003",
+                "MOB-FEAT-063/AC-004",
+                "MOB-FEAT-063/AC-005",
+                "MOB-FEAT-063/AC-006",
+                "MOB-FEAT-063/AC-008"
+            ]
         },
         {
             "path": "src/entities/user-setting/model/readerGesturePreferences.ts",
@@ -6639,14 +7667,80 @@
         {
             "path": "src/widgets/remote-processing/ui/BatchRetrySheet.tsx",
             "category": "behavior",
-            "specs": ["MOB-FEAT-055"],
-            "observations": ["MOB-FEAT-055/AC-005", "MOB-FEAT-055/AC-006"]
+            "specs": ["MOB-FEAT-055", "MOB-FEAT-066"],
+            "observations": ["MOB-FEAT-055/AC-005", "MOB-FEAT-055/AC-006", "MOB-FEAT-066/AC-006"]
         },
         {
             "path": "src/widgets/remote-processing/ui/__tests__/BatchRetrySheet.test.tsx",
             "category": "evidence",
             "specs": ["MOB-FEAT-055"],
             "observations": ["MOB-FEAT-055/AC-005"]
+        },
+        {
+            "path": "src/features/authenticate/ui/LegalLinks.tsx",
+            "category": "behavior",
+            "specs": ["MOB-FEAT-064"],
+            "observations": ["MOB-FEAT-064/AC-001", "MOB-FEAT-064/AC-002"]
+        },
+        {
+            "path": "src/features/authenticate/ui/__tests__/LegalLinks.test.tsx",
+            "category": "evidence",
+            "specs": ["MOB-FEAT-064"],
+            "observations": ["MOB-FEAT-064/AC-001", "MOB-FEAT-064/AC-002"]
+        },
+        {
+            "path": "src/shared/config/useExternalLinkOpener.ts",
+            "category": "behavior",
+            "specs": ["MOB-FEAT-064"],
+            "observations": ["MOB-FEAT-064/AC-001", "MOB-FEAT-064/AC-004"]
+        },
+        {
+            "path": "src/pages/settings-privacy/ui/__tests__/SettingsPrivacyPage.test.tsx",
+            "category": "evidence",
+            "specs": ["MOB-FEAT-008"],
+            "observations": ["MOB-FEAT-008/AC-004", "MOB-FEAT-008/AC-009"]
+        },
+        {
+            "path": "src/pages/settings-content-languages/ui/__tests__/SettingsContentLanguagesPage.test.tsx",
+            "category": "evidence",
+            "specs": ["MOB-FEAT-008"],
+            "observations": ["MOB-FEAT-008/AC-004", "MOB-FEAT-008/AC-009"]
+        },
+        {
+            "path": "src/pages/profile/ui/__tests__/ProfilePage.test.tsx",
+            "category": "evidence",
+            "specs": ["MOB-BASE-005"],
+            "observations": ["MOB-BASE-005/OBS-003"]
+        },
+        {
+            "path": "src/shared/ui/ProgressFill.tsx",
+            "category": "behavior",
+            "specs": ["MOB-FEAT-057"],
+            "observations": ["MOB-FEAT-057/AC-001"]
+        },
+        {
+            "path": "src/shared/ui/__tests__/progressFill.test.tsx",
+            "category": "evidence",
+            "specs": ["MOB-FEAT-057"],
+            "observations": ["MOB-FEAT-057/AC-001"]
+        },
+        {
+            "path": "src/shared/ui/useImageFade.ts",
+            "category": "behavior",
+            "specs": ["MOB-FEAT-002", "MOB-FEAT-057"],
+            "observations": ["MOB-FEAT-002/AC-009", "MOB-FEAT-002/AC-010", "MOB-FEAT-057/AC-001"]
+        },
+        {
+            "path": "src/shared/ui/__tests__/useImageFade.test.tsx",
+            "category": "evidence",
+            "specs": ["MOB-FEAT-002", "MOB-FEAT-057"],
+            "observations": ["MOB-FEAT-002/AC-009", "MOB-FEAT-002/AC-010", "MOB-FEAT-057/AC-001"]
+        },
+        {
+            "path": "src/widgets/local-translation-library/ui/__tests__/chainedSheet.test.tsx",
+            "category": "evidence",
+            "specs": ["MOB-FEAT-060", "MOB-FEAT-057"],
+            "observations": ["MOB-FEAT-060/AC-004", "MOB-FEAT-057/AC-001"]
         }
     ]
 }

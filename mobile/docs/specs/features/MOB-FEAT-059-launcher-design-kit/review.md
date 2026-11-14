@@ -51,3 +51,7 @@
 
 Os 7 critérios estão implementados com evidência automatizada. Verdict `verification-pending` porque TASK-007
 (capturas no iOS Simulator) continua aberta. Review feita pelo próprio implementador, sem auditor externo.
+
+## Cabeçalho em 2026-11-12
+
+O emulador Android confirmou o recorte central do logo na barra de marca. O teste da Home cobre a visibilidade do atalho da prévia com o modo desenvolvedor ligado e desligado. [Captura da Home](../../../../../artifacts/auditoria-design-mobile/android-home-logo.png).

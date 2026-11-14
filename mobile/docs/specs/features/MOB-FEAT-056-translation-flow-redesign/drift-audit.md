@@ -38,3 +38,15 @@ Verificações feitas:
 
 - TASK-012: escuro no iPhone 18 Pro feito em 2026-11-09 (etapa 3 e "Antes de enviar" em
   `docs/ui-captures/dark/design-kit-phase2-iphone18pro/`); faltam claro, fonte ampliada, 320 pt e Android físico.
+
+## Revisão de 2026-11-11
+
+AC-014 mapeado a tasks, review e evidências. Resumo, rodapé e destino da tradução revisado por inspeção e testes automatizados. A verificação física permanece aberta.
+
+No emulador Android API 37, oito imagens sintéticas foram importadas e validadas. A rolagem horizontal mostrou a oitava miniatura. A busca vazia preservou Sem obra e a folha Antes de enviar permitiu recusar o envio.
+
+## Revisão de 2026-11-11
+
+As miniaturas continuam na FlatList horizontal. O teste verifica que o indicador foi ocultado e a coleção permanece completa.
+
+Na API 37, o resumo rolou até a oitava miniatura sem indicador visível. Durante a primeira importação, o emulador registrou um timeout de foco. O rascunho permaneceu íntegro e o fluxo avançou após reabrir o app. A matriz física continua pendente.

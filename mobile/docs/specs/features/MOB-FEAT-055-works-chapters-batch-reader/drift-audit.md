@@ -34,3 +34,11 @@ Verificações feitas:
 
 - TASK-010: roteiro `evidence/device-test-plan-2026-11-07.md` em Android físico (lote, falha isolada, retry, zoom e
   pan, voltar/Home, leitor de tela, memória com dezenas de imagens).
+
+## Revisão de 2026-11-11
+
+AC-011 mapeado a tasks, review e evidências. Estado por página e capítulo revisado por inspeção e testes automatizados. A verificação física permanece aberta.
+
+## Revisão de 2026-11-11
+
+A admissão e o aceite SQLite usam o estado da página alvo. Testes exercitam projeto PROCESSING e READY com página irmã pronta, exclusão de tentativas incertas e preservação de um resultado prévio no commit.

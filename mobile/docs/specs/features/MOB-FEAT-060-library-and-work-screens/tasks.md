@@ -7,21 +7,22 @@
 
 ## Rastreabilidade
 
-| Critério | Tasks              | Evidência planejada                                               |
-| -------- | ------------------ | ----------------------------------------------------------------- |
-| AC-001   | TASK-002, TASK-003 | RNTL da biblioteca (esqueleto, grade, contagem, nova obra)        |
-| AC-002   | TASK-002, TASK-003 | modelo da visão geral e RNTL com e sem progresso                  |
-| AC-003   | TASK-003           | RNTL da ordenação e do modo seleção com exclusão em lote          |
-| AC-004   | TASK-004           | RNTL do menu da obra, folhas e `ConfirmSheet`                     |
-| AC-005   | TASK-004           | RNTL da seção "Sem obra" e da folha "Mover para obra"             |
-| AC-006   | TASK-005           | RNTL da tela da obra e do rodapé nos três casos                   |
-| AC-007   | TASK-006           | RNTL do menu do capítulo, com e sem páginas falhas                |
-| AC-008   | TASK-007           | RNTL da tela de gerenciamento e da folha de vínculo               |
-| AC-009   | TASK-008           | RNTL de navegação biblioteca → obra → leitor                      |
-| AC-010   | TASK-009           | RNTL dos estados vazio e de erro e das falhas de operação         |
-| AC-011   | TASK-001           | RNTL do `StatusChip`                                              |
-| AC-012   | TASK-008, TASK-010 | rotas, chaves nos três locales, `fontScale` 2; capturas pendentes |
-| AC-013   | TASK-011           | testes da 025 e 055 verdes; gates; `coverage.json`                |
+| Critério | Tasks              | Evidência planejada                                                       |
+| -------- | ------------------ | ------------------------------------------------------------------------- |
+| AC-001   | TASK-002, TASK-003 | RNTL da biblioteca (esqueleto, grade, contagem, nova obra)                |
+| AC-002   | TASK-002, TASK-003 | modelo da visão geral e RNTL com e sem progresso                          |
+| AC-003   | TASK-003           | RNTL da ordenação e do modo seleção com exclusão em lote                  |
+| AC-004   | TASK-004           | RNTL do menu da obra, folhas e `ConfirmSheet`                             |
+| AC-005   | TASK-004           | RNTL da seção "Sem obra" e da folha "Mover para obra"                     |
+| AC-006   | TASK-005           | RNTL da tela da obra e do rodapé nos três casos                           |
+| AC-007   | TASK-006           | RNTL do menu do capítulo, com e sem páginas falhas                        |
+| AC-008   | TASK-007           | RNTL da tela de gerenciamento e da folha de vínculo                       |
+| AC-009   | TASK-008           | RNTL de navegação biblioteca → obra → leitor                              |
+| AC-010   | TASK-009           | RNTL dos estados vazio e de erro e das falhas de operação                 |
+| AC-011   | TASK-001           | RNTL do `StatusChip`                                                      |
+| AC-012   | TASK-008, TASK-010 | rotas, chaves nos três locales, `fontScale` 2; capturas pendentes         |
+| AC-013   | TASK-011           | testes da 025 e 055 verdes; gates; `coverage.json`                        |
+| AC-014   | TASK-012           | libraryOverview.test.ts e WorkScreens.test.tsx; validação Android física. |
 
 ## Checklist
 
@@ -44,3 +45,5 @@
 
 - A biblioteca antiga (`LocalWorksPanel`, `LocalTranslationLibrary`) é evidência de 025 e 055; seus casos migram para os testes novos.
 - `pnpm check` segue vermelho pelos checksums de review divergentes anteriores; registrar à parte.
+
+- [ ] TASK-012 — Hierarquia e posição de leitura. Código e regressões preparados. Validar em Android físico.

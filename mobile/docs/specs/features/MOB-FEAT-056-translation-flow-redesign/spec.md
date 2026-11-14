@@ -102,59 +102,69 @@ relaxar as garantias de validação, consentimento e persistência.
 ## Critérios de aceite
 
 ### AC-001 — Três etapas
+
 Importar, organizar, escolher idiomas, validar e preparar são concluídos em três
 etapas visíveis, sem remover nenhuma capacidade existente.
 
 ### AC-002 — Confirmações preservadas
+
 Ordem, idiomas e validação continuam registrados e exigidos antes de preparar;
 nenhum passo é pulado sem ação explícita do usuário.
 
 ### AC-003 — Validação automática
+
 Validação roda sozinha logo depois de confirmar os idiomas, na etapa Idiomas,
 exibe estado por página e só bloqueia quando há página inválida, com correção e
 retry localizados.
 
 ### AC-004 — Ação principal sempre alcançável
+
 Cada etapa tem um único botão primário fixo no rodapé, visível sem rolagem em
 telas pequenas e com fonte ampliada.
 
 ### AC-005 — Navegação sem perda
+
 Voltar e avançar preservam draft, ordem, idiomas e validação; Home e saída
 durante processamento preservam o comportamento seguro atual.
 
 ### AC-006 — Consentimento e envio inalterados
+
 Nenhuma chamada remota ocorre antes do aceite; consentimento, chave por
 tentativa, recibos e retry seguem MOB-FEAT-017/055.
 
 ### AC-007 — Lote e feedback de estado
+
 Seleção em lote, progresso agregado e chips de estado distinguem aguardando,
 processando, salva, falhou e incerta; erros mostram ação.
 
 ### AC-008 — Consistência visual e i18n
+
 Tokens de tema, componentes de `shared/ui`, claro/escuro e textos completos em
 `pt-BR`, `en-US` e `es-ES`, sem texto ou cor fixos.
 
 ### AC-009 — Itens de desenvolvimento
+
 Demonstração e atalhos de desenvolvimento não aparecem em build de usuário.
 
 ### AC-010 — Qualidade e regressão
+
 Testes de página, painéis, modelo de etapas, i18n e FSD passam; `pnpm check`
 verde; cobertura e registry atualizados.
 
 ## Estratégia de evidência
 
-| Critério | Teste/evidência esperada                                         |
-| -------- | ---------------------------------------------------------------- |
-| AC-001   | teste de página e `translationFlow` com 3 etapas                 |
-| AC-002   | testes de persistência das confirmações e gating                 |
-| AC-003   | teste de validação automática, inválida e retry                  |
-| AC-004   | teste de layout com rodapé fixo e fonte ampliada; captura        |
-| AC-005   | testes de voltar/avançar, Home e saída em processamento          |
-| AC-006   | testes de consentimento e ausência de chamada antes do aceite    |
-| AC-007   | testes do painel de lote e do componente de status               |
-| AC-008   | testes de i18n por chave e capturas claro/escuro                 |
-| AC-009   | teste com `__DEV__` falso                                        |
-| AC-010   | `pnpm check` e revisão                                           |
+| Critério | Teste/evidência esperada                                      |
+| -------- | ------------------------------------------------------------- |
+| AC-001   | teste de página e `translationFlow` com 3 etapas              |
+| AC-002   | testes de persistência das confirmações e gating              |
+| AC-003   | teste de validação automática, inválida e retry               |
+| AC-004   | teste de layout com rodapé fixo e fonte ampliada; captura     |
+| AC-005   | testes de voltar/avançar, Home e saída em processamento       |
+| AC-006   | testes de consentimento e ausência de chamada antes do aceite |
+| AC-007   | testes do painel de lote e do componente de status            |
+| AC-008   | testes de i18n por chave e capturas claro/escuro              |
+| AC-009   | teste com `__DEV__` falso                                     |
+| AC-010   | `pnpm check` e revisão                                        |
 
 ## Gate de implementação
 
@@ -175,12 +185,12 @@ Mudar a intenção de uma spec aprovada é revisão: a spec volta a `draft` até
 `blocked` pela MOB-FEAT-055. Na aprovação da revisão, a opção **A (seguir o kit)** foi escolhida nas quatro linhas;
 as regras e AC abaixo valem e prevalecem sobre o texto original dos AC citados.
 
-| #    | Item                | 056 hoje                       | A — kit                                                                                               | AC afetados (com A)           | Escolha      |
-| ---- | ------------------- | ------------------------------ | ----------------------------------------------------------------------------------------------------- | ----------------------------- | ------------ |
-| D3.1 | Idiomas             | linha única "origem → destino" | seletores "De" e "Para" em folha, botão de trocar; o idioma escolhido no outro lado fica desabilitado | AC-001 (texto), AC-013 novo   | A            |
-| D3.2 | Consentimento       | fora do escopo desta spec      | folha "Antes de enviar" com 3 itens e "Ver detalhes" com o texto completo                             | AC-006 (reforço), AC-011 novo | A            |
-| D3.3 | Destino do capítulo | não previsto                   | cartão "Salvar em: <obra> / Sem obra" com folha de escolha, antes de traduzir                         | AC-012 novo                   | A            |
-| D3.4 | Progresso           | 3 passos com o atual rotulado  | barra de 3 segmentos e "Etapa N de 3: <nome>"                                                         | AC-004 (texto do indicador)   | A            |
+| #    | Item                | 056 hoje                       | A — kit                                                                                               | AC afetados (com A)           | Escolha |
+| ---- | ------------------- | ------------------------------ | ----------------------------------------------------------------------------------------------------- | ----------------------------- | ------- |
+| D3.1 | Idiomas             | linha única "origem → destino" | seletores "De" e "Para" em folha, botão de trocar; o idioma escolhido no outro lado fica desabilitado | AC-001 (texto), AC-013 novo   | A       |
+| D3.2 | Consentimento       | fora do escopo desta spec      | folha "Antes de enviar" com 3 itens e "Ver detalhes" com o texto completo                             | AC-006 (reforço), AC-011 novo | A       |
+| D3.3 | Destino do capítulo | não previsto                   | cartão "Salvar em: <obra> / Sem obra" com folha de escolha, antes de traduzir                         | AC-012 novo                   | A       |
+| D3.4 | Progresso           | 3 passos com o atual rotulado  | barra de 3 segmentos e "Etapa N de 3: <nome>"                                                         | AC-004 (texto do indicador)   | A       |
 
 ### Regras adicionais
 
@@ -204,7 +214,7 @@ as regras e AC abaixo valem e prevalecem sobre o texto original dos AC citados.
 ### Critérios de aceite adicionados ou alterados
 
 - **AC-001 (texto alterado):** a etapa Idiomas usa os seletores "De" e "Para" da D3.1 em vez da linha única.
-- **AC-004 (texto alterado):** o indicador de progresso é a barra de 3 segmentos com "Etapa N de 3: <nome>".
+- **AC-004 (texto alterado):** o indicador de progresso tem 3 segmentos. O nome da etapa fica acima do segmento ativo, centralizado sobre ele, e o contador fica abaixo da barra. O leitor de tela anuncia "Etapa N de 3: <nome>".
 - **AC-006 (reforço):** o aceite acontece na folha "Antes de enviar" da D3.2.
 
 ### AC-011 — Consentimento em camadas
@@ -247,8 +257,31 @@ Resultados roteirizados (4ª página falha, 6ª incerta), data fixa "08/11/2026"
 - **D4 — momento da validação (2026-11-09, durante a execução):** a AC-003 pedia validação depois da ordem, mas a
   MOB-FEAT-015 só valida com idiomas confirmados. Ruan Moraes escolheu ajustar a spec (resposta “Ajustar a spec”): a
   validação roda na etapa Idiomas, logo depois da confirmação dos idiomas; a 015 não muda.
+  Quando há páginas inválidas, a etapa Idiomas mostra uma vista de correção com
+  galeria rolável e rodapé fixo. Os seletores e o resumo do capítulo cedem espaço
+  à galeria até as falhas serem resolvidas.
 
 ### Histórico de aprovação
 
 - Versão original: aprovada por Ruan Moraes em 2026-11-08 (resposta “Aprovo a spec”), com gate `blocked`. Esta
   aprovação não cobre a revisão D3 acima.
+
+## Revisão aprovada — 2026-11-11
+
+Aprovação registrada pelo pedido de implementação do plano do leitor, capítulos e modo desenvolvedor.
+
+### AC-014 — Revisão e seleção do destino
+
+Mostrar todas as páginas no resumo virtualizado, orientação acima da revisão e ações fixas. Buscar obras pelo título sem distinguir acentos e mostrar capas e seleção acessível. Preservar o aceite antes do envio.
+
+## Revisão solicitada em 2026-11-11
+
+Na etapa Idiomas, as miniaturas continuam roláveis e o indicador horizontal fica oculto.
+
+### Resumo e lista de páginas
+
+Na etapa Traduzir, o resumo fica separado da lista virtualizada. A contagem de seleção e sua ação ocupam uma faixa própria. As linhas alinham miniatura, título e status, e controle de seleção.
+
+## Ajuste do diálogo de saída em 2026-11-12
+
+Na saída com rascunho, uma folha inferior informa que o rascunho pode ser retomado neste aparelho. As ações ocupam a largura inteira em ordem vertical. “Sair e manter rascunho” é a ação principal preenchida, “Continuar aqui” é secundária com contorno e “Descartar páginas” usa texto na cor de ação destrutiva, com espaçamento adicional.

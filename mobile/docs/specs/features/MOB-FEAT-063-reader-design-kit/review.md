@@ -73,6 +73,7 @@ Desvios mantidos: botão de expandir o painel (052), "Original" no ajuste (D18),
 | AC-007   | sim          | suítes de 005, 051, 052, 053 e 055 verdes (ver finding 4)                               | pass                              |
 | AC-008   | sim          | `i18n.test.ts`; RTL em `ContentReaderKit.test.tsx`                                      | pass em teste; capturas pendentes |
 | AC-009   | sim          | gates abaixo; `coverage.json`                                                           | pass                              |
+| AC-010   | parcial      | PageRetryIndicator.test.tsx                                                             | verificação física pendente       |
 
 ## Gates
 

@@ -39,7 +39,7 @@ alterar contratos, stores, persistência, requests ou navegação.
 - Tamanho do texto, densidade, direção, ajuste e visibilidades curtas usam
   seletores segmentados quando os rótulos couberem de forma legível.
 - Idioma da interface, formato de data e opções sensíveis com explicação usam
-  cards de escolha; fuso horário e qualidade usam campo de seleção em sheet.
+  cards de escolha; fuso horário usa campo de seleção em sheet.
 - Saturação, espaçamento e pré-carregamento usam sliders ajustáveis com valor
   atual e limites visíveis, mantendo paridade funcional com o web.
 - Animações, reduzir movimento, alto contraste, marcar como lido e analytics são
@@ -63,7 +63,7 @@ alterar contratos, stores, persistência, requests ou navegação.
 ## Casos de erro
 
 - Uma opção indisponível fica desabilitada sem desaparecer nem aceitar mudança.
-- Fuso ou qualidade selecionados continuam visíveis ao reabrir o sheet.
+- O fuso selecionado continua visível ao reabrir o sheet.
 - Slider responde a toque, gesto e ações assistivas de incremento/decremento,
   mantendo o valor entre os limites.
 - `DO_NOT_TRACK` mantém sua confirmação e desabilita analytics com explicação.
@@ -90,7 +90,7 @@ localizados e persistência equivalente.
 
 ### AC-004 — Preferências do leitor
 
-Modo, direção, ajuste, qualidade, fundo, saturação, espaçamento,
+Modo, direção, ajuste, fundo, saturação, espaçamento,
 pré-carregamento e marcar como lido possuem controles apropriados e equivalentes.
 
 ### AC-005 — Privacidade e conteúdo

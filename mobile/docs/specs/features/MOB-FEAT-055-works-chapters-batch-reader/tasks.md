@@ -18,6 +18,7 @@
 | AC-008   | TASK-008 | navegação e consistência de header     |
 | AC-009   | TASK-009 | interrupção, restart e offline         |
 | AC-010   | TASK-010 | gates e matriz física                  |
+| AC-011 | TASK-011 | PageRetryIndicator.test.tsx e libraryOverview.test.ts; validação Android física. |
 
 ## Checklist
 
@@ -74,3 +75,25 @@ partir da obra (`LocalWorksPanel` → `OfflineTranslationPage` com `workTarget`)
 local), zoom (`ZoomableSurface` no `ContentReader`), voltar quadrado e Home, reconciliação ao reabrir.
 TASK-010 continua aberta: o roteiro `evidence/device-test-plan-2026-11-07.md` ainda não foi executado
 em aparelho físico.
+
+## Correção do lote — 2026-11-10
+
+No teste em Android físico, um lote de aproximadamente cinco páginas salvou
+apenas a primeira. Foi identificada uma divergência na aceitação da resposta
+volátil: o envio permitia uma página `DRAFT` em projeto `PROCESSING`, mas a
+transação que recebia a resposta a rejeitava. O teste SQLite
+`volatileAttemptSqlite.test.ts` reproduziu a rejeição e confirmou a aceitação
+da segunda página preservando a primeira `READY`. A validação do lote corrigido
+no aparelho e as demais evidências físicas continuam pendentes; nenhuma
+tentativa ambígua deve ser reenviada automaticamente.
+
+Em novo teste Android com 34 páginas, o progresso contava falhas e respostas
+incertas como concluídas. Páginas `DRAFT` com tentativa incerta também
+permaneciam selecionáveis. As correções de AC-004/005/009 contam apenas
+commits concluídos, excluem tentativas incertas da seleção e interrompem o lote
+ao receber HTTP 429, preservando as páginas ainda não enviadas. O gateway
+temporário anunciou disponibilidade em consulta posterior de capabilities;
+a resposta que interrompeu o teste físico segue sem confirmação. A revalidação
+no aparelho continua em TASK-010.
+
+- [ ] TASK-011 — Estado por página e capítulo. Código e regressões preparados. Validar em Android físico.

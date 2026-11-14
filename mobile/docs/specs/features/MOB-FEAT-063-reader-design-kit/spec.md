@@ -21,7 +21,7 @@ kit é referência visual e de comportamento, não código para copiar.
 
 ## Contexto e contratos relacionados
 
-- Contratos que **não mudam**: MOB-FEAT-005 (modos, direção, ajuste, qualidade, saturação, espaçamento,
+- Contratos que **não mudam**: MOB-FEAT-005 (modos, direção, ajuste, saturação, espaçamento,
   pré-carregamento, progresso), MOB-FEAT-051 (leitor unificado, overlay de demonstração, erro por página),
   MOB-FEAT-052 (gestos e modos de exibir controles), MOB-FEAT-053 (leitor de texto), MOB-FEAT-055 (zoom, marcador de
   falha, retry seletivo) e MOB-DEC-008 (sem reenvio automático).
@@ -91,9 +91,11 @@ fictícia).
   hora e ficam salvas nas configurações" e botão fechar. Fecha por botão, fundo e voltar do Android.
 - Rodapé com "Todos os ajustes do leitor", que fecha a folha e abre Configurações > Leitor (062).
 - Conteúdo (D2, opção A): folha única com Modo, Direção, Ajuste, Fundo, Saturação e Espaçamento; Gestos,
-  Pré-carregamento, Marcação e Qualidade ficam em Configurações > Leitor, a um toque pelo rodapé. Além disso: ajuste inclui "Original" (D18); qualidade segue a 005/AC-004 (D19);
+  Pré-carregamento e Marcação ficam em Configurações > Leitor, a um toque pelo rodapé. O ajuste inclui "Original" (D18);
   espaçamento só aparece onde a 005 o aplica; limites, commit de sliders, erros e retry da 054/AC-002 preservados.
 - Abrir, fechar ou mudar ajuste não remonta o viewport nem perde a âncora (054/AC-003).
+
+O cabeçalho de ajustes usa o botão fechar com borda e superfície do kit. Expandir e recolher ficam ao lado. “Ver texto completo” usa a largura do botão e fica centralizado em uma linha na fonte padrão, com quebra permitida quando necessário para a fonte ampliada.
 
 ### Tema, i18n e acessibilidade
 
@@ -121,7 +123,7 @@ de 2 capítulos.
 ### AC-002 — Lista de capítulos
 
 Dada uma obra com 2 ou mais capítulos, quando a pessoa abrir a lista, então a folha mostra os capítulos na ordem da
-055 com o atual marcado e anunciado, e escolher outro capítulo o abre no leitor e fecha a folha.
+055 com o atual marcado e anunciado, e escolher outro capítulo o abre no leitor e fecha a folha. A busca filtra pelo nome sem distinguir acentos ou maiúsculas. A ordem numérica é o padrão e pode ser trocada pela alfabética. A ordenação da folha não altera a sequência de navegação no leitor.
 
 ### AC-003 — Barra inferior
 
@@ -147,7 +149,7 @@ os ajustes do leitor" que leva a Configurações > Leitor, com Modo, Direção, 
 
 ### AC-007 — Contratos do leitor preservados
 
-Modos, direção, ajuste com "Original", qualidade só com fontes distintas, saturação, espaçamento, pré-carregamento,
+Modos, direção, ajuste com "Original", saturação, espaçamento, pré-carregamento,
 progresso, gestos e modos de exibir controles, zoom, marcador de falha e retry individual continuam como em 005, 051,
 052, 053 e 055; abrir ou fechar folhas não remonta o viewport.
 
@@ -203,7 +205,7 @@ As propostas abaixo foram aceitas como redigidas; em D2 vale a opção A.
     - **Escolhida: A.** Motivo: é o objetivo do kit (menos rolagem durante a leitura) e nenhum ajuste se perde: todos
       continuam em Configurações > Leitor, a um toque.
 - **D18 — ajuste "Original":** o kit removeu. Aceito: manter (005).
-- **D19 — qualidade:** o kit mostra as cinco opções sempre. Aceito: manter a regra da 005/AC-004.
+- **D19 — qualidade:** a preferência foi removida. O leitor carrega a imagem automaticamente (005/AC-004).
 - **D20 — cores das barras:** o kit usa hex fixos escuros. Aceito: tokens temáticos (051).
 - **D21 — controles por leitor:** aceito conforme a tabela "Onde cada controle aparece".
 
@@ -215,3 +217,11 @@ As propostas abaixo foram aceitas como redigidas; em D2 vale a opção A.
   recomendações como redigidas. O gate de implementação segue `blocked`.
 
 Não criar `tasks.md` antes de status `approved` e aprovação preenchida.
+
+## Revisão aprovada — 2026-11-11
+
+Aprovação registrada pelo pedido de implementação do plano do leitor, capítulos e modo desenvolvedor.
+
+### AC-010 — Tradução da página no leitor
+
+Página nunca enviada usa apresentação neutra e ação Traduzir esta página. Falha comprovada permite retry e resultado incerto permite consultar recibo. O aceite abrange somente a página escolhida.

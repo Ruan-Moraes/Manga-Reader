@@ -35,3 +35,7 @@ Verificações feitas:
 - TASK-010: escuro no iPhone 18 Pro feito em 2026-11-09 (biblioteca, obra e gerenciar em
   `docs/ui-captures/dark/design-kit-phase2-iphone18pro/`); faltam claro, fonte ampliada, 320 pt, alto contraste e
   Android físico.
+
+## Revisão de 2026-11-11
+
+AC-014 mapeado a tasks, review e evidências. Hierarquia e posição de leitura revisado por inspeção e testes automatizados. A verificação física permanece aberta.

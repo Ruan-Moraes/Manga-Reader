@@ -38,3 +38,7 @@ falha de injeção de toque/scroll via CUA, ausência de Android e de métricas 
 TASK-006 permanece aberta; não marcar implemented sem essa verificação.
 
 Rebase C06 (2026-09-12): referência global recalculada para a árvore local com recuperação compartilhada. Escopo (arquivo externo: `perfomance_app/mobile/docs/active/performance-evidence/recovery-2026-09-12/review.md`). Não altera verdict nem valida implementações locais de outras tarefas ou medições físicas.
+
+## Regressão de 2026-11-11
+
+O teste de interação cobre a substituição da viewport paginada enquanto há movimento, incluindo descarte de eventos tardios e recuperação por toque. A reprodução física do relato Android permanece pendente.

@@ -32,11 +32,15 @@ página problemática sem perder resultados válidos.
 
 - A etapa mostra título dinâmico, card-resumo e grid virtualizado de miniaturas
   com página e estado acessível: aguardando, pronta ou ação necessária.
-- Quando houver falhas, um alerta e os filtros `Com problema`/`Todas` aparecem;
-  `Com problema` é selecionado inicialmente e a ação de correção focaliza a
-  primeira página inválida.
-- A miniatura inválida possui borda, badge textual e ação própria para substituir
-  o arquivo. O detalhe abre em modal com preview, mensagem humana, origem e ação.
+- Os filtros `Com problema` e `Todas` usam duas colunas, com miniaturas em formato retrato (3:4).
+  Páginas prontas têm uma faixa com ícone de confirmação e texto de status.
+- Quando a validação encontrar páginas com problema, uma folha inferior abre
+  com o resumo e o motivo de cada falha, em ordem de página. O botão de correção
+  reabre esse resumo. A ação da folha volta à galeria filtrada e focaliza a
+  primeira página inválida. Os filtros `Com problema`/`Todas` continuam na galeria.
+- A miniatura inválida tem dois botões de ícone lado a lado para abrir o detalhe
+  da falha e substituir o arquivo. O botão de detalhe anuncia o motivo da falha
+  ao leitor de tela. O detalhe abre em modal com preview, mensagem humana, origem e ação.
 - A origem da falha é um modelo de apresentação `local | processing`. Falhas
   locais são derivadas dos códigos persistidos atuais. Consumidores futuros
   podem fornecer uma falha de processamento, sem que esta feature a fabrique.
@@ -73,8 +77,9 @@ página problemática sem perder resultados válidos.
 
 ### AC-001 — Resumo e galeria escalável
 
-Sucesso, progresso e lote misto são resumidos sem lista textual exaustiva e o
-grid virtualiza dezenas de miniaturas com estados acessíveis.
+Sucesso, progresso e lote misto são resumidos na galeria, que virtualiza dezenas
+de miniaturas com estados acessíveis. A folha de falhas lista todas as páginas
+afetadas.
 
 ### AC-002 — Falha localizada e detalhe honesto
 
@@ -89,7 +94,7 @@ draft.
 
 ### AC-004 — Rodapé orientado ao estado
 
-O CTA informa progresso, focaliza a primeira falha ou avança para revisão
+O CTA informa progresso, abre o resumo de falhas ou avança para revisão
 somente quando a prontidão derivada for verdadeira.
 
 ### AC-005 — Responsividade, acessibilidade e i18n
