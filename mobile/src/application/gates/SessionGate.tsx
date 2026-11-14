@@ -92,7 +92,7 @@ export function SessionGate({ children }: PropsWithChildren) {
         }
     }, [identityEpoch, isAuthenticated, isHydrated, params.returnTo, router, segments]);
 
-    if (!isHydrated) return <StartupFeedback label={t('startup.session')} />;
+    if (!isHydrated) return <StartupFeedback label={t('startup.session')} title={t('startup.opening')} />;
 
     return children;
 }

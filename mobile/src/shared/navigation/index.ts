@@ -13,4 +13,13 @@ export {
     type SettingsRoute,
 } from './routes';
 export { useLeaveGuard } from './useLeaveGuard';
+export {
+    screenTransition,
+    type ScreenTransitionContext,
+    type ScreenTransitionKind,
+    type ScreenTransitionOptions,
+    tabTransition,
+    type TabTransitionOptions,
+    useScreenTransitions,
+} from './transitions';
 export { useScreenRefocus } from './useScreenFocus';

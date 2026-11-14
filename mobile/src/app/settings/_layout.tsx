@@ -1,17 +1,19 @@
 import { Stack } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 
+import { useScreenTransitions } from '@/shared/navigation';
 import { useTheme } from '@/shared/theme';
 
 export default function SettingsLayout() {
     const { t } = useTranslation('settingsNavigation');
 
-    const { decorativeMotionEnabled, tokens } = useTheme();
+    const { tokens } = useTheme();
+    const { drillIn } = useScreenTransitions();
 
     return (
         <Stack
             screenOptions={{
-                animation: decorativeMotionEnabled ? 'slide_from_right' : 'none',
+                ...drillIn,
                 contentStyle: { backgroundColor: tokens.bg },
                 headerShown: false,
             }}

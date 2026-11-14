@@ -51,7 +51,7 @@ export function SettingsGate({ children }: PropsWithChildren) {
         }
     }, [fontsLoaded, isSettingsHydrated]);
 
-    if (!fontsLoaded || !isSettingsHydrated) return <StartupFeedback label={t('startup.settings')} />;
+    if (!fontsLoaded || !isSettingsHydrated) return <StartupFeedback label={t('startup.settings')} title={t('startup.opening')} />;
 
     return children;
 }

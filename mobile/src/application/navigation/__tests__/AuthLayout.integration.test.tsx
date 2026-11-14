@@ -17,10 +17,12 @@ const stack = jest.requireMock('expo-router').Stack as jest.Mock;
 
 describe('MOB-FEAT-002 auth navigation motion', () => {
     it.each([
-        [true, 'slide_from_right'],
+        [true, 'simple_push'],
         [false, 'none'],
     ] as const)('resolve animação decorativa %s como %s', (decorativeMotionEnabled, animation) => {
-        jest.mocked(useTheme).mockReturnValue({ decorativeMotionEnabled, tokens: { bg: '#000' } } as ReturnType<typeof useTheme>);
+        jest.mocked(useTheme).mockReturnValue({ decorativeMotionEnabled, motion: { screen: 140, screenSlide: 220 }, tokens: { bg: '#000' } } as ReturnType<
+            typeof useTheme
+        >);
 
         render(<AuthLayout />);
 

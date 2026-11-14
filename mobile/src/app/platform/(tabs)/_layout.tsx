@@ -2,6 +2,7 @@ import { Tabs } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import type { ColorValue } from 'react-native';
 
+import { tabTransition } from '@/shared/navigation';
 import { useTheme } from '@/shared/theme';
 import { Icon, type IconName } from '@/shared/ui';
 
@@ -10,13 +11,14 @@ function TabIcon({ name, color }: { name: IconName; color: ColorValue }) {
 }
 
 export default function TabLayout() {
-    const { tokens } = useTheme();
+    const { decorativeMotionEnabled, motion, tokens } = useTheme();
 
     const { t } = useTranslation('common');
 
     return (
         <Tabs
             screenOptions={{
+                ...tabTransition({ decorativeMotionEnabled, motion }),
                 tabBarActiveTintColor: tokens.accent,
                 tabBarInactiveTintColor: tokens.tertiary,
                 tabBarStyle: { backgroundColor: tokens.surface, borderTopColor: tokens.separator },

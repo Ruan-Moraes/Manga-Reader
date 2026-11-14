@@ -26,7 +26,7 @@ export function ContentLanguagesIdentityBoundary({ children, identityEpoch, isAu
 
     const identityAligned = isAuthenticated ? contentIdentityEpoch === identityEpoch : contentIdentityEpoch === null;
 
-    return identityAligned ? children : <StartupFeedback label={t('sync.syncing')} />;
+    return identityAligned ? children : <StartupFeedback label={t('sync.syncing')} title={t('launcher:startup.opening')} />;
 }
 
 export function ContentLanguagesAccountGate({ children }: PropsWithChildren) {
