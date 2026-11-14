@@ -105,7 +105,7 @@ sem usar credenciais ou alterar recursos cloud nesta investigação.
 
 ## Controle restrito da preferência OOM — 2026-10-11
 
-Diagnóstico adicional com as [novas imagens Java 25/Boot 4](native-base-update-2026-10-11.md),
+Diagnóstico adicional com as [novas imagens Java 25/Boot 4](../native-runtime/native-base-update-2026-10-11.md),
 sem alterar produção ou instalar pacote. Não substitui o protocolo integral
 acima: nenhum worker, job, SQL, codec, modelo, provider ou imagem real participou.
 O probe Java temporário carrega a **implementação real de `LinuxOomPolicy` do
@@ -175,7 +175,7 @@ TASK-002/006/007/008 e 020/021 não são promovidas. Fonte/configuração audita
 inalteradas: 400 arquivos / checksum técnico
 `40c140568670d3ac826a40e485bf533d1f95a10da32c528cc4e76f44aea149b6`.
 Segurança residual e aprovação de instalação do candidato Ubuntu são
-[pendências separadas](native-residual-security-2026-10-11.md). Gates globais
+[pendências separadas](../native-runtime/native-residual-security-2026-10-11.md). Gates globais
 anteriores conservam suas datas; não são cobertura integral deste probe.
 
 Fechamento documental: checks do parser, cinco links relativos, Prettier

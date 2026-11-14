@@ -6,13 +6,13 @@ admissão não aprovada (9 PASS / 3 FAIL / 6 UNKNOWN).** Armazenamento e essa
 execução foram autorizados, não implantação/cobrança da stack completa.
 **Job, registry/imagem e conta temporários posteriormente retirados com
 aprovação; evidências e imagem local preservadas.**
-Próximo candidato de diagnóstico: [VM temporária com Docker](worker-isolation-target-options-2026-10-12.md),
+Próximo candidato de diagnóstico: [VM temporária com Docker](../worker-isolation/worker-isolation-target-options-2026-10-12.md),
 recomendação ainda sem provisionamento/aprovação operacional; quotas, pin de
-metadata e cotação preparados na [receita privada](worker-isolation-vm-recipe-2026-10-12.md).
+metadata e cotação preparados na [receita privada](../worker-isolation/worker-isolation-vm-recipe-2026-10-12.md).
 Checklist e comandos iniciais preservam a preparação; os registros
 cronológicos ao final indicam o estado corrente, sem substituir seus históricos.
 020 permanece `in-progress/open`, 021 bloqueada. Complementa o
-[histórico do diagnóstico cloud](worker-isolation-cloud-plan.md), sem substituir
+[histórico do diagnóstico cloud](../worker-isolation/worker-isolation-cloud-plan.md), sem substituir
 resultados anteriores ou tocar os arquivos da auditoria de performance.
 
 ## Escopo e sequência
@@ -73,7 +73,7 @@ com UTC, comando e escopo. Estado atual permanece pendente nesta preparação.
 
 ## 2. Job mínimo de diagnóstico
 
-Usar o [probe Java e preparador existentes](worker-isolation-probe.md).
+Usar o [probe Java e preparador existentes](../worker-isolation/worker-isolation-probe.md).
 Contexto: somente runtime/licenças e oito classes; nenhum Spring, modelo,
 codec, SDK Google, captura, amostra ou segredo. Cache ausente exige aprovação
 de aquisição, sem pull implícito. Nenhum build/push ocorreu nesta preparação.
@@ -337,7 +337,7 @@ a cotação regional antes de propor registry/push/conta/Job. As APIs da stack
 completa ficam desligadas. Não há autorização derivada para recurso, download,
 provider, imagem de mangá ou cobrança; nenhuma dessas ações ocorreu.
 
-Continuação de 12/10: a [revisão prévia da imagem e cotação](diagnostic-publication-review-2026-10-12.md)
+Continuação de 12/10: a [revisão prévia da imagem e cotação](../ocr-evaluation/diagnostic-publication-review-2026-10-12.md)
 confirmou integridade da candidata de diagnóstico, mas exige base CVE válida
 para nova varredura. Cotação regional também permanece inconclusiva; nenhuma
 publicação/criação/execução foi autorizada ou realizada por essa revisão.
@@ -362,7 +362,7 @@ candidata de diagnóstico**, não produção ou execução paga. Preparado o pr�
 pedido de criação do registry temporário `toonlira-diag-20261012` em São Paulo,
 com pré-flight IAM/disponibilidade, scanner pago desabilitado e término vazio.
 Nenhum uso de credenciais, criação ou push nesta parcela. Ver a seção final da
-[revisão](diagnostic-publication-review-2026-10-12.md), que mantém achados,
+[revisão](../ocr-evaluation/diagnostic-publication-review-2026-10-12.md), que mantém achados,
 cobertura incompleta e autorização financeira separados desse aceite.
 
 Após autorização específica de criação e consultas, o registry temporário
@@ -417,7 +417,7 @@ obrigatórios não observáveis pelos parsers atuais. Não avançar para etapas
 3–4, flexibilizar guards ou interpretar sucesso do Job como admissão. Limite
 de endereço unlimited esperado no probe sem bootstrap; noexec é observação
 adicional. Resultado, hashes, interpretação limitada e retirada proposta:
-[diagnóstico cloud real](diagnostic-cloud-result-2026-10-12.md).
+[diagnóstico cloud real](../ocr-evaluation/diagnostic-cloud-result-2026-10-12.md).
 
 Job/registry/conta permanecem existentes; exclusão ainda não autorizada.
 
@@ -435,7 +435,7 @@ Estado corrente: **diagnóstico encerrado e recursos temporários retirados;
 admissão operacional pendente de decisão arquitetural**. Não avançar para
 bootstrap/integrar SQL/GCS/Tasks ou relaxar guards. 020/021 e defaults continuam
 inalterados. Recibos, recuperação e limites no
-[diagnóstico cloud real](diagnostic-cloud-result-2026-10-12.md).
+[diagnóstico cloud real](../ocr-evaluation/diagnostic-cloud-result-2026-10-12.md).
 
 Após pedido explícito para continuar a decisão de isolamento, comparação pública
 e reconciliação do código recomendaram uma VM Compute Engine temporária com
@@ -443,7 +443,7 @@ Docker/cgroup v2 como próximo **candidato de prova**, não migração aprovada.
 Container mantém 8 GiB; margem de RAM do host não substitui os guards. GKE tem
 obstáculo no `podPidsLimit` documentado; não repetir Cloud Run idêntico sem nova
 hipótese. Requisitos, sequência, pendências de custo e pré-flight somente leitura
-estão na [proposta](worker-isolation-target-options-2026-10-12.md).
+estão na [proposta](../worker-isolation/worker-isolation-target-options-2026-10-12.md).
 Nenhuma credencial, instalação, recurso novo, upload ou chamada paga nesta análise.
 020/021 permanecem inalteradas; não confundir recomendação com observação na VM.
 
@@ -455,7 +455,7 @@ Resource Manager v1 retornaram boolean sem campo explícito, com limitação do
 verificador/formato preservada. Nenhuma proteção restritiva presumida, grant
 ou troca de identidade. IAM do projeto/manifests CLI sem alteração; zero VM,
 upload, chamada paga ou instalação. Recibos e próximo pedido delimitado de
-habilitação constam na [proposta corrente](worker-isolation-target-options-2026-10-12.md#8-pré-flight-autorizado-bloqueado-pela-api--2026-10-12).
+habilitação constam na [proposta corrente](../worker-isolation/worker-isolation-target-options-2026-10-12.md#8-pré-flight-autorizado-bloqueado-pela-api--2026-10-12).
 
 Após confirmação específica, um pedido de habilitação de Compute foi enviado
 em 12/10 às 18:27 de Brasília. Timeout local não foi repetido; operação original
@@ -465,7 +465,7 @@ removido/público. Roles OCR e conta padrão inalterados; Editor desta última e
 preexistente, não grant novo do executor. Zero VMs/discos globais. Rede default
 observada com regras permissivas e PGA desligado em São Paulo, sem baseline
 anterior que prove criação nesta operação; nenhuma regra/rede alterada.
-Recibos e limites na [continuação](worker-isolation-target-options-2026-10-12.md#9-compute-habilitado-e-efeitos-conferidos--2026-10-12).
+Recibos e limites na [continuação](../worker-isolation/worker-isolation-target-options-2026-10-12.md#9-compute-habilitado-e-efeitos-conferidos--2026-10-12).
 Próximo passo ainda é quota/zona/SO e receita privada/cotação, não provisionamento.
 020/021 e os guards permanecem inalterados; sem mídia/provider/compute iniciado.
 
@@ -475,7 +475,7 @@ com folga para a candidata, três zonas `UP`, catálogo `e2-highmem-2` com
 drift; nenhuma instalação/download, criação ou execução paga. Catálogo não é
 reserva de capacidade nem prova de controles/patches do host.
 
-[Receita candidata e cotação regional](worker-isolation-vm-recipe-2026-10-12.md)
+[Receita candidata e cotação regional](../worker-isolation/worker-isolation-vm-recipe-2026-10-12.md)
 registram VPC/subnet privadas próprias, PGA, SA somente reader do registry,
 container sem rede e saída serial pela API sem SSH/IAP. Dez minutos hipotéticos
 de VM+disco padrão 10 GiB ≈ US$ 0,02405, sem teto/autorizações ou custo total
@@ -483,19 +483,19 @@ presumido. Launcher/coletor local, segurança e alvos exatos ainda pendentes;
 não criar recursos ou executar para resolver essas pendências. 020/021 e todos
 os defaults permanecem inalterados, sem tocar performance/site/OCR.
 
-Após «Vamos indo», [preparação local do launcher/core de coleta](worker-isolation-vm-preparation-2026-10-12.md)
+Após «Vamos indo», [preparação local do launcher/core de coleta](../worker-isolation/worker-isolation-vm-preparation-2026-10-12.md)
 gerou pacote exclusivo com hashes e testes sintéticos. Nenhum cloud-config
 publicado, serviço iniciado, credencial usada, scan novo ou pacote instalado.
 Adapter Google e prova Linux/device/boot/segurança do pin continuam abertos;
 isto não é operação na VM ou nova autorização financeira. 020/021 inalteradas.
 
-Posteriormente, [adapter de consulta preparado e COS identificado](worker-isolation-vm-reader-2026-10-12.md):
+Posteriormente, [adapter de consulta preparado e COS identificado](../worker-isolation/worker-isolation-vm-reader-2026-10-12.md):
 31 testes leves offline; somente metadata pública de pacotes lida via HTTPS,
 sem credencial, software/instalação, recurso novo ou chamada a provider. Revisão
 CVE/backports/JRE e prova Linux/host continuam próprias. Nenhuma autorização
 de VM/publicação/grant/execução ou promoção da 020 foi inferida desta preparação.
 
-Em 13/10, a [revisão parcial de segurança da VM](worker-isolation-vm-security-2026-10-13.md)
+Em 13/10, a [revisão parcial de segurança da VM](../worker-isolation/worker-isolation-vm-security-2026-10-13.md)
 encontrou nos fontes Docker pinados a lógica associada ao risco DNS/TLS do pull
 (CVE-2026-92543), sem correção comprovada. Criação/execução continuam bloqueadas;
 container sem rede/digest fixo não protegem a credencial usada pelo daemon do
@@ -505,7 +505,7 @@ prova Linux continuam pendentes. 27 testes locais passaram, sem promover a 020
 ou abrir a 021; próxima parcela busca pin corrigido ou desenho de mitigação,
 não publicação/provisionamento. Performance e gates históricos preservados.
 
-Em continuação, [COS 133 e mitigação privada investigados](worker-isolation-private-pull-2026-10-13.md):
+Em continuação, [COS 133 e mitigação privada investigados](../worker-isolation/worker-isolation-private-pull-2026-10-13.md):
 o fonte correto da segunda LTS também mantém a lógica de registry problemática,
 sem trocar a candidata. Preparado/testado um rascunho puro de DNS privado e
 egress ao VIP, não implantação ou prova de host. 34 testes locais aprovados,
@@ -513,21 +513,21 @@ sem credenciais/instalação/recursos/providers. API/zona DNS seriam custo novo
 que exige confirmação específica futura; guard Linux e demais gates ainda
 pendentes. Nenhuma criação, alteração do launcher anterior ou promoção da 020/021.
 
-Em seguida, [guard Java e integração pré-pull preparados localmente](worker-isolation-prepull-guard-2026-10-13.md):
+Em seguida, [guard Java e integração pré-pull preparados localmente](../worker-isolation/worker-isolation-prepull-guard-2026-10-13.md):
 hashes/prazo precedem o pull, sem alterar o pacote anterior. Fixtures DNS/TLS e
 falhas nativas passaram na imagem Linux existente com rede bloqueada; nenhuma
 credencial, DNS/TLS real, instalação ou VM. JRE dedicado ainda aguarda autorização
 de preparo; não presumir runtime presente no COS, prova operacional ou correção
 do Docker. Cloud DNS, criação/custo e instalação no host continuam próprios.
 
-Após continuação autorizada para o preparo local, [JRE dedicado copiado e testado](worker-isolation-prepull-runtime-2026-10-13.md):
+Após continuação autorizada para o preparo local, [JRE dedicado copiado e testado](../worker-isolation/worker-isolation-prepull-runtime-2026-10-13.md):
 aproximadamente 381 MiB adicionais, origem/topologia e bindings reais conferidos,
 sem rede de serviço, pacote novo, instalação ou credencial. Teste ocultou o JRE
 base e executou a cópia; não prova COS/segurança do runtime. Bootstrap privado
 anterior ao pull ainda requer desenho/validação e ações próprias; nenhuma
 publicação, reaproveitamento de OCR ou promoção da 020/021.
 
-Na continuação, [entrega pré-pull desenhada e filesystem sintético verificado](worker-isolation-prepull-delivery-2026-10-13.md):
+Na continuação, [entrega pré-pull desenhada e filesystem sintético verificado](../worker-isolation/worker-isolation-prepull-delivery-2026-10-13.md):
 disco auxiliar read-only é candidato de entrega, não recurso provisionado.
 53 testes Node aprovados; fixture ext4 local de 8 MiB criada/verificada com
 utilitários existentes, sem instalação ou privilégio. Nenhuma credencial,
@@ -542,7 +542,7 @@ recuperável do disco preservado. Não houve upload, instalação, credencial ou
 recurso cloud. Checker pré-Java, bindings, importação e prova COS continuam
 necessários; pacote local não aprova operação ou corrige o risco do pull.
 
-Em seguida, [montagem e inventário pré-Java integrados localmente](worker-isolation-prepull-mount-2026-10-13.md):
+Em seguida, [montagem e inventário pré-Java integrados localmente](../worker-isolation/worker-isolation-prepull-mount-2026-10-13.md):
 novo launcher exige source/tipo/opções read-only, compara inventário de 335
 entradas e âncoras independentes antes de Java/pull. 61 testes Node e nove checks
 nativos com fixtures sintéticas aprovados. Nenhum dispositivo montado, serviço
@@ -550,7 +550,7 @@ systemd iniciado, pacote instalado, credencial/upload/recurso cloud utilizado.
 Importação, boot COS e gates de segurança/custo continuam abertos; 020/021
 inalteradas, pacotes anteriores e performance preservados.
 
-Em 14/10, [pré-flight documental de importação e IAM](worker-isolation-import-preflight-2026-10-14.md)
+Em 14/10, [pré-flight documental de importação e IAM](../worker-isolation/worker-isolation-import-preflight-2026-10-14.md)
 confirmou mínimo de 10 GiB para o disco auxiliar pd-standard, além do boot.
 RAW direto continua candidato sem Cloud Build; aceitação do archive e principal
 de leitura privado não foram comprovados. Divergência de preços na UI pública
@@ -559,7 +559,7 @@ autenticada ao projeto, upload, grant ou recurso criado; próximo passo é uma
 consulta IAM/APIs somente leitura, sujeita à autorização de credencial. Segurança,
 custos e boot reais permanecem próprios; 020/021 e defaults inalterados.
 
-Após confirmação, [IAM/APIs/service agents consultados somente leitura](worker-isolation-import-iam-2026-10-14.md):
+Após confirmação, [IAM/APIs/service agents consultados somente leitura](../worker-isolation/worker-isolation-import-iam-2026-10-14.md):
 projeto ativo, APIs necessárias habilitadas, Compute Service Agent já vinculado
 e IAM/SDK sem drift. 23 permissões retornadas em teste de projeto; seis de
 Storage seguem pendentes por recurso, sem inferir ausência/grant necessário.
@@ -567,7 +567,7 @@ Storage seguem pendentes por recurso, sem inferir ausência/grant necessário.
 API enable ou provider. Importação/custos/segurança/boot continuam próprios;
 020 aberta e 021 bloqueada, performance e defaults preservados.
 
-Na mesma data, [cotação regional e receita de entrega privada](worker-isolation-import-recipe-2026-10-14.md)
+Na mesma data, [cotação regional e receita de entrega privada](../worker-isolation/worker-isolation-import-recipe-2026-10-14.md)
 resolveram a divergência visual por dados públicos de São Paulo: disco zonal,
 custom image e Storage. 72 testes Node locais aprovados; archive e fotografia
 técnica inalterados. Staging privado é a próxima parcela proposta, sujeita à
@@ -575,7 +575,7 @@ autorização de credencial/upload/custo e retirada. Nenhum recurso, instalaçã
 grant ou provider. Aceitação do RAW, importação, montagem COS e segurança do pull
 seguem abertas; não há autorização de VM ou promoção da 020/021.
 
-Após «Sim», [staging privado do runtime comprovado](worker-isolation-private-staging-2026-10-14.md):
+Após «Sim», [staging privado do runtime comprovado](../worker-isolation/worker-isolation-private-staging-2026-10-14.md):
 um bucket/objeto em São Paulo, SHA-256 local/remoto igual, acesso privado e
 retirada ativa confirmados. O erro local no corpo 204 não causou novo delete
 do objeto. Consulta do bucket soft-deleted recusada (403), sem alteração IAM;
@@ -583,7 +583,7 @@ retenção temporária não significa eliminação física. 83 testes locais apr
 runtime/fotografia técnica/performance preservados. Nenhum Compute/DNS/provider;
 importação, boot/segurança e autorização das próximas parcelas continuam abertas.
 
-Na continuação da meta, [preparação local da observação de importação](worker-isolation-image-import-preparation-2026-10-14.md)
+Na continuação da meta, [preparação local da observação de importação](../worker-isolation/worker-isolation-image-import-preparation-2026-10-14.md)
 entregou planner/observer JavaScript com IDs/UUIDs, prazo, cancelamento, confirmação
 perdida, origem estável e retirada não executável. 99 testes locais aprovados;
 fixture distingue operação simulada de archive local real. Seleção da geração
@@ -591,14 +591,14 @@ no RAW URL não está documentada claramente e permanece candidata, sem fallback
 Nenhuma credencial ou mutação cloud; execução real exige aprovação própria.
 Segurança/admissão/qualidade/020/021 permanecem abertas, sem promover defaults.
 
-Enquanto a autorização da imagem real permanece pendente, [transporte e journal de importação preparados offline](worker-isolation-import-execution-offline-2026-10-14.md):
+Enquanto a autorização da imagem real permanece pendente, [transporte e journal de importação preparados offline](../worker-isolation/worker-isolation-import-execution-offline-2026-10-14.md):
 uma tentativa, claims persistentes, handles/UUIDs e recuperação sem novo create;
 retirada exige identidade/terminalidade/ausência e preserva origem na incerteza.
 131 testes locais aprovados, com filesystem real e HTTP/credencial sintéticos.
 Sem recursos/credenciais Google, instalação ou alteração de runtime/020/021.
 Aceitação RAW/geração, operador real e todos os gates de segurança continuam abertos.
 
-Após «Autorizo», a [tentativa real de importação direta](worker-isolation-image-import-real-2026-10-14.md)
+Após «Autorizo», a [tentativa real de importação direta](../worker-isolation/worker-isolation-image-import-real-2026-10-14.md)
 criou nova origem privada, comprovou upload/readback e observou uma operação de
 insert até DONE sem erro da API. A admissão estrita dos metadados não foi
 confirmada; a captura local não preservou quais predicados divergiram. Não é
@@ -609,7 +609,7 @@ separada de eliminação física. Diagnóstico offline adicional preparado, sem
 recriação/fallback, grant, instalação, disco, VM ou provider. 151 testes locais
 aprovados; 020 aberta, 021 bloqueada, defaults/runtime/performance preservados.
 
-Com limite autorizado de US$ 5, [duas provas diagnósticas de origem](worker-isolation-source-echo-budget-2026-10-14.md)
+Com limite autorizado de US$ 5, [duas provas diagnósticas de origem](../worker-isolation/worker-isolation-source-echo-budget-2026-10-14.md)
 confirmaram imagem READY, 1 GiB, região e arquitetura corretas. O único
 predicado divergente foi o eco da origem: no GET detalhado, `rawDisk.source`
 estava presente como string vazia. Isso não comprova seleção da geração ou
@@ -622,7 +622,7 @@ foram retiradas e confirmadas ausentes, com retenção temporária separada.
 VM/disco, instalação, IAM ou provider. Próximo gate é a prova independente do
 disco/montagem e segurança do host; 020/021/defaults permanecem inalterados.
 
-Na continuação, [prova mínima de montagem/conteúdo preparada offline](worker-isolation-mount-only-preparation-2026-10-14.md):
+Na continuação, [prova mínima de montagem/conteúdo preparada offline](../worker-isolation/worker-isolation-mount-only-preparation-2026-10-14.md):
 sem executar Java/Docker/provider, preserva o path absoluto dos manifests e
 separa a conferência do dispositivo RO, montagem noexec e inventário/hashes.
 13 testes Node novos e 11 checks nativos com fixtures aprovados; nenhuma
@@ -632,7 +632,7 @@ instalação não iniciada. Sintaxe/runtime COS, binding por IDs, segurança,
 cotação completa e criação/retirada continuam pendentes, sem ampliar aprovação
 do worker ou promover 020/021.
 
-Em 15/10, após aprovação da instalação local, a [verificação systemd em imagem descartável](worker-isolation-systemd-verification-2026-10-15.md)
+Em 15/10, após aprovação da instalação local, a [verificação systemd em imagem descartável](../worker-isolation/worker-isolation-systemd-verification-2026-10-15.md)
 conferiu os 19 pacotes oficiais pinados e verificou cinco unidades revisadas
 sem avisos, com controles negativos. Corrigiu path do blockdev e retirou a
 interpretação indevida do check antigo que aceitava comando ausente. Imagem
@@ -641,7 +641,7 @@ removido. Nenhum Google Cloud, credencial, provider ou reserva nova; segurança
 do host, utilitários/runtime COS, binding por IDs, cotação e montagem real
 continuam pendentes. 020 aberta, 021 bloqueada e defaults preservados.
 
-Ainda em 15/10, [binding e pré-flight da montagem](worker-isolation-mount-binding-2026-10-15.md)
+Ainda em 15/10, [binding e pré-flight da montagem](../worker-isolation/worker-isolation-mount-binding-2026-10-15.md)
 acrescentam contrato de identidade/serial bounded e plano parcial de retirada,
 testados com transporte falso. Consultas reais GET confirmam o mesmo projeto,
 metadados comuns vazios, COS pinado READY e definição E2 candidata, sem recursos
@@ -659,7 +659,7 @@ folgas explícitas, mas não é cotação completa, fatura ou teto do provedor.
 Nenhum slot financeiro novo reservado; o executor continua não admitido por
 segurança e lifecycle incompletos, não por falta de autorização repetida.
 
-A [continuação de coleta HTTP e recuperação](worker-isolation-mount-transport-2026-10-15.md)
+A [continuação de coleta HTTP e recuperação](../worker-isolation/worker-isolation-mount-transport-2026-10-15.md)
 implementa a agregação de configuração/serial e retirada Compute por alvos
 pinados, com journal durável, confirmação de ausência e proteção contra segundo
 DELETE após resposta perdida. Testes usam somente API falsa e IDs sintéticos;
@@ -667,7 +667,7 @@ nenhuma credencial, instalação, criação ou reserva financeira nova. Conexão
 staging/gerações, criação e recuperação completas, revisão COS e cotação ainda
 impedem admitir a VM. A 020 permanece aberta, 021 bloqueada e defaults intactos.
 
-Na [retirada integrada com staging](worker-isolation-mount-lifecycle-2026-10-15.md),
+Na [retirada integrada com staging](../worker-isolation/worker-isolation-mount-lifecycle-2026-10-15.md),
 o caminho de escopo completo conhecido passou a exigir criações Compute
 terminais antes de liberar a fonte. Objeto/bucket têm ownership, versões,
 tentativas duráveis e ausência ativa conferidos; testes integrados usam somente
@@ -676,7 +676,7 @@ não comprova expurgo físico. Sem nova reserva, instalação ou credencial;
 criação/recuperação completas, revisão COS e cotação seguem pendentes, sem
 promoção da 020 ou liberação da 021.
 
-A [continuação de registro progressivo](worker-isolation-progressive-recovery-2026-10-15.md)
+A [continuação de registro progressivo](../worker-isolation/worker-isolation-progressive-recovery-2026-10-15.md)
 distingue recurso não tentado de resposta perdida, fecha novos inserts antes da
 recuperação e testa retirada parcial sem IDs fictícios. GETs reais confirmaram
 filtro por UUID e envelope canônico sem `items` nas três listas de operações;
@@ -685,116 +685,116 @@ Naquela parcela, mutadores, integração parcial com staging e crash do mutex
 continuavam pendentes, além de requests aprovados, revisão COS e orçamento.
 Sem nova reserva/instalação ou chamada OCR/tradução; estados/defaults inalterados.
 
-A [recuperação após interrupção](worker-isolation-crash-recovery-2026-10-15.md)
+A [recuperação após interrupção](../worker-isolation/worker-isolation-crash-recovery-2026-10-15.md)
 entrega o journal com lock do sistema operacional e publicação atômica, além da
 ligação de staging ao plano parcial sem IDs fictícios. Testes locais com SIGKILL
 e API falsa; nenhuma consulta/mutação cloud. Requests aprovados, mutadores Compute
 HTTP, revisão COS e cotação completa continuam bloqueando uma nova VM real.
 
-A [revisão dos requests e da barreira de rotas](worker-isolation-request-review-2026-10-15.md)
+A [revisão dos requests e da barreira de rotas](../worker-isolation/worker-isolation-request-review-2026-10-15.md)
 entrega composição semântica vinculada ao journal/staging e registra que criar a
 VPC gera uma default route incompatível com o snapshot exigido. Plano de retirada
 restrito à rede própria, testado com IDs sintéticos; ainda sem mutação ou journal
 de execução dessa rota. A VM não foi liberada contando apenas com o firewall.
 
-A [continuação do journal da rota](worker-isolation-route-journal-2026-10-15.md)
+A [continuação do journal da rota](../worker-isolation/worker-isolation-route-journal-2026-10-15.md)
 implementa envio único, transporte HTTP restrito e confirmação terminal/ausência
 com API falsa e journal durável. Não executa DELETE real nem libera VM: falta
 ligação ao driver completo, mutadores de criação, revisão COS e admissão de custo.
 
-O [driver de criação com barreira](worker-isolation-guarded-driver-2026-10-15.md)
+O [driver de criação com barreira](../worker-isolation/worker-isolation-guarded-driver-2026-10-15.md)
 integra a confirmação da rota ao claim e ao encaminhamento da VM. Concorrência,
 reaparecimento da rota e expiração durante as consultas são testados com journals
 duráveis e transporte falso. Sem liberação cloud: faltam ligação do ciclo completo
 à admissão real, revisão COS e cotação/reserva completas.
 
-O [transporte HTTP de criação](worker-isolation-create-http-2026-10-15.md)
+O [transporte HTTP de criação](../worker-isolation/worker-isolation-create-http-2026-10-15.md)
 agora compõe o driver internamente e testa os oito POSTs canônicos contra API
 falsa, com journal durável, verificações frescas e ausência de replay após falha.
 Não executa nenhuma criação no Google nem entrega admissão operacional;
 os gates de segurança e custo permanecem fechados.
 
-A [retirada integrada de rota, Compute e origem](worker-isolation-teardown-2026-10-15.md)
+A [retirada integrada de rota, Compute e origem](../worker-isolation/worker-isolation-teardown-2026-10-15.md)
 fecha a composição de teardown com API falsa e journals duráveis. Resolve
 operações DELETE antes de aceitar 404, sem replay, e preserva a origem quando
 houver incerteza. Não remove recursos Google; integração do ciclo completo com
 admissão real, revisão COS, cotação/reserva e prova operacional seguem pendentes.
 
-O [ensaio do ciclo mínimo](worker-isolation-cycle-2026-10-16.md) compõe os
+O [ensaio do ciclo mínimo](../worker-isolation/worker-isolation-cycle-2026-10-16.md) compõe os
 adapters existentes com captura validada pelos IDs do journal e cleanup
 independente do cancelamento principal. HTTP, metadados e serial são sintéticos;
 não executa montagem/renderer nem resolve os adapters de observação e admissão
 reais. A origem é preservada se o contexto/encerramento continuar incerto.
 
-A [ligação HTTP posterior](worker-isolation-http-readers-2026-10-17.md) reaproveita
+A [ligação HTTP posterior](../worker-isolation/worker-isolation-http-readers-2026-10-17.md) reaproveita
 o reader completo e acrescenta contexto inicial da rota e guards de escopo na
 fronteira de envio. Detecta routers cross-region e policy efetiva antes de criar
 a VM; todo o ensaio permanece com servidor falso e sem aprovação operacional.
 
-O [pré-flight de leitura em 17/10](worker-isolation-read-preflight-2026-10-17.md)
+O [pré-flight de leitura em 17/10](../worker-isolation/worker-isolation-read-preflight-2026-10-17.md)
 renovou identidade/projeto/COS/máquina e observou Compute/Storage habilitados,
 com as treze permissões de observação retornadas no teste IAM do projeto.
 Não criou recursos nem ampliou papéis. Essa consulta real não é execução dos
 endpoints de firewall nos recursos futuros, IAM completo, aprovação COS/custo
 ou prova do worker. A admissão operacional continua fechada.
 
-O [suplemento posterior](worker-isolation-cost-supplement-2026-10-17.md) renovou
+O [suplemento posterior](../worker-isolation/worker-isolation-cost-supplement-2026-10-17.md) renovou
 preços regionais e conferiu a distinção entre importação manual, armazenamento,
 operações e tráfego. O envelope segue provisório, sem reserva nova; a revisão
 estática da prova mínima não corrige os findings ou admite o worker completo.
 
-A [reconciliação de schema](worker-isolation-schema-reconciliation-2026-10-17.md)
+A [reconciliação de schema](../worker-isolation/worker-isolation-schema-reconciliation-2026-10-17.md)
 preserva o pré-flight inconclusivo e registra o formato real dos agregados vazios
 e da coleção de políticas omitida. A correção é local/versionada e não comprova
 boot; permissões da imagem e acesso Storage ainda exigem resolução no escopo
 correto, sem ampliar IAM automaticamente.
 
-A [ligação do staging ao ciclo](worker-isolation-staging-handoff-plan-2026-10-17.md)
+A [ligação do staging ao ciclo](../worker-isolation/worker-isolation-staging-handoff-plan-2026-10-17.md)
 preserva o plano e a primeira parcela do journal. O
-[produtor e handoff](worker-isolation-staging-transport-2026-10-17.md) posteriores
+[produtor e handoff](../worker-isolation/worker-isolation-staging-transport-2026-10-17.md) posteriores
 estão testados localmente em conjunto, com archive físico e HTTP falso. A ligação
 codificada não aprova criação real, seletor de geração de importação ou boot COS.
 Não executar o ciclo usando metadados de fixtures como observações de Storage.
 
-A [recuperação parcial](worker-isolation-staging-recovery-2026-10-17.md)
+A [recuperação parcial](../worker-isolation/worker-isolation-staging-recovery-2026-10-17.md)
 acrescenta tooling local para falha anterior ao handoff, com dono realmente
 encerrado e journal separado. Foi testada com efeitos falsos; não é
 cleanup real, solução automática de crash ou aprovação operacional do COS.
 
-A [revisão de admissão](worker-isolation-admission-review-2026-10-17.md)
+A [revisão de admissão](../worker-isolation/worker-isolation-admission-review-2026-10-17.md)
 corrige o resumo sobre o prazo: requests/binding já exigem DELETE após 600 s,
 mas isso não expira data disk/imagem/staging. A consulta real da política COS
 retornou 403, sem grant ou boot; acesso efetivo e admissão continuam pendentes.
 
-A [reprodução de criação recusada](worker-isolation-rejected-create-2026-10-17.md)
+A [reprodução de criação recusada](../worker-isolation/worker-isolation-rejected-create-2026-10-17.md)
 preserva os dois testes vermelhos como baseline histórico do ciclo v2. A
-[integração v3](worker-isolation-rejection-integration-2026-10-17.md) exercita
+[integração v3](../worker-isolation/worker-isolation-rejection-integration-2026-10-17.md) exercita
 os mesmos aceites contra a retirada nova, com recusa separada de operação e
 handoff compatível. Não é aprovação de boot ou recuperação automática de casos
 ambíguos.
 
-A [limpeza de fonte verificada](worker-isolation-verified-source-cleanup-2026-10-17.md)
+A [limpeza de fonte verificada](../worker-isolation/worker-isolation-verified-source-cleanup-2026-10-17.md)
 separa o caso anterior ao handoff de upload parcial e ciclo entregue. O handler
 de cleanup-only mantém admissão própria, claim exclusivo e proibição de criação
-Compute. O [supervisor local](worker-isolation-supervisor-2026-10-17.md) conecta
+Compute. O [supervisor local](../worker-isolation/worker-isolation-supervisor-2026-10-17.md) conecta
 os checkpoints e exige posse confirmada. A configuração/admissão do entrypoint
 real e a validação operacional continuam pendentes.
 
-A [preparação do operador](worker-isolation-operator-preparation-2026-10-17.md)
+A [preparação do operador](../worker-isolation/worker-isolation-operator-preparation-2026-10-17.md)
 confere os arquivos reais e permite regenerar o resumo sem SDK/rede. Dois GETs
 reais observaram billing ativo, conta aberta e BRL; não é cotação ou autorização
 de criação. O envelope USD não foi convertido arbitrariamente. Composição nativa,
 revisão COS, custo aplicável e validação do worker completo permanecem abertos.
 
-A [tabela da conta e cenário BRL](worker-isolation-account-pricing-2026-10-17.md)
+A [tabela da conta e cenário BRL](../worker-isolation/worker-isolation-account-pricing-2026-10-17.md)
 agora têm observação real dos SKUs/taxa e reprodução offline. O resultado é
 cenário, não fatura/teto garantido: a divergência entre fontes tributárias fica
 explícita e não foi resolvida por alterar booleans de aprovação.
 
 ### Composição local do operador — 2026-10-18
 
-Os [journals nativos](worker-isolation-native-journals-2026-10-18.md) e a
-[composição concreta](worker-isolation-composition-2026-10-18.md) agora ligam os
+Os [journals nativos](../worker-isolation/worker-isolation-native-journals-2026-10-18.md) e a
+[composição concreta](../worker-isolation/worker-isolation-composition-2026-10-18.md) agora ligam os
 registros duráveis ao supervisor e às fases de criação/retirada em testes locais.
 O fluxo completo usa HTTP/credenciais/IDs/serial sintéticos; não houve boot real,
 nova reserva ou chamada autenticada. O archive físico continua sendo de runtime,
@@ -805,35 +805,35 @@ financeiras ainda impedem o CLI real. Esta parcela resolve a ligação dos journ
 não o aceite operacional do worker completo. A 020 e seus critérios mantêm o
 estado aberto anterior, sem alterar a investigação híbrida ou a auditoria mobile.
 
-A [camada nativa de identidade e HTTP](worker-isolation-native-io-2026-10-18.md)
+A [camada nativa de identidade e HTTP](../worker-isolation/worker-isolation-native-io-2026-10-18.md)
 foi ligada à composição com autorização de I/O separada. Testes usam SDK/HTTP
 sintéticos, não sua conta real; não há nova reserva, alteração de SDK ou recurso.
 O ticket e a ligação ao CLI continuam bloqueados pela admissão operacional.
 
-A [revisão de admissão de 18/10](worker-isolation-admission-status-2026-10-18.md)
+A [revisão de admissão de 18/10](../worker-isolation/worker-isolation-admission-status-2026-10-18.md)
 reconfirma integridade e regressões focais sem criação cloud. A receita mínima
 não faz pull nem executa o worker; isso não equivale a segurança observada no
 host. Custo/tributos/retirada ainda são hipóteses, não teto financeiro garantido.
 Nenhuma reserva ou autoridade operacional nova foi inferida dessas verificações.
 
 A autorização humana posterior aumentou o teto para
-[USD 100 no total](worker-isolation-budget100-2026-10-18.md). Ledger novo sem
+[USD 100 no total](../worker-isolation/worker-isolation-budget100-2026-10-18.md). Ledger novo sem
 reservas e quatro leituras autenticadas nativas confirmaram projeto/metadados,
 imagem pinada e máquina. Não houve criação cloud, e essa leitura não fecha
 segurança/custo da receita mínima nem a validação do worker completo.
 
-A [primeira execução nativa](worker-isolation-native-attempt-2026-10-18.md)
+A [primeira execução nativa](../worker-isolation/worker-isolation-native-attempt-2026-10-18.md)
 teve staging verificado e VPC criada, mas parou antes da VM. A limpeza inicial
 ficou inconclusiva; recuperação exclusivamente GET/DELETE confirmou ausência
 ativa Compute/rota/staging, sem nova reserva ou criação. Dois regressivos
 reproduzem a suposição incorreta de DELETE retornar imediatamente DONE; o fix
 e nova validação permanecem necessários, sem promover a 020 ou abrir a 021.
 
-A [revisão posterior do acompanhamento Compute](worker-isolation-operation-polling-2026-10-18.md)
+A [revisão posterior do acompanhamento Compute](../worker-isolation/worker-isolation-operation-polling-2026-10-18.md)
 implementa espera GET-only limitada e preserva a reprodução histórica. A correção
 é do executor privado da prova restrita, não aprovação operacional do renderer.
 
-A [segunda rodada real e recuperação](worker-isolation-second-native-attempt-2026-10-18.md)
+A [segunda rodada real e recuperação](../worker-isolation/worker-isolation-second-native-attempt-2026-10-18.md)
 confirmou avanço após a rota até imagem/disco, sem criar VM. Ausência ativa foi
 confirmada em retirada explícita; intenção não enviada e lock foram preservados.
 Normalização de campo vazio omitido e tratamento normativo dessa intenção
@@ -843,113 +843,113 @@ A mesma evidência registra a normalização posterior integrada ao ciclo offlin
 sem credenciais ou cloud. Ela não libera nova rodada: o desfecho normativo da
 intenção não enviada e os gates integrais da revisão continuam pendentes.
 
-A [revisão posterior do journal](worker-isolation-unsent-journal-2026-10-18.md)
+A [revisão posterior do journal](../worker-isolation/worker-isolation-unsent-journal-2026-10-18.md)
 integra grant CAS antes do POST e distingue NOT_SENT de confirmação ambígua.
 A consolidação offline passou, preservando os contextos e locks históricos;
 o próximo gate é o operador de execução com admissão e preços válidos durante
 toda a rodada. Nenhum recurso cloud ou reserva foi criado nessa revisão.
 
-O [preparo local v4 posterior](worker-isolation-v4-preparation-2026-10-18.md)
+O [preparo local v4 posterior](../worker-isolation/worker-isolation-v4-preparation-2026-10-18.md)
 revalida esses recibos e os locks históricos, com preços e billing renovados
 por consultas somente leitura. A validade financeira deve cobrir também o
 cleanup. Esse preview local não admite execução; ausência atual do escopo
 antigo e ligação do operador ao runtime continuam no próximo gate.
 
-A [revisão posterior do executor v4](worker-isolation-v4-executor-2026-10-18.md)
+A [revisão posterior do executor v4](../worker-isolation/worker-isolation-v4-executor-2026-10-18.md)
 liga o runtime, o preparo financeiro e a leitura atual do escopo anterior.
 O gate integral offline passou após uma falha de timing preservada, de causa
 ainda não comprovada. A admissão técnica é limitada à prova de montagem;
 não admite worker, provider, renderer ou promoção da 020/021.
 
-A [terceira rodada real](worker-isolation-third-native-attempt-2026-10-19.md)
+A [terceira rodada real](../worker-isolation/worker-isolation-third-native-attempt-2026-10-19.md)
 ultrapassou o disco de dados e criou o disco de boot, sem enviar a VM. O v4
 retirou os recursos automaticamente sem fabricar operação para a intenção
 não enviada. A montagem não foi comprovada; nova tentativa depende da
 investigação offline do gate pré-VM, preservando o resultado negativo.
 
-O [diagnóstico posterior](worker-isolation-prevm-preflight-2026-10-19.md)
+O [diagnóstico posterior](../worker-isolation/worker-isolation-prevm-preflight-2026-10-19.md)
 reproduz o disparo do prazo de IO com leituras sequenciais e descreve o
 candidato de preparação separada/GETs limitados em paralelo. Ele não executa
 cloud e não transforma o resultado negativo anterior em montagem aprovada.
 
-A [quarta rodada e retirada explícita](worker-isolation-fourth-native-attempt-2026-10-19.md)
+A [quarta rodada e retirada explícita](../worker-isolation/worker-isolation-fourth-native-attempt-2026-10-19.md)
 chegou ao POST da VM, que recebeu HTTP 400 sem repetição. A recuperação somente
 GET/DELETE confirmou ausência ativa e preservou o journal Compute original.
 O diagnóstico posterior confirmou incompatibilidade E2 padrão/`TERMINATE`.
 O avanço pré-VM não constitui prova de montagem; validar um perfil compatível
 precede qualquer nova admissão. A 020/021 mantém o estado conservador.
 
-O [contrato Spot](worker-isolation-spot-contract-2026-10-19.md) foi validado
+O [contrato Spot](../worker-isolation/worker-isolation-spot-contract-2026-10-19.md) foi validado
 offline com HTTP sintético e CAS local. Ele não contém executor nativo e
 preserva a rejeição da combinação E2 padrão/`TERMINATE`, sem fallback para
 `MIGRATE`. Nova prova exige fechar as lacunas de recuperação e renovar a
 admissão específica do perfil; não usar preços antigos como cotação Spot.
 
-A [revisão HTTP 400](worker-isolation-http400-protocol-2026-10-19.md) fecha
+A [revisão HTTP 400](../worker-isolation/worker-isolation-http400-protocol-2026-10-19.md) fecha
 a lacuna do protocolo local com status real e duas provas de ausência antes
 da retirada. O grafo foi testado offline; sua ligação ao executor/admissão
 nativos ainda precisa de implementação e verificação próprias.
 
-A [preparação da admissão Spot](worker-isolation-spot-admission-preparation-2026-10-20.md)
+A [preparação da admissão Spot](../worker-isolation/worker-isolation-spot-admission-preparation-2026-10-20.md)
 acrescenta cotação verificável e leitura real de quotas, sem mutação cloud.
 Limite preemptible zero não foi convertido em aprovação de fallback;
 o regime precisa ser esclarecido antes da nova prova restrita.
 
-A [admissão e integração offline](worker-isolation-spot-admission-offline-2026-10-20.md)
+A [admissão e integração offline](../worker-isolation/worker-isolation-spot-admission-offline-2026-10-20.md)
 ligam a política concreta ao grafo CAS5 e ao wrapper de ports existentes.
 Essa parcela fecha a divergência de hash observada no ensaio integrado;
 não executa cloud, não admite quota zero e não aprova o worker completo.
 
-A [investigação N1](worker-isolation-n1-investigation-2026-10-20.md) registra
+A [investigação N1](../worker-isolation/worker-isolation-n1-investigation-2026-10-20.md) registra
 metadados reais e nova cotação do candidato `custom-1-1024`, sem modificar quota
 ou criar VM. O contrato/admissão próprios e a validação operacional permanecem
 abertos; não se trata de fallback automático ou aprovação de produção.
 
-O [contrato e a admissão N1 offline](worker-isolation-n1-contract-2026-10-20.md)
+O [contrato e a admissão N1 offline](../worker-isolation/worker-isolation-n1-contract-2026-10-20.md)
 foram entregues posteriormente, com quota STANDARD observada por GET e teste
 integral sob bloqueador de rede/CLI. Ainda não há VM ou operador operacional N1
-admitido. O [preflight real posterior](worker-isolation-n1-preflight-2026-10-20.md)
+admitido. O [preflight real posterior](../worker-isolation/worker-isolation-n1-preflight-2026-10-20.md)
 foi implementado e encontrou depreciação da imagem COS pinada. A consulta da
 substituta não altera os pins antigos nem aprova o worker completo.
-A [continuação COS73916](worker-isolation-cos-revision-2026-10-21.md) separa a
+A [continuação COS73916](../worker-isolation/worker-isolation-cos-revision-2026-10-21.md) separa a
 nova revisão local dos contratos e as cinco consultas reais do preflight da
 execução futura. Ainda não houve VM N1 ou aprovação operacional do worker.
-O [operador específico](worker-isolation-n1-operator-2026-10-21.md) foi integrado
+O [operador específico](../worker-isolation/worker-isolation-n1-operator-2026-10-21.md) foi integrado
 posteriormente e validado offline. Sua preparação ainda falha fechada por falta
 de entradas financeiras atuais; o caminho de execução não foi invocado.
 
-Esse é o snapshot da preparação offline. Na [primeira execução N1 posterior](worker-isolation-n1-first-execution-2026-10-21.md),
+Esse é o snapshot da preparação offline. Na [primeira execução N1 posterior](../worker-isolation/worker-isolation-n1-first-execution-2026-10-21.md),
 as entradas foram renovadas e houve admissão/reserva, mas a composição parou no
 handoff sem POST Compute ou prova de montagem. O staging privado foi retirado;
 a causa exata da recusa e os gates do worker completo continuam abertos.
 
-A [continuação de dispatch](worker-isolation-dispatch-freshness-2026-10-21.md)
+A [continuação de dispatch](../worker-isolation/worker-isolation-dispatch-freshness-2026-10-21.md)
 corrige um defeito de prazo reproduzido localmente, sem afirmar que ele foi a
 causa histórica da recusa. A composição final preserva as janelas de preparo
 e POST e os bloqueios de grant/cancelamento; não houve nova execução cloud.
 
-O [operador novo com dispatch corrigido](worker-isolation-fixed-operator-2026-10-22.md)
+O [operador novo com dispatch corrigido](../worker-isolation/worker-isolation-fixed-operator-2026-10-22.md)
 liga essa revisão ao coordenador local e acrescenta a reconferência do staging
 retirado da quinta rodada. Os locks originais permanecem preservados; a
 preparação financeira e a prova nativa continuam pendentes.
 
-A [reconferência financeira posterior](worker-isolation-financial-readiness-2026-10-22.md)
+A [reconferência financeira posterior](../worker-isolation/worker-isolation-financial-readiness-2026-10-22.md)
 validou os GETs dos pré-requisitos e identificou divergência de calendário na
 cotação. A leitura de uma SKU pela API oficial foi possível, mas não constitui
 cotação completa nem admissão nativa; não houve reserva ou mutação cloud.
 
-O [leitor completo de preços pela API](worker-isolation-api-pricing-2026-10-22.md)
+O [leitor completo de preços pela API](../worker-isolation/worker-isolation-api-pricing-2026-10-22.md)
 foi implementado e validado posteriormente, com contrato próprio e captura real.
 A adaptação da admissão/operador permanece aberta; cotação não equivale a
 execução ou aprovação do worker.
 
-A [integração do operador API](worker-isolation-api-operator-native-2026-10-22.md)
+A [integração do operador API](../worker-isolation/worker-isolation-api-operator-native-2026-10-22.md)
 foi validada posteriormente e houve uma prova restrita com nova reserva. A recusa
 ficou no gate de metadados, sem POST Compute; a recuperação confirmou ausência
 ativa do staging e preservou os journals. A contenção local de leituras do ledger
 precisa de correção/teste antes de outra criação.
 
-A [correção serial de reserva](worker-isolation-serial-reservation-2026-10-22.md)
+A [correção serial de reserva](../worker-isolation/worker-isolation-serial-reservation-2026-10-22.md)
 foi validada posteriormente com ledger temporário real e HTTP falso. O novo
 operador acrescenta a reconferência da sexta rodada retirada; a prova nativa e
 os gates do worker completo continuam separados desse resultado offline.
@@ -959,11 +959,11 @@ A mesma continuação registra a sétima prova: sete criações Compute anterior
 automática confirmou ausência ativa; a recusa será investigada offline antes
 de outra criação. Não houve montagem comprovada ou admissão do worker.
 
-A [preparação offline da barreira de rotas](worker-isolation-route-barrier-offline-2026-10-23.md)
+A [preparação offline da barreira de rotas](../worker-isolation/worker-isolation-route-barrier-offline-2026-10-23.md)
 reduz espera sequencial entre GETs independentes e mantém os predicates/timers.
 O candidato ainda exige operador novo e prova nativa; não habilita o worker.
 
-A [integração posterior do operador](worker-isolation-route-operator-native-2026-10-23.md)
+A [integração posterior do operador](../worker-isolation/worker-isolation-route-operator-native-2026-10-23.md)
 acrescenta a sétima retirada às ausências obrigatórias e liga o grafo selecionado
 a dados financeiros novos. O resultado da prova e os gates do worker completo
 continuam distintos da aprovação offline.
@@ -972,31 +972,31 @@ A tentativa com esse operador foi recusada no pré-flight por depreciação da
 imagem COS fixada, sem nova reserva ou recurso. A candidata indicada pelo
 publisher precisa de revisão/pins/testes próprios; nenhum gate foi relaxado.
 
-A [revisão offline COS7608](worker-isolation-cos7608-offline-2026-10-23.md)
+A [revisão offline COS7608](../worker-isolation/worker-isolation-cos7608-offline-2026-10-23.md)
 prepara posteriormente esses contratos e a seleção explícita do grafo. Não
 executa a imagem, cria reserva ou transforma metadados em aprovação operacional.
 
-A [integração do operador COS7608](worker-isolation-cos7608-operator-2026-10-23.md)
+A [integração do operador COS7608](../worker-isolation/worker-isolation-cos7608-operator-2026-10-23.md)
 foi seguida de uma prova restrita e recuperação explícita. A ausência ativa dos
 recursos foi confirmada; o envio da VM e a montagem não foram comprovados.
 O próximo diagnóstico é offline, sem repetir criação ou reutilizar os contextos.
 
-O [diagnóstico subsequente do envio da VM](worker-isolation-vm-send-diagnosis-2026-10-23.md)
+O [diagnóstico subsequente do envio da VM](../worker-isolation/worker-isolation-vm-send-diagnosis-2026-10-23.md)
 identificou por hash o GET de espelhamentos e reproduziu a camada adicional
 anterior ao transporte. O candidato sobrepõe somente leituras independentes;
 passou os cenários locais, mas não foi selecionado no operador nem executado
 na cloud. A causa exclusiva da rodada e a validação operacional seguem abertas.
 
-A [seleção em grafo separado](worker-isolation-vm-scope-graph-2026-10-23.md)
+A [seleção em grafo separado](../worker-isolation/worker-isolation-vm-scope-graph-2026-10-23.md)
 passou posteriormente pelo coordenador integral com transportes sintéticos,
 incluindo cancelamento após grant e confirmação da criação perdida. Preserva
 recibos e operador anteriores; não constitui nova prova cloud ou admissão de produção.
 
-O [trace passivo da fronteira VM](worker-isolation-vm-boundary-trace-2026-10-23.md)
+O [trace passivo da fronteira VM](../worker-isolation/worker-isolation-vm-boundary-trace-2026-10-23.md)
 foi acrescentado e verificado localmente no coordenador e no I/O nativo. Ele
 distingue pontos de falha sem alterar grants, retries ou cleanup.
 
-A [integração posterior do operador com trace](worker-isolation-vm-trace-operator-2026-10-23.md)
+A [integração posterior do operador com trace](../worker-isolation/worker-isolation-vm-trace-operator-2026-10-23.md)
 comprovou um envio real da criação VM, seguido de terminal com
 `ZONE_RESOURCE_POOL_EXHAUSTED`. Recursos ativos foram retirados e a auditoria
 conferiu os recibos e ausências, sem repetir a criação. A zona B da mesma região
@@ -1004,45 +1004,45 @@ passou por consultas de metadados, não por alocação ou boot. Preparar a sele�
 consistente dessa alternativa é o próximo trabalho; montagem, isolamento e
 integração operacional da 020 continuam abertos.
 
-O [grafo candidato B](worker-isolation-zoneb-graph-2026-10-23.md) passou depois
+O [grafo candidato B](../worker-isolation/worker-isolation-zoneb-graph-2026-10-23.md) passou depois
 pelo coordenador completo offline, incluindo recusa de capacidade, cancelamento
 e confirmação perdida. O gate confere preservação das políticas e rejeição de
 journals de outra zona, mas não seleciona novo operador ou autoriza repetir a
 criação. A integração da nona retirada e os pré-flights frescos continuam necessários.
 
-A [integração do operador B](worker-isolation-zoneb-operator-2026-10-23.md) foi
+A [integração do operador B](../worker-isolation/worker-isolation-zoneb-operator-2026-10-23.md) foi
 posteriormente executada com essa guarda e consultas frescas. A rodada encerrou
 com retirada após GET 429 do Resource Manager, antes de criar a VM. A comparação
 posterior com/sem projeto de cota explícito retornou 200 nos dois casos: não
 reproduziu nem explicou definitivamente o erro histórico. Montagem e admissão
 operacional continuam abertas; o contexto encerrado não deve ser repetido.
 
-O [candidato seguinte do I/O nativo](worker-isolation-crm-quota-native-2026-10-23.md)
+O [candidato seguinte do I/O nativo](../worker-isolation/worker-isolation-crm-quota-native-2026-10-23.md)
 explicita o projeto de cota somente no GET admitido do Resource Manager, sem
 aceitar override do chamador ou repetir requisições. Também verifica cancelamento
 após a admissão. A validação é offline; não resolve por si a causa do 429 nem
 seleciona nova execução cloud.
 
-A [guarda da décima retirada](worker-isolation-tenth-retirement-2026-10-23.md)
+A [guarda da décima retirada](../worker-isolation/worker-isolation-tenth-retirement-2026-10-23.md)
 integra depois os onze alvos desse contexto ao conjunto anterior e ao coordenador
 offline. Preserva validade curta, consultas limitadas e bloqueio antes de reserva
 quando a prova da décima rodada estiver incompleta. Ainda não há seleção em novo
 operador cloud ou evidência de montagem real.
 
-O [operador seguinte com cota explícita](worker-isolation-quota-operator-2026-10-24.md)
+O [operador seguinte com cota explícita](../worker-isolation/worker-isolation-quota-operator-2026-10-24.md)
 seleciona depois o guard de 97 alvos e o transporte atualizado em entrada nativa
 própria, com gates e captura financeira separados. O resultado da prova é
 registrado nesse documento: a VM retornou erro de capacidade, a retirada foi
 auditada e um candidato N2 passou somente por consultas de metadados. Montagem e
 admissão do worker completo de 8 GiB continuam pendentes.
 
-A [preparação offline posterior do N2](worker-isolation-n2-preparation-2026-10-24.md)
+A [preparação offline posterior do N2](../worker-isolation/worker-isolation-n2-preparation-2026-10-24.md)
 testa o perfil de host de 16 GiB, o guard de 108 alvos, o claim persistente de
 execução única e o contrato de preços próprio com fixtures sintéticas. Ainda não
 integra novo operador ou captura cotação N2 real. O limite do worker permanece
 separado; boot, contenção e admissão operacional continuam abertos.
 
-Os [leitores e coordenador N2](worker-isolation-n2-coordinator-2026-10-24.md)
+Os [leitores e coordenador N2](../worker-isolation/worker-isolation-n2-coordinator-2026-10-24.md)
 integram depois os contratos N2 de metadata/quota, preço e guard de 108 alvos ao
 ensaio integral offline. Transporte simulado, consultas reais de metadados e
 criação de VM são evidências distintas; não inferir boot/worker operacional a

@@ -70,7 +70,7 @@ indisponíveis, soft delete/backup e revisão operacional continuam gates distin
 
 Upgrade V7→V8, plano das consultas reais, SKIP LOCKED, upload publicado depois
 de varredura e purge físico independente do SQL foram conferidos no foco de
-269 testes. Ver a [evidência datada](../../../../mobile/docs/specs/features/MOB-FEAT-020-visual-translation-rendering/evidence/original-retention-audit-2026-10-09.md).
+269 testes. Ver a [evidência datada](../../../../../mobile/docs/specs/features/MOB-FEAT-020-visual-translation-rendering/evidence/original-retention-audit-2026-10-09.md).
 O plano anterior e a primeira fotografia são preservados. O finding separado
 de resultado READY com política corrente permanece a corrigir: mudar configuração
 ampliou o prazo do mesmo snapshot no diagnóstico sintético. Isso não altera

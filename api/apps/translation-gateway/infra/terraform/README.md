@@ -65,14 +65,14 @@ zero, PIDs até 64, tmpfs limitado/noexec, AS pai/filha, rootfs/capabilities,
 IAM/SQL/storage privados, imagem segura, retenção e isolamento de falhas.
 Selecionar 8 GiB não resolve nem afrouxa esses guards do Java.
 
-Antes de uma prova no alvo, usar o [diagnóstico Java independente](../../docs/worker-isolation-probe.md)
+Antes de uma prova no alvo, usar o [diagnóstico Java independente](../../docs/worker-isolation/worker-isolation-probe.md)
 para preparar a leitura sanitizada dos controles. Não inicia worker ou provider,
 não altera limites e não aprova operação mesmo com observações coincidentes.
 Segunda geração e volume temporário limitado ainda não estão declarados neste
 candidato; valores exatos de cgroup/PIDs/OOM/flags de mount exigem comprovação.
 Não remover as preconditions para executar esse diagnóstico em cloud.
 
-Testes estruturais offline: `node --test scripts/worker-resource-profile.test.mjs`
+Testes estruturais offline: `node --test scripts/isolation/worker-resource-profile.test.mjs`
 no módulo gateway. Eles conferem texto/ligação do HCL e proteção dos defaults;
 não são execução de plano Terraform ou validação Cloud Run. `terraform fmt -check`
 e `terraform validate` são os gates locais. Para conferir os exemplos, usar

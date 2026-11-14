@@ -1,6 +1,6 @@
 # SDKs no worker Linux — protocolo local, 2026-10-09
 
-Complementar a prova de [loopback no worker](../../../../mobile/docs/specs/features/MOB-FEAT-020-visual-translation-rendering/evidence/worker-sdk-loopback-2026-10-09.md)
+Complementar a prova de [loopback no worker](../../../../../mobile/docs/specs/features/MOB-FEAT-020-visual-translation-rendering/evidence/worker-sdk-loopback-2026-10-09.md)
 com medição do processo Linux inteiro. Somente harness Java exclusivo de testes:
 SDKs e adapters oficiais, serviços gRPC sintéticos em loopback, PostgreSQL em
 rede Docker interna, storage local e renderer supervisionado real. Não usar ADC,

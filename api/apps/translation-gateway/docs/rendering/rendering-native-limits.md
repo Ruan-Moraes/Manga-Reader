@@ -6,7 +6,7 @@ libwebp lossless/exact com orçamento total medido. Não admite o worker complet
 nem altera RAM cloud/defaults: 020 in-progress/open, 021 blocked.
 
 Parcela posterior: a filha aplica/relê PR_SET_DUMPABLE=0 antes de fontes/mídia.
-A [evidência](../../../../mobile/docs/specs/features/MOB-FEAT-020-visual-translation-rendering/evidence/rendering-dumpability-worker-2026-10-05.md)
+A [evidência](../../../../../mobile/docs/specs/features/MOB-FEAT-020-visual-translation-rendering/evidence/rendering-dumpability-worker-2026-10-05.md)
 separa essa proteção do harness Spring ainda aguardando Docker. Números/gates
 abaixo permanecem a fotografia da parcela anterior, não aprovam o novo harness.
 
@@ -57,7 +57,7 @@ exact e quality 100; a 1.0 preserva método 4. Com heap 128 MiB e AS inalterado,
 o foco do worker concluiu 12 READY máximos JPEG/WebP nos dois alvos, sem perda
 de pixels no controle independente. O bean recusa reservas maiores, sem elevar
 caps, reduzir mídia/qualidade ou modificar cloud. A
-[evidência corrente](../../../../mobile/docs/specs/features/MOB-FEAT-020-visual-translation-rendering/evidence/rendering-jpeg-headroom-2026-10-08.md)
+[evidência corrente](../../../../../mobile/docs/specs/features/MOB-FEAT-020-visual-translation-rendering/evidence/rendering-jpeg-headroom-2026-10-08.md)
 separa controles, worker e regressão ampliada dos históricos abaixo; não é
 admissão operacional do orçamento de produção.
 
@@ -112,7 +112,7 @@ Docker, libwebp ou pacote. Com caches preparados:
 Flags da segunda execução representam um único comando. As bibliotecas
 históricas ficam no harness de recursos, não na seleção do bean de produção.
 Resultados/código auditados estão na
-[evidência SDD](../../../../mobile/docs/specs/features/MOB-FEAT-020-visual-translation-rendering/evidence/rendering-native-limits-2026-10-05.md).
+[evidência SDD](../../../../../mobile/docs/specs/features/MOB-FEAT-020-visual-translation-rendering/evidence/rendering-native-limits-2026-10-05.md).
 
 Faltam profiling do worker Spring/PostgreSQL/storage/layout/fontes residentes,
 volume textual máximo, sequência e fault injection completos; orçamento total

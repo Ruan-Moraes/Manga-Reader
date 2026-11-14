@@ -28,7 +28,7 @@ parcela distinta. Bootstrap sozinho não mede o pipeline nem admite RAM cloud.
 é a seleção opt-in do worker com layout real, clients oficiais OCR/tradução
 contra gRPC local e renderer real nas imagens glibc candidatas. Requer as mesmas
 propriedades explícitas de IDs/pins/socket/decoder da
-[imagem nativa](rendering-native-image.md) e
+[imagem nativa](../rendering/rendering-native-image.md) e
 `renderer.native.image.layout.model=<path-absoluto-do-modelo-cacheado>`.
 Não baixa, escolhe amostra real, inicializa ADC ou chama Google.
 
@@ -46,6 +46,6 @@ Verifica estado e vínculos/hash do layout separado; ele não altera o manifesto
 OCR ou os pixels do render. Reentrega não aumenta as quatro/três RPCs dos fakes.
 
 Resultados e limitações na
-[evidência da imagem](../../../../mobile/docs/specs/features/MOB-FEAT-020-visual-translation-rendering/evidence/rendering-native-image-2026-10-10.md).
+[evidência da imagem](../../../../../mobile/docs/specs/features/MOB-FEAT-020-visual-translation-rendering/evidence/rendering-native-image-2026-10-10.md).
 Uma rodada por alvo não é benchmark estatístico, admissão cloud, qualidade
 do detector ou prova de todas as combinações de formato/idioma/falha.

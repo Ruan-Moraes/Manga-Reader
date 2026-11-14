@@ -84,12 +84,12 @@ Nada disso muda a configuração cloud. Scratch 64 MiB falhou nas fontes da
 multicolor; repetição com 128 MiB foi explícita, sem reduzir entrada. Hash de
 todos os pixels antes/depois do decode no mesmo segmento; fixture pequena
 pintada também comparada com compositor existente e decoder CLI independente.
-Ver [evidência de recursos](../../../../mobile/docs/specs/features/MOB-FEAT-020-visual-translation-rendering/evidence/rendering-native-resources-2026-10-04.md).
+Ver [evidência de recursos](../../../../../mobile/docs/specs/features/MOB-FEAT-020-visual-translation-rendering/evidence/rendering-native-resources-2026-10-04.md).
 
 Rejeição de largura/altura/pixels por política explícita no encode agora retorna
 `codec-invalid-media`, sem causa nem criação de arquivo; I/O genuíno continua
 `codec-unavailable`. Regressão Linux precedeu a correção. Ver
-[política e decisão pendente](../../../../mobile/docs/specs/features/MOB-FEAT-020-visual-translation-rendering/evidence/rendering-native-policy-2026-10-04.md).
+[política e decisão pendente](../../../../../mobile/docs/specs/features/MOB-FEAT-020-visual-translation-rendering/evidence/rendering-native-policy-2026-10-04.md).
 Esse fix não elimina buffers internos VP8L nem admite modo nativo no worker.
 Pesquisa de outros codecs é informativa; não há troca de dependência ou novo
 encoder aprovado. Requisito/caps/qualidade continuam intactos.
@@ -119,4 +119,4 @@ com hard timeout: integração supervisionada/cgroup e nova medição de 80M
 continuam necessárias. Falha nativa fatal ainda exige confinamento na filha.
 
 Evidência datada em
-[codec FFM](../../../../mobile/docs/specs/features/MOB-FEAT-020-visual-translation-rendering/evidence/rendering-native-codec-2026-10-04.md).
+[codec FFM](../../../../../mobile/docs/specs/features/MOB-FEAT-020-visual-translation-rendering/evidence/rendering-native-codec-2026-10-04.md).

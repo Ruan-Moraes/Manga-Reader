@@ -16,9 +16,9 @@ prepare-as explicitamente. Não há acesso Google nem download automático de am
 Na raiz do repositório:
 
 ```bash
-node api/apps/translation-gateway/scripts/ocr-samples.mjs verify
-node api/apps/translation-gateway/scripts/ocr-evaluation.mjs run --mode offline --run-id pt-p01-teste-01
-node api/apps/translation-gateway/scripts/ocr-evaluation.mjs report --run-id pt-p01-teste-01
+node api/apps/translation-gateway/scripts/ocr/ocr-samples.mjs verify
+node api/apps/translation-gateway/scripts/ocr/ocr-evaluation.mjs run --mode offline --run-id pt-p01-teste-01
+node api/apps/translation-gateway/scripts/ocr/ocr-evaluation.mjs report --run-id pt-p01-teste-01
 ```
 
 A amostra padrão é `pt-ep01-p01`. Para outra imagem já admitida, informar
@@ -35,7 +35,7 @@ comprova reconhecimento de chinês tradicional ou qualidade de balões.
 Para a capa histórica CC0 já restaurada localmente:
 
 ```bash
-node api/apps/translation-gateway/scripts/ocr-evaluation.mjs run --sample ja-tokyo-puck-1909-cover --mode offline --run-id tokyo-puck-simulacao-01
+node api/apps/translation-gateway/scripts/ocr/ocr-evaluation.mjs run --sample ja-tokyo-puck-1909-cover --mode offline --run-id tokyo-puck-simulacao-01
 ```
 
 O relatório preserva o crédito e o aviso de orientação mista/conteúdo multilíngue.
@@ -51,8 +51,8 @@ geometria, persistência e exportação; não verifica qualidade OCR.
 ## Comparar sem nova chamada
 
 ```bash
-node api/apps/translation-gateway/scripts/ocr-evaluation.mjs run --mode offline --run-id pt-p01-teste-02
-node api/apps/translation-gateway/scripts/ocr-evaluation.mjs report --run-id pt-p01-teste-02 --compare pt-p01-teste-01
+node api/apps/translation-gateway/scripts/ocr/ocr-evaluation.mjs run --mode offline --run-id pt-p01-teste-02
+node api/apps/translation-gateway/scripts/ocr/ocr-evaluation.mjs report --run-id pt-p01-teste-02 --compare pt-p01-teste-01
 ```
 
 O HTML comparativo fica na segunda rodada. `report` só lê arquivos locais,
@@ -119,7 +119,7 @@ para processamento remoto/custo e conferir:
 Somente após esses gates, substituir os valores simbólicos e executar manualmente:
 
 ```bash
-node api/apps/translation-gateway/scripts/ocr-evaluation.mjs run --mode vision --run-id pt-p01-real-01 --project SEU_PROJETO --bucket SEU_BUCKET_PRIVADO --credentials-file /DIRETORIO_PRIVADO/application_default_credentials.json --service-account CONTA@SEU_PROJETO.iam.gserviceaccount.com --confirm-paid-call
+node api/apps/translation-gateway/scripts/ocr/ocr-evaluation.mjs run --mode vision --run-id pt-p01-real-01 --project SEU_PROJETO --bucket SEU_BUCKET_PRIVADO --credentials-file /DIRETORIO_PRIVADO/application_default_credentials.json --service-account CONTA@SEU_PROJETO.iam.gserviceaccount.com --confirm-paid-call
 ```
 
 O consentimento é por invocação, não configuração persistente. O harness usa somente
@@ -159,7 +159,7 @@ são preservados e recusados. Não há `--force`, resume nem reinstalação impl
 ## Validação automatizada
 
 ```bash
-node --test api/apps/translation-gateway/scripts/ocr-evaluation.test.mjs
+node --test api/apps/translation-gateway/scripts/ocr/ocr-evaluation.test.mjs
 cd api
 ./mvnw -pl apps/translation-gateway -am test -Dtest=EvaluationCredentialsTest,EvaluationVisionCaptureTest,OcrEvaluationHarnessTest -Dsurefire.failIfNoSpecifiedTests=false
 ```

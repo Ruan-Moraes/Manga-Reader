@@ -97,7 +97,7 @@ Validação corrente, sem chamadas externas nem reinstalação de dependências:
   30 testes de performance, 24 SDD e seis de boundaries. Incluiu specs,
   links, TypeScript, ESLint, FSD e formatação. Warnings preexistentes de
   `act` não foram corrigidos neste escopo.
-- Raiz: `node --test api/apps/translation-gateway/scripts/*.test.mjs`,
+- Raiz: `node --test api/apps/translation-gateway/scripts/*/*.test.mjs`,
   85 aprovados, zero falhas e um skip opcional de calibração Java por ausência
   de `OCR_CALIBRATION_FONT`. Esse skip não comprova qualidade tipográfica.
 - Checks SDD/links, formatação dirigida e `git diff --check` foram repetidos

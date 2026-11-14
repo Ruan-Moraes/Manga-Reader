@@ -15,7 +15,7 @@ packager aceita `--platform linux-x86_64-musl`; sua ausência preserva o comando
 ARM64 anterior, nunca deduzindo o alvo do host. Defaults/migrations/contratos,
 libwebp lossless/exact e RAM cloud permanecem. Provas de codec, guard, bean e
 worker com PostgreSQL/storage reais em x86_64 **emulado** estão na
-[evidência](../../../../mobile/docs/specs/features/MOB-FEAT-020-visual-translation-rendering/evidence/rendering-amd64-2026-10-07.md).
+[evidência](../../../../../mobile/docs/specs/features/MOB-FEAT-020-visual-translation-rendering/evidence/rendering-amd64-2026-10-07.md).
 Não é hardware AMD64 nativo, orçamento garantido, isolamento ou deploy cloud.
 
 ## Pacote e admissão
@@ -26,7 +26,7 @@ pai; dependências exatas são específicas de cada alvo. Glibc exige política
 fixa de arenas no pai/helper/filha limitados. As descrições/pins musl abaixo
 são a fotografia anterior, não regra permissiva para carregar glibc como musl.
 
-`scripts/render-native-package.mjs` recebe somente arquivos locais e hashes
+`scripts/native-image/render-native-package.mjs` recebe somente arquivos locais e hashes
 explícitos. Não baixa, compila, carrega biblioteca ou usa Google. Reserva destino
 novo atomicamente, sem sobrescrever/retomar/remover pacote parcial. Falha de
 escrita preserva o diretório para recuperação explícita pelo operador.
@@ -85,7 +85,7 @@ e PATENTS, inclusive finais de linha, em vez de reformatá-los.
 Empacotar explicitamente, com paths absolutos canônicos e destino inexistente:
 
 ```text
-node scripts/render-native-package.mjs --webp <libwebp.so.7.2.0>
+node scripts/native-image/render-native-package.mjs --webp <libwebp.so.7.2.0>
   --sharp <libsharpyuv.so.0.1.2> --webp-sha256 <hash-verificado>
   --sharp-sha256 <hash-verificado> --copying <COPYING> --patents <PATENTS>
   --destination <diretorio-novo>
@@ -94,7 +94,7 @@ node scripts/render-native-package.mjs --webp <libwebp.so.7.2.0>
 Esse é um comando com todas as opções. Saída `packaged-not-admitted` significa
 somente cópia/pins/licenças: admissão ELF e execução são provas separadas.
 Registro do ambiente/pins efetivamente observado fica na
-[evidência sanitizada](../../../../mobile/docs/specs/features/MOB-FEAT-020-visual-translation-rendering/evidence/rendering-native-distribution-2026-10-05.md).
+[evidência sanitizada](../../../../../mobile/docs/specs/features/MOB-FEAT-020-visual-translation-rendering/evidence/rendering-native-distribution-2026-10-05.md).
 
 ## Seleção explícita do worker local
 
@@ -129,7 +129,7 @@ com o novo modo ainda precisam de provas. Terraform não foi modificado.
 
 Package atual pelo reactor antes dos testes de Boot. Testes leves:
 NativeCodecElfTest, NativeCodecDistributionTest, RenderingConfigurationTest;
-Node `node --test scripts/render-native-package.test.mjs`.
+Node `node --test scripts/native-image/render-native-package.test.mjs`.
 
 Prova real explicitamente selecionada: NativeCodecDistributionLinuxTest, com
 `renderer.distribution.enabled=true`, `renderer.distribution.directory`,

@@ -65,12 +65,12 @@ máxima com texto terminou em OOM no mesmo teto. Diagnóstico explícito com
 Default do harness continua 2048; nenhum teto cloud/qualidade/prazo foi alterado.
 Não converter o verde diagnóstico em admissão operacional ou de 2 GiB.
 Valores e limites estão na
-[evidência datada](../../../../mobile/docs/specs/features/MOB-FEAT-020-visual-translation-rendering/evidence/rendering-worker-linux-2026-10-07.md).
+[evidência datada](../../../../../mobile/docs/specs/features/MOB-FEAT-020-visual-translation-rendering/evidence/rendering-worker-linux-2026-10-07.md).
 
 ## Estado da primeira tentativa — 2026-10-05
 
 Parcela seguinte: [protocolo OOM](rendering-worker-oom.md) e
-[evidência](../../../../mobile/docs/specs/features/MOB-FEAT-020-visual-translation-rendering/evidence/rendering-worker-oom-2026-10-07.md)
+[evidência](../../../../../mobile/docs/specs/features/MOB-FEAT-020-visual-translation-rendering/evidence/rendering-worker-oom-2026-10-07.md)
 medem evento real/vítima, falha sem saída e recuperação no mesmo contexto.
 Não alteram o resultado histórico nem aprovam o candidato de memória.
 

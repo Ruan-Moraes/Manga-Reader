@@ -6,7 +6,7 @@ credencial/provider pago, mídia privada, mobile, deploy ou mudança de RAM clou
 
 [Coordenador](../../../../../../api/apps/translation-gateway/src/main/java/com/toonlira/translationgateway/infrastructure/rendering/NativeWorkerParentPreparation.java),
 [helper](../../../../../../api/apps/translation-gateway/src/main/java/com/toonlira/translationgateway/infrastructure/rendering/NativeWorkerParentLimitMain.java),
-[política](../../../../../../api/apps/translation-gateway/docs/rendering-memory-admission.md).
+[política](../../../../../../api/apps/translation-gateway/docs/rendering/rendering-memory-admission.md).
 
 ## Alteração e segurança
 

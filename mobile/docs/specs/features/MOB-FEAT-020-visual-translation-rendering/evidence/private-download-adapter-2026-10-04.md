@@ -6,7 +6,7 @@ sem chamador HTTP, alterações mobile, migrations, Terraform ou provider real.
 
 ## Plano anterior e inspeção
 
-[Plano](../../../../../../api/apps/translation-gateway/docs/private-result-downloads.md):
+[Plano](../../../../../../api/apps/translation-gateway/docs/architecture/private-result-downloads.md):
 reutilizar metadados BCNF V1–V6, sem duplicar tamanho de manifesto em coluna;
 consulta futura owner-scoped usará PKs/uniques existentes. Nenhuma migration,
 índice/cache/tabela/texto no PostgreSQL. ObjectStoragePort/worker não mudam.

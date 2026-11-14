@@ -8,14 +8,14 @@ Nenhuma instalação nova, credencial, chamada paga ou recurso cloud foi usado.
 
 ## Escopo e evidência direta
 
-O [probe Java exclusivo de testes](../src/test/java/com/toonlira/translationgateway/infrastructure/rendering/RootfsNativeMetadataProbe.java)
+O [probe Java exclusivo de testes](../../src/test/java/com/toonlira/translationgateway/infrastructure/rendering/RootfsNativeMetadataProbe.java)
 usa FFM para chamar `llistxattr`, `lgetxattr` e `getuid` da libc existente.
 Não compila C, segue symlinks, lê payloads dos arquivos ou modifica atributos
 das imagens. O self-check cria apenas seu próprio arquivo e link no tmpfs,
 conferindo um atributo binário e a leitura sem seguir o link.
 
 A lista de caminhos vem dos headers físicos do archive selado, pelo
-`readRootfsPathInventory` do [auditor Node](../scripts/rootfs-archive-audit.mjs).
+`readRootfsPathInventory` do [auditor Node](../../scripts/single-jre/rootfs-archive-audit.mjs).
 Não se normalizam nomes Unicode. Mounts do runtime (`dev`, `proc`, `sys`,
 hostname/hosts/resolv.conf) são excluídos explicitamente; a raiz é incluída.
 A leitura usa rootfs readonly, nenhuma capability, `no-new-privileges`,

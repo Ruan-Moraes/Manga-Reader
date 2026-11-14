@@ -8,7 +8,7 @@ cloud ou deploy. 020 in-progress/open, verdict changes-requested; 021 blocked.
 
 ## Implementação e evidências verificadas
 
-- [Política/processo e reprodução](../../../../../../api/apps/translation-gateway/docs/rendering-native-limits.md).
+- [Política/processo e reprodução](../../../../../../api/apps/translation-gateway/docs/rendering/rendering-native-limits.md).
 - [Limites imutáveis](../../../../../../api/apps/translation-gateway/src/main/java/com/toonlira/translationgateway/infrastructure/rendering/NativeProcessLimits.java),
   [variante explícita](../../../../../../api/apps/translation-gateway/src/main/java/com/toonlira/translationgateway/infrastructure/rendering/BoundedNativeRenderChildSettings.java),
   [guard Linux Java/FFM](../../../../../../api/apps/translation-gateway/src/main/java/com/toonlira/translationgateway/infrastructure/rendering/LinuxNativeProcessGuard.java).

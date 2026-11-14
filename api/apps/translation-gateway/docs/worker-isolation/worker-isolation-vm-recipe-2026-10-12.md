@@ -128,7 +128,7 @@ stop não garante recuperação sem Cloud Logging. Não instalar agente ou conce
 O probe não prepara AS=3 GiB: seu `unlimited`/FAIL continuará explícito na primeira
 triagem. Não exigir relatório inteiramente PASS para esconder essa limitação nem
 chamar a primeira execução de admissão nativa. Namespace/controles obrigatórios
-UNKNOWN ou incompatíveis bloqueiam avanço, conforme o [contrato existente](rendering-memory-admission.md).
+UNKNOWN ou incompatíveis bloqueiam avanço, conforme o [contrato existente](../rendering/rendering-memory-admission.md).
 Prova com bootstrap, syscalls, filha/OOM e integração são parcelas posteriores.
 
 ## 4. Cotação pública, não orçamento aprovado
@@ -187,7 +187,7 @@ JDK 23 já instalado; fixtures locais/sintéticas, nenhuma VM ou native bootstra
 Comando reproduzível, com `JAVA_HOME`/PATH do JDK existente:
 
 ```bash
-node --test api/apps/translation-gateway/scripts/worker-isolation-probe.test.mjs api/apps/translation-gateway/scripts/worker-isolation-image.test.mjs api/apps/translation-gateway/scripts/worker-resource-profile.test.mjs
+node --test api/apps/translation-gateway/scripts/isolation/worker-isolation-probe.test.mjs api/apps/translation-gateway/scripts/isolation/worker-isolation-image.test.mjs api/apps/translation-gateway/scripts/isolation/worker-resource-profile.test.mjs
 ```
 
 Recibo, ações, IAM/SDK e captura pública conferidos por hash; scanner de padrões

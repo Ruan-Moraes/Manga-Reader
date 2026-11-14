@@ -173,7 +173,7 @@ autoaprovação do renderer ou do consumo de memória.
 O orçamento cloud atual de 1 GiB permanece inalterado e não foi admitido para
 o máximo multicolor. Integração supervisionada, distribuição, perfil completo,
 qualidade e operação continuam pendentes. 020 in-progress/open e 021 blocked.
-Ver o [plano de memória](../../../../../api/apps/translation-gateway/docs/rendering-memory-policy.md).
+Ver o [plano de memória](../../../../../api/apps/translation-gateway/docs/rendering/rendering-memory-policy.md).
 
 Parcela posterior de 2026-10-05: [distribuição local fixada](evidence/rendering-native-distribution-2026-10-05.md)
 e seleção explícita supervisionada foram codificadas e testadas no bean mínimo

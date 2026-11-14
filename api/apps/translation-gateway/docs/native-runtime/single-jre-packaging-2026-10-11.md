@@ -11,24 +11,24 @@ chamada real, credencial, cloud, publicação ou alteração do runtime default.
 
 ## Entrega
 
-O comando [render-single-jre-image.mjs](../scripts/render-single-jre-image.mjs)
+O comando [render-single-jre-image.mjs](../../scripts/native-image/render-single-jre-image.mjs)
 prepara um contexto local separado usando o JAR, codec e recibo existentes.
 Não cria a base, executa Docker, extrai arquivos, instala dependências, inicia
 o worker, chama providers ou publica uma imagem. O Dockerfile copiado é o
-[Dockerfile.native](../Dockerfile.native), sem alteração dos defaults disabled.
+[Dockerfile.native](../../scripts/native-image/Dockerfile.native), sem alteração dos defaults disabled.
 
-O caminho comum [render-native-image.mjs](../scripts/render-native-image.mjs)
+O caminho comum [render-native-image.mjs](../../scripts/native-image/render-native-image.mjs)
 continua usando Temurin ou a prova estrita de seus dois patches. Ele **não**
 aceita o novo recibo como substituto dessa prova. O opt-in experimental exige
 `--base-proof` e seu SHA-256, sem fallback nem override arbitrário de registry.
 
-O [verificador](../scripts/single-jre-proof.mjs) confere:
+O [verificador](../../scripts/single-jre/single-jre-proof.mjs) confere:
 
 - recibo readonly, hash fornecido explicitamente e arquitetura;
 - todos os artefatos declarados, com nomes restritos e leitura limitada;
 - hashes/tamanhos dos dois archives por streaming, sem extração;
 - listas de entradas, mtree, hardlinks e exclusões fixas pela
-  [política](../scripts/single-jre-policy.mjs);
+  [política](../../scripts/single-jre/single-jre-policy.mjs);
 - correspondência entre nomes das listas e do mtree, sem normalizar Unicode;
 - configuração capturada da base: Ubuntu, uma camada vinculada ao rootfs,
   entrypoint, arquitetura e labels de procedência;
@@ -53,7 +53,7 @@ aceitar outro modelo de preparação. A obtenção/preparação da base é etapa
 separada, sujeita à aprovação de instalação e validação própria.
 
 ```bash
-node /caminho/absoluto/api/apps/translation-gateway/scripts/render-single-jre-image.mjs \
+node /caminho/absoluto/api/apps/translation-gateway/scripts/native-image/render-single-jre-image.mjs \
   --jar /caminho/absoluto/gateway.jar \
   --jar-sha256 <sha256-do-jar> \
   --distribution /caminho/absoluto/codec-readonly \

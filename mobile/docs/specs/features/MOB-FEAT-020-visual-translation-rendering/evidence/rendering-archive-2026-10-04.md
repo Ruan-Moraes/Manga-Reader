@@ -6,7 +6,7 @@ operacional ou aceite integral de AC-006.
 
 ## Implementação e escopo
 
-[Plano antes do código](../../../../../../api/apps/translation-gateway/docs/rendering-archive.md).
+[Plano antes do código](../../../../../../api/apps/translation-gateway/docs/rendering/rendering-archive.md).
 RenderJvmLauncher admite somente um arquivo Boot 3.4.3 com manifest/classes/libs
 esperados e seleciona RenderChildMain por PropertiesLauncher. loader.home/path/
 config.location controlados impedem consultar loader.properties de cwd/home;

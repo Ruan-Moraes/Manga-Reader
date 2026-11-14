@@ -115,7 +115,7 @@ Lado-código resolvido; resíduo só-infra documentado acima.
 separada do aceite atual de `MOB-FEAT-018`. V3 guarda metadados por job em BCNF,
 com FK composta/cascade e PK suficiente; não cria tabela de texto/regiões nem
 contador. Qualidade geral, geometria irregular, consumo pela tradução e ativação
-operacional permanecem abertos. Ver [contrato e limites](../api/apps/translation-gateway/docs/layout-experimental.md).
+operacional permanecem abertos. Ver [contrato e limites](../api/apps/translation-gateway/docs/ocr-evaluation/layout-experimental.md).
 Layout `1.1` trata duplicatas quase idênticas com auditoria e mantém ambiguidades
 reais; isso não aprova qualidade geral. Avaliação específica de onomatopeias fica
 para escopo futuro, sem remover suas regiões do OCR.
@@ -529,7 +529,7 @@ justificar, pequenos patches produzidos no servidor para regiões complexas.
 Não exigir inpainting no cliente nem presumir que overlay elimina o decode
 da página. Benefício de custo, memória e rede ainda não foi medido.
 
-Fonte detalhada: [alternativas e roteiro de comparação](../api/apps/translation-gateway/docs/hybrid-rendering-options-2026-10-18.md).
+Fonte detalhada: [alternativas e roteiro de comparação](../api/apps/translation-gateway/docs/architecture/hybrid-rendering-options-2026-10-18.md).
 O documento diferencia fatos existentes, alternativas e hipóteses; não reabre
 nem altera a auditoria de performance mobile DT-75.
 

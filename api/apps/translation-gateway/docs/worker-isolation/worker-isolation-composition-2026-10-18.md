@@ -3,7 +3,7 @@
 Data: 2026-10-18. Continuação dos
 [journals nativos](worker-isolation-native-journals-2026-10-18.md).
 020 permanece `in-progress/open`; 021 bloqueada. O
-[estudo híbrido urgente](hybrid-rendering-options-2026-10-18.md) não muda a
+[estudo híbrido urgente](../architecture/hybrid-rendering-options-2026-10-18.md) não muda a
 implementação server-side vigente.
 
 ## Entrega local

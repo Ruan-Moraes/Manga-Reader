@@ -41,7 +41,7 @@ build não os resolve. Falhas/limites serão registrados em evidência própria.
 
 ## Resultado da preparação
 
-[Evidência](../../../../mobile/docs/specs/features/MOB-FEAT-020-visual-translation-rendering/evidence/rendering-native-build-2026-10-04.md):
+[Evidência](../../../../../mobile/docs/specs/features/MOB-FEAT-020-visual-translation-rendering/evidence/rendering-native-build-2026-10-04.md):
 build/install concluídos, 367 arquivos upstream intactos, hashes/ELF/exports e
 versão 1.6.0 via Java FFM conferidos offline. Controle de SHA adulterado falhou
 antes de load. Artefatos/manifesto locais em `.local/rendering-linux/native-build.vLY64G/`;

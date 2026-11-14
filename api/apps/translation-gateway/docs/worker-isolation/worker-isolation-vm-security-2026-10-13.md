@@ -96,7 +96,7 @@ O scan de 12/10 continua histórico e OS-only: 108 pacotes, 16 ocorrências,
 continua descartado. Metadata Java tinha `NextUpdate` em **12/10 às 21:59 de
 Brasília**, já ultrapassado nesta revisão. Não houve refresh; atualizar apenas
 o Java DB não transforma análise de JARs em auditoria do runtime nativo.
-Preservar [as limitações da revisão da imagem](diagnostic-publication-review-2026-10-12.md).
+Preservar [as limitações da revisão da imagem](../ocr-evaluation/diagnostic-publication-review-2026-10-12.md).
 
 ## 5. Evidência local e decisão
 

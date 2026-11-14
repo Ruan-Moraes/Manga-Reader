@@ -1,7 +1,7 @@
 # Retenção de resultado imutável — plano antes do código
 
 Plano inicial de 020/TASK-006, elaborado antes de corrigir o finding confirmado na
-[auditoria local](../../../../mobile/docs/specs/features/MOB-FEAT-020-visual-translation-rendering/evidence/original-retention-audit-2026-10-09.md).
+[auditoria local](../../../../../mobile/docs/specs/features/MOB-FEAT-020-visual-translation-rendering/evidence/original-retention-audit-2026-10-09.md).
 Não muda intenção, defaults, limite de uma hora, contratos HTTP/task/manifestos,
 qualidade, codec ou estado público. Sem cloud, credenciais ou provider real.
 
@@ -84,4 +84,4 @@ V1–V9 e upgrade V8→V9 conferidos no PostgreSQL 17, sem banco compartilhado.
 Oito testes novos de persistência cobrem política/replay, prazo exato,
 rollback e espera real de lock. O fluxo integral de 23 casos e seis workers
 Linux com JAR novo passaram, sem provider real. Gates e limites da parcela na
-[evidência datada](../../../../mobile/docs/specs/features/MOB-FEAT-020-visual-translation-rendering/evidence/result-retention-snapshot-2026-10-09.md).
+[evidência datada](../../../../../mobile/docs/specs/features/MOB-FEAT-020-visual-translation-rendering/evidence/result-retention-snapshot-2026-10-09.md).

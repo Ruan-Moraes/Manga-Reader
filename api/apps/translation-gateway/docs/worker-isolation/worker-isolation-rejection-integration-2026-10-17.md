@@ -97,7 +97,7 @@ o envelope financeiro e a retirada efetiva. O término automático de 600 s já
 existia, mas não expira custom image, data disk e staging. Permanecem abertas a
 [revisão de segurança COS](worker-isolation-vm-security-2026-10-13.md), a
 [revisão de admissão](worker-isolation-admission-review-2026-10-17.md) e a
-[validação cloud do renderer](rendering-cloud-validation.md). O teto autorizado
+[validação cloud do renderer](../rendering/rendering-cloud-validation.md). O teto autorizado
 é US$ 5 **total**, sem nova reserva nesta etapa.
 
 Maven, web, mobile e SDD não são reexecutados/redatados por esta mudança somente

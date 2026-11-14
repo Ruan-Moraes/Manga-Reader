@@ -27,10 +27,10 @@ da TASK-005. Não houve chamada Google, credencial, upload, tradução ou deploy
 
 1. Red: novos testes falharam por ausência de `inspectPng` e atribuição CC BY 4.0
    fixa no relatório, antes da implementação.
-2. `node --test api/apps/translation-gateway/scripts/*.test.mjs`: **37 testes,
+2. `node --test api/apps/translation-gateway/scripts/*/*.test.mjs`: **37 testes,
    zero falhas**. Inclui corrupção, CRC, MIME, inflação limitada, APNG, metadados,
    licença/origem falsas, derivação ausente, symlink, escape e direitos por item.
-3. `node api/apps/translation-gateway/scripts/ocr-samples.mjs verify` e `gallery`:
+3. `node api/apps/translation-gateway/scripts/ocr/ocr-samples.mjs verify` e `gallery`:
    **14 amostras íntegras, zero downloads**. As duas novas cópias são byte a byte
    iguais às saídas da aquisição autorizada; PDFs e PNGs de origem preservados.
 4. `./mvnw -o -B test`, na raiz `api/`, com Docker: **BUILD SUCCESS**, sem falhas

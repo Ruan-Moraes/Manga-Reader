@@ -85,7 +85,7 @@ normativos, não reservam/aprovam Target Specs e não abrem gates:
 
 - [Plano de implementação do produto](../plans/product-implementation.md)
 - [Plano da migração para SDK 57](../plans/sdk-57-migration/README.md)
-- [Plano arquitetural do gateway e vertical slice](../../../api/apps/translation-gateway/docs/translation-gateway-plan.md)
+- [Plano arquitetural do gateway e vertical slice](../../../api/apps/translation-gateway/docs/architecture/translation-gateway-plan.md)
 - [Mapa consolidado de cobertura dos requisitos](../references/requirements-coverage-map.md)
 - [Gaps e conflitos do produto](../references/product-gaps-and-conflicts.md)
 - [Registro de riscos do produto](../references/product-risk-register.md)

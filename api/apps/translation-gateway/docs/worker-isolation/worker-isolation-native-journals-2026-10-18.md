@@ -3,7 +3,7 @@
 Data: 2026-10-18. Continuação da
 [preparação do operador](worker-isolation-operator-preparation-2026-10-17.md),
 sem substituir a implementação server-side pela
-[alternativa híbrida urgente](hybrid-rendering-options-2026-10-18.md).
+[alternativa híbrida urgente](../architecture/hybrid-rendering-options-2026-10-18.md).
 020 permanece `in-progress/open`; 021 bloqueada.
 
 ## Parcela implementada

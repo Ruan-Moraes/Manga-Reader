@@ -12,7 +12,7 @@ as demais referências do mesmo job. O retry durável existia, mas os arquivos
 saudáveis aguardavam desnecessariamente outra rodada. Três regressões unitárias
 reproduziram esse comportamento antes da correção.
 
-[ClaimedObjectCleanup](../src/main/java/com/toonlira/translationgateway/application/ClaimedObjectCleanup.java)
+[ClaimedObjectCleanup](../../src/main/java/com/toonlira/translationgateway/application/ClaimedObjectCleanup.java)
 tenta cada chave já autorizada pelo claim, isolando falhas de storage. Se qualquer
 remoção falhar, o job continua pendente e é reagendado; sucesso parcial não
 preenche `completed_at`. Nenhum erro bruto, texto ou chave é registrado. Não há
@@ -79,8 +79,8 @@ com `--pull=false` e `--network=none`:
 
 Ambas passaram no probe readonly UID 1000, capabilities zeradas, sem rede,
 JRE Ubuntu 25 e defaults desabilitados. Isso não aprova segurança ou operação.
-A [matriz anterior](native-metadata-runtime-2026-10-11.md) e a
-[galeria anterior](rendering-visual-review-2026-10-12.md) são fotografias do JAR
+A [matriz anterior](../native-runtime/native-metadata-runtime-2026-10-11.md) e a
+[galeria anterior](../rendering/rendering-visual-review-2026-10-12.md) são fotografias do JAR
 anterior: não constituem validação automática desta correção.
 
 A repetição com o pacote novo concluiu 40 testes, zero falhas/erros/skips,

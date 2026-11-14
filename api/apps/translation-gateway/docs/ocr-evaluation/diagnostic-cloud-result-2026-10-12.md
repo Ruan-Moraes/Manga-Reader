@@ -3,7 +3,7 @@
 **Resultado: execução concluída, admissão operacional não aprovada.**
 Parcela da validação da 020; não é OCR, renderização ou execução do worker.
 020 continua `in-progress/open`, 021 bloqueada. Complementa o
-[roteiro](rendering-cloud-validation.md) e a
+[roteiro](../rendering/rendering-cloud-validation.md) e a
 [revisão/autorizações](diagnostic-publication-review-2026-10-12.md).
 **Recursos temporários retirados após aprovação em 12/10; evidências preservadas.**
 
@@ -76,16 +76,16 @@ não critério novo de admissão. Não atribuir o bloqueio apenas a esses dois F
 Bloqueiam avanço nesta configuração: identificação incompatível com `0::/` e
 ausência de observação admitida de controles de memória/swap/PIDs/OOM/orçamento.
 Código autoritativo relido, sem alteração:
-[LinuxWorkerMemoryAdmission](../src/main/java/com/toonlira/translationgateway/infrastructure/rendering/LinuxWorkerMemoryAdmission.java)
-e [LinuxOomPolicy](../src/main/java/com/toonlira/translationgateway/infrastructure/rendering/LinuxOomPolicy.java).
+[LinuxWorkerMemoryAdmission](../../src/main/java/com/toonlira/translationgateway/infrastructure/rendering/LinuxWorkerMemoryAdmission.java)
+e [LinuxOomPolicy](../../src/main/java/com/toonlira/translationgateway/infrastructure/rendering/LinuxOomPolicy.java).
 Ambos exigem cgroup/controles específicos e recusam estado desconhecido.
 
 **Inferência limitada:** se o worker receber essas mesmas observações, a
 admissão atual recusará o ambiente. Não executamos bootstrap Spring/helper/
 codec/modelo, portanto não afirmar falha observada do worker. Tampouco afirmar
 incompatibilidade universal de toda configuração Cloud Run/Service.
-Ver [limites da ferramenta](worker-isolation-probe.md) e
-[contrato de memória](rendering-memory-admission.md).
+Ver [limites da ferramenta](../worker-isolation/worker-isolation-probe.md) e
+[contrato de memória](../rendering/rendering-memory-admission.md).
 
 Etapas de bootstrap nativo/stack SQL/GCS/Tasks **não iniciadas**. Sem retry,
 waiver de guard, aumento de recursos, deploy, uploads ou migração automática
@@ -180,7 +180,7 @@ zero falhas/skips, com JDK 23 já
 instalado e sem Docker/download/rede/provider:
 
 ```bash
-node --test api/apps/translation-gateway/scripts/worker-isolation-probe.test.mjs api/apps/translation-gateway/scripts/worker-isolation-image.test.mjs api/apps/translation-gateway/scripts/worker-resource-profile.test.mjs
+node --test api/apps/translation-gateway/scripts/isolation/worker-isolation-probe.test.mjs api/apps/translation-gateway/scripts/isolation/worker-isolation-image.test.mjs api/apps/translation-gateway/scripts/isolation/worker-resource-profile.test.mjs
 ```
 
 Fixtures desses testes são sintéticas e não substituem os checks cloud reais.

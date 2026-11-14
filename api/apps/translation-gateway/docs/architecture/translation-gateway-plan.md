@@ -25,7 +25,7 @@ concorrência e retry de lotes continuam em `MOB-FEAT-022..024`.
 
 Direção adicional em 2026-10-18: continuar a implementação no servidor e tratar
 a [investigação híbrida](hybrid-rendering-options-2026-10-18.md)
-como urgente/P1 ([DT-76](../../../../docs/tech-debt.md#dt-76-renderização-híbrida-de-tradução--urgentep1)).
+como urgente/P1 ([DT-76](../../../../../docs/tech-debt.md#dt-76-renderização-híbrida-de-tradução--urgentep1)).
 Instruções de desenho e patches seletivos são candidatos a protótipo, sem mudança
 da topologia/contratos aprovados abaixo nem implementação mobile neste marco.
 
@@ -125,23 +125,23 @@ com testes leves aprovados. O bloqueio inicial de Docker foi resolvido e a
 cadeia V1–V4, concorrência/cancelamento e Maven global passaram em 2026-10-02.
 Em 2026-10-03, a parcela local acrescentou SQLite v9 com metadados de tradução
 na entity existente, sem gravação de resultado remoto; ver a
-[evidência local](../../../../mobile/docs/specs/features/MOB-FEAT-019-contextual-language-pair-translation/evidence/translation-local-metadata-2026-10-03.md).
+[evidência local](../../../../../mobile/docs/specs/features/MOB-FEAT-019-contextual-language-pair-translation/evidence/translation-local-metadata-2026-10-03.md).
 Nenhuma chamada real de tradução foi executada; TASK-002..007 continuam
 abertas até a verificação integral e a revisão correspondente.
 Na parcela seguinte do mesmo dia, capabilities/submissão/worker passaram a
 conferir os mesmos pares operacionais configurados, com ETag canônico sensível
 ao conjunto. O mobile valida o manifesto de tradução `1.0` contra o OCR esperado,
 sem integração de download, gravação remota ou ACK; ver a
-[evidência dos pares e contrato local](../../../../mobile/docs/specs/features/MOB-FEAT-019-contextual-language-pair-translation/evidence/translation-capabilities-contracts-2026-10-03.md).
+[evidência dos pares e contrato local](../../../../../mobile/docs/specs/features/MOB-FEAT-019-contextual-language-pair-translation/evidence/translation-capabilities-contracts-2026-10-03.md).
 Na continuação, foram corrigidas as janelas de falha pré-reserva e confirmação
 perdida da tradução, com testes concorrentes e rollback reais em PostgreSQL,
-conforme [evidência de segurança de reentrega](../../../../mobile/docs/specs/features/MOB-FEAT-019-contextual-language-pair-translation/evidence/translation-delivery-safety-2026-10-03.md).
+conforme [evidência de segurança de reentrega](../../../../../mobile/docs/specs/features/MOB-FEAT-019-contextual-language-pair-translation/evidence/translation-delivery-safety-2026-10-03.md).
 O fechamento server-side seguinte acrescenta ACK idempotente por proprietário,
 pedido durável e cleanup com lease por job, em V5. A aquisição/commit e envio de
 ACK pelo aplicativo continuam na 021; `READY` aparece apenas em fixtures deste
 incremento. O renderer deverá incluir seus objetos finais na projeção de cleanup.
 Ver [plano de persistência](result-acknowledgement.md)
-e [evidência da retenção](../../../../mobile/docs/specs/features/MOB-FEAT-019-contextual-language-pair-translation/evidence/translation-result-ack-2026-10-03.md).
+e [evidência da retenção](../../../../../mobile/docs/specs/features/MOB-FEAT-019-contextual-language-pair-translation/evidence/translation-result-ack-2026-10-03.md).
 Benchmark independente,
 qualidade vertical, página vazia real e operação completa continuam pendentes.
 
@@ -152,16 +152,16 @@ foi aberto conforme autorização de Ruan para implementar autonomamente até a
 renderização; suas tasks foram derivadas sem começar antecipadamente a 021.
 O incremento seguinte entrega contratos imutáveis/validadores e manifesto final
 estrito, com a 020 `in-progress/open`, sem fontes, codec ou pintura. Ver
-[contratos da renderização](rendering-contracts.md).
+[contratos da renderização](../rendering/rendering-contracts.md).
 Esse era o limite da parcela inicial. Em 2026-10-04, fontes, codec, composição,
 arquivos e worker local opt-in produzem WebP/manifesto privados e READY nos
 testes com OCR/tradução falsos e PostgreSQL. Não é execução real de tradução
 nem resultado publicado/baixado no aplicativo. URLs assinadas, distribuição,
 profiling e qualidade permanecem abertos. Ver
-[plano do worker](rendering-worker.md),
-[consolidação da 019](../../../../mobile/docs/specs/features/MOB-FEAT-019-contextual-language-pair-translation/evidence/translation-consolidation-2026-10-03.md)
-e [planejamento da 020](../../../../mobile/docs/specs/features/MOB-FEAT-020-visual-translation-rendering/tasks.md).
-[Evidência e limites](../../../../mobile/docs/specs/features/MOB-FEAT-018-multilingual-ocr-regions/evidence/ocr-consolidation.md).
+[plano do worker](../rendering/rendering-worker.md),
+[consolidação da 019](../../../../../mobile/docs/specs/features/MOB-FEAT-019-contextual-language-pair-translation/evidence/translation-consolidation-2026-10-03.md)
+e [planejamento da 020](../../../../../mobile/docs/specs/features/MOB-FEAT-020-visual-translation-rendering/tasks.md).
+[Evidência e limites](../../../../../mobile/docs/specs/features/MOB-FEAT-018-multilingual-ocr-regions/evidence/ocr-consolidation.md).
 Preservar ordem estrutural do Vision e índices contíguos após filtragem, sem
 heurística de direção ou consumo de layout experimental. Sem mudança de runtime mobile,
 defaults habilitados, recursos cloud, Termos ou exposição pública. A V6 adiciona
@@ -172,10 +172,10 @@ metadados privados aos artefatos finais; nenhum texto é persistido no PostgreSQ
 Ruan escolheu manter libwebp com orçamento total medido: buffers internos são
 permitidos, mas cópias redundantes pela aplicação não. WebP lossless/exact,
 limites defensivos e original íntegro permanecem obrigatórios. Ver o
-[plano incremental](rendering-memory-policy.md).
+[plano incremental](../rendering/rendering-memory-policy.md).
 Os experimentos locais não mudam Terraform ou orçamento cloud de 1 GiB.
 Pacote readonly e seleção supervisionada foram codificados/testados opt-in;
-[prova Spring de 2026-10-07](../../../../mobile/docs/specs/features/MOB-FEAT-020-visual-translation-rendering/evidence/rendering-worker-linux-2026-10-07.md)
+[prova Spring de 2026-10-07](../../../../../mobile/docs/specs/features/MOB-FEAT-020-visual-translation-rendering/evidence/rendering-worker-linux-2026-10-07.md)
 concluiu o fluxo máximo com texto a 4 GiB e confirmou OOM a 2 GiB.
 Admissão de orçamento, contenção, distribuição operacional, SDKs residentes
 e qualidade continuam abertos. 020 in-progress/open, 021 blocked.
@@ -208,7 +208,7 @@ detecção local ONNX. Não altera manifesto OCR, tradução ou estados público
 guarda apenas metadados por job, FK composta para etapa OCR, cascade e CHECKs;
 referências compartilham o commit OCR/job, sem inferência dentro de transação.
 Contrato, replay e limites em
-[layout experimental](layout-experimental.md).
+[layout experimental](../ocr-evaluation/layout-experimental.md).
 Extensão não amplia nem conclui os critérios atuais da `MOB-FEAT-018`.
 O layout `1.1` acrescenta auditoria de supressão determinística de caixas quase
 idênticas (IoU ≥ 0,95) antes da associação; ambiguidades entre candidatos distintos
@@ -325,7 +325,7 @@ um dispatcher idempotente cria a Cloud Task e reconcilia linhas pendentes.
   redundantes nos mesmos prefixos.
 - Flyway é forward-only; a suíte PostgreSQL Testcontainers cobre cadeia limpa e
   constraints. A cadeia V1–V5 foi executada com PostgreSQL 17; a
-  [evidência datada](../../../../mobile/docs/specs/features/MOB-FEAT-019-contextual-language-pair-translation/evidence/translation-result-ack-2026-10-03.md)
+  [evidência datada](../../../../../mobile/docs/specs/features/MOB-FEAT-019-contextual-language-pair-translation/evidence/translation-result-ack-2026-10-03.md)
   registra os resultados.
 
 ## Processamento

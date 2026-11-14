@@ -87,7 +87,7 @@ container; reexecução com acesso ao socket local passou, sem invocação OCR r
 
 Gates finais executados nesta alteração:
 
-- `OCR_CALIBRATION_FONT=<fonte-local> node --test api/apps/translation-gateway/scripts/*.test.mjs`:
+- `OCR_CALIBRATION_FONT=<fonte-local> node --test api/apps/translation-gateway/scripts/*/*.test.mjs`:
   86 testes aprovados, nenhum ignorado, incluindo renderização física local.
 - `./mvnw -o -B -pl apps/translation-gateway -am test -Dtest=CalibrationAdmissionTest,CalibrationWorkerTest -Dsurefire.failIfNoSpecifiedTests=false`:
   12 testes aprovados após acesso ao Docker; nenhuma chamada Google nesse gate.

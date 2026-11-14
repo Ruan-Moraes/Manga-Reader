@@ -7,7 +7,7 @@ Somente probe Java exclusivo dos testes e governança. Performance mobile N/A.
 
 ## Preparação reproduzível
 
-[Plano anterior à prova](../../../../../../api/apps/translation-gateway/docs/layout-runtime-resources.md).
+[Plano anterior à prova](../../../../../../api/apps/translation-gateway/docs/ocr-evaluation/layout-runtime-resources.md).
 Modelo local conferido com o pin publicado
 `065744e91c0594ad8663aa8b870ce3fb27222942eded5a3cc388ce23421bd195`.
 SDK ONNX Java 1.24.2 cacheado, SHA-256

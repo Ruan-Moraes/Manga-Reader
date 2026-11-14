@@ -22,7 +22,7 @@ cache, sockets e outras cargas continuam exigindo limites/evidência próprios.
 Preservar as três fixtures máximas no mesmo worker, texto/qualidade/deadlines,
 SQL/storage/renderer reais e providers falsos; exigir READY, hashes e redelivery.
 Não usar sucesso com maior teto como solução de isolamento. Resultado e limites:
-[evidência](../../../../mobile/docs/specs/features/MOB-FEAT-020-visual-translation-rendering/evidence/rendering-parent-address-2026-10-07.md).
+[evidência](../../../../../mobile/docs/specs/features/MOB-FEAT-020-visual-translation-rendering/evidence/rendering-parent-address-2026-10-07.md).
 
 Fonte primária: [prlimit/RLIMIT_AS](https://man7.org/linux/man-pages/man2/getrlimit.2.html).
 Mudanças do limite de outro processo dependem das credenciais/UIDs permitidas

@@ -75,7 +75,7 @@ mobile apenas; não inferir métricas Android ou qualidade por uma página unifo
 ## Reprodução e resultado
 
 Adicionar `-Drenderer.linux.resources.enabled=true` ao comando global Linux da
-[evidência](../../../../mobile/docs/specs/features/MOB-FEAT-020-visual-translation-rendering/evidence/rendering-linux-resources-2026-10-04.md).
+[evidência](../../../../../mobile/docs/specs/features/MOB-FEAT-020-visual-translation-rendering/evidence/rendering-linux-resources-2026-10-04.md).
 O opt-in executa cinco casos reais do renderer, incluindo falhas deliberadas;
 os testes comuns não criam containers de profiling nem baixam dependências.
 Requer o JAR atual e os pins/flags de codec do harness Linux existente.

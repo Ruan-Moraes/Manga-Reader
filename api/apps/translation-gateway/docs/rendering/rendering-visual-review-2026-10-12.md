@@ -1,6 +1,6 @@
 # Galeria sintética para revisão visual — 2026-10-12
 
-Complemento da [matriz nativa corrigida](native-metadata-runtime-2026-10-11.md).
+Complemento da [matriz nativa corrigida](../native-runtime/native-metadata-runtime-2026-10-11.md).
 A 020 permanece `in-progress/open`; a 021 permanece bloqueada. Nenhum modo de
 produção, schema, provider, imagem licenciada, credencial ou recurso cloud foi
 alterado. A geração foi executada localmente em 2026-10-11; a consolidação desta
@@ -8,13 +8,13 @@ parcela não transforma a galeria em aprovação de qualidade geral.
 
 ## Entrega e cobertura
 
-[VisualRenderingFixture](../src/test/java/com/toonlira/translationgateway/infrastructure/rendering/VisualRenderingFixture.java)
+[VisualRenderingFixture](../../src/test/java/com/toonlira/translationgateway/infrastructure/rendering/VisualRenderingFixture.java)
 gera arte geométrica sem depender de fontes do host. Textos são fixtures
 sintéticas independentes, não OCR ou tradução da arte gerada. Quatro regiões
 por página: fundo claro, fundo escuro com quebra explícita/caracteres de markup
 inertes, quadrilátero inclinado e área estreita com overflow intencional.
 
-O [harness opt-in](../src/test/java/com/toonlira/translationgateway/infrastructure/rendering/NativeRenderingVisualReviewLinuxTest.java)
+O [harness opt-in](../../src/test/java/com/toonlira/translationgateway/infrastructure/rendering/NativeRenderingVisualReviewLinuxTest.java)
 executa o `RenderChildMain` e as bibliotecas do JAR/imagem existentes, sem montar
 outro JAR sobre a imagem. Usa rootfs readonly, rede desligada, uma CPU, teto
 diagnóstico de 1 GiB e limites self-only da filha. Não inicia Spring, banco,
@@ -72,7 +72,7 @@ A investigação não justifica mudar essa política por uma impressão visual.
 
 ## Relatório somente de leitura
 
-[render-visual-review.mjs](../scripts/render-visual-review.mjs) confere os 14 casos,
+[render-visual-review.mjs](../../scripts/visual-review/render-visual-review.mjs) confere os 14 casos,
 hashes, headers/dimensões declaradas, vínculos e regiões antes de escrever um
 HTML exclusivo no diretório privado da galeria. Headers não substituem decode:
 a comparação de pixels pertence ao harness Java, não ao gerador do HTML.
@@ -117,7 +117,7 @@ cd api
   -Drenderer.linux.docker.path=/caminho/docker \
   -Drenderer.linux.codec.directory=/privado/decoder-independente
 
-node apps/translation-gateway/scripts/render-visual-review.mjs \
+node apps/translation-gateway/scripts/visual-review/render-visual-review.mjs \
   --gallery /privado/nova-rodada/gallery \
   --output /privado/nova-rodada/gallery/report.html
 ```

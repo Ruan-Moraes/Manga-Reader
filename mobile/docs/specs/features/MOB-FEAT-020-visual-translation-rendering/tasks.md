@@ -55,7 +55,7 @@ abertas para auditoria integral, operação e gates da feature completa.
 Ruan escolheu manter libwebp com orçamento total medido. A revisão humana da
 spec permite buffers internos contabilizados e mantém a proibição de cópias
 redundantes da aplicação, concorrência antes do decode, lossless/exact e caps.
-Ver o [plano anterior à prova](../../../../../api/apps/translation-gateway/docs/rendering-memory-policy.md).
+Ver o [plano anterior à prova](../../../../../api/apps/translation-gateway/docs/rendering/rendering-memory-policy.md).
 O candidato de 2 GiB é somente experimento local: 1 GiB cloud/defaults/bean
 permanecem inalterados. Integração supervisionada, distribuição e medição do
 worker completo ainda exigem admissão e provas de falha, não apenas revisão externa.
@@ -336,7 +336,7 @@ vínculo mídia/OCR/tradução, limites e falhas sanitizadas, política `clean-b
 e manifesto final UTF-8 estrito. Encoder limitado em bytes e decoder com
 hash/vínculo/texto/geometria/ordem íntegros. Testes sintéticos precederam os
 tipos/serviço. Não há fonte, codec, pintura, bean, mudança de schema ou chamada
-ao provider. O [plano técnico](../../../../../api/apps/translation-gateway/docs/rendering-contracts.md)
+ao provider. O [plano técnico](../../../../../api/apps/translation-gateway/docs/rendering/rendering-contracts.md)
 e a [evidência parcial](evidence/rendering-contracts-2026-10-03.md) delimitam a
 TASK-001; TASK-002..008 continuam abertas e a feature permanece `in-progress`.
 
@@ -442,7 +442,7 @@ chamada OCR/tradução ocorre por reentrega. OCR conserva o original após suces
 e usa referências exatas, não estado intermediário, na confirmação perdida.
 Falha anterior à reserva OCR não encerra outra entrega RUNNING.
 
-Ver [plano](../../../../../api/apps/translation-gateway/docs/rendering-worker.md)
+Ver [plano](../../../../../api/apps/translation-gateway/docs/rendering/rendering-worker.md)
 e [evidência](evidence/rendering-worker-2026-10-04.md). TASK-005 técnica entregue
 e conferida na review deste incremento; TASK-006 ainda exige URLs/
 expiração consultável e consolidação de retenção/cleanup em todos os caminhos.
@@ -459,7 +459,7 @@ confirmadas como limpeza bem-sucedida. Prefixo privado e symlinks preservam
 arquivos reutilizáveis. JSON/rotas permanecem iguais, com no-store nas consultas.
 
 Ver [evidência](evidence/result-expiration-2026-10-04.md) e
-[plano](../../../../../api/apps/translation-gateway/docs/result-expiration.md).
+[plano](../../../../../api/apps/translation-gateway/docs/architecture/result-expiration.md).
 TASK-006 permanece aberta para URLs/metadados e retenção terminal integral;
 TASK-002/007/008 e 017/TASK-017 continuam abertas. Não há aquisição mobile,
 assinatura real, credencial ou ativação. A 020 permanece in-progress e a 021
@@ -503,7 +503,7 @@ WebP e manifesto completos com bytes/hash/MIME, dimensões e prazos; nova leitur
 de estado/TTL suprime URLs após ACK/expiração. Disabled falha com 503, sem ADC
 ou fallback. OpenAPI e parser mobile estritos alinhados, sem aquisição,
 persistência de URLs ou READY local. Plano anterior em
-[result-query-delivery](../../../../../api/apps/translation-gateway/docs/result-query-delivery.md).
+[result-query-delivery](../../../../../api/apps/translation-gateway/docs/architecture/result-query-delivery.md).
 
 TASK-006 continua aberta para retenção terminal integral; TASK-002/007/008 e
 017/TASK-017 não são concluídas por esta parcela. Nenhuma migration, chamada
@@ -519,7 +519,7 @@ Claims SKIP LOCKED, leases e confirmação CAS mantêm retry de exclusão fora d
 transação; varredura privada de uma hora continua cobrindo órfãos não registrados.
 Default/runtime mobile e gates permanecem inalterados.
 
-Ver [plano](../../../../../api/apps/translation-gateway/docs/lifecycle-retention.md)
+Ver [plano](../../../../../api/apps/translation-gateway/docs/architecture/lifecycle-retention.md)
 e [evidência](evidence/lifecycle-retention-2026-10-04.md). TASK-006 e 017/TASK-017
 continuam abertas para remoção imediata/falhas integrais dos workers, incluindo
 uploads órfãos posteriores ao terminal. TASK-002/007/008 permanecem abertas;
@@ -591,7 +591,7 @@ limitada do chamador. Sinalização de interrupt também ocorre fora dele. Saíd
 tardia não é entregue; operação, limpeza e sinalização precisam terminar antes
 de devolver capacidade. Falha de cleanup mantém capacidade indisponível.
 
-Ver [plano](../../../../../api/apps/translation-gateway/docs/rendering-call-deadline.md)
+Ver [plano](../../../../../api/apps/translation-gateway/docs/rendering/rendering-call-deadline.md)
 e [evidência](evidence/rendering-call-deadline-2026-10-04.md). Não modifica
 RenderPort, manifesto, banco, estados, defaults ou configuração do worker.
 TASK-002/006/007/008 permanecem abertas: contenção kernel, caps nativos/disco,
@@ -609,7 +609,7 @@ e documentação alterados; nenhuma correção SQL presumida. TASK-006/007 e dem
 pendências continuam abertas; não aprova operação cloud ou codec/memória.
 
 Parcela Linux de recursos em 2026-10-04:
-[plano](../../../../../api/apps/translation-gateway/docs/rendering-linux-resources.md)
+[plano](../../../../../api/apps/translation-gateway/docs/rendering/rendering-linux-resources.md)
 e [evidência](evidence/rendering-linux-resources-2026-10-04.md). Cinco casos reais
 de sucesso/fault injection, sem rede/mídia real. Máximo uniforme de 80 milhões
 de pixels passa com teto experimental de 4 GiB e falha por OOM com o orçamento

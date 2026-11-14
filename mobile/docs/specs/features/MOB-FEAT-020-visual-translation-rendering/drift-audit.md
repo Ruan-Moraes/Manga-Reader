@@ -50,7 +50,7 @@ Source 419, JAR e checksum mobile relidos sem divergência. Aprovação de
 qualidade/segurança/operação permanece false; a pendência de diff externo
 também permanece explícita. Não há nova conclusão sobre outras features.
 
-Suplemento de [segurança das imagens novas](../../../../../api/apps/translation-gateway/docs/rendering-security-refresh-2026-10-12.md):
+Suplemento de [segurança das imagens novas](../../../../../api/apps/translation-gateway/docs/rendering/rendering-security-refresh-2026-10-12.md):
 scans offline ligados ao config exportado e aos sete hashes de camada, sem
 reutilizar o scan do JAR antigo. Em cada alvo: 18 ocorrências OS, 13 MEDIUM/
 cinco LOW e zero nas 195 dependências Java identificadas; conjunto coincide
@@ -744,7 +744,7 @@ Ruan escolheu manter libwebp com orçamento total medido; Spec Architect registr
 a revisão de AC-006 antes da nova prova. A proibição absoluta de buffers internos
 foi substituída por contabilidade/limite total, sem autorizar cópias redundantes
 da aplicação, perda de pixels ou redução silenciosa dos limites.
-Ver o [plano](../../../../../api/apps/translation-gateway/docs/rendering-memory-policy.md).
+Ver o [plano](../../../../../api/apps/translation-gateway/docs/rendering/rendering-memory-policy.md).
 
 A decisão antes pendente está resolvida. OOM no teto cloud atual de 1 GiB,
 integração supervisionada, distribuição/contenção e perfil completo continuam
@@ -774,7 +774,7 @@ pendências funcionais ou externas. Nenhum gate/validador foi enfraquecido.
 
 ## Prazo e posse da chamada — parcela posterior, 2026-10-04
 
-[Plano](../../../../../api/apps/translation-gateway/docs/rendering-call-deadline.md)
+[Plano](../../../../../api/apps/translation-gateway/docs/rendering/rendering-call-deadline.md)
 e [evidência](evidence/rendering-call-deadline-2026-10-04.md) conferidos contra
 supervisor e adapter. O prazo monotônico original cobre a espera completa do
 chamador; operação, descarte e sinalização ficam sob posse privada. Uma chamada
@@ -862,7 +862,7 @@ violado no escopo inspecionado. Buffers internos, orçamento/containment e
 integração/distribuição continuam lacunas funcionais; nenhum requisito
 relaxado para aprovar. Runtime mobile/defaults/schema/gates preservados.
 
-[Plano](../../../../../api/apps/translation-gateway/docs/rendering-linux.md)
+[Plano](../../../../../api/apps/translation-gateway/docs/rendering/rendering-linux.md)
 e [evidência](evidence/rendering-linux-2026-10-04.md) conferidos. Harness Java
 opt-in de testes reutiliza o protocolo/JAR sem alterar runtime; aquisição
 autorizada separadamente e execução sem rede/pull/credenciais. Nenhum dado do
@@ -877,7 +877,7 @@ in-progress/open, TASK-002/006/007/008 abertas e 021 blocked, sem promoção.
 
 ## Admissão Boot — parcela posterior, 2026-10-04
 
-[Plano](../../../../../api/apps/translation-gateway/docs/rendering-archive.md)
+[Plano](../../../../../api/apps/translation-gateway/docs/rendering/rendering-archive.md)
 e [evidência](evidence/rendering-archive-2026-10-04.md) conferidos. O novo launcher
 admite explicitamente o JAR compatível sem mudar bootstrap normal ou bean; não
 há fallback para main/configuração externa. Fixtures sintéticas revalidam o
@@ -893,7 +893,7 @@ Hash técnico do gateway separado da governança; fotografias históricas mantid
 
 ## Isolamento explícito de JVM — parcela posterior, 2026-10-04
 
-[Plano](../../../../../api/apps/translation-gateway/docs/rendering-isolation.md)
+[Plano](../../../../../api/apps/translation-gateway/docs/rendering/rendering-isolation.md)
 e [evidência](evidence/rendering-isolation-2026-10-04.md) conferidos contra fontes
 e testes. Adapter explícito, IPC privado, validação integral, heap/prazo e
 limpeza por propriedade não mudam contratos públicos, schema, defaults ou

@@ -20,7 +20,7 @@ Cinco testes red foram executados no PostgreSQL 17 e em adapter falso:
 
 ## Plano e correção
 
-[Plano registrado antes dos testes/código](../../../../../../api/apps/translation-gateway/docs/lifecycle-retention.md).
+[Plano registrado antes dos testes/código](../../../../../../api/apps/translation-gateway/docs/architecture/lifecycle-retention.md).
 PostgreSQL continua dono do estado/locks; `job_id` determina a outbox e `id`
 determina o job. Reutilizados `attempt_count`, PKs/índice pending e intenção V7,
 sem contador/cache/coluna duplicados. FKs cascade e CHECKs preservados; nenhuma
@@ -96,7 +96,7 @@ O comando global e pins locais são os da
 [parcela anterior](lifecycle-controls-cleanup-2026-10-04.md#integridade-e-validação);
 caminhos Homebrew não representam pacote de produção.
 
-Node `node --test scripts/*.test.mjs`: exit 0, 85 pass e um opt-in de fonte não
+Node `node --test scripts/*/*.test.mjs`: exit 0, 85 pass e um opt-in de fonte não
 selecionado. Web `pnpm exec tsc -b`: exit 0. Mobile `pnpm check` integral:
 exit 0, 116 suítes/892 testes, além de 30 testes de performance, 24 SDD e seis
 FSD. Typecheck/lint/formato/links aprovados nessa rodada; warnings existentes

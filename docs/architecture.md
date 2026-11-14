@@ -137,7 +137,7 @@ Bootstrap/scheduler/storage indisponíveis, distribuição do codec e profiling
 continuam pendências operacionais/técnicas, sem promessa de SLA não medida.
 Em 2026-10-05, a decisão humana mantém libwebp lossless/exact, sem cópias
 redundantes na aplicação, admitindo buffers internos em orçamento total medido.
-O [plano de memória](../api/apps/translation-gateway/docs/rendering-memory-policy.md)
+O [plano de memória](../api/apps/translation-gateway/docs/rendering/rendering-memory-policy.md)
 separa prova local do codec de admissão do worker completo. O adapter FFM
 supervisionado é selecionável somente pelo opt-in local `supervised-native`,
 após admissão de pacote readonly fixado e relocável; o pai não carrega FFM.
@@ -145,7 +145,7 @@ Prova mínima do bean não é admissão do worker completo: contenção e recurs
 totais continuam pendentes, sem alterar a RAM cloud ou defaults desabilitados.
 Na parcela posterior, a filha aplica limites self-only Linux de endereço,
 CPU, arquivo e descritores antes de fontes/decode. São proteção parcial, não
-RAM agregada ou quota de staging; o [registro](../api/apps/translation-gateway/docs/rendering-native-limits.md)
+RAM agregada ou quota de staging; o [registro](../api/apps/translation-gateway/docs/rendering/rendering-native-limits.md)
 mantém abertas a admissão do worker completo e contenção de OOM compartilhado.
 O harness Spring/SQL/storage/renderer foi executado com providers falsos;
 [evidência](../mobile/docs/specs/features/MOB-FEAT-020-visual-translation-rendering/evidence/rendering-worker-linux-2026-10-07.md)
@@ -160,11 +160,11 @@ OOM compartilhado e distribuição operacional continuam pendentes.
 Tradução real e validação operacional continuam pendentes; nenhum upload real deve ser
 anunciado. A arquitetura, modelo relacional,
 fronteiras FSD, retenção e gates estão em
-[`translation-gateway-plan.md`](../api/apps/translation-gateway/docs/translation-gateway-plan.md).
+[`translation-gateway-plan.md`](../api/apps/translation-gateway/docs/architecture/translation-gateway-plan.md).
 
 Em 2026-10-18, Ruan manteve a implementação server-side e priorizou como
 [DT-76 urgente/P1](tech-debt.md#dt-76-renderização-híbrida-de-tradução--urgentep1)
-a [investigação de renderização híbrida](../api/apps/translation-gateway/docs/hybrid-rendering-options-2026-10-18.md).
+a [investigação de renderização híbrida](../api/apps/translation-gateway/docs/architecture/hybrid-rendering-options-2026-10-18.md).
 OCR/tradução remotos com overlay ou patches no aparelho são alternativas futuras,
 não arquitetura ativa, garantia de economia ou alteração dos contratos 020/021.
 

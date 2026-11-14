@@ -14,7 +14,7 @@ explícito da referência persistida, não o construtor legado de uma hora.
 O probe anterior permanece histórico; não deve ser convertido em prova da
 nova semântica ou sobrescrito.
 
-O [plano antes do código](../../../../../../api/apps/translation-gateway/docs/result-retention-snapshot.md)
+O [plano antes do código](../../../../../../api/apps/translation-gateway/docs/architecture/result-retention-snapshot.md)
 usa PostgreSQL em BCNF e V9 aditiva: `id → result_retention_seconds` e
 `(job_id, stage) → result_expires_at`. Prazo é congelado na admissão; replay
 não renova. Deadline dos dois arquivos é capturado antes do primeiro upload,

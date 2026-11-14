@@ -50,7 +50,7 @@ No reactor `api`, com Docker local e CLI libwebp 1.6.0 já verificados:
 
 Linhas acima representam argumentos de um único comando. Paths absolutos são
 locais, não instalados automaticamente. Pins/preparação existentes no
-[protocolo do codec](../../../../../../api/apps/translation-gateway/docs/rendering-codec.md).
+[protocolo do codec](../../../../../../api/apps/translation-gateway/docs/rendering/rendering-codec.md).
 Foco inicial: quatro testes/zero failures/errors/skips. Depois das asserções
 de logs, suíte completa recompilada: 27 testes/zero failures/errors/skips.
 Não houve correção de produção nem red artificial: é evidência complementar

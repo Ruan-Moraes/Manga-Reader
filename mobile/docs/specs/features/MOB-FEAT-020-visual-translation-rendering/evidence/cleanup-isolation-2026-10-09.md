@@ -11,7 +11,7 @@ Performance mobile N/A, sem runtime/UI do aplicativo.
 Um objeto com locator inválido ou erro de metadados/delete abortava a fase
 antes de outros objetos vencidos. Oito casos reproduziram isso antes do fix:
 cinco no GCS mockado e três no storage local, zero errors. Não é ausência de
-benchmark ou falha cloud. O [plano anterior ao código](../../../../../../api/apps/translation-gateway/docs/cleanup-isolation.md)
+benchmark ou falha cloud. O [plano anterior ao código](../../../../../../api/apps/translation-gateway/docs/architecture/cleanup-isolation.md)
 preserva PostgreSQL/BCNF/PKs/cascades e não cria tabela, índice ou contador.
 
 ## Correção e limites

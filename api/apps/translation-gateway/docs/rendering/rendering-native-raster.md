@@ -69,7 +69,7 @@ e equivalência de pixels nos sete destinos. A validação antiga de pintura
 aceitava um ARGB premultiplicado com tipo preservado pelo JDK; regressão
 reproduzida e rejeição explícita acrescentada. Não carrega libwebp nem resolve
 suas estruturas/ownership. Evidência e limites em
-[raster nativo](../../../../mobile/docs/specs/features/MOB-FEAT-020-visual-translation-rendering/evidence/rendering-native-raster-2026-10-04.md).
+[raster nativo](../../../../../mobile/docs/specs/features/MOB-FEAT-020-visual-translation-rendering/evidence/rendering-native-raster-2026-10-04.md).
 
 Referências Java 23: [Arena](https://docs.oracle.com/en/java/javase/23/docs/api/java.base/java/lang/foreign/Arena.html)
 e [MemorySegment](https://docs.oracle.com/en/java/javase/23/docs/api/java.base/java/lang/foreign/MemorySegment.html).

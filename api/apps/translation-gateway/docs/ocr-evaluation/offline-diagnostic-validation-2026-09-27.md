@@ -41,7 +41,7 @@ Não houve agrupamento, reordenação, correção de caracteres, CER ou nota.
 Comandos reproduzíveis:
 
 ```bash
-node --test api/apps/translation-gateway/scripts/*.test.mjs
+node --test api/apps/translation-gateway/scripts/*/*.test.mjs
 cd api
 ./mvnw -o -B -pl apps/translation-gateway -am test \
   -Dtest=VisionDiagnosticTest -Dsurefire.failIfNoSpecifiedTests=false

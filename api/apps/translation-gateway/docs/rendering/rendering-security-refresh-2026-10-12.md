@@ -1,6 +1,6 @@
 # Scan offline do pacote corrigido — 2026-10-12
 
-Complemento da [correção de cleanup](cleanup-owned-objects-2026-10-12.md).
+Complemento da [correção de cleanup](../architecture/cleanup-owned-objects-2026-10-12.md).
 É verificação das imagens novas, não aprovação de segurança, qualidade ou
 operação. 020 permanece `in-progress/open`; 021 continua bloqueada.
 Sem download, instalação, credencial, provider pago, push ou recurso cloud.

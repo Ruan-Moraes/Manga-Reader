@@ -4,7 +4,7 @@ Data: 2026-10-10. Estado: **pré-flight e habilitação solicitada da API Cloud 
 O pedido «vamos indo» autoriza esta preparação documental, não publicação,
 credenciais, recursos, cobrança ou execução. Guards e defaults permanecem intactos.
 
-Continuação preparada em 2026-10-12: o [roteiro operacional da 020](rendering-cloud-validation.md)
+Continuação preparada em 2026-10-12: o [roteiro operacional da 020](../rendering/rendering-cloud-validation.md)
 usa este histórico para planejar inventário, diagnóstico, admissão nativa e
 integração privada. Nenhuma nova consulta autenticada, publicação ou execução
 nessa preparação; as parcelas datadas abaixo permanecem históricas.

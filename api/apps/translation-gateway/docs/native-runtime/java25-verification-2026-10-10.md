@@ -13,7 +13,7 @@ cloud ou ativação de defaults. A 020 continua `in-progress` e a 021 bloqueada.
 - Checksum técnico: 394 arquivos,
   `e04aebeb4813b7d5701417bb8787636181640c4f8b515d5dada3aaea88281264`.
   Reproduzir o comando de hashing da
-  [consolidação OCR](../../../../mobile/docs/specs/features/MOB-FEAT-018-multilingual-ocr-regions/evidence/ocr-consolidation.md#checksum-técnico-reproduzível):
+  [consolidação OCR](../../../../../mobile/docs/specs/features/MOB-FEAT-018-multilingual-ocr-regions/evidence/ocr-consolidation.md#checksum-técnico-reproduzível):
   paths relativos ao gateway ordenados, NUL, bytes completos, NUL. Escopo:
   `src`, `scripts`, `openapi`, `pom.xml`, `.tf`/`.tfvars.example` diretamente em
   `infra/terraform`. Exclui Dockerfiles, docs, build, caches e artefatos privados.

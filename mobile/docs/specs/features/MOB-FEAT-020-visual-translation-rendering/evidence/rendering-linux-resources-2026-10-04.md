@@ -6,7 +6,7 @@ e containers locais; sem mídia real, ADC, provider, aquisição nova ou cloud.
 
 ## Plano, testes e isolamento
 
-[Plano anterior ao código](../../../../../../api/apps/translation-gateway/docs/rendering-linux-resources.md).
+[Plano anterior ao código](../../../../../../api/apps/translation-gateway/docs/rendering/rendering-linux-resources.md).
 O harness existente recebeu um opt-in separado de profiling, não um bean de
 produção. Input/request/JAR/codecs/probe são read-only; rede desligada, root
 read-only, uma CPU, 64 PIDs, cap-drop ALL e no-new-privileges. Scratch é tmpfs

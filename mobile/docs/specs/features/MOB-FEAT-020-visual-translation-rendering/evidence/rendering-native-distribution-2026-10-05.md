@@ -8,9 +8,9 @@ Python, provider, ADC, mídia privada, cloud ou deploy. 020 in-progress/open,
 
 ## Fontes e testes
 
-- [Plano e uso](../../../../../../api/apps/translation-gateway/docs/rendering-native-distribution.md).
-- [Pacote JS](../../../../../../api/apps/translation-gateway/scripts/render-native-package.mjs) e
-  [testes Node](../../../../../../api/apps/translation-gateway/scripts/render-native-package.test.mjs).
+- [Plano e uso](../../../../../../api/apps/translation-gateway/docs/rendering/rendering-native-distribution.md).
+- [Pacote JS](../../../../../../api/apps/translation-gateway/scripts/native-image/render-native-package.mjs) e
+  [testes Node](../../../../../../api/apps/translation-gateway/scripts/native-image/render-native-package.test.mjs).
 - [Admissão Java](../../../../../../api/apps/translation-gateway/src/main/java/com/toonlira/translationgateway/infrastructure/rendering/NativeCodecDistribution.java),
   [parser ELF limitado](../../../../../../api/apps/translation-gateway/src/main/java/com/toonlira/translationgateway/infrastructure/rendering/NativeCodecElf.java),
   [configuração opt-in](../../../../../../api/apps/translation-gateway/src/main/java/com/toonlira/translationgateway/infrastructure/rendering/NativeRenderingConfiguration.java).

@@ -100,7 +100,7 @@ Imagem exportada e scan OS existentes conferidos integralmente por hash:
 Scan histórico de 12/10 às 13:01 de Brasília: 16 ocorrências/10 CVEs,
 12 MEDIUM/quatro LOW, somente OS-pkgs. Não é cobertura integral de JRE, ausência
 de exploração ou novo scan nesta etapa. Aprovação restrita anterior do
-[diagnóstico Cloud Run](diagnostic-publication-review-2026-10-12.md) não aprova
+[diagnóstico Cloud Run](../ocr-evaluation/diagnostic-publication-review-2026-10-12.md) não aprova
 automaticamente um novo host VM. Bases/cache descartados seguem ausentes;
 nenhum banco de vulnerabilidades, modelo ou imagem foi reconstruído/baixado.
 

@@ -11,7 +11,7 @@ somente em fixtures de PostgreSQL temporário; renderer não está implementado.
 ## Plano anterior ao código
 
 A skill `database-design` orientou o
-[plano de schema](../../../../../../api/apps/translation-gateway/docs/result-acknowledgement.md):
+[plano de schema](../../../../../../api/apps/translation-gateway/docs/architecture/result-acknowledgement.md):
 PostgreSQL para metadados, uma linha por job com PK/FK cascade, timestamps e
 índice parcial para claim. `job_id` determina todos os atributos (BCNF).
 Instalação, objetos e estado são derivados das tabelas existentes; não há texto,

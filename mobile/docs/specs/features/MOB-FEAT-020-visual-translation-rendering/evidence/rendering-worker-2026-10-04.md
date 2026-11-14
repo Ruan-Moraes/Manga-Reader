@@ -5,7 +5,7 @@ nova imagem, deploy, recursos cloud, Termos ou mudança de runtime mobile.
 
 ## Plano e implementação
 
-[Plano anterior ao código](../../../../../../api/apps/translation-gateway/docs/rendering-worker.md):
+[Plano anterior ao código](../../../../../../api/apps/translation-gateway/docs/rendering/rendering-worker.md):
 PostgreSQL e BCNF existentes, PK/FK/constraints V6, storage privado para pixels
 e texto. Nenhuma V7, tabela, índice, contador/cache ou mudança pública de enum.
 Transações somente nos wrappers de persistência; nenhum I/O/render/provider
@@ -96,7 +96,7 @@ cd api
   -Drenderer.dwebp.path=CAMINHO_ABSOLUTO_ADMITIDO -Drenderer.dwebp.sha256=HASH_ADMITIDO
 ```
 
-Preparação explícita dos tools no [protocolo do codec](../../../../../../api/apps/translation-gateway/docs/rendering-codec.md).
+Preparação explícita dos tools no [protocolo do codec](../../../../../../api/apps/translation-gateway/docs/rendering/rendering-codec.md).
 Nenhuma instalação/rede Google é autorizada pelo comando. Testes focados e
 suíte leve passaram; gates integrais serão registrados na review após execução.
 MOB-DEC-007: runtime mobile não alterado, medição Android não aplicável a esta

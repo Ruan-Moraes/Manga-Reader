@@ -6,7 +6,7 @@ credencial, instalação de dependências, deploy ou habilitação de uploads.
 
 ## Modelagem e implementação
 
-[Plano anterior](../../../../../../api/apps/translation-gateway/docs/lifecycle-retention.md)
+[Plano anterior](../../../../../../api/apps/translation-gateway/docs/architecture/lifecycle-retention.md)
 conforme database-design: V7 aditiva BCNF, job_id PK/FK cascade, escopo
 ORIGINAL/ALL com CHECK, timestamps e índice parcial pending. Sem texto, URLs,
 chaves duplicadas, índice redundante ou contador. V1–V6 preservadas.

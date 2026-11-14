@@ -1,7 +1,7 @@
 # Diagnóstico independente de isolamento
 
 Ferramenta Java/JDK 23, sem dependências adicionais, separada do JAR Spring:
-[`WorkerIsolationProbe.java`](../scripts/isolation/WorkerIsolationProbe.java).
+[`WorkerIsolationProbe.java`](../../scripts/isolation/WorkerIsolationProbe.java).
 Não inicia worker, banco, OCR/tradução/layout/rendering, ADC ou rede. Não carrega
 FFM/ONNX/libwebp, não altera limites, mounts ou preferência OOM e não envia arquivos.
 Somente o relatório opcional explicitamente solicitado é gravado, em arquivo novo.
@@ -70,7 +70,7 @@ execução Cloud Run. Não colocar arquivos `.class` ou relatórios no Git.
 Testes reproduzíveis, sem Docker/download:
 
 ```bash
-node --test scripts/worker-isolation-probe.test.mjs
+node --test scripts/isolation/worker-isolation-probe.test.mjs
 ```
 
 O teste compila a ferramenta e fixtures Java em diretório temporário exclusivo,
@@ -102,9 +102,9 @@ no [plano da prova cloud](worker-isolation-cloud-plan.md), ainda não executado.
 
 ## Imagem local exclusiva do diagnóstico
 
-[Preparador Node](../scripts/worker-isolation-image.mjs),
-[testes](../scripts/worker-isolation-image.test.mjs) e
-[Dockerfile específico](../Dockerfile.isolation-probe). Não usa o Dockerfile/JAR
+[Preparador Node](../../scripts/isolation/worker-isolation-image.mjs),
+[testes](../../scripts/isolation/worker-isolation-image.test.mjs) e
+[Dockerfile específico](../../scripts/isolation/Dockerfile.isolation-probe). Não usa o Dockerfile/JAR
 Spring. O preparador não chama Docker, SDK, rede ou credenciais: somente valida
 hash, reserva diretório novo e compila o probe com `javac -proc:none --release 23`.
 Ambiente do compilador limitado a PATH/JAVA_HOME, sem processors ou plugins.
@@ -112,8 +112,8 @@ Ambiente do compilador limitado a PATH/JAVA_HOME, sem processors ou plugins.
 Na pasta do módulo, com `probe_dir` absoluto/exclusivo preparado como acima:
 
 ```bash
-node scripts/worker-isolation-image.mjs --destination "$probe_dir/prepared" --source-sha256 "$(shasum -a 256 scripts/isolation/WorkerIsolationProbe.java | cut -d ' ' -f 1)"
-node --test scripts/worker-isolation-image.test.mjs
+node scripts/isolation/worker-isolation-image.mjs --destination "$probe_dir/prepared" --source-sha256 "$(shasum -a 256 scripts/isolation/WorkerIsolationProbe.java | cut -d ' ' -f 1)"
+node --test scripts/isolation/worker-isolation-image.test.mjs
 ```
 
 Ele exige as oito classes esperadas, header CAFEBABE/major 67 e hashes. O contexto

@@ -7,7 +7,7 @@ cloud ou chamada real de provider. Defaults operacionais permanecem desabilitado
 
 ## Preparação executada
 
-O preparador JavaScript [ubuntu-base-update.mjs](../scripts/ubuntu-base-update.mjs)
+O preparador JavaScript [ubuntu-base-update.mjs](../../scripts/native-image/ubuntu-base-update.mjs)
 usa bases Temurin já presentes, identificadas por digest, e configuração Docker
 isolada sem credenciais/helpers/proxy/context remoto. A instalação é opt-in;
 destino existente não é retomado ou sobrescrito.
@@ -204,7 +204,7 @@ Com Docker local, config isolada sem credenciais, bases já presentes e autoriza
 dos dois pacotes, no módulo gateway:
 
 ```text
-node scripts/ubuntu-base-update.mjs
+node scripts/native-image/ubuntu-base-update.mjs
   --architecture arm64
   --destination <diretorio-absoluto-canonico-inexistente>
   --docker-config <config-isolada>
@@ -217,4 +217,4 @@ instalação implícita de dependências ou reutilização de destino. Falha ap�
 os logs/planos e gera `failure.json`; limpar/repetir exige novo destino e não
 transforma uma preparação parcial em base admitida. Apenas o container criado
 por essa execução é removido automaticamente. Ver também o
-[empacotamento nativo](rendering-native-image.md).
+[empacotamento nativo](../rendering/rendering-native-image.md).

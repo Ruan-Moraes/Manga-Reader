@@ -97,7 +97,7 @@ sintéticos. Comparam os sete destinos pixel a pixel com a composição existent
 preservando fontes, original, regiões/ordem/texto e manifesto estrito; PNG/WebP
 vazios permanecem equivalentes. Não são revisão linguística ou benchmark nos
 80 milhões de pixels. Evidência e gates datados estão na
-[parcela da 020](../../../../mobile/docs/specs/features/MOB-FEAT-020-visual-translation-rendering/evidence/rendering-isolation-2026-10-04.md).
+[parcela da 020](../../../../../mobile/docs/specs/features/MOB-FEAT-020-visual-translation-rendering/evidence/rendering-isolation-2026-10-04.md).
 
 ## Parcela posterior — prazo do chamador, 2026-10-04
 

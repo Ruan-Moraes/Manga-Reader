@@ -114,6 +114,6 @@ enfraquece a garantia de posse nem admite duas operações simultâneas. Uma thr
 presa ou limpeza sem confirmação exige recuperação explícita/restart, não retry.
 O supervisor não modifica o bean local do worker nem defaults.
 
-[Evidência datada](../../../../mobile/docs/specs/features/MOB-FEAT-020-visual-translation-rendering/evidence/rendering-call-deadline-2026-10-04.md)
+[Evidência datada](../../../../../mobile/docs/specs/features/MOB-FEAT-020-visual-translation-rendering/evidence/rendering-call-deadline-2026-10-04.md)
 registra red/green, hashes e gates. A prova anterior Linux/Boot permanece
 histórica; o JAR desta parcela foi reempacotado antes de ser revalidado.

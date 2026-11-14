@@ -59,7 +59,7 @@ XMLs frescos desde `2026-10-08T10:23:31Z`, contados antes da suíte leve.
 Não é aprovação do extended nativo completo. Comando: `./mvnw -o -q test`,
 Docker local já preparado, sem instalação ou chamadas externas de providers.
 
-Node `node --test scripts/*.test.mjs`: 92 pass/um opt-in não selecionado,
+Node `node --test scripts/*/*.test.mjs`: 92 pass/um opt-in não selecionado,
 zero failures. Web `./node_modules/.bin/tsc -b`: exit 0. Primeiro `pnpm check`
 integral passou com 116 suítes/892 testes antes da consolidação documental.
 A checagem intermediária SDD recusou checksums após a nova entrada evidence;

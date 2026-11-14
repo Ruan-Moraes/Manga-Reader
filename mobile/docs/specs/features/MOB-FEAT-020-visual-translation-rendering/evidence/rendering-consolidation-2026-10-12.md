@@ -7,7 +7,7 @@ locais não autorizam publicação, recursos cloud, credenciais ou provider pago
 
 ## Fontes e artefatos distintos
 
-O [registro técnico do cleanup](../../../../../../api/apps/translation-gateway/docs/cleanup-owned-objects-2026-10-12.md)
+O [registro técnico do cleanup](../../../../../../api/apps/translation-gateway/docs/architecture/cleanup-owned-objects-2026-10-12.md)
 documenta a correção, o plano sem mudança de schema e os testes executados.
 Snapshot técnico atual: 419 arquivos, SHA-256
 `1925cc08e68adbe5a5768f1077f1f25995d8da438f02b7dcdcc45ea233acf82a`.
@@ -59,7 +59,7 @@ em `PlatformBadge.tsx`, que não foi corrigida automaticamente.
 
 ## Galeria sintética, não aprovação humana
 
-A [galeria anterior](../../../../../../api/apps/translation-gateway/docs/rendering-visual-review-2026-10-12.md)
+A [galeria anterior](../../../../../../api/apps/translation-gateway/docs/rendering/rendering-visual-review-2026-10-12.md)
 contém 14 casos nos sete destinos/duas arquiteturas, quatro regiões por imagem,
 contraste claro/escuro, polígono inclinado e overflow completo. Onze testes de
 fixtures/harness passaram; exterior dos polígonos intacto e WebP/PNG iguais

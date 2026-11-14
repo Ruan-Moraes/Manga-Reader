@@ -30,7 +30,7 @@ Esta evidência não demonstra imagem traduzida, qualidade visual ou operação 
   provider, imagem privada ou integração com worker adicionada nesta parcela.
 
 Fontes e testes:
-[plano/contrato técnico](../../../../../../api/apps/translation-gateway/docs/rendering-contracts.md),
+[plano/contrato técnico](../../../../../../api/apps/translation-gateway/docs/rendering/rendering-contracts.md),
 [domínio](../../../../../../api/apps/translation-gateway/src/main/java/com/toonlira/translationgateway/domain/rendering),
 [porta](../../../../../../api/apps/translation-gateway/src/main/java/com/toonlira/translationgateway/application/port/RenderPort.java),
 [codec do manifesto](../../../../../../api/apps/translation-gateway/src/main/java/com/toonlira/translationgateway/application/RenderManifestService.java),

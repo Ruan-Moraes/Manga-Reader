@@ -18,8 +18,8 @@ provider, cloud/credenciais, mídia privada, deploy ou habilitação de uploads.
   e POM do módulo, sem target/docs/cache. Não é o checksum mobile nem cobre
   Dockerfile/POM pai. Históricos mantêm seus hashes próprios.
 
-[Contrato/configuração/repetição](../../../../../../api/apps/translation-gateway/docs/rendering-glibc-integration.md)
-e [preparação com pins upstream](../../../../../../api/apps/translation-gateway/docs/rendering-glibc-preparation.md).
+[Contrato/configuração/repetição](../../../../../../api/apps/translation-gateway/docs/rendering/rendering-glibc-integration.md)
+e [preparação com pins upstream](../../../../../../api/apps/translation-gateway/docs/rendering/rendering-glibc-preparation.md).
 Nova plataforma explícita glibc ARM64/x86_64 coexiste com musl, sem alias ou
 fallback. `NativeRuntimeElf` verifica `PT_INTERP` do Java por I/O limitado,
 sem FFM/subprocesso no pai. Pacote exige deps ELF específicas, licença, hash,

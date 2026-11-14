@@ -60,7 +60,7 @@ Não confundir providers falsos com qualidade real. Receita/pins do
 `LinuxWorkerMemoryAdmissionTest,IsolatedRenderAdapterTest,NativeWorkerMemoryAdmissionLinuxTest`.
 
 Resultados, fotografia técnica e gates:
-[evidência](../../../../mobile/docs/specs/features/MOB-FEAT-020-visual-translation-rendering/evidence/rendering-memory-admission-2026-10-07.md).
+[evidência](../../../../../mobile/docs/specs/features/MOB-FEAT-020-visual-translation-rendering/evidence/rendering-memory-admission-2026-10-07.md).
 Fontes primárias: [cgroup v2](https://www.kernel.org/doc/html/latest/admin-guide/cgroup-v2.html)
 e [RLIMIT_AS](https://man7.org/linux/man-pages/man2/getrlimit.2.html).
 

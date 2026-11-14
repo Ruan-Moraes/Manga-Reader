@@ -90,4 +90,4 @@ imagens privadas para repetir fixtures.
 Cloud permanece 1 GiB/defaults disabled. Nenhuma mudança de schema, migration,
 dependência, C próprio/Python, ADC/provider, deploy, legal ou runtime mobile.
 Gates/resultados/hashes estão na
-[evidência](../../../../mobile/docs/specs/features/MOB-FEAT-020-visual-translation-rendering/evidence/rendering-supervised-native-2026-10-05.md).
+[evidência](../../../../../mobile/docs/specs/features/MOB-FEAT-020-visual-translation-rendering/evidence/rendering-supervised-native-2026-10-05.md).

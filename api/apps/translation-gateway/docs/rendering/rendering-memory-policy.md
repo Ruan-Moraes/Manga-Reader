@@ -1,7 +1,7 @@
 # libwebp com orçamento total — plano incremental, 2026-10-05
 
 Decisão humana: Ruan escolheu manter libwebp após a pesquisa das alternativas.
-A [spec 020](../../../../mobile/docs/specs/features/MOB-FEAT-020-visual-translation-rendering/spec.md)
+A [spec 020](../../../../../mobile/docs/specs/features/MOB-FEAT-020-visual-translation-rendering/spec.md)
 admite buffers internos limitados/contabilizados, não cópias redundantes na
 aplicação. Não altera WebP lossless/exact, limite de 80M pixels, 12 MiB de
 entrada, 12.000 pixels por dimensão, manifesto ou contrato RenderPort.
@@ -11,7 +11,7 @@ entrada, 12.000 pixels por dimensão, manifesto ou contrato RenderPort.
 - O raster Java compartilhado evita PAM/Import/Copy integrais no wrapper FFM.
   O source oficial VP8L ainda cria buffers próprios: encoder e decoder não
   tornam-se streaming por receber um ponteiro emprestado.
-- O [perfil anterior](../../../../mobile/docs/specs/features/MOB-FEAT-020-visual-translation-rendering/evidence/rendering-native-resources-2026-10-04.md)
+- O [perfil anterior](../../../../../mobile/docs/specs/features/MOB-FEAT-020-visual-translation-rendering/evidence/rendering-native-resources-2026-10-04.md)
   passou com teto experimental de 4 GiB e falhou no máximo multicolor com 1 GiB.
   Isso não valida o worker completo ou um orçamento intermediário.
 - Hipótese da próxima prova: 2 GiB são suficientes para as duas fixtures
@@ -70,7 +70,7 @@ filesystem do computador é recusado antes da escrita. Três ARM64 e um x86_64
 emulado observaram espaço útil zero, FAILED sem artefatos → sucessora READY,
 duas filhas encerradas e cleanup/original/reentrega íntegros. Só src/test muda;
 produção/default/RAM cloud/qualidade permanecem iguais. Ver
-[evidência e reprodução](../../../../mobile/docs/specs/features/MOB-FEAT-020-visual-translation-rendering/evidence/rendering-admitted-disk-fault-2026-10-08.md).
+[evidência e reprodução](../../../../../mobile/docs/specs/features/MOB-FEAT-020-visual-translation-rendering/evidence/rendering-admitted-disk-fault-2026-10-08.md).
 Timeout/cancelamento admitidos e orçamento agregado ainda não aprovados.
 
 Nenhuma mudança de bean/runtime, schema, migration, infra, ADC/provider, mídia

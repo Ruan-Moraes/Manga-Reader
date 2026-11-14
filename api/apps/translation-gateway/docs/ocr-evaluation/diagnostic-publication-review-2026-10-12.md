@@ -1,6 +1,6 @@
 # Revisão prévia do diagnóstico cloud — 2026-10-12
 
-Complemento do [roteiro operacional](rendering-cloud-validation.md). Parcela
+Complemento do [roteiro operacional](../rendering/rendering-cloud-validation.md). Parcela
 local/pública, sem gcloud, credenciais, downloads, instalações, push ou recurso
 cloud. Não é scan atualizado nem aprovação de segurança/operação. 020 continua
 `in-progress/open`, 021 bloqueada. Arquivos de performance preservados.

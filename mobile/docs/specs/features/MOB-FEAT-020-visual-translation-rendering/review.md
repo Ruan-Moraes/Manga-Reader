@@ -47,7 +47,7 @@ checksum mobile reconfirmado: SHA-256
 Flags de qualidade, segurança e operação continuam false; não é promoção da
 feature nem substitui revisão humana ou controles no ambiente alvo.
 
-Suplemento de segurança: [scan do pacote corrigido](../../../../../api/apps/translation-gateway/docs/rendering-security-refresh-2026-10-12.md)
+Suplemento de segurança: [scan do pacote corrigido](../../../../../api/apps/translation-gateway/docs/rendering/rendering-security-refresh-2026-10-12.md)
 concluído offline nas imagens novas, DBs locais conferidos/read-only e válidos
 na execução. Cada alvo: 121 pacotes OS, 18 ocorrências (13 MEDIUM/cinco LOW),
 zero nas 195 dependências Java identificadas. Config exportado/scan e todas
@@ -970,7 +970,7 @@ Runtime mobile não alterado; performance nativa não inferida de testes Java.
 
 ## Isolamento explícito de JVM — parcela de 2026-10-04
 
-[Plano](../../../../../api/apps/translation-gateway/docs/rendering-isolation.md)
+[Plano](../../../../../api/apps/translation-gateway/docs/rendering/rendering-isolation.md)
 e [evidência](evidence/rendering-isolation-2026-10-04.md) inspecionados. IPC
 sem desserialização arbitrária, contagens/tamanho/EOF limitados, reconstrução
 pelos validadores e revalidação do arquivo conferidos. Processo Java filho tem
@@ -1093,7 +1093,7 @@ substitui revisão visual/operacional nem altera o verdict parcial.
 
 ## Entrega privada nas consultas — parcela posterior, 2026-10-04
 
-[Plano](../../../../../api/apps/translation-gateway/docs/result-query-delivery.md)
+[Plano](../../../../../api/apps/translation-gateway/docs/architecture/result-query-delivery.md)
 e [evidência](evidence/result-query-delivery-2026-10-04.md) inspecionados.
 Projeção bloqueante owner-scoped, snapshots curtos e NOT_SUPPORTED no
 coordenador mantêm assinatura fora de TX. ACK/TTL durante I/O, mudança de
@@ -1120,7 +1120,7 @@ SDD/links finais reexecutados após estabilização, sem instalação/cloud/prov
 
 ## Fila de ciclo de vida — parcela posterior, 2026-10-04
 
-[Plano](../../../../../api/apps/translation-gateway/docs/lifecycle-retention.md)
+[Plano](../../../../../api/apps/translation-gateway/docs/architecture/lifecycle-retention.md)
 e [evidência](evidence/lifecycle-retention-2026-10-04.md) inspecionados.
 BCNF, FK cascade, CHECKs e índice parcial da V7 preservam V1–V6. Intenção
 individual acompanha estado na transação; reconciliador limitado cobre históricos
@@ -1144,7 +1144,7 @@ são reclassificados como mera falta de benchmark. Detalhes na evidência.
 
 ## Admissão Boot — parcela posterior, 2026-10-04
 
-[Plano](../../../../../api/apps/translation-gateway/docs/rendering-archive.md)
+[Plano](../../../../../api/apps/translation-gateway/docs/rendering/rendering-archive.md)
 e [evidência](evidence/rendering-archive-2026-10-04.md) conferidos contra launcher
 e testes. Admissão de um único JAR Boot com manifest/conteúdo allowlisted;
 configuração externa, mistura de classpath ou main indevida falham fechadas.
@@ -1161,7 +1161,7 @@ blocked. A prova do JAR não substitui recursos/deadline/profiling/retenção pe
 
 ## Linux ARM64 local — parcela posterior, 2026-10-04
 
-[Plano](../../../../../api/apps/translation-gateway/docs/rendering-linux.md)
+[Plano](../../../../../api/apps/translation-gateway/docs/rendering/rendering-linux.md)
 e [evidência](evidence/rendering-linux-2026-10-04.md) conferidos. Aquisição
 explicitamente autorizada, pins de imagem/binaries e ausência de pull/rede/
 credenciais em teste. Docker CLI local com configuração vazia, mounts mínimos,
@@ -1179,7 +1179,7 @@ changes-requested e tasks/status/gate conservadores preservados; 021 blocked.
 
 ## Prazo e posse da chamada — parcela posterior, 2026-10-04
 
-[Plano](../../../../../api/apps/translation-gateway/docs/rendering-call-deadline.md)
+[Plano](../../../../../api/apps/translation-gateway/docs/rendering/rendering-call-deadline.md)
 e [evidência](evidence/rendering-call-deadline-2026-10-04.md) conferidos contra
 código/testes. Regressão real de launcher travado foi reproduzida antes da
 implementação; espera limitada, transferência única e descarte tardio conferidos.

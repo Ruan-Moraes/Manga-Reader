@@ -13,7 +13,7 @@ modelos. Não instala dependências. A CLI recusa opções cloud e download.
 Na raiz do repositório, com perfil privado previamente conferido:
 
 ```bash
-node api/apps/translation-gateway/scripts/ocr-evaluation.mjs columns \
+node api/apps/translation-gateway/scripts/ocr/ocr-evaluation.mjs columns \
   --run-id ja-tokyo-puck-real-20260927-a \
   --diagnostic structure-20260927-b \
   --experiment-id columns-20260927-a \
@@ -28,7 +28,7 @@ anterior para fazê-la parecer correta. Não há ajuste automático de parâmetr
 Para atualizar SOMENTE a apresentação dos artefatos salvos:
 
 ```bash
-node api/apps/translation-gateway/scripts/ocr-evaluation.mjs report \
+node api/apps/translation-gateway/scripts/ocr/ocr-evaluation.mjs report \
   --run-id ja-tokyo-puck-real-20260927-a --columns columns-20260927-a
 ```
 
@@ -109,7 +109,7 @@ salvas pelo navegador. A ampliação SVG usa a imagem original, sem gerar recort
 
 ## Validação e ponto de parada
 
-Testes: `node --test api/apps/translation-gateway/scripts/*.test.mjs` na raiz.
+Testes: `node --test api/apps/translation-gateway/scripts/*/*.test.mjs` na raiz.
 Fixtures são sintéticas; nenhuma imagem ou transcrição real entra no Git.
 Executar Maven global offline com Docker, web `tsc -b`, SDD/links,
 formatação direcionada e `git diff --check`. Não executar builds Maven concorrentes.

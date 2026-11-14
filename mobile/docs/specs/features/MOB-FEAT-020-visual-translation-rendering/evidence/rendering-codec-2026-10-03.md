@@ -25,7 +25,7 @@ identificadas por caminho e hash. Não há busca no PATH, fallback ou bean Sprin
   criado pela operação, sem varrer diretório ou remover arquivo alheio. Falha
   de cleanup tem código sanitizado próprio.
 
-Fontes: [plano e comandos](../../../../../../api/apps/translation-gateway/docs/rendering-codec.md),
+Fontes: [plano e comandos](../../../../../../api/apps/translation-gateway/docs/rendering/rendering-codec.md),
 [adapter e PAM](../../../../../../api/apps/translation-gateway/src/main/java/com/toonlira/translationgateway/infrastructure/rendering),
 [testes](../../../../../../api/apps/translation-gateway/src/test/java/com/toonlira/translationgateway/infrastructure/rendering).
 
@@ -89,7 +89,7 @@ opt-in nativo: exit 0 após todos os casos adicionados. Gateway: 473 testes,
 48 classes, zero falhas/erros/ignorados, incluindo V1–V5 e gRPC local.
 Suíte leve `-Dtest.excludedGroups=testcontainers`: exit 0; nessa execução,
 o opt-in nativo não foi passado e não constitui prova dos testes nativos.
-Node `node --test api/apps/translation-gateway/scripts/ocr-*.test.mjs`:
+Node `node --test api/apps/translation-gateway/scripts/ocr/ocr-*.test.mjs`:
 85 aprovados, zero falhas e um opt-in tipográfico não executado.
 O resultado final de `pnpm check`, SDD, links e formato está na
 [review corrente](../review.md); headers são rebase mecânico, sem renovar

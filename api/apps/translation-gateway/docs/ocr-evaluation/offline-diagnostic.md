@@ -18,10 +18,10 @@ abaixo reutiliza o classpath desse teste; se dependências/relatório de teste
 estiverem ausentes, falha sem instalar nada. Na raiz do repositório:
 
 ```bash
-node api/apps/translation-gateway/scripts/ocr-evaluation.mjs diagnose \
+node api/apps/translation-gateway/scripts/ocr/ocr-evaluation.mjs diagnose \
   --run-id ja-tokyo-puck-real-20260927-a --analysis-id structure-local-01
 
-node api/apps/translation-gateway/scripts/ocr-evaluation.mjs report \
+node api/apps/translation-gateway/scripts/ocr/ocr-evaluation.mjs report \
   --run-id ja-tokyo-puck-real-20260927-a --diagnostic structure-local-01
 ```
 

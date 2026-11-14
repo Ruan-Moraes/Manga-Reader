@@ -6,7 +6,7 @@ não em verificação final. TASK-002..007 permanecem abertas.
 
 ## Fontes e cobertura
 
-- [Contratos e limites](../../../../../../api/apps/translation-gateway/docs/translation-contracts.md).
+- [Contratos e limites](../../../../../../api/apps/translation-gateway/docs/architecture/translation-contracts.md).
 - [Validador](../../../../../../api/apps/translation-gateway/src/main/java/com/toonlira/translationgateway/domain/translation/TranslationValidator.java)
   e [testes](../../../../../../api/apps/translation-gateway/src/test/java/com/toonlira/translationgateway/domain/translation/TranslationValidatorTest.java).
 - [Porta sem adapter](../../../../../../api/apps/translation-gateway/src/main/java/com/toonlira/translationgateway/application/port/TranslationPort.java).

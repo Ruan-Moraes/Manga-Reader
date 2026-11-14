@@ -117,11 +117,11 @@ sem listener HTTP. Replay protobuf usa o mapper real sem criar ADC/GCS/Vision.
 Da raiz:
 
 ```bash
-node api/apps/translation-gateway/scripts/ocr-evaluation.mjs layout \
+node api/apps/translation-gateway/scripts/ocr/ocr-evaluation.mjs layout \
   --run-id pt-p01-real-20260927-a --analysis-id layout-minha-rodada --direction ltr
 
 # Regenerar HTML: não executa inferência, Maven ou provider
-node api/apps/translation-gateway/scripts/ocr-evaluation.mjs report \
+node api/apps/translation-gateway/scripts/ocr/ocr-evaluation.mjs report \
   --run-id pt-p01-real-20260927-a --layout layout-minha-rodada
 ```
 

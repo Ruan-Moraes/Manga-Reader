@@ -2,7 +2,7 @@
 
 As medições e os digests desta parcela descrevem Java 23 e ficam preservados.
 O runtime atual foi migrado separadamente para
-[Java 25](java25-migration.md), com novas imagens/pins e toolchain; ao repetir
+[Java 25](../native-runtime/java25-migration.md), com novas imagens/pins e toolchain; ao repetir
 os comandos abaixo, acrescentar `-t <toolchains.xml>` e consultar os alvos
 atuais. Esta fotografia não deve ser usada para aprovar a versão nova.
 
@@ -117,7 +117,7 @@ do worker nessa base e decisão de orçamento após provas integrais, com gates
 operacionais/qualidade próprios. Não habilitar uploads para testar.
 
 Resultados e checksum da parcela ficam na
-[evidência sanitizada](../../../../mobile/docs/specs/features/MOB-FEAT-020-visual-translation-rendering/evidence/rendering-glibc-integration-2026-10-10.md).
+[evidência sanitizada](../../../../../mobile/docs/specs/features/MOB-FEAT-020-visual-translation-rendering/evidence/rendering-glibc-integration-2026-10-10.md).
 020 permanece `in-progress/open`, verdict `changes-requested`,
 TASK-002/006/007/008 abertas; 021 continua bloqueada. APIs, manifests,
 migrations, dados OCR históricos e código mobile não foram alterados.

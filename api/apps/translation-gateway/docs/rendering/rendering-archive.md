@@ -88,7 +88,7 @@ codec Linux não existe no cache local; não foi baixada. Contenção atômica d
 processos nativos, orçamento de memória/disco, deadline integral do chamador e
 integração supervisionada no worker continuam trabalho funcional aberto.
 020 in-progress/open e 021 blocked; defaults disabled. A
-[evidência datada](../../../../mobile/docs/specs/features/MOB-FEAT-020-visual-translation-rendering/evidence/rendering-archive-2026-10-04.md)
+[evidência datada](../../../../../mobile/docs/specs/features/MOB-FEAT-020-visual-translation-rendering/evidence/rendering-archive-2026-10-04.md)
 guarda comandos efetivos, hashes e resultados; conclusões históricas preservadas.
 
 Esta fotografia antecede a aquisição e a [prova Linux ARM64 local](rendering-linux.md)

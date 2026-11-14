@@ -10,7 +10,7 @@ somente runtime Java e documentação foram alterados.
 
 O disclosure permite 1..3600 segundos, mas o código anterior aplicava somente
 uma hora. Essa era uma divergência funcional, não falta de benchmark.
-O [plano anterior ao código](../../../../../../api/apps/translation-gateway/docs/original-retention.md)
+O [plano anterior ao código](../../../../../../api/apps/translation-gateway/docs/architecture/original-retention.md)
 define PostgreSQL/BCNF, snapshot escalar e deadline derivado, sem índice,
 contador ou cache novo. V8 adiciona `original_retention_seconds` com CHECK;
 V1–V7 permanecem intactas. Default legado 3600 é ancorado à criação original,

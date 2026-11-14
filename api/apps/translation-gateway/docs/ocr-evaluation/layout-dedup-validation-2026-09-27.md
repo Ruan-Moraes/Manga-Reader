@@ -75,7 +75,7 @@ Docker/loopback passou; nenhuma permissão ou configuração cloud foi alterada.
 Comandos reproduzíveis a partir da raiz (Maven dentro de `api`):
 
 ```bash
-node --test api/apps/translation-gateway/scripts/*.test.mjs
+node --test api/apps/translation-gateway/scripts/*/*.test.mjs
 cd api
 ./mvnw -o -q -pl apps/translation-gateway -am test
 ./mvnw -o -q test

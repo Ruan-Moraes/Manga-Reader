@@ -80,7 +80,7 @@ transação pendente não prova rollback. Antes de apagar uploads sem referênci
 os três workers resolvem a falha condicional sob o lock existente e releem os
 vínculos. Commit vencedor preserva arquivos; rollback vencedor permite descarte;
 resolução desconhecida preserva órfãos para o failsafe. Ver a
-[evidência](../../../../mobile/docs/specs/features/MOB-FEAT-020-visual-translation-rendering/evidence/commit-resolution-2026-10-09.md).
+[evidência](../../../../../mobile/docs/specs/features/MOB-FEAT-020-visual-translation-rendering/evidence/commit-resolution-2026-10-09.md).
 V1–V7, índices, formato dos manifestos e códigos públicos permanecem iguais.
 
 ## Verificação e limites desta parcela

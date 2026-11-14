@@ -40,7 +40,7 @@ convertidas em admissão da distribuição.
 
 ## Implementação e proteção
 
-[rootfs-archive-audit.mjs](../scripts/rootfs-archive-audit.mjs) lê os próprios
+[rootfs-archive-audit.mjs](../../scripts/single-jre/rootfs-archive-audit.mjs) lê os próprios
 archives, sem extrair ou executar suas entradas. Confere SHA-256 integral,
 checksums USTAR, tipos, tamanhos/padding, UTF-8 estrito, PAX e fim do archive.
 Rejeita duplicatas, traversal, hardlinks sem destino regular/cíclicos, extensions
@@ -68,7 +68,7 @@ normaliza nomes ou reconstrói headers. A saída é exclusiva e conferida novame
 pelo auditor. Falha deixa evidência parcial privada, sem recibo de sucesso,
 sem sobrescrita/retomada ou limpeza abrangente. Nenhum arquivo fonte é removido.
 
-O [verificador de recibos](../scripts/single-jre-proof.mjs) agora exige também
+O [verificador de recibos](../../scripts/single-jre/single-jre-proof.mjs) agora exige também
 essa auditoria física, não apenas capturas e hashes de arquivos. Retorna
 `captured-records-and-archive-headers-content`; `baseSecurityApproved=false`,
 `baseOperationalApproved=false` e a pendência de metadata do filesystem ficam.
@@ -100,13 +100,13 @@ O diretório-pai deve existir e ser privado; a saída deve ser nova. Inputs são
 readonly. Nenhum comando baixa dependências ou arquivos automaticamente.
 
 ```bash
-node /repo/api/apps/translation-gateway/scripts/rootfs-archive-audit.mjs filter \
+node /repo/api/apps/translation-gateway/scripts/single-jre/rootfs-archive-audit.mjs filter \
   --source /privado/source-rootfs.tar \
   --source-sha256 <sha256-original> \
   --architecture arm64 \
   --destination /privado/nova-filtragem
 
-node /repo/api/apps/translation-gateway/scripts/rootfs-archive-audit.mjs \
+node /repo/api/apps/translation-gateway/scripts/single-jre/rootfs-archive-audit.mjs \
   --before /privado/source-rootfs.tar \
   --before-sha256 <sha256-original> \
   --after /privado/nova-filtragem/rootfs.tar \

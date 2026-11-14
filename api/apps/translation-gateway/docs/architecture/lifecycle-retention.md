@@ -9,7 +9,7 @@ Parcela posterior de 2026-10-09 UTC: reserva ambígua da submissão não autoriz
 apagar o original. Consulta escalar de posse usa lock da instalação e snapshot
 independente antes do descarte; estado desconhecido preserva o upload para
 varredura privada. Sem migration/contador novo. Ver a
-[evidência](../../../../mobile/docs/specs/features/MOB-FEAT-020-visual-translation-rendering/evidence/submission-original-ownership-2026-10-09.md).
+[evidência](../../../../../mobile/docs/specs/features/MOB-FEAT-020-visual-translation-rendering/evidence/submission-original-ownership-2026-10-09.md).
 Retenção abreviada do original ainda exige execução própria; esta correção não
 fecha a auditoria integral de prazo ou operação.
 
@@ -120,7 +120,7 @@ Cada fase de manutenção é tentada independentemente; o resultado final report
 somente `storage-unavailable` ou `internal-error`, sem causas SQL/storage.
 Isso não torna o serviço disponível se não conseguir inicializar por falha SQL,
 nem garante scheduler/latência de delete em produção. Essas provas continuam
-operacionais. Ver [evidência corrente](../../../../mobile/docs/specs/features/MOB-FEAT-020-visual-translation-rendering/evidence/lifecycle-worker-cleanup-2026-10-04.md).
+operacionais. Ver [evidência corrente](../../../../../mobile/docs/specs/features/MOB-FEAT-020-visual-translation-rendering/evidence/lifecycle-worker-cleanup-2026-10-04.md).
 
 ## Plano seguinte — cancelamento e dispatch após commit
 
@@ -166,7 +166,7 @@ reproduziu delete dentro da TX do chamador antes da correção. Claim/confirmaç
 próprios não são revertidos por rollback posterior do chamador após exclusão.
 Testes com arquivos reais confirmam isolamento do job, original reutilizável e
 outro job ativo preservados. V5/V7 e contratos públicos inalterados. Ver
-[evidência da parcela](../../../../mobile/docs/specs/features/MOB-FEAT-020-visual-translation-rendering/evidence/lifecycle-controls-cleanup-2026-10-04.md).
+[evidência da parcela](../../../../../mobile/docs/specs/features/MOB-FEAT-020-visual-translation-rendering/evidence/lifecycle-controls-cleanup-2026-10-04.md).
 Não é aceite de retenção operacional integral, interleavings exaustivas,
 distribuição, caps/deadline ou profiling/qualidade.
 
@@ -216,7 +216,7 @@ Porta interna/persistência/dispatcher/JDBC e harnesses coordenados, nenhuma
 migration/API pública/default alterados. Testes com pg_blocking_pids/NOWAIT
 confirmam ordem e cancelamento vencedor, sem sleep artificial. Arquivos reais
 confirmam original preservado após falha atrasada; repetição não reabre cleanup.
-Ver [evidência](../../../../mobile/docs/specs/features/MOB-FEAT-020-visual-translation-rendering/evidence/dispatch-ownership-2026-10-04.md).
+Ver [evidência](../../../../../mobile/docs/specs/features/MOB-FEAT-020-visual-translation-rendering/evidence/dispatch-ownership-2026-10-04.md).
 Não encerra auditoria integral/operacional nem recursos/qualidade da 020.
 
 ## Próxima auditoria — locks de limpeza stale, 2026-10-04
@@ -247,5 +247,5 @@ Prova executada: a hipótese não se confirmou nas três etapas. NOWAIT da etapa
 passou enquanto a TX de limpeza permanecia aberta; job/stage e ausência de
 intenção/storage foram conferidos. Após liberar o dono, failStale recuperou o
 job. Nenhuma correção SQL ou migration foi necessária. Ver
-[evidência](../../../../mobile/docs/specs/features/MOB-FEAT-020-visual-translation-rendering/evidence/lifecycle-stale-locks-2026-10-04.md).
+[evidência](../../../../../mobile/docs/specs/features/MOB-FEAT-020-visual-translation-rendering/evidence/lifecycle-stale-locks-2026-10-04.md).
 Esta interleaving não aprova retenção operacional nem resolve memória do codec.

@@ -19,7 +19,7 @@ O [registro posterior](#10-quota-catálogo-e-receita-privada--2026-10-12)
 
 ## 1. Fatos e limites
 
-O [diagnóstico Cloud Run](diagnostic-cloud-result-2026-10-12.md) observado teve
+O [diagnóstico Cloud Run](../ocr-evaluation/diagnostic-cloud-result-2026-10-12.md) observado teve
 9 PASS, 3 FAIL e 6 UNKNOWN. Seus três recursos temporários foram retirados
 com aprovação; arquivos/evidências locais permanecem. Não republicá-los ou
 recuperar a conta por pressuposição.
@@ -30,9 +30,9 @@ bootstrap; `noexec` é defesa adicional, não critério novo da 020. Não conclu
 que toda configuração Cloud Run ou todo serviço gerenciado seja incompatível.
 
 Requisitos vêm de
-[LinuxWorkerMemoryAdmission](../src/main/java/com/toonlira/translationgateway/infrastructure/rendering/LinuxWorkerMemoryAdmission.java),
-[LinuxOomPolicy](../src/main/java/com/toonlira/translationgateway/infrastructure/rendering/LinuxOomPolicy.java)
-e do [contrato de memória](rendering-memory-admission.md), não da plataforma
+[LinuxWorkerMemoryAdmission](../../src/main/java/com/toonlira/translationgateway/infrastructure/rendering/LinuxWorkerMemoryAdmission.java),
+[LinuxOomPolicy](../../src/main/java/com/toonlira/translationgateway/infrastructure/rendering/LinuxOomPolicy.java)
+e do [contrato de memória](../rendering/rendering-memory-admission.md), não da plataforma
 que for mais conveniente. Esta proposta não altera código, contratos, migrations,
 Terraform, aceites SDD ou garantias. Não transforma OOM score em imunidade.
 

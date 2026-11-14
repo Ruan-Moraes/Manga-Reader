@@ -75,5 +75,5 @@ identificam os pacotes upstream. A imagem é da
 [distribuição oficial Temurin](https://github.com/adoptium/containers).
 Fixar bytes adquiridos não comprova atualização de segurança ou suporte futuro.
 
-A [evidência datada](../../../../mobile/docs/specs/features/MOB-FEAT-020-visual-translation-rendering/evidence/rendering-linux-2026-10-04.md)
+A [evidência datada](../../../../../mobile/docs/specs/features/MOB-FEAT-020-visual-translation-rendering/evidence/rendering-linux-2026-10-04.md)
 registra os resultados reais, pins e limitações, separados das provas macOS.

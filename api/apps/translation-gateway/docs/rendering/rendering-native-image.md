@@ -4,7 +4,7 @@ Distribuição candidata local da MOB-FEAT-020, não deploy ou admissão operaci
 `Dockerfile.native` entrega JAR, fontes/licenças já presentes nele e pacote
 libwebp readonly. Os defaults de ativação e Terraform não mudaram. O Dockerfile
 padrão e os alvos do preparador agora usam Java 25 fixado, conforme a
-[migração local](java25-migration.md). Não há build automático em task ou teste
+[migração local](../native-runtime/java25-migration.md). Não há build automático em task ou teste
 comum, publicação ou chamada paga. Os registros históricos Java 23/Noble ficam
 preservados e não são aprovação de segurança de produção.
 
@@ -19,14 +19,14 @@ Pelo reactor `api/`, reconstruir o archive explicitamente:
 No módulo gateway, com paths absolutos canônicos e destino inexistente:
 
 ```text
-node scripts/render-native-image.mjs
+node scripts/native-image/render-native-image.mjs
   --jar <gateway.jar> --jar-sha256 <hash-externo-do-jar>
   --distribution <pacote-readonly> --manifest-sha256 <pin-externo>
   --platform linux-x86_64-glibc --destination <contexto-novo>
 ```
 
 O bloco representa um comando. ARM64 usa `linux-aarch64-glibc`. Os alvos
-fixam os digests Java 25 da [migração local](java25-migration.md), nunca
+fixam os digests Java 25 da [migração local](../native-runtime/java25-migration.md), nunca
 inferem arquitetura do host. Não há opção para download, credencial, push ou
 URL. O script não chama Docker ou Google; `prepared-not-built` não é admissão.
 
@@ -46,7 +46,7 @@ imagens, capturas OCR, configuração Docker pessoal, Maven settings ou ADC.
 Para uma base Ubuntu derivada localmente, acrescentar `--base-proof <result.json-readonly>`
 e `--base-proof-sha256 <pin-externo>` ao comando. A prova deve corresponder ao
 parent fixado, arquitetura e exatamente aos dois upgrades aprovados da
-[preparação de segurança](native-base-update-2026-10-11.md). Não há override livre
+[preparação de segurança](../native-runtime/native-base-update-2026-10-11.md). Não há override livre
 de runtime/tag. A metadata registra o ID local imutável, parent, hash da prova
 e `baseSecurityApproved=false`; não reclassifica a base oficial antiga como
 corrigida. Sem prova explícita, os alvos oficiais anteriores permanecem default.
@@ -142,10 +142,10 @@ Docker direto, evitando essa preparação implícita. Cache foi preservado;
 nada foi enviado a providers. O ocorrido não é ocultado como execução offline.
 
 Resultados, hashes e gates estão na
-[evidência](../../../../mobile/docs/specs/features/MOB-FEAT-020-visual-translation-rendering/evidence/rendering-native-image-2026-10-10.md).
+[evidência](../../../../../mobile/docs/specs/features/MOB-FEAT-020-visual-translation-rendering/evidence/rendering-native-image-2026-10-10.md).
 020 permanece `in-progress/open`; 021 bloqueada. A matriz ampliada foi executada
 nas mesmas imagens; não cobre todas as combinações formato×idioma×limite.
-O [perfil combinado local](layout-runtime-resources.md) usa JNI/modelo readonly
+O [perfil combinado local](../ocr-evaluation/layout-runtime-resources.md) usa JNI/modelo readonly
 externos à imagem. Orçamento cloud 1 GiB, combinações restantes, OOM agregado, revisão
 dos sete destinos e validação operacional continuam abertos. Não reatribuir
 provas musl anteriores a esta imagem.

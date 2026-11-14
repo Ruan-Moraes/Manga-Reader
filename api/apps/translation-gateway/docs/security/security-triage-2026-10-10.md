@@ -1,7 +1,7 @@
 # Triagem de segurança do gateway — 2026-10-10
 
 Fotografia anterior à remediação. O usuário autorizou a migração isolada;
-acompanhar a execução e pendências no [registro Boot 4](boot4-execution-2026-10-10.md).
+acompanhar a execução e pendências no [registro Boot 4](../native-runtime/boot4-execution-2026-10-10.md).
 As versões e o scan abaixo permanecem como baseline histórico, não novo scan.
 
 Investigação local e consulta a fontes públicas, sem alteração de dependências,
@@ -11,7 +11,7 @@ Não é aprovação de produção nem nova execução dos gates Java.
 ## Evidência de entrada
 
 Relatório Trivy da imagem x86_64, descrito na
-[verificação Java 25](java25-verification-2026-10-10.md#scan-local-e-triagem).
+[verificação Java 25](../native-runtime/java25-verification-2026-10-10.md#scan-local-e-triagem).
 O SHA-256 foi conferido novamente nesta triagem:
 `bfc656e9fd3ea946f25e577cf8cf12f47d088d47b94b3d19827ce04d0d2014f7`.
 O relatório privado contém 25 ocorrências Java (sete CRITICAL, oito HIGH,
@@ -86,7 +86,7 @@ não têm versão corrigida indicada nesse relatório; consultar backports e
 condições do fornecedor antes de propor exclusões ou mudanças de base.
 
 O inventário de JRE/codec permanece no
-[registro Java 25](java25-migration.md). FreeType/libpng/zlib embarcados e
+[registro Java 25](../native-runtime/java25-migration.md). FreeType/libpng/zlib embarcados e
 libwebp manual exigem análise própria; a ausência na contagem Trivy não prova
 segurança. A [CVE-2026-85091 do zlib](https://ubuntu.com/security/CVE-2026-85091)
 continua pendente de confirmação de correção/backport e reachability nas cópias
@@ -94,7 +94,7 @@ embarcadas. Nenhum pacote foi removido ou imagem reconstruída nesta triagem.
 
 ## Decisão proposta, ainda não executada
 
-O [plano em quatro etapas](boot4-migration-plan.md) identifica as superfícies
+O [plano em quatro etapas](../native-runtime/boot4-migration-plan.md) identifica as superfícies
 do código e os gates de implementação; continua pendente de aprovação.
 
 Recomenda-se planejar migração **somente do gateway** para uma versão estável

@@ -77,7 +77,7 @@ na [review](../review.md), somente após término dos comandos.
 ## Reprodução e limites
 
 Em `api/`, usar Maven offline/reactor, Docker local e os mesmos pins do
-[worker local](../../../../../../api/apps/translation-gateway/docs/rendering-worker.md).
+[worker local](../../../../../../api/apps/translation-gateway/docs/rendering/rendering-worker.md).
 
 ```text
 ./mvnw -o -q -pl apps/translation-gateway -am test

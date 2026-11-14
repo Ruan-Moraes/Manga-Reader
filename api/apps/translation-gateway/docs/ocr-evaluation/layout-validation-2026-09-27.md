@@ -25,7 +25,7 @@ Fonte: `pt-p01-real-20260927-a`, página `pt-ep01-p01`. Nesta execução, OCR fo
 ## Validação
 
 ```bash
-node --test api/apps/translation-gateway/scripts/*.test.mjs
+node --test api/apps/translation-gateway/scripts/*/*.test.mjs
 cd api
 ./mvnw -o -pl apps/translation-gateway -am test -Dtest.excludedGroups=testcontainers
 ./mvnw -o -pl apps/translation-gateway -am test

@@ -6,7 +6,7 @@ explicitamente por Ruan. Não há chamada Google, ADC, imagem real ou deploy.
 
 ## Escopo e proveniência
 
-[Plano antes do harness](../../../../../../api/apps/translation-gateway/docs/rendering-linux.md).
+[Plano antes do harness](../../../../../../api/apps/translation-gateway/docs/rendering/rendering-linux.md).
 Somente testes/configuração ignorada/documentação mudam neste incremento.
 Não altera domínio, runtime, banco, migration, worker ou defaults.
 
@@ -97,7 +97,7 @@ Quatro harnesses históricos excluídos por data; contagem antes da suíte leve,
 sem Maven sobreposto. RenderingPersistence 83, worker 17, schema 49, dispatch três.
 Nenhum container toonlira-render-linux ficou na inspeção final escopada.
 
-Node `node --test scripts/*.test.mjs`: exit 0, 85 pass/um opt-in de fonte ignorado.
+Node `node --test scripts/*/*.test.mjs`: exit 0, 85 pass/um opt-in de fonte ignorado.
 Web `pnpm exec tsc -b`: exit 0.
 
 ## Gates e conclusão

@@ -6,7 +6,7 @@ permanece `in-progress/open`; a 021, `approved/blocked`.
 
 ## Plano e implementação inspecionados
 
-O [plano de ciclo de vida](../../../../../../api/apps/translation-gateway/docs/lifecycle-retention.md)
+O [plano de ciclo de vida](../../../../../../api/apps/translation-gateway/docs/architecture/lifecycle-retention.md)
 foi registrado antes dos testes/código. PostgreSQL continua dono do estado e
 das intenções duráveis; bytes permanecem no storage privado. V5 e V7, BCNF,
 FKs/cascade, CHECKs, PKs e índices existentes preservados. Nenhuma V8, texto,
@@ -90,7 +90,7 @@ Comando global em `api/`, usando somente codec local já instalado:
 ```
 
 Esses caminhos não representam empacotamento de produção. Node tooling
-`node --test scripts/*.test.mjs`: 85 pass e um opt-in de fonte não selecionado,
+`node --test scripts/*/*.test.mjs`: 85 pass e um opt-in de fonte não selecionado,
 exit 0. Web `pnpm exec tsc -b`: exit 0. Mobile `pnpm check` integral exit 0:
 116 suítes/892 testes, além de 30 testes de performance, 24 SDD e seis FSD;
 typecheck/lint/formato/links aprovados. Warnings existentes de act dos ícones

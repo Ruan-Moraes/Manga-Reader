@@ -27,7 +27,7 @@ Nenhuma política do kernel/host foi alterada para produzir o resultado.
 
 ## Prova implementada e limites
 
-[Protocolo](../../../../../../api/apps/translation-gateway/docs/rendering-worker-oom.md),
+[Protocolo](../../../../../../api/apps/translation-gateway/docs/rendering/rendering-worker-oom.md),
 [teste](../../../../../../api/apps/translation-gateway/src/test/java/com/toonlira/translationgateway/infrastructure/rendering/NativeRenderingWorkerLinuxTest.java)
 e [probe](../../../../../../api/apps/translation-gateway/src/test/java/com/toonlira/translationgateway/infrastructure/rendering/NativeRenderingWorkerProbe.java):
 mesmo Spring/worker, SQL/locks/Flyway V1–V7, MockMvc/filtros, storage/renderer

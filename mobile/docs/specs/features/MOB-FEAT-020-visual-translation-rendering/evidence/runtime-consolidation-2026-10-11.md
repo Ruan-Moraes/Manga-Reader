@@ -12,7 +12,7 @@ Foram inspecionados spec/tasks/registry/coverage, os caminhos de composição,
 orquestração de render, entrega privada e respectivos testes. Os fontes, testes
 e configuração do gateway continuam correspondendo a **400 arquivos** e
 SHA-256 `40c140568670d3ac826a40e485bf533d1f95a10da32c528cc4e76f44aea149b6`.
-O escopo técnico é o do [registro da base](../../../../../../api/apps/translation-gateway/docs/native-base-update-2026-10-11.md):
+O escopo técnico é o do [registro da base](../../../../../../api/apps/translation-gateway/docs/native-runtime/native-base-update-2026-10-11.md):
 paths relativos ordenados/NUL/bytes/NUL; src/scripts/openapi/pom e Terraform
 direto, excluindo docs/Dockerfiles/build/capturas. Não é o checksum mobile.
 
@@ -22,10 +22,10 @@ usuário `1000:1000`; não são digests publicados ou artefatos assinados.
 Hashes do XML/diagnósticos, resumo global e scans foram relidos e conferidos
 contra os registros, sem regenerar relatórios ou iniciar outra inferência.
 
-- [Migração Boot 4 e suas regressões](../../../../../../api/apps/translation-gateway/docs/boot4-execution-2026-10-10.md):
+- [Migração Boot 4 e suas regressões](../../../../../../api/apps/translation-gateway/docs/native-runtime/boot4-execution-2026-10-10.md):
   parent standalone, Jackson compatível, Argon2 anterior, configuração HTTP,
   archive/launcher, JNI/musl/glibc e testes. Snapshots Java 23 permanecem históricos.
-- [Base Ubuntu atualizada e matriz atual](../../../../../../api/apps/translation-gateway/docs/native-base-update-2026-10-11.md):
+- [Base Ubuntu atualizada e matriz atual](../../../../../../api/apps/translation-gateway/docs/native-runtime/native-base-update-2026-10-11.md):
   exatamente dois upgrades autorizados; JRE íntegro, proveniência explícita,
   preflight e **40 testes nativos**, zero failures/errors/skips, terminados
   às 07:56:08 local. XML `e39b0d9fb9290064ffb7e49f2639e7a1154de4a1126529e4ee447b67daca7bfc`.

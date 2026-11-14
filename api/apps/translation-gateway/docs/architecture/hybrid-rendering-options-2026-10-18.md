@@ -2,7 +2,7 @@
 
 Data: 2026-10-18. Prioridade **urgente/P1**, solicitada por Ruan. Estado:
 pesquisa e proposta, **não implementada nem admitida**. Fonte de backlog:
-[DT-76](../../../../docs/tech-debt.md#dt-76-renderização-híbrida-de-tradução--urgentep1).
+[DT-76](../../../../../docs/tech-debt.md#dt-76-renderização-híbrida-de-tradução--urgentep1).
 
 ## Decisão vigente
 

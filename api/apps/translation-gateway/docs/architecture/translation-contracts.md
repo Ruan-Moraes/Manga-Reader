@@ -1,7 +1,7 @@
 # Contratos internos de tradução — TASK-001 (fotografia)
 
 Este documento registra o marco da TASK-001. A parcela posterior de adapter e
-worker está descrita no [README do gateway](../README.md); as afirmações abaixo
+worker está descrita no [README do gateway](../../README.md); as afirmações abaixo
 sobre ausência de adapter referem-se apenas àquela fotografia histórica.
 
 Fundação Java da MOB-FEAT-019, sem adapter ou ligação ao worker. Não executa
@@ -60,4 +60,4 @@ do adapter/provider e da avaliação real, não de um fake determinístico.
 Testes: `TranslationValidatorTest` (domínio e fake exclusivo dos testes) e
 `GetCapabilitiesUseCaseTest` (forma/ordem/ETag público congelados antes da alteração).
 Gates e rastreabilidade ficam na
-[review parcial](../../../../mobile/docs/specs/features/MOB-FEAT-019-contextual-language-pair-translation/review.md).
+[review parcial](../../../../../mobile/docs/specs/features/MOB-FEAT-019-contextual-language-pair-translation/review.md).

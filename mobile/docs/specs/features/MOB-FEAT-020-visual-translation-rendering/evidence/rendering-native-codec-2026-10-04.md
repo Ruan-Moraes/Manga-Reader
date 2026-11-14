@@ -8,7 +8,7 @@ performance Android não aplicável nem inferida dessa prova Java/Linux.
 
 ## Plano e ABI
 
-[Plano anterior aos testes/código](../../../../../../api/apps/translation-gateway/docs/rendering-native-codec.md).
+[Plano anterior aos testes/código](../../../../../../api/apps/translation-gateway/docs/rendering/rendering-native-codec.md).
 Novo build oficial com debug em `.local/rendering-linux/abi-build.5Gtk93/`,
 ignorado: source 1.6.0 e archive pinado da preparação anterior, 367 arquivos
 upstream comparados byte a byte, zero modificações. GCC 14.2.0-r4,

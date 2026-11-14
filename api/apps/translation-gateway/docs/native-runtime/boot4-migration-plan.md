@@ -1,7 +1,7 @@
 # Plano de migração isolada do gateway para Boot 4
 
 **Execução autorizada pelo usuário em 2026-10-10.** Preparada nessa data a
-partir do código atual e da [triagem](security-triage-2026-10-10.md).
+partir do código atual e da [triagem](../security/security-triage-2026-10-10.md).
 A autorização abrange a migração isolada e seus downloads/testes locais.
 Instalações adicionais fora deste plano e a etapa final de ativação/publicação
 exigem confirmação. O registro da preparação abaixo é histórico; execução e
@@ -88,7 +88,7 @@ não relaxamento de parser ou troca silenciosa de formato.
 ## Etapa 3 — Revalidar empacotamento e fronteira nativa
 
 - Atualizar o pin exato Boot de `RenderJvmLauncher`, suas fixtures, o teste
-  `GatewayRuntimeTest` e `scripts/gateway-runtime.test.mjs` para a versão escolhida.
+  `GatewayRuntimeTest` e `scripts/runtime/gateway-runtime.test.mjs` para a versão escolhida.
   Preservar rejeição de versões vizinhas, loader/config externos e classpath misto.
 - Regenerar hashes de suporte de `LinuxRenderContainerFixture` a partir dos
   JARs resolvidos e identificados, nunca aceitar hash genérico ou ignorar a comparação.

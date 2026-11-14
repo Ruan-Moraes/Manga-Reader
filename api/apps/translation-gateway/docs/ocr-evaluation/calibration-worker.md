@@ -15,15 +15,15 @@ de PostgreSQL deve estar disponível antes de executar. Não há download de mí
 Na raiz do repositório, após preparar o bundle:
 
 ```bash
-node api/apps/translation-gateway/scripts/ocr-calibration-evaluation.mjs run \
+node api/apps/translation-gateway/scripts/ocr/ocr-calibration-evaluation.mjs run \
   --calibration ja-kanji-java-20260927-b --orientation horizontal \
   --run-id horizontal-offline-01 --mode offline
 
-node api/apps/translation-gateway/scripts/ocr-calibration-evaluation.mjs run \
+node api/apps/translation-gateway/scripts/ocr/ocr-calibration-evaluation.mjs run \
   --calibration ja-kanji-java-20260927-b --orientation vertical \
   --run-id vertical-offline-01 --mode offline
 
-node api/apps/translation-gateway/scripts/ocr-calibration-evaluation.mjs report \
+node api/apps/translation-gateway/scripts/ocr/ocr-calibration-evaluation.mjs report \
   --calibration ja-kanji-java-20260927-b --run-id vertical-offline-01
 ```
 
@@ -127,7 +127,7 @@ o diário da rodada descrito no executor manual; nunca limpar o bucket inteiro.
 ## Testes
 
 ```bash
-node --test api/apps/translation-gateway/scripts/ocr-calibration-evaluation.test.mjs
+node --test api/apps/translation-gateway/scripts/ocr/ocr-calibration-evaluation.test.mjs
 cd api
 ./mvnw -o -B -pl apps/translation-gateway -am test \
   -Dtest=CalibrationAdmissionTest,CalibrationWorkerTest \

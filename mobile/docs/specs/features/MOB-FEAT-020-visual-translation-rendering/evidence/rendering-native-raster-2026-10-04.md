@@ -7,7 +7,7 @@ download ou alteração cloud nesta parcela. Java 23, não C próprio ou Python.
 
 ## Plano e implementação
 
-[Plano anterior aos testes/código](../../../../../../api/apps/translation-gateway/docs/rendering-native-raster.md).
+[Plano anterior aos testes/código](../../../../../../api/apps/translation-gateway/docs/rendering/rendering-native-raster.md).
 Uma alocação Arena confinada, alinhada, de quatro bytes por pixel compartilha
 memória entre MemorySegment, DataBuffer TYPE_INT e BufferedImage. Não há
 int[] integral nesse DataBuffer. Ownership/close são explícitos, sem GC como
@@ -87,7 +87,7 @@ O global reexecutou profiling do **CLI anterior**, não desta superfície nova:
 OOM sem resultado. Faults de scratch/memória preservaram original e execuções
 seguintes passaram. São dados reais locais de fixture sintética, não melhoria
 de memória comprovada para a alternativa nem aprovação operacional. Comandos
-de opt-in estão no [protocolo de recursos](../../../../../../api/apps/translation-gateway/docs/rendering-linux-resources.md).
+de opt-in estão no [protocolo de recursos](../../../../../../api/apps/translation-gateway/docs/rendering/rendering-linux-resources.md).
 
 Node tooling: 85 pass, um opt-in de fonte não selecionado; exit 0.
 Web `pnpm exec tsc -b`: exit 0. Suíte leve gateway offline/reactor com

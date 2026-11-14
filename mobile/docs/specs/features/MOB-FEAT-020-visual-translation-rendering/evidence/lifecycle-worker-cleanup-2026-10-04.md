@@ -6,7 +6,7 @@ chamada paga, upload real, deploy, dependência ou default ativado.
 
 ## Contrato e modelagem
 
-[Plano](../../../../../../api/apps/translation-gateway/docs/lifecycle-retention.md)
+[Plano](../../../../../../api/apps/translation-gateway/docs/architecture/lifecycle-retention.md)
 registrado antes da implementação conforme database-design. Reutiliza V7:
 PostgreSQL para intenção/lease, job_id PK determinando seus atributos (BCNF),
 FK cascade/CHECKs e índices preservados. Objetos permanecem privados no storage.
@@ -91,7 +91,7 @@ Comando global, no diretório api, usando apenas o codec já instalado:
 ```
 
 Caminhos locais não representam empacotamento de produção. Node tooling
-`node --test scripts/*.test.mjs`: 85 pass/um opt-in de fonte não selecionado.
+`node --test scripts/*/*.test.mjs`: 85 pass/um opt-in de fonte não selecionado.
 Web `pnpm exec tsc -b`: exit 0. Mobile `pnpm check` integral: exit 0,
 116 suítes/892 testes, além de 30 testes de performance, 24 SDD e seis FSD;
 typecheck/lint/formato/links aprovados. Warnings existentes de act dos ícones
