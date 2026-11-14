@@ -90,7 +90,9 @@ public final class VisionResponseMapper {
                 appendBreak(text, wordBreak);
             }
             if (text.length() > MAX_TEXT_PER_REGION) invalid();
-            words.add(new OcrParagraph.Word(text.substring(start), polygon(word.getBoundingBox(), command)));
+            // Vision reports 0 when it has no confidence for a word; keep that as "unknown", not as "certainly wrong".
+            double confidence = word.getConfidence() > 0 ? word.getConfidence() : Double.NaN;
+            words.add(new OcrParagraph.Word(text.substring(start), polygon(word.getBoundingBox(), command), confidence));
         }
         return text.toString();
     }

@@ -138,6 +138,10 @@ class VisionResponseMapperTest {
         assertThat(mapped.words()).extracting(com.toonlira.translationgateway.domain.OcrParagraph.Word::text)
             .containsExactly("YOU ", "clatter");
         assertThat(mapped.words().get(1).polygon().getFirst().x()).isEqualTo(0.3);
+        assertThat(mapped.words().get(0).confidence()).isNaN(); // Vision sends 0 when it has no confidence
+        var sure = paragraph.toBuilder().setWords(0, paragraph.getWords(0).toBuilder().setConfidence(.42f)).build();
+        assertThat(new VisionResponseMapper().mapParagraphs(response(sure), COMMAND).getFirst().words().getFirst().confidence())
+            .isCloseTo(.42, org.assertj.core.data.Offset.offset(1e-6));
     }
 
     static Paragraph paragraph(String text, BoundingPoly box) {

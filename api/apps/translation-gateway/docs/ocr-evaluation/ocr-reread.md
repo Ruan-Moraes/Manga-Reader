@@ -1,0 +1,54 @@
+# Releitura do OCR por confiança (mosaico + votação com dicionário)
+
+Corrige erros de leitura do provedor (ex.: "IS SO" lido "15 50", "OS" lido "05", "STOP" lido "TÏÏÏ")
+sem regra por obra, idioma ou palavra. Ligado por padrão: `GATEWAY_OCR_REREAD_MAX_REGIONS=8`
+(`0` desliga; máximo 16). Pesquisa e opções avaliadas: discussão de 2026-11-14 (ferramentas de mangá,
+correção pós-OCR, votação entre variantes, super-resolução, LLM multimodal).
+
+## Fluxo (`OcrRereadService`, depois do agrupamento)
+
+1. **Dúvida**: o Vision devolve confiança por palavra (`OcrParagraph.Word.confidence`). Uma fala é
+   suspeita se alguma palavra (pontuação ignorada) tem confiança < 0,8 ou, em en/es/pt-BR, não está no
+   léxico. Ordem: palavra mais fraca primeiro; até `reread-max-regions` falas por página.
+2. **Variantes** (`RereadMosaicBuilder`, só CPU): recorte da fala inteira (contexto ajuda: "THIS OS"
+   é lido certo, um "05..." isolado não) em 4 formas — 2× e 3× coloridas, 3× binarizada (Otsu) com
+   traço afinado, 3× em cinza com contraste esticado.
+3. **Mosaico**: todos os recortes × variantes numa única imagem (`MosaicLayout`, espaço branco entre
+   eles) → **uma** chamada extra ao Vision por página com dúvida (inline, não armazenada). Página sem
+   dúvida: nenhuma chamada extra.
+4. **Votação** (`OcrReread.choose`): por fala, original × releituras; pontos = confiança média +
+   concordância entre variantes (0,2 por variante) + fração de tokens que são palavras do idioma
+   (número conta como não-palavra). Só troca se ≥ 2 variantes concordam, a leitura é parecida com a
+   original (sem puxar texto vizinho; palavras fora da caixa original são descartadas) e vence por
+   margem de 0,15. Diferença só de espaçamento nunca vence. Falha em qualquer etapa → leitura original.
+
+Logs só com contagens (`paragraphs`, `suspects`, `tilesRead`, `replaced`); nunca texto.
+
+## Escolha das variantes (laboratório, Ubunchu! ch02 p.03–04, 8 tratamentos)
+
+| Caso | Acertos por variante |
+|---|---|
+| "ARE 50" → SO | colorida 2×/3×, binarizada fina, cinza+contraste (4/8); binarizadas normal/grossa erram |
+| "THIS 05" → OS | 7/8 |
+| "05..." isolado | 0/8 (sem contexto) |
+| "WINDOWS 15 50" | só binarizadas 2×/fina; maioria erra no recorte do parágrafo |
+
+O traço engrossado repetia os erros e saiu do conjunto.
+
+## Resultado real (p.02–04, en→pt-BR)
+
+- "WINDOWS IS SO PATHETIC!" → "O Windows é tão patético!" (antes "WINDOWS 15 50: PATÉTICO!").
+- "YOU LINUX FREAKS ARE SO ANNOYING!", "ABOUT THIS OS..." → "sobre este sistema operacional",
+  "SSSSSS TTTTTTT" (SFX STOP).
+- 2–3 substituições por página, 1 chamada extra ao Vision por página.
+
+## Limites conhecidos
+
+- Quando todas as variantes erram igual, não corrige ("THE CHOSEN 05..." — ambíguo até com contexto;
+  "the chosen 5" também é plausível). É onde uma camada de linguagem (LLM, opcional, ainda não
+  implementada; exige atualizar o disclosure) ajudaria.
+- Recorte de texto inclinado pode pegar rótulo vizinho ("mar Survey"); essas regiões costumam ser
+  preservadas no render (texto sobre arte).
+- Léxico só para en/es/pt-BR (`src/main/resources/lexicon/`, FrequencyWords 50k, CC BY-SA 4.0 — ver
+  `NOTICE.md`); ja/ko/zh usam só confiança e concordância. Página WebP sem leitor ImageIO local pula a
+  releitura.

@@ -131,6 +131,13 @@ public class GatewayProperties {
         public void setMode(Mode value) { this.mode = value; }
         public String getProjectId() { return projectId; }
         public void setProjectId(String value) { this.projectId = value; }
+        /** Max doubtful paragraphs re-read per page, all in one extra OCR call (mosaic); 0 disables re-reading. */
+        private int rereadMaxRegions = 0;
+        public int getRereadMaxRegions() { return rereadMaxRegions; }
+        public void setRereadMaxRegions(int value) {
+            if (value < 0 || value > 16) throw new IllegalArgumentException("reread-max-regions must be 0..16");
+            rereadMaxRegions = value;
+        }
     }
 
     public static class Media {

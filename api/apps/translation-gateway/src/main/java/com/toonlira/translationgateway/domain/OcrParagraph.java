@@ -9,7 +9,9 @@ import java.util.List;
 public record OcrParagraph(OcrManifest.Region region, List<Word> words) {
     public OcrParagraph { words = List.copyOf(words); }
 
-    public record Word(String text, List<OcrManifest.Vertex> polygon) {
+    /** {@code confidence} is the provider's word confidence in [0,1], or NaN when it gave none. */
+    public record Word(String text, List<OcrManifest.Vertex> polygon, double confidence) {
         public Word { polygon = List.copyOf(polygon); }
+        public Word(String text, List<OcrManifest.Vertex> polygon) { this(text, polygon, Double.NaN); }
     }
 }

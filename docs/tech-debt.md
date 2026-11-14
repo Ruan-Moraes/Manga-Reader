@@ -546,7 +546,9 @@ mediana, termos protegidos/`translate="no"`, textos só-literais sem tradução,
 `quality` no manifesto, piso de fonte 0,75× a mediana via expansão para o fundo
 liso do balão, limpeza do halo JPEG em volta do texto, máscara do balão — arte/SFX fora do
 balão intactos —, original preservado para texto sobre arte ou tradução idêntica, sem quebra no
-meio da palavra, `text_free` do ONNX no layout `1.2` em sombra). Pendente:
+meio da palavra, `text_free` do ONNX no layout `1.2` em sombra, `quality` no `ReadyResult` com
+V10 e selo "revisar" no `gateway-tester`, releitura do OCR por confiança em mosaico com votação
+apoiada em dicionário). Pendente:
 
 - **Inpainting real** (feito: fringe de 4 px para glifos que vazam do polígono;
   falta fundo texturizado/gradiente, onde o preenchimento por cor mediana ainda
@@ -556,8 +558,6 @@ meio da palavra, `text_free` do ONNX no layout `1.2` em sombra). Pendente:
   páginas em inglês) e levar os balões até o render.
 - **SFX/texto livre**: texto livre preservado fica no idioma original (falta tipografia
   estilizada ou inpainting real); letreiros à mão sobre fundo liso viram fonte comum pequena.
-- **Expor `quality` em `ReadyResult`/OpenAPI** (exige coluna/migration) e selo
-  "revisar" no `gateway-tester`.
 - **Comparação com a edição original** (Ubunchu! ep. 01, Hiroshi Seo) e regressão visual.
 
 Fonte: auditoria visual das 12 páginas pt-BR (relatório anexado na conversa de 2026-11-14).

@@ -70,6 +70,8 @@ class SubmissionCommitResolutionTest {
         registry.add("spring.datasource.username", POSTGRES::getUsername);
         registry.add("spring.datasource.password", POSTGRES::getPassword);
         registry.add("gateway.storage.local-directory", () -> temporary.resolve("objects").toString());
+        // OCR is a mock answering recognize() only; re-reading (covered by OcrRereadServiceTest) is out of scope here.
+        registry.add("gateway.ocr.reread-max-regions", () -> "0");
     }
     @Autowired SubmitPageUseCase submission;
     @Autowired GatewayRepository repository;

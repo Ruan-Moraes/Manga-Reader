@@ -19,6 +19,8 @@ Contrato do manifesto: [rendering-contracts.md](rendering-contracts.md).
 | Máscara do balão: limpa só o interior do balão + letras cercadas; arte, borda e SFX fora do balão ficam mesmo com polígono OCR maior que o balão | `BalloonMask`, `CleanBoxPainter.fillMasked` |
 | Original preservado quando a tradução é igual ao texto ("AKANE!", "FREEK" — sem `NEEDS_REVIEW`) ou o texto está sobre arte (<25% da tinta cercada pelo balão — com `NEEDS_REVIEW`) | `PageRasterPainter.preserveOriginal`, `UnchangedText`, `PageQuality` |
 | Sem quebra no meio da palavra ("YouTu / be", "Pesq / uisa") | `PageRasterPainter.compose` (`requireNextWord`) |
+| Releitura do OCR: falas com palavras de baixa confiança ou fora do léxico são relidas em 4 variantes de imagem num mosaico (1 chamada extra ao Vision por página) e a votação (confiança + concordância + dicionário) escolhe a leitura; sem regra por obra/idioma | `OcrRereadService`, `OcrReread`, `RereadMosaicBuilder`, `lexicon/` |
+| `quality` na API: V10 grava as contagens de texto na etapa de render; `ReadyResult.quality` (opcional) derivado delas; mobile aceita o campo; selo "revisar" no `gateway-tester` | `RenderTextCounts`, `PageQuality.of`, `GatewayController.Quality`, V10 |
 | Agrupamento por balão ONNX (`GATEWAY_LAYOUT_MODE=grouping`, opcional): divide parágrafos do Vision por palavra quando cruzam a borda do balão e junta falas por balão; heurística continua para texto livre e como fallback | `OcrRegionGrouper.splitByBubbles`/`group(..., bubbles)`, `ShadowLayoutService.detectForGrouping` |
 | ONNX: `text_bubble`/`text_free` no layout `1.2` (`textBoxes`, `regionKinds`), modo sombra; modelo baixado em `.local/` | `OnnxBubbleDetector.decodeAll`, `LayoutInterpreter` |
 | Limpeza do halo JPEG (contorno retangular cinza em volta do texto): até 8 px, distância 6–120, preserva antialiasing de borda/arte, desiste em retícula/gradiente (>40% não-liso); limpeza calculada antes de pintar | `CleanBoxPainter.halo`/`extraCleanup` |
@@ -51,11 +53,13 @@ Não houve comparação antes/depois controlada nem teste com o original em japo
 4. **Inpainting real**: fundos texturizados/gradiente ainda recebem cor mediana e podem deixar remendos.
    (O contorno retangular de halo JPEG em balões lisos foi resolvido — ver "Feito".) Pendente também: o
    fringe pinta uma moldura de 4 px quando a cor de limpeza é a mediana de uma retícula.
-5. **Erros de OCR** (ex.: "OS" lido "05") — fora do alcance do pipeline atual.
+5. **Erros de OCR** (parcial): releitura por confiança em mosaico com votação apoiada em dicionário —
+   ver [ocr-reread.md](../ocr-evaluation/ocr-reread.md). Falta: casos em que todas as variantes erram
+   igual ("THE CHOSEN 05...") — candidato a camada de linguagem opcional.
 
 ### Contrato e produto
-6. **`quality` na API**: hoje só no manifesto. Expor em `ReadyResult`/OpenAPI exige coluna e migration.
-7. **Selo "revisar" no `gateway-tester`**: depende do item 6 (ou de ler o manifesto).
+6. ~~**`quality` na API**~~ — feito: `ReadyResult.quality` (V10 + OpenAPI + zod do mobile).
+7. ~~**Selo "revisar" no `gateway-tester`**~~ — feito (lote e página única).
 
 ### Verificação
 8. Comparação com a edição original (ep. 01, Hiroshi Seo) e diff por região.
@@ -64,5 +68,5 @@ Não houve comparação antes/depois controlada nem teste com o original em japo
     (gap ≤ 0,8×altura, sobreposição ≥ 40%).
 
 ## Próximo passo sugerido
-Commitar o trabalho desta rodada (está tudo sem commit na branch) e então o item 5 (erros de OCR, ex.:
-"IS SO" lido "15 50") ou os itens 6–7 (`quality` na API e selo de revisão no `gateway-tester`).
+Item 4 (inpainting real para texto livre preservado) ou avaliar o modo `grouping` em mais páginas/mangá
+japonês antes de torná-lo padrão.

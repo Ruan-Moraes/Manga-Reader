@@ -19,6 +19,7 @@ import java.nio.file.Path;
 import java.security.MessageDigest;
 import java.time.Clock;
 import java.time.Instant;
+import java.util.List;
 import java.util.UUID;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -35,6 +36,7 @@ public class ProcessOcrTaskUseCase {
     private final Clock clock;
     private final ShadowLayoutService layouts;
     private final CleanupLifecycleObjectsUseCase lifecycle;
+    private final OcrRereadService reread;
 
     public ProcessOcrTaskUseCase(OcrPersistenceUseCase persistence, ObjectStoragePort storage,
                                  MediaInspectionService inspector, OcrPort ocr, OcrManifestService manifests,
@@ -42,11 +44,18 @@ public class ProcessOcrTaskUseCase {
         this(persistence, storage, inspector, ocr, manifests, properties, clock, null, lifecycle);
     }
 
-    @Autowired
     public ProcessOcrTaskUseCase(OcrPersistenceUseCase persistence, ObjectStoragePort storage,
                                  MediaInspectionService inspector, OcrPort ocr, OcrManifestService manifests,
                                  GatewayProperties properties, Clock clock, ShadowLayoutService layouts,
                                  CleanupLifecycleObjectsUseCase lifecycle) {
+        this(persistence, storage, inspector, ocr, manifests, properties, clock, layouts, lifecycle, null);
+    }
+
+    @Autowired
+    public ProcessOcrTaskUseCase(OcrPersistenceUseCase persistence, ObjectStoragePort storage,
+                                 MediaInspectionService inspector, OcrPort ocr, OcrManifestService manifests,
+                                 GatewayProperties properties, Clock clock, ShadowLayoutService layouts,
+                                 CleanupLifecycleObjectsUseCase lifecycle, OcrRereadService reread) {
         this.persistence = persistence;
         this.storage = storage;
         this.inspector = inspector;
@@ -56,6 +65,7 @@ public class ProcessOcrTaskUseCase {
         this.clock = clock;
         this.layouts = layouts;
         this.lifecycle = lifecycle;
+        this.reread = reread;
     }
 
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
@@ -126,9 +136,20 @@ public class ProcessOcrTaskUseCase {
             var detections = layouts == null ? null : layouts.detectForGrouping(media.path());
             var command = new OcrPort.Command(job.objectKey(), job.sourceLanguage(), job.jobRef(), media.widthPx(), media.heightPx());
             var bubbles = ShadowLayoutService.boxes(detections);
-            var paragraphs = bubbles == null ? ocr.recognize(command)
-                : OcrRegionGrouper.splitByBubbles(ocr.recognizeParagraphs(command), bubbles);
+            // Word geometry and confidences are needed by balloon splitting and by re-reading doubtful paragraphs.
+            boolean rereading = reread != null && reread.enabled();
+            List<OcrManifest.Region> paragraphs;
+            List<com.toonlira.translationgateway.domain.OcrParagraph> read = List.of();
+            if (bubbles == null && !rereading) paragraphs = ocr.recognize(command);
+            else {
+                read = ocr.recognizeParagraphs(command);
+                paragraphs = bubbles == null ? read.stream().map(com.toonlira.translationgateway.domain.OcrParagraph::region).toList()
+                    : OcrRegionGrouper.splitByBubbles(read, bubbles);
+            }
             var regions = OcrRegionGrouper.group(paragraphs, job.sourceLanguage(), media.widthPx(), media.heightPx(), bubbles);
+            // Doubtful speeches are re-read whole, after grouping: context is what lets the provider read "THIS OS"
+            // where a lone "05..." fragment stays ambiguous.
+            if (rereading) regions = reread.improveRegions(regions, read, media.path(), job.sourceLanguage(), media.widthPx(), media.heightPx());
             requireOriginal(job);
             var manifest = new OcrManifest("1.0", job.jobRef(), job.sourceLanguage(), job.widthPx(), job.heightPx(), regions);
             var encoded = manifests.encode(manifest);

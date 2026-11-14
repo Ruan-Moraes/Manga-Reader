@@ -18,6 +18,8 @@ public final class VisionOcrAdapter implements OcrPort, AutoCloseable {
     private final ImageAnnotatorClient client;
     private final String projectId;
     private final String bucket;
+    /** Inline content stays well under the provider's request size limit. */
+    static final int MAX_INLINE_BYTES = 8 * 1024 * 1024;
     private final VisionResponseMapper mapper = new VisionResponseMapper();
 
     public VisionOcrAdapter(ImageAnnotatorClient client, String projectId, String bucket) {
@@ -44,6 +46,21 @@ public final class VisionOcrAdapter implements OcrPort, AutoCloseable {
         }
         var image = Image.newBuilder().setSource(ImageSource.newBuilder()
             .setGcsImageUri("gs://" + bucket + "/" + command.objectKey()));
+        return annotate(image, hint, command);
+    }
+
+    /** Re-read mosaic: same provider, region and feature as the page; sent inline, never stored. */
+    @Override
+    public List<com.toonlira.translationgateway.domain.OcrParagraph> recognizeImage(byte[] png, String sourceLanguage,
+                                                                                    int widthPx, int heightPx) {
+        if (png == null || png.length == 0 || png.length > MAX_INLINE_BYTES || widthPx <= 0 || heightPx <= 0)
+            throw new GatewayException(GatewayErrorCode.OCR_INVALID_MEDIA, 422, false);
+        var command = new Command("inline/reread", sourceLanguage, java.util.UUID.randomUUID(), widthPx, heightPx);
+        return annotate(Image.newBuilder().setContent(com.google.protobuf.ByteString.copyFrom(png)),
+            languageHint(sourceLanguage), command);
+    }
+
+    private List<com.toonlira.translationgateway.domain.OcrParagraph> annotate(Image.Builder image, String hint, Command command) {
         var request = BatchAnnotateImagesRequest.newBuilder().setParent("projects/" + projectId + "/locations/us")
             .addRequests(AnnotateImageRequest.newBuilder().setImage(image)
                 .addFeatures(Feature.newBuilder().setType(Feature.Type.DOCUMENT_TEXT_DETECTION))

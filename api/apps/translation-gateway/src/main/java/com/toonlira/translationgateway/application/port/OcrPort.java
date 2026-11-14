@@ -10,6 +10,14 @@ public interface OcrPort {
 
     List<OcrManifest.Region> recognize(Command command);
 
+    /**
+     * OCR of an in-memory PNG (the re-read mosaic), coordinates relative to it. Providers that cannot do it throw,
+     * and re-reading is skipped.
+     */
+    default List<OcrParagraph> recognizeImage(byte[] png, String sourceLanguage, int widthPx, int heightPx) {
+        throw new UnsupportedOperationException("In-memory OCR unavailable");
+    }
+
     /** Paragraphs with word geometry; providers without words return the plain regions. */
     default List<OcrParagraph> recognizeParagraphs(Command command) {
         return recognize(command).stream().map(region -> new OcrParagraph(region, List.of())).toList();
