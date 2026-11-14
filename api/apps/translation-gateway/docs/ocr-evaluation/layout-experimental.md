@@ -185,3 +185,32 @@ que a heurística traduzia como "depois" era o SFX mal lido). As caixas do model
 inglês são imprecisas — vários balões não detectados e caixas sobre arte —, por isso o modo segue
 opcional e a regra de ambiguidade é essencial ("UP"/"THIS" caíam em duas caixas sobrepostas).
 
+## Avaliação em lote e ajustes (2026-11-14, rodada 2)
+
+Bancada offline: uma leitura do Vision por página (respostas em cache), heurística × balões calculados
+sobre a mesma leitura. Regras ajustadas com os erros observados (todas gerais, nenhuma por obra):
+
+- Linha pertence ao balão que a contém **claramente mais** (vantagem ≥ 0,15); caixas vizinhas se
+  sobrepõem e antes deixavam "THIS IS DEFINITELY" ambígua.
+- Divisão por palavra só com dono claro: ≥ 80% numa caixa ou ≤ 20% em todas; palavra cortada pela
+  caixa ("GET OUT" a 43%, "post." ao lado de "AH!!") não divide.
+- Dentro do mesmo balão, só junta linha **perto** de outra da fala (empilhada, sobreposta ou na mesma
+  linha); caixas grandes não colam falas distantes ("GET OUT NOOB" + "BUT... FLAME WAR").
+- Linha fora de balão, empilhada sob uma fala de balão, continua a fala se estiver na folga de 15% da
+  caixa, tiver ≥ 2 palavras ou for só pontuação; palavra isolada (perfil de SFX, "clatter") fica à parte.
+- Caixas de parágrafos que se sobrepõem (≥ 25% da menor) são um bloco só — texto inclinado/manuscrito
+  ("We can be the" / "GUI Brigade!").
+
+| Amostra | Páginas | Com diferença | Balões melhor | Balões pior | Iguais |
+|---|---|---|---|---|---|
+| Inglês (ch01, ch03, ch05) | 24 | 12 | 10 | 1 ("GET / OUT NOOB!" estilizado) | 1 |
+| Japonês (ch01, ch02) | 24 | 2 | 1 (separou colunas de balões vizinhos) | 1 (caminho de arquivo partido) | — |
+
+**Achado principal no japonês:** o agrupador não junta texto vertical CJK em nenhum modo; o Vision
+devolveu 855 parágrafos (≈ 1 por coluna) para 237 balões, e **171 balões (72%) têm vários parágrafos**
+— cada coluna é traduzida isolada. Agrupar CJK por balão (colunas direita→esquerda, sem espaço) é o
+maior ganho pendente para mangá japonês.
+
+**Recomendação:** `grouping` como modo de produção para fontes horizontais (en/es/pt-BR) quando o
+modelo estiver provisionado. O default do código continua `disabled` porque o modelo não é versionado.
+

@@ -59,7 +59,9 @@ class OcrRegionGrouperTest {
     void balloonJoinsItsParagraphsEvenWhenTheProviderInterleavesOthers() {
         var top = region(0, "WAIT,", 100, 100, 200, 130);
         var other = region(1, "ELSEWHERE", 600, 100, 800, 130);
-        var bottom = region(2, "PLEASE!", 100, 200, 200, 230); // gap too large for the heuristic
+        var bottom = region(2, "PLEASE!", 100, 165, 200, 195); // next line of the same balloon
+        // The provider read the other balloon in between: the heuristic alone would never rejoin them.
+        assertThat(OcrRegionGrouper.group(List.of(top, other, bottom), "en", W, H)).hasSize(3);
         var result = OcrRegionGrouper.group(List.of(top, other, bottom), "en", W, H,
             List.of(box(80, 80, 230, 250), box(580, 80, 820, 150)));
         assertThat(result).extracting(OcrManifest.Region::sourceText).containsExactly("WAIT, PLEASE!", "ELSEWHERE");
@@ -108,5 +110,30 @@ class OcrRegionGrouperTest {
             .containsExactly(overlap.region());
         assertThat(OcrRegionGrouper.splitByBubbles(List.of(mixed), null)).containsExactly(mixed.region());
         assertThat(OcrRegionGrouper.splitByBubbles(List.of(mixed), List.of(box(90, 90, 430, 140)))).containsExactly(mixed.region());
+    }
+
+    @Test
+    void overlappingBoxesOfSlantedHandLetteringAreOneCaption() {
+        // Real boxes from Ubunchu! ch02 p.04 (2044 px wide page scaled to this 1000 px fixture keeps the ratios).
+        var first = region(0, "We can\nbe the\n", 334, 221, 428, 303);
+        var second = region(1, "GUI Brigade!\n", 349, 265, 514, 344);
+        var result = OcrRegionGrouper.group(List.of(first, second), "en", W, H);
+        assertThat(result).extracting(OcrManifest.Region::sourceText).containsExactly("We can be the GUI Brigade!");
+        // Touching corners only (tiny shared area) stay apart.
+        var far = region(1, "OTHER\n", 420, 295, 600, 380);
+        assertThat(OcrRegionGrouper.group(List.of(first, far), "en", W, H)).hasSize(2);
+    }
+
+    @Test
+    void distantParagraphsInsideOneLargeBoxStayApartAndCutLinesRejoinTheirBalloon() {
+        // One detector box covering a shout at the top and a caption far below: two speeches, not one.
+        var shout = region(0, "GET OUT NOOB\n", 100, 100, 260, 130);
+        var caption = region(1, "BUT... EVENTUALLY I CAUSED A FLAME WAR.\n", 100, 400, 400, 430);
+        assertThat(OcrRegionGrouper.group(List.of(shout, caption), "en", W, H, List.of(box(80, 80, 420, 450)))).hasSize(2);
+        // A loose box cut the second line of a speech: it is outside the box but within its slack, so it rejoins.
+        var first = region(0, "CAN I HAVE A MOMENT\n", 100, 100, 300, 130);
+        var second = region(1, "OF YOUR TIME?\n", 130, 138, 270, 168);
+        assertThat(OcrRegionGrouper.group(List.of(first, second), "en", W, H, List.of(box(90, 90, 310, 150))))
+            .extracting(OcrManifest.Region::sourceText).containsExactly("CAN I HAVE A MOMENT OF YOUR TIME?");
     }
 }
