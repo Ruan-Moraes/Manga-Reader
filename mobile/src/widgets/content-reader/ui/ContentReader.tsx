@@ -10,8 +10,8 @@ import {
     type ReaderSettings,
     type TextReaderPreferences,
 } from '@/entities/user-setting';
-import { ThemePaletteProvider, useTheme } from '@/shared/theme';
-import { AppText, BackButton, BottomSheet, Button, Icon, IconButton, PressableBox as Pressable } from '@/shared/ui';
+import { MOTION_EASING, ThemePaletteProvider, useTheme } from '@/shared/theme';
+import { AppText, BackButton, BottomSheet, Button, Icon, IconButton, Input, PressableBox as Pressable, ProgressFill, SegmentedControl } from '@/shared/ui';
 
 import { effectiveImageMode, type ReaderDocument, type ReaderLocation, restoreLocationById } from '../model/contentReader';
 import { textReaderPalette } from '../model/textReader';
@@ -22,7 +22,12 @@ import { ReaderRevealGesture } from './ReaderRevealGesture';
 import { TextViewport } from './TextViewport';
 import { ZoomableSurface } from './ZoomableSurface';
 
-const CONTROLS_ANIMATION_MS = 160;
+const CHAPTER_SORT_OPTIONS = ['numeric', 'alphabetic'] as const;
+type ChapterSort = (typeof CHAPTER_SORT_OPTIONS)[number];
+
+function normalizeChapterSearch(value: string, language: string) {
+    return value.toLocaleLowerCase(language).normalize('NFD').replace(/\p{M}/gu, '').trim();
+}
 
 /** Kit reader bars (063): fixed side columns keep the chapter title centred. */
 const KIT_SIDE_WIDTH = 96;
@@ -110,9 +115,9 @@ function ReaderSession({
     blockingState,
     settingsSheet,
 }: ContentReaderProps) {
-    const { t } = useTranslation('reader');
+    const { t, i18n } = useTranslation('reader');
 
-    const { colorScheme, metrics, radii, spacing, tokens, minimumTouchTarget, decorativeMotionEnabled } = useTheme();
+    const { colorScheme, metrics, motion, radii, spacing, tokens, minimumTouchTarget, decorativeMotionEnabled } = useTheme();
 
     const insets = useSafeAreaInsets();
 
@@ -123,6 +128,22 @@ function ReaderSession({
     const [showOverflow, setShowOverflow] = useState(false);
     const [screenReader, setScreenReader] = useState(false);
     const [chapterListOpen, setChapterListOpen] = useState(false);
+    const [chapterQuery, setChapterQuery] = useState('');
+    const [chapterSort, setChapterSort] = useState<ChapterSort>('numeric');
+    const language = i18n.resolvedLanguage ?? i18n.language;
+    const visibleChapters = useMemo(() => {
+        if (!chapters) return [];
+        const query = normalizeChapterSearch(chapterQuery, language);
+        const collator = new Intl.Collator(language, { numeric: chapterSort === 'numeric', sensitivity: 'base' });
+        return chapters.items
+            .filter(item => normalizeChapterSearch(item.title, language).includes(query))
+            .sort((left, right) => collator.compare(left.title, right.title));
+    }, [chapterQuery, chapterSort, chapters, language]);
+
+    const closeChapterList = () => {
+        setChapterListOpen(false);
+        setChapterQuery('');
+    };
 
     const imageDocument = document.kind === 'IMAGE_SEQUENCE' ? document : null;
 
@@ -147,7 +168,7 @@ function ReaderSession({
         if (nextGroup !== groupIndex) onLocationChange?.({ itemId: ids[nextGroup * step], index: nextGroup * step });
     };
 
-    const interaction = useReaderInteraction(gesturePreferences, paged, settings?.direction === 'RTL', navigate);
+    const interaction = useReaderInteraction(gesturePreferences, paged, settings?.direction === 'RTL', navigate, paged ? current.itemId : undefined);
 
     const controlsVisible = interaction.state.visible;
 
@@ -199,14 +220,15 @@ function ReaderSession({
     useEffect(() => {
         const animation = Animated.timing(progress, {
             toValue: controlsVisible ? 1 : 0,
-            duration: decorativeMotionEnabled ? CONTROLS_ANIMATION_MS : 0,
+            duration: decorativeMotionEnabled ? motion.base : 0,
+            easing: controlsVisible ? MOTION_EASING.enter : MOTION_EASING.exit,
             useNativeDriver: true,
         });
 
         animation.start();
 
         return () => animation.stop();
-    }, [controlsVisible, decorativeMotionEnabled, progress]);
+    }, [controlsVisible, decorativeMotionEnabled, motion.base, progress]);
 
     if (imageDocument && !settings) throw new Error('ContentReader requires settings for IMAGE_SEQUENCE');
 
@@ -249,15 +271,19 @@ function ReaderSession({
 
     const comparisonControls = (
         <>
-            {hasOriginal && !settingsSheet ? (
-                <Button variant="outline" onPress={() => setShowOriginal(value => !value)}>
-                    {t(showOriginal ? 'actions.showResult' : 'actions.showOriginal')}
-                </Button>
-            ) : null}
-            {overflow.length ? (
-                <Button variant="ghost" onPress={() => setShowOverflow(value => !value)}>
-                    {t('actions.overflow')}
-                </Button>
+            {(hasOriginal && !settingsSheet) || overflow.length > 0 ? (
+                <View style={{ gap: spacing.xs }}>
+                    {hasOriginal && !settingsSheet ? (
+                        <Button variant="outline" onPress={() => setShowOriginal(value => !value)}>
+                            {t(showOriginal ? 'actions.showResult' : 'actions.showOriginal')}
+                        </Button>
+                    ) : null}
+                    {overflow.length ? (
+                        <Button variant="ghost" onPress={() => setShowOverflow(value => !value)}>
+                            {t('actions.overflow')}
+                        </Button>
+                    ) : null}
+                </View>
             ) : null}
             {showOverflow ? overflow.map(region => <AppText key={region.id}>{region.translatedText}</AppText>) : null}
             {controlsContent}
@@ -277,7 +303,7 @@ function ReaderSession({
                     <Pressable
                         key={String(original)}
                         accessibilityRole="radio"
-                        accessibilityState={{ checked: selected }}
+                        accessibilityState={{ selected, checked: selected }}
                         accessibilityLabel={t(original ? 'kit.original' : 'kit.translated')}
                         onPress={() => setShowOriginal(original)}
                         style={{
@@ -310,7 +336,8 @@ function ReaderSession({
 
     return (
         <View style={{ flex: 1, backgroundColor: tokens.bg }}>
-            <StatusBar hidden={false} barStyle={colorScheme === 'dark' ? 'light-content' : 'dark-content'} />
+            {/* Immersive reading: the status bar leaves with the controls instead of sitting dark over the pages (revisão 2026-11-13). */}
+            <StatusBar hidden={!controlsVisible} showHideTransition="fade" barStyle={colorScheme === 'dark' ? 'light-content' : 'dark-content'} />
             <View
                 ref={surfaceRef}
                 testID="reader-touch-surface"
@@ -464,9 +491,7 @@ function ReaderSession({
                             accessibilityValue={{ min: 0, max: ids.length, now: current.index + 1 }}
                             style={{ backgroundColor: tokens.separator, borderRadius: 2, flex: 1, height: 4, overflow: 'hidden' }}
                         >
-                            <View
-                                style={{ backgroundColor: tokens.accent, height: '100%', width: `${((current.index + 1) / Math.max(1, ids.length)) * 100}%` }}
-                            />
+                            <ProgressFill value={(current.index + 1) / Math.max(1, ids.length)} color={tokens.accent} testID="reader-progress-fill" />
                         </View>
                         <AppText
                             testID="reader-current-page"
@@ -485,14 +510,12 @@ function ReaderSession({
                             accessibilityRole="progressbar"
                             accessibilityLabel={t('viewport.progress')}
                             accessibilityValue={imageDocument ? { min: 0, max: ids.length, now: current.index + 1 } : { min: 0, max: 100, now: textPercent }}
-                            style={{ height: spacing.xs, backgroundColor: tokens.separator }}
+                            style={{ height: spacing.xs, backgroundColor: tokens.separator, overflow: 'hidden' }}
                         >
-                            <View
-                                style={{
-                                    width: `${imageDocument ? ((current.index + 1) / Math.max(1, ids.length)) * 100 : textPercent}%`,
-                                    height: '100%',
-                                    backgroundColor: tokens.accentText,
-                                }}
+                            <ProgressFill
+                                value={imageDocument ? (current.index + 1) / Math.max(1, ids.length) : textPercent / 100}
+                                color={tokens.accentText}
+                                testID="reader-progress-fill"
                             />
                         </View>
                         <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.xs, minHeight: minimumTouchTarget }}>
@@ -652,19 +675,42 @@ function ReaderSession({
                 {comparisonControls}
             </ReaderPanel>
             {chapters ? (
-                <BottomSheet visible={chapterListOpen} onClose={() => setChapterListOpen(false)} closeLabel={t('kit.close')} title={t('kit.chapterListTitle')}>
+                <BottomSheet visible={chapterListOpen} onClose={closeChapterList} closeLabel={t('kit.close')} title={t('kit.chapterListTitle')}>
+                    <View>
+                        <Input
+                            accessibilityLabel={t('kit.chapterSearch')}
+                            placeholder={t('kit.chapterSearch')}
+                            value={chapterQuery}
+                            onChange={setChapterQuery}
+                            autoCapitalize="none"
+                            returnKeyType="search"
+                            leading={<Icon name="search-outline" size={metrics.icon.md} decorative />}
+                        />
+                        <SegmentedControl
+                            label={t('kit.chapterSort')}
+                            value={chapterSort}
+                            options={CHAPTER_SORT_OPTIONS}
+                            optionLabel={option => t(`kit.chapterSortOptions.${option}`)}
+                            onChange={setChapterSort}
+                        />
+                    </View>
                     <View style={{ gap: spacing.xs }}>
-                        {chapters.items.map(item => {
+                        {visibleChapters.length === 0 ? (
+                            <AppText variant="caption" tone="muted" accessibilityLiveRegion="polite">
+                                {t('kit.chapterSearchEmpty')}
+                            </AppText>
+                        ) : null}
+                        {visibleChapters.map(item => {
                             const selected = item.id === chapters.currentId;
                             return (
                                 <Pressable
                                     key={item.id}
                                     accessibilityRole="radio"
-                                    accessibilityState={{ checked: selected }}
+                                    accessibilityState={{ selected, checked: selected }}
                                     accessibilityLabel={item.title}
                                     accessibilityHint={selected ? t('kit.currentChapter') : undefined}
                                     onPress={() => {
-                                        setChapterListOpen(false);
+                                        closeChapterList();
                                         if (!selected) chapters.onSelect(item.id);
                                     }}
                                     style={({ pressed }) => ({

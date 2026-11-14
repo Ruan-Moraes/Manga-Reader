@@ -35,6 +35,13 @@ export function SettingsReaderPage() {
     const updateSettings = useSettingsStore(state => state.updateSettings);
 
     const [openSheet, setOpenSheet] = useState<ReaderSheet | null>(null);
+    // The sheet keeps showing its content while it slides out; clearing it on close left an empty card going down
+    // (revisão 2026-11-13).
+    const [shownSheet, setShownSheet] = useState<ReaderSheet>('navigation');
+    const showSheet = (sheet: ReaderSheet) => {
+        setShownSheet(sheet);
+        setOpenSheet(sheet);
+    };
 
     const updateReader = (patch: Parameters<typeof normalizeReaderSettings>[0]) =>
         void updateSettings(current => ({ ...current, reader: normalizeReaderSettings(patch, current) }), 'reader');
@@ -94,7 +101,7 @@ export function SettingsReaderPage() {
                         key={sheet}
                         description={sheetCopy[sheet].description}
                         icon={SHEET_ICONS[sheet]}
-                        onPress={() => setOpenSheet(sheet)}
+                        onPress={() => showSheet(sheet)}
                         showDivider={index < SHEETS.length - 1}
                         title={sheetCopy[sheet].title}
                         variant="plain"
@@ -106,10 +113,10 @@ export function SettingsReaderPage() {
                 visible={openSheet !== null}
                 onClose={() => setOpenSheet(null)}
                 closeLabel={t('readerSheets.close')}
-                title={openSheet ? sheetCopy[openSheet].title : undefined}
-                description={openSheet ? sheetCopy[openSheet].description : undefined}
+                title={sheetCopy[shownSheet].title}
+                description={sheetCopy[shownSheet].description}
                 footer={
-                    openSheet === 'text' ? (
+                    shownSheet === 'text' ? (
                         <Button size="compact" variant="ghost" onPress={() => void resetTextReader()}>
                             {tr('text.reset')}
                         </Button>
@@ -117,7 +124,7 @@ export function SettingsReaderPage() {
                 }
                 testIDs={{ sheet: 'reader-settings-sheet', backdrop: 'reader-settings-sheet-backdrop', layer: 'reader-settings-sheet-layer' }}
             >
-                {openSheet ? renderSheetContent(openSheet) : null}
+                {renderSheetContent(shownSheet)}
             </BottomSheet>
         </ScreenScaffold>
     );

@@ -41,13 +41,14 @@ it('lembra a categoria ao fechar e reabrir sem mostrar conteúdo de outras abas'
     expect(screen.getByRole('tab', { name: 'Aparência' })).toBeSelected();
 });
 
-it('oferece expansão e fechamento por backdrop e Android', () => {
+it('oferece expansão e fechamento por botão, backdrop e Android', () => {
     const screen = panel();
     fireEvent.press(screen.getByRole('button', { name: 'Expandir painel' }));
     expect(screen.getByRole('button', { name: 'Recolher painel' })).toBeOnTheScreen();
+    fireEvent.press(screen.getByRole('button', { name: 'Fechar seleção' }));
     fireEvent.press(screen.getByTestId('reader-panel-backdrop', { includeHiddenElements: true }));
     fireEvent(screen.getByTestId('reader-panel'), 'requestClose');
-    expect(screen.onClose).toHaveBeenCalledTimes(2);
+    expect(screen.onClose).toHaveBeenCalledTimes(3);
 });
 
 it.each([

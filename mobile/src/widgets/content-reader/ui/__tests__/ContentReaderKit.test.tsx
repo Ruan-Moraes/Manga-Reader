@@ -85,6 +85,35 @@ describe('MOB-FEAT-063 leitor no padrão do kit', () => {
         expect(onSelect).toHaveBeenCalledWith('chapter-3');
     });
 
+    it('filtra capítulos por nome sem acentos e alterna a ordem numérica e alfabética', () => {
+        const onSelect = jest.fn();
+        reader({
+            chapters: {
+                currentId: 'two',
+                onSelect,
+                items: [
+                    { id: 'ten', title: 'Capítulo 10' },
+                    { id: 'prologue', title: 'Prólogo' },
+                    { id: 'two', title: 'Capítulo 2' },
+                ],
+            },
+        });
+        fireEvent.press(screen.getByRole('button', { name: 'Lista de capítulos' }));
+        const query = screen.getByLabelText('Buscar capítulo por nome');
+        fireEvent.changeText(query, 'CAPITULO');
+        const order = () => screen.getAllByRole('radio', { name: /^Capítulo / }).map(row => row.props.accessibilityLabel);
+        expect(order()).toEqual(['Capítulo 2', 'Capítulo 10']);
+        expect(screen.queryByRole('radio', { name: 'Prólogo' })).toBeNull();
+        fireEvent.press(screen.getByRole('radio', { name: 'Alfabético' }));
+        expect(order()).toEqual(['Capítulo 10', 'Capítulo 2']);
+        expect(screen.getByRole('radio', { name: 'Capítulo 2' })).toBeChecked();
+        fireEvent.changeText(query, 'inexistente');
+        expect(screen.getByText('Nenhum capítulo encontrado.')).toBeOnTheScreen();
+        fireEvent.changeText(query, 'prologo');
+        fireEvent.press(screen.getByRole('radio', { name: 'Prólogo' }));
+        expect(onSelect).toHaveBeenCalledWith('prologue');
+    });
+
     it('AC-003 barra inferior com "p / T" acessível, vizinhos e alternador Traduzido/Original', () => {
         const onSelect = jest.fn();
         reader({ chapters: chapters(onSelect, 'chapter-1') });

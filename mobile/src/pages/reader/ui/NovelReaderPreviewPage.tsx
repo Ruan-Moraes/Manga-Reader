@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { ReaderGestureControls } from '@/features/configure-chapter-reader';
 import { TextReaderControls } from '@/features/configure-text-reader';
 import { useSettingsStore } from '@/features/manage-settings';
+import { useDeveloperMode, useDeveloperModeEnabled } from '@/shared/config';
 import { navigateBackOrReplace, ROUTES } from '@/shared/navigation';
 import { ContentReader, type ReaderLocation } from '@/widgets/content-reader';
 
@@ -25,7 +26,7 @@ function DevelopmentNovelReaderPreview() {
         () =>
             createNovelPreviewDocument({
                 illustration: {
-                    ...Image.resolveAssetSource(require('../../../../assets/images/launcher-hero.png')),
+                    ...Image.resolveAssetSource(require('../../../../assets/images/launcher-hero.webp')),
                     description: t('novelPreview.illustration'),
                 },
                 title: t('novelPreview.title'),
@@ -69,6 +70,9 @@ function DevelopmentNovelReaderPreview() {
 }
 
 export function NovelReaderPreviewPage() {
-    if (!isNovelPreviewEnabled(__DEV__)) return <Redirect href={ROUTES.ROOT} />;
+    const developerModeEnabled = useDeveloperModeEnabled();
+    const hydrated = useDeveloperMode(state => state.hydrated);
+    if (__DEV__ && !hydrated) return null;
+    if (!isNovelPreviewEnabled(__DEV__) || !developerModeEnabled) return <Redirect href={ROUTES.ROOT} />;
     return <DevelopmentNovelReaderPreview />;
 }

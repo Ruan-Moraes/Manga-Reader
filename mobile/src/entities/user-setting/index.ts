@@ -8,7 +8,6 @@ export {
     DEFAULT_USER_SETTINGS,
     type DensityPreference,
     type FontSizePreference,
-    type ImageQuality,
     type LocaleSettings,
     normalizeUserSettings,
     type ReaderBackground,

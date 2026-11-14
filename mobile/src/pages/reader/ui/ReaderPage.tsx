@@ -4,7 +4,7 @@ import { router } from 'expo-router';
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 
-import { chapterReaderQueryOptions, getImageVariantCapabilities } from '@/entities/chapter';
+import { chapterReaderQueryOptions } from '@/entities/chapter';
 import { getReadingProgress, type ReadingProgress, readingProgressQueryKeys, reportInvalidReadingProgress } from '@/entities/reading-progress';
 import { useSessionStore } from '@/entities/session';
 import { normalizeReaderSettings, ReaderSettingsControls } from '@/features/configure-chapter-reader';
@@ -28,7 +28,7 @@ interface IdentityProps extends Props {
 
 function IdentityReaderPage({ titleId, requestedChapter, identityEpoch, isAuthenticated }: IdentityProps) {
     const { t } = useTranslation('reader');
-    const { spacing, tokens } = useTheme();
+    const { spacing } = useTheme();
     const settings = useSettingsStore(state => state.settings);
     const updateSettings = useSettingsStore(state => state.updateSettings);
     const readerGestures = useSettingsStore(state => state.readerGestures);
@@ -182,24 +182,30 @@ function IdentityReaderPage({ titleId, requestedChapter, identityEpoch, isAuthen
 
     if (isAuthenticated && progressQuery.isSuccess && resume.kind === 'choose' && !resumeResolved) {
         return (
-            <View style={{ flex: 1, justifyContent: 'center', padding: spacing.lg, gap: spacing.md, backgroundColor: tokens.bg }}>
-                <AppText accessibilityRole="header" variant="title">
-                    {t('resume.title')}
-                </AppText>
-                <AppText tone="muted">{t('resume.description', { chapter: resume.recent?.chapterNumber, page: resume.recent?.currentPage })}</AppText>
-                <Button
-                    onPress={() => {
-                        setChapterNumber(resume.recent!.chapterNumber);
-                        setPendingResume(resume.recent!);
-                        unavailableDiagnosticReported.current = false;
-                    }}
-                >
-                    {t('resume.continue')}
-                </Button>
-                <Button variant="outline" onPress={openRequestedChapter}>
-                    {t('resume.requested')}
-                </Button>
-            </View>
+            // Same frame as the other reader states: safe area and the visible way out (revisão 2026-11-13).
+            <PageContainer>
+                <NavigationHeader backLabel={t('actions.exit')} onBack={exitReader} />
+                <View testID="reader-resume-choice" style={{ flex: 1, justifyContent: 'center', gap: spacing.md }}>
+                    <AppText accessibilityRole="header" variant="title">
+                        {t('resume.title')}
+                    </AppText>
+                    <AppText tone="muted">{t('resume.description', { chapter: resume.recent?.chapterNumber, page: resume.recent?.currentPage })}</AppText>
+                    <View style={{ gap: spacing.xs }}>
+                        <Button
+                            onPress={() => {
+                                setChapterNumber(resume.recent!.chapterNumber);
+                                setPendingResume(resume.recent!);
+                                unavailableDiagnosticReported.current = false;
+                            }}
+                        >
+                            {t('resume.continue')}
+                        </Button>
+                        <Button variant="outline" onPress={openRequestedChapter}>
+                            {t('resume.requested')}
+                        </Button>
+                    </View>
+                </View>
+            </PageContainer>
         );
     }
 
@@ -218,7 +224,6 @@ function IdentityReaderPage({ titleId, requestedChapter, identityEpoch, isAuthen
                         compact
                         category="quick"
                         value={settings.reader}
-                        capabilities={getImageVariantCapabilities(chapterQuery.data.pages)}
                         onChange={patch => void updateSettings(current => ({ ...current, reader: normalizeReaderSettings(patch, current) }), 'reader')}
                     />
                 ),

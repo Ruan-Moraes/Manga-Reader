@@ -33,16 +33,12 @@
         "RTL": "Right → Left"
     },
     "options": {
-        "AUTO": "Automatic",
         "BLACK": "Black",
         "DARK": "Dark",
         "DOUBLE": "Double",
         "HEIGHT": "Height",
-        "HIGH": "High",
         "LIGHT": "Light",
-        "LOW": "Low",
         "LTR": "Left to right",
-        "MEDIUM": "Medium",
         "ORIGINAL": "Original",
         "PAGED": "Paged",
         "PAPER": "Paper",
@@ -71,13 +67,6 @@
                 "VERTICAL": "Continuous flow for scrolling."
             },
             "preload": "Number of pages prepared around the current one.",
-            "quality": {
-                "AUTO": "Balances sharpness and data usage.",
-                "HIGH": "Prioritizes sharpness with higher data usage.",
-                "LOW": "Prioritizes lower data usage and faster loading.",
-                "MEDIUM": "Keeps good sharpness with moderate data usage.",
-                "ORIGINAL": "Keeps the page at its original resolution."
-            },
             "saturation": "Adjust the color intensity of pages."
         },
         "direction": "Direction",
@@ -86,7 +75,6 @@
         "mode": "Mode",
         "modeLong": "Reading mode",
         "preload": "Preload",
-        "quality": "Quality",
         "saturation": "Saturation",
         "sections": {
             "behavior": {
@@ -94,7 +82,7 @@
                 "title": "Behavior"
             },
             "image": {
-                "description": "Page quality, background, and visual treatment.",
+                "description": "Page background and visual treatment.",
                 "title": "Image"
             },
             "navigation": {
@@ -164,7 +152,7 @@
         "size": "Text size",
         "decrease": "Decrease text size",
         "increase": "Increase text size",
-        "sizeValue": "{{size}} sp",
+        "sizeValue": "{{size}} pt",
         "spacing": "Line spacing",
         "lineSpacing": {
             "COMPACT": "Compact",
@@ -206,6 +194,13 @@
         "close": "Close",
         "chapterList": "Chapter list",
         "chapterListTitle": "Chapters",
+        "chapterSearch": "Search chapters by name",
+        "chapterSort": "Sort by",
+        "chapterSortOptions": {
+            "numeric": "Numeric",
+            "alphabetic": "Alphabetical"
+        },
+        "chapterSearchEmpty": "No chapters found.",
         "currentChapter": "Current chapter",
         "previousChapter": "Previous chapter",
         "nextChapter": "Next chapter",

@@ -12,7 +12,6 @@ function ControlledReaderSettingsControls() {
 
     return (
         <ReaderSettingsControls
-            capabilities={{ high: true, low: true, medium: true }}
             onChange={patch => setValue(current => ({ ...current, ...patch }))}
             value={value}
         />
@@ -24,7 +23,7 @@ describe('MOB-FEAT-031 reader settings controls', () => {
         const onChange = jest.fn();
         const view = render(
             <ThemeProvider waitForPlatform={false}>
-                <ReaderSettingsControls capabilities={{ high: true, low: true, medium: true }} onChange={onChange} value={DEFAULT_USER_SETTINGS.reader} />
+                <ReaderSettingsControls onChange={onChange} value={DEFAULT_USER_SETTINGS.reader} />
             </ThemeProvider>,
         );
 
@@ -41,23 +40,20 @@ describe('MOB-FEAT-031 reader settings controls', () => {
         expect(onChange).toHaveBeenCalledWith({ saturation: 95 });
         expect(onChange).toHaveBeenCalledWith({ gap: 1 });
         expect(onChange).toHaveBeenCalledWith({ autoMarkRead: false });
-        expect(view.getByRole('button', { name: 'Qualidade: Automática' })).toBeOnTheScreen();
+        expect(view.queryByRole('button', { name: /Qualidade/ })).toBeNull();
         expect(['Preto', 'Escuro', 'Papel', 'Claro', 'Branco'].map(name => view.getByRole('radio', { name }))).toHaveLength(5);
     });
 
-    it('mapeia direção, ajuste, qualidade, fundo e preload para patches independentes', () => {
+    it('mapeia direção, ajuste, fundo e preload para patches independentes', () => {
         const onChange = jest.fn();
         const view = render(
             <ThemeProvider waitForPlatform={false}>
-                <ReaderSettingsControls capabilities={{ high: true, low: true, medium: true }} onChange={onChange} value={DEFAULT_USER_SETTINGS.reader} />
+                <ReaderSettingsControls onChange={onChange} value={DEFAULT_USER_SETTINGS.reader} />
             </ThemeProvider>,
         );
 
         fireEvent.press(view.getByRole('radio', { name: 'Webtoon' }));
         fireEvent.press(view.getByRole('radio', { name: 'Altura' }));
-        fireEvent.press(view.getByRole('button', { name: 'Qualidade: Automática' }));
-        expect(view.getByText('Prioriza nitidez com maior uso de dados.')).toBeOnTheScreen();
-        fireEvent.press(view.getByRole('radio', { name: 'Alta' }));
         fireEvent.press(view.getByRole('radio', { name: 'Papel' }));
         fireEvent(view.getByRole('adjustable', { name: 'Pré-carregamento' }), 'accessibilityAction', {
             nativeEvent: { actionName: 'increment' },
@@ -65,7 +61,6 @@ describe('MOB-FEAT-031 reader settings controls', () => {
 
         expect(onChange).toHaveBeenCalledWith({ direction: 'WEBTOON' });
         expect(onChange).toHaveBeenCalledWith({ fit: 'HEIGHT' });
-        expect(onChange).toHaveBeenCalledWith({ quality: 'HIGH' });
         expect(onChange).toHaveBeenCalledWith({ background: 'PAPER' });
         expect(onChange).toHaveBeenCalledWith({ preload: 4 });
     });
@@ -98,7 +93,7 @@ describe('MOB-FEAT-031 reader settings controls', () => {
         const onChange = jest.fn();
         const view = render(
             <ThemeProvider waitForPlatform={false}>
-                <ReaderSettingsControls capabilities={{ high: true, low: true, medium: true }} onChange={onChange} value={DEFAULT_USER_SETTINGS.reader} />
+                <ReaderSettingsControls onChange={onChange} value={DEFAULT_USER_SETTINGS.reader} />
             </ThemeProvider>,
         );
         const paper = view.getByRole('radio', { name: 'Papel' });
@@ -125,7 +120,6 @@ it('separa categorias compactas e mantém ajuda e alteração de preferências',
             <ReaderSettingsControls
                 compact
                 category={category}
-                capabilities={{ high: false, low: false, medium: false }}
                 onChange={onChange}
                 value={DEFAULT_USER_SETTINGS.reader}
             />
@@ -148,7 +142,7 @@ describe('MOB-FEAT-063 categoria quick da folha do leitor', () => {
     const quick = (reader = DEFAULT_USER_SETTINGS.reader) =>
         render(
             <ThemeProvider waitForPlatform={false}>
-                <ReaderSettingsControls category="quick" compact capabilities={{ high: true, low: true, medium: true }} onChange={jest.fn()} value={reader} />
+                <ReaderSettingsControls category="quick" compact onChange={jest.fn()} value={reader} />
             </ThemeProvider>,
         );
 

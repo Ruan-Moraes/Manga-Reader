@@ -9,13 +9,5 @@ interface Props {
 }
 
 export function ReaderPreferencesSection({ value, onChange, category, compact }: Props) {
-    return (
-        <ReaderSettingsControls
-            value={value}
-            capabilities={{ low: false, medium: false, high: false }}
-            onChange={onChange}
-            category={category}
-            compact={compact}
-        />
-    );
+    return <ReaderSettingsControls value={value} onChange={onChange} category={category} compact={compact} />;
 }

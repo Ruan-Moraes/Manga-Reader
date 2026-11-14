@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useTheme } from '@/shared/theme';
-import { AppText, IconButton, PressableBox as Pressable, resolveSheetFooterBottom } from '@/shared/ui';
+import { AppText, IconButton, PanelHeader, PressableBox as Pressable, resolveSheetFooterBottom } from '@/shared/ui';
 
 export interface ReaderControlSection {
     id: string;
@@ -72,38 +72,21 @@ export function ReaderPanel({ visible, title, onClose, sections, children, descr
                             />
                         </View>
                     ) : null}
-                    <View
-                        className="flex-row"
-                        style={{
-                            alignItems: kitSheet ? 'flex-start' : 'center',
-                            gap: spacing.xs,
-                            paddingHorizontal: gutter,
-                            paddingTop: spacing.sm,
-                            // Como nas demais folhas: respiro e divisor sob o cabeçalho (as abas já têm a própria borda).
-                            ...(sections?.length
-                                ? { paddingBottom: spacing.sm }
-                                : { borderBottomColor: tokens.separator, borderBottomWidth: 1, paddingBottom: spacing.md }),
-                        }}
-                    >
-                        <View className="flex-1" style={{ gap: spacing.xs / 2, minWidth: 0 }}>
-                            <AppText accessibilityRole="header" variant={description ? 'section' : 'label'}>
-                                {title}
-                            </AppText>
-                            {description ? (
-                                <AppText testID="reader-panel-description" variant="caption" tone="muted">
-                                    {description}
-                                </AppText>
-                            ) : null}
-                        </View>
-                        {!forcedExpanded ? (
+                    <PanelHeader
+                        gutter={gutter}
+                        title={title}
+                        description={description}
+                        descriptionTestID="reader-panel-description"
+                        closeLabel={t('settings.closeSelection')}
+                        onClose={onClose}
+                        actions={!forcedExpanded ? (
                             <IconButton
                                 icon={expanded ? 'chevron-down' : 'chevron-up'}
                                 accessibilityLabel={t(expanded ? 'panel.collapse' : 'panel.expand')}
                                 onPress={() => setExpanded(value => !value)}
                             />
-                        ) : null}
-                        <IconButton icon="close" accessibilityLabel={t('settings.closeSelection')} onPress={onClose} />
-                    </View>
+                        ) : undefined}
+                    />
                     {sections?.length ? (
                         <View
                             accessibilityRole="tablist"
@@ -132,7 +115,12 @@ export function ReaderPanel({ visible, title, onClose, sections, children, descr
                             ))}
                         </View>
                     ) : null}
-                    <ScrollView key={active?.id ?? 'content'} contentContainerStyle={{ gap: kitSheet ? spacing.lg : spacing.md, padding: gutter }}>
+                    <ScrollView
+                        key={active?.id ?? 'content'}
+                        showsVerticalScrollIndicator={false}
+                        showsHorizontalScrollIndicator={false}
+                        contentContainerStyle={{ gap: kitSheet ? spacing.lg : spacing.md, padding: gutter }}
+                    >
                         {active ? active.content : children}
                     </ScrollView>
                     {footer ? (

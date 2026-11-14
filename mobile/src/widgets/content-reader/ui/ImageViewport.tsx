@@ -168,6 +168,8 @@ export const ImageViewport = memo(function ImageViewport({
     if (mode === 'VERTICAL') {
         return (
             <FlatList
+                showsVerticalScrollIndicator={false}
+                showsHorizontalScrollIndicator={false}
                 ref={listRef}
                 testID="reader-vertical"
                 onLayout={event => setViewport(event.nativeEvent.layout)}
@@ -201,11 +203,17 @@ export const ImageViewport = memo(function ImageViewport({
     );
     const group = groups[groupIndex] ?? groups[0] ?? [];
     const surfaceWidth = mode === 'DOUBLE' ? width / 2 : width;
+    const scrollable = group.some(item => fittedImageSize(item, surfaceWidth, height, settings.fit).height > height);
     return (
         <ScrollView
+            showsVerticalScrollIndicator={false}
+            showsHorizontalScrollIndicator={false}
             key={groupIndex}
             onLayout={event => setViewport(event.nativeEvent.layout)}
             testID="reader-paged"
+            scrollEnabled={scrollable}
+            onScroll={event => onScrollPhase?.('activity', event)}
+            scrollEventThrottle={32}
             onScrollBeginDrag={event => onScrollPhase?.('dragStart', event)}
             onScrollEndDrag={event => onScrollPhase?.('dragEnd', event)}
             onMomentumScrollBegin={event => onScrollPhase?.('momentumStart', event)}

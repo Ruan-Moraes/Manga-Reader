@@ -33,16 +33,12 @@
         "RTL": "Dir → Esq"
     },
     "options": {
-        "AUTO": "Automática",
         "BLACK": "Preto",
         "DARK": "Escuro",
         "DOUBLE": "Dupla",
         "HEIGHT": "Altura",
-        "HIGH": "Alta",
         "LIGHT": "Claro",
-        "LOW": "Baixa",
         "LTR": "Esquerda para direita",
-        "MEDIUM": "Média",
         "ORIGINAL": "Original",
         "PAGED": "Paginado",
         "PAPER": "Papel",
@@ -71,13 +67,6 @@
                 "VERTICAL": "Fluxo contínuo para leitura por rolagem."
             },
             "preload": "Quantidade de páginas preparadas ao redor da atual.",
-            "quality": {
-                "AUTO": "Equilibra nitidez e uso de dados.",
-                "HIGH": "Prioriza nitidez com maior uso de dados.",
-                "LOW": "Prioriza economia de dados e carregamento rápido.",
-                "MEDIUM": "Mantém boa nitidez com uso moderado de dados.",
-                "ORIGINAL": "Preserva a resolução original da página."
-            },
             "saturation": "Ajuste a intensidade das cores das páginas."
         },
         "direction": "Direção",
@@ -86,7 +75,6 @@
         "mode": "Modo",
         "modeLong": "Modo de leitura",
         "preload": "Pré-carregamento",
-        "quality": "Qualidade",
         "saturation": "Saturação",
         "sections": {
             "behavior": {
@@ -94,7 +82,7 @@
                 "title": "Comportamento"
             },
             "image": {
-                "description": "Qualidade, fundo e tratamento visual das páginas.",
+                "description": "Fundo e tratamento visual das páginas.",
                 "title": "Imagem"
             },
             "navigation": {
@@ -164,7 +152,7 @@
         "size": "Tamanho do texto",
         "decrease": "Diminuir texto",
         "increase": "Aumentar texto",
-        "sizeValue": "{{size}} sp",
+        "sizeValue": "{{size}} pt",
         "spacing": "Entrelinha",
         "lineSpacing": {
             "COMPACT": "Compacta",
@@ -206,6 +194,13 @@
         "close": "Fechar",
         "chapterList": "Lista de capítulos",
         "chapterListTitle": "Capítulos",
+        "chapterSearch": "Buscar capítulo por nome",
+        "chapterSort": "Ordenar por",
+        "chapterSortOptions": {
+            "numeric": "Numérico",
+            "alphabetic": "Alfabético"
+        },
+        "chapterSearchEmpty": "Nenhum capítulo encontrado.",
         "currentChapter": "Capítulo atual",
         "previousChapter": "Capítulo anterior",
         "nextChapter": "Próximo capítulo",

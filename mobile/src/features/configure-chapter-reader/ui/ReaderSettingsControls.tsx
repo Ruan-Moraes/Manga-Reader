@@ -2,12 +2,10 @@ import { type ReactNode } from 'react';
 import { View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-import type { ImageVariantCapabilities } from '@/entities/chapter';
-import type { ImageQuality, ReaderBackground, ReaderSettings, ReadingDirection, ReadingFit, ReadingMode } from '@/entities/user-setting';
+import type { ReaderBackground, ReaderSettings, ReadingDirection, ReadingFit, ReadingMode } from '@/entities/user-setting';
 import { darkTokens, lightTokens, useTheme } from '@/shared/theme';
-import { ChoiceCards, FormSection, type IconName, RangeSlider, SectionStack, SegmentedControl, SelectField, SwatchPicker, SwitchRow } from '@/shared/ui';
+import { ChoiceCards, FormSection, type IconName, RangeSlider, SectionStack, SegmentedControl, SwatchPicker, SwitchRow } from '@/shared/ui';
 
-import { selectableQualities } from '../model/readerConfiguration';
 
 const MODES: readonly ReadingMode[] = ['VERTICAL', 'PAGED', 'DOUBLE'];
 const DIRECTIONS: readonly ReadingDirection[] = ['LTR', 'RTL', 'WEBTOON'];
@@ -30,14 +28,11 @@ interface Props {
      */
     category?: ReaderSettingsCategory;
     compact?: boolean;
-    capabilities: ImageVariantCapabilities;
     onChange: (patch: Partial<ReaderSettings>) => void;
 }
 
-export function ReaderSettingsControls({ value, capabilities, onChange, category, compact = false }: Props) {
+export function ReaderSettingsControls({ value, onChange, category, compact = false }: Props) {
     const { t } = useTranslation('reader');
-
-    const qualities = selectableQualities(capabilities);
 
     const backgroundColors: Record<ReaderBackground, string> = {
         BLACK: darkTokens.logoBg,
@@ -109,17 +104,6 @@ export function ReaderSettingsControls({ value, capabilities, onChange, category
             ) : null}
             {showsImage(category) ? (
                 <Section compact={compact} title={t('settings.sections.image.title')} description={t('settings.sections.image.description')}>
-                    {category === 'quick' ? null : (
-                        <SelectField
-                            closeLabel={t('settings.closeSelection')}
-                            label={t('settings.quality')}
-                            onChange={(quality: ImageQuality) => onChange({ quality })}
-                            optionDescription={option => t(`settings.descriptions.quality.${option}`)}
-                            optionLabel={option => t(`options.${option}`)}
-                            options={qualities}
-                            value={qualities.includes(value.quality) ? value.quality : 'AUTO'}
-                        />
-                    )}
                     <SwatchPicker
                         separated={compact}
                         label={t('settings.background')}

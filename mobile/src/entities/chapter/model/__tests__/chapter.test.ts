@@ -1,4 +1,4 @@
-import { getImageVariantCapabilities, mapReaderChapter, normalizeChapterPages } from '../../index';
+import { mapReaderChapter, normalizeChapterPages } from '../../index';
 
 const page = (id: string, order: number, overrides: Record<string, unknown> = {}) => ({
     id,
@@ -66,6 +66,6 @@ describe('MOB-FEAT-005/AC-004 image capabilities', () => {
             pages: [page('page-1', 1)],
         })!;
 
-        expect(getImageVariantCapabilities(chapter.pages)).toEqual({ low: false, medium: false, high: false });
+        expect(chapter.pages[0]).toMatchObject({ imageUrl: expect.any(String), thumbnailUrl: expect.any(String) });
     });
 });

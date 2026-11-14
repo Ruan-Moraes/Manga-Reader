@@ -2,8 +2,6 @@ export { chapterQueryKeys, chapterReaderQueryKey, chapterReaderQueryOptions, get
 export {
     type Chapter,
     type ChapterPage,
-    getImageVariantCapabilities,
-    type ImageVariantCapabilities,
     mapChapterPage,
     mapReaderChapter,
     normalizeChapterPages,

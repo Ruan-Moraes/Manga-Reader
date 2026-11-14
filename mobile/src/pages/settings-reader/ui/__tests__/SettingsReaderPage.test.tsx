@@ -7,6 +7,7 @@ import { DEFAULT_USER_SETTINGS } from '@/entities/user-setting';
 import { useSettingsStore } from '@/features/manage-settings';
 import i18n from '@/shared/i18n';
 import { ThemeProvider } from '@/shared/theme';
+import { BottomSheet } from '@/shared/ui';
 
 import { SettingsReaderPage } from '../SettingsReaderPage';
 
@@ -71,15 +72,13 @@ describe('MOB-FEAT-062 Configurações > Leitor', () => {
         expect(useSettingsStore.getState().settings.reader.fit).toBe('ORIGINAL');
     });
 
-    it('AC-006 Imagem mantém a qualidade disponível de hoje e o fundo', () => {
+    it('AC-006 Imagem oferece fundo e saturação sem seletor de qualidade', () => {
         render(shell(<SettingsReaderPage />));
 
         openSheet('Imagem');
-        fireEvent.press(screen.getByRole('button', { name: 'Qualidade: Automática' }));
-
-        expect(screen.getByRole('radio', { name: 'Original' })).toBeOnTheScreen();
-        expect(screen.queryByRole('radio', { name: 'Alta' })).toBeNull();
-        expect(screen.queryByRole('radio', { name: 'Baixa' })).toBeNull();
+        expect(screen.queryByRole('button', { name: /Qualidade/ })).toBeNull();
+        expect(screen.getByRole('radio', { name: 'Papel' })).toBeOnTheScreen();
+        expect(screen.getByRole('adjustable', { name: 'Saturação' })).toBeOnTheScreen();
     });
 
     it('AC-006 Gestos respeita a regra das áreas laterais no modo vertical', () => {
@@ -102,5 +101,26 @@ describe('MOB-FEAT-062 Configurações > Leitor', () => {
         expect(screen.getByTestId('bottom-sheet-footer')).toBeOnTheScreen();
         expect(within(screen.getByTestId('bottom-sheet-footer')).getByRole('button', { name: 'Restaurar ajustes do texto' })).toBeOnTheScreen();
         expect(screen.getAllByRole('button', { name: 'Restaurar ajustes do texto' })).toHaveLength(1);
+    });
+
+    it('revisão 2026-11-13: a folha mantém título e conteúdo enquanto desce ao fechar', () => {
+        render(shell(<SettingsReaderPage />));
+
+        openSheet('Gestos do leitor');
+        closeSheet();
+
+        const sheet = screen.UNSAFE_getByType(BottomSheet);
+        expect(sheet.props.visible).toBe(false);
+        expect(sheet.props.title).toBe('Gestos do leitor');
+        expect(sheet.props.children).not.toBeNull();
+    });
+
+    it('revisão 2026-11-13: o tamanho do texto usa pt, não a unidade técnica do Android', () => {
+        render(shell(<SettingsReaderPage />));
+
+        openSheet('Texto e aparência');
+
+        expect(screen.getAllByText(/\d+ pt$/).length).toBeGreaterThan(0);
+        expect(screen.queryByText(/\d+ sp$/)).toBeNull();
     });
 });

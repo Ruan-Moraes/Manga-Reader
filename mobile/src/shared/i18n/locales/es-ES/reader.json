@@ -33,16 +33,12 @@
         "RTL": "Der → Izq"
     },
     "options": {
-        "AUTO": "Automática",
         "BLACK": "Negro",
         "DARK": "Oscuro",
         "DOUBLE": "Doble",
         "HEIGHT": "Altura",
-        "HIGH": "Alta",
         "LIGHT": "Claro",
-        "LOW": "Baja",
         "LTR": "Izquierda a derecha",
-        "MEDIUM": "Media",
         "ORIGINAL": "Original",
         "PAGED": "Paginado",
         "PAPER": "Papel",
@@ -71,13 +67,6 @@
                 "VERTICAL": "Flujo continuo para lectura por desplazamiento."
             },
             "preload": "Cantidad de páginas preparadas alrededor de la actual.",
-            "quality": {
-                "AUTO": "Equilibra nitidez y uso de datos.",
-                "HIGH": "Prioriza nitidez con mayor uso de datos.",
-                "LOW": "Prioriza ahorro de datos y carga más rápida.",
-                "MEDIUM": "Mantiene buena nitidez con uso moderado de datos.",
-                "ORIGINAL": "Conserva la resolución original de la página."
-            },
             "saturation": "Ajusta la intensidad de color de las páginas."
         },
         "direction": "Dirección",
@@ -86,7 +75,6 @@
         "mode": "Modo",
         "modeLong": "Modo de lectura",
         "preload": "Precarga",
-        "quality": "Calidad",
         "saturation": "Saturación",
         "sections": {
             "behavior": {
@@ -94,7 +82,7 @@
                 "title": "Comportamiento"
             },
             "image": {
-                "description": "Calidad, fondo y tratamiento visual de las páginas.",
+                "description": "Fondo y tratamiento visual de las páginas.",
                 "title": "Imagen"
             },
             "navigation": {
@@ -164,7 +152,7 @@
         "size": "Tamaño del texto",
         "decrease": "Reducir texto",
         "increase": "Aumentar texto",
-        "sizeValue": "{{size}} sp",
+        "sizeValue": "{{size}} pt",
         "spacing": "Interlineado",
         "lineSpacing": {
             "COMPACT": "Compacto",
@@ -206,6 +194,13 @@
         "close": "Cerrar",
         "chapterList": "Lista de capítulos",
         "chapterListTitle": "Capítulos",
+        "chapterSearch": "Buscar capítulo por nombre",
+        "chapterSort": "Ordenar por",
+        "chapterSortOptions": {
+            "numeric": "Numérico",
+            "alphabetic": "Alfabético"
+        },
+        "chapterSearchEmpty": "No se encontraron capítulos.",
         "currentChapter": "Capítulo actual",
         "previousChapter": "Capítulo anterior",
         "nextChapter": "Capítulo siguiente",

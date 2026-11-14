@@ -1,14 +1,16 @@
 import { useState } from 'react';
-import { AccessibilityInfo, FlatList, Text } from 'react-native';
+import { AccessibilityInfo, Animated, FlatList, StatusBar, Text } from 'react-native';
 import { act, fireEvent, render } from '@testing-library/react-native';
+import { Image } from 'expo-image';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { DEFAULT_TEXT_READER_PREFERENCES, DEFAULT_USER_SETTINGS } from '@/entities/user-setting';
 import i18n from '@/shared/i18n';
-import { darkTokens, lightTokens, ThemeProvider } from '@/shared/theme';
+import { darkTokens, lightTokens, MOTION_DURATIONS, MOTION_EASING, ThemeProvider } from '@/shared/theme';
 
 import { type ImageSequenceDocument, type ReaderLocation, type TextFlowDocument } from '../../model/contentReader';
 import { ContentReader } from '../ContentReader';
+import { readerCachePolicy } from '../ImageSurface';
 
 jest.mock('@expo/vector-icons', () => ({ Ionicons: () => null }));
 
@@ -82,6 +84,26 @@ describe('MOB-FEAT-051 content reader', () => {
         expect(list.props.maxToRenderPerBatch).toBe(3);
     });
 
+    it.each([
+        { animations: true, duration: MOTION_DURATIONS.base },
+        { animations: false, duration: 0 },
+    ])('animates the reader controls with the base motion token (animations: $animations)', ({ animations, duration }) => {
+        const timing = jest.spyOn(Animated, 'timing');
+        const screen = render(
+            <SafeAreaProvider initialMetrics={{ frame: { x: 0, y: 0, width: 750, height: 1334 }, insets: { top: 20, right: 0, bottom: 20, left: 0 } }}>
+                <ThemeProvider animations={animations} initialOverride="dark" waitForPlatform={false}>
+                    <ContentReader document={imageDocument} settings={DEFAULT_USER_SETTINGS.reader} onExit={jest.fn()} />
+                </ThemeProvider>
+            </SafeAreaProvider>,
+        );
+        timing.mockClear();
+        fireEvent(screen.getByTestId('reader-touch-surface'), 'accessibilityAction', { nativeEvent: { actionName: 'activate' } });
+
+        const reveal = timing.mock.calls.map(([, config]) => config).find(config => config.toValue === 1 && config.easing === MOTION_EASING.enter);
+        expect(reveal).toEqual(expect.objectContaining({ duration }));
+        timing.mockRestore();
+    });
+
     it('keeps the exit callback and native panel dismissal available', () => {
         const onExit = jest.fn();
         const screen = withTheme(
@@ -141,6 +163,63 @@ describe('MOB-FEAT-051 content reader', () => {
         expect(screen.queryByTestId('reader-top-bar')).toBeNull();
         fireEvent(screen.getByTestId('reader-touch-surface'), 'accessibilityAction', { nativeEvent: { actionName: 'activate' } });
         expect(screen.getByTestId('reader-top-bar')).toBeTruthy();
+    });
+
+    it('esconde a barra de status junto com os controles e não aplica filtro nem cache em disco às páginas (revisão 2026-11-13)', () => {
+        const screen = withTheme(<ContentReader document={imageDocument} settings={DEFAULT_USER_SETTINGS.reader} onExit={jest.fn()} />, false);
+        expect(screen.UNSAFE_getByType(StatusBar).props.hidden).toBe(true);
+        fireEvent(screen.getByTestId('reader-touch-surface'), 'accessibilityAction', { nativeEvent: { actionName: 'activate' } });
+        expect(screen.UNSAFE_getByType(StatusBar).props.hidden).toBe(false);
+
+        const pages = screen.UNSAFE_getAllByType(Image);
+        expect(pages.length).toBeGreaterThan(0);
+        expect(pages.every(page => page.props.cachePolicy === 'memory')).toBe(true);
+        expect(DEFAULT_USER_SETTINGS.reader.saturation ?? 100).toBe(100);
+        expect(screen.UNSAFE_queryAllByProps({ style: { filter: [{ saturate: 1 }] } })).toHaveLength(0);
+    });
+
+    it('mantém páginas locais só em memória e páginas do servidor também em disco (revisão 2026-11-13)', () => {
+        expect(readerCachePolicy('file:///var/mobile/result.webp')).toBe('memory');
+        expect(readerCachePolicy('result-1')).toBe('memory');
+        expect(readerCachePolicy('https://cdn.example/page-1.webp')).toBe('memory-disk');
+        expect(readerCachePolicy('HTTP://cdn.example/page-2.webp')).toBe('memory-disk');
+    });
+
+    it('recovers both paged bars after interrupted momentum and navigates with the restored arrow', () => {
+        jest.useFakeTimers();
+        try {
+            function PagedReader() {
+                const [location, setLocation] = useState<ReaderLocation>({ itemId: 'p1', index: 0 });
+                return (
+                    <ContentReader
+                        document={imageDocument}
+                        settings={{ ...DEFAULT_USER_SETTINGS.reader, mode: 'PAGED', direction: 'LTR' }}
+                        location={location}
+                        onLocationChange={setLocation}
+                        onExit={jest.fn()}
+                    />
+                );
+            }
+            const screen = withTheme(<PagedReader />);
+            const viewport = screen.getByTestId('reader-paged');
+            fireEvent(viewport, 'momentumScrollBegin');
+            expect(screen.queryByTestId('reader-top-bar')).toBeNull();
+            expect(screen.queryByTestId('reader-bottom-bar')).toBeNull();
+            act(() => jest.advanceTimersByTime(300));
+            fireEvent(viewport, 'scroll', { nativeEvent: { contentOffset: { x: 0, y: 50 } } });
+            act(() => jest.advanceTimersByTime(300));
+            expect(screen.queryByTestId('reader-bottom-bar')).toBeNull();
+            act(() => jest.advanceTimersByTime(50));
+            const surface = screen.getByTestId('reader-touch-surface');
+            fireEvent(surface, 'touchStart', { nativeEvent: { pageX: 10, pageY: 10 } });
+            fireEvent(surface, 'touchEnd', { nativeEvent: { pageX: 10, pageY: 10 } });
+            expect(screen.getByTestId('reader-top-bar')).toBeOnTheScreen();
+            expect(screen.getByTestId('reader-bottom-bar')).toBeOnTheScreen();
+            fireEvent.press(screen.getByRole('button', { name: 'Próxima página' }));
+            expect(screen.getByTestId('reader-page-p2')).toBeOnTheScreen();
+        } finally {
+            jest.useRealTimers();
+        }
     });
 
     it('opens a settings modal with an explicit close action', () => {

@@ -116,6 +116,11 @@ describe('MOB-FEAT-058 estados do leitor de capítulos', () => {
         const title = await screen.findByRole('header', { name: 'Continuar de onde parou?' });
         expect(title.props.style).toEqual(expect.arrayContaining([expect.objectContaining({ letterSpacing: -0.35 })]));
         expect(screen.getByText('Seu progresso mais recente está no capítulo 3, página 2.')).toBeTruthy();
+        // Revisão 2026-11-13: mesma moldura dos outros estados, com área segura e saída visível.
+        const { router } = jest.requireMock('expo-router') as { router: { back: jest.Mock } };
+        router.back.mockClear();
+        fireEvent.press(screen.getByRole('button', { name: i18n.t('reader:actions.exit') }));
+        expect(router.back).toHaveBeenCalledTimes(1);
         screen.unmount();
     });
 });
