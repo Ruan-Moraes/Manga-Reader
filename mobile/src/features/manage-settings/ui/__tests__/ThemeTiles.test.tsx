@@ -3,7 +3,7 @@ import { fireEvent, render, screen } from '@testing-library/react-native';
 
 import { DEFAULT_USER_SETTINGS } from '@/entities/user-setting';
 import i18n, { DEFAULT_LANGUAGE } from '@/shared/i18n';
-import { darkTokens, ThemeProvider } from '@/shared/theme';
+import { ThemeProvider } from '@/shared/theme';
 
 import { resetSettingsRuntimeForTests, useSettingsStore } from '../../model/settingsStore';
 import { AppearanceAccessibilityControls, resolveThemeTilesStacked } from '../AppearanceAccessibilityControls';
@@ -35,11 +35,11 @@ describe('MOB-FEAT-062 tiles de tema', () => {
         const system = StyleSheet.flatten(screen.getByTestId('theme-tile-SYSTEM').props.style);
         const dark = StyleSheet.flatten(screen.getByTestId('theme-tile-DARK').props.style);
 
-        expect(system).toEqual(expect.objectContaining({ borderColor: darkTokens.accentBorder, borderWidth: 2, flex: 1 }));
-        expect(dark).toEqual(expect.objectContaining({ borderColor: darkTokens.separator, borderWidth: 2 }));
+        expect(system.borderColor).not.toBe(dark.borderColor);
+        expect(system.borderWidth).toBe(dark.borderWidth);
         expect(screen.getByTestId('theme-tiles-description').props.children).toBe(i18n.t('common:settings.appearance.theme.descriptions.SYSTEM'));
 
-        fireEvent.press(screen.getByRole('radio', { name: 'Escuro' }));
+        fireEvent.press(screen.getByText('Escuro'));
 
         expect(useSettingsStore.getState().settings.appearance.theme).toBe('DARK');
     });

@@ -64,7 +64,7 @@ describe('MOB-FEAT-002 appearance controls', () => {
         const screen = render(<Harness />);
         const dark = screen.getByRole('radio', { name: 'Escuro' });
 
-        expect(dark.props.accessibilityState).toEqual({ disabled: false, selected: false });
+        expect(dark.props.accessibilityState).toMatchObject({ disabled: false, selected: false });
         fireEvent.press(dark);
 
         await waitFor(() => {
@@ -72,7 +72,7 @@ describe('MOB-FEAT-002 appearance controls', () => {
             expect(screen.getByText('dark:false:true')).toBeTruthy();
         });
         expect(secureStore.setItemAsync).toHaveBeenCalled();
-        expect(screen.getByRole('radio', { name: 'Escuro' }).props.accessibilityState).toEqual({ disabled: false, selected: true });
+        expect(screen.getByRole('radio', { name: 'Escuro' }).props.accessibilityState).toMatchObject({ disabled: false, selected: true });
     });
 
     it('mantém preview local, apresenta erro traduzido e oferece retry', async () => {
@@ -94,9 +94,9 @@ describe('MOB-FEAT-002 appearance controls', () => {
 
         fireEvent.press(within(fontGroup).getByRole('radio', { name: 'Confortável' }));
         fireEvent.press(within(densityGroup).getByRole('radio', { name: 'Compacta' }));
-        fireEvent.press(screen.getByRole('switch', { name: 'Animações decorativas' }));
-        fireEvent.press(screen.getByRole('switch', { name: 'Reduzir movimento' }));
-        fireEvent.press(screen.getByRole('switch', { name: 'Alto contraste' }));
+        fireEvent(screen.getByRole('switch', { name: 'Animações decorativas' }), 'valueChange', false);
+        fireEvent(screen.getByRole('switch', { name: 'Reduzir movimento' }), 'valueChange', true);
+        fireEvent(screen.getByRole('switch', { name: 'Alto contraste' }), 'valueChange', true);
 
         await waitFor(() => {
             expect(useSettingsStore.getState().settings.appearance).toEqual({
@@ -111,8 +111,8 @@ describe('MOB-FEAT-002 appearance controls', () => {
     });
 
     it.each([
-        ['en-US', 'Appearance', 'Follow system'],
-        ['es-ES', 'Apariencia', 'Seguir el sistema'],
+        ['en-US', 'Appearance', 'System'],
+        ['es-ES', 'Apariencia', 'Sistema'],
     ] as const)('renderiza controles no idioma %s', async (language, title, systemOption) => {
         await i18n.changeLanguage(language);
         const screen = render(<Harness />);

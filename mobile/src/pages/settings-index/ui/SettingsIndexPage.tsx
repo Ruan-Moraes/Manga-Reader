@@ -1,6 +1,7 @@
 import { View } from 'react-native';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
+import { useShallow } from 'zustand/react/shallow';
 
 import { useSessionStore } from '@/entities/session';
 import { usePrivacySettingsStore } from '@/entities/user';
@@ -34,11 +35,27 @@ export function SettingsIndexPage() {
     const { fontScale, layout, spacing } = useTheme();
 
     const isAuthenticated = useSessionStore(state => state.isAuthenticated);
-    const settings = useSettingsStore();
-    const content = useContentLanguagesStore();
-    const privacy = usePrivacySettingsStore();
-    const privacyMutation = usePrivacyMutationStore();
-    const data = useDataControlsStore();
+    // Only the fields behind each row's status: the index stays mounted under the settings pages and must not
+    // re-render on every unrelated store change (revisão 2026-11-13).
+    const settings = useSettingsStore(
+        useShallow(state => ({ pendingGroup: state.pendingGroup, pendingVersion: state.pendingVersion, syncStatus: state.syncStatus })),
+    );
+    const content = useContentLanguagesStore(
+        useShallow(state => ({
+            consumerRetrying: state.consumerRetrying,
+            hydrationStatus: state.hydrationStatus,
+            invalidationError: Boolean(state.invalidationError),
+            pending: Boolean(state.pending),
+            readError: Boolean(state.readError),
+            syncStatus: state.syncStatus,
+            writeError: Boolean(state.writeError),
+        })),
+    );
+    const privacyError = usePrivacySettingsStore(state => Boolean(state.error));
+    const privacyMutation = usePrivacyMutationStore(
+        useShallow(state => ({ error: Boolean(state.error), invalidationError: Boolean(state.invalidationError), syncStatus: state.syncStatus })),
+    );
+    const data = useDataControlsStore(useShallow(state => ({ busyAction: state.busyAction, errorKey: state.errorKey })));
 
     const settingsStatus = (group: 'appearance' | 'locale' | 'reader'): VisibleStatus => {
         if (!isAuthenticated) return 'local';
@@ -72,7 +89,7 @@ export function SettingsIndexPage() {
         if (id === 'privacy') {
             if (!isAuthenticated) return 'local';
 
-            if (privacy.error || privacyMutation.error || privacyMutation.invalidationError || privacyMutation.syncStatus === 'error') return 'error';
+            if (privacyError || privacyMutation.error || privacyMutation.invalidationError || privacyMutation.syncStatus === 'error') return 'error';
 
             return privacyMutation.syncStatus === 'syncing' ? 'syncing' : 'synced';
         }
@@ -110,12 +127,13 @@ export function SettingsIndexPage() {
 
     return (
         <PageContainer scroll>
-            <View style={{ flex: 1, gap: layout.sectionGap, paddingBottom: spacing.xl, paddingTop: spacing.xs }}>
-                <NavigationHeader
-                    backLabel={t('actions.backToModules')}
-                    onBack={() => navigateBackOrReplace(ROUTES.ROOT)}
-                    title={fontScale < 1.6 ? t('index.title') : undefined}
-                />
+            {/* Header outside the section gap: same header rhythm as every screen (revisão 2026-11-14). */}
+            <NavigationHeader
+                backLabel={t('actions.backToModules')}
+                onBack={() => navigateBackOrReplace(ROUTES.ROOT)}
+                title={fontScale < 1.6 ? t('index.title') : undefined}
+            />
+            <View style={{ flex: 1, gap: layout.sectionGap, paddingBottom: spacing.xl }}>
                 <View style={{ gap: spacing.sm }}>
                     <AppText variant="eyebrow" tone="accent">
                         {t('index.eyebrow')}
@@ -131,7 +149,7 @@ export function SettingsIndexPage() {
                             <SettingsIndex
                                 items={items.filter(item => item.group === group)}
                                 loginRequiredLabel={t('access.loginRequired')}
-                                openHint={t('actions.open', { section: t('index.title') })}
+                                openHint={title => t('actions.open', { section: title })}
                             />
                         </SettingsGroupCard>
                     ))}

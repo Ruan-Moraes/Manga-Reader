@@ -12,7 +12,7 @@ import {
     usePrivacySettingsStore,
 } from '@/entities/user';
 import { useTheme } from '@/shared/theme';
-import { AppText, ChoiceCards, ConfirmDialog, FormSection, SectionStack, SegmentedControl, StatusMessage, SwitchRow } from '@/shared/ui';
+import { AppText, ChoiceCards, ConfirmDialog, FormSection, LoadingBlock, SectionStack, SegmentedControl, StatusMessage, SwitchRow } from '@/shared/ui';
 
 import { usePrivacyMutationStore } from '../model/privacyMutationStore';
 import { changeHistoryVisibility, retryPrivacyConsumers, retryPrivacyUpdate, updatePrivacy } from '../model/updatePrivacy';
@@ -27,6 +27,12 @@ export function PrivacyControlsPanel() {
     const { radii, spacing, tokens } = useTheme();
     const run = (operation: Promise<unknown>) => void operation.catch(() => undefined);
     const [pendingConfirm, setPendingConfirm] = useState<'dnt' | 'analytics' | null>(null);
+    // The dialog keeps the copy of the confirmation it opened with while it fades out (revisão 2026-11-13).
+    const [shownConfirm, setShownConfirm] = useState<'dnt' | 'analytics'>('dnt');
+    const openConfirm = (kind: 'dnt' | 'analytics') => {
+        setShownConfirm(kind);
+        setPendingConfirm(kind);
+    };
     const dntResolver = useRef<((confirmed: boolean) => void) | null>(null);
 
     const settleDnt = (confirmed: boolean) => {
@@ -46,13 +52,18 @@ export function PrivacyControlsPanel() {
         if (pendingConfirm === 'analytics') run(updatePrivacy({ behaviorAnalyticsEnabled: false }, queryClient));
     };
 
-    if (!current) return hydrationError ? <StatusMessage title={t('privacy.error')} tone="danger" /> : null;
+    if (!current)
+        return hydrationError ? (
+            <StatusMessage title={t('privacy.error')} tone="danger" />
+        ) : (
+            <LoadingBlock inline label={t('privacy.loading')} testID="privacy-loading" />
+        );
 
     const confirmDnt = () =>
         new Promise<boolean>(resolve => {
             settleDnt(false);
             dntResolver.current = resolve;
-            setPendingConfirm('dnt');
+            openConfirm('dnt');
         });
 
     const toggleAnalytics = () => {
@@ -61,7 +72,7 @@ export function PrivacyControlsPanel() {
             run(updatePrivacy({ behaviorAnalyticsEnabled: true }, queryClient));
             return;
         }
-        setPendingConfirm('analytics');
+        openConfirm('analytics');
     };
 
     return (
@@ -143,8 +154,8 @@ export function PrivacyControlsPanel() {
                 closeLabel={t('navigation.dismiss')}
                 cancelLabel={t('privacy.cancel')}
                 confirmLabel={t('privacy.confirm')}
-                title={pendingConfirm === 'analytics' ? t('privacy.analytics.confirmTitle') : t('privacy.dnt.confirmTitle')}
-                description={pendingConfirm === 'analytics' ? t('privacy.analytics.confirmBody') : t('privacy.dnt.confirmBody')}
+                title={shownConfirm === 'analytics' ? t('privacy.analytics.confirmTitle') : t('privacy.dnt.confirmTitle')}
+                description={shownConfirm === 'analytics' ? t('privacy.analytics.confirmBody') : t('privacy.dnt.confirmBody')}
             />
         </SectionStack>
     );

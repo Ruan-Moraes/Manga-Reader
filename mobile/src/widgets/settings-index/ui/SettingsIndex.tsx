@@ -6,7 +6,8 @@ import type { SettingsIndexItem } from '../model/types';
 
 interface SettingsIndexProps {
     items: readonly SettingsIndexItem[];
-    openHint: string;
+    /** Hint for a row's destination, built from the row title (revisão 2026-11-13). */
+    openHint: (title: string) => string;
     loginRequiredLabel: string;
 }
 
@@ -16,7 +17,7 @@ export function SettingsIndex({ items, openHint, loginRequiredLabel }: SettingsI
             {items.map((item, index) => (
                 <ListRow
                     key={item.id}
-                    accessibilityHint={item.loginRequired ? loginRequiredLabel : openHint}
+                    accessibilityHint={item.loginRequired ? loginRequiredLabel : openHint(item.title)}
                     accessibilityLabel={item.statusLabel ? `${item.title}. ${item.statusLabel}` : item.title}
                     description={item.description}
                     icon={item.icon}

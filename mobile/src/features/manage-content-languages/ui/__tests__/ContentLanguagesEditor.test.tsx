@@ -1,3 +1,4 @@
+import { StyleSheet } from 'react-native';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react-native';
 import AxiosMockAdapter from 'axios-mock-adapter';
@@ -39,7 +40,7 @@ describe('MOB-FEAT-004 ContentLanguagesEditor', () => {
         const removeFallback = screen.getByLabelText('Remover Português (Brasil)');
         expect(fallbackRow).toBeOnTheScreen();
         expect(removeFallback).toBeDisabled();
-        expect(removeFallback.props.style).toEqual(expect.objectContaining({ minHeight: 44, minWidth: 44 }));
+        expect(StyleSheet.flatten(removeFallback.props.style)).toEqual(expect.objectContaining({ minHeight: 44, minWidth: 44 }));
         expect(screen.getByLabelText('Mover Inglês para baixo')).not.toBeDisabled();
         fireEvent.press(removeFallback);
         expect(apiMock.history.patch).toHaveLength(0);

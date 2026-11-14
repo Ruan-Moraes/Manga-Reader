@@ -37,7 +37,8 @@ export function DataControlsPanel({
     const { t } = useTranslation('common');
     const [pending, setPending] = useState<{ kind: ConfirmKind; operation: () => Promise<unknown> } | null>(null);
     const [storage, setStorage] = useState<{ usedBytes: number; scope: string } | null>(null);
-    const [offlineData, setOfflineData] = useState<LocalDataSummary | null>({ totalBytes: 0, participantIds: [] });
+    // undefined while the first measurement runs, null when it failed (revisão 2026-11-13: neither one claims "nothing stored").
+    const [offlineData, setOfflineData] = useState<LocalDataSummary | null | undefined>(undefined);
 
     useEffect(() => {
         let mounted = true;
@@ -102,14 +103,12 @@ export function DataControlsPanel({
             ) : null}
             <FormSection contentPadding="none" title={t('dataControls.sections.device.title')} description={t('dataControls.sections.device.description')}>
                 {storage ? (
+                    // Plain name with the size beside it, instead of a sentence about app-controlled storage (revisão 2026-11-13).
                     <ListRow
-                        description={t('dataControls.storageLabel')}
                         icon="pie-chart-outline"
+                        meta={formatByteSize(storage.usedBytes)}
                         showDivider
-                        title={t('dataControls.storageUsage', {
-                            size: formatByteSize(storage.usedBytes),
-                            scope: storage.scope === 'temporary-exports' ? t('dataControls.storageScopes.temporaryExports') : storage.scope,
-                        })}
+                        title={storage.scope === 'temporary-exports' ? t('dataControls.storageScopes.temporaryExports') : storage.scope}
                         variant="plain"
                     />
                 ) : null}
@@ -127,11 +126,20 @@ export function DataControlsPanel({
                 />
             </FormSection>
             <FormSection contentPadding="none" title={t('dataControls.offline.title')} description={t('dataControls.offline.description')}>
-                {offlineData && offlineData.totalBytes > 0 ? (
+                {offlineData === undefined ? (
+                    <ListRow icon="phone-portrait-outline" loading showDivider={false} title={t('dataControls.offline.title')} variant="plain" />
+                ) : offlineData === null ? (
+                    <ListRow
+                        description={t('dataControls.offline.measureError')}
+                        icon="phone-portrait-outline"
+                        showDivider={false}
+                        title={t('dataControls.offline.title')}
+                        variant="plain"
+                    />
+                ) : offlineData.totalBytes > 0 ? (
                     <ListRow
                         accessibilityHint={t('dataControls.offline.description')}
                         disabled={busyAction !== null}
-                        description={t('dataControls.offline.description')}
                         icon="phone-portrait-outline"
                         loading={busyAction === 'offline'}
                         onPress={() => confirm('offline', () => clearRegisteredLocalData(true, offlineData))}

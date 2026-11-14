@@ -64,7 +64,9 @@ describe('MOB-FEAT-007 DataControlsPanel', () => {
             </QueryClientProvider>,
         );
 
-        await waitFor(() => expect(screen.getByText('512 B em exportações temporárias controladas pelo app')).toBeTruthy());
+        // revisão 2026-11-13: nome simples com o tamanho ao lado.
+        await waitFor(() => expect(screen.getByText('Exportações temporárias')).toBeTruthy());
+        expect(screen.getByText('512 B')).toBeTruthy();
     });
 
     it('omite a medição quando o adaptador nativo falha', async () => {
@@ -76,7 +78,7 @@ describe('MOB-FEAT-007 DataControlsPanel', () => {
             </QueryClientProvider>,
         );
 
-        await waitFor(() => expect(screen.queryByText(/bytes em/)).toBeNull());
+        await waitFor(() => expect(screen.queryByText('Exportações temporárias')).toBeNull());
     });
 
     it('encaminha ações privadas do guest ao login sem confirmação ou request privado', () => {
@@ -121,5 +123,36 @@ describe('MOB-FEAT-007 DataControlsPanel', () => {
         await waitFor(() => expect(screen.queryByText(/Limpar dados offline \(/)).toBeNull());
         expect(screen.getByText('Nenhum projeto ou arquivo offline foi armazenado neste aparelho.')).toBeOnTheScreen();
         expect(measure.mock.calls.length).toBeGreaterThan(1);
+    });
+
+    const renderPanel = () =>
+        render(
+            <QueryClientProvider client={new QueryClient()}>
+                <ThemeProvider>
+                    <DataControlsPanel storageMeasurement={{ measure: async () => ({ usedBytes: 0, scope: 'temporary-exports' }) }} />
+                </ThemeProvider>
+            </QueryClientProvider>,
+        );
+
+    it('revisão 2026-11-13: enquanto mede, não afirma que não há dados offline', async () => {
+        let resolve: (value: { totalBytes: number; participantIds: string[] }) => void = () => undefined;
+        jest.mocked(measureLocalData).mockReturnValue(new Promise(done => (resolve = done)));
+        renderPanel();
+
+        expect(screen.queryByText('Nenhum projeto ou arquivo offline foi armazenado neste aparelho.')).toBeNull();
+        expect(screen.getAllByText('Dados offline', { includeHiddenElements: true }).length).toBeGreaterThan(1);
+
+        resolve({ totalBytes: 2048, participantIds: ['project-1'] });
+        expect(await screen.findByText('Limpar dados offline (2 KB)')).toBeOnTheScreen();
+        // A descrição da seção não se repete na linha.
+        expect(screen.getAllByText('Remove projetos e arquivos locais registrados neste aparelho.')).toHaveLength(1);
+    });
+
+    it('revisão 2026-11-13: falha na medição avisa a falha em vez de dizer que está vazio', async () => {
+        jest.mocked(measureLocalData).mockRejectedValue(new Error('io'));
+        renderPanel();
+
+        expect(await screen.findByText('Não foi possível medir os dados offline deste aparelho.')).toBeOnTheScreen();
+        expect(screen.queryByText('Nenhum projeto ou arquivo offline foi armazenado neste aparelho.')).toBeNull();
     });
 });

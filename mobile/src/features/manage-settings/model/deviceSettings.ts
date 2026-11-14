@@ -4,7 +4,6 @@ export const USER_SETTINGS_PATHS = [
     'reader.direction',
     'reader.mode',
     'reader.fit',
-    'reader.quality',
     'reader.saturation',
     'reader.gap',
     'reader.background',

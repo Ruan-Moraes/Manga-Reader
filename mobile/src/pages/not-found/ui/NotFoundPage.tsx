@@ -16,6 +16,7 @@ export function NotFoundPage() {
         <>
             <Stack.Screen options={{ title: t('notFound.pageTitle') }} />
             <PageContainer>
+                {/* Single back control at the top, like every other screen (revisão 2026-11-13). */}
                 {hasHistory ? <NavigationHeader backLabel={t('navigation.back')} onBack={goBack} /> : null}
                 <StateView
                     kind="notfound"
@@ -23,7 +24,6 @@ export function NotFoundPage() {
                     title={t('notFound.pageTitle')}
                     text={t('notFound.pageDesc')}
                     goHome={{ label: t('notFound.goHome'), onPress: goHome }}
-                    back={hasHistory ? { label: t('navigation.back'), onPress: goBack } : undefined}
                 />
             </PageContainer>
         </>

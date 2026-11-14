@@ -47,12 +47,14 @@ describe('MOB-FEAT-008/AC-001/004/008 SettingsIndex', () => {
                         },
                     ]}
                     loginRequiredLabel="Login necessário"
-                    openHint="Abrir"
+                    openHint={title => `Abrir ${title}`}
                 />
             </ThemeProvider>,
         );
 
         expect(screen.getAllByRole('button').map(node => node.props.accessibilityLabel)).toEqual(['Aparência', 'Privacidade']);
+        expect(screen.getByLabelText('Aparência')).toHaveProp('accessibilityHint', 'Abrir Aparência');
+        expect(screen.getByLabelText('Privacidade')).toHaveProp('accessibilityHint', 'Login necessário');
         expect(screen.queryByText('Salvo localmente')).toBeNull();
         expect(screen.getByText('Login necessário')).toBeOnTheScreen();
         fireEvent.press(screen.getByLabelText('Privacidade'));

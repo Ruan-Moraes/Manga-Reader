@@ -58,17 +58,16 @@ describe('MOB-FEAT-058 página não encontrada', () => {
         expect(screen.queryByRole('button', { name: 'Voltar' })).toBeNull();
     });
 
-    it('AC-002 com histórico oferece voltar no conteúdo e no cabeçalho', () => {
+    it('AC-002 com histórico oferece um único voltar, no cabeçalho (revisão 2026-11-13)', () => {
         mockCanGoBack.mockReturnValue(true);
         renderPage();
 
         const backButtons = screen.getAllByRole('button', { name: 'Voltar' });
-        expect(backButtons).toHaveLength(2);
+        expect(backButtons).toHaveLength(1);
 
         fireEvent.press(backButtons[0]);
-        fireEvent.press(backButtons[1]);
 
-        expect(mockBack).toHaveBeenCalledTimes(2);
+        expect(mockBack).toHaveBeenCalledTimes(1);
         expect(screen.getByRole('button', { name: 'Voltar ao início' })).toBeOnTheScreen();
     });
 });

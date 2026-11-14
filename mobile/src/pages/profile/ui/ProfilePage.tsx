@@ -1,4 +1,5 @@
-import { Text, View } from 'react-native';
+import { useState } from 'react';
+import { View } from 'react-native';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 
@@ -13,24 +14,34 @@ export function ProfilePage() {
     const user = useSessionStore(state => state.user);
     const { t } = useTranslation('common');
     const { t: tSettings } = useTranslation('settingsNavigation');
-    const { spacing, tokens, typography } = useTheme();
+    const { spacing } = useTheme();
+    const [signingOut, setSigningOut] = useState(false);
 
+    // One sign-out at a time, and always back to the start (revisão 2026-11-13, same as the platform status page).
     const handleLogout = async () => {
-        await signOut();
-        router.replace(ROUTES.ROOT as never);
+        if (signingOut) return;
+        setSigningOut(true);
+        try {
+            await signOut();
+        } catch {
+            // The session is already cleared locally.
+        } finally {
+            router.replace(ROUTES.ROOT as never);
+        }
     };
 
     return (
         <PageContainer scroll>
-            <View style={{ alignSelf: 'center', flex: 1, maxWidth: 720, paddingTop: spacing.sm, width: '100%' }}>
+            <View style={{ alignSelf: 'center', flex: 1, maxWidth: 720, width: '100%' }}>
                 <NavigationHeader backLabel={tSettings('actions.back')} onBack={() => navigateBackOrReplace(ROUTES.ROOT)} />
                 <AppText accessibilityRole="header" variant="title">
                     {t('nav.profile')}
                 </AppText>
                 {user && (
                     <View style={{ marginTop: spacing.md }}>
-                        <Text style={{ fontSize: typography.h3, fontWeight: '500', color: tokens.text }}>{user.name}</Text>
-                        <Text style={{ color: tokens.muted, fontSize: typography.body }}>{user.email}</Text>
+                        {/* App typeface instead of raw Text (revisão 2026-11-13). */}
+                        <AppText variant="section">{user.name}</AppText>
+                        <AppText tone="muted">{user.email}</AppText>
                     </View>
                 )}
                 <View style={{ marginTop: spacing.xl }}>
@@ -41,18 +52,17 @@ export function ProfilePage() {
                                     id: 'settings',
                                     title: tSettings('index.title'),
                                     description: tSettings('index.subtitle'),
-                                    statusLabel: tSettings('actions.open', { section: tSettings('index.title') }),
                                     loginRequired: false,
                                     onPress: () => router.push(ROUTES.SETTINGS.INDEX as never),
                                 },
                             ]}
                             loginRequiredLabel={tSettings('access.loginRequired')}
-                            openHint={tSettings('actions.open', { section: tSettings('index.title') })}
+                            openHint={title => tSettings('actions.open', { section: title })}
                         />
                     </SettingsSections>
                 </View>
                 <View style={{ marginTop: spacing.xl }}>
-                    <Button onPress={handleLogout} tone="danger" variant="outline">
+                    <Button loading={signingOut} onPress={() => void handleLogout()} tone="danger" variant="outline">
                         {t('user.logout')}
                     </Button>
                 </View>
