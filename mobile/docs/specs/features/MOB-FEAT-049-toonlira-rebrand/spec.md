@@ -32,7 +32,7 @@ compatibilidade com chaves, banco SQLite ou arquivos locais da marca anterior.
 - `app.json` deve expor `name`, `slug` e `scheme` como `toonlira`, além dos
   identificadores Android e iOS `com.toonlira.app`.
 - Textos públicos, permissões e links configurados devem consumir a configuração
-  de marca gerada a partir de `scripts/config/brand.json`.
+  de marca gerada a partir de `scripts/brand/config/brand.json`.
 - O banco local, arquivos privados e chaves locais devem usar identificadores
   Toonlira; instalações da marca anterior não são migradas.
 - Todos os textos visíveis devem permanecer localizados em pt-BR, en-US e es-ES.
