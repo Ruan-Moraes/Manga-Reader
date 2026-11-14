@@ -57,6 +57,7 @@ public final class RenderManifest {
     public String translationSha256() { return request.translationSha256(); }
     public RenderedImage image() { return image; }
     public List<Region> regions() { return regions; }
+    public PageQuality quality() { return PageQuality.evaluate(regions); }
     @Override public String toString() { return "RenderManifest[redacted]"; }
 
     public record Placement(UUID regionId, boolean overflow, int fontSizePx) {

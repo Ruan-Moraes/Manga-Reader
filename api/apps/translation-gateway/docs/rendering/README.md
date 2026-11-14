@@ -13,6 +13,7 @@ Contratos do renderer, codec, fontes, composição, worker, persistência, image
 - [rendering-contracts.md](rendering-contracts.md) — Renderer — contratos e plano do primeiro incremento
 - [rendering-files.md](rendering-files.md) — Renderer de arquivos — plano de execução, 2026-10-03
 - [rendering-fonts.md](rendering-fonts.md) — Fontes da renderização — plano e recursos verificados
+- [visual-quality-roadmap-2026-11-14.md](visual-quality-roadmap-2026-11-14.md) — Qualidade visual da tradução: estado e pendências (auditoria Ubunchu!)
 - [rendering-glibc-integration.md](rendering-glibc-integration.md) — Integração local glibc do renderer — 2026-10-10
 - [rendering-glibc-preparation.md](rendering-glibc-preparation.md) — Preparação local Java 23/glibc — 2026-10-10
 - [rendering-isolation.md](rendering-isolation.md) — Isolamento do renderer — plano incremental, 2026-10-04

@@ -75,7 +75,53 @@ JSON UTF-8, versão `1.0`, separado dos artefatos OCR/tradução existentes:
 - `originalSha256`, `ocrSha256`, `translationSha256`;
 - `image`: `mimeType`, `byteSize`, `widthPx`, `heightPx`, `sha256`;
 - `regions`: `id`, `readingOrder`, `sourceText`, `translatedText`, `polygon`
-  (quatro vértices normalizados `x`/`y`), `overflow`, `fontSizePx`.
+  (quatro vértices normalizados `x`/`y`), `overflow`, `fontSizePx`;
+- `quality`: `status` (`OK` | `NEEDS_REVIEW`) e `issues` (`TEXT_NOT_RENDERED`,
+  `ALL_TEXT_NOT_RENDERED`), derivados de `overflow` e revalidados no decode.
+  Não bloqueia a entrega: o job continua `READY`.
+
+Política de composição (`clean-box-1.1`, auditoria Ubunchu! 2026-11-14):
+região cujo texto não cabe (`overflow=true`) **não é limpa** — os pixels
+originais permanecem, em vez de um balão apagado. A fonte de cada região é
+limitada a 1,35× a mediana das regiões da página (com 3 ou mais regiões).
+Piso relativo: região que sai abaixo de 0,75× a mediana (ou em `overflow`) é
+recomposta numa caixa expandida a partir da caixa inscrita para o fundo liso ao
+redor (distância de cor ≤ 30 da cor de limpeza; até max(altura inicial, 2× o
+piso) por lado). A expansão para em tinta (borda do balão, arte), na borda da
+imagem, a 4 px do retângulo de qualquer outra região e em caixas já expandidas
+por outra região. Até 8 px do próprio polígono, ruído de compressão JPEG (não
+tinta, distância ≤ 120) não bloqueia. O plano expandido só é aceito se a fonte
+aumentar; a caixa expandida é preenchida inteira com a cor de limpeza (apaga o
+halo) e o texto é recortado a ela. Fundo texturizado não expande — a região
+mantém o resultado anterior.
+
+**Máscara do balão** (substitui o preenchimento do polígono inteiro e o antigo
+fringe): por região, numa janela de 12 px em volta do polígono, o interior do
+balão é o maior componente liso (4-conexo, distância ≤ 30 da cor de limpeza)
+dentro do polígono; letras de origem são blobs não-lisos (8-conexos) cercados por
+ele **e que tocam o polígono**. Só interior do balão dentro do polígono + letras
+cercadas são limpos; borda do balão, arte e SFX fora do balão alcançam a borda da
+janela e ficam intactos, mesmo quando o polígono OCR passa da borda. A caixa de
+layout é a caixa inscrita encolhida até cair só em pixels permitidos, e o texto é
+recortado a ela. Região coberta por outras (sem amostra de entorno) usa o
+polígono inteiro, como antes.
+
+**Original preservado** (`overflow=true`, `fontSizePx=0`), além de texto que não cabe:
+- tradução igual ao original após normalizar espaços/caixa ("AKANE!", "FREEK",
+  "PAH-"): a letra original fica; **não** conta como `TEXT_NOT_RENDERED`;
+- menos de 25% da tinta de origem dentro do polígono cercada pelo balão (texto
+  sobre arte ou borda de quadro): conta como `TEXT_NOT_RENDERED` (`NEEDS_REVIEW`).
+
+Palavra mais larga que a caixa nunca é quebrada no meio (`requireNextWord`): a
+fonte diminui e, se ainda não couber, a região preserva o original.
+
+Halo de compressão: pixels até 8 px do polígono com distância de cor entre 6 e
+120 (ruído JPEG em volta do texto original, que vira um contorno retangular ao
+lado do preenchimento liso) também são limpos, só no interior do balão ou em
+pontinhos isolados, exceto a até 2 px de tinta que permanece (antialiasing de
+borda/arte), dentro da caixa de outra região, ou quando mais de 40% da faixa é
+não-lisa (retícula/gradiente). Máscara e halo de todas as regiões são calculados
+no raster intacto, antes de qualquer pintura.
 
 O encoder usa stream limitado antes da materialização final: escapes JSON
 contam nos bytes. Um texto válido nos limites UTF-16 ainda pode exceder o teto

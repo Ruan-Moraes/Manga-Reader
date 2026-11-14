@@ -61,7 +61,7 @@ class PageRasterPainterTest {
     @ValueSource(strings = {"😀", "\uD800", "primeira\tsegunda", "texto\u0001oculto", "a"})
     void missingGlyphControlsOrVeryNarrowAreaAreHonestFullFallback(String text) {
         var image = CleanBoxPainterTest.fixture(WIDTH, HEIGHT, 0xffeeeeee);
-        var polygon = CleanBoxPainterTest.rectangle(.1, .1, .12, .2);
+        var polygon = CleanBoxPainterTest.rectangle(.1, .1, .105, .2);
         var request = request("pt-BR", text, polygon);
         var result = painter.paint(image, request);
         assertThat(result).containsExactly(new RenderManifest.Placement(REGION, true, 0));
@@ -156,7 +156,7 @@ class PageRasterPainterTest {
     }
 
     @Test
-    void laterRegionNeutralizationErasesEarlierTextInOverlapWithoutReestimatingColors() {
+    void overflowingLaterRegionIsPreservedAndDoesNotEraseEarlierTextInOverlap() {
         var first = CleanBoxPainterTest.rectangle(.2, .2, .8, .8);
         var second = CleanBoxPainterTest.rectangle(.1, .1, .9, .9);
         var pair = new LanguagePair("en", "pt-BR");
@@ -173,8 +173,226 @@ class PageRasterPainterTest {
         var image = CleanBoxPainterTest.fixture(WIDTH, HEIGHT, 0xffeeeeee);
         var placements = painter.paint(image, request);
         assertThat(placements).extracting(RenderManifest.Placement::overflow).containsExactly(false, true);
-        assertThat(changedInside(image, second, 0xffeeeeee)).isEqualTo(3);
+        assertThat(changedInside(image, first, 0xffeeeeee)).isGreaterThan(20);
+        assertThat(changedInside(image, second, 0xffeeeeee)).isEqualTo(changedInside(image, first, 0xffeeeeee));
         assertOutside(image, second, 0xffeeeeee);
+    }
+
+    @Test
+    void strokesSpillingOutsideThePolygonAreErasedButUnrelatedArtIsKept() {
+        var polygon = CleanBoxPainterTest.rectangle(.3, .3, .7, .7);
+        var image = CleanBoxPainterTest.fixture(WIDTH, HEIGHT, 0xffffffff);
+        int left = (int) (.3 * WIDTH), mid = (int) (.5 * HEIGHT);
+        for (int x = left - 3; x < left + 20; x++) image.setRGB(x, mid, 0xff000000); // stroke crossing the box edge
+        for (int y = 5; y < 40; y++) image.setRGB(20, y, 0xff000000); // far-away art
+        painter.paint(image, request("pt-BR", "Oi", polygon));
+        assertThat(image.getRGB(left - 3, mid)).isEqualTo(0xffffffff);
+        assertThat(image.getRGB(20, 20)).isEqualTo(0xff000000);
+    }
+
+    @Test
+    void overflowKeepsOriginalPixelsInsteadOfErasingTheRegion() {
+        var polygon = CleanBoxPainterTest.rectangle(.1, .1, .9, .9);
+        var image = CleanBoxPainterTest.fixture(WIDTH, HEIGHT, 0xffeeeeee);
+        image.setRGB(180, 100, 0xff102030);
+        var result = painter.paint(image, request("pt-BR", " tradução completa ".repeat(300), polygon));
+        assertThat(result.getFirst().overflow()).isTrue();
+        assertThat(image.getRGB(180, 100)).isEqualTo(0xff102030);
+        assertThat(changedInside(image, polygon, 0xffeeeeee)).isEqualTo(1);
+    }
+
+    @Test
+    void oversizedRegionIsCappedRelativeToTheMedianOfItsNeighbours() {
+        var pair = new LanguagePair("en", "pt-BR");
+        var boxes = List.of(CleanBoxPainterTest.rectangle(.02, .02, .3, .3), CleanBoxPainterTest.rectangle(.35, .02, .63, .3),
+            CleanBoxPainterTest.rectangle(.68, .02, .96, .3), CleanBoxPainterTest.rectangle(.02, .4, .98, .98));
+        var texts = List.of("Uma frase de tamanho médio aqui", "Outra frase de tamanho médio aqui",
+            "Mais uma frase de tamanho médio", "Oi");
+        var regions = new java.util.ArrayList<OcrManifest.Region>();
+        for (int i = 0; i < boxes.size(); i++) regions.add(new OcrManifest.Region(new UUID(0, i + 1), i, "s" + i, boxes.get(i)));
+        var ocr = new OcrManifest("1.0", JOB, "en", WIDTH, HEIGHT, regions);
+        var input = new TranslationRequest(JOB, pair, regions.stream().map(r ->
+            new TranslationRequest.Region(r.id(), r.readingOrder(), r.sourceText())).toList());
+        var translated = new TranslationValidator(Set.of(pair)).validateResponse(input, new TranslationResponse(
+            java.util.stream.IntStream.range(0, 4).mapToObj(i ->
+                new TranslationResponse.Region(regions.get(i).id(), texts.get(i))).toList()));
+        var request = RenderRequest.create(new RenderSource("image/png", 100, WIDTH, HEIGHT, "a".repeat(64)),
+            ocr, translated, "b".repeat(64), "c".repeat(64), RenderPolicy.initial());
+        var result = painter.paint(CleanBoxPainterTest.fixture(WIDTH, HEIGHT, 0xffeeeeee), request);
+        var sizes = result.stream().mapToInt(RenderManifest.Placement::fontSizePx).sorted().toArray();
+        assertThat(result).noneMatch(RenderManifest.Placement::overflow);
+        assertThat(sizes[3]).isLessThanOrEqualTo((int) Math.ceil((sizes[1] + sizes[2]) / 2.0 * 1.35));
+    }
+
+    @Test
+    void shortLineInTightPolygonGrowsIntoFlatBalloonButNeverCrossesItsBorder() {
+        var small = CleanBoxPainterTest.rectangle(.45, .72, .55, .77); // ~36x11 px: "Claro!" cannot fit at all
+        var image = CleanBoxPainterTest.fixture(WIDTH, HEIGHT, 0xffeeeeee);
+        int borderLeft = 110, borderRight = 250, borderTop = 130, borderBottom = 212;
+        outline(image, borderLeft, borderTop, borderRight, borderBottom, 0xff000000);
+        var original = copy(image);
+        var result = painter.paint(image, page(image, List.of(
+            CleanBoxPainterTest.rectangle(.02, .02, .3, .3), CleanBoxPainterTest.rectangle(.35, .02, .63, .3),
+            CleanBoxPainterTest.rectangle(.68, .02, .96, .3), small),
+            List.of("Uma frase média aqui", "Outra frase média aqui", "Mais uma frase média", "Claro!")));
+        var sizes = result.subList(0, 3).stream().mapToInt(RenderManifest.Placement::fontSizePx).sorted().toArray();
+        var claro = result.get(3);
+        assertThat(claro.overflow()).isFalse();
+        assertThat(claro.fontSizePx()).isGreaterThanOrEqualTo((int) Math.ceil(sizes[1] * .75));
+        int paintedOutsidePolygon = 0;
+        for (int y = 0; y < HEIGHT; y++) for (int x = 0; x < WIDTH; x++) {
+            boolean insideBalloon = x > borderLeft && x < borderRight && y > borderTop && y < borderBottom;
+            if (y < HEIGHT * .31) continue; // top row regions paint their own text
+            if (!insideBalloon) assertThat(image.getRGB(x, y)).as("(%d,%d)", x, y).isEqualTo(original.getRGB(x, y));
+            else if (!shape(small).contains(x + .5, y + .5) && image.getRGB(x, y) != original.getRGB(x, y)) paintedOutsidePolygon++;
+        }
+        assertThat(paintedOutsidePolygon).isPositive();
+    }
+
+    @Test
+    void compressionNoiseAroundSourceTextDoesNotBlockGrowthAndIsCleanedWithTheGrownBox() {
+        var small = CleanBoxPainterTest.rectangle(.45, .72, .55, .77);
+        var image = CleanBoxPainterTest.fixture(WIDTH, HEIGHT, 0xffeeeeee);
+        int noise = 0xffcccccc; // between background (<=30) and ink (>120) distance, like JPEG ringing
+        for (int y = 152; y < 176; y++) for (int x = 156; x < 204; x++)
+            if ((x < 162 || x >= 198 || y < 158 || y >= 170) && (x + y) % 3 == 0) image.setRGB(x, y, noise);
+        var result = painter.paint(image, page(image, List.of(
+            CleanBoxPainterTest.rectangle(.02, .02, .3, .3), CleanBoxPainterTest.rectangle(.35, .02, .63, .3),
+            CleanBoxPainterTest.rectangle(.68, .02, .96, .3), small),
+            List.of("Uma frase média aqui", "Outra frase média aqui", "Mais uma frase média", "Claro!")));
+        var sizes = result.subList(0, 3).stream().mapToInt(RenderManifest.Placement::fontSizePx).sorted().toArray();
+        assertThat(result.get(3).overflow()).isFalse();
+        assertThat(result.get(3).fontSizePx()).isGreaterThanOrEqualTo((int) Math.ceil(sizes[1] * .75));
+        for (int y = 152; y < 176; y++) for (int x = 156; x < 204; x++)
+            assertThat(image.getRGB(x, y)).as("(%d,%d)", x, y).isNotEqualTo(noise);
+    }
+
+    @Test
+    void sparseCompressionHaloIsCleanedButBalloonBorderAndItsAntialiasingStay() {
+        var polygon = CleanBoxPainterTest.rectangle(.3, .3, .7, .7); // x 108..252, y 66..154
+        var image = CleanBoxPainterTest.fixture(WIDTH, HEIGHT, 0xffffffff);
+        int noise = 0xffdddddd, antialias = 0xffdddddd; // distance 102 from white: not background, not ink
+        for (int y = 58; y < 162; y++) for (int x = 100; x < 108; x++) if ((x + y) % 5 == 0) image.setRGB(x, y, noise);
+        for (int y = 58; y < 66; y++) for (int x = 108; x < 252; x++) if ((x + y) % 4 == 0) image.setRGB(x, y, 0xfffafafa); // faint, distance 15
+        for (int y = 66; y < 154; y++) { image.setRGB(258, y, 0xff000000); image.setRGB(257, y, antialias); }
+        painter.paint(image, request("pt-BR", "Oi", polygon));
+        for (int y = 58; y < 162; y++) for (int x = 100; x < 108; x++)
+            assertThat(image.getRGB(x, y)).as("(%d,%d)", x, y).isEqualTo(0xffffffff);
+        for (int y = 58; y < 66; y++) for (int x = 108; x < 252; x++)
+            assertThat(image.getRGB(x, y)).as("(%d,%d)", x, y).isEqualTo(0xffffffff);
+        for (int y = 66; y < 154; y++) {
+            assertThat(image.getRGB(258, y)).isEqualTo(0xff000000);
+            assertThat(image.getRGB(257, y)).isEqualTo(antialias);
+        }
+    }
+
+    @Test
+    void denseScreentoneAroundTheRegionIsNotMistakenForHalo() {
+        var polygon = CleanBoxPainterTest.rectangle(.3, .3, .7, .7);
+        var image = CleanBoxPainterTest.fixture(WIDTH, HEIGHT, 0xffffffff);
+        for (int y = 0; y < HEIGHT; y++) for (int x = 0; x < WIDTH; x++) if ((x + y) % 2 == 0) image.setRGB(x, y, 0xffdddddd);
+        var original = copy(image);
+        painter.paint(image, request("pt-BR", "Oi", polygon));
+        var path = shape(polygon);
+        for (int y = 0; y < HEIGHT; y++) for (int x = 0; x < WIDTH; x++)
+            if (!path.contains(x + .5, y + .5)) assertThat(image.getRGB(x, y)).as("(%d,%d)", x, y).isEqualTo(original.getRGB(x, y));
+    }
+
+    @Test
+    void polygonOvershootingTheBalloonCleansOnlyItsInteriorAndKeepsBorderAndArtBeyond() {
+        var image = CleanBoxPainterTest.fixture(WIDTH, HEIGHT, 0xffffffff);
+        outline(image, 60, 40, 220, 180, 0xff000000); // balloon border
+        for (int y = 0; y < HEIGHT; y++) for (int x = 221; x < WIDTH; x++) if ((x + y) % 6 == 0) image.setRGB(x, y, 0xff333333); // art
+        for (int y = 95; y < 115; y++) for (int x = 100; x < 180; x += 8) { image.setRGB(x, y, 0xff000000); image.setRGB(x + 1, y, 0xff000000); }
+        var original = copy(image);
+        var polygon = CleanBoxPainterTest.rectangle(80 / 360.0, 70 / 220.0, 290 / 360.0, 150 / 220.0); // crosses x=220
+        var result = painter.paint(image, request("pt-BR", "Oi", polygon));
+        assertThat(result.getFirst().overflow()).isFalse();
+        for (int y = 0; y < HEIGHT; y++) for (int x = 220; x < WIDTH; x++)
+            assertThat(image.getRGB(x, y)).as("(%d,%d)", x, y).isEqualTo(original.getRGB(x, y));
+        assertThat(image.getRGB(100, 96)).isNotEqualTo(0xff000000); // source glyph stroke erased
+    }
+
+    @Test
+    void textDrawnOverArtworkKeepsTheOriginalAndIsReported() {
+        var image = CleanBoxPainterTest.fixture(WIDTH, HEIGHT, 0xffffffff);
+        for (int y = 0; y < HEIGHT; y++) for (int x = 0; x < WIDTH; x++)
+            if (x % 7 == 0 || y % 11 == 0) image.setRGB(x, y, 0xff000000); // continuous strokes, like drawn art
+        var original = copy(image);
+        var result = painter.paint(image, request("pt-BR", "Oi", CleanBoxPainterTest.rectangle(.3, .3, .7, .7)));
+        assertThat(result.getFirst().overflow()).isTrue();
+        for (int y = 0; y < HEIGHT; y++) for (int x = 0; x < WIDTH; x++)
+            assertThat(image.getRGB(x, y)).isEqualTo(original.getRGB(x, y));
+    }
+
+    @Test
+    void translationEqualToTheSourceKeepsTheOriginalLettering() {
+        var polygon = CleanBoxPainterTest.rectangle(.3, .3, .7, .7);
+        var pair = new LanguagePair("en", "pt-BR");
+        var ocr = new OcrManifest("1.0", JOB, "en", WIDTH, HEIGHT, List.of(new OcrManifest.Region(REGION, 0, "FREEK\n", polygon)));
+        var input = new TranslationRequest(JOB, pair, List.of(new TranslationRequest.Region(REGION, 0, "FREEK\n")));
+        var translation = new TranslationValidator(Set.of(pair)).validateResponse(input,
+            new TranslationResponse(List.of(new TranslationResponse.Region(REGION, " FREEK"))));
+        var request = RenderRequest.create(new RenderSource("image/png", 100, WIDTH, HEIGHT, "a".repeat(64)),
+            ocr, translation, "b".repeat(64), "c".repeat(64), RenderPolicy.initial());
+        var image = CleanBoxPainterTest.fixture(WIDTH, HEIGHT, 0xffffffff);
+        image.setRGB(180, 110, 0xff000000);
+        var result = painter.paint(image, request);
+        assertThat(result.getFirst().overflow()).isTrue();
+        assertThat(image.getRGB(180, 110)).isEqualTo(0xff000000);
+    }
+
+    @Test
+    void wordWiderThanTheBalloonIsNeverSplitMidWord() {
+        var narrowAndTall = CleanBoxPainterTest.rectangle(.45, .1, .55, .9); // ~36 x 176 px: room for many short lines
+        var image = CleanBoxPainterTest.fixture(WIDTH, HEIGHT, 0xffffffff);
+        var result = painter.paint(image, request("pt-BR", "Inconstitucionalissimamente", narrowAndTall));
+        assertThat(result.getFirst().overflow()).isTrue();
+        var fits = painter.paint(CleanBoxPainterTest.fixture(WIDTH, HEIGHT, 0xffffffff), request("pt-BR", "Oi tu", narrowAndTall));
+        assertThat(fits.getFirst().overflow()).isFalse();
+    }
+
+    @Test
+    void texturedSurroundingsDoNotGrowAndNeighbouringRegionIsLeftAlone() {
+        var small = CleanBoxPainterTest.rectangle(.30, .72, .40, .77);
+        var neighbour = CleanBoxPainterTest.rectangle(.42, .65, .70, .85);
+        var image = CleanBoxPainterTest.fixture(WIDTH, HEIGHT, 0xffeeeeee);
+        for (int y = 120; y < HEIGHT; y++) for (int x = 0; x < 100; x++) if ((x + y) % 2 == 0) image.setRGB(x, y, 0xff888888);
+        var original = copy(image);
+        var result = painter.paint(image, page(image, List.of(
+            CleanBoxPainterTest.rectangle(.02, .02, .3, .3), CleanBoxPainterTest.rectangle(.35, .02, .63, .3),
+            CleanBoxPainterTest.rectangle(.68, .02, .96, .3), small, neighbour),
+            List.of("Uma frase média aqui", "Outra frase média aqui", "Mais uma frase média", "Claro!",
+                "texto longo demais ".repeat(200))));
+        assertThat(result.get(4).overflow()).isTrue();
+        assertThat(changedInside(image, neighbour, 0xffeeeeee)).isZero();
+        for (int y = 120; y < HEIGHT; y++) for (int x = 0; x < 100; x++)
+            assertThat(image.getRGB(x, y)).as("(%d,%d)", x, y).isEqualTo(original.getRGB(x, y));
+    }
+
+    private static RenderRequest page(BufferedImage image, List<List<OcrManifest.Vertex>> boxes, List<String> texts) {
+        var pair = new LanguagePair("en", "pt-BR");
+        var regions = new java.util.ArrayList<OcrManifest.Region>();
+        for (int i = 0; i < boxes.size(); i++) regions.add(new OcrManifest.Region(new UUID(0, i + 1), i, "s" + i, boxes.get(i)));
+        var ocr = new OcrManifest("1.0", JOB, "en", image.getWidth(), image.getHeight(), regions);
+        var input = new TranslationRequest(JOB, pair, regions.stream().map(r ->
+            new TranslationRequest.Region(r.id(), r.readingOrder(), r.sourceText())).toList());
+        var translated = new TranslationValidator(Set.of(pair)).validateResponse(input, new TranslationResponse(
+            java.util.stream.IntStream.range(0, boxes.size()).mapToObj(i ->
+                new TranslationResponse.Region(regions.get(i).id(), texts.get(i))).toList()));
+        return RenderRequest.create(new RenderSource("image/png", 100, image.getWidth(), image.getHeight(), "a".repeat(64)),
+            ocr, translated, "b".repeat(64), "c".repeat(64), RenderPolicy.initial());
+    }
+
+    private static void outline(BufferedImage image, int left, int top, int right, int bottom, int color) {
+        for (int x = left; x <= right; x++) { image.setRGB(x, top, color); image.setRGB(x, bottom, color); }
+        for (int y = top; y <= bottom; y++) { image.setRGB(left, y, color); image.setRGB(right, y, color); }
+    }
+
+    private static BufferedImage copy(BufferedImage original) {
+        var image = new BufferedImage(original.getWidth(), original.getHeight(), BufferedImage.TYPE_INT_ARGB);
+        image.setData(original.getData());
+        return image;
     }
 
     private static Stream<Arguments> destinations() {

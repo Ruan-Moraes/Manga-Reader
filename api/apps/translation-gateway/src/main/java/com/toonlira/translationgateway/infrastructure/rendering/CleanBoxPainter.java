@@ -13,6 +13,16 @@ import java.util.List;
 final class CleanBoxPainter {
     private static final int SAMPLES_PER_SIDE = 32;
     private static final int MAX_SAMPLES = 4 * SAMPLES_PER_SIDE;
+    static final int INK_DISTANCE = 120;
+    static final int BACKGROUND_DISTANCE = 30;
+    /** JPEG block noise around the source glyphs reaches up to one 8x8 block past the OCR polygon. */
+    static final int HALO_PX = 8;
+    /** Halo pixels this close to ink that stays (balloon border, artwork) are kept: they are its antialiasing. */
+    private static final int HALO_GUARD_PX = 2;
+    /** Faint JPEG ringing (about 2 levels per channel and up) still reads as a line next to a perfectly flat fill. */
+    private static final int HALO_MIN_DISTANCE = 6;
+    /** Above this share of non-flat pixels the band is screentone or gradient, not sparse compression noise. */
+    private static final double MAX_HALO_DENSITY = .4;
     private static final int NO_SURROUNDING_COLOR = 0xffffffff;
 
     List<CleanRegion> clean(BufferedImage image, RenderRequest request) {
@@ -30,8 +40,15 @@ final class CleanBoxPainter {
         var prepared = new ArrayList<CleanRegion>(polygons.size());
         for (int i = 0; i < polygons.size(); i++) {
             checkInterrupted();
-            prepared.add(new CleanRegion(request.regions().get(i), polygons.get(i),
-                surroundingColor(image, polygons.get(i), polygons, Math.max(1, request.policy().paddingPx()))));
+            int padding = Math.max(1, request.policy().paddingPx());
+            int argb = surroundingColor(image, polygons.get(i), polygons, padding);
+            var others = new ArrayList<>(polygons);
+            others.remove(i);
+            // Without any surrounding sample (region covered by others or by the page edge) there is no balloon
+            // reference colour: the whole polygon is cleaned, as the plain clean-box policy does.
+            var mask = hasSurroundings(image, polygons.get(i), polygons, padding)
+                ? BalloonMask.of(image, polygons.get(i), others, argb) : BalloonMask.polygonOnly(polygons.get(i));
+            prepared.add(new CleanRegion(request.regions().get(i), polygons.get(i), argb, mask));
         }
         // All surroundings refer to the same untouched raster; earlier paint cannot influence later color estimates.
         return List.copyOf(prepared);
@@ -44,6 +61,75 @@ final class CleanBoxPainter {
             var span = region.polygon().span(y);
             if (span != null) image.setRGB(span.start(), y, span.end() - span.start(), 1, row, 0, row.length);
         }
+    }
+
+    /**
+     * Balloon-mask cleaning: only the balloon interior inside the polygon and the source glyphs it encloses are
+     * erased (see {@link BalloonMask}); polygon pixels over borders or artwork stay. {@code halo} comes from
+     * {@link #halo}, computed beforehand on the untouched raster.
+     */
+    void fillMasked(BufferedImage image, CleanRegion region, List<Integer> halo) {
+        region.mask().fill(image, region.argb());
+        for (int index : halo) image.setRGB(index % image.getWidth(), index / image.getWidth(), region.argb());
+    }
+
+    /**
+     * Sparse non-ink noise (JPEG ringing) in the balloon within HALO_PX of the polygon, which a flat fill leaves as a
+     * faint rectangle around the new text. Only balloon-interior pixels qualify; those near remaining ink
+     * (antialiasing of borders/art) are kept, and the band is skipped when dense (screentone or gradient). Must be
+     * computed before any painting; {@code reserved} boxes (where other regions draw) are never touched.
+     */
+    static List<Integer> halo(BufferedImage image, CleanRegion region, List<RasterPolygon.Bounds> reserved) {
+        var bounds = region.polygon().bounds();
+        var mask = region.mask();
+        int reach = HALO_PX + HALO_GUARD_PX;
+        int left = Math.max(0, bounds.left() - reach), right = Math.min(image.getWidth(), bounds.right() + reach);
+        int top = Math.max(0, bounds.top() - reach), bottom = Math.min(image.getHeight(), bounds.bottom() + reach);
+        int width = right - left, height = bottom - top;
+        if (width <= 0 || height <= 0) return List.of();
+        var distance = new int[width * height];
+        var foreign = new boolean[width * height];
+        for (int y = top; y < bottom; y++) {
+            checkInterrupted();
+            for (int x = left; x < right; x++) {
+                int i = (y - top) * width + (x - left);
+                distance[i] = distance(image.getRGB(x, y), region.argb());
+                foreign[i] = distance[i] > INK_DISTANCE && !mask.clean(x, y);
+            }
+        }
+        int band = 0, noisy = 0;
+        var candidates = new ArrayList<Integer>();
+        for (int y = Math.max(0, bounds.top() - HALO_PX); y < Math.min(image.getHeight(), bounds.bottom() + HALO_PX); y++) {
+            checkInterrupted();
+            for (int x = Math.max(0, bounds.left() - HALO_PX); x < Math.min(image.getWidth(), bounds.right() + HALO_PX); x++) {
+                if (mask.clean(x, y)) continue;
+                int i = (y - top) * width + (x - left);
+                band++;
+                if (distance[i] < HALO_MIN_DISTANCE || distance[i] > INK_DISTANCE) continue;
+                noisy++;
+                if (!(mask.allowed(x, y) || mask.enclosedSpeck(x, y)) || nearForeign(foreign, width, height, x - left, y - top) || inside(reserved, x, y)) continue;
+                candidates.add(y * image.getWidth() + x);
+            }
+        }
+        return band == 0 || noisy > band * MAX_HALO_DENSITY ? List.of() : candidates;
+    }
+
+    private static boolean nearForeign(boolean[] foreign, int width, int height, int x, int y) {
+        for (int dy = -HALO_GUARD_PX; dy <= HALO_GUARD_PX; dy++) for (int dx = -HALO_GUARD_PX; dx <= HALO_GUARD_PX; dx++) {
+            int nx = x + dx, ny = y + dy;
+            if (nx >= 0 && ny >= 0 && nx < width && ny < height && foreign[ny * width + nx]) return true;
+        }
+        return false;
+    }
+
+    private static boolean inside(List<RasterPolygon.Bounds> boxes, int x, int y) {
+        for (var box : boxes) if (x >= box.left() && x < box.right() && y >= box.top() && y < box.bottom()) return true;
+        return false;
+    }
+
+    static int distance(int a, int b) {
+        return Math.abs(((a >>> 16) & 255) - ((b >>> 16) & 255)) + Math.abs(((a >>> 8) & 255) - ((b >>> 8) & 255))
+            + Math.abs((a & 255) - (b & 255));
     }
 
     private static int surroundingColor(BufferedImage image, RasterPolygon polygon, List<RasterPolygon> all, int padding) {
@@ -70,6 +156,22 @@ final class CleanBoxPainter {
         return color;
     }
 
+    private static boolean hasSurroundings(BufferedImage image, RasterPolygon polygon, List<RasterPolygon> all, int padding) {
+        var bounds = polygon.bounds();
+        int left = bounds.left() - padding, right = bounds.right() - 1 + padding;
+        int top = bounds.top() - padding, bottom = bounds.bottom() - 1 + padding;
+        var samples = new int[MAX_SAMPLES];
+        int count = 0;
+        for (int i = 0; i < SAMPLES_PER_SIDE && count == 0; i++) {
+            int x = interpolate(left, right, i), y = interpolate(top, bottom, i);
+            count = sample(image, x, top, all, samples, count);
+            count = sample(image, x, bottom, all, samples, count);
+            count = sample(image, left, y, all, samples, count);
+            count = sample(image, right, y, all, samples, count);
+        }
+        return count > 0;
+    }
+
     private static int sample(BufferedImage image, int x, int y, List<RasterPolygon> all, int[] samples, int count) {
         if (x < 0 || y < 0 || x >= image.getWidth() || y >= image.getHeight()) return count;
         for (var polygon : all) if (polygon.contains(x, y)) return count;
@@ -91,7 +193,7 @@ final class CleanBoxPainter {
         if (Thread.currentThread().isInterrupted()) throw new RenderPaintingException(CANCELLED);
     }
 
-    record CleanRegion(RenderRequest.Region region, RasterPolygon polygon, int argb) {
+    record CleanRegion(RenderRequest.Region region, RasterPolygon polygon, int argb, BalloonMask mask) {
         @Override public String toString() { return "CleanRegion[redacted]"; }
     }
 }

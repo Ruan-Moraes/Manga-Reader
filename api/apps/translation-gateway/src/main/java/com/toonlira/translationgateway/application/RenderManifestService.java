@@ -7,6 +7,7 @@ import tools.jackson.databind.DeserializationFeature;
 import tools.jackson.databind.MapperFeature;
 import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.ObjectReader;
+import com.toonlira.translationgateway.domain.rendering.PageQuality;
 import com.toonlira.translationgateway.domain.rendering.RenderManifest;
 import com.toonlira.translationgateway.domain.rendering.RenderPolicy;
 import com.toonlira.translationgateway.domain.rendering.RenderRequest;
@@ -57,7 +58,7 @@ public final class RenderManifestService {
             var output = new BoundedOutput(policy.maxManifestBytes());
             mapper.writeValue(output, new Document(manifest.version(), manifest.policyVersion(), manifest.jobRef(),
                 manifest.sourceLanguage(), manifest.targetLanguage(), manifest.originalSha256(), manifest.ocrSha256(),
-                manifest.translationSha256(), manifest.image(), manifest.regions()));
+                manifest.translationSha256(), manifest.image(), manifest.regions(), manifest.quality()));
             var bytes = output.bytes();
             return new Encoded(bytes, hash(bytes));
         } catch (NoSuchAlgorithmException | RuntimeException error) {
@@ -97,7 +98,8 @@ public final class RenderManifestService {
             || !request.ocrSha256().equals(document.ocrSha256())
             || !request.translationSha256().equals(document.translationSha256())
             || !image.equals(document.image()) || document.regions() == null
-            || document.regions().size() != request.regions().size()) invalid();
+            || document.regions().size() != request.regions().size()
+            || !PageQuality.evaluate(document.regions()).equals(document.quality())) invalid();
         for (int order = 0; order < request.regions().size(); order++) {
             var source = request.regions().get(order);
             var region = document.regions().get(order);
@@ -116,7 +118,8 @@ public final class RenderManifestService {
 
     private record Document(String version, String policyVersion, UUID jobRef, String sourceLanguage,
                             String targetLanguage, String originalSha256, String ocrSha256,
-                            String translationSha256, RenderedImage image, List<RenderManifest.Region> regions) {
+                            String translationSha256, RenderedImage image, List<RenderManifest.Region> regions,
+                            PageQuality quality) {
         @Override public String toString() { return "RenderManifest.Document[redacted]"; }
     }
 

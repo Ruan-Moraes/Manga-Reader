@@ -74,7 +74,7 @@ class ManifestSerializationCompatibilityTest {
             + "\",\"image\":{\"mimeType\":\"image/webp\",\"byteSize\":100,\"widthPx\":100,\"heightPx\":80,\"sha256\":\""
             + "d".repeat(64) + "\"},\"regions\":[{\"id\":\"" + REGION
             + "\",\"readingOrder\":0,\"sourceText\":\"" + SOURCE_JSON + "\",\"translatedText\":\"" + TARGET_JSON
-            + "\",\"polygon\":" + POLYGON_JSON + ",\"overflow\":true,\"fontSizePx\":0}]}";
+            + "\",\"polygon\":" + POLYGON_JSON + ",\"overflow\":true,\"fontSizePx\":0}],\"quality\":{\"status\":\"NEEDS_REVIEW\",\"issues\":[\"TEXT_NOT_RENDERED\",\"ALL_TEXT_NOT_RENDERED\"]}}";
         bytesAndHash(encoded.bytes(), encoded.sha256(), expected);
         assertThat(service.decode(expected.getBytes(StandardCharsets.UTF_8), encoded.sha256(), request, image)
             .regions()).isEqualTo(manifest.regions());

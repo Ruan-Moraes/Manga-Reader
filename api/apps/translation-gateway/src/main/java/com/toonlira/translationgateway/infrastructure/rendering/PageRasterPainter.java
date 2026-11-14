@@ -6,6 +6,7 @@ import static com.toonlira.translationgateway.infrastructure.rendering.RenderPai
 import com.toonlira.translationgateway.domain.rendering.RenderManifest;
 import com.toonlira.translationgateway.domain.rendering.RenderPolicy;
 import com.toonlira.translationgateway.domain.rendering.RenderRequest;
+import com.toonlira.translationgateway.domain.rendering.UnchangedText;
 import java.awt.Color;
 import java.awt.RenderingHints;
 import java.awt.Shape;
@@ -31,6 +32,11 @@ public final class PageRasterPainter {
         "es", Locale.forLanguageTag("es"), "ko", Locale.KOREAN, "zh-Hans", Locale.SIMPLIFIED_CHINESE,
         "zh-Hant", Locale.TRADITIONAL_CHINESE, "pt-BR", Locale.forLanguageTag("pt-BR"));
     private static final FontRenderContext FONT_CONTEXT = new FontRenderContext(null, true, true);
+    private static final int MEDIAN_CAP_MIN_REGIONS = 3;
+    private static final double MEDIAN_CAP_FACTOR = 1.35;
+    private static final double MEDIAN_FLOOR_FACTOR = .75;
+    /** Below this share of source ink inside the balloon the text sits on artwork: the original is preserved. */
+    private static final double MIN_ENCLOSED_INK = .25;
     private static final int BLACK = 0xff000000, WHITE = 0xffffffff;
     private static final int[] COLOR_CHANNEL_SHIFTS = {16, 8, 0};
     private final BundledRenderingFonts fonts;
@@ -54,27 +60,111 @@ public final class PageRasterPainter {
         var backgroundRow = new int[image.getWidth()];
         // Antialiasing is evaluated on one row only. Transfer is explicitly restricted to OCR pixel-center spans.
         var canvas = new BufferedImage(image.getWidth(), 1, BufferedImage.TYPE_INT_ARGB);
-        for (var region : regions) {
+        var policy = request.policy();
+        var plans = new Plan[regions.size()];
+        var preserved = new boolean[regions.size()];
+        for (int i = 0; i < plans.length; i++) {
             CleanBoxPainter.checkInterrupted();
-            var bounds = region.polygon().interiorBox(request.policy().paddingPx());
-            var plan = compose(region.region().translatedText(), request.pair().target(), bounds, request.policy());
-            boxes.fill(image, region, backgroundRow);
-            int ink = contrast(region.argb());
-            if (plan == null) {
-                marker(image, region.polygon(), bounds, ink);
-                placements.add(new RenderManifest.Placement(region.region().id(), true, 0));
-            } else {
-                draw(image, canvas, region.polygon(), plan.lines(), ink);
-                placements.add(new RenderManifest.Placement(region.region().id(), false, plan.size()));
+            var region = regions.get(i);
+            preserved[i] = preserveOriginal(region);
+            if (!preserved[i]) plans[i] = planFor(region, request, policy.maximumFontPx());
+        }
+        int cap = fontCap(plans, policy);
+        if (cap < policy.maximumFontPx()) {
+            for (int i = 0; i < plans.length; i++) {
+                if (plans[i] != null && plans[i].size() > cap) plans[i] = planFor(regions.get(i), request, cap);
             }
+        }
+        raiseToFloor(image, regions, plans, preserved, request, cap);
+        // Halo sets are computed on the untouched raster, so no region erases text another one already drew.
+        var halos = new ArrayList<List<Integer>>(plans.length);
+        for (int i = 0; i < plans.length; i++) {
+            var reserved = new ArrayList<RasterPolygon.Bounds>();
+            for (int j = 0; j < plans.length; j++) if (j != i && plans[j] != null) reserved.add(plans[j].clipBox());
+            halos.add(plans[i] == null ? List.of() : CleanBoxPainter.halo(image, regions.get(i), reserved));
+        }
+        for (int i = 0; i < plans.length; i++) {
+            CleanBoxPainter.checkInterrupted();
+            var region = regions.get(i);
+            var plan = plans[i];
+            if (plan == null) {
+                // Not drawn (no fit, text over artwork, or nothing to replace): the original stays untouched.
+                placements.add(new RenderManifest.Placement(region.region().id(), true, 0));
+                continue;
+            }
+            boxes.fillMasked(image, region, halos.get(i));
+            if (plan.grown()) fillBox(image, plan.clipBox(), region.argb());
+            draw(image, canvas, region.polygon(), plan.clipBox(), plan.lines(), contrast(region.argb()));
+            placements.add(new RenderManifest.Placement(region.region().id(), false, plan.size()));
         }
         return List.copyOf(placements);
     }
 
-    private Plan compose(String text, String target, RasterPolygon.Bounds box, RenderPolicy policy) {
+    /** Unchanged lettering and text drawn over artwork (little source ink inside a balloon) keep the original. */
+    private static boolean preserveOriginal(CleanBoxPainter.CleanRegion region) {
+        var text = region.region();
+        return UnchangedText.unchanged(text.sourceText(), text.translatedText())
+            || region.mask().enclosedInk() < MIN_ENCLOSED_INK;
+    }
+
+    private Plan planFor(CleanBoxPainter.CleanRegion region, RenderRequest request, int maximumFontPx) {
+        var text = region.region().translatedText();
+        var target = request.pair().target();
+        // The layout box is the polygon's inscribed box shrunk until it lies on balloon interior only.
+        var padded = region.mask().fit(region.polygon().interiorBox(request.policy().paddingPx()));
+        var plan = compose(text, target, padded, request.policy(), maximumFontPx, padded, false);
+        if (plan != null || request.policy().paddingPx() == 0) return plan;
+        // A tight bubble gets a second chance with the whole inscribed box before the text is given up on.
+        var whole = region.mask().fit(region.polygon().interiorBox(0));
+        return compose(text, target, whole, request.policy(), maximumFontPx, whole, false);
+    }
+
+    /** Median-relative ceiling so one balloon cannot be typeset several times larger than its neighbours. */
+    private static int fontCap(Plan[] plans, RenderPolicy policy) {
+        double median = median(plans);
+        if (Double.isNaN(median)) return policy.maximumFontPx();
+        return Math.clamp((int) Math.ceil(median * MEDIAN_CAP_FACTOR), policy.minimumFontPx(), policy.maximumFontPx());
+    }
+
+    /**
+     * Median-relative floor. A short line in a tight OCR polygon (or one that did not fit at all) is recomposed in a
+     * box grown into the flat balloon background around it. The new plan is kept only if it is strictly larger, so
+     * the floor never shrinks text and never paints outside verified background.
+     */
+    private void raiseToFloor(BufferedImage image, List<CleanBoxPainter.CleanRegion> regions, Plan[] plans,
+                              boolean[] preserved, RenderRequest request, int cap) {
+        double median = median(plans);
+        if (Double.isNaN(median)) return;
+        var policy = request.policy();
+        int floor = Math.clamp((int) Math.ceil(median * MEDIAN_FLOOR_FACTOR), policy.minimumFontPx(), cap);
+        var claimed = new ArrayList<RasterPolygon.Bounds>();
+        for (int i = 0; i < plans.length; i++) {
+            CleanBoxPainter.checkInterrupted();
+            if (preserved[i] || plans[i] != null && plans[i].size() >= floor) continue;
+            var region = regions.get(i);
+            var start = region.mask().fit(region.polygon().interiorBox(0));
+            int limit = Math.max(start.bottom() - start.top(), 2 * floor);
+            var grown = BalloonExpansion.expand(image, region, regions, claimed, start, limit);
+            if (grown.equals(start)) continue;
+            var padded = new RasterPolygon.Bounds(grown.left() + policy.paddingPx(), grown.top() + policy.paddingPx(),
+                grown.right() - policy.paddingPx(), grown.bottom() - policy.paddingPx());
+            var plan = compose(region.region().translatedText(), request.pair().target(), padded, policy, cap, grown, true);
+            if (plan != null && (plans[i] == null || plan.size() > plans[i].size())) { plans[i] = plan; claimed.add(grown); }
+        }
+    }
+
+    private static double median(Plan[] plans) {
+        int[] sizes = Arrays.stream(plans).filter(plan -> plan != null).mapToInt(Plan::size).sorted().toArray();
+        if (sizes.length < MEDIAN_CAP_MIN_REGIONS) return Double.NaN;
+        return sizes.length % 2 == 1 ? sizes[sizes.length / 2]
+            : (sizes[sizes.length / 2 - 1] + sizes[sizes.length / 2]) / 2.0;
+    }
+
+    private Plan compose(String text, String target, RasterPolygon.Bounds box, RenderPolicy policy, int maximumFontPx,
+                         RasterPolygon.Bounds clipBox, boolean grown) {
         if (!fonts.canDisplay(target, text) || unsupportedControl(text) || box.right() <= box.left() || box.bottom() <= box.top())
             return null;
-        for (int size = policy.maximumFontPx(); size >= policy.minimumFontPx(); size--) {
+        for (int size = maximumFontPx; size >= policy.minimumFontPx(); size--) {
             CleanBoxPainter.checkInterrupted();
             var font = fonts.fontFor(target, size);
             var metrics = font.getLineMetrics("Ag", FONT_CONTEXT);
@@ -95,7 +185,9 @@ public final class PageRasterPainter {
                 while (measurer.getPosition() < paragraph.length()) {
                     CleanBoxPainter.checkInterrupted();
                     int before = measurer.getPosition();
-                    var line = measurer.nextLayout(box.right() - box.left());
+                    // requireNextWord: a word wider than the box is never split mid-word ("YouTu / be"); the font
+                    // shrinks instead, and if it still does not fit the region keeps its original.
+                    var line = measurer.nextLayout(box.right() - box.left(), paragraph.length(), true);
                     if (line == null || measurer.getPosition() <= before || visualWidth(line) > box.right() - box.left()) {
                         fits = false; break;
                     }
@@ -116,7 +208,7 @@ public final class PageRasterPainter {
                 }
                 baseline += lineHeight;
             }
-            return new Plan(size, List.copyOf(outlines));
+            return new Plan(size, List.copyOf(outlines), clipBox, grown);
         }
         return null;
     }
@@ -126,15 +218,18 @@ public final class PageRasterPainter {
         return Math.max(line.getAdvance(), bounds.getMaxX()) - Math.min(0, bounds.getMinX());
     }
 
-    private static void draw(BufferedImage image, BufferedImage canvas, RasterPolygon polygon, List<GlyphLine> lines, int ink) {
+    private static void draw(BufferedImage image, BufferedImage canvas, RasterPolygon polygon, RasterPolygon.Bounds clipBox,
+                             List<GlyphLine> lines, int ink) {
         var row = ((DataBufferInt) canvas.getRaster().getDataBuffer()).getData();
         var graphics = canvas.createGraphics();
         try {
             graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             graphics.setColor(new Color(ink, true));
-            for (int y = polygon.bounds().top(); y < polygon.bounds().bottom(); y++) {
+            int top = clipBox == null ? polygon.bounds().top() : clipBox.top();
+            int bottom = clipBox == null ? polygon.bounds().bottom() : clipBox.bottom();
+            for (int y = top; y < bottom; y++) {
                 CleanBoxPainter.checkInterrupted();
-                var span = polygon.span(y);
+                var span = clip(polygon, clipBox, y);
                 if (span == null) continue;
                 Arrays.fill(row, 0);
                 graphics.setTransform(AffineTransform.getTranslateInstance(0, -y));
@@ -147,11 +242,20 @@ public final class PageRasterPainter {
         } finally { graphics.dispose(); }
     }
 
-    private static void marker(BufferedImage image, RasterPolygon polygon, RasterPolygon.Bounds box, int ink) {
-        int width = box.right() - box.left(), height = box.bottom() - box.top();
-        if (width < 5 || height < 1) return;
-        int x = box.left() + (width - 5) / 2, y = box.top() + height / 2;
-        for (int offset : new int[]{0, 2, 4}) if (polygon.contains(x + offset, y)) image.setRGB(x + offset, y, ink);
+    /** Every plan is laid out inside its verified box, so that box alone is its clip. */
+    private static RasterPolygon.Span clip(RasterPolygon polygon, RasterPolygon.Bounds clipBox, int y) {
+        if (clipBox == null) return polygon.span(y);
+        return y < clipBox.top() || y >= clipBox.bottom() ? null : new RasterPolygon.Span(clipBox.left(), clipBox.right());
+    }
+
+    /** The grown box was verified as flat background or near-text noise, so it is cleaned as a whole. */
+    private static void fillBox(BufferedImage image, RasterPolygon.Bounds box, int argb) {
+        var row = new int[box.right() - box.left()];
+        Arrays.fill(row, argb);
+        for (int y = box.top(); y < box.bottom(); y++) {
+            CleanBoxPainter.checkInterrupted();
+            image.setRGB(box.left(), y, row.length, 1, row, 0, row.length);
+        }
     }
 
     private static int over(int source, int destination) {
@@ -183,5 +287,9 @@ public final class PageRasterPainter {
         return text.codePoints().anyMatch(point -> Character.isISOControl(point) && point != '\n' && point != '\r');
     }
     private record GlyphLine(Shape outline, Rectangle2D bounds) { }
-    private record Plan(int size, List<GlyphLine> lines) { }
+    /**
+     * {@code clipBox} is the layout box, verified to lie on balloon interior (mask-fitted, or grown into flat
+     * background when {@code grown}); glyphs are clipped to it, never to the raw OCR polygon.
+     */
+    private record Plan(int size, List<GlyphLine> lines, RasterPolygon.Bounds clipBox, boolean grown) { }
 }
