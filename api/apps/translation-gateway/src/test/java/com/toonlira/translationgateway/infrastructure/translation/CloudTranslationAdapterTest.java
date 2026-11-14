@@ -97,6 +97,19 @@ class CloudTranslationAdapterTest {
     }
 
     @Test
+    void acceptsProviderEchoingTheProjectNumberInTheModel() {
+        var client = mock(TranslationServiceClient.class);
+        var request = request("en", "pt-BR");
+        var numbered = TranslateTextResponse.newBuilder();
+        numbered.addTranslationsBuilder()
+            .setModel("projects/322587816101/locations/global/models/general/translation-llm")
+            .setTranslatedText("<div><p data-region=\"" + FIRST + "\">um</p><p data-region=\"" + SECOND + "\">dois</p></div>");
+        when(client.translateText(any(TranslateTextRequest.class))).thenReturn(numbered.build());
+
+        assertThat(new CloudTranslationAdapter(client, "test-project").translate(request).regions()).hasSize(2);
+    }
+
+    @Test
     void doesNotCallProviderForAnEmptyPage() {
         var client = mock(TranslationServiceClient.class);
         var request = new TranslationRequest(UUID.randomUUID(), new LanguagePair("en", "pt-BR"), List.of());

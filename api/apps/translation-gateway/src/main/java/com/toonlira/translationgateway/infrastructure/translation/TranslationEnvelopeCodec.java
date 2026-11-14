@@ -16,7 +16,9 @@ import org.apache.commons.text.StringEscapeUtils;
 /** One HTML document keeps page context while opaque tags carry region identities. */
 final class TranslationEnvelopeCodec {
     static final int MAX_PROVIDER_CODEPOINTS = 30_000;
-    private static final Pattern REGION = Pattern.compile("<p data-region=\"([0-9a-f-]{36})\">([^<>]*)</p>", Pattern.DOTALL);
+    private static final Pattern REGION = Pattern.compile("<p data-region=\"([0-9a-f-]{36})\">((?:[^<>]++|<span translate=\"no\">[^<>]*+</span>)*+)</p>", Pattern.DOTALL);
+    private static final Pattern SPAN_TAGS = Pattern.compile("<span translate=\"no\">|</span>");
+    private final ProtectedTerms terms = new ProtectedTerms();
     private static final TranslationValidator CONTRACT = new TranslationValidator(Set.copyOf(LanguagePair.all()));
 
     String encode(TranslationRequest request) {
@@ -28,7 +30,7 @@ final class TranslationEnvelopeCodec {
         var html = new StringBuilder("<div>");
         for (var region : request.regions()) {
             html.append("<p data-region=\"").append(region.id()).append("\">")
-                .append(StringEscapeUtils.escapeHtml4(region.sourceText())).append("</p>");
+                .append(terms.wrap(region.sourceText(), StringEscapeUtils::escapeHtml4)).append("</p>");
         }
         html.append("</div>");
         String content = html.toString();
@@ -36,6 +38,24 @@ final class TranslationEnvelopeCodec {
             throw new GatewayException(GatewayErrorCode.TRANSLATION_INVALID_REQUEST, 422, false);
         }
         return content;
+    }
+
+    /**
+     * Regions whose protected literals did not survive translation fall back to their source text, so a product name
+     * or URL is never silently altered; the renderer then keeps the original art for text it cannot draw.
+     */
+    boolean isLiteralOnly(String text) { return terms.isLiteralOnly(text); }
+
+    TranslationResponse restoreProtected(TranslationRequest request, TranslationResponse translated) {
+        var source = new java.util.HashMap<UUID, String>();
+        for (var region : request.regions()) source.put(region.id(), region.sourceText());
+        var regions = new ArrayList<TranslationResponse.Region>();
+        for (var region : translated.regions()) {
+            String original = source.get(region.id());
+            boolean lost = original != null && terms.find(original).stream().anyMatch(term -> !region.translatedText().contains(term));
+            regions.add(lost ? new TranslationResponse.Region(region.id(), original) : region);
+        }
+        return new TranslationResponse(regions);
     }
 
     TranslationResponse decode(String translatedHtml) {
@@ -52,7 +72,7 @@ final class TranslationEnvelopeCodec {
             } catch (IllegalArgumentException error) {
                 throw new GatewayException(GatewayErrorCode.TRANSLATION_INVALID_RESPONSE, 422, false);
             }
-            regions.add(new TranslationResponse.Region(id, StringEscapeUtils.unescapeHtml4(matcher.group(2))));
+            regions.add(new TranslationResponse.Region(id, StringEscapeUtils.unescapeHtml4(SPAN_TAGS.matcher(matcher.group(2)).replaceAll(""))));
             offset = matcher.end();
         }
         if (!inner.substring(offset).isBlank()) invalid();
