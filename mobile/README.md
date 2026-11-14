@@ -204,7 +204,7 @@ O gateway de tradução usa uma origem independente
 (`EXPO_PUBLIC_TRANSLATION_GATEWAY_URL`) sem `/api` da Core. Apenas origens HTTPS
 sem path, credenciais, query ou fragment são aceitas; ausência ou configuração
 inválida fecha o upload e nunca ativa fallback direto para provider. Consulte o
-[plano arquitetural aprovado](../docs/translation-gateway-plan.md).
+[plano arquitetural aprovado](../api/apps/translation-gateway/docs/translation-gateway-plan.md).
 
 ## Autenticação
 

@@ -33,7 +33,7 @@ seus operadores. Os modos de produção continuam desabilitados por padrão.
 Auditoria paralela, somente leitura, solicitada por Ruan. Fotografia datada da
 implementação e das evidências; não é promoção de status nem validação nova de
 runtime. Fontes de verdade continuam sendo
-[registry](../mobile/docs/specs/registry.md), specs/tasks/reviews e evidências de
+[registry](../../../../mobile/docs/specs/registry.md), specs/tasks/reviews e evidências de
 cada feature. A investigação principal de isolamento não foi interrompida.
 
 ## Código entregue e trabalho restante
@@ -47,7 +47,7 @@ cada feature. A investigação principal de isolamento não foi interrompida.
 | 020: renderização          | `in-progress/open`     | Codec/fontes, composição, overflow, worker e cleanup testados localmente                             | Segurança/distribuição, isolamento/memória, operação cloud e revisão visual     |
 | 021: resultado no leitor   | `approved/blocked`     | Spec e primitives locais parciais                                                                    | Aquisição/download/hash, commit, ACK, abertura única e teste offline real       |
 
-O [controller do worker](../api/apps/translation-gateway/src/main/java/com/toonlira/translationgateway/presentation/OcrTaskController.java)
+O [controller do worker](../src/main/java/com/toonlira/translationgateway/presentation/OcrTaskController.java)
 já encadeia OCR → tradução → renderização. Não falta escrever todo o pipeline.
 Falta comprovar a composição real no ambiente admitido e completar sua entrega
 ao aplicativo. Os modos continuam desabilitados por padrão; simulador e leitor
@@ -59,10 +59,10 @@ Contagem dos checkboxes em 17/10, sem ponderar tamanho ou risco:
 
 | Feature                                                                                         | Concluídos/total |
 | ----------------------------------------------------------------------------------------------- | ---------------: |
-| [017](../mobile/docs/specs/features/MOB-FEAT-017-remote-processing-consent-gateway/tasks.md)    |            12/17 |
-| [018](../mobile/docs/specs/features/MOB-FEAT-018-multilingual-ocr-regions/tasks.md)             |              6/8 |
-| [019](../mobile/docs/specs/features/MOB-FEAT-019-contextual-language-pair-translation/tasks.md) |              6/7 |
-| [020](../mobile/docs/specs/features/MOB-FEAT-020-visual-translation-rendering/tasks.md)         |              4/8 |
+| [017](../../../../mobile/docs/specs/features/MOB-FEAT-017-remote-processing-consent-gateway/tasks.md)    |            12/17 |
+| [018](../../../../mobile/docs/specs/features/MOB-FEAT-018-multilingual-ocr-regions/tasks.md)             |              6/8 |
+| [019](../../../../mobile/docs/specs/features/MOB-FEAT-019-contextual-language-pair-translation/tasks.md) |              6/7 |
+| [020](../../../../mobile/docs/specs/features/MOB-FEAT-020-visual-translation-rendering/tasks.md)         |              4/8 |
 | Total 017–020                                                                                   |  **28/40 (70%)** |
 
 Isso **não significa 70% de prontidão do produto**: as tarefas têm tamanhos
@@ -72,18 +72,18 @@ onomatopeias também não estão incluídos nesse denominador.
 
 ## O que as evidências realmente demonstram
 
-- [OCR](../mobile/docs/specs/features/MOB-FEAT-018-multilingual-ocr-regions/evidence/ocr-consolidation.md):
+- [OCR](../../../../mobile/docs/specs/features/MOB-FEAT-018-multilingual-ocr-regions/evidence/ocr-consolidation.md):
   15 rodadas reais do catálogo nos sete idiomas e quatro controles tipográficos
   reais. Não equivalem a 18 referências independentes aprovadas; não há página
   vazia real confirmada naquela consolidação.
-- [Tradução](../mobile/docs/specs/features/MOB-FEAT-019-contextual-language-pair-translation/evidence/translation-consolidation-2026-10-03.md):
+- [Tradução](../../../../mobile/docs/specs/features/MOB-FEAT-019-contextual-language-pair-translation/evidence/translation-consolidation-2026-10-03.md):
   adapter/transporte exercitados offline, sem primeira tradução real validada.
   Resposta do fake não prova naturalidade ou fidelidade.
-- [Renderer](../mobile/docs/specs/features/MOB-FEAT-020-visual-translation-rendering/evidence/rendering-consolidation-2026-10-12.md):
+- [Renderer](../../../../mobile/docs/specs/features/MOB-FEAT-020-visual-translation-rendering/evidence/rendering-consolidation-2026-10-12.md):
   composição real local com OCR/tradução sintéticos nos cenários integrais.
   O envelope Linux de 8 GiB não admite automaticamente um alvo cloud de 1 GiB.
-- [Pré-flight cloud](../api/apps/translation-gateway/docs/worker-isolation-read-preflight-2026-10-17.md)
-  e [reconciliação posterior](../api/apps/translation-gateway/docs/worker-isolation-schema-reconciliation-2026-10-17.md):
+- [Pré-flight cloud](worker-isolation-read-preflight-2026-10-17.md)
+  e [reconciliação posterior](worker-isolation-schema-reconciliation-2026-10-17.md):
   consultas reais de preparação, sem prova de montagem/renderer. Os ensaios do
   lifecycle/serial continuam sintéticos. A configuração Cloud Run testada não
   foi admitida; isso não demonstra impossibilidade universal de Cloud Run.
@@ -106,7 +106,7 @@ há base medida para uma data final ou estimativa estreita: o maior risco está
 na admissão/execução do alvo, não na contagem dos componentes. Reestimar após a
 primeira execução do worker completo no ambiente aprovado. Espera por revisão
 humana/legal ou aprovação operacional não deve ser confundida com esforço de
-codificação. O [roteiro operacional](../api/apps/translation-gateway/docs/rendering-cloud-validation.md)
+codificação. O [roteiro operacional](rendering-cloud-validation.md)
 exige mais que HTTP 204 ou um processo com exit 0.
 
 ## O que depende de Ruan
@@ -127,6 +127,6 @@ validação manual de Ruan. Sua aprovação exploratória não será apresentada
 revisão linguística independente. Fidelidade em idiomas que ele não domina
 continua pendente de revisão competente; traduzir para português não a comprova.
 
-A [review da 020](../mobile/docs/specs/features/MOB-FEAT-020-visual-translation-rendering/review.md)
+A [review da 020](../../../../mobile/docs/specs/features/MOB-FEAT-020-visual-translation-rendering/review.md)
 permanece `changes-requested`. Nenhuma etapa foi concluída ou desbloqueada por
 este mapa; não foram usados credenciais, cloud ou providers para produzi-lo.

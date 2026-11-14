@@ -40,7 +40,7 @@ mobile e sem expor segredo de provider no aplicativo.
 - A arquitetura usa Cloud Run/Tasks/SQL/Storage em São Paulo, Cloud Vision OCR
   regional `us` e Cloud Translation Advanced `general/translation-llm` pelo
   endpoint global, sem garantia de processamento da tradução apenas nos EUA, conforme
-  [`docs/translation-gateway-plan.md`](../../../../../docs/translation-gateway-plan.md).
+  [`docs/translation-gateway-plan.md`](../../../../../api/apps/translation-gateway/docs/translation-gateway-plan.md).
 - `MOB-FEAT-018..020` interpretarão os resultados estruturados do job. Esta spec
   termina na submissão aceita e consulta/cancelamento do envelope remoto.
 - Termos e Privacidade operacionais 1.0 estão publicados em

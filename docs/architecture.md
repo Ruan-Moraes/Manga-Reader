@@ -25,17 +25,19 @@ ele centraliza a configuração do MongoDB 8 usada pelo Testcontainers.
 
 ### Domínios
 
-Os 19 pacotes de domínio atuais são `auth`, `author`, `category`, `comment`,
-`errorlog`, `event`, `forum`, `group`, `label`, `library`, `manga`, `news`,
-`payment`, `publisher`, `review`, `store`, `subscription`, `trending` e `user`.
-Nem todo pacote precisa possuir artefatos em todas as camadas; os limites seguem
-as responsabilidades implementadas.
+Os 19 pacotes em `domain/` são `analytics`, `auth`, `author`, `category`,
+`comment`, `errorlog`, `event`, `forum`, `group`, `label`, `library`, `manga`,
+`news`, `payment`, `publisher`, `review`, `search`, `store`, `subscription` e
+`user`. Há ainda pacotes só de `application`/`presentation` (sem entidade
+própria): `contact`, `social`, `stats`, `trending` e `admin`. Nem todo pacote
+precisa possuir artefatos em todas as camadas; os limites seguem as
+responsabilidades implementadas.
 
 ### Persistência poliglota
 
 | Tecnologia                          | Papel principal                                                                                                                                                                                      |
 | ----------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| PostgreSQL + JPA/Hibernate + Flyway | Usuários, grupos, eventos, biblioteca, lojas, tags, assinaturas, pagamentos, autores, editoras e labels de domínio. As tabelas antigas do fórum permanecem apenas para rollback da migração (DT-50). |
+| PostgreSQL + JPA/Hibernate + Flyway | Usuários, grupos, eventos, biblioteca, lojas, tags, assinaturas, pagamentos, autores, editoras e labels de domínio. As tabelas antigas do fórum permanecem apenas para rollback da migração. |
 | MongoDB + Spring Data + Mongock     | Títulos, capítulos, comentários polimórficos, avaliações, tópicos do fórum, votos, notícias, histórico de leitura e projeções `reviews_aggregate`/`title_trend_daily`.                               |
 | Neo4j + `Neo4jClient`               | Grafo social de seguidores, seguindo e remoção dos nós relacionados à conta.                                                                                                                         |
 | Redis                               | Cache de aplicação; não é fonte canônica de dados de negócio.                                                                                                                                        |
@@ -70,7 +72,7 @@ ou capítulo remove as respectivas marcações.
 
 ### Serviço de Agregação de Avaliações (`api/apps/jobs/rating-aggregator`)
 
-Módulo Spring Boot **separado** do monolito (`api/apps/core`), porta 8081. É o **dono** da coleção `reviews_aggregate` (ex-`title_rating_aggregate`, renomeada no rename `ratings`→`reviews` — DT-50), **fonte oficial única** de nota/contagem exibida em todas as telas (detalhe, cards, busca, ranking, recomendações, admin).
+Módulo Spring Boot **separado** do monolito (`api/apps/core`), porta 8081. É o **dono** da coleção `reviews_aggregate` (ex-`title_rating_aggregate`, renomeada no rename `ratings`→`reviews`), **fonte oficial única** de nota/contagem exibida em todas as telas (detalhe, cards, busca, ranking, recomendações, admin).
 
 - **Por quê**: nota/contagem eram divergentes — listagens liam `Title.ratingAverage/ratingCount` (nunca atualizados; o "job periódico" do javadoc não existia) e o detalhe lia agregação `AVG/COUNT` ao vivo. Agora há fonte única denormalizada, sem agregação pesada por request.
 - **Recompute (2 gatilhos)**: (1) consome `RatingEvent` (`rating.*`: submit/update/delete) do RabbitMQ (exchange `manga.events`, fila própria `manga.rating.aggregate`, routing `rating.#`) e recalcula o título; (2) job `@Scheduled` de reconciliação (rede de segurança). Mongock `V001` faz backfill a partir das avaliações (`V002` renomeou as coleções p/ `reviews`/`reviews_aggregate`).
@@ -158,7 +160,7 @@ OOM compartilhado e distribuição operacional continuam pendentes.
 Tradução real e validação operacional continuam pendentes; nenhum upload real deve ser
 anunciado. A arquitetura, modelo relacional,
 fronteiras FSD, retenção e gates estão em
-[`translation-gateway-plan.md`](translation-gateway-plan.md).
+[`translation-gateway-plan.md`](../api/apps/translation-gateway/docs/translation-gateway-plan.md).
 
 Em 2026-10-18, Ruan manteve a implementação server-side e priorizou como
 [DT-76 urgente/P1](tech-debt.md#dt-76-renderização-híbrida-de-tradução--urgentep1)
