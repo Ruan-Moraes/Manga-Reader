@@ -1,19 +1,23 @@
 # Frontend — `web/`
 
-Workspace pnpm com duas aplicações React e pacotes privados compartilhados.
+Workspace pnpm com múltiplas aplicações React, ferramentas e pacotes compartilhados.
 
 ## Estrutura
 
 ```text
 web/
-├── toonlira/       # aplicação principal React + Vite + FSD
-├── landing-page/       # landing page React + Vite
-├── packages/
-│   ├── assets/         # ícones e manifestos servidos pelo Vite
-│   ├── design-tokens/  # @toonlira/design-tokens
-│   ├── tsconfig/       # configurações TypeScript compartilhadas
-│   └── types/          # contratos TypeScript compartilhados
-├── scripts/            # auditoria de chaves i18n
+├── projects/
+│   ├── toonlira/           # 🎯 aplicação principal (React + Vite + FSD)
+│   ├── landing-page/       # 🚀 landing page (React + Vite)
+│   └── gateway-tester/     # 🧪 tester do Translation Gateway
+├── packages/               # 📦 pacotes compartilhados
+│   ├── assets/             # ícones e manifestos servidos pelo Vite
+│   ├── brand/              # componentes de branding compartilhados
+│   ├── design-tokens/      # @toonlira/design-tokens (Tailwind)
+│   ├── tsconfig/           # configurações TypeScript
+│   └── types/              # contratos TypeScript
+├── tools/
+│   └── scripts/            # 🛠️ utilitários (auditoria i18n, etc)
 ├── package.json
 └── pnpm-workspace.yaml
 ```
@@ -32,12 +36,20 @@ workspace.
 cd web
 pnpm install
 
-pnpm dev:app       # http://localhost:5173
-pnpm dev:landing   # http://localhost:5174
+# Executar por aplicação (via scripts do workspace)
+pnpm dev:app           # Toonlira: http://localhost:5173
+pnpm dev:landing       # Landing: http://localhost:5174
+pnpm dev:gateway       # Gateway Tester: http://localhost:5175
+
+# Ou diretamente com filtro
+pnpm --filter toonlira dev
+pnpm --filter landing-page dev
+pnpm --filter gateway-tester dev
 ```
 
-As duas aplicações encaminham `/api` para `http://localhost:8080` durante o
-desenvolvimento.
+**Encaminhamento de API durante desenvolvimento:**
+- `toonlira` e `landing-page`: `/api` → `http://localhost:8080` (Core API)
+- `gateway-tester`: `/api` → `http://localhost:8084` (Translation Gateway)
 
 ## Comandos do workspace
 

@@ -7,6 +7,7 @@
     <toRun name="Translation Gateway (8084)" type="MavenRunConfiguration" />
     <toRun name="Web Dev (5173)" type="js.build_tools.npm" />
     <toRun name="Landing Dev (5174)" type="js.build_tools.npm" />
+    <toRun name="Gateway Tester Dev (5175)" type="js.build_tools.npm" />
     <method v="2" />
   </configuration>
 </component>
