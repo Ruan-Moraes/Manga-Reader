@@ -35,7 +35,7 @@ class GlobalSearchIndexesPostgresTest {
     private TitleAuthorJpaRepository titleAuthors;
 
     @Test
-    @DisplayName("Flyway aplica V44, V49 e V50 e cria função e índices GIN")
+    @DisplayName("Flyway aplica a cadeia até a V51 e cria função e índices GIN")
     void appliesMigrationChain() {
         assertThat(jdbc.queryForObject(
                 "SELECT success FROM flyway_schema_history WHERE version = '44'",
@@ -46,6 +46,14 @@ class GlobalSearchIndexesPostgresTest {
         assertThat(jdbc.queryForObject(
                 "SELECT success FROM flyway_schema_history WHERE version = '50'",
                 Boolean.class)).isTrue();
+        assertThat(jdbc.queryForObject(
+                "SELECT success FROM flyway_schema_history WHERE version = '51'",
+                Boolean.class)).isTrue();
+        assertThat(jdbc.queryForObject("""
+                SELECT count(*)
+                FROM information_schema.columns
+                WHERE table_schema = 'public' AND table_name = 'user_system_settings' AND column_name = 'reader_quality'
+                """, Integer.class)).isZero();
         assertThat(jdbc.queryForObject(
                 "SELECT mr_normalize_search('  Ação—Total  ')",
                 String.class)).isEqualTo("acao total");

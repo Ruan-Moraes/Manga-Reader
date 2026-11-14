@@ -3,12 +3,13 @@ package com.toonlira.presentation.user.dto;
 import com.toonlira.domain.user.valueobject.UserSettings.DateFormatPreference;
 import com.toonlira.domain.user.valueobject.UserSettings.DensityPreference;
 import com.toonlira.domain.user.valueobject.UserSettings.FontSizePreference;
-import com.toonlira.domain.user.valueobject.UserSettings.ImageQuality;
 import com.toonlira.domain.user.valueobject.UserSettings.ReaderBackground;
 import com.toonlira.domain.user.valueobject.UserSettings.ReadingDirection;
 import com.toonlira.domain.user.valueobject.UserSettings.ReadingFit;
 import com.toonlira.domain.user.valueobject.UserSettings.ReadingMode;
 import com.toonlira.domain.user.valueobject.UserSettings.ThemePreference;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
@@ -28,11 +29,11 @@ public record UpdateUserSettingsRequest(
         @NotNull(message = "{validation.settings.required}") @Valid Locale locale,
         @NotNull(message = "{validation.settings.required}") @Valid Accessibility accessibility
 ) {
+    @JsonIgnoreProperties("quality")
     public record Reader(
             @NotNull(message = "{validation.settings.required}") ReadingDirection direction,
             @NotNull(message = "{validation.settings.required}") ReadingMode mode,
             @NotNull(message = "{validation.settings.required}") ReadingFit fit,
-            @NotNull(message = "{validation.settings.required}") ImageQuality quality,
             @Min(value = 0, message = "{validation.settings.range}") @Max(value = 100, message = "{validation.settings.range}") Integer saturation,
             @Min(value = 0, message = "{validation.settings.range}") @Max(value = 32, message = "{validation.settings.range}") int gap,
             @NotNull(message = "{validation.settings.required}") ReaderBackground background,

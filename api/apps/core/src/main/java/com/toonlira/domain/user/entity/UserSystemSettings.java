@@ -12,7 +12,6 @@ import com.toonlira.domain.user.valueobject.UserSettings.AppearanceSettings;
 import com.toonlira.domain.user.valueobject.UserSettings.DateFormatPreference;
 import com.toonlira.domain.user.valueobject.UserSettings.DensityPreference;
 import com.toonlira.domain.user.valueobject.UserSettings.FontSizePreference;
-import com.toonlira.domain.user.valueobject.UserSettings.ImageQuality;
 import com.toonlira.domain.user.valueobject.UserSettings.LocaleSettings;
 import com.toonlira.domain.user.valueobject.UserSettings.ReaderBackground;
 import com.toonlira.domain.user.valueobject.UserSettings.ReaderSettings;
@@ -69,11 +68,6 @@ public class UserSystemSettings {
     @Column(name = "reader_fit", nullable = false, length = 20)
     @Builder.Default
     private ReadingFit readerFit = ReadingFit.WIDTH;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "reader_quality", nullable = false, length = 20)
-    @Builder.Default
-    private ImageQuality readerQuality = ImageQuality.AUTO;
 
     @Column(name = "reader_saturation", nullable = false)
     @Builder.Default
@@ -152,7 +146,6 @@ public class UserSystemSettings {
                         readerDirection,
                         readerMode,
                         readerFit,
-                        readerQuality,
                         readerSaturation,
                         readerGap,
                         readerBackground,
@@ -184,7 +177,6 @@ public class UserSystemSettings {
         this.readerDirection = reader.direction();
         this.readerMode = reader.mode();
         this.readerFit = reader.fit();
-        this.readerQuality = reader.quality();
         this.readerSaturation = reader.saturation();
         this.readerGap = reader.gap();
         this.readerBackground = reader.background();

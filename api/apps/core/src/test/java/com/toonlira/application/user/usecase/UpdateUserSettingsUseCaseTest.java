@@ -53,7 +53,6 @@ class UpdateUserSettingsUseCaseTest {
                 ReadingDirection.LTR,
                 UserSettings.ReadingMode.PAGED,
                 UserSettings.ReadingFit.HEIGHT,
-                UserSettings.ImageQuality.HIGH,
                 50,
                 16,
                 UserSettings.ReaderBackground.PAPER,
