@@ -1,7 +1,0 @@
-<component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Translation Gateway + Swagger (8084)" type="CompoundRunConfigurationType">
-    <toRun name="Translation Gateway (8084)" type="MavenRunConfiguration" />
-    <toRun name="Open Gateway Swagger" type="ShConfigurationType" />
-    <method v="2" />
-  </configuration>
-</component>

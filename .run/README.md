@@ -15,10 +15,9 @@ documentados nos READMEs de cada módulo.
 - `Mobile`: Expo Dev, Android, iOS e Web.
 - `Mobile / Tests`: Jest em CI/watch, integridade das specs e o gate completo.
 - `Gateway`: Configurações dedicadas para testar o Translation Gateway:
-  - `Translation Gateway (8084)`: só o backend do gateway
-  - `Translation Gateway + Swagger (8084)`: gateway + abre Swagger UI
+  - `Translation Gateway (8084)`: só o backend do gateway (o log de subida mostra a URL do Swagger UI)
   - `Gateway Tester Dev (5175)`: interface web para testar o gateway
-  - `🚀 Full Gateway Stack`: todos os três acima juntos
+  - `🚀 Full Gateway Stack`: os dois acima juntos
 
 Os nomes com `/` representam a hierarquia lógica pedida. O IntelliJ persiste
 somente um nome de pasta por configuração compartilhada, portanto esses grupos
