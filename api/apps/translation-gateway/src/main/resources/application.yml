@@ -48,6 +48,16 @@ management:
       probes:
         enabled: true
 
+springdoc:
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+    operations-sorter: method
+    tags-sorter: alpha
+  api-docs:
+    path: /v3/api-docs
+  show-actuator: false
+
 gateway:
   enabled: ${GATEWAY_ENABLED:false}
   result-download:
