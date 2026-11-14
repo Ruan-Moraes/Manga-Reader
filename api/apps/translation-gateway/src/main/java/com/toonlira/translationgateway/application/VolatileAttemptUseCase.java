@@ -31,8 +31,10 @@ public class VolatileAttemptUseCase {
     @Transactional
     public VolatileAttemptRepository.Receipt reserve(UUID installation, UUID key) {
         requireActive(key);
+        var budget = properties.getTestBudget();
+        boolean unmetered = budget.isEnabled() && budget.isUnmetered();
         return repository.reserve(installation, key, UUID.randomUUID(), Instant.now(clock),
-            properties.getInstallationDailyQuota(), properties.getGlobalDailyQuota());
+            unmetered ? 0 : properties.getInstallationDailyQuota(), unmetered ? 0 : properties.getGlobalDailyQuota());
     }
     @Transactional
     public void finish(UUID operation, VolatileAttemptRepository.Status status, String error) {

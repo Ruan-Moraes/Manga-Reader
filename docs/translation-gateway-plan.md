@@ -42,3 +42,7 @@ O [README do módulo](../api/apps/translation-gateway/README.md) concentra
 configuração, execução e testes. Mudanças operacionais de recursos antigos
 exigem inventário e encerramento próprios; alterar código não comprova exclusão
 retroativa de dados existentes.
+
+A cobrança comercial depende do [sistema de cotas e precificação das
+assinaturas](translation-subscription-quotas.md), com franquia aplicada pelo
+gateway e exibida nas ofertas da web e dos apps.

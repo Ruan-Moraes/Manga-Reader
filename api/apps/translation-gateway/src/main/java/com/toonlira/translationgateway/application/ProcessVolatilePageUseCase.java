@@ -160,6 +160,7 @@ public class ProcessVolatilePageUseCase {
         } catch (IOException | RuntimeException error) {
             if (operation != null && !finished) {
                 var code = sanitizedFailure(error);
+                LOG.warn("volatile-processing operation={} event=failed errorCode={}", operation, code.value());
                 try { attempts.finish(operation, VolatileAttemptRepository.Status.FAILED, code.value()); }
                 catch (RuntimeException uncertain) { /* STARTED remains a durable barrier against paid replay. */ }
             }

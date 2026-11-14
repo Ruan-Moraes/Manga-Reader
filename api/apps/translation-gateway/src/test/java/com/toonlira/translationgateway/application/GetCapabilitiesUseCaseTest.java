@@ -10,6 +10,7 @@ import com.toonlira.translationgateway.application.config.GatewayProperties;
 import com.toonlira.translationgateway.domain.GatewayErrorCode;
 import com.toonlira.translationgateway.domain.GatewayException;
 import com.toonlira.translationgateway.domain.translation.LanguagePair;
+import com.toonlira.translationgateway.presentation.VolatileCapabilitiesController;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneOffset;
@@ -21,6 +22,38 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 class GetCapabilitiesUseCaseTest {
     private static final Instant NOW = Instant.parse("2026-09-02T12:00:00Z");
+
+    @Test
+    void preservesLegacyCapabilitiesForInstalledApksAndReportsEffectiveZeroQuotas() {
+        var properties = validProperties();
+        properties.getDisclosure().setVersion("volatile-test");
+        properties.setInstallationDailyQuota(0);
+        var budget = properties.getTestBudget();
+        budget.setUnmetered(true);
+        budget.setEnabled(true);
+        var controller = new VolatileCapabilitiesController(properties, Clock.fixed(NOW, ZoneOffset.UTC));
+        assertThatThrownBy(() -> controller.capabilities("legacy")).isInstanceOf(GatewayException.class);
+
+        budget.setDeadline(NOW.plusSeconds(3600));
+        var legacy = controller.capabilities("legacy").getBody();
+        var effective = controller.capabilities("effective").getBody();
+        assertThat(legacy.dailyInstallationQuota()).isEqualTo(20);
+        assertThat(legacy.dailyGlobalQuota()).isEqualTo(100);
+        assertThat(effective.dailyInstallationQuota()).isZero();
+        assertThat(effective.dailyGlobalQuota()).isZero();
+    }
+
+    @Test
+    void allowsDisablingInstallationQuotaOnlyWithTheTestBudgetEnabled() {
+        var properties = validProperties();
+        properties.getDisclosure().setVersion("volatile-test");
+        properties.setInstallationDailyQuota(0);
+
+        assertThatThrownBy(() -> VolatileGatewayPolicy.validate(properties)).isInstanceOf(GatewayException.class);
+
+        properties.getTestBudget().setEnabled(true);
+        assertThatCode(() -> VolatileGatewayPolicy.validate(properties)).doesNotThrowAnyException();
+    }
 
     @Test
     void shouldPreserveTheCapabilitiesContractWhenLanguagesAreCentralized() {

@@ -53,10 +53,13 @@ public class GatewayProperties {
 
     public static class TestBudget {
         private boolean enabled;
+        private boolean unmetered;
         private int maxAttempts;
         private Instant deadline;
         public boolean isEnabled() { return enabled; }
         public void setEnabled(boolean value) { enabled = value; }
+        public boolean isUnmetered() { return unmetered; }
+        public void setUnmetered(boolean value) { unmetered = value; }
         public int getMaxAttempts() { return maxAttempts; }
         public void setMaxAttempts(int value) { maxAttempts = value; }
         public Instant getDeadline() { return deadline; }

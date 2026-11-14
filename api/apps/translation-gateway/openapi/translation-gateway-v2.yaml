@@ -17,6 +17,15 @@
     "get":
       "operationId": "getVolatileCapabilities"
       "security": []
+      "parameters":
+        -
+          "name": "quotaView"
+          "in": "query"
+          "description": "Use effective para consultar as cotas aplicadas pelo servidor. Em teste sem cotas, a resposta padrão mantém os valores históricos exigidos pelos APKs instalados."
+          "schema":
+            "type": "string"
+            "enum": ["legacy", "effective"]
+            "default": "legacy"
       "responses":
         "200":
           "description": "Configuração atual limitada, sem ETag ou conteúdo"
@@ -425,9 +434,13 @@
         "mediaLimits":
           "$ref": "#/components/schemas/MediaLimits"
         "dailyInstallationQuota":
-          "const": 20
+          "type": "integer"
+          "enum": [0, 20]
+          "description": "Na visão efetiva, 0 indica ausência de quota diária por instalação."
         "dailyGlobalQuota":
-          "const": 100
+          "type": "integer"
+          "enum": [0, 100]
+          "description": "Na visão efetiva, 0 indica ausência de quota diária global."
         "disclosure":
           "$ref": "#/components/schemas/LegalDisclosure"
       "allOf":

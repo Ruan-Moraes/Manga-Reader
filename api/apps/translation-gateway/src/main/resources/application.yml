@@ -82,10 +82,11 @@ gateway:
   key: ${GATEWAY_KEY:local-disabled}
   session-ttl: ${GATEWAY_SESSION_TTL:PT15M}
   capabilities-ttl: ${GATEWAY_CAPABILITIES_TTL:PT5M}
-  installation-daily-quota: 20
+  installation-daily-quota: ${GATEWAY_INSTALLATION_DAILY_QUOTA:20}
   global-daily-quota: 100
   test-budget:
     enabled: ${GATEWAY_TEST_BUDGET_ENABLED:false}
+    unmetered: ${GATEWAY_TEST_UNMETERED:false}
     max-attempts: ${GATEWAY_TEST_BUDGET_MAX_ATTEMPTS:0}
     deadline: ${GATEWAY_TEST_BUDGET_DEADLINE:}
   media:

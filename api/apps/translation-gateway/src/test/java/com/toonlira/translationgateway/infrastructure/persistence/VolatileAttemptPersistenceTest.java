@@ -51,12 +51,50 @@ class VolatileAttemptPersistenceTest {
         return new UUID((timestamp.toEpochMilli() << 16) | 0x7000L, UUID.randomUUID().getLeastSignificantBits());
     }
     @BeforeEach void prepare() {
+        properties.setInstallationDailyQuota(20);
         properties.getTestBudget().setEnabled(false);
+        properties.getTestBudget().setUnmetered(false);
         jdbc.sql("DELETE FROM volatile_test_budget_window").update();
         jdbc.sql("DELETE FROM anonymous_installations").update();
         owner = UUID.randomUUID();
         jdbc.sql("INSERT INTO anonymous_installations(id,credential_hash,status,created_at,last_seen_at) VALUES (:id,:hash,'ACTIVE',now(),now())")
             .param("id", owner).param("hash", "test:" + owner).update();
+    }
+
+    @Test void unmeteredTestBypassesAllAttemptQuotasAndKeepsReplayAndDeadlineProtection() {
+        var budget = properties.getTestBudget();
+        budget.setEnabled(true);
+        budget.setUnmetered(true);
+        budget.setMaxAttempts(20);
+        budget.setDeadline(Instant.now().plusSeconds(3600));
+        var firstKey = key();
+        attempts.reserve(owner, firstKey);
+        for (int page = 2; page <= 101; page++) attempts.reserve(owner, key());
+
+        assertThatThrownBy(() -> attempts.reserve(owner, firstKey))
+            .isInstanceOfSatisfying(GatewayException.class, error -> assertThat(error.status()).isEqualTo(409));
+        assertThat(jdbc.sql("SELECT attempts_reserved FROM volatile_test_budget_window WHERE window_key='private-test'")
+            .query(Long.class).single()).isEqualTo(101);
+        budget.setDeadline(Instant.now().minusSeconds(1));
+        assertThatThrownBy(() -> attempts.reserve(owner, key()))
+            .isInstanceOfSatisfying(GatewayException.class, error -> assertThat(error.status()).isEqualTo(429));
+        assertThat(jdbc.sql("SELECT count(*) FROM volatile_processing_attempts").query(Long.class).single()).isEqualTo(101);
+    }
+
+    @Test void zeroInstallationQuotaAllowsChapterWithoutRemovingTheTestBudget() {
+        properties.setInstallationDailyQuota(0);
+        properties.getTestBudget().setEnabled(true);
+        properties.getTestBudget().setMaxAttempts(34);
+        properties.getTestBudget().setDeadline(Instant.now().plusSeconds(3600));
+        var firstKey = key();
+        attempts.reserve(owner, firstKey);
+        for (int page = 2; page <= 34; page++) attempts.reserve(owner, key());
+
+        assertThatThrownBy(() -> attempts.reserve(owner, firstKey))
+            .isInstanceOfSatisfying(GatewayException.class, error -> assertThat(error.status()).isEqualTo(409));
+        assertThatThrownBy(() -> attempts.reserve(owner, key()))
+            .isInstanceOfSatisfying(GatewayException.class, error -> assertThat(error.status()).isEqualTo(429));
+        assertThat(jdbc.sql("SELECT count(*) FROM volatile_processing_attempts").query(Long.class).single()).isEqualTo(34);
     }
 
     @Test void appliesWholeMigrationChainAndKeepsReceiptWithoutContentColumns() {
@@ -163,9 +201,9 @@ class VolatileAttemptPersistenceTest {
 
     @Test void globalQuotaIsSerializedAndFailedReceiptStillConsumesReservation() {
         var now = Instant.now(); var first = UUID.randomUUID();
-        transactions.executeWithoutResult(status -> repository.reserve(owner, key(), first, now, 20, 1));
+        transactions.executeWithoutResult(status -> repository.reserve(owner, key(), first, now, 0, 1));
         transactions.executeWithoutResult(status -> repository.finish(first, VolatileAttemptRepository.Status.FAILED, "internal-error", now));
-        assertThatThrownBy(() -> transactions.executeWithoutResult(status -> repository.reserve(owner, key(), UUID.randomUUID(), now, 20, 1)))
+        assertThatThrownBy(() -> transactions.executeWithoutResult(status -> repository.reserve(owner, key(), UUID.randomUUID(), now, 0, 1)))
             .isInstanceOfSatisfying(GatewayException.class, error -> assertThat(error.status()).isEqualTo(429));
     }
 

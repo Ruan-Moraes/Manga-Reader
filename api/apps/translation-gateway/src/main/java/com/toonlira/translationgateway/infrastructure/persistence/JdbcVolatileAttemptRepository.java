@@ -5,6 +5,7 @@ import com.toonlira.translationgateway.application.config.GatewayProperties;
 import com.toonlira.translationgateway.domain.GatewayException;
 import com.toonlira.translationgateway.domain.GatewayErrorCode;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.util.Optional;
 import java.util.UUID;
@@ -34,14 +35,7 @@ public class JdbcVolatileAttemptRepository implements VolatileAttemptRepository 
         if (active.isEmpty() || !"ACTIVE".equals(active.get()))
             throw new GatewayException(GatewayErrorCode.INSTALLATION_REVOKED, 403, false);
         if (find(installation, key).isPresent()) throw new GatewayException(GatewayErrorCode.JOB_STATE_CONFLICT, 409, false);
-        var start = date.atStartOfDay(ZoneOffset.UTC).toInstant();
-        var end = date.plusDays(1).atStartOfDay(ZoneOffset.UTC).toInstant();
-        var counts = jdbc.sql("""
-            SELECT count(*) AS total,count(*) FILTER (WHERE installation_id=:owner) AS owned
-            FROM volatile_processing_attempts WHERE created_at>=:start AND created_at<:end
-            """).param("owner", installation).param("start", start.atOffset(ZoneOffset.UTC)).param("end", end.atOffset(ZoneOffset.UTC))
-            .query((rs, row) -> new long[]{rs.getLong(1), rs.getLong(2)}).single();
-        if (counts[0] >= globalQuota || counts[1] >= installationQuota) throw new GatewayException(GatewayErrorCode.QUOTA_EXCEEDED, 429, false);
+        if (installationQuota != 0 || globalQuota != 0) enforceDailyQuota(installation, date, installationQuota, globalQuota);
         reserveTestBudget(now);
         jdbc.sql("""
             INSERT INTO volatile_processing_attempts(operation_ref,installation_id,idempotency_key,status,created_at)
@@ -50,19 +44,32 @@ public class JdbcVolatileAttemptRepository implements VolatileAttemptRepository 
         return new Receipt(operation, Status.STARTED, now, null, null);
     }
 
+    private void enforceDailyQuota(UUID installation, LocalDate date, int installationQuota, int globalQuota) {
+        var start = date.atStartOfDay(ZoneOffset.UTC).toInstant();
+        var end = date.plusDays(1).atStartOfDay(ZoneOffset.UTC).toInstant();
+        var counts = jdbc.sql("""
+            SELECT count(*) AS total,count(*) FILTER (WHERE installation_id=:owner) AS owned
+            FROM volatile_processing_attempts WHERE created_at>=:start AND created_at<:end
+            """).param("owner", installation).param("start", start.atOffset(ZoneOffset.UTC)).param("end", end.atOffset(ZoneOffset.UTC))
+            .query((rs, row) -> new long[]{rs.getLong(1), rs.getLong(2)}).single();
+        if ((globalQuota != 0 && counts[0] >= globalQuota) || (installationQuota != 0 && counts[1] >= installationQuota))
+            throw new GatewayException(GatewayErrorCode.QUOTA_EXCEEDED, 429, false);
+    }
+
     private void reserveTestBudget(Instant now) {
         var budget = properties.getTestBudget();
         if (!budget.isEnabled()) return;
-        if (budget.getMaxAttempts() < 1 || budget.getDeadline() == null || !now.isBefore(budget.getDeadline()))
+        if ((!budget.isUnmetered() && budget.getMaxAttempts() < 1) || budget.getDeadline() == null || !now.isBefore(budget.getDeadline()))
             throw new GatewayException(GatewayErrorCode.QUOTA_EXCEEDED, 429, false);
         var reserved = jdbc.sql("""
             INSERT INTO volatile_test_budget_window(window_key, attempts_reserved)
             SELECT 'private-test', 1 WHERE clock_timestamp() < :deadline
             ON CONFLICT (window_key) DO UPDATE
             SET attempts_reserved = volatile_test_budget_window.attempts_reserved + 1
-            WHERE volatile_test_budget_window.attempts_reserved < :maximum AND clock_timestamp() < :deadline
+            WHERE (:unmetered OR volatile_test_budget_window.attempts_reserved < :maximum) AND clock_timestamp() < :deadline
             RETURNING attempts_reserved
-            """).param("maximum", budget.getMaxAttempts()).param("deadline", budget.getDeadline().atOffset(ZoneOffset.UTC))
+            """).param("unmetered", budget.isUnmetered()).param("maximum", budget.getMaxAttempts())
+            .param("deadline", budget.getDeadline().atOffset(ZoneOffset.UTC))
             .query(Long.class).optional();
         if (reserved.isEmpty()) throw new GatewayException(GatewayErrorCode.QUOTA_EXCEEDED, 429, false);
     }

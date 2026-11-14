@@ -81,6 +81,19 @@ pelo purge de recibos individuais. Esse limite de chamadas não constitui um
 teto financeiro em dólares: cobrança de saída e registro de custos podem variar.
 Ver [plano de dados e limites](docs/private-test-budget-design-2026-11-03.md).
 
+O Compose dedicado de teste configura `GATEWAY_TEST_UNMETERED=true` com o
+contador habilitado e prazo explícito. Durante essa janela, a admissão não
+aplica a quota diária por instalação, a quota diária global nem o máximo de
+tentativas da janela. As reservas continuam registradas para auditoria. O
+prazo de teste e a proteção de tráfego do proxy continuam independentes.
+
+`GET /v2/capabilities?quotaView=effective` informa as duas cotas diárias
+efetivas. Zero indica ausência da respectiva quota. A resposta padrão
+preserva os campos históricos `20` e `100` no teste sem cotas para manter
+compatibilidade com APKs que validam esses valores. Esses campos da visão
+padrão servem à compatibilidade de protocolo. A franquia comercial terá
+[contrato próprio nas assinaturas](../../../docs/translation-subscription-quotas.md).
+
 ## Configuração e execução
 
 Java 25, Maven Wrapper e PostgreSQL dedicado. Executar a partir de `api/`:
