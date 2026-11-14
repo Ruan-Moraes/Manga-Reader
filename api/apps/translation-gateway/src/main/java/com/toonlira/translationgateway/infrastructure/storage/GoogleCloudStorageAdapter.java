@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.Optional;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
@@ -33,6 +34,7 @@ public class GoogleCloudStorageAdapter implements ObjectStoragePort {
     private final Storage storage;
     private final String bucket;
 
+    @Autowired
     public GoogleCloudStorageAdapter(GatewayProperties properties) {
         this(StorageOptions.getDefaultInstance().getService(), properties.getStorage().getBucket());
     }
