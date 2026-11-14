@@ -1,14 +1,12 @@
 import { useState } from 'react'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import gatewayClient from './services/gatewayClient'
+import BatchPanel from './BatchPanel'
 import type { Installation, Session, Job } from './services/gatewayClient'
 
 export default function App() {
   const [installation, setInstallation] = useState<Installation | null>(null)
   const [session, setSession] = useState<Session | null>(null)
-  const [selectedFile, setSelectedFile] = useState<File | null>(null)
-  const [sourceLanguage, setSourceLanguage] = useState('ja')
-  const [targetLanguage, setTargetLanguage] = useState('pt')
   const [currentJobRef, setCurrentJobRef] = useState<string | null>(null)
   const [jobHistory, setJobHistory] = useState<Job[]>([])
 
@@ -37,17 +35,6 @@ export default function App() {
     },
   })
 
-  // Submit page mutation
-  const submitPageMutation = useMutation({
-    mutationFn: () =>
-      gatewayClient.submitPage(session!.accessToken, selectedFile!, sourceLanguage, targetLanguage),
-    onSuccess: (data) => {
-      setCurrentJobRef(data.jobRef)
-      setJobHistory((prev) => [data, ...prev])
-      setSelectedFile(null)
-    },
-  })
-
   // Get job query
   const { data: currentJob, isLoading: jobLoading, refetch: refetchJob } = useQuery({
     queryKey: ['job', currentJobRef],
@@ -62,18 +49,6 @@ export default function App() {
 
   const handleCreateSession = () => {
     createSessionMutation.mutate()
-  }
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      setSelectedFile(e.target.files[0])
-    }
-  }
-
-  const handleSubmitPage = () => {
-    if (selectedFile && session) {
-      submitPageMutation.mutate()
-    }
   }
 
   const handleCancelJob = async () => {
@@ -188,98 +163,13 @@ export default function App() {
 
           {/* Center Column - Job Submission */}
           <div className="lg:col-span-2 space-y-6">
-            {/* File Upload */}
             {session && (
-              <div className="bg-white dark:bg-slate-800 rounded-lg shadow-lg p-6">
-                <h2 className="text-xl font-semibold mb-4 text-slate-900 dark:text-white">
-                  📄 Enviar Página
-                </h2>
-
-                <div className="space-y-4">
-                  {/* Language Selection */}
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-                        Idioma Origem
-                      </label>
-                      <select
-                        value={sourceLanguage}
-                        onChange={(e) => setSourceLanguage(e.target.value)}
-                        className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg dark:bg-slate-700 dark:text-white"
-                      >
-                        <option value="ja">Japonês (ja)</option>
-                        <option value="en">Inglês (en)</option>
-                        <option value="zh">Chinês (zh)</option>
-                        <option value="ko">Coreano (ko)</option>
-                      </select>
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-                        Idioma Destino
-                      </label>
-                      <select
-                        value={targetLanguage}
-                        onChange={(e) => setTargetLanguage(e.target.value)}
-                        className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg dark:bg-slate-700 dark:text-white"
-                      >
-                        <option value="pt">Português (pt)</option>
-                        <option value="en">Inglês (en)</option>
-                        <option value="es">Espanhol (es)</option>
-                        <option value="fr">Francês (fr)</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  {/* File Input */}
-                  <div className="border-2 border-dashed border-slate-300 dark:border-slate-600 rounded-lg p-6 text-center hover:border-slate-400 transition">
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={handleFileChange}
-                      className="hidden"
-                      id="file-input"
-                    />
-                    <label htmlFor="file-input" className="cursor-pointer block">
-                      {selectedFile ? (
-                        <div>
-                          <p className="text-sm font-semibold text-green-600 dark:text-green-400">
-                            ✓ Arquivo selecionado
-                          </p>
-                          <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">
-                            {selectedFile.name} ({(selectedFile.size / 1024 / 1024).toFixed(2)}MB)
-                          </p>
-                        </div>
-                      ) : (
-                        <div>
-                          <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">
-                            Clique para selecionar ou arraste uma imagem
-                          </p>
-                          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                            PNG, JPG, WebP etc.
-                          </p>
-                        </div>
-                      )}
-                    </label>
-                  </div>
-
-                  {/* Submit Button */}
-                  <button
-                    onClick={handleSubmitPage}
-                    disabled={!selectedFile || submitPageMutation.isPending}
-                    className="w-full bg-purple-600 hover:bg-purple-700 disabled:bg-purple-400 text-white font-semibold py-3 px-4 rounded-lg transition"
-                  >
-                    {submitPageMutation.isPending ? 'Enviando...' : '🚀 Enviar Página'}
-                  </button>
-
-                  {submitPageMutation.error && (
-                    <div className="p-3 bg-red-50 dark:bg-red-950 rounded-lg">
-                      <p className="text-sm text-red-600 dark:text-red-300">
-                        Erro: {submitPageMutation.error instanceof Error ? submitPageMutation.error.message : 'Desconhecido'}
-                      </p>
-                    </div>
-                  )}
-                </div>
-              </div>
+              <BatchPanel
+                accessToken={session.accessToken}
+                disclosureVersion={capabilities?.disclosure?.version ?? ''}
+                languages={capabilities?.supportedLanguages ?? []}
+                dailyQuota={capabilities?.dailyInstallationQuota}
+              />
             )}
 
             {/* Current Job Status */}
@@ -407,7 +297,7 @@ export default function App() {
         {/* Footer */}
         <div className="mt-8 p-4 bg-slate-100 dark:bg-slate-800 rounded-lg text-center text-sm text-slate-600 dark:text-slate-400">
           <p>
-            Gateway Tester v0.1.0 • Conectado a: <code>http://localhost:8084</code>
+            Gateway Tester v0.1.0 • Conectado a: <code>/api → http://localhost:8084</code>
           </p>
         </div>
       </div>
