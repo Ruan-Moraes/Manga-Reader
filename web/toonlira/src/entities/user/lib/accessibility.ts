@@ -28,8 +28,13 @@ type PartialUserSettings = {
 };
 
 export function mergeUserSettings(settings?: PartialUserSettings | null): UserSettings {
+    // Read old snapshots without carrying removed reader fields into the next update.
+    const { direction, mode, fit, saturation, gap, background, autoMarkRead, preload } = {
+        ...DEFAULT_USER_SETTINGS.reader,
+        ...settings?.reader,
+    };
     return {
-        reader: { ...DEFAULT_USER_SETTINGS.reader, ...settings?.reader },
+        reader: { direction, mode, fit, saturation, gap, background, autoMarkRead, preload },
         appearance: { ...DEFAULT_USER_SETTINGS.appearance, ...settings?.appearance },
         locale: { ...DEFAULT_USER_SETTINGS.locale, ...settings?.locale },
         accessibility: { ...DEFAULT_USER_SETTINGS.accessibility, ...settings?.accessibility },

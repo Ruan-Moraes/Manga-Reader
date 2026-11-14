@@ -126,7 +126,6 @@ const Chapter = () => {
                     fit={r.fit}
                     saturation={r.saturation}
                     gap={r.gap}
-                    quality={r.quality}
                     preload={r.preload}
                     chapter={r.chapter}
                     page={r.page}

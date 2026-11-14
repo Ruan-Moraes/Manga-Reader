@@ -1,10 +1,9 @@
 import { useTranslation } from 'react-i18next';
 
 import { SegmentedControl } from '@ui/SegmentedControl';
-import { Select } from '@ui/Select';
 import { Switch } from '@ui/Switch';
 import { Slider } from '@ui/Slider';
-import type { ImageQuality, ReaderBackground, ReadingDirection, ReadingFit, ReadingMode } from '@entities/user';
+import type { ReaderBackground, ReadingDirection, ReadingFit, ReadingMode } from '@entities/user';
 
 import { SettingSection, SettingRow } from './settingsShared';
 import type { SettingsState } from '../../model/useSettingsState';
@@ -60,22 +59,6 @@ const ReaderTab = ({ state }: { state: SettingsState }) => {
                             { value: 'WIDTH', label: t('settings.system.reader.fitWidth') },
                             { value: 'HEIGHT', label: t('settings.system.reader.fitHeight') },
                             { value: 'ORIGINAL', label: t('settings.system.reader.fitOriginal') },
-                        ]}
-                    />
-                </SettingRow>
-
-                <SettingRow label={t('settings.system.reader.quality')}>
-                    <Select
-                        aria-label={t('settings.system.reader.quality')}
-                        value={r.quality}
-                        onChange={e => updateGroup('reader', { quality: e.target.value as ImageQuality }, t('settings.system.reader.qualityToast'))}
-                        className="w-44"
-                        options={[
-                            { value: 'AUTO', label: t('settings.system.reader.qualityAuto') },
-                            { value: 'LOW', label: t('settings.system.reader.qualityLow') },
-                            { value: 'MEDIUM', label: t('settings.system.reader.qualityMedium') },
-                            { value: 'HIGH', label: t('settings.system.reader.qualityHigh') },
-                            { value: 'ORIGINAL', label: t('settings.system.reader.qualityOriginal') },
                         ]}
                     />
                 </SettingRow>

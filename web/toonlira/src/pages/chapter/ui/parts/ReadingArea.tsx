@@ -1,7 +1,6 @@
 import { type RefObject } from 'react';
 
 import type { ReaderPage } from '@entities/chapter';
-import type { ImageQuality } from '@entities/user';
 
 import { TOTAL_PAGES } from '../../model/readerData';
 import type { Direction, Fit, ReadMode } from '../../model/useChapterReader';
@@ -26,7 +25,6 @@ interface ReadingAreaProps {
     fit: Fit;
     saturation: number;
     gap: number;
-    quality: ImageQuality;
     preload: number;
     chapter: number;
     page: number;
@@ -38,7 +36,7 @@ interface ReadingAreaProps {
 
 const FALLBACK_PAGES = Array.from({ length: TOTAL_PAGES }, (_, i) => i + 1);
 
-export const ReadingArea = ({ mode, direction, fit, saturation, gap, quality, preload, chapter, page, listRef, end, pages }: ReadingAreaProps) => {
+export const ReadingArea = ({ mode, direction, fit, saturation, gap, preload, chapter, page, listRef, end, pages }: ReadingAreaProps) => {
     const rowDir = direction === 'rtl' ? 'row-reverse' : 'row';
 
     const hasRealPages = Boolean(pages?.length);
@@ -49,7 +47,7 @@ export const ReadingArea = ({ mode, direction, fit, saturation, gap, quality, pr
     const srcOf = (n: number): string | undefined => {
         const readerPage = hasRealPages ? pages![n - 1] : undefined;
         if (!readerPage) return undefined;
-        return quality === 'LOW' ? readerPage.thumbnailUrl || readerPage.imageUrl : readerPage.imageUrl;
+        return readerPage.imageUrl;
     };
     const numbers = hasRealPages ? pages!.map((_, i) => i + 1) : FALLBACK_PAGES;
 
@@ -59,7 +57,7 @@ export const ReadingArea = ({ mode, direction, fit, saturation, gap, quality, pr
                 <div className="reader-pages-vertical" ref={listRef}>
                     {numbers.map(n => {
                         const edge = n === 1 && n === total ? 'both' : n === 1 ? 'first' : n === total ? 'last' : undefined;
-                        return <ReaderPagePlaceholder key={n} n={n} chapter={chapter} src={srcOf(n)} eager={n <= page + preload} quality={quality} edge={edge} />;
+                        return <ReaderPagePlaceholder key={n} n={n} chapter={chapter} src={srcOf(n)} eager={n <= page + preload} edge={edge} />;
                     })}
                     <EndOfChapter {...end} />
                 </div>
@@ -67,14 +65,14 @@ export const ReadingArea = ({ mode, direction, fit, saturation, gap, quality, pr
 
             {mode === 'paged' && (
                 <div className="reader-paged-stage" data-fit={fit} style={{ flexDirection: rowDir }}>
-                    {page > total ? <EndOfChapter {...end} /> : <ReaderPagePlaceholder n={page} chapter={chapter} src={srcOf(page)} eager quality={quality} />}
+                    {page > total ? <EndOfChapter {...end} /> : <ReaderPagePlaceholder n={page} chapter={chapter} src={srcOf(page)} eager />}
                 </div>
             )}
 
             {mode === 'double' && (
                 <div className="reader-double-stage" style={{ flexDirection: rowDir }}>
-                    <ReaderPagePlaceholder n={page} chapter={chapter} src={srcOf(page)} eager quality={quality} />
-                    {page + 1 <= total && <ReaderPagePlaceholder n={page + 1} chapter={chapter} src={srcOf(page + 1)} eager quality={quality} />}
+                    <ReaderPagePlaceholder n={page} chapter={chapter} src={srcOf(page)} eager />
+                    {page + 1 <= total && <ReaderPagePlaceholder n={page + 1} chapter={chapter} src={srcOf(page + 1)} eager />}
                 </div>
             )}
         </div>

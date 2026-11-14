@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ImageOff, RotateCw } from 'lucide-react';
-import type { ImageQuality } from '@entities/user';
 
 import { PAGE_GRADIENT } from '../../model/readerData';
 
@@ -11,7 +10,6 @@ interface ReaderPagePlaceholderProps {
     /** URL da página real; quando ausente, mostra o placeholder com gradiente. */
     src?: string;
     eager?: boolean;
-    quality: ImageQuality;
     edge?: 'first' | 'last' | 'both';
 }
 
@@ -19,7 +17,7 @@ interface ReaderPagePlaceholderProps {
  * Página do leitor: imagem real (com lazy loading, estado de erro e retry
  * por página) quando `src` existe; placeholder com gradiente caso contrário.
  */
-export const ReaderPagePlaceholder = ({ n, chapter, src, eager = false, quality, edge }: ReaderPagePlaceholderProps) => {
+export const ReaderPagePlaceholder = ({ n, chapter, src, eager = false, edge }: ReaderPagePlaceholderProps) => {
     const { t } = useTranslation('manga');
     const [failed, setFailed] = useState(false);
     // Cache-buster incrementado a cada retry para forçar novo request da imagem.
@@ -42,7 +40,7 @@ export const ReaderPagePlaceholder = ({ n, chapter, src, eager = false, quality,
     const imageSrc = src && attempt > 0 ? `${src}${src.includes('?') ? '&' : '?'}retry=${attempt}` : src;
 
     return (
-        <div className="reader-page" data-rd-page={n} data-rd-edge={edge} data-quality={quality.toLowerCase()} style={showImage ? undefined : { background: PAGE_GRADIENT }} role="img" aria-label={t('reader.pageAria', { page: n, chNum: chapter })}>
+        <div className="reader-page" data-rd-page={n} data-rd-edge={edge} style={showImage ? undefined : { background: PAGE_GRADIENT }} role="img" aria-label={t('reader.pageAria', { page: n, chNum: chapter })}>
             <div className="reader-page-stamp" aria-hidden="true">
                 <span className="reader-page-stamp-ch">
                     {t('reader.chapterAbbr')} {chapter}
