@@ -353,6 +353,63 @@ class PageRasterPainterTest {
     }
 
     @Test
+    void speechOverArtworkIsInpaintedAndRetypedWithAnOutlineOnlyWhenHinted() {
+        var polygon = CleanBoxPainterTest.rectangle(.3, .3, .7, .7); // x 108..252, y 66..154
+        var calls = new java.util.ArrayList<int[]>();
+        Inpainter white = (image, box) -> {
+            calls.add(box);
+            for (int y = Math.max(0, box[1]); y < Math.min(HEIGHT, box[3]); y++)
+                for (int x = Math.max(0, box[0]); x < Math.min(WIDTH, box[2]); x++) image.setRGB(x, y, 0xffffffff);
+            return true;
+        };
+        var inpainting = new PageRasterPainter(FONTS, white);
+        var art = artwork();
+        var hinted = request("pt-BR", "Obrigado por tudo", polygon);
+        assertThatThrownBy(() -> hinted.withCaptionHints(Set.of(UUID.randomUUID())))
+            .isInstanceOf(com.toonlira.translationgateway.domain.rendering.RenderValidationException.class);
+        var result = inpainting.paint(art, hinted.withCaptionHints(Set.of(REGION)));
+        assertThat(result.getFirst().overflow()).isFalse();
+        assertThat(calls).hasSize(1);
+        assertThat(calls.getFirst()).containsExactly(104, 62, 256, 158); // polygon bounds + 4 px
+        int black = 0, white2 = 0;
+        for (int y = 66; y < 154; y++) for (int x = 108; x < 252; x++) {
+            int rgb = art.getRGB(x, y) & 0xffffff;
+            if (rgb == 0) black++;
+            if (rgb == 0xffffff) white2++;
+        }
+        assertThat(black).isPositive(); // the lettering
+        assertThat(white2).isPositive(); // reconstructed artwork and outline
+        // Without the hint (a sound effect) or without an inpainter, text over artwork keeps its original lettering.
+        var untouched = artwork();
+        assertThat(inpainting.paint(untouched, hinted).getFirst().overflow()).isTrue();
+        assertThat(painter.paint(artwork(), hinted.withCaptionHints(Set.of(REGION))).getFirst().overflow()).isTrue();
+        assertThat(calls).hasSize(1);
+        assertThat(sameAs(untouched, artwork())).isTrue();
+    }
+
+    @Test
+    void failedInpaintingKeepsTheOriginalLettering() {
+        var polygon = CleanBoxPainterTest.rectangle(.3, .3, .7, .7);
+        var failing = new PageRasterPainter(FONTS, (image, box) -> false);
+        var art = artwork();
+        var result = failing.paint(art, request("pt-BR", "Obrigado por tudo", polygon).withCaptionHints(Set.of(REGION)));
+        assertThat(result.getFirst().overflow()).isTrue();
+        assertThat(sameAs(art, artwork())).isTrue();
+    }
+
+    private static BufferedImage artwork() {
+        var image = CleanBoxPainterTest.fixture(WIDTH, HEIGHT, 0xffffffff);
+        for (int y = 0; y < HEIGHT; y++) for (int x = 0; x < WIDTH; x++)
+            if (x % 7 == 0 || y % 11 == 0) image.setRGB(x, y, 0xff000000); // continuous strokes, like drawn art
+        return image;
+    }
+
+    private static boolean sameAs(BufferedImage a, BufferedImage b) {
+        for (int y = 0; y < HEIGHT; y++) for (int x = 0; x < WIDTH; x++) if (a.getRGB(x, y) != b.getRGB(x, y)) return false;
+        return true;
+    }
+
+    @Test
     void texturedSurroundingsDoNotGrowAndNeighbouringRegionIsLeftAlone() {
         var small = CleanBoxPainterTest.rectangle(.30, .72, .40, .77);
         var neighbour = CleanBoxPainterTest.rectangle(.42, .65, .70, .85);

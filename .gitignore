@@ -42,6 +42,7 @@ yarn-error.log*
 /.local/ocr-samples/
 /.local/rendering-linux/
 /.local/worker-isolation/
+/.local/inpainting/
 
 # =====================================================
 # Yarn

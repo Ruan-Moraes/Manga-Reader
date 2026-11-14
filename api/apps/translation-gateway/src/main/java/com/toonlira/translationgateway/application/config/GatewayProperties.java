@@ -70,6 +70,16 @@ public class GatewayProperties {
         private Path nativeDistribution;
         private String nativeDistributionSha256 = "";
         private int childHeapMiB = 128;
+        /** LaMa ONNX model (fixed SHA-256); empty disables inpainting (text over art keeps its lettering). */
+        private Path inpaintingModelPath;
+        private int inpaintingThreads = 4;
+        public Path getInpaintingModelPath() { return inpaintingModelPath; }
+        public void setInpaintingModelPath(Path value) { inpaintingModelPath = value; }
+        public int getInpaintingThreads() { return inpaintingThreads; }
+        public void setInpaintingThreads(int value) {
+            if (value < 1 || value > 32) throw new IllegalArgumentException("inpainting-threads must be 1..32");
+            inpaintingThreads = value;
+        }
         private Duration processDeadline = Duration.ofSeconds(90);
         public Mode getMode() { return mode; }
         public void setMode(Mode value) { mode = value; }

@@ -19,6 +19,7 @@ Contrato do manifesto: [rendering-contracts.md](rendering-contracts.md).
 | Máscara do balão: limpa só o interior do balão + letras cercadas; arte, borda e SFX fora do balão ficam mesmo com polígono OCR maior que o balão | `BalloonMask`, `CleanBoxPainter.fillMasked` |
 | Original preservado quando a tradução é igual ao texto ("AKANE!", "FREEK" — sem `NEEDS_REVIEW`) ou o texto está sobre arte (<25% da tinta cercada pelo balão — com `NEEDS_REVIEW`) | `PageRasterPainter.preserveOriginal`, `UnchangedText`, `PageQuality` |
 | Sem quebra no meio da palavra ("YouTu / be", "Pesq / uisa") | `PageRasterPainter.compose` (`requireNextWord`) |
+| Inpainting LaMa (ONNX, CPU, ~0,85 s/região) para falas e legendas sobre arte no render local: arte reconstruída, tradução em preto com contorno; SFX preservados; só pixels alterados pelo modelo são escritos | `LamaInpainter`, `CaptionFilter`, `PageRasterPainter` |
 | Releitura do OCR: falas com palavras de baixa confiança ou fora do léxico são relidas em 4 variantes de imagem num mosaico (1 chamada extra ao Vision por página) e a votação (confiança + concordância + dicionário) escolhe a leitura; sem regra por obra/idioma | `OcrRereadService`, `OcrReread`, `RereadMosaicBuilder`, `lexicon/` |
 | `quality` na API: V10 grava as contagens de texto na etapa de render; `ReadyResult.quality` (opcional) derivado delas; mobile aceita o campo; selo "revisar" no `gateway-tester` | `RenderTextCounts`, `PageQuality.of`, `GatewayController.Quality`, V10 |
 | Agrupamento por balão ONNX (`GATEWAY_LAYOUT_MODE=grouping`, opcional): divide parágrafos do Vision por palavra quando cruzam a borda do balão e junta falas por balão; heurística continua para texto livre e como fallback | `OcrRegionGrouper.splitByBubbles`/`group(..., bubbles)`, `ShadowLayoutService.detectForGrouping` |
@@ -45,14 +46,14 @@ Não houve comparação antes/depois controlada nem teste com o original em japo
 2. **Agrupamento por layout ONNX** (feito, opcional): falta (a) avaliar em mais páginas e em mangá
    japonês antes de virar padrão — as caixas do modelo nas páginas em inglês são imprecisas; (b) usar
    os balões também para limitar máscara/layout no render (hoje o layout não chega ao render).
-3. **SFX/texto livre** (parcial): texto sobre arte e letra igual ao original já são preservados; o ONNX
-   classifica `text_free` em sombra. Falta: (a) texto livre preservado continua em inglês — só redesenhar
-   SFX com tipografia estilizada ou inpainting real resolveria; (b) letreiro desenhado à mão sobre fundo
+3. **SFX/texto livre** (parcial): falas/legendas sobre arte agora são traduzidas com inpainting
+   ([inpainting.md](inpainting.md)); SFX preservados por decisão de produto. Falta: (b) letreiro desenhado à mão sobre fundo
    liso ("GUI brigade!") é trocado por fonte comum pequena (13 px); (c) usar `regionKinds` no render exige
    levar o layout até a requisição de render (hoje só no bucket privado).
-4. **Inpainting real**: fundos texturizados/gradiente ainda recebem cor mediana e podem deixar remendos.
-   (O contorno retangular de halo JPEG em balões lisos foi resolvido — ver "Feito".) Pendente também: o
-   fringe pinta uma moldura de 4 px quando a cor de limpeza é a mediana de uma retícula.
+4. **Inpainting real** (parcial): LaMa em CPU para falas sobre arte, só no render `local`
+   ([inpainting.md](inpainting.md)). Falta: levar aos modos isolado/nativo sem quebrar o isolamento;
+   balões com fundo de retícula ainda usam preenchimento liso. (O fringe da moldura de retícula saiu
+   com a máscara do balão.)
 5. **Erros de OCR** (parcial): releitura por confiança em mosaico com votação apoiada em dicionário —
    ver [ocr-reread.md](../ocr-evaluation/ocr-reread.md). Falta: casos em que todas as variantes erram
    igual ("THE CHOSEN 05...") — candidato a camada de linguagem opcional.

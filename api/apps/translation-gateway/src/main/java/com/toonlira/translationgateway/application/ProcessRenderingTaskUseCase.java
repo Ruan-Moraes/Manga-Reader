@@ -50,12 +50,25 @@ public class ProcessRenderingTaskUseCase {
     private final GatewayProperties properties;
     private final Clock clock;
     private final CleanupLifecycleObjectsUseCase lifecycle;
+    private final com.toonlira.translationgateway.application.port.LexiconPort lexicons;
 
     public ProcessRenderingTaskUseCase(RenderingPersistenceUseCase persistence, ObjectStoragePort storage,
                                        MediaInspectionService inspector, OcrManifestService ocrManifests,
                                        TranslationManifestService translationManifests, RenderManifestService renderManifests,
                                        ObjectProvider<RenderPort> renderer, GatewayProperties properties, Clock clock,
                                        CleanupLifecycleObjectsUseCase lifecycle) {
+        this(persistence, storage, inspector, ocrManifests, translationManifests, renderManifests, renderer, properties,
+            clock, lifecycle, null);
+    }
+
+    @org.springframework.beans.factory.annotation.Autowired
+    public ProcessRenderingTaskUseCase(RenderingPersistenceUseCase persistence, ObjectStoragePort storage,
+                                       MediaInspectionService inspector, OcrManifestService ocrManifests,
+                                       TranslationManifestService translationManifests, RenderManifestService renderManifests,
+                                       ObjectProvider<RenderPort> renderer, GatewayProperties properties, Clock clock,
+                                       CleanupLifecycleObjectsUseCase lifecycle,
+                                       com.toonlira.translationgateway.application.port.LexiconPort lexicons) {
+        this.lexicons = lexicons;
         this.persistence = persistence;
         this.storage = storage;
         this.inspector = inspector;
@@ -125,7 +138,12 @@ public class ProcessRenderingTaskUseCase {
             .map(region -> new TranslationRequest.Region(region.id(), region.readingOrder(), region.sourceText())).toList());
         var translationBytes = readVerified(job.translationObjectKey(), job.translationSha256(), MAX_TRANSLATION_MANIFEST_BYTES);
         var translation = translationManifests.decode(translationBytes, job.translationSha256(), translationRequest, job.ocrSha256());
-        return RenderRequest.create(job.source(), ocr, translation, job.ocrSha256(), job.translationSha256(), policy);
+        var request = RenderRequest.create(job.source(), ocr, translation, job.ocrSha256(), job.translationSha256(), policy);
+        // Which regions read as speech/captions (vs sound effects): a renderer that can inpaint may retype them
+        // over reconstructed artwork; the others keep their lettering.
+        if (lexicons == null) return request;
+        return request.withCaptionHints(com.toonlira.translationgateway.domain.rendering.CaptionFilter.captions(
+            request, lexicons.forLanguage(job.sourceLanguage())));
     }
 
     private RenderPolicy policy() {

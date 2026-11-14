@@ -24,6 +24,18 @@ public final class RenderRequest {
     private final String translationSha256;
     private final RenderPolicy policy;
     private final List<Region> regions;
+    private final Set<UUID> captionHints;
+
+    private RenderRequest(RenderRequest base, Set<UUID> captionHints) {
+        this.jobRef = base.jobRef;
+        this.source = base.source;
+        this.pair = base.pair;
+        this.ocrSha256 = base.ocrSha256;
+        this.translationSha256 = base.translationSha256;
+        this.policy = base.policy;
+        this.regions = base.regions;
+        this.captionHints = Set.copyOf(captionHints);
+    }
 
     private RenderRequest(RenderSource source, OcrManifest ocr, TranslationResult translation,
                           String ocrSha256, String translationSha256, RenderPolicy policy) {
@@ -36,7 +48,20 @@ public final class RenderRequest {
         this.regions = ocr.regions().stream().map(region -> new Region(region.id(), region.readingOrder(),
             region.sourceText(), translation.regions().get(region.readingOrder()).translatedText(),
             List.copyOf(region.polygon()))).toList();
+        this.captionHints = Set.of();
     }
+
+    /**
+     * Regions that read as speech or captions (not sound effects). Only a hint: a renderer that can inpaint may
+     * redraw such a region over reconstructed artwork when its lettering sits on art; others ignore it.
+     */
+    public RenderRequest withCaptionHints(Set<UUID> hints) {
+        var ids = regions.stream().map(Region::id).collect(java.util.stream.Collectors.toSet());
+        if (hints == null || !ids.containsAll(hints)) invalid();
+        return new RenderRequest(this, hints);
+    }
+
+    public Set<UUID> captionHints() { return captionHints; }
 
     public static RenderRequest create(RenderSource source, OcrManifest ocr, TranslationResult translation,
                                        String ocrSha256, String translationSha256, RenderPolicy policy) {

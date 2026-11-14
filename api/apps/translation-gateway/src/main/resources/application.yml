@@ -89,6 +89,9 @@ gateway:
     native-distribution-sha256: ${GATEWAY_RENDERING_NATIVE_DISTRIBUTION_SHA256:}
     child-heap-mib: ${GATEWAY_RENDERING_CHILD_HEAP_MIB:128}
     process-deadline: ${GATEWAY_RENDERING_PROCESS_DEADLINE:PT90S}
+    # LaMa ONNX (local render mode only); empty = no inpainting, speech over artwork keeps its lettering.
+    inpainting-model-path: ${GATEWAY_RENDERING_INPAINTING_MODEL_PATH:}
+    inpainting-threads: ${GATEWAY_RENDERING_INPAINTING_THREADS:4}
   key: ${GATEWAY_KEY:local-disabled}
   session-ttl: ${GATEWAY_SESSION_TTL:PT15M}
   capabilities-ttl: ${GATEWAY_CAPABILITIES_TTL:PT5M}

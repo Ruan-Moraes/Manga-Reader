@@ -7,6 +7,7 @@ import com.toonlira.translationgateway.domain.rendering.RenderManifest;
 import com.toonlira.translationgateway.domain.rendering.RenderPolicy;
 import com.toonlira.translationgateway.domain.rendering.RenderRequest;
 import com.toonlira.translationgateway.domain.rendering.UnchangedText;
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.RenderingHints;
 import java.awt.Shape;
@@ -39,12 +40,19 @@ public final class PageRasterPainter {
     private static final double MIN_ENCLOSED_INK = .25;
     private static final int BLACK = 0xff000000, WHITE = 0xffffffff;
     private static final int[] COLOR_CHANNEL_SHIFTS = {16, 8, 0};
+    /** Pixels added around an inpainted box so antialiased source strokes are reconstructed too. */
+    private static final int INPAINT_MARGIN = 4;
     private final BundledRenderingFonts fonts;
     private final CleanBoxPainter boxes = new CleanBoxPainter();
+    private final Inpainter inpainter;
 
-    public PageRasterPainter(BundledRenderingFonts fonts) {
+    public PageRasterPainter(BundledRenderingFonts fonts) { this(fonts, null); }
+
+    /** {@code inpainter} may be null: text over artwork then keeps its original lettering. */
+    public PageRasterPainter(BundledRenderingFonts fonts, Inpainter inpainter) {
         if (fonts == null) throw new RenderPaintingException(INVALID_INPUT);
         this.fonts = fonts;
+        this.inpainter = inpainter;
     }
 
     public List<RenderManifest.Placement> paint(BufferedImage image, RenderRequest request) {
@@ -63,25 +71,38 @@ public final class PageRasterPainter {
         var policy = request.policy();
         var plans = new Plan[regions.size()];
         var preserved = new boolean[regions.size()];
+        var inpaint = new boolean[regions.size()];
         for (int i = 0; i < plans.length; i++) {
             CleanBoxPainter.checkInterrupted();
             var region = regions.get(i);
-            preserved[i] = preserveOriginal(region);
-            if (!preserved[i]) plans[i] = planFor(region, request, policy.maximumFontPx());
+            inpaint[i] = inpaints(region, request);
+            preserved[i] = !inpaint[i] && preserveOriginal(region);
+            if (!preserved[i]) plans[i] = plan(region, request, policy.maximumFontPx(), inpaint[i]);
         }
         int cap = fontCap(plans, policy);
         if (cap < policy.maximumFontPx()) {
             for (int i = 0; i < plans.length; i++) {
-                if (plans[i] != null && plans[i].size() > cap) plans[i] = planFor(regions.get(i), request, cap);
+                if (plans[i] != null && plans[i].size() > cap) plans[i] = plan(regions.get(i), request, cap, inpaint[i]);
             }
         }
-        raiseToFloor(image, regions, plans, preserved, request, cap);
+        var fixedSize = new boolean[regions.size()];
+        for (int i = 0; i < plans.length; i++) fixedSize[i] = preserved[i] || inpaint[i];
+        raiseToFloor(image, regions, plans, fixedSize, request, cap);
         // Halo sets are computed on the untouched raster, so no region erases text another one already drew.
         var halos = new ArrayList<List<Integer>>(plans.length);
         for (int i = 0; i < plans.length; i++) {
             var reserved = new ArrayList<RasterPolygon.Bounds>();
             for (int j = 0; j < plans.length; j++) if (j != i && plans[j] != null) reserved.add(plans[j].clipBox());
-            halos.add(plans[i] == null ? List.of() : CleanBoxPainter.halo(image, regions.get(i), reserved));
+            halos.add(plans[i] == null || inpaint[i] ? List.of() : CleanBoxPainter.halo(image, regions.get(i), reserved));
+        }
+        // Speech over artwork: the artwork under it is reconstructed before any text is drawn. If that fails the
+        // region keeps its original lettering, exactly as without an inpainter.
+        for (int i = 0; i < plans.length; i++) {
+            if (!inpaint[i] || plans[i] == null) continue;
+            CleanBoxPainter.checkInterrupted();
+            var bounds = regions.get(i).polygon().bounds();
+            if (!inpainter.inpaint(image, new int[]{bounds.left() - INPAINT_MARGIN, bounds.top() - INPAINT_MARGIN,
+                bounds.right() + INPAINT_MARGIN, bounds.bottom() + INPAINT_MARGIN})) plans[i] = null;
         }
         for (int i = 0; i < plans.length; i++) {
             CleanBoxPainter.checkInterrupted();
@@ -92,13 +113,39 @@ public final class PageRasterPainter {
                 placements.add(new RenderManifest.Placement(region.region().id(), true, 0));
                 continue;
             }
-            boxes.fillMasked(image, region, halos.get(i));
-            if (plan.grown()) fillBox(image, plan.clipBox(), region.argb());
-            draw(image, canvas, region.polygon(), plan.clipBox(), plan.lines(), contrast(region.argb()));
+            if (inpaint[i]) {
+                // Over reconstructed artwork: dark lettering with a light outline, readable on any drawing.
+                draw(image, canvas, region.polygon(), plan.clipBox(), plan.lines(), BLACK, WHITE, outline(plan.size()));
+            } else {
+                boxes.fillMasked(image, region, halos.get(i));
+                if (plan.grown()) fillBox(image, plan.clipBox(), region.argb());
+                draw(image, canvas, region.polygon(), plan.clipBox(), plan.lines(), contrast(region.argb()), 0, 0);
+            }
             placements.add(new RenderManifest.Placement(region.region().id(), false, plan.size()));
         }
         return List.copyOf(placements);
     }
+
+    /** Speech/caption over artwork (render hint + mask) that this painter can erase by inpainting. */
+    private boolean inpaints(CleanBoxPainter.CleanRegion region, RenderRequest request) {
+        var text = region.region();
+        return inpainter != null && request.captionHints().contains(text.id())
+            && !UnchangedText.unchanged(text.sourceText(), text.translatedText())
+            && region.mask().enclosedInk() < MIN_ENCLOSED_INK;
+    }
+
+    private Plan plan(CleanBoxPainter.CleanRegion region, RenderRequest request, int maximumFontPx, boolean inpainted) {
+        if (!inpainted) return planFor(region, request, maximumFontPx);
+        // The whole box is reconstructed, so text may use the polygon's inscribed box (no balloon mask), leaving
+        // room for the outline; it is clipped to the inpainted box.
+        var bounds = region.polygon().bounds();
+        var clip = new RasterPolygon.Bounds(bounds.left() - INPAINT_MARGIN, bounds.top() - INPAINT_MARGIN,
+            bounds.right() + INPAINT_MARGIN, bounds.bottom() + INPAINT_MARGIN);
+        var box = region.polygon().interiorBox(request.policy().paddingPx());
+        return compose(region.region().translatedText(), request.pair().target(), box, request.policy(), maximumFontPx, clip, false);
+    }
+
+    private static int outline(int fontSize) { return Math.max(2, Math.round(fontSize / 8f)); }
 
     /** Unchanged lettering and text drawn over artwork (little source ink inside a balloon) keep the original. */
     private static boolean preserveOriginal(CleanBoxPainter.CleanRegion region) {
@@ -219,22 +266,33 @@ public final class PageRasterPainter {
     }
 
     private static void draw(BufferedImage image, BufferedImage canvas, RasterPolygon polygon, RasterPolygon.Bounds clipBox,
-                             List<GlyphLine> lines, int ink) {
+                             List<GlyphLine> lines, int ink, int outlineColor, int outlineWidth) {
         var row = ((DataBufferInt) canvas.getRaster().getDataBuffer()).getData();
         var graphics = canvas.createGraphics();
         try {
             graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-            graphics.setColor(new Color(ink, true));
-            int top = clipBox == null ? polygon.bounds().top() : clipBox.top();
-            int bottom = clipBox == null ? polygon.bounds().bottom() : clipBox.bottom();
+            var stroke = outlineWidth > 0
+                ? new BasicStroke(2f * outlineWidth, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND) : null;
+            int top = Math.max(0, clipBox == null ? polygon.bounds().top() : clipBox.top());
+            int bottom = Math.min(image.getHeight(), clipBox == null ? polygon.bounds().bottom() : clipBox.bottom());
             for (int y = top; y < bottom; y++) {
                 CleanBoxPainter.checkInterrupted();
                 var span = clip(polygon, clipBox, y);
                 if (span == null) continue;
                 Arrays.fill(row, 0);
                 graphics.setTransform(AffineTransform.getTranslateInstance(0, -y));
-                for (var line : lines) if (line.bounds().getMinY() < y + 1 && line.bounds().getMaxY() > y) graphics.fill(line.outline());
-                for (int x = span.start(); x < span.end(); x++) {
+                for (var line : lines) {
+                    if (line.bounds().getMinY() - outlineWidth >= y + 1 || line.bounds().getMaxY() + outlineWidth <= y) continue;
+                    if (stroke != null) {
+                        // Outline first, glyph on top: the halo never covers the letter itself.
+                        graphics.setColor(new Color(outlineColor, true));
+                        graphics.setStroke(stroke);
+                        graphics.draw(line.outline());
+                    }
+                    graphics.setColor(new Color(ink, true));
+                    graphics.fill(line.outline());
+                }
+                for (int x = Math.max(0, span.start()); x < Math.min(image.getWidth(), span.end()); x++) {
                     int coverage = row[x] >>> 24;
                     if (coverage != 0) image.setRGB(x, y, over(row[x], image.getRGB(x, y)));
                 }
