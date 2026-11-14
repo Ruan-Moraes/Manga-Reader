@@ -19,7 +19,7 @@
     <description>Gateway privado e assíncrono para processamento de páginas do aplicativo mobile.</description>
 
     <properties>
-        <java.version>25</java.version>
+        <java.version>23</java.version>
         <testcontainers.version>1.21.4</testcontainers.version>
         <!-- Coordinated security patches not yet supplied by the Boot BOM. -->
         <jackson-bom.version>3.1.7</jackson-bom.version>
