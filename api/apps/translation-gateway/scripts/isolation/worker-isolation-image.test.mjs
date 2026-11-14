@@ -17,10 +17,7 @@ import {
 } from "./worker-isolation-image.mjs";
 
 const sha = (bytes) => createHash("sha256").update(bytes).digest("hex");
-const source = new URL(
-  "./isolation/WorkerIsolationProbe.java",
-  import.meta.url,
-);
+const source = new URL("./WorkerIsolationProbe.java", import.meta.url);
 
 test("requires explicit destination/hash; no push, download or credentials options", () => {
   for (const args of [

@@ -6,7 +6,7 @@ import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { loadRun } from "./ocr-evaluation.mjs";
 
-const REPO = fileURLToPath(new URL("../../../../", import.meta.url));
+const REPO = fileURLToPath(new URL("../../../../../", import.meta.url));
 const ID = /^[a-z0-9][a-z0-9-]{0,63}$/;
 const MODEL_SHA =
   "065744e91c0594ad8663aa8b870ce3fb27222942eded5a3cc388ce23421bd195";

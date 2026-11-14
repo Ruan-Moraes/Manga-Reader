@@ -247,7 +247,7 @@ test("regeneration rejects corrupted JSON, hash, source binding, provenance and 
 test("offline parser has no clients, credential initialization, Spring, JDBC or inference imports", async () => {
   const source = await readFile(
     new URL(
-      "../src/test/java/com/toonlira/translationgateway/evaluation/VisionDiagnostic.java",
+      "../../src/test/java/com/toonlira/translationgateway/evaluation/VisionDiagnostic.java",
       import.meta.url,
     ),
     "utf8",

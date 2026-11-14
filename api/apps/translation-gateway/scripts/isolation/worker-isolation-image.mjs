@@ -12,7 +12,7 @@ import {
 } from "node:fs/promises";
 import { dirname, isAbsolute, join, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
-import { checkedFile } from "./render-native-package.mjs";
+import { checkedFile } from "../native-image/render-native-package.mjs";
 
 const execute = promisify(execFile);
 const BASE_IMAGE =
@@ -75,9 +75,7 @@ export async function prepareIsolationImage(options) {
   try {
     validate(options);
     const source = await checkedFile(
-      fileURLToPath(
-        new URL("./isolation/WorkerIsolationProbe.java", import.meta.url),
-      ),
+      fileURLToPath(new URL("./WorkerIsolationProbe.java", import.meta.url)),
       options["source-sha256"],
       MAX_SOURCE_BYTES,
     );
@@ -87,7 +85,7 @@ export async function prepareIsolationImage(options) {
     )
       fail();
     let dockerfile = await readFile(
-      new URL("../Dockerfile.isolation-probe", import.meta.url),
+      new URL("./Dockerfile.isolation-probe", import.meta.url),
       "utf8",
     );
     if (

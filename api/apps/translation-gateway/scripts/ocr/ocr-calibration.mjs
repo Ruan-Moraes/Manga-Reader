@@ -16,7 +16,7 @@ const RENDERER = path.join(
   path.dirname(SCRIPT),
   "CalibrationGlyphRenderer.java",
 );
-const REPO = path.resolve(path.dirname(SCRIPT), "../../../..");
+const REPO = path.resolve(path.dirname(SCRIPT), "../../../../..");
 const ROOT = path.join(REPO, ".local/ocr-samples/calibration");
 const NAMES = ["horizontal", "vertical"];
 const DEFAULT_RECIPE = "kanji-grid-1";

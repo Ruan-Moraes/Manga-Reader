@@ -1,0 +1,72 @@
+# ==============================================================================
+# Translation Gateway — ambiente local
+# ==============================================================================
+# Uso (a partir de api/apps/translation-gateway):
+#   docker compose up --build
+#
+# Sobe PostgreSQL 17 + gateway em http://localhost:8084 (Swagger: /swagger-ui.html).
+#
+# Por padrão o gateway nasce fail-closed (GATEWAY_ENABLED=false): /v1/capabilities
+# retorna 503. Para teste local explícito, exporte GATEWAY_ENABLED=true e os
+# valores de disclosure (GATEWAY_DISCLOSURE_VERSION, GATEWAY_OPERATOR_NAME, ...);
+# o modo local-ack nunca chama worker nem provider.
+# ==============================================================================
+
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: toonlira-gateway-postgres
+    ports:
+      - "5433:5432" # 5433 no host para não colidir com o Postgres do core
+    environment:
+      POSTGRES_DB: manga_translation_gateway
+      POSTGRES_USER: manga
+      POSTGRES_PASSWORD: manga_secret
+    volumes:
+      - gateway_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U manga -d manga_translation_gateway"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: "1.0"
+
+  gateway:
+    build:
+      context: ../.. # api/
+      dockerfile: apps/translation-gateway/Dockerfile
+    container_name: toonlira-translation-gateway
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "8084:8084"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/manga_translation_gateway
+      SPRING_DATASOURCE_USERNAME: manga
+      SPRING_DATASOURCE_PASSWORD: manga_secret
+      GATEWAY_ENABLED: ${GATEWAY_ENABLED:-false}
+      GATEWAY_KEY: ${GATEWAY_KEY:-local-dev}
+      GATEWAY_DISPATCH_MODE: ${GATEWAY_DISPATCH_MODE:-disabled}
+      GATEWAY_STORAGE_MODE: local
+      GATEWAY_DISCLOSURE_VERSION: ${GATEWAY_DISCLOSURE_VERSION:-}
+      GATEWAY_OPERATOR_NAME: ${GATEWAY_OPERATOR_NAME:-}
+      GATEWAY_OPERATOR_CONTACT: ${GATEWAY_OPERATOR_CONTACT:-}
+      GATEWAY_PRIVACY_POLICY_URL: ${GATEWAY_PRIVACY_POLICY_URL:-}
+      GATEWAY_TERMS_URL: ${GATEWAY_TERMS_URL:-}
+      GATEWAY_PROVIDER_TRAINING_POLICY: ${GATEWAY_PROVIDER_TRAINING_POLICY:-}
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 768M
+          cpus: "1.0"
+
+volumes:
+  gateway_postgres_data:
+    driver: local

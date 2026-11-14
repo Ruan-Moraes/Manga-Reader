@@ -7,7 +7,7 @@ import { fileURLToPath } from "node:url";
 import { loadRun, validateRawResponse } from "./ocr-evaluation.mjs";
 import { renderAttribution } from "./ocr-samples.mjs";
 
-const REPO = fileURLToPath(new URL("../../../../", import.meta.url));
+const REPO = fileURLToPath(new URL("../../../../../", import.meta.url));
 const MODULE = join(REPO, "api/apps/translation-gateway");
 const HELPER = join(
   MODULE,

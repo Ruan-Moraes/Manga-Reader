@@ -19,7 +19,7 @@ import {
 } from "./ocr-columns-core.mjs";
 import { renderAttribution } from "./ocr-samples.mjs";
 
-const REPO = fileURLToPath(new URL("../../../../", import.meta.url));
+const REPO = fileURLToPath(new URL("../../../../../", import.meta.url));
 const ID = /^[a-z0-9][a-z0-9-]{0,63}$/;
 const MARKER = "<!doctype html><!-- Toonlira experimental columns v1 -->";
 const MAX_HTML = 16 * 1024 * 1024;

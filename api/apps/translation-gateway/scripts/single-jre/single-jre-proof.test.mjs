@@ -15,12 +15,12 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { verifySingleJreProof } from "./single-jre-proof.mjs";
 import { FILTER_PATTERNS } from "./single-jre-policy.mjs";
-import { packageCodec } from "./render-native-package.mjs";
+import { packageCodec } from "../native-image/render-native-package.mjs";
 import { member, archive } from "./test-support/rootfs-archive-fixture.mjs";
 import {
   prepareImageContext,
   prepareSingleJreImageContext,
-} from "./render-native-image.mjs";
+} from "../native-image/render-native-image.mjs";
 
 const sha = (bytes) => createHash("sha256").update(bytes).digest("hex");
 async function fixture(t, architecture = "arm64") {
@@ -242,7 +242,7 @@ for (const arch of ["arm64", "amd64"]) {
         join(root, name),
         await readFile(
           new URL(
-            `../src/test/resources/rendering-native-license/${name}`,
+            `../../src/test/resources/rendering-native-license/${name}`,
             import.meta.url,
           ),
         ),

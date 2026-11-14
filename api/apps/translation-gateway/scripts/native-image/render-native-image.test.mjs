@@ -42,7 +42,7 @@ async function fixture(platform = "linux-aarch64-glibc") {
       join(root, name),
       await readFile(
         new URL(
-          `../src/test/resources/rendering-native-license/${name}`,
+          `../../src/test/resources/rendering-native-license/${name}`,
           import.meta.url,
         ),
       ),

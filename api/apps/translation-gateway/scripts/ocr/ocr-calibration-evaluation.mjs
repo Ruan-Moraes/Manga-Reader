@@ -17,7 +17,7 @@ import {
 } from "./ocr-evaluation.mjs";
 
 const SCRIPT = fileURLToPath(import.meta.url);
-const REPO = path.resolve(path.dirname(SCRIPT), "../../../..");
+const REPO = path.resolve(path.dirname(SCRIPT), "../../../../..");
 const ROOT = path.join(REPO, ".local/ocr-samples/calibration");
 const MAX_JSON = 1024 * 1024;
 const ID = /^[a-z0-9][a-z0-9-]{0,63}$/;

@@ -10,9 +10,12 @@ import {
   sampleRights,
 } from "./ocr-samples.mjs";
 
-const REPO = fileURLToPath(new URL("../../../../", import.meta.url));
+const REPO = fileURLToPath(new URL("../../../../../", import.meta.url));
 const ROOT = join(REPO, ".local/ocr-samples");
-const CATALOG = new URL("../docs/ocr-evaluation/samples.json", import.meta.url);
+const CATALOG = new URL(
+  "../../docs/ocr-evaluation/samples.json",
+  import.meta.url,
+);
 const MARKER = "<!doctype html><!-- Toonlira OCR evaluation v1 -->";
 const ID = /^[a-z0-9][a-z0-9-]{0,63}$/;
 const sha = (bytes) => createHash("sha256").update(bytes).digest("hex");

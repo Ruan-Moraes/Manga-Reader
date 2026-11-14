@@ -19,7 +19,7 @@ import {
   SOURCE_HASH,
 } from "./render-native-package.mjs";
 import { UPDATES } from "./ubuntu-base-update.mjs";
-import { verifySingleJreProof } from "./single-jre-proof.mjs";
+import { verifySingleJreProof } from "../single-jre/single-jre-proof.mjs";
 
 const MAX_JAR_BYTES = 512 * 1024 * 1024;
 const OPTIONS = [
@@ -312,7 +312,7 @@ async function prepareContext(options, resolveBase) {
     const destination = options.destination;
     if ((await realpath(dirname(destination))) !== dirname(destination)) fail();
     const dockerfile = await readFile(
-      new URL("../Dockerfile.native", import.meta.url),
+      new URL("./Dockerfile.native", import.meta.url),
     );
     await mkdir(destination, { mode: 0o700 });
     reserved = true;

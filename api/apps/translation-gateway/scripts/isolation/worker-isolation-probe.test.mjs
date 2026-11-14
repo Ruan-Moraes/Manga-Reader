@@ -10,7 +10,7 @@ test("standalone Java probe: synthetic boundaries, redaction and local CLI", asy
   assert.ok(
     /^\/\.local\/worker-isolation\/$/m.test(
       await readFile(
-        new URL("../../../../.gitignore", import.meta.url),
+        new URL("../../../../../.gitignore", import.meta.url),
         "utf8",
       ),
     ),
@@ -18,10 +18,10 @@ test("standalone Java probe: synthetic boundaries, redaction and local CLI", asy
   );
   const build = await mkdtemp(join(tmpdir(), "worker-isolation-test-"));
   const source = fileURLToPath(
-    new URL("./isolation/WorkerIsolationProbe.java", import.meta.url),
+    new URL("./WorkerIsolationProbe.java", import.meta.url),
   );
   const checks = fileURLToPath(
-    new URL("./isolation/WorkerIsolationProbeChecks.java", import.meta.url),
+    new URL("./WorkerIsolationProbeChecks.java", import.meta.url),
   );
   const execute = (command, args) =>
     spawnSync(command, args, {

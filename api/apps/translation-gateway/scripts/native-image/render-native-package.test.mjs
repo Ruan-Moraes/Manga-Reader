@@ -35,7 +35,7 @@ async function fixture() {
     options.copying,
     await readFile(
       new URL(
-        "../src/test/resources/rendering-native-license/COPYING",
+        "../../src/test/resources/rendering-native-license/COPYING",
         import.meta.url,
       ),
     ),
@@ -44,7 +44,7 @@ async function fixture() {
     options.patents,
     await readFile(
       new URL(
-        "../src/test/resources/rendering-native-license/PATENTS",
+        "../../src/test/resources/rendering-native-license/PATENTS",
         import.meta.url,
       ),
     ),

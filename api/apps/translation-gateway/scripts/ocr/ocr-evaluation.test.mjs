@@ -164,7 +164,7 @@ test("report escapes OCR, labels simulation, and rejects comparison across image
 test("CC0 report preserves mixed-language caveat and escapes item credits without provider", async () => {
   const catalog = JSON.parse(
     await readFile(
-      new URL("../docs/ocr-evaluation/samples.json", import.meta.url),
+      new URL("../../docs/ocr-evaluation/samples.json", import.meta.url),
     ),
   );
   const original = catalog.samples.find(

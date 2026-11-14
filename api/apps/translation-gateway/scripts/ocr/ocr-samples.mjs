@@ -6,11 +6,11 @@ import { inflateSync } from "node:zlib";
 
 const MAX_BYTES = 12_582_912;
 const MANIFEST = new URL(
-  "../docs/ocr-evaluation/samples.json",
+  "../../docs/ocr-evaluation/samples.json",
   import.meta.url,
 );
 const ROOT = fileURLToPath(
-  new URL("../../../../.local/ocr-samples/", import.meta.url),
+  new URL("../../../../../.local/ocr-samples/", import.meta.url),
 );
 const GALLERY_MARKER = "<!doctype html><!-- Toonlira OCR sample gallery v1 -->";
 const LANGUAGES = ["ja", "en", "es", "ko", "zh-Hans", "zh-Hant", "pt-BR"];
@@ -517,7 +517,7 @@ async function main() {
   requireThat(
     process.argv.length <= 3 &&
       ["verify", "download", "gallery"].includes(command),
-    "Uso: node api/apps/translation-gateway/scripts/ocr-samples.mjs [verify|download|gallery]",
+    "Uso: node api/apps/translation-gateway/scripts/ocr/ocr-samples.mjs [verify|download|gallery]",
   );
   const manifest = JSON.parse(await readFile(MANIFEST, "utf8"));
   validateManifest(manifest);

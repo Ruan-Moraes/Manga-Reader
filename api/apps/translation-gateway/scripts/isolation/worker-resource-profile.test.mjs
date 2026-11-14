@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 
 const read = (name) =>
-  readFile(new URL(`../infra/terraform/${name}`, import.meta.url), "utf8");
+  readFile(new URL(`../../infra/terraform/${name}`, import.meta.url), "utf8");
 function block(source, declaration) {
   const start = source.indexOf(`${declaration} {`);
   assert.notEqual(start, -1, `missing ${declaration}`);
