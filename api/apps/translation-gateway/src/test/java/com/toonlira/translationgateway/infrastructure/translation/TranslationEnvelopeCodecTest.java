@@ -31,6 +31,14 @@ class TranslationEnvelopeCodecTest {
     }
 
     @Test
+    void decodeRemovesProviderSpacesBetweenProtectedTermsAndPunctuation() {
+        var decoded = codec.decode("<div><p data-region=\"" + ID + "\">Obrigado por chamá-lo <span translate=\"no\">Ubuntu</span> !"
+            + " Use ( <span translate=\"no\">wget</span> ) e <span translate=\"no\">GNOME</span> agora.</p></div>");
+        assertThat(decoded.regions().getFirst().translatedText())
+            .isEqualTo("Obrigado por chamá-lo Ubuntu! Use (wget) e GNOME agora.");
+    }
+
+    @Test
     void decodeStripsProtectionSpansButKeepsLiterals() {
         var decoded = codec.decode("<div><p data-region=\"" + ID + "\">Abra o <span translate=\"no\">YouTube</span> agora</p></div>");
         assertThat(decoded.regions().getFirst().translatedText()).isEqualTo("Abra o YouTube agora");

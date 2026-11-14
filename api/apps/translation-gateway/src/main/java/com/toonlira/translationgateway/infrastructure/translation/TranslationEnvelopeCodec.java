@@ -18,6 +18,12 @@ final class TranslationEnvelopeCodec {
     static final int MAX_PROVIDER_CODEPOINTS = 30_000;
     private static final Pattern REGION = Pattern.compile("<p data-region=\"([0-9a-f-]{36})\">((?:[^<>]++|<span translate=\"no\">[^<>]*+</span>)*+)</p>", Pattern.DOTALL);
     private static final Pattern SPAN_TAGS = Pattern.compile("<span translate=\"no\">|</span>");
+    /**
+     * The provider treats a protected span as a separate token and pads it with spaces ("Ubuntu !", "( Ubuntu"),
+     * which pt-BR/es/en typography never uses before closing or after opening punctuation.
+     */
+    private static final Pattern SPACE_AFTER_SPAN = Pattern.compile("</span>[ \\u00A0]+(?=[!?.,;:…)\\]}»”’])");
+    private static final Pattern SPACE_BEFORE_SPAN = Pattern.compile("(?<=[(\\[{«“‘])[ \\u00A0]+<span translate=\"no\">");
     private final ProtectedTerms terms = new ProtectedTerms();
     private static final TranslationValidator CONTRACT = new TranslationValidator(Set.copyOf(LanguagePair.all()));
 
@@ -72,7 +78,9 @@ final class TranslationEnvelopeCodec {
             } catch (IllegalArgumentException error) {
                 throw new GatewayException(GatewayErrorCode.TRANSLATION_INVALID_RESPONSE, 422, false);
             }
-            regions.add(new TranslationResponse.Region(id, StringEscapeUtils.unescapeHtml4(SPAN_TAGS.matcher(matcher.group(2)).replaceAll(""))));
+            var body = SPACE_AFTER_SPAN.matcher(matcher.group(2)).replaceAll("</span>");
+            body = SPACE_BEFORE_SPAN.matcher(body).replaceAll("<span translate=\"no\">");
+            regions.add(new TranslationResponse.Region(id, StringEscapeUtils.unescapeHtml4(SPAN_TAGS.matcher(body).replaceAll(""))));
             offset = matcher.end();
         }
         if (!inner.substring(offset).isBlank()) invalid();
