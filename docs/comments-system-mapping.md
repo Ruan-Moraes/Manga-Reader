@@ -1,7 +1,7 @@
 # Mapeamento do Sistema de Comentários — Frontend
 
 > Gerado em: 2026-06-20  
-> Escopo: `web/toonlira/src`
+> Escopo: `web/apps/toonlira/src`
 
 ---
 

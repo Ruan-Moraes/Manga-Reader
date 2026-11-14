@@ -2,7 +2,7 @@
   "hosting": [
     {
       "target": "app",
-      "public": "web/toonlira/dist",
+      "public": "web/apps/toonlira/dist",
       "ignore": [
         "firebase.json",
         "**/.*",
@@ -17,7 +17,7 @@
     },
     {
       "target": "landing",
-      "public": "web/landing-page/dist",
+      "public": "web/apps/landing-page/dist",
       "ignore": [
         "firebase.json",
         "**/.*",

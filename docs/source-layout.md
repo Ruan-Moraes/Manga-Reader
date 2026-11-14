@@ -15,7 +15,7 @@ api/apps/core/src/main/java/com/toonlira/
 ├── presentation/{domain}/mapper/      # MapStruct mappers
 └── shared/                            # Cross-cutting: configs, exceptions, constants
 
-web/toonlira/src/
+web/apps/toonlira/src/
 ├── app/      # Router config + route guards (@app) — FSD app layer
 ├── pages/    # Route-level pages, 1 slice por rota (@pages) — FSD pages layer
 ├── widgets/  # Blocos compostos: header/, footer/, mobile-tab-bar/,

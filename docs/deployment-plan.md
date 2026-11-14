@@ -122,7 +122,7 @@ pnpm install
 # Build de produção
 VITE_API_BASE_URL=https://api.toonlira.com pnpm --filter toonlira build
 
-# Output: web/toonlira/dist/
+# Output: web/apps/toonlira/dist/
 # Servir com Nginx ou upload para CDN
 ```
 
@@ -253,8 +253,8 @@ jobs:
       - uses: pnpm/action-setup@v4
       - run: cd web && pnpm install --frozen-lockfile
       - run: cd web && pnpm --filter toonlira lint:fsd
-      - run: cd web/toonlira && npx tsc -b
-      - run: cd web/toonlira && npx vitest run --pool=forks
+      - run: cd web/apps/toonlira && npx tsc -b
+      - run: cd web/apps/toonlira && npx vitest run --pool=forks
 
   frontend-build:
     needs: frontend-check
@@ -269,7 +269,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: frontend-dist
-          path: web/toonlira/dist
+          path: web/apps/toonlira/dist
 
   # ──── BACKEND ────
   backend-test:

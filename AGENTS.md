@@ -19,10 +19,10 @@
 `libs/testing-support` é um JAR interno de escopo `test`, compilado pelo reactor;
 não executar testes de consumidores diretamente de `api/apps`.
 
-### Frontend (`/web/toonlira/`)
+### Frontend (`/web/apps/toonlira/`)
 
 pnpm workspace (raiz `web/`). Rodar por workspace com `--filter toonlira`
-ou `cd web/toonlira` + `npx`:
+ou `cd web/apps/toonlira` + `npx`:
 
 ```bash
 pnpm --filter toonlira dev          # Dev server :5173 (proxy API → :8080)
@@ -106,7 +106,7 @@ No mobile, `src/application` representa a app layer porque `app/` é reservado p
 Antes de considerar qualquer tarefa concluída:
 
 1. `./mvnw test` passa com **0 failures, 0 errors**
-2. `cd web/toonlira && npx tsc -b` compila com **0 errors**
+2. `cd web/apps/toonlira && npx tsc -b` compila com **0 errors**
 3. Todo requisito novo/alterado tem teste correspondente
 4. Nenhum teste existente foi quebrado ou deletado sem justificativa
 5. Commits pequenos e focados com mensagens claras

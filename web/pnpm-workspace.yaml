@@ -1,6 +1,5 @@
 packages:
-  - "projects/*"
-  - "packages/*"
+  - "apps/*"
 allowBuilds:
   '@swc/core': false
   electron: false

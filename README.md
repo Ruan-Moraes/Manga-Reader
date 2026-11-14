@@ -123,7 +123,7 @@ cd api
 ### Web
 
 ```bash
-cd web/toonlira
+cd web/apps/toonlira
 npx tsc -b
 npm run lint:fsd
 npx vitest run --pool=forks

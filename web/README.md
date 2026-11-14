@@ -6,16 +6,10 @@ Workspace pnpm com múltiplas aplicações React, ferramentas e pacotes comparti
 
 ```text
 web/
-├── projects/
+├── apps/
 │   ├── toonlira/           # 🎯 aplicação principal (React + Vite + FSD)
 │   ├── landing-page/       # 🚀 landing page (React + Vite)
 │   └── gateway-tester/     # 🧪 tester do Translation Gateway
-├── packages/               # 📦 pacotes compartilhados
-│   ├── assets/             # ícones e manifestos servidos pelo Vite
-│   ├── brand/              # componentes de branding compartilhados
-│   ├── design-tokens/      # @toonlira/design-tokens (Tailwind)
-│   ├── tsconfig/           # configurações TypeScript
-│   └── types/              # contratos TypeScript
 ├── tools/
 │   └── scripts/            # 🛠️ utilitários (auditoria i18n, etc)
 ├── package.json
@@ -95,13 +89,12 @@ FSD completo da aplicação principal.
 
 Consulte [`landing-page/README.md`](landing-page/README.md).
 
-## Pacotes compartilhados
+## Independência dos apps
 
-- `@toonlira/design-tokens`: tokens visuais e preset Tailwind.
-- `@toonlira/types`: contratos TypeScript usados entre os apps.
-- `@toonlira/tsconfig`: bases de configuração TypeScript.
-- `@toonlira/assets`: metadados do workspace; os arquivos são consumidos
-  como `publicDir` nos `vite.config.ts`, não por imports JavaScript.
+Cada app em `apps/` é autocontido: não há pacotes compartilhados no
+workspace. Brand (`shared/config/brand.generated.ts`), ícones (`public/`) e
+tsconfig vivem dentro de cada app, o que facilita extrair qualquer um deles do
+monorepo. `scripts/brand/brand.mjs` gera os arquivos de brand em cada app.
 
 Diretórios locais de design/handoff ignorados pelo Git não são dependências de
 runtime e não devem ser importados pelo código.

@@ -296,7 +296,7 @@ o seam para S3/Cloudinary/R2, mas nenhum upload binário é simulado antes desse
 ### Capítulos admin — ports & gateways HTTP
 
 O gerenciamento de capítulos isola os contratos por **ports** no frontend, em
-`web/toonlira/src/entities/chapter/`:
+`web/apps/toonlira/src/entities/chapter/`:
 
 - `model/admin/` — domínio puro: types (`AdminChapter`, `ChapterPage`,
   `ChapterMetrics`), máquina de status (`draft/processing/scheduled/published/

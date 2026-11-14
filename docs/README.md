@@ -49,8 +49,8 @@ contêm instruções operacionais específicas.
 - [`../api/README.md`](../api/README.md): backend e jobs.
 - [`../api/apps/core/README.md`](../api/apps/core/README.md): API principal.
 - [`../web/README.md`](../web/README.md): workspace frontend.
-- [`../web/toonlira/README.md`](../web/toonlira/README.md): aplicação web principal.
-- [`../web/landing-page/README.md`](../web/landing-page/README.md): landing page.
+- [`../web/apps/toonlira/README.md`](../web/apps/toonlira/README.md): aplicação web principal.
+- [`../web/apps/landing-page/README.md`](../web/apps/landing-page/README.md): landing page.
 - [`../mobile/README.md`](../mobile/README.md): aplicativo mobile.
 
 ## Regra de manutenção
