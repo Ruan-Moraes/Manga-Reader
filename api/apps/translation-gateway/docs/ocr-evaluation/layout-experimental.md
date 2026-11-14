@@ -7,6 +7,8 @@ texto, geometria ou ordem do manifesto OCR `1.0`. Nenhuma rota nova foi criada.
 ## Configuração e modelo
 
 Default `gateway.layout.mode=disabled`: não abre modelo nem inicializa ONNX.
+`grouping` (mesmos requisitos de `shadow`) também deixa os balões detectados decidirem o agrupamento
+OCR — ver "Agrupamento por balão" abaixo; `shadow` continua só registrando.
 `shadow` exige perfil `worker`, `GATEWAY_LAYOUT_MODEL_PATH` válido e
 `GATEWAY_LAYOUT_DIRECTION=ltr|rtl`, sem inferência de direção pelo idioma.
 Gateway, OCR e worker cloud continuam desabilitados por padrão.
@@ -21,6 +23,10 @@ RT-DETR-v2. Licença declarada pelo autor: Apache-2.0. Arquivo `detector.onnx` F
 - Revisão: `16e8a622f91fabc6b5b65c96d32d1183f8843546`.
 - SHA-256: `065744e91c0594ad8663aa8b870ce3fb27222942eded5a3cc388ce23421bd195`.
 - Classes: `0=bubble`, `1=text_bubble`, `2=text_free`; só `bubble` fornece contêineres.
+  Desde `layoutVersion=1.2`, `text_bubble`/`text_free` vão para `textBoxes` (mesmo limiar e
+  limite de 256) e cada região OCR recebe `regionKinds[].kind` = classe da caixa de texto que
+  cobre ≥ 50% dela, ou `unknown`. São só sinais semânticos: não agrupam, não ordenam e não
+  controlam o render (ver comparação abaixo).
 - RGB, resize bilinear 640 × 640, escala `[0,1]`, sem média/desvio, padding ou crop.
 - Limiar `0.5`, experimental; supressão conservadora descrita abaixo, sem correção de coordenadas.
 - Entrada `images`: FLOAT `[N,3,H,W]`; `orig_target_sizes`: INT64 `[N,2]`.
@@ -147,3 +153,35 @@ Quadros irregulares/sobrepostos e separadores escuros também permanecem fora da
 
 Veja a [evidência datada](layout-validation-2026-09-27.md).
 Supressão e regressão local: [evidência do layout 1.1](layout-dedup-validation-2026-09-27.md).
+
+## Comparação `regionKinds` × máscara do render (2026-11-14)
+
+Ubunchu! ch02 p.03–04 (en→pt-BR, 35 regiões, worker local em `shadow`, `ltr`): todas as
+regiões `text_bubble` foram renderizadas pela máscara do balão; `text_free` sobre arte/borda de
+quadro ("Thank you…", "Now Akane…", rótulos do CD) foram preservadas; `text_free` sobre fundo liso
+("Aff…", "We can be the…") traduzidas. SFX estilizados ("FREEK", "PAH-", "clatter") saem como
+`unknown` — o modelo não os vê como texto — e a máscara os preservou. Conclusão: nestas páginas o
+ONNX confirma, mas não corrige, as decisões do render; seu ganho esperado é o agrupamento por
+balão (o OCR juntou o SFX "clatter" à fala "YOU LINUX FREAKS…").
+
+## Agrupamento por balão (`mode=grouping`, 2026-11-14)
+
+O detector roda uma vez **antes** do OCR ser agrupado; as mesmas detecções alimentam o artefato de
+layout (sem segunda inferência). Balões passam pela mesma deduplicação do artefato. Se o detector
+falhar, o OCR segue com a heurística de proximidade — layout nunca falha o OCR.
+
+1. **Divisão por palavra** (`OcrRegionGrouper.splitByBubbles`): o Vision pode juntar fala e SFX num
+   parágrafo ("YOU LINUX clatter"). As palavras (caixas do próprio Vision, via
+   `VisionResponseMapper.mapParagraphs`) recebem o balão que contém ≥ 50% delas; palavra em duas
+   caixas sobrepostas é ambígua e segue as vizinhas, nunca causa divisão. Cada sequência de palavras
+   com o mesmo dono vira uma região com ID derivado estável; o texto só é particionado, nunca alterado.
+2. **Agrupamento** (`OcrRegionGrouper.group(..., bubbles)`): regiões no mesmo balão viram uma fala
+   (na posição da primeira); balões diferentes, ou dentro × fora, nunca se juntam; só texto fora de
+   balão usa a heurística de proximidade.
+
+Validação (Ubunchu! ch02 p.03–04, en→pt-BR): p.03 idêntica ao modo heurístico; p.04 passou a separar
+o SFX "clatter" da fala "YOU LINUX FREAKS ARE SO ANNOYING!" e de "WINDOWS IS SO PATHETIC!" (o "after"
+que a heurística traduzia como "depois" era o SFX mal lido). As caixas do modelo nesta página em
+inglês são imprecisas — vários balões não detectados e caixas sobre arte —, por isso o modo segue
+opcional e a regra de ambiguidade é essencial ("UP"/"THIS" caíam em duas caixas sobrepostas).
+

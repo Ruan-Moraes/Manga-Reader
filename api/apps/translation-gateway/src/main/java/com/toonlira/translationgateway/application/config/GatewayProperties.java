@@ -109,7 +109,8 @@ public class GatewayProperties {
     }
 
     public static class Layout {
-        public enum Mode { DISABLED, SHADOW }
+        /** SHADOW records layout only; GROUPING also lets detected balloons drive OCR paragraph grouping. */
+        public enum Mode { DISABLED, SHADOW, GROUPING }
         private Mode mode = Mode.DISABLED;
         private Path modelPath;
         private String direction = "";

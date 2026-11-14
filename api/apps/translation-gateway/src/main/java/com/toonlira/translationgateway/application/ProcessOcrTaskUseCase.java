@@ -8,6 +8,7 @@ import com.toonlira.translationgateway.domain.GatewayErrorCode;
 import com.toonlira.translationgateway.domain.GatewayException;
 import com.toonlira.translationgateway.domain.JobStatus;
 import com.toonlira.translationgateway.domain.OcrManifest;
+import com.toonlira.translationgateway.domain.OcrRegionGrouper;
 import com.toonlira.translationgateway.domain.layout.LayoutOutcome;
 import org.springframework.beans.factory.annotation.Autowired;
 import java.io.InputStream;
@@ -119,13 +120,20 @@ public class ProcessOcrTaskUseCase {
         LayoutOutcome layout = null;
         try {
             requireOriginal(job);
-            var regions = ocr.recognize(new OcrPort.Command(job.objectKey(), job.sourceLanguage(), job.jobRef(),
-                media.widthPx(), media.heightPx()));
+            // In layout mode "grouping" detected balloons decide which words form one speech: paragraphs that cross a
+            // balloon border are split, then grouped per balloon. Otherwise (or if the detector fails) the proximity
+            // heuristic groups whole paragraphs. The same detections feed the layout artifact below.
+            var detections = layouts == null ? null : layouts.detectForGrouping(media.path());
+            var command = new OcrPort.Command(job.objectKey(), job.sourceLanguage(), job.jobRef(), media.widthPx(), media.heightPx());
+            var bubbles = ShadowLayoutService.boxes(detections);
+            var paragraphs = bubbles == null ? ocr.recognize(command)
+                : OcrRegionGrouper.splitByBubbles(ocr.recognizeParagraphs(command), bubbles);
+            var regions = OcrRegionGrouper.group(paragraphs, job.sourceLanguage(), media.widthPx(), media.heightPx(), bubbles);
             requireOriginal(job);
             var manifest = new OcrManifest("1.0", job.jobRef(), job.sourceLanguage(), job.widthPx(), job.heightPx(), regions);
             var encoded = manifests.encode(manifest);
             manifestSha256 = encoded.sha256();
-            if (layouts != null) layout = layouts.prepare(job.id(), media.path(), manifest, media.sha256(), encoded.sha256());
+            if (layouts != null) layout = layouts.prepare(job.id(), media.path(), manifest, media.sha256(), encoded.sha256(), detections);
             manifestFile = Files.createTempFile("translation-ocr-", ".json");
             Files.write(manifestFile, encoded.bytes());
             manifestKey = "private/ocr/" + job.id() + "/" + UUID.randomUUID() + ".json";

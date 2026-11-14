@@ -4,7 +4,10 @@ import tools.jackson.databind.ObjectMapper;
 import com.toonlira.translationgateway.application.port.LayoutPort;
 import com.toonlira.translationgateway.application.port.ObjectStoragePort;
 import com.toonlira.translationgateway.domain.OcrManifest;
+import com.toonlira.translationgateway.domain.layout.Detections;
+import com.toonlira.translationgateway.domain.layout.LayoutBox;
 import com.toonlira.translationgateway.domain.layout.LayoutFailure;
+import com.toonlira.translationgateway.domain.layout.Bubble;
 import com.toonlira.translationgateway.domain.layout.BubbleDeduplicator;
 import com.toonlira.translationgateway.domain.layout.LayoutOutcome;
 import com.toonlira.translationgateway.domain.layout.LayoutParameters;
@@ -14,6 +17,7 @@ import java.security.MessageDigest;
 import java.time.Clock;
 import java.time.Instant;
 import java.util.HexFormat;
+import java.util.List;
 import java.util.UUID;
 import org.springframework.stereotype.Service;
 
@@ -31,14 +35,35 @@ public class ShadowLayoutService {
         this.clock = clock;
     }
 
+    /**
+     * Balloon boxes for OCR grouping, deduplicated like the layout artifact. Null when grouping is not enabled or the
+     * detector fails: the caller then keeps the proximity heuristic, and OCR never fails because of layout.
+     */
+    public Detections detectForGrouping(Path image) {
+        if (!layout.available() || !layout.groups()) return null;
+        try {
+            var detected = layout.detect(image);
+            return detected == null ? null : new Detections(BubbleDeduplicator.filter(detected.bubbles()).retained(), detected.texts());
+        } catch (RuntimeException | LinkageError error) { return null; }
+    }
+
+    public static List<LayoutBox> boxes(Detections detections) {
+        return detections == null ? null : detections.bubbles().stream().map(Bubble::bounds).toList();
+    }
+
     public LayoutOutcome prepare(UUID jobId, Path image, OcrManifest ocr, String imageHash, String ocrHash) {
+        return prepare(jobId, image, ocr, imageHash, ocrHash, null);
+    }
+
+    public LayoutOutcome prepare(UUID jobId, Path image, OcrManifest ocr, String imageHash, String ocrHash, Detections detections) {
         if (!layout.available()) return null;
         Instant started = Instant.now(clock);
         Path temporary = null;
         String key = null;
         try {
-            var result = layout.analyze(image, ocr, imageHash, ocrHash);
-            if (result == null || !("1.0".equals(result.layoutVersion()) || "1.1".equals(result.layoutVersion())) || !imageHash.equals(result.imageSha256())
+            var result = detections == null ? layout.analyze(image, ocr, imageHash, ocrHash)
+                : layout.analyze(image, ocr, imageHash, ocrHash, detections);
+            if (result == null || !("1.0".equals(result.layoutVersion()) || "1.1".equals(result.layoutVersion()) || "1.2".equals(result.layoutVersion())) || !imageHash.equals(result.imageSha256())
                 || !ocrHash.equals(result.ocrManifestSha256()) || result.associations().size() != ocr.regions().size())
                 throw new LayoutFailure(LayoutFailure.Code.INVALID_RESPONSE);
             BubbleDeduplicator.validateAudit(result);

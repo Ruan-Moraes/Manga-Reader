@@ -31,6 +31,11 @@ public final class VisionOcrAdapter implements OcrPort, AutoCloseable {
 
     @Override
     public List<OcrManifest.Region> recognize(Command command) {
+        return recognizeParagraphs(command).stream().map(com.toonlira.translationgateway.domain.OcrParagraph::region).toList();
+    }
+
+    @Override
+    public List<com.toonlira.translationgateway.domain.OcrParagraph> recognizeParagraphs(Command command) {
         var hint = languageHint(command.sourceLanguage());
         if (command.jobRef() == null || command.widthPx() <= 0 || command.heightPx() <= 0
             || command.objectKey() == null || !command.objectKey().matches("private/originals/[A-Za-z0-9/_\\.-]+")
@@ -44,7 +49,7 @@ public final class VisionOcrAdapter implements OcrPort, AutoCloseable {
                 .addFeatures(Feature.newBuilder().setType(Feature.Type.DOCUMENT_TEXT_DETECTION))
                 .setImageContext(ImageContext.newBuilder().addLanguageHints(hint))).build();
         try {
-            return mapper.map(client.batchAnnotateImages(request), command);
+            return mapper.mapParagraphs(client.batchAnnotateImages(request), command);
         } catch (ApiException error) {
             // Provider messages can contain text or object references; never retain the cause.
             throw new GatewayException(GatewayErrorCode.OCR_UNAVAILABLE, 503, false);

@@ -14,6 +14,12 @@ public final class LayoutInterpreter {
     public LayoutManifest interpret(OcrManifest ocr, String imageHash, String manifestHash,
                                     LayoutManifest.Model model, ReadingDirection direction,
                                     List<Panel> panels, List<Bubble> bubbles) {
+        return interpret(ocr, imageHash, manifestHash, model, direction, panels, bubbles, List.of());
+    }
+
+    public LayoutManifest interpret(OcrManifest ocr, String imageHash, String manifestHash,
+                                    LayoutManifest.Model model, ReadingDirection direction,
+                                    List<Panel> panels, List<Bubble> bubbles, List<TextBox> texts) {
         if (direction == null) throw new IllegalArgumentException("Reading direction required");
         var filtered = BubbleDeduplicator.filter(bubbles);
         var links = LayoutAssociator.associate(ocr.regions(), panels, filtered.retained());
@@ -47,13 +53,25 @@ public final class LayoutInterpreter {
         }
         var state = panels.isEmpty() ? LayoutManifest.State.inconclusive
             : ambiguities.isEmpty() && unassociated.isEmpty() ? LayoutManifest.State.complete : LayoutManifest.State.partial;
-        return new LayoutManifest("1.1", imageHash, manifestHash, ALGORITHM_REVISION, model,
+        var kinds = ocr.regions().stream().map(region -> new LayoutManifest.RegionKind(region.id(), kind(region, texts))).toList();
+        return new LayoutManifest("1.2", imageHash, manifestHash, ALGORITHM_REVISION, model,
             Map.of("whiteChannel", WHITE_CHANNEL, "clearCoverage", CLEAR_COVERAGE, "minimumGutterFraction", MIN_GUTTER_FRACTION,
                 "minimumPanelArea", MIN_PANEL_AREA, "containment", CONTAINMENT, "confidence", CONFIDENCE,
                 "duplicateIou", DUPLICATE_IOU),
             direction, state, List.copyOf(panels), filtered.retained(), links,
             groups.entrySet().stream().map(entry -> new LayoutManifest.Group(entry.getKey(), List.copyOf(entry.getValue()))).toList(),
-            List.copyOf(order), List.copyOf(unassociated), List.copyOf(ambiguities), filtered.suppressed());
+            List.copyOf(order), List.copyOf(unassociated), List.copyOf(ambiguities), filtered.suppressed(),
+            List.copyOf(texts), kinds);
+    }
+
+    private static String kind(OcrManifest.Region region, List<TextBox> texts) {
+        TextBox best = null;
+        double bestCover = TEXT_KIND_COVERAGE;
+        for (var text : texts) {
+            double cover = LayoutGeometry.containment(region.polygon(), text.bounds());
+            if (cover >= bestCover) { bestCover = cover; best = text; }
+        }
+        return best == null ? "unknown" : best.kind().name();
     }
 
     private List<List<OcrManifest.Region>> sortUnambiguous(List<List<OcrManifest.Region>> units, ReadingDirection direction,

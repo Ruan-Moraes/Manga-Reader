@@ -59,7 +59,7 @@ class ShadowLayoutServiceTest {
         when(port.available()).thenReturn(true);
         var oversized = new LayoutManifest("1.0", "a".repeat(64), "b".repeat(64), "x".repeat(1048576),
             ComicDetectorModel.METADATA, Map.of(), ReadingDirection.ltr, LayoutManifest.State.inconclusive,
-            List.of(), List.of(), List.of(), List.of(), List.of(), List.of(), List.of(), List.of());
+            List.of(), List.of(), List.of(), List.of(), List.of(), List.of(), List.of(), List.of(), null, null);
         when(port.analyze(any(), any(), any(), any())).thenReturn(oversized);
         assertThat(prepare().errorCode()).isEqualTo("layout-limit-exceeded");
         verifyNoInteractions(storage);
@@ -110,5 +110,22 @@ class ShadowLayoutServiceTest {
 
     private LayoutOutcome prepare() {
         return service.prepare(UUID.randomUUID(), Path.of("missing-image"), ocr, "a".repeat(64), "b".repeat(64));
+    }
+
+    @Test void groupingDetectionsAreDeduplicatedAndNeverFailOcr() {
+        var image = Path.of("page.png");
+        when(port.available()).thenReturn(true);
+        assertThat(service.detectForGrouping(image)).isNull(); // shadow mode: never drives grouping
+        verify(port, never()).detect(any());
+
+        when(port.groups()).thenReturn(true);
+        var box = new LayoutBox(.1, .1, .5, .5);
+        when(port.detect(image)).thenReturn(new com.toonlira.translationgateway.domain.layout.Detections(
+            List.of(new Bubble("bubble-0", box, .9), new Bubble("bubble-1", box, .8)), List.of()));
+        assertThat(service.detectForGrouping(image).bubbles()).extracting(Bubble::id).containsExactly("bubble-0");
+
+        when(port.detect(image)).thenThrow(new LayoutFailure(LayoutFailure.Code.TIMEOUT));
+        assertThat(service.detectForGrouping(image)).isNull();
+        assertThat(ShadowLayoutService.boxes(null)).isNull();
     }
 }

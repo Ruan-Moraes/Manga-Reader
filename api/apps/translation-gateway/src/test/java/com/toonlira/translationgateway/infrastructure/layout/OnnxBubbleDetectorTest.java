@@ -64,4 +64,14 @@ class OnnxBubbleDetectorTest {
         assertThat(bubbles.getFirst().bounds().top()).isCloseTo(.2, within(1e-6));
         assertThat(bubbles.getFirst().bounds().bottom()).isCloseTo(.6, within(1e-6));
     }
+
+    @Test void decodeAllKeepsTextClassesApartFromContainers() {
+        var result = OnnxBubbleDetector.decodeAll(new long[][]{{0, 1, 2, 2}},
+            new float[][][]{{{10, 20, 50, 80}, {12, 22, 48, 78}, {60, 20, 90, 60}, {60, 20, 90, 60}}},
+            new float[][]{{.5f, .9f, .8f, .3f}}, 100, 200);
+        assertThat(result.bubbles()).extracting(com.toonlira.translationgateway.domain.layout.Bubble::id).containsExactly("bubble-0");
+        assertThat(result.texts()).extracting(com.toonlira.translationgateway.domain.layout.TextBox::kind).containsExactly(
+            com.toonlira.translationgateway.domain.layout.TextBox.Kind.text_bubble,
+            com.toonlira.translationgateway.domain.layout.TextBox.Kind.text_free);
+    }
 }

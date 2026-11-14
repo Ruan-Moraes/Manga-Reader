@@ -16,7 +16,7 @@ class LayoutInterpreterTest {
         assertThat(layout.bubbles()).containsExactly(winner);
         assertThat(layout.suggestedOrder()).containsExactly(speech.id());
         assertThat(layout.ambiguities()).isEmpty();
-        assertThat(layout.layoutVersion()).isEqualTo("1.1");
+        assertThat(layout.layoutVersion()).isEqualTo("1.2");
         assertThat(layout.suppressedBubbles()).hasSize(1);
         BubbleDeduplicator.validateAudit(layout);
         assertThat(ocr.regions()).containsExactly(speech);
@@ -68,5 +68,23 @@ class LayoutInterpreterTest {
     private OcrManifest.Region region(double l, double t, double r, double b) {
         return new OcrManifest.Region(UUID.randomUUID(), 0, "same",
             List.of(new OcrManifest.Vertex(l, t), new OcrManifest.Vertex(r, t), new OcrManifest.Vertex(r, b), new OcrManifest.Vertex(l, b)));
+    }
+
+    @Test void layoutOneTwoClassifiesEachRegionByTheTextBoxCoveringIt() {
+        var speech = region(.1, .1, .3, .2);
+        var effect = region(.5, .5, .7, .6);
+        var stray = region(.8, .8, .9, .9);
+        var texts = List.of(
+            new TextBox("text-1", TextBox.Kind.text_bubble, new LayoutBox(.09, .09, .31, .21), .9),
+            new TextBox("text-2", TextBox.Kind.text_free, new LayoutBox(.5, .5, .6, .6), .8)); // covers half of effect
+        var layout = new LayoutInterpreter().interpret(
+            new OcrManifest("1.0", UUID.randomUUID(), "en", 100, 200, List.of(speech, effect, stray)),
+            "a".repeat(64), "b".repeat(64), null, ReadingDirection.ltr,
+            List.of(new Panel("p", new LayoutBox(0, 0, 1, 1))), List.of(), texts);
+        assertThat(layout.layoutVersion()).isEqualTo("1.2");
+        assertThat(layout.textBoxes()).isEqualTo(texts);
+        assertThat(layout.regionKinds()).extracting(LayoutManifest.RegionKind::kind)
+            .containsExactly("text_bubble", "text_free", "unknown");
+        BubbleDeduplicator.validateAudit(layout);
     }
 }

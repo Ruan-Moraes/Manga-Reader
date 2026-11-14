@@ -9,6 +9,8 @@ public final class LayoutParameters {
     public static final double MIN_PANEL_AREA = .02;
     public static final double CONTAINMENT = .9;
     public static final double CONFIDENCE = .5;
+    /** Share of an OCR region a text box must cover to lend it its class (layout 1.2). */
+    public static final double TEXT_KIND_COVERAGE = .5;
     public static final int MAX_PANELS = 128;
     public static final int MAX_BUBBLES = 256;
     public static final int MAX_ASSOCIATIONS = 1024;
