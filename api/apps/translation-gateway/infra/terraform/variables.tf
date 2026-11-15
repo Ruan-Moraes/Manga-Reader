@@ -93,7 +93,7 @@ variable "database_disk_autoresize_limit_gb" {
 variable "layout_mode" {
   description = "Worker balloon/text detector: disabled, shadow (records layout only) or grouping (balloons drive OCR grouping and bound render masks). Needs the model baked in the image and raises worker memory to 2Gi."
   type        = string
-  default     = "disabled"
+  default     = "grouping"
   nullable    = false
   validation {
     condition     = contains(["disabled", "shadow", "grouping"], var.layout_mode)

@@ -14,13 +14,13 @@ locals {
   worker_profile = local.worker_resource_profiles[var.worker_resource_profile]
   # The layout detector adds ~550 MiB of native memory (measured: load +366, inference +178); 1Gi does not fit it.
   worker_resources = var.layout_mode == "disabled" || var.worker_resource_profile != "baseline" ? local.worker_profile : merge(
-    local.worker_profile, { memory = "2Gi" })
+  local.worker_profile, { memory = "2Gi" })
   layout_model_path = "/app/models/comic-detector-16e8a622/detector.onnx"
-  name             = "translation-gateway"
-  database_name    = "translation_gateway"
-  database_user    = "translation_gateway"
-  dispatch_enabled = var.gateway_enabled && var.worker_enabled
-  worker_url       = var.worker_enabled ? "${google_cloud_run_v2_service.worker[0].uri}/internal/tasks/ocr" : ""
+  name              = "translation-gateway"
+  database_name     = "translation_gateway"
+  database_user     = "translation_gateway"
+  dispatch_enabled  = var.gateway_enabled && var.worker_enabled
+  worker_url        = var.worker_enabled ? "${google_cloud_run_v2_service.worker[0].uri}/internal/tasks/ocr" : ""
   required_apis = toset([
     "artifactregistry.googleapis.com",
     "cloudresourcemanager.googleapis.com",

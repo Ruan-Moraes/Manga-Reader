@@ -556,7 +556,7 @@ origem CJK, recuperação de texto não lido pelas caixas do detector). Pendente
   deixa remendos).
 - **Agrupamento por balão ONNX** avaliado (48 páginas en/ja), texto vertical CJK agrupado, classes
   e balões chegam ao render, modelo provisionado (Dockerfile com SHA fixado + Terraform `layout_mode`,
-  worker 2 GiB). Falta ligar `grouping` ao ativar o produto e rodar `terraform validate`.
+  worker 2 GiB), `grouping` padrão no Terraform (validate/fmt verdes).
 - **SFX/texto livre**: texto livre preservado fica no idioma original (falta tipografia
   estilizada ou inpainting real); letreiros à mão sobre fundo liso viram fonte comum pequena.
 - **Comparação com a edição original** (Ubunchu! ep. 01, Hiroshi Seo) e regressão visual.

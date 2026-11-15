@@ -51,7 +51,11 @@ do módulo, inclusive com worker desabilitado. Não é um `check` que apenas avi
 Isso não é controle IAM nem proteção contra editar/remover guards ou usar
 `-target`; não executar nenhum desses caminhos para contornar o gate.
 Default e exemplos mantêm `gateway_enabled=false` e `worker_enabled=false`;
-OCR, tradução, layout, render e download ficam explicitamente `disabled` no worker.
+OCR, tradução, render e download ficam explicitamente `disabled` no worker.
+O layout já vem em `layout_mode = "grouping"` (balões detectados agrupam o OCR e limitam a
+máscara do render; modelo embutido na imagem com SHA-256 conferido no build): só tem efeito quando o
+OCR for ligado e eleva o worker `baseline` para 2 GiB. `layout_mode = "disabled"` volta à
+heurística de proximidade.
 
 `worker_container_image` permite referência independente por digest de registry;
 `null` mantém a referência compartilhada anterior. Não usar o ID do cache Docker

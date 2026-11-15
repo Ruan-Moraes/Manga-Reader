@@ -243,6 +243,7 @@ inpainting, mesmo que o dicionário a leia como frase.
 **Provisionamento**: o `Dockerfile` baixa o detector da revisão fixada e confere o SHA-256 no build
 (`/app/models/comic-detector-16e8a622/detector.onnx`); Terraform ganhou `layout_mode`
 (`disabled`|`shadow`|`grouping`) e `layout_direction`, e com layout ligado o worker baseline sobe para 2 GiB
-(medido: detector +366 MiB ao carregar, +178 MiB na inferência, ~0,30 s por página). `terraform validate`
-não foi executado (Terraform ausente na máquina de desenvolvimento).
+(medido: detector +366 MiB ao carregar, +178 MiB na inferência, ~0,30 s por página). Desde 2026-11-15
+`layout_mode = "grouping"` é o padrão do Terraform; `terraform validate` e `fmt -check` passam
+(Terraform 1.9.8 em contêiner, `init -backend=false`).
 
