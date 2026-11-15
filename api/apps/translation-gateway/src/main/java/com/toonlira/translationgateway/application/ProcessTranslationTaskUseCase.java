@@ -129,9 +129,11 @@ public class ProcessTranslationTaskUseCase {
         String outputHash = null;
         try {
             requireOriginal(job);
+            // A word split one character per balloon (「あ」「ら」) is translated as one segment.
+            var fragments = com.toonlira.translationgateway.domain.translation.FragmentJoiner.of(request);
             var response = request.regions().isEmpty()
                 ? new TranslationResponse(List.of())
-                : translation.translate(request);
+                : fragments.expand(translation.translate(fragments.request()));
             requireOriginal(job);
             var result = validator.validateResponse(request, response);
             var encoded = translationManifests.encode(result, job.ocrSha256());
