@@ -11,6 +11,9 @@ Organizada por assunto. Documentos datados são registros históricos (ver [pol�
 | [`worker-isolation/`](worker-isolation/README.md) | **Prova de isolamento do worker (Cloud Run / VM)** — Evidências de isolamento do worker, quase todas de out/2026. São registros históricos: não editar o conteúdo; ordem alfabética por fase (`n1`, `n2`, `prepull`, `import`, `spot`, `vm`, ...). |
 | [`ocr-evaluation/`](ocr-evaluation/README.md) | **Avaliação de OCR e layout** — Protocolo, catálogo, calibração, experimentos de layout e diagnósticos offline. |
 
+**Auditoria em aberto:** [`auditoria-2026-11-15.md`](auditoria-2026-11-15.md) — roteiro para auditar a qualidade
+visual, OCR, inpainting, letreiros, camada Gemini, regressão visual e infraestrutura de dev (2026-11-14 → 15).
+
 ## Pendência
 
 O `pom.xml` e o `Dockerfile` do gateway usam Java 23, enquanto os documentos de `native-runtime/` e `rendering/` (e `scripts/runtime/gateway-runtime.test.mjs`) assumem Java 25. Decisão de alinhamento pendente.
