@@ -26,7 +26,14 @@ e DT-77 em [`docs/tech-debt.md`](../../../../docs/tech-debt.md).
 | `28897b93` | pipeline real local (storage, docs, dispatcher `scripts/local/dev-dispatcher.sh`) |
 | `03249795` | gateway-tester traduz um lote de páginas |
 
+**Incidente 2026-11-15 (`ocr-unavailable` em lote):** após ~6 min sem chamadas, toda chamada de OCR do worker
+esperava os 60 s do prazo numa conexão gRPC morta (a mesma chamada fora do worker respondia em 3 s; reiniciar o
+worker resolvia). Como as retentativas são desligadas de propósito (sem cobrança dupla), a correção é no canal:
+`idleTimeout` de 2 min (conexão ociosa é fechada e reaberta na próxima chamada) e keepalive de 60 s/20 s durante
+chamadas, em Vision e Translation (`VisionClientFactory`, `TranslationClientFactory`, `ProviderChannelHygieneTest`).
+
 Conferir:
+- [ ] Mesmo problema pode ocorrer no Cloud Run (instância ociosa): a correção vale para os dois ambientes.
 - [ ] `scripts/local/gateway-real.env.example` não contém segredos; o env real fica em `~/.config/toonlira/` (fora do repo).
 - [ ] O dispatcher é **só dev** (substitui Cloud Tasks) e cada job pode gerar custo de OCR/tradução.
 
@@ -54,7 +61,15 @@ Conferir:
 | `01a68bed` | pedaços claramente no mesmo balão viram uma fala (「こっこのCCSMってコンパネ」), só escrita CJK e letra parecida |
 | `543a6e43` | letra medida por sqrt(área/letras); colunas com letra > 2,2× só juntam coladas (furigana) — letreiro grande não engole fala |
 
-Onde: `domain/OcrRegionGrouper.java` (+ `OcrRegionGrouperTest`, 14 testes). Bancada: `.local/bench/GroupingEval.java`
+**Capa (2026-11-15, depois da auditoria inicial):** no agrupamento de línguas com espaço, linhas com letra de tamanho
+muito diferente (altura por linha > 1,75× **e** área por letra > 1,5×) não se juntam fora de um balão detectado —
+o logo "Ubunchu!" (7× o subtítulo) era juntado ao subtítulo e virava letreiro (logo apagado pelo LaMa) e o "Ubunty"
+do livro do pinguim entrava nos créditos (inpainting borrava o desenho). Dentro de um balão, diferença de tamanho é
+ênfase e continua juntando ("YOU LINUX / FREAKS ARE SO ANNOYING!"). Bancada en (24 págs.): só separações corretas
+(logo/título, créditos/livro, SFX/interface: "Network Connection"/"TA-DA!"); capa na regressão real
+(`en-01-01a-cover.json`). Resto: o nome em japonês 瀬尾 浩史 é lido como "WE" e grudado na linha do autor.
+
+Onde: `domain/OcrRegionGrouper.java` (+ `OcrRegionGrouperTest`, 15 testes). Bancada: `.local/bench/GroupingEval.java`
 (cache do Vision em `.local/bench/visioncache`).
 
 Conferir:

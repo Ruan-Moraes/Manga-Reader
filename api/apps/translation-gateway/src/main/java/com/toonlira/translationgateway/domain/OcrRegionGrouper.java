@@ -85,8 +85,9 @@ public final class OcrRegionGrouper {
                 // speeches or effects, which must not be glued together ("GET OUT NOOB" + a distant caption).
                 for (int u = units.size() - 1; u >= 0 && target == null; u--) {
                     var unit = units.get(u);
-                    boolean close = near(unit.members(), region, widthPx, heightPx)
-                        || unit == last && sameBubble(unit.members().getLast(), region, widthPx, heightPx, unit.members());
+                    // Inside one detected balloon a size difference is emphasis ("YOU LINUX / FREAKS ARE SO ANNOYING!").
+                    boolean close = near(unit.members(), region, widthPx, heightPx, false)
+                        || unit == last && sameBubble(unit.members().getLast(), region, widthPx, heightPx, unit.members(), false);
                     if (unit.bubble() == bubble && close && chars(unit.members(), region) <= MAX_MERGED_CHARS) target = unit;
                 }
             } else if (last != null && sameBubble(last.members().getLast(), region, widthPx, heightPx, last.members())
@@ -232,11 +233,36 @@ public final class OcrRegionGrouper {
         return chars;
     }
 
+    /**
+     * Lettering of two paragraphs is of different size: per-line heights differ by more than {@link #MAX_LINE_RATIO}
+     * and the area per letter (sqrt(area / letters), blind to slant) by more than {@link #AREA_GLYPH_RATIO}. Slanted
+     * hand lettering inflates its box height but not its area per letter, so it still joins.
+     */
+    private static boolean differentLineSize(OcrManifest.Region a, OcrManifest.Region b, double[] boxA, double[] boxB) {
+        double lineA = (boxA[3] - boxA[1]) / lines(a), lineB = (boxB[3] - boxB[1]) / lines(b);
+        if (lineA <= 0 || lineB <= 0 || Math.max(lineA, lineB) <= MAX_LINE_RATIO * Math.min(lineA, lineB)) return false;
+        double glyphA = areaGlyph(a, boxA), glyphB = areaGlyph(b, boxB);
+        return glyphA > 0 && glyphB > 0 && Math.max(glyphA, glyphB) > AREA_GLYPH_RATIO * Math.min(glyphA, glyphB);
+    }
+
+    private static final double AREA_GLYPH_RATIO = 1.5;
+
+    private static double areaGlyph(OcrManifest.Region region, double[] box) {
+        long letters = region.sourceText().codePoints().filter(Character::isLetterOrDigit).count();
+        return letters == 0 ? 0 : Math.sqrt((box[2] - box[0]) * (box[3] - box[1]) / letters);
+    }
+
     /** Close to some line of the speech: overlapping, stacked (small vertical gap) or on the same line. */
     private static boolean near(List<OcrManifest.Region> members, OcrManifest.Region region, int w, int h) {
+        return near(members, region, w, h, true);
+    }
+
+    /** {@code bySize}: lettering of very different size is not near (off inside one detected balloon: emphasis). */
+    private static boolean near(List<OcrManifest.Region> members, OcrManifest.Region region, int w, int h, boolean bySize) {
         var b = box(region, w, h);
         for (var member : members) {
             var a = box(member, w, h);
+            if (bySize && differentLineSize(member, region, a, b)) continue;
             double minHeight = Math.min(a[3] - a[1], b[3] - b[1]), minWidth = Math.min(a[2] - a[0], b[2] - b[0]);
             if (minHeight <= 0 || minWidth <= 0) continue;
             double horizontalOverlap = Math.min(a[2], b[2]) - Math.max(a[0], b[0]);
@@ -251,6 +277,11 @@ public final class OcrRegionGrouper {
     }
 
     private static boolean sameBubble(OcrManifest.Region a, OcrManifest.Region b, int w, int h, List<OcrManifest.Region> run) {
+        return sameBubble(a, b, w, h, run, true);
+    }
+
+    private static boolean sameBubble(OcrManifest.Region a, OcrManifest.Region b, int w, int h, List<OcrManifest.Region> run,
+                                      boolean bySize) {
         var boxA = box(a, w, h);
         var boxB = box(b, w, h);
         double minHeight = Math.min(boxA[3] - boxA[1], boxB[3] - boxB[1]);
@@ -260,6 +291,9 @@ public final class OcrRegionGrouper {
         int chars = b.sourceText().length();
         for (var member : run) chars += member.sourceText().length();
         if (minHeight <= 0 || minWidth <= 0 || chars > MAX_MERGED_CHARS) return false;
+        // Lettering of very different size is a different block, even overlapping: a title logo under its subtitle
+        // ("Ubunchu!" 7x the line height), a word drawn on an object beside the credits.
+        if (bySize && differentLineSize(a, b, boxA, boxB)) return false;
         // Boxes covering each other are one block of text: slanted or hand-lettered lines that the provider split
         // ("We can be the" / "GUI Brigade!") overlap; distinct paragraphs practically never do.
         double overlapHeight = Math.min(boxA[3], boxB[3]) - Math.max(boxA[1], boxB[1]);

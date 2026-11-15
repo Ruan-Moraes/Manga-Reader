@@ -139,7 +139,7 @@
     "maxChangedOutside" : 0,
     "regions" : [ {
       "overflow" : false,
-      "font" : 26,
+      "font" : 32,
       "residualInk" : 0
     }, {
       "overflow" : false,

@@ -97,6 +97,19 @@ class OcrRegionGrouperTest {
         assertThat(OcrRegionGrouper.group(ruby, "ja", W, H)).hasSize(1);
     }
 
+    @Test
+    void aTitleLogoOrAWordDrawnOnAnObjectNeverJoinsTheTextBesideIt() {
+        // Real cover (Ubunchu! ch01 en, scaled 0.8): a 7x taller logo under its subtitle, a word on a drawn book over
+        // the credits. Joined, the logo was erased as "lettering" and the inpainting reached the drawing.
+        var subtitle = region(0, "Ubuntu Romantic School Comedy:\n", 216, 40, 628, 62);
+        var logo = region(1, "Ubunchu!\n", 31, 48, 772, 202);
+        assertThat(OcrRegionGrouper.group(List.of(subtitle, logo), "en", W, H)).extracting(OcrManifest.Region::sourceText)
+            .containsExactly("Ubuntu Romantic School Comedy:\n", "Ubunchu!\n");
+        var book = region(0, "Ubunty\n", 780, 1102, 846, 1170);
+        var credits = region(1, "First Printed In: ASCII Magazine \"Kantan Ubuntu!\"\nPublished by: ASCII MEDIA WORKS Inc.\n", 529, 1161, 968, 1202);
+        assertThat(OcrRegionGrouper.group(List.of(book, credits), "en", W, H)).hasSize(2);
+    }
+
     private static com.toonlira.translationgateway.domain.layout.LayoutBox box(int l, int t, int r, int b) {
         return new com.toonlira.translationgateway.domain.layout.LayoutBox(l / (double) W, t / (double) H, r / (double) W, b / (double) H);
     }
