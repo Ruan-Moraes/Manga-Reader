@@ -27,7 +27,7 @@ import java.util.Set;
 
 /** Verified physical fonts, explicitly instantiated; no network, system fallback or global registration. */
 public final class BundledRenderingFonts {
-    public static final String VERSION = "noto-sans-1.1";
+    public static final String VERSION = "noto-sans-1.2";
     private static final String ROOT = "/rendering/fonts/";
     private static final int MAX_MANIFEST_BYTES = 32 * 1024;
     private static final int MAX_LICENSE_BYTES = 64 * 1024;
@@ -36,9 +36,12 @@ public final class BundledRenderingFonts {
     private static final String CJK_REVISION = "523d033d6cb47f4a80c58a35753646f5c3608a78";
     private static final Map<String, String> DESTINATIONS = Map.of("en", "latin", "es", "latin", "pt-BR", "latin",
         "ja", "ja", "ko", "ko", "zh-Hans", "zh-Hans", "zh-Hant", "zh-Hant");
-    private static final Map<String, String> FACES = Map.of("latin", "NotoSans-Regular", "latin-black", "NotoSans-Black",
-        "ja", "NotoSansCJKjp-Regular",
-        "ko", "NotoSansCJKkr-Regular", "zh-Hans", "NotoSansCJKsc-Regular", "zh-Hant", "NotoSansCJKtc-Regular");
+    private static final Map<String, String> FACES = Map.ofEntries(Map.entry("latin", "NotoSans-Regular"),
+        Map.entry("latin-black", "NotoSans-Black"), Map.entry("ja-black", "NotoSansCJKjp-Black"),
+        Map.entry("ko-black", "NotoSansCJKkr-Black"), Map.entry("zh-Hans-black", "NotoSansCJKsc-Black"),
+        Map.entry("zh-Hant-black", "NotoSansCJKtc-Black"), Map.entry("ja", "NotoSansCJKjp-Regular"),
+        Map.entry("ko", "NotoSansCJKkr-Regular"), Map.entry("zh-Hans", "NotoSansCJKsc-Regular"),
+        Map.entry("zh-Hant", "NotoSansCJKtc-Regular"));
     private static final Map<String, String> CJK_DIRECTORIES = Map.of("ja", "Japanese", "ko", "Korean",
         "zh-Hans", "SimplifiedChinese", "zh-Hant", "TraditionalChinese");
     private static final Set<String> LICENSE_FILES = Set.of("OFL-NotoSans.txt", "OFL-NotoSansCJK.txt");
@@ -102,15 +105,14 @@ public final class BundledRenderingFonts {
     }
 
     /**
-     * Heavy face for hand-drawn lettering (shouts drawn over the art) in Latin destinations; other scripts keep their
-     * regular face (no heavy CJK face is bundled).
+     * Heavy face (Black) for hand-drawn lettering (shouts drawn over the art), in every destination script.
      */
     public Font letteringFontFor(String destination, float sizePx) {
         if (!Float.isFinite(sizePx) || sizePx <= 0 || sizePx > RenderPolicy.MAX_DIMENSION_PX)
             throw new RenderFontException(INVALID_INPUT);
         String id = destination == null ? null : DESTINATIONS.get(destination);
         if (id == null) throw new RenderFontException(INVALID_INPUT);
-        return fonts.get("latin".equals(id) ? "latin-black" : id).deriveFont(sizePx);
+        return fonts.get(id + "-black").deriveFont(sizePx);
     }
 
     public String version() { return VERSION; }
@@ -132,8 +134,10 @@ public final class BundledRenderingFonts {
                 || !FACES.get(asset.id()).equals(asset.postScriptName())) invalid();
             boolean latin = asset.id().startsWith("latin");
             String expectedFile = asset.postScriptName() + (latin ? ".ttf" : ".otf");
+            // Heavy faces ("ja-black") live beside their regular face in the same upstream directory.
+            String base = asset.id().endsWith("-black") ? asset.id().substring(0, asset.id().length() - "-black".length()) : asset.id();
             String expectedPath = latin ? "hinted/ttf/NotoSans/" + expectedFile
-                : "Sans/OTF/" + CJK_DIRECTORIES.get(asset.id()) + "/" + expectedFile;
+                : "Sans/OTF/" + CJK_DIRECTORIES.get(base) + "/" + expectedFile;
             if (!expectedFile.equals(asset.file()) || asset.byteSize() <= 0 || asset.byteSize() > MAX_FONT_BYTES
                 || !hash(asset.sha256(), 64) || !hash(asset.gitBlobSha1(), 40)
                 || !(latin ? "notofonts/noto-fonts" : "notofonts/noto-cjk").equals(asset.upstreamRepository())

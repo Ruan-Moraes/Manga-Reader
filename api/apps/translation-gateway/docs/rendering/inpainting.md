@@ -83,9 +83,12 @@ Produção ainda tem o render desabilitado (`infra/terraform`).
 - **Letreiro** (`CaptionFilter.letterings`, dica `letteringHints`): frase (≥ 8 letras com kanji, ou ≥ 3
   palavras) que o detector não vê como texto (`unknown`) **ou** desenhada bem maior que a letra da página
   (sqrt(área/letras) ≥ 1,8× a mediana). Com inpainter: LaMa apaga, a tradução vai em **Noto Sans Black**
-  (pacote verificado `noto-sans-1.1`, OFL, mesma revisão da Regular) com contorno branco largo, no tamanho da
+  (pacote verificado `noto-sans-1.2`, OFL, mesma revisão da Regular; destinos ja/ko/zh-Hans/zh-Hant usam
+  Noto Sans CJK Black, +~68 MB na imagem) com contorno branco largo, no tamanho da
   própria caixa e **inclinada** como o polígono do OCR (até 0,5 rad); fica fora da mediana/teto/piso das falas.
   Onomatopeia curta continua SFX. Real: pág. 01_03 「ターミナルがあれば全てが」 → "Com um terminal, tudo…".
+  O final 「上手くいく」 continua em japonês: **nem o OCR nem o detector o leem** (não é um pedaço partido do
+  grupo); recortado sozinho com moldura, o OCR lê só 「上手く」 e puxa o balão vizinho — sem regra geral segura.
 - **Fala que não cabe no papel**: fala com dica que o caminho liso não consegue encaixar nem crescendo no balão
   (letra sobre papel cortado por linhas de velocidade, sem interior de balão contínuo) passa pelo LaMa e é
   reescrita na própria caixa, em vez de ficar sem tradução.

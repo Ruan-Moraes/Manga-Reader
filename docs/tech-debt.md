@@ -555,7 +555,8 @@ em japonês/chinês reconhecida, inpainting nos modos isolado/nativo com o model
 (sintética + páginas reais locais), letreiros-frase em Noto Sans Black inclinada).
 Limites conhecidos: dois textos no mesmo balão (fala + aparte manuscrito) dividem o espaço e saem
 menores; letra à mão que encosta na borda do balão fica (「がま」, pág. 03 — apagar tinta ligada à borda
-apagaria o contorno); retícula sem página real de validação nas amostras. Pendente:
+apagaria o contorno); retícula sem página real de validação nas amostras; fim de letreiro que nem OCR nem
+detector leem (「上手くいく」, pág. 03) fica no original. Pendente:
 
 - **Inpainting real** (feito: fringe de 4 px para glifos que vazam do polígono;
   falta fundo texturizado/gradiente, onde o preenchimento por cor mediana ainda
