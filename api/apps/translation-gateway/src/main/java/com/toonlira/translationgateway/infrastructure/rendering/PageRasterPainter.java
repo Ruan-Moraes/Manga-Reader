@@ -131,12 +131,15 @@ public final class PageRasterPainter {
         return List.copyOf(placements);
     }
 
-    /** Speech/caption over artwork (render hint + mask) that this painter can erase by inpainting. */
+    /**
+     * Text this painter erases by inpainting instead of a flat fill: speech/caption over artwork (render hint + mask),
+     * or any translated text in a balloon with a screentone background, where a flat fill leaves a patch.
+     */
     private boolean inpaints(CleanBoxPainter.CleanRegion region, RenderRequest request) {
         var text = region.region();
-        return inpainter != null && request.captionHints().contains(text.id())
-            && !UnchangedText.unchanged(text.sourceText(), text.translatedText())
-            && region.mask().enclosedInk() < MIN_ENCLOSED_INK;
+        if (inpainter == null || UnchangedText.unchanged(text.sourceText(), text.translatedText())) return false;
+        if (region.mask().screentone() && region.mask().enclosedInk() >= MIN_ENCLOSED_INK) return true;
+        return request.captionHints().contains(text.id()) && region.mask().enclosedInk() < MIN_ENCLOSED_INK;
     }
 
     private Plan plan(CleanBoxPainter.CleanRegion region, RenderRequest request, int maximumFontPx, boolean inpainted) {

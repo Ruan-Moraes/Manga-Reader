@@ -56,5 +56,7 @@ texto sobre arte como antes. Produção ainda tem o render desabilitado (`infra/
 ## Limites conhecidos
 
 - Janelas grandes (faixas longas) passam por 512 px e voltam: detalhe fino reconstruído sai suave.
-- Retícula sob o texto é reconstruída de forma aproximada.
+- Retícula sob o texto é reconstruída de forma aproximada. Balões com fundo de retícula (≥ 15 pontos de tinta
+  em volta do texto) também passam pelo LaMa em vez do preenchimento liso; não há exemplo real nas amostras
+  (Ubunchu! não tem fala sobre retícula), só o teste sintético.
 - Espaço antes de pontuação após termo protegido ("Ubuntu !") vem da etapa de tradução, não daqui.

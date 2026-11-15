@@ -28,6 +28,7 @@ Contrato do manifesto: [rendering-contracts.md](rendering-contracts.md).
 | Agrupamento por balão ONNX (`GATEWAY_LAYOUT_MODE=grouping`, opcional): divide parágrafos do Vision por palavra quando cruzam a borda do balão e junta falas por balão; heurística continua para texto livre e como fallback | `OcrRegionGrouper.splitByBubbles`/`group(..., bubbles)`, `ShadowLayoutService.detectForGrouping` |
 | ONNX: `text_bubble`/`text_free` no layout `1.2` (`textBoxes`, `regionKinds`), modo sombra; modelo baixado em `.local/` | `OnnxBubbleDetector.decodeAll`, `LayoutInterpreter` |
 | Limpeza do halo JPEG (contorno retangular cinza em volta do texto): até 8 px, distância 6–120, preserva antialiasing de borda/arte, desiste em retícula/gradiente (>40% não-liso); limpeza calculada antes de pintar | `CleanBoxPainter.halo`/`extraCleanup` |
+| Fragmentos de uma palavra em balões vizinhos (「あ」「ら」 = 「あら」) traduzidos juntos: o 1º recebe a tradução ("Ora"), os demais "…" (ja/zh/ko, 2–3 regiões seguidas com 1 letra cada) | `FragmentJoiner`, `ProcessTranslationTaskUseCase` |
 | Piso de fonte 0,75× a mediana: região pequena (ou em overflow) recomposta numa caixa expandida para o fundo liso do balão; para em tinta e em outras regiões; tolera e limpa o halo JPEG até 8 px; só aceita se a fonte aumentar | `PageRasterPainter.raiseToFloor`, `BalloonExpansion` |
 
 Validação real (worker reiniciado, GCP `toonlira-rm`): ch02 p.02–04 chegaram a `READY`; na p.03 as
@@ -59,7 +60,7 @@ Não houve comparação antes/depois controlada nem teste com o original em japo
    (SFX estilizado) nunca recebe inpainting.
 4. **Inpainting real** (parcial): LaMa em CPU para falas sobre arte, só no render `local`
    ([inpainting.md](inpainting.md)). Falta: levar aos modos isolado/nativo sem quebrar o isolamento;
-   balões com fundo de retícula ainda usam preenchimento liso. (O fringe da moldura de retícula saiu
+   balões com fundo de retícula agora passam pelo LaMa no render local (sem exemplo real nas amostras). (O fringe da moldura de retícula saiu
    com a máscara do balão.)
 5. **Erros de OCR** (parcial): releitura por confiança em mosaico com votação apoiada em dicionário —
    ver [ocr-reread.md](../ocr-evaluation/ocr-reread.md). Falta: casos em que todas as variantes erram

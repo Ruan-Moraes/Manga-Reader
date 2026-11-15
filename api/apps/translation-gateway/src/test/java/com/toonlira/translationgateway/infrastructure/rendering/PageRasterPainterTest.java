@@ -454,6 +454,40 @@ class PageRasterPainterTest {
     }
 
     @Test
+    void textInAScreentoneBalloonIsInpaintedInsteadOfLeavingAFlatPatch() {
+        var polygon = CleanBoxPainterTest.rectangle(135 / 360.0, 75 / 220.0, 225 / 360.0, 145 / 220.0);
+        var calls = new java.util.ArrayList<int[]>();
+        Inpainter recorder = (image, box) -> { calls.add(box); return true; };
+        var tone = screentoneBalloon(true);
+        var original = copy(tone);
+        var result = new PageRasterPainter(FONTS, recorder).paint(tone, request("pt-BR", "Obrigado por tudo", polygon));
+        assertThat(result.getFirst().overflow()).isFalse();
+        assertThat(calls).hasSize(1);
+        // Away from the text box the screentone is intact: no flat fill was spread over it.
+        for (int y = 24; y < 196; y++) for (int x = 64; x < 296; x++) {
+            boolean nearText = x >= 125 && x < 235 && y >= 65 && y < 155;
+            if (!nearText) assertThat(tone.getRGB(x, y)).as("(%d,%d)", x, y).isEqualTo(original.getRGB(x, y));
+        }
+        // A plain balloon keeps the flat clean (no inpainting); without an inpainter nothing changes either.
+        new PageRasterPainter(FONTS, recorder).paint(screentoneBalloon(false), request("pt-BR", "Obrigado por tudo", polygon));
+        assertThat(calls).hasSize(1);
+        assertThat(painter.paint(screentoneBalloon(true), request("pt-BR", "Obrigado por tudo", polygon)).getFirst().overflow()).isFalse();
+    }
+
+    /** White balloon (border 60..300 x 20..200), lettering bars inside 140..220 x 80..140, optional 2x2 tone dots. */
+    private static BufferedImage screentoneBalloon(boolean dots) {
+        var image = CleanBoxPainterTest.fixture(WIDTH, HEIGHT, 0xffffffff);
+        outline(image, 60, 20, 300, 200, 0xff000000);
+        if (dots) for (int y = 26; y < 196; y += 8) for (int x = 66; x < 296; x += 8) {
+            if (x >= 136 && x < 224 && y >= 76 && y < 144) continue; // the lettering area
+            for (int dy = 0; dy < 2; dy++) for (int dx = 0; dx < 2; dx++) image.setRGB(x + dx, y + dy, 0xff000000);
+        }
+        for (int bar = 0; bar < 6; bar++)
+            for (int y = 85; y < 135; y++) for (int x = 145 + bar * 12; x < 150 + bar * 12; x++) image.setRGB(x, y, 0xff000000);
+        return image;
+    }
+
+    @Test
     void failedInpaintingKeepsTheOriginalLettering() {
         var polygon = CleanBoxPainterTest.rectangle(.3, .3, .7, .7);
         var failing = new PageRasterPainter(FONTS, (image, box) -> false);

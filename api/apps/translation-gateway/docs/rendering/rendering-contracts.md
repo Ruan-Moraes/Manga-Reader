@@ -107,6 +107,11 @@ da caixa inteira e também das faixas centrais de 60% e 35% da altura, que
 alargam primeiro e depois crescem na vertical (num balão oval, as pontas de uma
 coluna alta já encostam na borda curva); vence a maior fonte.
 
+**Balão com retícula**: a máscara conta pontos de tinta minúsculos (≤ 12 px) cercados pelo fundo e fora do
+polígono; com 15 ou mais o fundo é retícula. Pintar a cor de limpeza apagaria a retícula sob o texto (remendo
+liso), então, havendo inpainter (render `local`), o texto traduzido nesse balão é apagado pelo LaMa e reescrito
+em preto com contorno, como texto sobre arte. Ruído JPEG (claro, não tinta) não conta. Sem inpainter: como antes.
+
 **Máscara do balão** (substitui o preenchimento do polígono inteiro e o antigo
 fringe): por região, numa janela de 12 px em volta do polígono, o interior do
 balão é o maior componente liso (4-conexo, distância ≤ 30 da cor de limpeza)

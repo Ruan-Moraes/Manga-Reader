@@ -16,11 +16,16 @@ final class BalloonMask {
     private static final int FLAT = 1, BALLOON = 2, OUTSIDE = 4, CLEAN = 8, ALLOWED = 16, GLYPH = 32;
     private final int left, top, width, height;
     private final byte[] state;
+    /** Tiny enclosed blobs (screentone dots) at most this many pixels. */
+    static final int DOT_MAX_PX = 12;
+    /** Dots outside the polygon from which the balloon background counts as screentone. */
+    static final int MIN_TONE_DOTS = 15;
     private final double enclosedInk;
+    private final boolean screentone;
 
-    private BalloonMask(int left, int top, int width, int height, byte[] state, double enclosedInk) {
+    private BalloonMask(int left, int top, int width, int height, byte[] state, double enclosedInk, boolean screentone) {
         this.left = left; this.top = top; this.width = width; this.height = height;
-        this.state = state; this.enclosedInk = enclosedInk;
+        this.state = state; this.enclosedInk = enclosedInk; this.screentone = screentone;
     }
 
     static BalloonMask of(BufferedImage image, RasterPolygon polygon, List<RasterPolygon> others, int argb) {
@@ -51,7 +56,7 @@ final class BalloonMask {
         }
         markLargestFlatComponent(state, inside, width, height);
         markOutside(state, width, height);
-        markGlyphs(state, inside, width, height);
+        int dots = markGlyphs(state, inside, ink, width, height);
         int inkInside = 0, enclosedInkInside = 0;
         for (int y = 0; y < height; y++) for (int x = 0; x < width; x++) {
             int i = y * width + x;
@@ -62,7 +67,8 @@ final class BalloonMask {
             state[i] |= ALLOWED;
             if (inside[i] && balloon || enclosed) state[i] |= CLEAN;
         }
-        return new BalloonMask(left, top, width, height, state, inkInside == 0 ? 1 : (double) enclosedInkInside / inkInside);
+        return new BalloonMask(left, top, width, height, state, inkInside == 0 ? 1 : (double) enclosedInkInside / inkInside,
+            dots >= MIN_TONE_DOTS);
     }
 
     /** The plain clean-box policy: every polygon pixel is cleaned and may be drawn on. */
@@ -77,7 +83,7 @@ final class BalloonMask {
             for (int x = Math.max(span.start(), bounds.left()); x < Math.min(span.end(), bounds.right()); x++)
                 state[y * width + x - bounds.left()] = (byte) (CLEAN | ALLOWED | GLYPH);
         }
-        return new BalloonMask(bounds.left(), bounds.top(), width, height, state, 1);
+        return new BalloonMask(bounds.left(), bounds.top(), width, height, state, 1, false);
     }
 
     /** Enclosed non-glyph pixel: a speck not touching the polygon nor reaching the window edge (compression noise). */
@@ -86,6 +92,12 @@ final class BalloonMask {
         int s = state[(y - top) * width + x - left];
         return (s & (BALLOON | OUTSIDE | GLYPH)) == 0;
     }
+
+    /**
+     * The balloon background is screentone: many tiny dots around the text, outside its polygon (lettering has no
+     * dots outside its own box). Filling such a balloon with one colour erases the tone under the text — a patch.
+     */
+    boolean screentone() { return screentone; }
 
     /** Share of the source ink in the polygon that sits inside the balloon and will therefore be erased. */
     double enclosedInk() { return enclosedInk; }
@@ -190,18 +202,22 @@ final class BalloonMask {
     /**
      * Enclosed blobs (neither balloon nor reachable from the window edge) touching the polygon are source glyphs.
      * A blob entirely outside the polygon is artwork or decoration inside the balloon and stays untouched.
+     * Returns how many of those outside blobs are tiny dots of ink ({@link #DOT_MAX_PX}): the screentone signal.
+     * JPEG specks are light (not ink) and do not count.
      */
-    private static void markGlyphs(byte[] state, boolean[] inside, int width, int height) {
+    private static int markGlyphs(byte[] state, boolean[] inside, boolean[] ink, int width, int height) {
+        int dots = 0;
         var seen = new boolean[state.length];
         var queue = new int[state.length];
         for (int start = 0; start < state.length; start++) {
             if (seen[start] || (state[start] & (BALLOON | OUTSIDE)) != 0) continue;
             int head = 0, tail = 0;
-            boolean touches = false;
+            boolean touches = false, inked = false;
             seen[start] = true; queue[tail++] = start;
             while (head < tail) {
                 int i = queue[head++], x = i % width, y = i / width;
                 touches |= inside[i];
+                inked |= ink[i];
                 for (int dy = -1; dy <= 1; dy++) for (int dx = -1; dx <= 1; dx++) {
                     int nx = x + dx, ny = y + dy;
                     if (nx < 0 || ny < 0 || nx >= width || ny >= height) continue;
@@ -211,8 +227,10 @@ final class BalloonMask {
                 }
             }
             if (touches) for (int k = 0; k < tail; k++) state[queue[k]] |= GLYPH;
+            else if (tail <= DOT_MAX_PX && inked) dots++;
             CleanBoxPainter.checkInterrupted();
         }
+        return dots;
     }
 
     private static boolean insideAny(List<RasterPolygon> polygons, int x, int y) {
