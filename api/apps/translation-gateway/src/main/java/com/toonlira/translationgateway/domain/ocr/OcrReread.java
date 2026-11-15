@@ -78,6 +78,24 @@ public final class OcrReread {
         return best;
     }
 
+    /**
+     * Fuller reading of a box the provider read only in part, or null: the agreed reading ({@link #recover}) must be
+     * longer than what was read and contain each piece of it, so a re-reading can add the missing column but never
+     * replace text that was read.
+     */
+    public static Reading extend(List<Reading> readings, List<String> existing) {
+        var best = recover(readings);
+        if (best == null) return null;
+        var key = normalize(best.text());
+        int length = 0;
+        for (var piece : existing) {
+            var part = normalize(piece);
+            if (!key.contains(part)) return null;
+            length += part.length();
+        }
+        return key.length() > length ? best : null;
+    }
+
     /** Text to keep: the original reading unless a re-reading clearly wins the vote. */
     public static String choose(Reading original, List<Reading> rereads, Lexicon lexicon) {
         var support = new HashMap<String, Integer>();
@@ -117,10 +135,11 @@ public final class OcrReread {
 
     /**
      * Case and whitespace insensitive key: readings that differ only in spacing ("SAYING, WHY" / "SAYING , WHY")
-     * are the same reading and never win a vote against each other. Punctuation is kept (it changes meaning).
+     * are the same reading and never win a vote against each other. Punctuation is kept (it changes meaning), except
+     * the length of an ellipsis: 「うん…でも」 and 「うん………でも」 are one reading of the same dots.
      */
     static String normalize(String text) {
-        return text == null ? "" : text.replaceAll("\\s+", "").toLowerCase(Locale.ROOT);
+        return text == null ? "" : text.replaceAll("\\s+", "").replaceAll("(?:…|‥|\\.{2,}|・{2,})+", "…").toLowerCase(Locale.ROOT);
     }
 
     /** 1 - normalized Levenshtein distance. */

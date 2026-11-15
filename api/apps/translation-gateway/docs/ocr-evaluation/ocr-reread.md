@@ -73,3 +73,18 @@ recorte (glifos sozinhos ampliados 3× eram lidos como uma linha só, "あらら
 recortes é descartada; numa caixa vertical, palavra de várias letras deitada na horizontal (「であも」 para
 「あー」「でも」 — leitura atravessando colunas) é descartada.
 
+### Moldura branca, leitura parcial e reticências (2026-11-15, 2ª rodada)
+
+- **Moldura branca**: o recorte exato da caixa vai para o centro de um quadro branco (meia caixa de cada lado).
+  Na bancada das 16 caixas, o Vision passou a ler 「あーでも」 na ordem certa (3/4 variantes; antes 「であも」,
+  descartado) e 「あ」 isolado da pág. 07. Dividir colunas verticais por projeção de tinta não acrescentou nada
+  e ficou de fora.
+- **Leitura parcial**: caixa do detector cujas palavras cobrem < 60% do seu lado longo (coluna esquecida num
+  balão de várias colunas — 24 de 312 caixas nas 24 páginas, ~10 delas parciais de verdade) entra na mesma
+  chamada. Só troca os parágrafos por uma leitura concordada **mais longa que os contém** (`OcrReread.extend`):
+  「でも」 → 「うん……でも」, 「や」 → 「いいや」. Parágrafo que sai da caixa nunca é substituído.
+- **Reticências**: na votação, "…", "……" e "..." são a mesma leitura (as variantes discordavam só no número
+  de pontos e nenhuma vencia).
+
+Resultado real: 「うん……でも」 → "É... mas...", 「あーでも」 → "Ah, mas...", 「いいや」 → "Não". Continuam sem
+leitura 「つ」 e balões só de reticências (corretamente sem tradução).

@@ -15,5 +15,17 @@ public interface RereadImagingPort {
      */
     Mosaic build(Path validatedImage, List<int[]> crops);
 
+    /**
+     * {@code framed}: each crop is laid on a white frame {@link #framePad} wide on every side before its variants
+     * are rendered, so the provider sees the lettering with space around it but no page beyond the crop.
+     */
+    default Mosaic build(Path validatedImage, List<int[]> crops, boolean framed) {
+        if (framed) throw new UnsupportedOperationException("framed crops unavailable");
+        return build(validatedImage, crops);
+    }
+
+    /** White frame around a crop: half its longer side. */
+    static int framePad(int[] crop) { return Math.max(crop[2] - crop[0], crop[3] - crop[1]) / 2; }
+
     record Mosaic(byte[] png, MosaicLayout.Layout layout) { }
 }

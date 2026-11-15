@@ -83,6 +83,28 @@ class OcrRereadServiceTest {
     }
 
     @Test
+    void boxReadOnlyInPartIsReplacedByALongerAgreedReadingThatContainsIt() {
+        // The provider read 「でも」 at the end of the box and missed 「うん……」: words span 30% of its long side.
+        var partial = paragraph("でも", .98, 640, 500, 700, 540);
+        var elsewhere = paragraph("HELLO THERE", .98, 100, 100, 300, 140);
+        var box = new TextBox("t1", TextBox.Kind.text_bubble, new LayoutBox(.5, .5, .7, .54), .9);
+        var result = service(8, tile -> "うん……でも").recover(List.of(elsewhere, partial), List.of(box), Path.of("p"), "ja",
+            UUID.randomUUID(), W, H);
+        assertThat(result).extracting(paragraph -> paragraph.region().sourceText()).containsExactly("HELLO THERE", "うん……でも");
+        assertThat(result.get(1).region().id()).isEqualTo(partial.region().id());
+        assertThat(result.get(1).region().readingOrder()).isEqualTo(1);
+        // A reading that drops what was read never replaces it.
+        assertThat(service(8, tile -> "うん……").recover(List.of(elsewhere, partial), List.of(box), Path.of("p"), "ja",
+            UUID.randomUUID(), W, H)).extracting(paragraph -> paragraph.region().sourceText()).containsExactly("HELLO THERE", "でも");
+        // Words spanning most of the box: fully read, never sent.
+        var full = paragraph("うん……でも", .98, 505, 500, 695, 540);
+        calls.set(0);
+        assertThat(service(8, tile -> "X").recover(List.of(full), List.of(box), Path.of("p"), "ja", UUID.randomUUID(), W, H))
+            .containsExactly(full);
+        assertThat(calls.get()).isZero();
+    }
+
+    @Test
     void readingAcrossVerticalColumnsOrNothingToRecoverAddsNothing() {
         var read = List.of(paragraph("HELLO THERE", .98, 100, 100, 300, 140));
         var vertical = new TextBox("t1", TextBox.Kind.text_bubble, new LayoutBox(.7, .1, .74, .3), .9);
@@ -119,10 +141,13 @@ class OcrRereadServiceTest {
     private OcrRereadService service(int max, java.util.function.IntFunction<String> readingOfTile) {
         var properties = new GatewayProperties();
         properties.getOcr().setRereadMaxRegions(max);
-        RereadImagingPort imaging = (image, crops) -> {
-            var sizes = new ArrayList<int[]>();
-            for (int i = 0; i < crops.size() * RereadImagingPort.VARIANTS; i++) sizes.add(new int[]{400, 80});
-            return new RereadImagingPort.Mosaic(new byte[]{1}, MosaicLayout.pack(sizes));
+        RereadImagingPort imaging = new RereadImagingPort() {
+            public Mosaic build(Path image, List<int[]> crops) {
+                var sizes = new ArrayList<int[]>();
+                for (int i = 0; i < crops.size() * RereadImagingPort.VARIANTS; i++) sizes.add(new int[]{400, 80});
+                return new RereadImagingPort.Mosaic(new byte[]{1}, MosaicLayout.pack(sizes));
+            }
+            public Mosaic build(Path image, List<int[]> crops, boolean framed) { return build(image, crops); }
         };
         OcrPort ocr = new OcrPort() {
             public boolean available() { return true; }

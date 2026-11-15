@@ -101,4 +101,17 @@ class OcrRereadTest {
         assertThat(OcrReread.recover(List.of(new OcrReread.Reading("……", .9), new OcrReread.Reading("……", .9)))).isNull();
         assertThat(OcrReread.recover(List.of(new OcrReread.Reading("つ", .67), new OcrReread.Reading("つ", .7)))).isNull();
     }
+
+    @Test
+    void aPartlyReadBoxIsExtendedOnlyByALongerReadingContainingWhatWasRead() {
+        var full = List.of(new OcrReread.Reading("うん……でも", .95), new OcrReread.Reading("うん… …でも", .93));
+        assertThat(OcrReread.extend(full, List.of("でも")).text()).isEqualTo("うん……でも");
+        assertThat(OcrReread.extend(full, List.of("まあね"))).isNull(); // different text: not an extension
+        assertThat(OcrReread.extend(full, List.of("うん……でも"))).isNull(); // nothing new
+        assertThat(OcrReread.extend(List.of(full.getFirst()), List.of("でも"))).isNull(); // one variant alone
+        // Variants that differ only in the length of the ellipsis agree.
+        var dots = List.of(new OcrReread.Reading("うん…でも", .9), new OcrReread.Reading("でうでもん", .9),
+            new OcrReread.Reading("うん………でも", .88));
+        assertThat(OcrReread.extend(dots, List.of("でも"))).isNotNull();
+    }
 }

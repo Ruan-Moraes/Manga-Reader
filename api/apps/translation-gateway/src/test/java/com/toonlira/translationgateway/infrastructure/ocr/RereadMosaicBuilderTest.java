@@ -55,4 +55,14 @@ class RereadMosaicBuilderTest {
         assertThat(lexicons.forLanguage("es").knows("también")).isTrue();
         assertThat(lexicons.forLanguage("ja").available()).isFalse();
     }
+
+    @Test
+    void framedCropSitsOnWhiteSpaceWithoutThePageAroundIt() {
+        var crop = new java.awt.image.BufferedImage(20, 40, java.awt.image.BufferedImage.TYPE_INT_RGB);
+        var framed = RereadMosaicBuilder.frame(crop, com.toonlira.translationgateway.application.port.RereadImagingPort.framePad(new int[]{0, 0, 20, 40}));
+        assertThat(framed.getWidth()).isEqualTo(60);
+        assertThat(framed.getHeight()).isEqualTo(80);
+        assertThat(framed.getRGB(0, 0) & 0xffffff).isEqualTo(0xffffff);
+        assertThat(framed.getRGB(30, 40) & 0xffffff).isZero(); // the crop itself (black) in the middle
+    }
 }

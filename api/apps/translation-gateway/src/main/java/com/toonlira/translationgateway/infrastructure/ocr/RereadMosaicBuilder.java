@@ -33,6 +33,11 @@ public class RereadMosaicBuilder implements RereadImagingPort {
 
     @Override
     public Mosaic build(Path validatedImage, List<int[]> crops) {
+        return build(validatedImage, crops, false);
+    }
+
+    @Override
+    public Mosaic build(Path validatedImage, List<int[]> crops, boolean framed) {
         BufferedImage page;
         try { page = ImageIO.read(validatedImage.toFile()); }
         catch (IOException | RuntimeException unreadable) { return null; }
@@ -46,6 +51,7 @@ public class RereadMosaicBuilder implements RereadImagingPort {
                 continue;
             }
             var source = page.getSubimage(left, top, right - left, bottom - top);
+            if (framed) source = frame(source, RereadImagingPort.framePad(new int[]{left, top, right, bottom}));
             for (int v = 0; v < VARIANTS; v++) tiles.add(variant(source, v));
         }
         var sizes = tiles.stream().map(tile -> tile == null ? new int[]{0, 0} : new int[]{tile.getWidth(), tile.getHeight()}).toList();
@@ -64,6 +70,18 @@ public class RereadMosaicBuilder implements RereadImagingPort {
             if (!ImageIO.write(canvas, "png", out)) return null;
             return new Mosaic(out.toByteArray(), layout);
         } catch (IOException failed) { return null; }
+    }
+
+    /** The crop centred on a white canvas {@code pad} wider on every side. */
+    static BufferedImage frame(BufferedImage source, int pad) {
+        var canvas = new BufferedImage(source.getWidth() + 2 * pad, source.getHeight() + 2 * pad, BufferedImage.TYPE_INT_RGB);
+        var graphics = canvas.createGraphics();
+        try {
+            graphics.setColor(Color.WHITE);
+            graphics.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
+            graphics.drawImage(source, pad, pad, null);
+        } finally { graphics.dispose(); }
+        return canvas;
     }
 
     static BufferedImage variant(BufferedImage source, int variant) {
