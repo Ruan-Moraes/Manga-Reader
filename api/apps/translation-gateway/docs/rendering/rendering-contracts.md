@@ -99,6 +99,13 @@ tinta, distância ≤ 120) não bloqueia. O plano expandido só é aceito se a f
 aumentar; a caixa expandida é preenchida inteira com a cor de limpeza (apaga o
 halo) e o texto é recortado a ela. Fundo texturizado não expande — a região
 mantém o resultado anterior.
+Origem japonesa/chinesa/coreana tem também um piso pela própria letra: tamanho
+do glifo estimado por sqrt(área / caracteres) da caixa do OCR, × 0,75 (limitado
+ao teto). Colunas verticais são estreitas; a mediana da página, feita dessas
+colunas, não percebe que o português horizontal saiu pequeno. A expansão parte
+da caixa inteira e também das faixas centrais de 60% e 35% da altura, que
+alargam primeiro e depois crescem na vertical (num balão oval, as pontas de uma
+coluna alta já encostam na borda curva); vence a maior fonte.
 
 **Máscara do balão** (substitui o preenchimento do polígono inteiro e o antigo
 fringe): por região, numa janela de 12 px em volta do polígono, o interior do

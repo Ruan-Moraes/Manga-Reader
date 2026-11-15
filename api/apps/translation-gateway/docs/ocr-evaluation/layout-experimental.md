@@ -232,7 +232,9 @@ caixas parciais para um mesmo balão vertical, que não vetam.
 Exemplos reais: 「試しにちょっと」「インスコしてみる」「だけだかんな」 (vindos fora de ordem) →
 「試しにちょっとインスコしてみるだけだかんな」 → "É só para instalar e testar um pouco, viu?";
 SFX 「カタカタ…」 (linhas ~2× mais altas) não gruda mais na legenda abaixo dele.
-Limite: texto horizontal em português num balão vertical estreito sai com fonte pequena (12–15 px).
+Fonte em balão vertical estreito: piso pelo tamanho do glifo de origem + expansão a partir da faixa central
+(ver `rendering-contracts.md`): "Eu tenho o trabalho do comitê…" 15 → 19 px, "A tela ficou com um visual
+impressionante." 13 → 21 px, "Risa-chan!?" 14 → 25 px.
 
 **Classes no render**: o render lê `regionKinds` do artefato (mesma verificação de hash/imagem/OCR dos
 balões). Região `unknown` (o detector não a vê como texto — letreiro/SFX estilizado) nunca recebe

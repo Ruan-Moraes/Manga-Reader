@@ -50,7 +50,9 @@ Não houve comparação antes/depois controlada nem teste com o original em japo
    balões melhores que a heurística em 10 de 12 páginas inglesas com diferença; os balões chegam ao
    render e limitam máscara e expansão de fonte. Texto vertical CJK agora agrupado (855 → ~440 regiões
    em 24 páginas japonesas) e modelo provisionado (Dockerfile + Terraform `layout_mode`). Falta: ligar
-   `layout_mode = "grouping"` ao ativar o produto e validar o Terraform; fonte pequena em balão vertical estreito.
+   `layout_mode = "grouping"` ao ativar o produto e validar o Terraform. Fonte em balão vertical estreito resolvida (piso pelo glifo de origem,
+   13–15 → 19–25 px) e texto que o OCR não leu recuperado pelas caixas do detector (「わーい」 → "Eba!",
+   9 de 16 caixas em 24 páginas — ver [ocr-reread.md](../ocr-evaluation/ocr-reread.md)).
 3. **SFX/texto livre** (parcial): falas/legendas sobre arte agora são traduzidas com inpainting
    ([inpainting.md](inpainting.md)); SFX preservados por decisão de produto; letreiro manuscrito partido
    em parágrafos sobrepostos agora vira uma fala só ("Podemos ser a Brigada da GUI!", 23 px). `regionKinds` chega ao render: região `unknown`

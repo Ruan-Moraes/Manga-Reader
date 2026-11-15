@@ -20,10 +20,17 @@ final class BalloonExpansion {
     static RasterPolygon.Bounds expand(BufferedImage image, CleanBoxPainter.CleanRegion region,
                                        List<CleanBoxPainter.CleanRegion> all, List<RasterPolygon.Bounds> claimed,
                                        RasterPolygon.Bounds start, int limitPx) {
+        return expand(image, region, all, claimed, start, limitPx, true);
+    }
+
+    /** With {@code vertical} false only the left and right sides grow (widening a line band first). */
+    static RasterPolygon.Bounds expand(BufferedImage image, CleanBoxPainter.CleanRegion region,
+                                       List<CleanBoxPainter.CleanRegion> all, List<RasterPolygon.Bounds> claimed,
+                                       RasterPolygon.Bounds start, int limitPx, boolean vertical) {
         if (start.right() <= start.left() || start.bottom() <= start.top() || limitPx <= 0) return start;
         var scan = new Scan(image, region, all, claimed);
         int left = start.left(), top = start.top(), right = start.right(), bottom = start.bottom();
-        var open = new boolean[]{true, true, true, true};
+        var open = new boolean[]{true, true, vertical, vertical};
         var grown = new int[SIDES];
         boolean any = true;
         while (any) {

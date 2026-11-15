@@ -36,6 +36,11 @@ public final class PageRasterPainter {
     private static final int MEDIAN_CAP_MIN_REGIONS = 3;
     private static final double MEDIAN_CAP_FACTOR = 1.35;
     private static final double MEDIAN_FLOOR_FACTOR = .75;
+    /** Translation typeset at no less than this share of the source glyph size (CJK sources, see glyphFloor). */
+    private static final double GLYPH_FLOOR_FACTOR = .75;
+    /** Growth seeds for the floor: the whole start box, then its middle 60% and 35% (see raiseToFloor). */
+    private static final double[] SEED_BANDS = {1, .6, .35};
+    private static final java.util.Set<String> SQUARE_GLYPH_SOURCES = java.util.Set.of("ja", "zh-Hans", "zh-Hant", "ko");
     /** Below this share of source ink inside the balloon the text sits on artwork: the original is preserved. */
     private static final double MIN_ENCLOSED_INK = .25;
     private static final int BLACK = 0xff000000, WHITE = 0xffffffff;
@@ -177,27 +182,67 @@ public final class PageRasterPainter {
      * Median-relative floor. A short line in a tight OCR polygon (or one that did not fit at all) is recomposed in a
      * box grown into the flat balloon background around it. The new plan is kept only if it is strictly larger, so
      * the floor never shrinks text and never paints outside verified background.
+     *
+     * <p>CJK sources also get a floor from their own lettering: vertical columns are narrow, so a horizontal
+     * translation confined to them comes out far smaller than the original glyphs, and the page median (made of
+     * such columns) cannot notice it.
      */
     private void raiseToFloor(BufferedImage image, List<CleanBoxPainter.CleanRegion> regions, Plan[] plans,
                               boolean[] preserved, RenderRequest request, int cap) {
         double median = median(plans);
-        if (Double.isNaN(median)) return;
+        boolean squareGlyphs = SQUARE_GLYPH_SOURCES.contains(request.pair().source());
+        if (Double.isNaN(median) && !squareGlyphs) return;
         var policy = request.policy();
-        int floor = Math.clamp((int) Math.ceil(median * MEDIAN_FLOOR_FACTOR), policy.minimumFontPx(), cap);
+        int floor = Double.isNaN(median) ? policy.minimumFontPx()
+            : Math.clamp((int) Math.ceil(median * MEDIAN_FLOOR_FACTOR), policy.minimumFontPx(), cap);
         var claimed = new ArrayList<RasterPolygon.Bounds>();
         for (int i = 0; i < plans.length; i++) {
             CleanBoxPainter.checkInterrupted();
-            if (preserved[i] || plans[i] != null && plans[i].size() >= floor) continue;
             var region = regions.get(i);
+            int target = squareGlyphs ? Math.max(floor, Math.min(cap, glyphFloor(region))) : floor;
+            if (preserved[i] || plans[i] != null && plans[i].size() >= target) continue;
             var start = region.mask().fit(region.polygon().interiorBox(0));
-            int limit = Math.max(start.bottom() - start.top(), 2 * floor);
-            var grown = BalloonExpansion.expand(image, region, regions, claimed, start, limit);
-            if (grown.equals(start)) continue;
-            var padded = new RasterPolygon.Bounds(grown.left() + policy.paddingPx(), grown.top() + policy.paddingPx(),
-                grown.right() - policy.paddingPx(), grown.bottom() - policy.paddingPx());
-            var plan = compose(region.region().translatedText(), request.pair().target(), padded, policy, cap, grown, true);
-            if (plan != null && (plans[i] == null || plan.size() > plans[i].size())) { plans[i] = plan; claimed.add(grown); }
+            int limit = Math.max(start.bottom() - start.top(), 2 * target);
+            Plan best = plans[i];
+            RasterPolygon.Bounds bestBox = null;
+            // A tall column in an oval balloon already touches the curved border at its ends, so it cannot widen;
+            // its middle band can. Each seed is grown and the largest resulting font wins.
+            for (double band : SEED_BANDS) {
+                var seed = band(start, band);
+                if (seed == null) continue;
+                // Bands widen first (horizontal text needs width), then grow vertically into what is left.
+                var grown = band == 1 ? BalloonExpansion.expand(image, region, regions, claimed, seed, limit)
+                    : BalloonExpansion.expand(image, region, regions, claimed,
+                        BalloonExpansion.expand(image, region, regions, claimed, seed, limit, false), limit);
+                if (grown.equals(seed) && band == 1) continue;
+                var padded = new RasterPolygon.Bounds(grown.left() + policy.paddingPx(), grown.top() + policy.paddingPx(),
+                    grown.right() - policy.paddingPx(), grown.bottom() - policy.paddingPx());
+                var plan = compose(region.region().translatedText(), request.pair().target(), padded, policy, cap, grown, true);
+                if (plan != null && (best == null || plan.size() > best.size())) { best = plan; bestBox = grown; }
+            }
+            if (bestBox != null) { plans[i] = best; claimed.add(bestBox); }
         }
+    }
+
+    /** The vertically centred share {@code fraction} of a box, full width; null when too thin to grow from. */
+    private static RasterPolygon.Bounds band(RasterPolygon.Bounds box, double fraction) {
+        if (fraction >= 1) return box;
+        int height = (int) Math.round((box.bottom() - box.top()) * fraction);
+        if (height < 4 || box.right() <= box.left()) return null;
+        int top = box.top() + (box.bottom() - box.top() - height) / 2;
+        return new RasterPolygon.Bounds(box.left(), top, box.right(), top + height);
+    }
+
+    /**
+     * Source glyph size of square-glyph scripts, estimated as sqrt(area / characters) of the OCR box (gaps between
+     * columns make it a slight overestimate, absorbed by the factor), times {@link #GLYPH_FLOOR_FACTOR}.
+     */
+    static int glyphFloor(CleanBoxPainter.CleanRegion region) {
+        long characters = region.region().sourceText().codePoints().filter(Character::isLetterOrDigit).count();
+        if (characters == 0) return 0;
+        var bounds = region.polygon().bounds();
+        double area = (double) (bounds.right() - bounds.left()) * (bounds.bottom() - bounds.top());
+        return (int) Math.ceil(GLYPH_FLOOR_FACTOR * Math.sqrt(area / characters));
     }
 
     private static double median(Plan[] plans) {

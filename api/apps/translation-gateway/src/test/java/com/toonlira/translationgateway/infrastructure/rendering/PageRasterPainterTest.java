@@ -250,6 +250,48 @@ class PageRasterPainterTest {
     }
 
     @Test
+    void horizontalTranslationOfNarrowVerticalJapaneseColumnsGrowsTowardsTheSourceGlyphSize() {
+        // Two vertical columns (~25 px glyphs) in a wide balloon: confined to the columns, "comunicação" forces a
+        // tiny font. The page median cannot notice (it is made of such columns); the source glyph size does.
+        var columns = CleanBoxPainterTest.rectangle(165 / 360.0, 30 / 220.0, 215 / 360.0, 180 / 220.0);
+        int borderLeft = 95, borderRight = 285, borderTop = 15, borderBottom = 200;
+        var text = List.of("Eu tenho trabalho no comitê de comunicação");
+        var english = CleanBoxPainterTest.fixture(WIDTH, HEIGHT, 0xffeeeeee);
+        outline(english, borderLeft, borderTop, borderRight, borderBottom, 0xff000000);
+        var japanese = copy(english);
+        var original = copy(english);
+        int confined = painter.paint(english, page(english, List.of(columns), text)).getFirst().fontSizePx();
+        var grown = painter.paint(japanese, page(japanese, List.of(columns), text, "ja", List.of("あたしは通信委員の仕事がある"))).getFirst();
+        assertThat(grown.overflow()).isFalse();
+        assertThat(grown.fontSizePx()).isGreaterThan(confined + 3);
+        for (int y = 0; y < HEIGHT; y++) for (int x = 0; x < WIDTH; x++) {
+            boolean insideBalloon = x > borderLeft && x < borderRight && y > borderTop && y < borderBottom;
+            if (!insideBalloon) assertThat(japanese.getRGB(x, y)).as("(%d,%d)", x, y).isEqualTo(original.getRGB(x, y));
+        }
+    }
+
+    @Test
+    void tallColumnInAnOvalBalloonWidensThroughTheBalloonMiddle() {
+        // The column's ends nearly touch the curved border, so only a band around its middle can widen.
+        var image = CleanBoxPainterTest.fixture(WIDTH, HEIGHT, 0xffeeeeee);
+        double cx = 180, cy = 110, rx = 120, ry = 100;
+        for (int y = 0; y < HEIGHT; y++) for (int x = 0; x < WIDTH; x++) {
+            double d = Math.pow((x - cx) / rx, 2) + Math.pow((y - cy) / ry, 2);
+            if (d >= 1 && d <= 1.06) image.setRGB(x, y, 0xff000000);
+        }
+        var original = copy(image);
+        var column = CleanBoxPainterTest.rectangle(168 / 360.0, 22 / 220.0, 192 / 360.0, 198 / 220.0);
+        var result = painter.paint(image, page(image, List.of(column), List.of("A tela ficou com um visual impressionante"),
+            "ja", List.of("なんか画面がすごいことに"))).getFirst();
+        assertThat(result.overflow()).isFalse();
+        assertThat(result.fontSizePx()).isGreaterThanOrEqualTo(20);
+        for (int y = 0; y < HEIGHT; y++) for (int x = 0; x < WIDTH; x++) {
+            if (Math.pow((x - cx) / rx, 2) + Math.pow((y - cy) / ry, 2) >= .98)
+                assertThat(image.getRGB(x, y)).as("(%d,%d)", x, y).isEqualTo(original.getRGB(x, y));
+        }
+    }
+
+    @Test
     void compressionNoiseAroundSourceTextDoesNotBlockGrowthAndIsCleanedWithTheGrownBox() {
         var small = CleanBoxPainterTest.rectangle(.45, .72, .55, .77);
         var image = CleanBoxPainterTest.fixture(WIDTH, HEIGHT, 0xffeeeeee);
@@ -452,10 +494,16 @@ class PageRasterPainterTest {
     }
 
     private static RenderRequest page(BufferedImage image, List<List<OcrManifest.Vertex>> boxes, List<String> texts) {
-        var pair = new LanguagePair("en", "pt-BR");
+        return page(image, boxes, texts, "en", null);
+    }
+
+    private static RenderRequest page(BufferedImage image, List<List<OcrManifest.Vertex>> boxes, List<String> texts,
+                                      String source, List<String> sourceTexts) {
+        var pair = new LanguagePair(source, "pt-BR");
         var regions = new java.util.ArrayList<OcrManifest.Region>();
-        for (int i = 0; i < boxes.size(); i++) regions.add(new OcrManifest.Region(new UUID(0, i + 1), i, "s" + i, boxes.get(i)));
-        var ocr = new OcrManifest("1.0", JOB, "en", image.getWidth(), image.getHeight(), regions);
+        for (int i = 0; i < boxes.size(); i++)
+            regions.add(new OcrManifest.Region(new UUID(0, i + 1), i, sourceTexts == null ? "s" + i : sourceTexts.get(i), boxes.get(i)));
+        var ocr = new OcrManifest("1.0", JOB, source, image.getWidth(), image.getHeight(), regions);
         var input = new TranslationRequest(JOB, pair, regions.stream().map(r ->
             new TranslationRequest.Region(r.id(), r.readingOrder(), r.sourceText())).toList());
         var translated = new TranslationValidator(Set.of(pair)).validateResponse(input, new TranslationResponse(

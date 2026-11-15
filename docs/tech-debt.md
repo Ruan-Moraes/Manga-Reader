@@ -548,7 +548,8 @@ liso do balão, limpeza do halo JPEG em volta do texto, máscara do balão — a
 balão intactos —, original preservado para texto sobre arte ou tradução idêntica, sem quebra no
 meio da palavra, `text_free` do ONNX no layout `1.2` em sombra, `quality` no `ReadyResult` com
 V10 e selo "revisar" no `gateway-tester`, releitura do OCR por confiança em mosaico com votação
-apoiada em dicionário, inpainting LaMa de falas sobre arte no render local). Pendente:
+apoiada em dicionário, inpainting LaMa de falas sobre arte no render local, piso de fonte pelo glifo de
+origem CJK, recuperação de texto não lido pelas caixas do detector). Pendente:
 
 - **Inpainting real** (feito: fringe de 4 px para glifos que vazam do polígono;
   falta fundo texturizado/gradiente, onde o preenchimento por cor mediana ainda
