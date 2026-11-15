@@ -550,7 +550,8 @@ meio da palavra, `text_free` do ONNX no layout `1.2` em sombra, `quality` no `Re
 V10 e selo "revisar" no `gateway-tester`, releitura do OCR por confiança em mosaico com votação
 apoiada em dicionário, inpainting LaMa de falas sobre arte no render local, piso de fonte pelo glifo de
 origem CJK, recuperação de texto não lido ou lido pela metade pelas caixas do detector, falas CJK
-juntadas pelo mesmo balão, fragmentos de balões vizinhos traduzidos juntos, retícula pelo LaMa).
+juntadas pelo mesmo balão, fragmentos de balões vizinhos traduzidos juntos, retícula pelo LaMa, legenda
+em japonês/chinês reconhecida, inpainting nos modos isolado/nativo com o modelo no pai).
 Limite conhecido: dois textos no mesmo balão (fala + aparte manuscrito) dividem o espaço e saem
 menores. Pendente:
 

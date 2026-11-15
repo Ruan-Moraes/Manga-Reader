@@ -31,6 +31,8 @@ Uma página tem tipicamente 0–3 falas sobre arte.
 
 1. `ProcessRenderingTaskUseCase` marca **dicas de legenda** (`CaptionFilter`): tradução diferente do
    original, ≥ 2 tokens diferentes com letras e, se houver léxico do idioma, ≥ 60% deles palavras.
+   Japonês/chinês (sem espaços): ≥ 4 letras com kanji ou ≥ 6 só em kana, ≥ 3 letras diferentes e sem
+   unidade repetida — 「※ウブントゥですよ」 é legenda; 「ひゅるる」, 「カタカタ…」, 「ドキドキ」 são SFX.
    Onomatopeia repetida ("clatter clatter"), palavra única e não-palavras ficam de fora.
 2. `PageRasterPainter` só aplica o inpainting quando a dica existe **e** a máscara do balão confirma texto
    sobre arte (`enclosedInk < 0,25`) **e** há inpainter (modo local). Senão, comportamento anterior.
@@ -40,11 +42,26 @@ Uma página tem tipicamente 0–3 falas sobre arte.
 4. Texto composto na caixa inscrita do polígono, recortado à caixa reconstruída, com contorno.
 5. Falha do modelo → região preservada (como sem inpainting).
 
-## Por que não nos modos isolado/nativo
+## Modos isolado/nativo: LaMa no pai, dois passes do filho (2026-11-15)
 
 O render isolado roda num processo filho sem acesso nativo e com memória limitada (decisão de
-segurança). Levar ONNX para lá quebraria o isolamento; esses modos não recebem inpainter e preservam o
-texto sobre arte como antes. Produção ainda tem o render desabilitado (`infra/terraform`).
+segurança): só ele decodifica a página. Por isso o LaMa (ONNX, nativo) **não** vai para o filho:
+
+1. O pai (worker) marca o diretório de staging com `inpaint.enabled` quando tem o modelo.
+2. **1º passe do filho**: o pintor pede as janelas como sempre, mas um `Recorder` só as grava em
+   `inpaint-request.bin` (geometria + 512×512 RGB cru + máscara 0/1, até 8 janelas) e as recusa; o resultado
+   desse passe é o fallback completo (letra original nas falas sobre arte).
+3. **Pai**: valida o arquivo (tamanho exato, máscara 0/1, geometria coerente) e roda o modelo só nesses
+   números — nunca vê a imagem codificada; grava `inpaint-patches.bin`.
+4. **2º passe do filho**: um `Replayer` recebe os pedidos na mesma ordem, confere a geometria da janela e
+   aplica a resposta com a mesma regra do modo local (`InpaintWindow.apply`). Diferença de geometria ou falha
+   do modelo → aquela fala fica com a letra original.
+
+Custo: um 2º lançamento do filho só em páginas com fala sobre arte. Arquivos versionados, sem serialização
+Java. Validado com JVM-filho real e o codec WebP real (`IsolatedInpaintingEndToEndTest`); o pixel final é
+idêntico ao do modo local (`InpaintExchangeTest`). Na mesma mudança, o pedido ao filho passou a levar as
+**dicas de fala e os balões detectados** — antes o filho pintava sem eles (máscara sem limite de balão).
+Produção ainda tem o render desabilitado (`infra/terraform`).
 
 ## Validação real (Ubunchu! ch02, en→pt-BR)
 

@@ -40,6 +40,8 @@ public final class IsolatedRenderAdapter implements RenderPort {
     private final int heapMiB;
     private final ChildLauncher launcher;
     private final Runnable admission;
+    /** Runs in this (parent) process on the windows the child prepared; null = no inpainting. */
+    private final InpaintModel inpaintModel;
 
     public IsolatedRenderAdapter(Path temporaryDirectory, RenderProcessSettings settings, Duration deadline, int heapMiB) {
         this(temporaryDirectory, settings, deadline, heapMiB, (directory, heap) ->
@@ -59,6 +61,11 @@ public final class IsolatedRenderAdapter implements RenderPort {
 
     IsolatedRenderAdapter(Path temporaryDirectory, RenderProcessSettings settings, Duration deadline, int heapMiB,
                           ChildLauncher launcher, Runnable admission) {
+        this(temporaryDirectory, settings, deadline, heapMiB, launcher, admission, null);
+    }
+
+    IsolatedRenderAdapter(Path temporaryDirectory, RenderProcessSettings settings, Duration deadline, int heapMiB,
+                          ChildLauncher launcher, Runnable admission, InpaintModel inpaintModel) {
         try {
             if (temporaryDirectory == null || !temporaryDirectory.isAbsolute()
                 || !Files.isDirectory(temporaryDirectory, LinkOption.NOFOLLOW_LINKS) || settings == null
@@ -72,6 +79,7 @@ public final class IsolatedRenderAdapter implements RenderPort {
             this.heapMiB = heapMiB;
             this.launcher = launcher;
             this.admission = admission;
+            this.inpaintModel = inpaintModel;
         } catch (IOException error) { throw new RenderFileException(CONFIGURATION); }
     }
 
@@ -98,12 +106,26 @@ public final class IsolatedRenderAdapter implements RenderPort {
             // Caller may discard its borrowed path on timeout; only this operation owns the child's input lifetime.
             var snapshot = snapshotOriginal(original, directory, request, started);
             RenderSubprocessProtocol.writeRequest(directory.resolve("request.bin"), snapshot, settings, request);
+            if (inpaintModel != null) Files.createFile(directory.resolve(InpaintExchange.ENABLED),
+                PosixFilePermissions.asFileAttribute(PosixFilePermissions.fromString("rw-------")));
             checkDeadline(started);
             process = launcher.start(directory, heapMiB);
             process.getOutputStream().close();
             await(process, descendants, started);
             // Do not validate/delete while an observed native descendant can still access the staging files.
             stop(process, descendants);
+            // Speech over artwork: the model runs here on the child's fixed-size windows (never on the encoded page),
+            // then a second child pass applies the answers. The first result is discarded only after that.
+            if (inpaintModel != null && InpaintExchange.answer(directory, inpaintModel, () -> withinDeadline(started))) {
+                var first = RenderSubprocessProtocol.readResult(directory.resolve("result.bin"), directory, request);
+                Files.delete(first.path());
+                Files.delete(directory.resolve("result.bin"));
+                checkDeadline(started);
+                process = launcher.start(directory, heapMiB);
+                process.getOutputStream().close();
+                await(process, descendants, started);
+                stop(process, descendants);
+            }
             var result = RenderSubprocessProtocol.readResult(directory.resolve("result.bin"), directory, request);
             verify(result, request);
             checkDeadline(started);
@@ -172,6 +194,10 @@ public final class IsolatedRenderAdapter implements RenderPort {
             throw new RenderFileException(INVALID_MEDIA);
         checkDeadline(started);
         return snapshot;
+    }
+
+    private boolean withinDeadline(long started) {
+        return !Thread.currentThread().isInterrupted() && System.nanoTime() - started < deadline.toNanos();
     }
 
     private void checkDeadline(long started) {

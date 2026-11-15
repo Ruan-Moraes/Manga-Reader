@@ -38,6 +38,8 @@ final class RenderSubprocessProtocol {
     private static final int NATIVE_REQUEST_MAGIC = 0x54524e32;
     private static final int BOUNDED_NATIVE_REQUEST_MAGIC = 0x54524e33;
     private static final int RESULT_MAGIC = 0x54525331;
+    /** Same bound as the layout artifact the bubbles come from. */
+    private static final int MAX_BUBBLES = 256;
 
     private RenderSubprocessProtocol() { }
 
@@ -98,6 +100,14 @@ final class RenderSubprocessProtocol {
                     out.writeInt(region.polygon().size());
                     for (var vertex : region.polygon()) { out.writeDouble(vertex.x()); out.writeDouble(vertex.y()); }
                 }
+                // Render hints the child needs to paint like the in-process renderer: speech over artwork that may be
+                // inpainted, and detected balloons bounding masks and font growth.
+                out.writeInt(request.captionHints().size());
+                for (var id : request.captionHints()) uuid(out, id);
+                out.writeInt(request.bubbles().size());
+                for (var box : request.bubbles()) {
+                    out.writeDouble(box.left()); out.writeDouble(box.top()); out.writeDouble(box.right()); out.writeDouble(box.bottom());
+                }
             }
             writePrivate(file, bytes.toByteArray(), MAX_REQUEST_BYTES);
         } catch (IOException | RuntimeException error) { throw new RenderFileException(UNAVAILABLE); }
@@ -139,12 +149,20 @@ final class RenderSubprocessProtocol {
                 regions.add(new OcrManifest.Region(id, order, text, List.copyOf(polygon)));
                 translations.add(new TranslationResponse.Region(id, translated));
             }
+            int hintCount = count(in, count);
+            var hints = new java.util.HashSet<UUID>(hintCount);
+            for (int index = 0; index < hintCount; index++) hints.add(uuid(in));
+            int bubbleCount = count(in, MAX_BUBBLES);
+            var bubbles = new ArrayList<com.toonlira.translationgateway.domain.layout.LayoutBox>(bubbleCount);
+            for (int index = 0; index < bubbleCount; index++)
+                bubbles.add(new com.toonlira.translationgateway.domain.layout.LayoutBox(in.readDouble(), in.readDouble(), in.readDouble(), in.readDouble()));
             end(in);
             var ocr = new OcrManifest("1.0", job, pair.source(), source.widthPx(), source.heightPx(), regions);
             var input = new TranslationRequest(job, pair, regions.stream().map(region ->
                 new TranslationRequest.Region(region.id(), region.readingOrder(), region.sourceText())).toList());
             var result = new TranslationValidator(Set.of(pair)).validateResponse(input, new TranslationResponse(translations));
-            return new Request(original, settings, RenderRequest.create(source, ocr, result, ocrHash, translationHash, policy));
+            return new Request(original, settings, RenderRequest.create(source, ocr, result, ocrHash, translationHash, policy)
+                .withBubbles(bubbles).withCaptionHints(hints));
         } catch (IOException | RuntimeException error) { throw new RenderFileException(UNAVAILABLE); }
     }
 

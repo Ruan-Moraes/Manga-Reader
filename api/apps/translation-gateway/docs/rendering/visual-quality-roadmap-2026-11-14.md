@@ -58,8 +58,9 @@ Não houve comparação antes/depois controlada nem teste com o original em japo
    ([inpainting.md](inpainting.md)); SFX preservados por decisão de produto; letreiro manuscrito partido
    em parágrafos sobrepostos agora vira uma fala só ("Podemos ser a Brigada da GUI!", 23 px). `regionKinds` chega ao render: região `unknown`
    (SFX estilizado) nunca recebe inpainting.
-4. **Inpainting real** (parcial): LaMa em CPU para falas sobre arte, só no render `local`
-   ([inpainting.md](inpainting.md)). Falta: levar aos modos isolado/nativo sem quebrar o isolamento;
+4. **Inpainting real** (parcial): LaMa em CPU para falas sobre arte no render `local` e, desde 2026-11-15,
+   nos modos isolado/nativo (modelo no pai, dois passes do filho — [inpainting.md](inpainting.md)); falas em
+   japonês/chinês agora também são reconhecidas como legenda.
    balões com fundo de retícula agora passam pelo LaMa no render local (sem exemplo real nas amostras). (O fringe da moldura de retícula saiu
    com a máscara do balão.)
 5. **Erros de OCR** (parcial): releitura por confiança em mosaico com votação apoiada em dicionário —
