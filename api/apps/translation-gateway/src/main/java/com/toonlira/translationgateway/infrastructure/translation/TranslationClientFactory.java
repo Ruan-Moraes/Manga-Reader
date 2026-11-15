@@ -6,6 +6,7 @@ import io.grpc.ManagedChannelBuilder;
 import java.io.IOException;
 import java.time.Duration;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 public class TranslationClientFactory {
     static final Duration DEADLINE = Duration.ofSeconds(60);
@@ -28,7 +29,9 @@ public class TranslationClientFactory {
         return settings;
     }
 
+    /** Same connection hygiene as {@code VisionClientFactory.configureChannel}: never reuse a connection dropped while idle. */
     static ManagedChannelBuilder<?> configureChannel(ManagedChannelBuilder<?> channel) {
-        return channel.disableRetry().maxInboundMessageSize(MAX_RESPONSE_BYTES);
+        return channel.disableRetry().maxInboundMessageSize(MAX_RESPONSE_BYTES)
+            .idleTimeout(2, TimeUnit.MINUTES).keepAliveTime(60, TimeUnit.SECONDS).keepAliveTimeout(20, TimeUnit.SECONDS);
     }
 }
