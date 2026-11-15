@@ -54,7 +54,8 @@ Não houve comparação antes/depois controlada nem teste com o original em japo
    é o padrão do Terraform (validate/fmt verdes). Fonte em balão vertical estreito resolvida (piso pelo glifo de origem,
    13–15 → 19–25 px) e texto que o OCR não leu recuperado pelas caixas do detector (「わーい」 → "Eba!",
    9 de 16 caixas em 24 páginas — ver [ocr-reread.md](../ocr-evaluation/ocr-reread.md)).
-3. **SFX/texto livre** (parcial): falas/legendas sobre arte agora são traduzidas com inpainting
+3. **SFX/texto livre** (parcial; letreiros-frase agora traduzidos em fonte pesada e inclinada, ver
+   [inpainting.md](inpainting.md); regressão visual em [visual-regression.md](visual-regression.md)): falas/legendas sobre arte agora são traduzidas com inpainting
    ([inpainting.md](inpainting.md)); SFX preservados por decisão de produto; letreiro manuscrito partido
    em parágrafos sobrepostos agora vira uma fala só ("Podemos ser a Brigada da GUI!", 23 px). `regionKinds` chega ao render: região `unknown`
    (SFX estilizado) nunca recebe inpainting.

@@ -104,6 +104,8 @@ final class RenderSubprocessProtocol {
                 // inpainted, and detected balloons bounding masks and font growth.
                 out.writeInt(request.captionHints().size());
                 for (var id : request.captionHints()) uuid(out, id);
+                out.writeInt(request.letteringHints().size());
+                for (var id : request.letteringHints()) uuid(out, id);
                 out.writeInt(request.bubbles().size());
                 for (var box : request.bubbles()) {
                     out.writeDouble(box.left()); out.writeDouble(box.top()); out.writeDouble(box.right()); out.writeDouble(box.bottom());
@@ -152,6 +154,9 @@ final class RenderSubprocessProtocol {
             int hintCount = count(in, count);
             var hints = new java.util.HashSet<UUID>(hintCount);
             for (int index = 0; index < hintCount; index++) hints.add(uuid(in));
+            int letteringCount = count(in, count);
+            var letterings = new java.util.HashSet<UUID>(letteringCount);
+            for (int index = 0; index < letteringCount; index++) letterings.add(uuid(in));
             int bubbleCount = count(in, MAX_BUBBLES);
             var bubbles = new ArrayList<com.toonlira.translationgateway.domain.layout.LayoutBox>(bubbleCount);
             for (int index = 0; index < bubbleCount; index++)
@@ -162,7 +167,7 @@ final class RenderSubprocessProtocol {
                 new TranslationRequest.Region(region.id(), region.readingOrder(), region.sourceText())).toList());
             var result = new TranslationValidator(Set.of(pair)).validateResponse(input, new TranslationResponse(translations));
             return new Request(original, settings, RenderRequest.create(source, ocr, result, ocrHash, translationHash, policy)
-                .withBubbles(bubbles).withCaptionHints(hints));
+                .withBubbles(bubbles).withCaptionHints(hints).withLetteringHints(letterings));
         } catch (IOException | RuntimeException error) { throw new RenderFileException(UNAVAILABLE); }
     }
 

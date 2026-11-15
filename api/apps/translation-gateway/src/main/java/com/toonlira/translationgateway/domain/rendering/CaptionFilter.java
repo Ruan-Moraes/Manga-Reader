@@ -36,6 +36,52 @@ public final class CaptionFilter {
         return Set.copyOf(result);
     }
 
+    /** Hand-drawn lettering of a sentence: letters needed with kanji / words needed in spaced scripts. */
+    static final int MIN_LETTERING_LETTERS = 8, MIN_LETTERING_WORDS = 3;
+
+    /**
+     * Regions the detector does not see as text ({@code unknown}) whose text is nonetheless a sentence: hand-drawn
+     * shouts over the art (「ターミナルがあれば全てが上手くいく」). Sound effects stay out: they are short, few-lettered or
+     * repetitive, and fail the caption rule or the sentence length.
+     */
+    public static Set<UUID> letterings(RenderRequest request, Lexicon lexicon, java.util.Map<UUID, String> kinds) {
+        int width = request.source().widthPx(), height = request.source().heightPx();
+        var glyphs = request.regions().stream().mapToDouble(region -> glyph(region, width, height)).filter(g -> g > 0).sorted().toArray();
+        double median = glyphs.length == 0 ? 0 : glyphs[glyphs.length / 2];
+        var result = new HashSet<UUID>();
+        for (var region : request.regions()) {
+            // Not seen as text by the detector, or drawn much bigger than the page's lettering: a shout.
+            boolean shout = "unknown".equals(kinds.get(region.id()))
+                || median > 0 && glyphs.length >= MIN_REGIONS_FOR_SIZE && glyph(region, width, height) >= SHOUT_SIZE * median;
+            if (shout && isLettering(region.sourceText(), region.translatedText(), lexicon)) result.add(region.id());
+        }
+        return Set.copyOf(result);
+    }
+
+    /** Glyph size from which lettering counts as drawn bigger than the page's speech, and regions needed to judge it. */
+    static final double SHOUT_SIZE = 1.8;
+    static final int MIN_REGIONS_FOR_SIZE = 3;
+
+    /** sqrt(box area / letters) in pixels: comparable between regions of one page, whatever the script. */
+    private static double glyph(RenderRequest.Region region, int width, int height) {
+        long letters = region.sourceText().codePoints().filter(Character::isLetterOrDigit).count();
+        if (letters == 0) return 0;
+        double l = 1, t = 1, r = 0, b = 0;
+        for (var vertex : region.polygon()) { l = Math.min(l, vertex.x()); r = Math.max(r, vertex.x()); t = Math.min(t, vertex.y()); b = Math.max(b, vertex.y()); }
+        return Math.sqrt((r - l) * width * (b - t) * height / letters);
+    }
+
+    static boolean isLettering(String source, String translated, Lexicon lexicon) {
+        if (!isCaption(source, translated, lexicon)) return false;
+        if (unspaced(source)) {
+            int[] letters = source.codePoints().filter(Character::isLetter).filter(c -> c != 'ー' && c != '〜' && c != '～').toArray();
+            boolean kanji = java.util.Arrays.stream(letters).anyMatch(c -> Character.UnicodeScript.of(c) == Character.UnicodeScript.HAN);
+            return kanji && letters.length >= MIN_LETTERING_LETTERS;
+        }
+        long words = java.util.Arrays.stream(source.split("\\s+")).filter(token -> token.codePoints().anyMatch(Character::isLetter)).distinct().count();
+        return words >= MIN_LETTERING_WORDS;
+    }
+
     public static boolean isCaption(String source, String translated, Lexicon lexicon) {
         if (source == null || translated == null || UnchangedText.unchanged(source, translated)) return false;
         if (unspaced(source)) return unspacedCaption(source);

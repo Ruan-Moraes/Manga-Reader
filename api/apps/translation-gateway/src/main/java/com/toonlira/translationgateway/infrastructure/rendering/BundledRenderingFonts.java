@@ -27,7 +27,7 @@ import java.util.Set;
 
 /** Verified physical fonts, explicitly instantiated; no network, system fallback or global registration. */
 public final class BundledRenderingFonts {
-    public static final String VERSION = "noto-sans-regular-1.0";
+    public static final String VERSION = "noto-sans-1.1";
     private static final String ROOT = "/rendering/fonts/";
     private static final int MAX_MANIFEST_BYTES = 32 * 1024;
     private static final int MAX_LICENSE_BYTES = 64 * 1024;
@@ -36,7 +36,8 @@ public final class BundledRenderingFonts {
     private static final String CJK_REVISION = "523d033d6cb47f4a80c58a35753646f5c3608a78";
     private static final Map<String, String> DESTINATIONS = Map.of("en", "latin", "es", "latin", "pt-BR", "latin",
         "ja", "ja", "ko", "ko", "zh-Hans", "zh-Hans", "zh-Hant", "zh-Hant");
-    private static final Map<String, String> FACES = Map.of("latin", "NotoSans-Regular", "ja", "NotoSansCJKjp-Regular",
+    private static final Map<String, String> FACES = Map.of("latin", "NotoSans-Regular", "latin-black", "NotoSans-Black",
+        "ja", "NotoSansCJKjp-Regular",
         "ko", "NotoSansCJKkr-Regular", "zh-Hans", "NotoSansCJKsc-Regular", "zh-Hant", "NotoSansCJKtc-Regular");
     private static final Map<String, String> CJK_DIRECTORIES = Map.of("ja", "Japanese", "ko", "Korean",
         "zh-Hans", "SimplifiedChinese", "zh-Hant", "TraditionalChinese");
@@ -100,6 +101,18 @@ public final class BundledRenderingFonts {
         return true;
     }
 
+    /**
+     * Heavy face for hand-drawn lettering (shouts drawn over the art) in Latin destinations; other scripts keep their
+     * regular face (no heavy CJK face is bundled).
+     */
+    public Font letteringFontFor(String destination, float sizePx) {
+        if (!Float.isFinite(sizePx) || sizePx <= 0 || sizePx > RenderPolicy.MAX_DIMENSION_PX)
+            throw new RenderFontException(INVALID_INPUT);
+        String id = destination == null ? null : DESTINATIONS.get(destination);
+        if (id == null) throw new RenderFontException(INVALID_INPUT);
+        return fonts.get("latin".equals(id) ? "latin-black" : id).deriveFont(sizePx);
+    }
+
     public String version() { return VERSION; }
     public List<Asset> assets() { return assets; }
     @Override public String toString() { return "BundledRenderingFonts[redacted]"; }
@@ -117,7 +130,7 @@ public final class BundledRenderingFonts {
         for (var asset : pack.assets()) {
             if (asset == null || !FACES.containsKey(asset.id()) || ids.putIfAbsent(asset.id(), asset) != null
                 || !FACES.get(asset.id()).equals(asset.postScriptName())) invalid();
-            boolean latin = "latin".equals(asset.id());
+            boolean latin = asset.id().startsWith("latin");
             String expectedFile = asset.postScriptName() + (latin ? ".ttf" : ".otf");
             String expectedPath = latin ? "hinted/ttf/NotoSans/" + expectedFile
                 : "Sans/OTF/" + CJK_DIRECTORIES.get(asset.id()) + "/" + expectedFile;

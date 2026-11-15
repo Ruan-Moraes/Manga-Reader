@@ -47,6 +47,8 @@ public final class PageRasterPainter {
     private static final int[] COLOR_CHANNEL_SHIFTS = {16, 8, 0};
     /** Pixels added around an inpainted box so antialiased source strokes are reconstructed too. */
     private static final int INPAINT_MARGIN = 4;
+    /** Slant of hand-drawn lettering below which it is drawn upright, and the most it is followed. */
+    private static final double MIN_TILT = .05, MAX_TILT = .5;
     private final BundledRenderingFonts fonts;
     private final CleanBoxPainter boxes = new CleanBoxPainter();
     private final Inpainter inpainter;
@@ -77,9 +79,14 @@ public final class PageRasterPainter {
         var plans = new Plan[regions.size()];
         var preserved = new boolean[regions.size()];
         var inpaint = new boolean[regions.size()];
+        var lettering = new boolean[regions.size()];
+        var letteringPlans = new Plan[regions.size()];
         for (int i = 0; i < plans.length; i++) {
             CleanBoxPainter.checkInterrupted();
             var region = regions.get(i);
+            // Hand-drawn shouts are planned apart: their size follows their own drawing, not the page median.
+            lettering[i] = letters(region, request);
+            if (lettering[i]) { inpaint[i] = true; letteringPlans[i] = planLettering(region, request); continue; }
             inpaint[i] = inpaints(region, request);
             preserved[i] = !inpaint[i] && preserveOriginal(region);
             if (!preserved[i]) plans[i] = plan(region, request, policy.maximumFontPx(), inpaint[i]);
@@ -93,6 +100,15 @@ public final class PageRasterPainter {
         var fixedSize = new boolean[regions.size()];
         for (int i = 0; i < plans.length; i++) fixedSize[i] = preserved[i] || inpaint[i];
         raiseToFloor(image, regions, plans, fixedSize, request, cap);
+        // Speech the flat path still cannot fit, even grown into its balloon (lettering on paper broken up by speed
+        // lines, so no balloon interior holds it), is rebuilt by the inpainter and retyped in its own box.
+        for (int i = 0; i < plans.length; i++) {
+            if (plans[i] != null || inpaint[i] || preserved[i] || lettering[i] || inpainter == null
+                || !request.captionHints().contains(regions.get(i).region().id())) continue;
+            var fallback = plan(regions.get(i), request, cap, true);
+            if (fallback != null) { inpaint[i] = true; plans[i] = fallback; }
+        }
+        for (int i = 0; i < plans.length; i++) if (lettering[i]) plans[i] = letteringPlans[i];
         // Halo sets are computed on the untouched raster, so no region erases text another one already drew.
         var halos = new ArrayList<List<Integer>>(plans.length);
         for (int i = 0; i < plans.length; i++) {
@@ -120,7 +136,8 @@ public final class PageRasterPainter {
             }
             if (inpaint[i]) {
                 // Over reconstructed artwork: dark lettering with a light outline, readable on any drawing.
-                draw(image, canvas, region.polygon(), plan.clipBox(), plan.lines(), BLACK, WHITE, outline(plan.size()));
+                draw(image, canvas, region.polygon(), plan.clipBox(), plan.lines(), BLACK, WHITE,
+                    lettering[i] ? letteringOutline(plan.size()) : outline(plan.size()));
             } else {
                 boxes.fillMasked(image, region, halos.get(i));
                 if (plan.grown()) fillBox(image, plan.clipBox(), region.argb());
@@ -154,6 +171,54 @@ public final class PageRasterPainter {
     }
 
     private static int outline(int fontSize) { return Math.max(2, Math.round(fontSize / 8f)); }
+
+    /** Shouts get a heavier light outline, closer to hand-drawn lettering. */
+    private static int letteringOutline(int fontSize) { return Math.max(3, Math.round(fontSize / 5f)); }
+
+    /** Hand-drawn lettering of a sentence (render hint) that this painter can erase by inpainting and retype. */
+    private boolean letters(CleanBoxPainter.CleanRegion region, RenderRequest request) {
+        var text = region.region();
+        return inpainter != null && request.letteringHints().contains(text.id())
+            && !UnchangedText.unchanged(text.sourceText(), text.translatedText());
+    }
+
+    /**
+     * A shout in the heavy face, filling the original drawing's own box and slanted like it: the box follows the OCR
+     * polygon's sides (not the axis-aligned bounds), the text is composed upright in it and rotated by the polygon's
+     * tilt from the nearest axis (at most {@link #MAX_TILT} radians).
+     */
+    private Plan planLettering(CleanBoxPainter.CleanRegion region, RenderRequest request) {
+        var vertices = region.region().polygon();
+        int width = request.source().widthPx(), height = request.source().heightPx();
+        double[] xs = new double[4], ys = new double[4];
+        for (int k = 0; k < 4; k++) { xs[k] = vertices.get(k).x() * width; ys[k] = vertices.get(k).y() * height; }
+        double ax = xs[1] - xs[0], ay = ys[1] - ys[0], bx = xs[2] - xs[1], by = ys[2] - ys[1];
+        double lengthA = Math.hypot(ax, ay), lengthB = Math.hypot(bx, by);
+        double angleA = Math.atan2(ay, ax);
+        double tilt = angleA - Math.round(angleA / (Math.PI / 2)) * (Math.PI / 2);
+        if (Math.abs(tilt) < MIN_TILT) tilt = 0;
+        tilt = Math.clamp(tilt, -MAX_TILT, MAX_TILT);
+        // Side A runs along x when its angle is nearer the horizontal axis.
+        boolean aHorizontal = Math.abs(Math.cos(angleA)) >= Math.abs(Math.sin(angleA));
+        double boxWidth = aHorizontal ? lengthA : lengthB, boxHeight = aHorizontal ? lengthB : lengthA;
+        double cx = (xs[0] + xs[1] + xs[2] + xs[3]) / 4, cy = (ys[0] + ys[1] + ys[2] + ys[3]) / 4;
+        int padding = request.policy().paddingPx();
+        var box = new RasterPolygon.Bounds((int) Math.round(cx - boxWidth / 2) + padding, (int) Math.round(cy - boxHeight / 2) + padding,
+            (int) Math.round(cx + boxWidth / 2) - padding, (int) Math.round(cy + boxHeight / 2) - padding);
+        var bounds = region.polygon().bounds();
+        var clip = new RasterPolygon.Bounds(bounds.left() - INPAINT_MARGIN, bounds.top() - INPAINT_MARGIN,
+            bounds.right() + INPAINT_MARGIN, bounds.bottom() + INPAINT_MARGIN);
+        var upright = compose(region.region().translatedText(), request.pair().target(), box, request.policy(),
+            request.policy().maximumFontPx(), clip, false, true);
+        if (upright == null || tilt == 0) return upright;
+        var rotate = AffineTransform.getRotateInstance(tilt, cx, cy);
+        var lines = new ArrayList<GlyphLine>(upright.lines().size());
+        for (var line : upright.lines()) {
+            var shape = rotate.createTransformedShape(line.outline());
+            lines.add(new GlyphLine(shape, shape.getBounds2D()));
+        }
+        return new Plan(upright.size(), List.copyOf(lines), clip, false);
+    }
 
     /** Unchanged lettering and text drawn over artwork (little source ink inside a balloon) keep the original. */
     private static boolean preserveOriginal(CleanBoxPainter.CleanRegion region) {
@@ -257,11 +322,17 @@ public final class PageRasterPainter {
 
     private Plan compose(String text, String target, RasterPolygon.Bounds box, RenderPolicy policy, int maximumFontPx,
                          RasterPolygon.Bounds clipBox, boolean grown) {
+        return compose(text, target, box, policy, maximumFontPx, clipBox, grown, false);
+    }
+
+    /** {@code heavy}: the hand-lettering face ({@link BundledRenderingFonts#letteringFontFor}). */
+    private Plan compose(String text, String target, RasterPolygon.Bounds box, RenderPolicy policy, int maximumFontPx,
+                         RasterPolygon.Bounds clipBox, boolean grown, boolean heavy) {
         if (!fonts.canDisplay(target, text) || unsupportedControl(text) || box.right() <= box.left() || box.bottom() <= box.top())
             return null;
         for (int size = maximumFontPx; size >= policy.minimumFontPx(); size--) {
             CleanBoxPainter.checkInterrupted();
-            var font = fonts.fontFor(target, size);
+            var font = heavy ? fonts.letteringFontFor(target, size) : fonts.fontFor(target, size);
             var metrics = font.getLineMetrics("Ag", FONT_CONTEXT);
             float lineHeight = (float) Math.ceil(metrics.getAscent() + metrics.getDescent() + metrics.getLeading());
             var lines = new ArrayList<TextLayout>();

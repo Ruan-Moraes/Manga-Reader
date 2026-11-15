@@ -25,9 +25,11 @@ public final class RenderRequest {
     private final RenderPolicy policy;
     private final List<Region> regions;
     private final Set<UUID> captionHints;
+    private final Set<UUID> letteringHints;
     private final List<com.toonlira.translationgateway.domain.layout.LayoutBox> bubbles;
 
-    private RenderRequest(RenderRequest base, Set<UUID> captionHints, List<com.toonlira.translationgateway.domain.layout.LayoutBox> bubbles) {
+    private RenderRequest(RenderRequest base, Set<UUID> captionHints, Set<UUID> letteringHints,
+                          List<com.toonlira.translationgateway.domain.layout.LayoutBox> bubbles) {
         this.jobRef = base.jobRef;
         this.source = base.source;
         this.pair = base.pair;
@@ -36,6 +38,7 @@ public final class RenderRequest {
         this.policy = base.policy;
         this.regions = base.regions;
         this.captionHints = Set.copyOf(captionHints);
+        this.letteringHints = Set.copyOf(letteringHints);
         this.bubbles = List.copyOf(bubbles);
     }
 
@@ -51,6 +54,7 @@ public final class RenderRequest {
             region.sourceText(), translation.regions().get(region.readingOrder()).translatedText(),
             List.copyOf(region.polygon()))).toList();
         this.captionHints = Set.of();
+        this.letteringHints = Set.of();
         this.bubbles = List.of();
     }
 
@@ -61,10 +65,23 @@ public final class RenderRequest {
     public RenderRequest withCaptionHints(Set<UUID> hints) {
         var ids = regions.stream().map(Region::id).collect(java.util.stream.Collectors.toSet());
         if (hints == null || !ids.containsAll(hints)) invalid();
-        return new RenderRequest(this, hints, bubbles);
+        return new RenderRequest(this, hints, letteringHints, bubbles);
     }
 
     public Set<UUID> captionHints() { return captionHints; }
+
+    /**
+     * Regions that are hand-drawn lettering of a sentence (a shout drawn over the art, which the detector does not
+     * see as a text box). Only a hint: a renderer that can inpaint may redraw it in a heavy face, slanted like the
+     * original; others keep the drawing.
+     */
+    public RenderRequest withLetteringHints(Set<UUID> hints) {
+        var ids = regions.stream().map(Region::id).collect(java.util.stream.Collectors.toSet());
+        if (hints == null || !ids.containsAll(hints)) invalid();
+        return new RenderRequest(this, captionHints, hints, bubbles);
+    }
+
+    public Set<UUID> letteringHints() { return letteringHints; }
 
     /**
      * Speech balloons detected on this page (normalized boxes, from the layout artifact of the same image and OCR
@@ -73,7 +90,7 @@ public final class RenderRequest {
     public RenderRequest withBubbles(List<com.toonlira.translationgateway.domain.layout.LayoutBox> detected) {
         // stream check: List.of(...).contains(null) itself throws on immutable lists.
         if (detected == null || detected.size() > 256 || detected.stream().anyMatch(java.util.Objects::isNull)) invalid();
-        return new RenderRequest(this, captionHints, detected);
+        return new RenderRequest(this, captionHints, letteringHints, detected);
     }
 
     public List<com.toonlira.translationgateway.domain.layout.LayoutBox> bubbles() { return bubbles; }

@@ -38,6 +38,21 @@ class CaptionFilterTest {
     }
 
     @Test
+    void handDrawnShoutsAreLetteringWhileSoundEffectsAndShortWordsAreNot() {
+        assertThat(CaptionFilter.isLettering("ターミナルがあれば全てが上手くいく", "Com um terminal, tudo dá certo", Lexicon.NONE)).isTrue();
+        assertThat(CaptionFilter.isLettering("わんのかゴラァ", "Tá querendo briga?", Lexicon.NONE)).isFalse(); // kana only, short
+        assertThat(CaptionFilter.isLettering("全然", "De jeito nenhum", Lexicon.NONE)).isFalse(); // too short
+        assertThat(CaptionFilter.isLettering("カタカタカタカタカタカタ", "Tec tec", Lexicon.NONE)).isFalse(); // repeated
+        assertThat(CaptionFilter.isLettering("Now Akane... Fine then!! Ubunchu it is...", "Olha, Akane...", EN)).isTrue();
+        assertThat(CaptionFilter.isLettering("-clatter clatter", "-clac-clac", EN)).isFalse();
+        // Only regions the detector does not see as text become lettering.
+        var request = request("Thank you for finally calling it", "Obrigado por finalmente chamar");
+        var id = request.regions().getFirst().id();
+        assertThat(CaptionFilter.letterings(request, EN, java.util.Map.of(id, "unknown"))).containsExactly(id);
+        assertThat(CaptionFilter.letterings(request, EN, java.util.Map.of(id, "text_free"))).isEmpty();
+    }
+
+    @Test
     void textTheDetectorDoesNotSeeAsTextIsNeverACaption() {
         // "AKANE IS COMING" reads as a sentence, but the detector classed it as artwork (stylized lettering).
         var request = request("Thank you for finally calling it", "Obrigado por finalmente chamar");

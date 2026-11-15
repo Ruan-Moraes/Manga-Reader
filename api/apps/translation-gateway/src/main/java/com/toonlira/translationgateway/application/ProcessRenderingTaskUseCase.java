@@ -146,8 +146,11 @@ public class ProcessRenderingTaskUseCase {
         // Which regions read as speech/captions (vs sound effects): a renderer that can inpaint may retype them
         // over reconstructed artwork; the others keep their lettering.
         if (lexicons == null) return request;
+        var lexicon = lexicons.forLanguage(job.sourceLanguage());
+        // Hand-drawn shouts the detector does not see as text, but that read as a sentence, may be retyped too.
         return request.withCaptionHints(com.toonlira.translationgateway.domain.rendering.CaptionFilter.captions(
-            request, lexicons.forLanguage(job.sourceLanguage()), hints.kinds()));
+            request, lexicon, hints.kinds())).withLetteringHints(com.toonlira.translationgateway.domain.rendering.CaptionFilter
+            .letterings(request, lexicon, hints.kinds()));
     }
 
     /** What the layout artifact tells the renderer: balloon boxes and the detector class of each OCR region. */

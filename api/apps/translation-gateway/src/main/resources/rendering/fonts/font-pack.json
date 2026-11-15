@@ -1,5 +1,5 @@
 {
-  "version": "noto-sans-regular-1.0",
+  "version": "noto-sans-1.1",
   "licenses": [
     {
       "file": "OFL-NotoSans.txt",
@@ -24,6 +24,20 @@
       "upstreamRevision": "ffebf8c1ee449e544955a7e813c54f9b73848eac",
       "upstreamPath": "hinted/ttf/NotoSans/NotoSans-Regular.ttf",
       "gitBlobSha1": "d55220958aa51eeeb85048d746eabe43d2cd9f14",
+      "copyright": "Copyright 2015-2021 Google LLC. All Rights Reserved.",
+      "licenseFile": "OFL-NotoSans.txt"
+    },
+    {
+      "id": "latin-black",
+      "file": "NotoSans-Black.ttf",
+      "byteSize": 591488,
+      "sha256": "2ea74ab862678045678cd0843e12fa17e100e7ad10b20f220fea6bb7b0ae88a5",
+      "postScriptName": "NotoSans-Black",
+      "fontVersion": "2.008",
+      "upstreamRepository": "notofonts/noto-fonts",
+      "upstreamRevision": "ffebf8c1ee449e544955a7e813c54f9b73848eac",
+      "upstreamPath": "hinted/ttf/NotoSans/NotoSans-Black.ttf",
+      "gitBlobSha1": "9ef9ff725fbe98475840578b02dd728751dbe227",
       "copyright": "Copyright 2015-2021 Google LLC. All Rights Reserved.",
       "licenseFile": "OFL-NotoSans.txt"
     },

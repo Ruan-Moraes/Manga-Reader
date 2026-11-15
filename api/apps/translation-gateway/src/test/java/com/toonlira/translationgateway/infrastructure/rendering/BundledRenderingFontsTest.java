@@ -34,16 +34,24 @@ class BundledRenderingFontsTest {
         assertThat(font.getPSName()).isEqualTo(face);
         assertThat(font.getSize2D()).isEqualTo(24);
         assertThat(fonts().canDisplay(code, text)).isTrue();
-        assertThat(fonts().version()).isEqualTo("noto-sans-regular-1.0");
+        assertThat(fonts().version()).isEqualTo("noto-sans-1.1");
     }
 
     @Test
     void keepsChineseVariantsDistinctAndNeverSelectsBySourceOrLocale() {
         assertThat(fonts().fontFor("zh-Hans", 20).getPSName()).isEqualTo("NotoSansCJKsc-Regular");
         assertThat(fonts().fontFor("zh-Hant", 20).getPSName()).isEqualTo("NotoSansCJKtc-Regular");
-        assertThat(fonts().assets()).hasSize(5);
+        assertThat(fonts().assets()).hasSize(6);
         assertThat(fonts().assets()).extracting(BundledRenderingFonts.Asset::sha256).doesNotHaveDuplicates();
         assertThatThrownBy(() -> fonts().assets().clear()).isInstanceOf(UnsupportedOperationException.class);
+    }
+
+    @Test
+    void handLetteringUsesTheHeavyLatinFaceAndKeepsCjkFaces() {
+        assertThat(fonts().letteringFontFor("pt-BR", 30).getPSName()).isEqualTo("NotoSans-Black");
+        assertThat(fonts().letteringFontFor("en", 30).getSize2D()).isEqualTo(30);
+        assertThat(fonts().letteringFontFor("ja", 30).getPSName()).isEqualTo("NotoSansCJKjp-Regular");
+        assertThat(fonts().letteringFontFor("pt-BR", 30).canDisplayUpTo("Ação é coração!")).isEqualTo(-1);
     }
 
     @ParameterizedTest
@@ -112,7 +120,7 @@ class BundledRenderingFontsTest {
     void rejectsAmbiguousOrCorruptedPackManifestBeforeOpeningFontFiles() throws Exception {
         String json;
         try (var input = resource(ROOT + "font-pack.json")) { json = new String(input.readAllBytes(), StandardCharsets.UTF_8); }
-        for (String invalid : new String[]{json.replace("noto-sans-regular-1.0", "unknown"),
+        for (String invalid : new String[]{json.replace("noto-sans-1.1", "unknown"),
             json.replace("\"assets\":", "\"unexpected\":1,\"assets\":"),
             json + "{}", "{\"version\":\"a\",\"version\":\"b\",\"assets\":[]}",
             json.replace("NotoSans-Regular.ttf", "../private.ttf"), json.replace("NotoSansCJKsc-Regular", "NotoSansCJKtc-Regular")}) {

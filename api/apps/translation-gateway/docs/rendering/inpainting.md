@@ -77,3 +77,17 @@ Produção ainda tem o render desabilitado (`infra/terraform`).
   em volta do texto) também passam pelo LaMa em vez do preenchimento liso; não há exemplo real nas amostras
   (Ubunchu! não tem fala sobre retícula), só o teste sintético.
 - Espaço antes de pontuação após termo protegido ("Ubuntu !") vem da etapa de tradução, não daqui.
+
+## Letreiros à mão e fala que não cabe no papel (2026-11-15)
+
+- **Letreiro** (`CaptionFilter.letterings`, dica `letteringHints`): frase (≥ 8 letras com kanji, ou ≥ 3
+  palavras) que o detector não vê como texto (`unknown`) **ou** desenhada bem maior que a letra da página
+  (sqrt(área/letras) ≥ 1,8× a mediana). Com inpainter: LaMa apaga, a tradução vai em **Noto Sans Black**
+  (pacote verificado `noto-sans-1.1`, OFL, mesma revisão da Regular) com contorno branco largo, no tamanho da
+  própria caixa e **inclinada** como o polígono do OCR (até 0,5 rad); fica fora da mediana/teto/piso das falas.
+  Onomatopeia curta continua SFX. Real: pág. 01_03 「ターミナルがあれば全てが」 → "Com um terminal, tudo…".
+- **Fala que não cabe no papel**: fala com dica que o caminho liso não consegue encaixar nem crescendo no balão
+  (letra sobre papel cortado por linhas de velocidade, sem interior de balão contínuo) passa pelo LaMa e é
+  reescrita na própria caixa, em vez de ficar sem tradução.
+- As duas dicas também viajam ao filho isolado (`RenderSubprocessProtocol`).
+
