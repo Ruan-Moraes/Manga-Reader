@@ -32,7 +32,7 @@ export function SegmentedControl<T extends string>({
     disabled = false,
 }: SegmentedControlProps<T>) {
     const { sizeClass } = useResponsiveLayout();
-    const { fontScale, minimumTouchTarget, radii, spacing, tokens } = useTheme();
+    const { fontScale, metrics, minimumTouchTarget, radii, spacing, tokens } = useTheme();
     const [focusedOption, setFocusedOption] = useState<T | null>(null);
     const stacked = resolveSegmentedControlStacked(sizeClass, fontScale);
 
@@ -73,6 +73,7 @@ export function SegmentedControl<T extends string>({
                             onPress={() => onChange(option)}
                             style={{
                                 flex: stacked ? undefined : 1,
+                                justifyContent: 'center',
                                 minHeight: minimumTouchTarget,
                                 minWidth: stacked ? undefined : 82,
                                 opacity: disabled ? 0.48 : 1,
@@ -84,28 +85,23 @@ export function SegmentedControl<T extends string>({
                                     testID={`segmented-option-surface-${option}`}
                                     style={{
                                         alignItems: 'center',
-                                        backgroundColor: selected ? tokens.accent : pressed ? tokens.surfacePressed : tokens.surface,
-                                        borderColor: focused ? tokens.focus : selected ? tokens.accent : tokens.inputBorder,
-                                        borderRadius: radii.control,
+                                        backgroundColor: selected ? tokens.accent : pressed ? tokens.surfacePressed : 'transparent',
+                                        borderColor: focused ? tokens.focus : selected ? tokens.accent : 'transparent',
+                                        borderRadius: radii.sm,
                                         borderWidth: 2,
-                                        flex: 1,
                                         flexDirection: 'row',
                                         gap: spacing.xs,
                                         justifyContent: 'center',
-                                        minHeight: minimumTouchTarget,
+                                        minHeight: metrics.control.compact,
                                         paddingHorizontal: spacing.sm,
-                                        paddingVertical: spacing.sm,
+                                        paddingVertical: spacing.xs,
                                         width: '100%',
                                     }}
                                 >
-                                    <AppText
-                                        variant="label"
-                                        tone={selected ? 'default' : 'muted'}
-                                        style={{ color: selected ? tokens.onAccent : tokens.muted, textAlign: 'center' }}
-                                    >
+                                    <AppText variant="button" style={{ color: selected ? tokens.onAccent : tokens.muted, textAlign: 'center' }}>
                                         {optionLabel(option)}
                                     </AppText>
-                                    {selected && stacked ? <Icon name="checkmark-circle" size={18} decorative /> : null}
+                                    {selected && stacked ? <Icon name="checkmark-circle" size={metrics.icon.sm} color={tokens.onAccent} decorative /> : null}
                                 </View>
                             )}
                         </Pressable>

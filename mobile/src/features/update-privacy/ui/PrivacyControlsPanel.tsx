@@ -1,4 +1,5 @@
-import { Alert, View } from 'react-native';
+import { useRef, useState } from 'react';
+import { View } from 'react-native';
 import { useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 
@@ -11,7 +12,7 @@ import {
     usePrivacySettingsStore,
 } from '@/entities/user';
 import { useTheme } from '@/shared/theme';
-import { AppText, ChoiceCards, FormSection, SectionStack, SegmentedControl, StatusMessage, SwitchRow } from '@/shared/ui';
+import { AppText, ChoiceCards, ConfirmDialog, FormSection, LoadingBlock, SectionStack, SegmentedControl, StatusMessage, SwitchRow } from '@/shared/ui';
 
 import { usePrivacyMutationStore } from '../model/privacyMutationStore';
 import { changeHistoryVisibility, retryPrivacyConsumers, retryPrivacyUpdate, updatePrivacy } from '../model/updatePrivacy';
@@ -25,16 +26,45 @@ export function PrivacyControlsPanel() {
     const { t } = useTranslation('common');
     const { radii, spacing, tokens } = useTheme();
     const run = (operation: Promise<unknown>) => void operation.catch(() => undefined);
+    const [pendingConfirm, setPendingConfirm] = useState<'dnt' | 'analytics' | null>(null);
+    // The dialog keeps the copy of the confirmation it opened with while it fades out (revisão 2026-11-13).
+    const [shownConfirm, setShownConfirm] = useState<'dnt' | 'analytics'>('dnt');
+    const openConfirm = (kind: 'dnt' | 'analytics') => {
+        setShownConfirm(kind);
+        setPendingConfirm(kind);
+    };
+    const dntResolver = useRef<((confirmed: boolean) => void) | null>(null);
 
-    if (!current) return hydrationError ? <StatusMessage title={t('privacy.error')} tone="danger" /> : null;
+    const settleDnt = (confirmed: boolean) => {
+        const resolve = dntResolver.current;
+        dntResolver.current = null;
+        resolve?.(confirmed);
+    };
+
+    const closeConfirm = () => {
+        setPendingConfirm(null);
+        // ConfirmDialog closes before confirming; defer the cancel so a confirmation settles first.
+        void Promise.resolve().then(() => settleDnt(false));
+    };
+
+    const confirmPending = () => {
+        if (pendingConfirm === 'dnt') settleDnt(true);
+        if (pendingConfirm === 'analytics') run(updatePrivacy({ behaviorAnalyticsEnabled: false }, queryClient));
+    };
+
+    if (!current)
+        return hydrationError ? (
+            <StatusMessage title={t('privacy.error')} tone="danger" />
+        ) : (
+            <LoadingBlock inline label={t('privacy.loading')} testID="privacy-loading" />
+        );
 
     const confirmDnt = () =>
-        new Promise<boolean>(resolve =>
-            Alert.alert(t('privacy.dnt.confirmTitle'), t('privacy.dnt.confirmBody'), [
-                { text: t('privacy.cancel'), style: 'cancel', onPress: () => resolve(false) },
-                { text: t('privacy.confirm'), style: 'destructive', onPress: () => resolve(true) },
-            ]),
-        );
+        new Promise<boolean>(resolve => {
+            settleDnt(false);
+            dntResolver.current = resolve;
+            openConfirm('dnt');
+        });
 
     const toggleAnalytics = () => {
         if (current.viewHistoryVisibility === 'DO_NOT_TRACK') return;
@@ -42,14 +72,7 @@ export function PrivacyControlsPanel() {
             run(updatePrivacy({ behaviorAnalyticsEnabled: true }, queryClient));
             return;
         }
-        Alert.alert(t('privacy.analytics.confirmTitle'), t('privacy.analytics.confirmBody'), [
-            { text: t('privacy.cancel'), style: 'cancel' },
-            {
-                text: t('privacy.confirm'),
-                style: 'destructive',
-                onPress: () => run(updatePrivacy({ behaviorAnalyticsEnabled: false }, queryClient)),
-            },
-        ]);
+        openConfirm('analytics');
     };
 
     return (
@@ -122,6 +145,18 @@ export function PrivacyControlsPanel() {
                     tone="danger"
                 />
             )}
+            <ConfirmDialog
+                visible={pendingConfirm !== null}
+                tone="accent"
+                icon="shield-checkmark-outline"
+                onClose={closeConfirm}
+                onConfirm={confirmPending}
+                closeLabel={t('navigation.dismiss')}
+                cancelLabel={t('privacy.cancel')}
+                confirmLabel={t('privacy.confirm')}
+                title={shownConfirm === 'analytics' ? t('privacy.analytics.confirmTitle') : t('privacy.dnt.confirmTitle')}
+                description={shownConfirm === 'analytics' ? t('privacy.analytics.confirmBody') : t('privacy.dnt.confirmBody')}
+            />
         </SectionStack>
     );
 }

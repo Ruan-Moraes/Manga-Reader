@@ -146,4 +146,26 @@ describe('MOB-BASE-002 ThemeProvider', () => {
         expect(StyleSheet.flatten(screen.getByText('Texto ampliado').props.style)).toMatchObject({ fontSize: 28, lineHeight: 42 });
         expect(screen.getByText('Texto ampliado').props.allowFontScaling).toBe(false);
     });
+
+    it('limita display e title a 2× da fonte nativa e deixa o corpo crescer', () => {
+        mockedUseWindowDimensions.mockReturnValue({ fontScale: 3.1, height: 800, scale: 2, width: 400 });
+        const { result } = renderHook(() => useTheme(), {
+            wrapper: ({ children }: PropsWithChildren) => <ThemeProvider waitForPlatform={false}>{children}</ThemeProvider>,
+        });
+        const { display, title, body } = result.current.textStyles;
+
+        render(
+            <ThemeProvider waitForPlatform={false}>
+                <AppText variant="display">Título display</AppText>
+                <AppText variant="title">Título title</AppText>
+                <AppText variant="body">Corpo ampliado</AppText>
+            </ThemeProvider>,
+        );
+        const style = (text: string) => StyleSheet.flatten(screen.getByText(text).props.style);
+
+        expect(style('Título display').fontSize).toBeCloseTo((display.fontSize ?? 0) * 2);
+        expect(style('Título display').lineHeight).toBeCloseTo((display.lineHeight ?? 0) * 2);
+        expect(style('Título title').fontSize).toBeCloseTo((title.fontSize ?? 0) * 2);
+        expect(style('Corpo ampliado').fontSize).toBeCloseTo((body.fontSize ?? 0) * 3.1);
+    });
 });

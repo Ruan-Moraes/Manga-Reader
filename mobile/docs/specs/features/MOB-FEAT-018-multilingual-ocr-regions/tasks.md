@@ -1,73 +1,55 @@
-# Tasks — MOB-FEAT-018
+# Tasks — MOB-FEAT-018, revisão volátil
 
-- Spec: `spec.md`
-- Status: `verification-pending`
-- Gate: `open` (2026-09-24; `MOB-FEAT-017` em `verification-pending`)
+- Spec: `spec.md`, intenção aprovada por Ruan em 2026-11-01.
+- Status atual: `verification-pending`; gate `open` em 2026-11-02.
+- Dependência 017: `verification-pending`, após revisão independente e gates.
+- A autorização sequencial consta de DEC-008. Backend está fora do workflow
+  mobile; integração/contratos e provas desta feature seguem sua intenção atual.
 
 ## Rastreabilidade
 
-| Critério | Tasks                        | Evidência esperada                                                 |
-| -------- | ---------------------------- | ------------------------------------------------------------------ |
-| AC-001   | TASK-001, TASK-004, TASK-006 | sete hints explícitos, recusa de código desconhecido               |
-| AC-002   | TASK-002, TASK-004, TASK-006 | manifesto versionado, IDs, ordem, polígonos e hash                 |
-| AC-003   | TASK-004, TASK-006, TASK-007 | fixtures horizontal/vertical e revisão humana; protocolo preparado |
-| AC-004   | TASK-002, TASK-006           | manifesto vazio válido e transição atômica                         |
-| AC-005   | TASK-002, TASK-004, TASK-006 | falhas sanitizadas, cancelamento e isolamento                      |
-| AC-006   | TASK-002, TASK-003, TASK-006 | bucket privado, exclusão do original, cleanup e logs               |
+| Critério | Tasks                                  | Evidência planejada                                                                        |
+| -------- | -------------------------------------- | ------------------------------------------------------------------------------------------ |
+| AC-001   | TASK-001, TASK-004                     | Sete hints e Vision online regional com bytes; nenhuma entrada URI de conteúdo na produção |
+| AC-002   | TASK-002, TASK-004                     | ID/ordem/geometria limitados e estáveis por operação, associação em memória                |
+| AC-003   | TASK-002, TASK-005                     | Fixtures horizontal/vertical/sete códigos; referências e revisão humana de qualidade real  |
+| AC-004   | TASK-003, TASK-004                     | Sem texto como vazio válido, sem tradução paga desnecessária                               |
+| AC-005   | TASK-003, TASK-004                     | Erros hostis/timeouts/cancelamento sanitizados e nenhuma etapa seguinte inválida           |
+| AC-006   | TASK-001, TASK-003, TASK-004, TASK-006 | Ausência de gravação/log de conteúdo, replay/restart sem OCR novo e configuração alvo      |
 
 ## Checklist
 
-- [x] TASK-001 — Criar contrato/validador de manifesto versionado e portas de OCR e storage; somente adapter falso nos testes, sem chamada real ao provider.
-- [x] TASK-002 — Implementar revalidação da mídia, reserva única com lock, transições/cancelamento, Flyway V2, upload create-only, hash e cleanup de etapas abandonadas.
-- [x] TASK-003 — Isolar perfil worker e rota interna; declarar Cloud Run privado e IAM mínimo, desabilitados por padrão, sem deploy.
-- [ ] TASK-004 — Integração Vision regional, sete hints, mapper e piloto real entregues; concluir benchmark independente e referências/revisão competente, incluindo vertical e página sem texto real. Aprovação exploratória não substitui essa verificação.
-- [ ] TASK-005 — Executar validação operacional completa com worker real, política/URLs aprovadas, logs e gates de produção antes de habilitar upload.
-- [x] TASK-006 — Parcela offline de TASK-004: implementar client Vision v1 regional `us`, comando interno GCS, hints, mapeamento limitado de parágrafos, configuração fail-closed e gRPC falso; cobrir transações, concorrência, falhas e cancelamento sem chamada paga.
-- [x] TASK-007 — Preparar protocolo de avaliação, catálogo de 18 posições e modelos privados de autorização, referência humana e relatório; sem obter imagens, executar OCR real ou afirmar qualidade.
-- [x] TASK-008 — Parcela de TASK-004: preparar executor manual isolado, validar rodada simulada de imagem licenciada, guardar manifesto/relatório comparável e proteger opt-in real contra repetição automática. Não conclui benchmark nem validação operacional.
+- [x] TASK-001 — Isolar adapter inline produtivo e retirar construção antiga de requests GCS/URI e wiring worker legado do artefato de produção, preservando fixtures/histórico em suporte de teste.
+- [x] TASK-002 — Conferir mapper reutilizado sem alterar algoritmo/ordem, hints, normalização e limites; vincular testes ao código produtivo vigente.
+- [x] TASK-003 — Conferir contrato de sessão, vazio, validação integral, falhas/cancelamento/retorno tardio e observabilidade sem conteúdo.
+- [x] TASK-004 — Executar testes focados e gate backend; revalidar artefato com HTTP privado + gRPC sintético e manter evidências Linux vinculadas à candidata atual; revisar por AC, coverage e drift/checksum.
+- [ ] TASK-005 — Concluir benchmark com referências/revisão humana independente, incluindo japonês vertical, imagem real sem texto e sete códigos; avaliar provas históricas sem herdar aceites do transporte antigo.
+- [ ] TASK-006 — Conferir provider/configuração efetiva, políticas publicadas e admissão operacional no ambiente alvo antes da ativação pública.
 
-## Marco atual
+## Arquivos prováveis e limites
 
-O worker usa gRPC falso nos testes automatizados; execuções manuais anteriores
-produziram capturas reais nos sete idiomas. A [consolidação auditada](evidence/ocr-consolidation.md)
-separa 15 rodadas do catálogo, quatro controles tipográficos reais, simulações e
-18 posições independentes ainda planejadas. A auditoria atual não usou credenciais
-nem fez nova chamada. Runtime, worker cloud, gateway e layout continuam
-desabilitados por padrão. TASK-004/005 abertas representam verificação externa,
-não implementação omitida; a 018 não está concluída.
+- Backend: adapter/factory/configuração Vision, mapper e testes; portas em memória
+  e orquestração já exercitadas na 017 serão auditadas, sem redesenhar algoritmo.
+- Mobile: contratos de conteúdo/regiões existentes só serão alterados se houver
+  lacuna técnica comprovada nesta fronteira. Não iniciar aquisição 021 ou simular
+  resultado pronto para satisfazer a 018.
+- Nenhuma migration nova prevista nesta etapa: servidor usa buffers; recibos de
+  metadados pertencem à 017. Mudança real de dados exige plano próprio prévio.
+- Nenhuma chamada paga, mídia de usuário, deploy público ou nova infraestrutura
+  é autorizada por este plano. Usar fixtures sintéticos locais na verificação.
+- TASK-005/006 são verificações reais abertas; não podem esconder código ausente.
+  `verification-pending` exige código/testes concluídos e revisão independente.
 
-Na consolidação anterior, o gate candidato da 019 foi recusado pelo validador:
-`approved` com gate aberto exige `tasks.md`, excluído daquele marco; foi aplicado
-o fallback `in-progress`/`blocked`. Em 2026-09-27, Ruan aprovou a transição
-documental com planejamento da 019. Após reconferir os hashes, a 018 passa a
-`verification-pending` e a 019 a `approved/open`, com suas sete tasks abertas.
-Nenhuma task técnica da 018 foi reaberta ou encerrada; TASK-004/005 continuam
-pendentes. Nenhuma implementação de tradução ou chamada OCR decorre da transição.
+## Gates
 
-A preparação de TASK-007 está no [protocolo OCR](../../../../../api/apps/translation-gateway/docs/ocr-evaluation/protocol.md),
-com [catálogo planejado](../../../../../api/apps/translation-gateway/docs/ocr-evaluation/catalog.md)
-e [modelos privados](../../../../../api/apps/translation-gateway/docs/ocr-evaluation/templates.md).
-As 18 posições do benchmark continuam sem referências independentes revisadas;
-não são preenchidas automaticamente pelo piloto. Os relatos abaixo são históricos
-dos respectivos marcos e não substituem o estado consolidado atual.
+Na raiz `api/`, testes focados via reactor e `./mvnw test`. No mobile,
+`pnpm specs:check` após planejamento e `pnpm check` após qualquer mudança runtime;
+provas locais não substituem benchmark/aparelho/políticas/produção.
 
-## Coleta e revisão — parcela de TASK-004, 2026-09-26
+## Resultado técnico e verificações abertas
 
-O [registro da coleta](../../../../../api/apps/translation-gateway/docs/ocr-evaluation/collection-review.md)
-documenta pesquisa pública inicial e protocolo 1.1: prioridade de quadrinhos,
-alternativa de impressos ilustrados, categoria explícita, custódia local de até
-30 dias e anotador/revisor distintos. Não reabre TASK-007 nem conclui TASK-004.
-
-As 18 posições continuam planejadas: destino privado, acessos, equipe por idioma,
-direitos por item e referências independentes ainda estão pendentes. Somente
-18 amostras autorizadas e 18 referências revisadas vigentes fecham esta parcela;
-resultados OCR e validação operacional permanecem fora da coleta.
-
-## Executor manual — parcela de TASK-004, 2026-09-26
-
-TASK-008 entrega o [executor e relatório local](../../../../../api/apps/translation-gateway/docs/ocr-evaluation/manual-test.md).
-Duas rodadas simuladas da página portuguesa 1 passaram pelo controller com filtros,
-PostgreSQL 17 isolado e adapter Vision contra gRPC falso. Exportação exige estado
-e hash confirmados; comparação não chama provider. O piloto licenciado de 12 JPEGs
-continua distinto das 18 referências independentes, sem retificar conclusões históricas.
-O caminho real tem opt-in por invocação e não foi executado. TASK-004/005 permanecem abertas.
+Revisão independente dos seis ACs confirmou runtime pronto após migrar os testes
+de falha à entrada inline. [Evidência atual](evidence/volatile-inline-verification-2026-11-02.md).
+Raiz backend: 2848 testes, zero falhas/erros, 115 skips; provas privadas opt-in
+atuais sem skips. TASK-005/006 permanecem abertas e não são substituídas por
+fixtures sintéticos. A 021 continua fora deste fechamento técnico.

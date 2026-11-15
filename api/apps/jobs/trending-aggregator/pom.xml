@@ -5,7 +5,7 @@
     <parent><groupId>com.toonlira</groupId><artifactId>toonlira-services</artifactId><version>0.0.1-SNAPSHOT</version><relativePath>../../../pom.xml</relativePath></parent>
     <artifactId>trending-aggregator</artifactId>
     <name>Toonlira Trending Aggregator</name>
-    <properties><java.version>23</java.version><mongock.version>5.5.0</mongock.version><testcontainers.version>1.21.4</testcontainers.version></properties>
+    <properties><java.version>25</java.version><mongock.version>5.5.0</mongock.version><testcontainers.version>1.21.4</testcontainers.version></properties>
     <dependencies>
         <dependency><groupId>com.toonlira</groupId><artifactId>testing-support</artifactId><scope>test</scope></dependency>
         <dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-web</artifactId></dependency>

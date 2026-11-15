@@ -16,5 +16,5 @@ export {
     type TextReaderBlock,
     verticalItemLayouts,
 } from './model/contentReader';
-export { ContentReader, type ContentReaderProps } from './ui/ContentReader';
+export { ContentReader, type ContentReaderProps, type ReaderChapterNavigation, type ReaderEndOfChapter, type ReaderSettingsSheet } from './ui/ContentReader';
 export type { ReaderControlSection } from './ui/ReaderPanel';

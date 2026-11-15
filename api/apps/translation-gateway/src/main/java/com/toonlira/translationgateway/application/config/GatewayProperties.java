@@ -2,17 +2,22 @@ package com.toonlira.translationgateway.application.config;
 
 import java.nio.file.Path;
 import java.time.Duration;
+import java.time.Instant;
 import java.util.List;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @ConfigurationProperties(prefix = "gateway")
 public class GatewayProperties {
     private boolean enabled;
+    private boolean volatileProcessingEnabled;
+    public boolean isVolatileProcessingEnabled() { return volatileProcessingEnabled; }
+    public void setVolatileProcessingEnabled(boolean value) { volatileProcessingEnabled = value; }
     private String key = "local-disabled";
     private Duration sessionTtl = Duration.ofMinutes(15);
     private Duration capabilitiesTtl = Duration.ofMinutes(5);
     private int installationDailyQuota = 20;
     private int globalDailyQuota = 100;
+    private final TestBudget testBudget = new TestBudget();
     private final Media media = new Media();
     private final Disclosure disclosure = new Disclosure();
     private final Storage storage = new Storage();
@@ -35,6 +40,7 @@ public class GatewayProperties {
     public void setInstallationDailyQuota(int value) { this.installationDailyQuota = value; }
     public int getGlobalDailyQuota() { return globalDailyQuota; }
     public void setGlobalDailyQuota(int value) { this.globalDailyQuota = value; }
+    public TestBudget getTestBudget() { return testBudget; }
     public Media getMedia() { return media; }
     public Disclosure getDisclosure() { return disclosure; }
     public Storage getStorage() { return storage; }
@@ -44,6 +50,21 @@ public class GatewayProperties {
     public Translation getTranslation() { return translation; }
     public Rendering getRendering() { return rendering; }
     public ResultDownload getResultDownload() { return resultDownload; }
+
+    public static class TestBudget {
+        private boolean enabled;
+        private boolean unmetered;
+        private int maxAttempts;
+        private Instant deadline;
+        public boolean isEnabled() { return enabled; }
+        public void setEnabled(boolean value) { enabled = value; }
+        public boolean isUnmetered() { return unmetered; }
+        public void setUnmetered(boolean value) { unmetered = value; }
+        public int getMaxAttempts() { return maxAttempts; }
+        public void setMaxAttempts(int value) { maxAttempts = value; }
+        public Instant getDeadline() { return deadline; }
+        public void setDeadline(Instant value) { deadline = value; }
+    }
 
     public static class ResultDownload {
         public enum Mode { DISABLED, GCS }
@@ -70,6 +91,9 @@ public class GatewayProperties {
         private Path nativeDistribution;
         private String nativeDistributionSha256 = "";
         private int childHeapMiB = 128;
+        private boolean storageProcessEnabled;
+        public boolean isStorageProcessEnabled() { return storageProcessEnabled; }
+        public void setStorageProcessEnabled(boolean value) { storageProcessEnabled = value; }
         private Duration processDeadline = Duration.ofSeconds(90);
         public Mode getMode() { return mode; }
         public void setMode(Mode value) { mode = value; }

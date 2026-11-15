@@ -65,6 +65,23 @@ describe('MOB-FEAT-052 interaction lifecycle', () => {
         unmount();
         expect(jest.getTimerCount()).toBe(0);
     });
+    it('recovers after a paged viewport is replaced during movement and ignores its late events', () => {
+        const { result, rerender } = renderHook(({ key }: { key: string }) => useReaderInteraction(DEFAULT_READER_GESTURES, true, false, jest.fn(), key), {
+            initialProps: { key: 'page-1' },
+        });
+        const previousScroll = result.current.onScrollPhase;
+        act(() => previousScroll('momentumStart'));
+        expect(result.current.busy()).toBe(true);
+
+        rerender({ key: 'page-2' });
+        act(() => {
+            previousScroll('dragStart');
+            result.current.touchHandlers.onTouchStart(event(20, 20));
+            result.current.touchHandlers.onTouchEnd(event(20, 20));
+        });
+        expect(result.current.state.visible).toBe(true);
+    });
+
     it('applies preference changes without resetting visible controls', () => {
         const { result, rerender } = renderHook(
             ({ mode }: { mode: 'TAP' | 'SWIPE' }) => useReaderInteraction({ ...DEFAULT_READER_GESTURES, controlsMode: mode }, false, false, jest.fn()),

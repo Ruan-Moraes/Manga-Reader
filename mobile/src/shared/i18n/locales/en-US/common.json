@@ -8,9 +8,10 @@
         "dashboardForbidden": "You do not have permission to access the dashboard."
     },
     "notFound": {
+        "eyebrow": "Error 404",
         "pageTitle": "Page not found",
         "pageDesc": "The address you accessed does not exist or has been removed. Check the link or return to the home page.",
-        "goHome": "Go to home",
+        "goHome": "Back to home",
         "searchWorks": "Browse titles"
     },
     "aboutUs": {
@@ -77,15 +78,11 @@
     "forum": {
         "comingSoon": "Coming soon: community topics"
     },
-    "modal": {
-        "title": "Modal"
-    },
     "user": {
         "logout": "Sign out"
     },
     "dataControls": {
         "title": "Data and storage",
-        "storageLabel": "Temporary usage",
         "sections": {
             "device": { "title": "On this device", "description": "Free up space without removing your account or preferences." },
             "account": { "title": "Account data", "description": "Export your information or remove tracked activity." }
@@ -94,8 +91,12 @@
         "confirm": "Confirm",
         "removes": "Removes",
         "preserves": "Preserves",
-        "storageUsage": "{{size}} in {{scope}}",
-        "storageScopes": { "temporaryExports": "temporary exports controlled by the app" },
+        "success": {
+            "cache": { "title": "Cache cleared", "description": "Images and regenerable data were removed from this device." },
+            "offline": { "title": "Offline data removed", "description": "Local projects and files were deleted from this device." },
+            "history": { "title": "History cleared", "description": "Read chapters and activities were removed. Your current position was kept." }
+        },
+        "storageScopes": { "temporaryExports": "Temporary exports" },
         "cache": {
             "action": "Clear cache",
             "description": "Removes images and data that can be downloaded again.",
@@ -124,6 +125,7 @@
             "action": "Clear offline data ({{size}})",
             "description": "Removes registered local projects and files from this device.",
             "empty": "No offline projects or files are stored on this device.",
+            "measureError": "Couldn't measure the offline data on this device.",
             "confirmTitle": "Clear offline data?",
             "confirmBody": "Registered offline projects and files will be removed from this device.",
             "projects": "offline projects and files"
@@ -138,6 +140,7 @@
         }
     },
     "localeControls": {
+        "dateExample": "Example: {{value}}",
         "title": "Language and region",
         "closeSelection": "Close selection",
         "interfaceSection": { "title": "Interface", "description": "Choose the language used in menus and messages." },
@@ -161,6 +164,7 @@
     },
     "privacy": {
         "title": "Privacy and sensitive content",
+        "loading": "Loading your privacy preferences…",
         "comments": "Comments",
         "history": "History",
         "library": "Library",
@@ -212,6 +216,7 @@
         }
     },
     "contentLanguages": {
+        "addAction": "Add",
         "title": "Content languages",
         "priorityTitle": "Preference order",
         "availableTitle": "Add a language",
@@ -246,7 +251,7 @@
                     "DARK": "Dark background for low-light environments."
                 },
                 "options": {
-                    "SYSTEM": "Follow system",
+                    "SYSTEM": "System",
                     "LIGHT": "Light",
                     "DARK": "Dark"
                 }

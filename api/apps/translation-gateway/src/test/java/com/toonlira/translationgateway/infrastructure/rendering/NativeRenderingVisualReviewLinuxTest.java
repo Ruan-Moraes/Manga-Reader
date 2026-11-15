@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 import javax.imageio.ImageIO;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -43,6 +44,16 @@ class NativeRenderingVisualReviewLinuxTest {
     @ParameterizedTest
     @EnumSource(value = NativeCodecPlatform.class, names = {"ARM64_GLIBC", "AMD64_GLIBC"})
     void savesSevenVerifiedSyntheticPagesForIndependentVisualReview(NativeCodecPlatform target) throws Exception {
+        saveSevenPages(target, false);
+    }
+
+    @Test
+    @EnabledIfSystemProperty(named = "renderer.visual.single-arm.enabled", matches = "true")
+    void savesSevenSyntheticPagesForArm64ReviewWithPinnedHostDecoder() throws Exception {
+        saveSevenPages(NativeCodecPlatform.ARM64_GLIBC, true);
+    }
+
+    private void saveSevenPages(NativeCodecPlatform target, boolean hostDecoder) throws Exception {
         String architecture = target == NativeCodecPlatform.ARM64_GLIBC ? "arm64" : "amd64";
         String image = System.getProperty("renderer.native.image." + architecture + ".id");
         var distribution = NativeCodecDistribution.admit(NativeCodecGlibcLinuxTest.distribution(target),
@@ -62,13 +73,14 @@ class NativeRenderingVisualReviewLinuxTest {
             RenderSubprocessProtocol.writeRequest(work.resolve("request.bin"), Path.of("/original"),
                 new BoundedNativeRenderChildSettings(settings, NativeProcessLimits.initial()), request);
             var decodedDirectory = Files.createDirectory(directory.resolve("decoded"));
-            try (var fixture = new LinuxRenderContainerFixture(temporary)) {
+            try (var fixture = new LinuxRenderContainerFixture(temporary, hostDecoder)) {
                 fixture.nativeImageVisualRender(original, work, image);
                 var output = RenderSubprocessProtocol.readResult(work.resolve("result.bin"), work, request);
                 assertThat(output.manifest().regions().stream().map(region -> region.overflow())).containsExactly(false, false, false, true);
                 var imageFile = Files.move(output.path(), directory.resolve("rendered.webp"));
                 assertThat(WebpProcessCodecTest.digest(imageFile)).isEqualTo(output.manifest().image().sha256());
-                fixture.decode(imageFile, decodedDirectory);
+                if (hostDecoder) decodeWithPinnedHost(imageFile, decodedDirectory.resolve("decoded.png"));
+                else fixture.decode(imageFile, decodedDirectory);
                 var decodedFile = Files.move(decodedDirectory.resolve("decoded.png"), directory.resolve("decoded.png"));
                 int changed = verifyPixels(original, decodedFile);
                 assertThat(changed).isGreaterThan(100);
@@ -94,6 +106,27 @@ class NativeRenderingVisualReviewLinuxTest {
                 System.out.println("synthetic-visual-render " + architecture + " " + language + ": verified-not-human-approved");
             }
         }
+    }
+
+    private static void decodeWithPinnedHost(Path image, Path output) throws Exception {
+        var configured = System.getProperty("renderer.visual.host.decoder");
+        var expected = System.getProperty("renderer.visual.host.decoder.sha256");
+        assertThat(configured).isNotBlank();
+        assertThat(expected).matches("[a-f0-9]{64}");
+        var decoder = Path.of(configured);
+        assertThat(decoder.isAbsolute()).isTrue();
+        assertThat(decoder.toRealPath()).isEqualTo(decoder);
+        assertThat(Files.isRegularFile(decoder, LinkOption.NOFOLLOW_LINKS) && Files.isExecutable(decoder)).isTrue();
+        assertThat(WebpProcessCodecTest.digest(decoder)).isEqualTo(expected);
+        var builder = new ProcessBuilder(decoder.toString(), image.toString(), "-o", output.toString());
+        builder.environment().clear();
+        builder.redirectOutput(ProcessBuilder.Redirect.DISCARD).redirectError(ProcessBuilder.Redirect.DISCARD);
+        var process = builder.start();
+        if (!process.waitFor(30, java.util.concurrent.TimeUnit.SECONDS)) {
+            process.destroyForcibly();
+            throw new IllegalStateException("visual-decoder-timeout");
+        }
+        assertThat(process.exitValue()).isZero();
     }
 
     private static int verifyPixels(Path original, Path rendered) throws Exception {

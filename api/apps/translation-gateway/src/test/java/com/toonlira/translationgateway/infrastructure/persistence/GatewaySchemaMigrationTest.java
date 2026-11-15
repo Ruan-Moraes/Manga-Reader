@@ -1,5 +1,7 @@
 package com.toonlira.translationgateway.infrastructure.persistence;
 
+import com.toonlira.translationgateway.infrastructure.storage.LegacyStorageFixture;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
@@ -27,7 +29,7 @@ import com.toonlira.translationgateway.application.port.LayoutPort;
 import com.toonlira.translationgateway.domain.OcrManifest;
 import com.toonlira.translationgateway.infrastructure.layout.ComicDetectorModel;
 import com.toonlira.translationgateway.infrastructure.ocr.FakeVisionServer;
-import com.toonlira.translationgateway.infrastructure.ocr.VisionOcrAdapter;
+import com.toonlira.translationgateway.infrastructure.ocr.LegacyVisionOcrAdapter;
 import com.toonlira.translationgateway.infrastructure.storage.LocalObjectStorageAdapter;
 import com.toonlira.translationgateway.infrastructure.translation.CloudTranslationAdapter;
 import com.toonlira.translationgateway.infrastructure.translation.FakeTranslationServer;
@@ -324,7 +326,7 @@ class GatewaySchemaMigrationTest {
             .store(argThat(key -> key.startsWith("private/layout/")), any(), any(), any(), any());
         var layout = syntheticLayout(null);
         try (var server = new FakeVisionServer();
-             var adapter = new VisionOcrAdapter(server.client(Duration.ofSeconds(5)), "test-project", "private-fixtures")) {
+             var adapter = new LegacyVisionOcrAdapter(server.client(Duration.ofSeconds(5)), "test-project", "private-fixtures")) {
             var shadow = new ShadowLayoutService(layout, failingStorage, GatewayJsonMapper.create(), Clock.systemUTC());
             var worker = new ProcessOcrTaskUseCase(ocrPersistence, failingStorage, new MediaInspectionService(), adapter,
                 new OcrManifestService(GatewayJsonMapper.create()), prepared.properties(), Clock.systemUTC(), shadow,
@@ -366,7 +368,7 @@ class GatewaySchemaMigrationTest {
         });
         var shadow = new ShadowLayoutService(detector, prepared.storage(), GatewayJsonMapper.create(), Clock.systemUTC());
         try (var server = new FakeVisionServer();
-             var adapter = new VisionOcrAdapter(server.client(Duration.ofSeconds(5)), "test-project", "private-fixtures")) {
+             var adapter = new LegacyVisionOcrAdapter(server.client(Duration.ofSeconds(5)), "test-project", "private-fixtures")) {
             var worker = new ProcessOcrTaskUseCase(injected, prepared.storage(), new MediaInspectionService(), adapter,
                 new OcrManifestService(GatewayJsonMapper.create()), prepared.properties(), Clock.systemUTC(), shadow,
                 new CleanupLifecycleObjectsUseCase(lifecyclePersistence, prepared.storage(), Clock.systemUTC()));
@@ -543,7 +545,7 @@ class GatewaySchemaMigrationTest {
         jdbcClient.sql("UPDATE processing_jobs SET status = 'READY' WHERE id = :id").param("id", job.id()).update();
         assertThatThrownBy(() -> acknowledgeResult.execute(createInstallation(), job.jobRef()))
             .isInstanceOfSatisfying(GatewayException.class, error -> assertThat(error.code()).isEqualTo(GatewayErrorCode.JOB_NOT_FOUND));
-        Callable<Boolean> request = () -> { acknowledgeResult.execute(installation, job.jobRef()); return true; };
+        Callable<Boolean> request = () -> { acknowledgementPersistence.request(installation, job.jobRef(), now); return true; };
         try (var executor = Executors.newFixedThreadPool(2)) {
             for (var result : executor.invokeAll(List.of(request, request))) assertThat(result.get()).isTrue();
         }
@@ -564,7 +566,7 @@ class GatewaySchemaMigrationTest {
         var job = reserveJob.execute(candidate(installation, UUID.randomUUID(), UUID.randomUUID(), now)).job();
         jdbcClient.sql("UPDATE processing_jobs SET status = 'READY' WHERE id = :id").param("id", job.id()).update();
         assertThatThrownBy(() -> transactionTemplate.executeWithoutResult(ignored -> {
-            acknowledgeResult.execute(installation, job.jobRef());
+            acknowledgementPersistence.request(installation, job.jobRef(), now);
             throw new IllegalStateException("synthetic rollback");
         })).isInstanceOf(IllegalStateException.class);
         assertThat(repository.findByJobRef(installation, job.jobRef()).orElseThrow().status()).isEqualTo(JobStatus.READY);
@@ -592,7 +594,7 @@ class GatewaySchemaMigrationTest {
         for (int index = 0; index < 2; index++) {
             var job = reserveJob.execute(candidate(installation, UUID.randomUUID(), UUID.randomUUID(), now)).job();
             jdbcClient.sql("UPDATE processing_jobs SET status = 'READY' WHERE id = :id").param("id", job.id()).update();
-            acknowledgeResult.execute(installation, job.jobRef());
+            acknowledgementPersistence.request(installation, job.jobRef(), now);
         }
         var claimAt = Instant.now().truncatedTo(ChronoUnit.MILLIS).plusSeconds(1);
         var lease = claimAt.plusSeconds(300);
@@ -648,7 +650,7 @@ class GatewaySchemaMigrationTest {
         jdbcClient.sql("UPDATE processing_jobs SET status = 'READY' WHERE id = :id").param("id", job.id()).update();
         var properties = new GatewayProperties();
         properties.getStorage().setLocalDirectory(workerTemporary);
-        var storage = spy(new LocalObjectStorageAdapter(properties));
+        var storage = spy(new LegacyStorageFixture(properties));
         var source = workerTemporary.resolve("synthetic-ack-source");
         Files.writeString(source, "synthetic artifact bytes");
         var hash = HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(Files.readAllBytes(source)));
@@ -664,7 +666,7 @@ class GatewaySchemaMigrationTest {
             transactionTemplate.executeWithoutResult(ignored ->
                 assertThat(acknowledgementRepository.expire(installation, job.jobRef(), now.plusSeconds(3600), now)).isTrue());
         } else {
-            acknowledgeResult.execute(installation, job.jobRef());
+            acknowledgementPersistence.request(installation, job.jobRef(), now);
         }
         var cleanupPersistence = mock(ResultAcknowledgementPersistenceUseCase.class,
             withSettings().defaultAnswer(delegatesTo(acknowledgementPersistence)));
@@ -706,7 +708,7 @@ class GatewaySchemaMigrationTest {
         properties.getTranslation().setMode(GatewayProperties.Translation.Mode.GOOGLE);
         properties.getTranslation().setEnabledPairs(List.of("ja:pt-BR"));
         properties.getStorage().setLocalDirectory(workerTemporary);
-        var storage = spy(new LocalObjectStorageAdapter(properties));
+        var storage = spy(new LegacyStorageFixture(properties));
         var mapper = GatewayJsonMapper.create();
         var manifests = new OcrManifestService(mapper);
         var regionId = UUID.randomUUID();
@@ -775,7 +777,7 @@ class GatewaySchemaMigrationTest {
         properties.getTranslation().setMode(GatewayProperties.Translation.Mode.GOOGLE);
         properties.getTranslation().setEnabledPairs(List.of("ja:pt-BR"));
         properties.getStorage().setLocalDirectory(workerTemporary);
-        var storage = spy(new LocalObjectStorageAdapter(properties));
+        var storage = spy(new LegacyStorageFixture(properties));
         var mapper = GatewayJsonMapper.create();
         var ocrManifests = new OcrManifestService(mapper);
         var translationManifests = new TranslationManifestService(mapper);
@@ -1015,7 +1017,7 @@ class GatewaySchemaMigrationTest {
         var entered = new CountDownLatch(1);
         var release = new CountDownLatch(1);
         try (var server = new FakeVisionServer();
-             var adapter = new VisionOcrAdapter(server.client(Duration.ofSeconds(10)), "test-project", "private-fixtures");
+             var adapter = new LegacyVisionOcrAdapter(server.client(Duration.ofSeconds(10)), "test-project", "private-fixtures");
              var executor = Executors.newSingleThreadExecutor()) {
             var defaultHandler = server.handler;
             server.handler = (request, observer) -> {
@@ -1071,7 +1073,7 @@ class GatewaySchemaMigrationTest {
             throw new IllegalStateException("injected acknowledgement loss");
         }).when(injected).complete(any(), any(), any(), any());
         try (var server = new FakeVisionServer();
-             var adapter = new VisionOcrAdapter(server.client(Duration.ofSeconds(5)), "test-project", "private-fixtures")) {
+             var adapter = new LegacyVisionOcrAdapter(server.client(Duration.ofSeconds(5)), "test-project", "private-fixtures")) {
             var worker = worker(prepared, injected, prepared.storage(), adapter);
             worker.execute(prepared.job().jobRef());
             worker.execute(prepared.job().jobRef());
@@ -1089,7 +1091,7 @@ class GatewaySchemaMigrationTest {
         doThrow(new IllegalStateException("injected upload failure")).when(failingStorage)
             .store(argThat(key -> key.startsWith("private/ocr/")), any(), any(), any(), any());
         try (var server = new FakeVisionServer();
-             var adapter = new VisionOcrAdapter(server.client(Duration.ofSeconds(5)), "test-project", "private-fixtures")) {
+             var adapter = new LegacyVisionOcrAdapter(server.client(Duration.ofSeconds(5)), "test-project", "private-fixtures")) {
             var worker = worker(prepared, ocrPersistence, failingStorage, adapter);
             worker.execute(prepared.job().jobRef());
             worker.execute(prepared.job().jobRef());
@@ -1101,7 +1103,7 @@ class GatewaySchemaMigrationTest {
     private PreparedWorker prepareWorkerJob() throws Exception {
         var properties = new GatewayProperties();
         properties.getStorage().setLocalDirectory(workerTemporary);
-        var storage = new LocalObjectStorageAdapter(properties);
+        var storage = new LegacyStorageFixture(properties);
         var source = workerTemporary.resolve("source.png");
         ImageIO.write(new BufferedImage(100, 200, BufferedImage.TYPE_INT_RGB), "png", source.toFile());
         var inspector = new MediaInspectionService();
@@ -1126,7 +1128,7 @@ class GatewaySchemaMigrationTest {
     }
 
     private ProcessOcrTaskUseCase worker(PreparedWorker prepared, OcrPersistenceUseCase persistence,
-                                        LocalObjectStorageAdapter storage, VisionOcrAdapter adapter) {
+                                        LocalObjectStorageAdapter storage, LegacyVisionOcrAdapter adapter) {
         return new ProcessOcrTaskUseCase(persistence, storage, new MediaInspectionService(), adapter,
             new OcrManifestService(GatewayJsonMapper.create()), prepared.properties(), Clock.systemUTC(),
             new CleanupLifecycleObjectsUseCase(lifecyclePersistence, storage, Clock.systemUTC()));

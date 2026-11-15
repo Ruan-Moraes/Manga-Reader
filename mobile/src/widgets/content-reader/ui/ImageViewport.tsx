@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { memo, type ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { FlatList, type NativeScrollEvent, type NativeSyntheticEvent, ScrollView, useWindowDimensions, View, type ViewToken } from 'react-native';
 import { Image } from 'expo-image';
 
@@ -28,6 +28,8 @@ interface ImageViewportProps {
     onLocationChange(location: ReaderLocation): void;
     onValidateItem?(itemId: string): Promise<boolean>;
     onScrollPhase?: ReaderScrollHandler;
+    /** Rendered after the last page in the vertical flow (063 end of chapter). */
+    footer?: ReactNode;
 }
 
 export const ImageViewport = memo(function ImageViewport({
@@ -38,6 +40,7 @@ export const ImageViewport = memo(function ImageViewport({
     onLocationChange,
     onValidateItem,
     onScrollPhase,
+    footer,
 }: ImageViewportProps) {
     const dimensions = useWindowDimensions();
     const [viewport, setViewport] = useState({ width: dimensions.width, height: dimensions.height });
@@ -165,6 +168,8 @@ export const ImageViewport = memo(function ImageViewport({
     if (mode === 'VERTICAL') {
         return (
             <FlatList
+                showsVerticalScrollIndicator={false}
+                showsHorizontalScrollIndicator={false}
                 ref={listRef}
                 testID="reader-vertical"
                 onLayout={event => setViewport(event.nativeEvent.layout)}
@@ -179,6 +184,7 @@ export const ImageViewport = memo(function ImageViewport({
                 initialScrollIndex={page.index}
                 getItemLayout={(_, index) => ({ length: layouts[index].height, offset: layouts[index].y, index })}
                 ItemSeparatorComponent={() => <View style={{ height: settings.gap }} />}
+                ListFooterComponent={footer ? <>{footer}</> : null}
                 onViewableItemsChanged={info => visibleChanged.current(info)}
                 viewabilityConfig={{ viewAreaCoveragePercentThreshold: 1 }}
                 onScroll={(event: NativeSyntheticEvent<NativeScrollEvent>) => updateFromOffset(event.nativeEvent.contentOffset.y)}
@@ -197,11 +203,17 @@ export const ImageViewport = memo(function ImageViewport({
     );
     const group = groups[groupIndex] ?? groups[0] ?? [];
     const surfaceWidth = mode === 'DOUBLE' ? width / 2 : width;
+    const scrollable = group.some(item => fittedImageSize(item, surfaceWidth, height, settings.fit).height > height);
     return (
         <ScrollView
+            showsVerticalScrollIndicator={false}
+            showsHorizontalScrollIndicator={false}
             key={groupIndex}
             onLayout={event => setViewport(event.nativeEvent.layout)}
             testID="reader-paged"
+            scrollEnabled={scrollable}
+            onScroll={event => onScrollPhase?.('activity', event)}
+            scrollEventThrottle={32}
             onScrollBeginDrag={event => onScrollPhase?.('dragStart', event)}
             onScrollEndDrag={event => onScrollPhase?.('dragEnd', event)}
             onMomentumScrollBegin={event => onScrollPhase?.('momentumStart', event)}

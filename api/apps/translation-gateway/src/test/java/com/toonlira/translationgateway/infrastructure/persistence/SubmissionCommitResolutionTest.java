@@ -17,6 +17,12 @@ import com.toonlira.translationgateway.application.SubmitPageUseCase;
 import com.toonlira.translationgateway.application.ProcessOcrTaskUseCase;
 import com.toonlira.translationgateway.application.port.GatewayRepository;
 import com.toonlira.translationgateway.application.port.ObjectStoragePort;
+import com.toonlira.translationgateway.application.config.GatewayProperties;
+import com.toonlira.translationgateway.infrastructure.storage.LegacyStorageFixture;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Primary;
 import com.toonlira.translationgateway.application.port.OcrPort;
 import com.toonlira.translationgateway.domain.JobStatus;
 import java.awt.image.BufferedImage;
@@ -62,7 +68,12 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @Tag("testcontainers")
 @Testcontainers
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@Import(SubmissionCommitResolutionTest.LegacyFixtures.class)
 class SubmissionCommitResolutionTest {
+    @TestConfiguration(proxyBeanMethods = false)
+    static class LegacyFixtures {
+        @Bean @Primary ObjectStoragePort storage(GatewayProperties properties) { return new LegacyStorageFixture(properties); }
+    }
     @Container static final PostgreSQLContainer<?> POSTGRES = new PostgreSQLContainer<>("postgres:17-alpine");
     @TempDir static Path temporary;
     @DynamicPropertySource static void configure(DynamicPropertyRegistry registry) {

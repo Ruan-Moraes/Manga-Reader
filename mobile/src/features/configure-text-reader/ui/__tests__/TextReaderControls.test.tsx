@@ -34,7 +34,7 @@ describe('MOB-FEAT-053 text controls', () => {
         expect(screen.getByRole('radio', { name: 'Largas' })).toBeSelected();
         expect(screen.getByRole('radio', { name: 'Papel' })).toBeSelected();
         fireEvent(screen.getByRole('adjustable'), 'accessibilityAction', { nativeEvent: { actionName: 'increment' } });
-        expect(screen.getByRole('adjustable')).toHaveAccessibilityValue({ min: 16, max: 28, now: 19, text: '19 sp' });
+        expect(screen.getByRole('adjustable')).toHaveAccessibilityValue({ min: 16, max: 28, now: 19, text: '19 pt' });
         fireEvent.press(screen.getByRole('button', { name: 'Restaurar ajustes do texto' }));
         expect(screen.getByRole('radio', { name: 'Do aplicativo' })).toBeSelected();
         expect(screen.getByRole('radio', { name: 'Confortável' })).toBeSelected();

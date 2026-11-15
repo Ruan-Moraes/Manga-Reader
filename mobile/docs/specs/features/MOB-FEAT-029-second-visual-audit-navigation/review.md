@@ -67,3 +67,11 @@ Rebase C02/C05 (2026-09-06): checksum global atualizado após virtualização do
 Consolidação documental (2026-09-06): checksum global atualizado após reconciliar o estado de performance; runtime e verdict preservados. Registro (arquivo externo: `perfomance_app/mobile/docs/active/performance-evidence/consolidation-2026-09-06/review.md`). Sem nova validação física.
 
 Preparação de commit (2026-09-06): rebase global após excluir scripts avulsos de ensaio, listagens Git e metadados do sistema dos arquivos versionados, conforme solicitação humana. Resultados históricos preservados; runtime e verdict inalterados.
+
+## Correção visual localizada — 2026-11-04
+
+No fluxo de tradução, o botão de retorno passou a usar o mesmo raio de controle
+da ação oposta, preservando o tamanho mínimo e o formato padrão nas demais telas.
+Testes de `shared/ui` e da página confirmaram o raio. A navegação solicitada para
+obras, capítulos e lote permanece sujeita à Target Spec 055 em draft; esta
+correção visual não aprova nem implementa esse novo comportamento.

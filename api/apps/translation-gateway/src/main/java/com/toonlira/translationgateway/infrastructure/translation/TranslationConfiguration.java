@@ -20,14 +20,14 @@ public class TranslationConfiguration {
     @Bean
     TranslationPort translationPort(GatewayProperties properties, Environment environment,
                                     TranslationClientFactory factory) {
-        if (!environment.acceptsProfiles(Profiles.of("worker"))
+        if ((!environment.acceptsProfiles(Profiles.of("worker")) && !properties.isVolatileProcessingEnabled())
             || properties.getTranslation().getMode() == GatewayProperties.Translation.Mode.DISABLED) {
             return request -> { throw new IllegalStateException("Translation disabled"); };
         }
-        if (!"gcs".equals(properties.getStorage().getMode())
-            || !properties.getTranslation().getProjectId().matches("[a-z][a-z0-9-]{4,28}[a-z0-9]")
-            || !properties.getStorage().getBucket().matches("[a-z0-9][a-z0-9._-]{1,220}[a-z0-9]")) {
-            throw new IllegalStateException("Translation requires a valid project and private GCS storage configuration");
+        if (!properties.getTranslation().getProjectId().matches("[1-9][0-9]{0,19}")
+            || !properties.isVolatileProcessingEnabled() && (!"gcs".equals(properties.getStorage().getMode())
+                || !properties.getStorage().getBucket().matches("[a-z0-9][a-z0-9._-]{1,220}[a-z0-9]"))) {
+            throw new IllegalStateException("Translation requires a valid project configuration");
         }
         try {
             if (ConfiguredTranslationPairs.parse(properties.getTranslation().getEnabledPairs()).isEmpty()) {

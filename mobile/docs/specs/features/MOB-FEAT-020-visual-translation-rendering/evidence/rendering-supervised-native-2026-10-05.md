@@ -1,5 +1,9 @@
 # FFM supervisionado — evidência parcial, 2026-10-05
 
+> Registro histórico do desenho anterior. Em 2026-11-01, as classes
+> referenciadas retiradas de produção foram movidas para suporte de teste. Os
+> links acompanham essa localização; não indicam código produtivo atual.
+
 TASK-002/007/008, AC-001..006. Ruan autorizou implementação incremental até
 a 020 e escolheu manter libwebp com orçamento total medido. 020 open/in-progress,
 verdict changes-requested; 021 approved/blocked. Sem chamada paga, credencial,
@@ -8,9 +12,9 @@ mídia privada, alteração cloud ou ativação.
 ## Fontes e testes
 
 - [Plano/implementação delimitada](../../../../../../api/apps/translation-gateway/docs/rendering-supervised-native.md).
-- [IPC](../../../../../../api/apps/translation-gateway/src/main/java/com/toonlira/translationgateway/infrastructure/rendering/RenderSubprocessProtocol.java):
+- [IPC](../../../../../../api/apps/translation-gateway/src/test/java/com/toonlira/translationgateway/infrastructure/rendering/RenderSubprocessProtocol.java):
   CLI TRN1 preservado, FFM TRN2 explícito; TRS1/contratos públicos iguais.
-- [Adapter da filha](../../../../../../api/apps/translation-gateway/src/main/java/com/toonlira/translationgateway/infrastructure/rendering/NativeFileRenderAdapter.java):
+- [Adapter da filha](../../../../../../api/apps/translation-gateway/src/test/java/com/toonlira/translationgateway/infrastructure/rendering/NativeFileRenderAdapter.java):
   valida mídia antes de carregar libs, capacidade antes de decode, ARGB único,
   ownership/close antes da transferência e cleanup somente de arquivos possuídos.
 - [Testes leves](../../../../../../api/apps/translation-gateway/src/test/java/com/toonlira/translationgateway/infrastructure/rendering/NativeFileRenderAdapterTest.java):

@@ -1,5 +1,7 @@
 package com.toonlira.translationgateway.infrastructure.persistence;
 
+import com.toonlira.translationgateway.infrastructure.storage.LegacyStorageFixture;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
@@ -463,7 +465,7 @@ class RenderingPersistenceTest {
         rendering.complete(job.id(), artifacts(job.id()), now);
         var properties = new GatewayProperties();
         properties.getStorage().setLocalDirectory(lifecycleFiles.resolve("owned-storage"));
-        var storage = spy(new LocalObjectStorageAdapter(properties));
+        var storage = spy(new LegacyStorageFixture(properties));
         var sample = lifecycleFiles.resolve("reusable-sample.png");
         Files.write(sample, new byte[] {1, 2, 3});
         var original = rendering.find(job.jobRef()).originalObjectKey();
@@ -782,7 +784,7 @@ class RenderingPersistenceTest {
     @Test
     void cleanFlywayChainAndExistingPrimaryKeyCoverRenderingMetadata() {
         assertThat(jdbc.sql("SELECT version FROM flyway_schema_history WHERE success ORDER BY installed_rank")
-            .query(String.class).list()).containsExactly("1", "2", "3", "4", "5", "6", "7", "8", "9");
+            .query(String.class).list()).containsExactly("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11");
         assertThat(jdbc.sql("SELECT indexdef FROM pg_indexes WHERE schemaname = 'public' AND tablename = 'processing_job_stages'")
             .query(String.class).list()).hasSize(1).first().asString().contains("UNIQUE", "job_id, stage");
         var job = prepareRendering();
@@ -827,7 +829,25 @@ class RenderingPersistenceTest {
         assertThat(upgraded).isEqualTo(rendering.find(job.jobRef()));
         assertThat(upgraded.artifacts()).isNull();
         assertThat(legacy.sql("SELECT version FROM flyway_schema_history WHERE success AND version IS NOT NULL ORDER BY installed_rank")
-            .query(String.class).list()).containsExactly("1", "2", "3", "4", "5", "6", "7", "8", "9");
+            .query(String.class).list()).containsExactly("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11");
+    }
+
+    @Test
+    void interruptedWorkerCanPersistUnclaimedRenderingFailure() throws Exception {
+        var job = prepareRendering();
+        var pool = Executors.newSingleThreadExecutor();
+        try {
+            var failure = pool.submit(() -> {
+                Thread.currentThread().interrupt();
+                try { rendering.failUnclaimed(job.id(), GatewayErrorCode.INTERNAL_ERROR, now); }
+                finally { Thread.interrupted(); }
+            });
+            failure.get(10, TimeUnit.SECONDS);
+            assertThat(rendering.find(job.jobRef()).status()).isEqualTo(JobStatus.FAILED);
+        } finally {
+            pool.shutdownNow();
+            assertThat(pool.awaitTermination(5, TimeUnit.SECONDS)).isTrue();
+        }
     }
 
     @Test
@@ -1337,7 +1357,7 @@ class RenderingPersistenceTest {
         assertThat(plan).anyMatch(line -> line.contains("Limit")).anyMatch(line -> line.contains("LockRows"));
         System.out.println("Result expiration EXPLAIN (synthetic local fixture):\n" + String.join("\n", plan));
         assertThat(jdbc.sql("SELECT version FROM flyway_schema_history WHERE success ORDER BY installed_rank")
-            .query(String.class).list()).containsExactly("1", "2", "3", "4", "5", "6", "7", "8", "9");
+            .query(String.class).list()).containsExactly("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11");
     }
 
     @Test

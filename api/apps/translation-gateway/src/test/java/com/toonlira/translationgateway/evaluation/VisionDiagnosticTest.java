@@ -13,7 +13,6 @@ import com.google.cloud.vision.v1.Symbol;
 import com.google.cloud.vision.v1.TextAnnotation;
 import com.google.cloud.vision.v1.Vertex;
 import com.google.cloud.vision.v1.Word;
-import com.toonlira.translationgateway.application.port.OcrPort;
 import com.toonlira.translationgateway.domain.OcrManifest;
 import com.toonlira.translationgateway.infrastructure.ocr.VisionResponseMapper;
 import java.util.List;
@@ -91,7 +90,7 @@ class VisionDiagnosticTest {
     }
 
     static OcrManifest manifest(BatchAnnotateImagesResponse batch) {
-        return new OcrManifest("1.0", JOB, "ja", 100, 200, new VisionResponseMapper().map(batch, new OcrPort.Command("local", "ja", JOB, 100, 200)));
+        return new OcrManifest("1.0", JOB, "ja", 100, 200, new VisionResponseMapper().map(batch, new VisionResponseMapper.Context(JOB, 100, 200)));
     }
     static BatchAnnotateImagesResponse batch(Paragraph... paragraphs) {
         return BatchAnnotateImagesResponse.newBuilder().addResponses(AnnotateImageResponse.newBuilder().setFullTextAnnotation(

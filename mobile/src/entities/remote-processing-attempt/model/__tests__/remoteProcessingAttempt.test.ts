@@ -1,4 +1,4 @@
-import { pageJobEnvelopeSchema } from '../remoteProcessingAttempt';
+import { pageJobEnvelopeSchema } from '../../../../../test-support/pre-volatile/legacyPageJobEnvelope';
 
 const envelope = {
     contractVersion: '1.0',

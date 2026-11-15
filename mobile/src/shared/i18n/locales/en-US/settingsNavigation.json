@@ -75,6 +75,11 @@
     "about": {
         "title": "About",
         "version": "Version",
+        "developerEnabled": "Developer mode enabled",
+        "developerMode": "Developer mode",
+        "developerDescription": "Shows technical translation details.",
+        "developerError": "Could not save developer mode.",
+        "developerDisable": "Tap to disable technical details.",
         "build": "Build",
         "appSection": {
             "title": "Application",
@@ -82,7 +87,7 @@
         },
         "linksSection": {
             "title": "Official links",
-            "description": "Help, documents, and project code."
+            "description": "Official project documents and pages."
         },
         "links": {
             "support": "Support",
@@ -108,5 +113,8 @@
     },
     "errors": {
         "externalLink": "Unable to open the external link. Try again."
+    },
+    "readerSheets": {
+        "close": "Close"
     }
 }

@@ -234,6 +234,8 @@ export const TextViewport = memo(function TextViewport({
     return (
         <MeasurementContext.Provider value={measurement}>
             <FlatList
+                showsVerticalScrollIndicator={false}
+                showsHorizontalScrollIndicator={false}
                 testID="reader-text-flow"
                 ref={listRef}
                 data={document.blocks as TextReaderBlock[]}

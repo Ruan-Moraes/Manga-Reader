@@ -71,3 +71,31 @@ describe('MOB-FEAT-003 formatadores regionais', () => {
         await i18n.changeLanguage('pt-BR');
     });
 });
+
+describe('revisão 2026-11-13: datas no Hermes', () => {
+    afterEach(() => jest.restoreAllMocks());
+
+    it('mantém o mês por extenso mesmo quando formatToParts rotula o "de" como mês (Hermes)', () => {
+        const original = Intl.DateTimeFormat.prototype.formatToParts;
+        jest.spyOn(Intl.DateTimeFormat.prototype, 'formatToParts').mockImplementation(function (this: Intl.DateTimeFormat, date) {
+            const parts = original.call(this, date);
+            const options = this.resolvedOptions();
+            if (options.locale.startsWith('pt') && options.month === 'short') {
+                return parts.map(part =>
+                    part.type === 'month'
+                        ? { ...part, type: 'literal' as const }
+                        : part.type === 'literal' && part.value.trim() === 'de'
+                          ? { ...part, type: 'month' as const, value: 'de' }
+                          : part,
+                );
+            }
+            return parts;
+        });
+        const date = new Date(Date.UTC(2026, 10, 8, 12));
+
+        expect(formatDate(date, { dateFormat: 'D_MON', includeYear: false, language: 'pt-BR', timezone: 'UTC' })).toBe('8 nov.');
+        expect(formatDate(date, { dateFormat: 'MON_D', includeYear: false, language: 'pt-BR', timezone: 'UTC' })).toBe('nov. 8');
+        expect(formatDate(date, { dateFormat: 'D_MON', language: 'pt-BR', timezone: 'UTC' })).toBe('8 nov. 2026');
+        expect(formatDate(date, { dateFormat: 'D_M', includeYear: false, language: 'pt-BR', timezone: 'UTC' })).toBe('08/11');
+    });
+});

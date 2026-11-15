@@ -11,6 +11,8 @@ interface Props extends Omit<TextInputProps, 'onBlur' | 'onChange' | 'onChangeTe
     onChange: (v: string) => void;
     placeholder?: string;
     error?: string;
+    /** Marks the field when a shared error message is displayed elsewhere. */
+    invalid?: boolean;
     helperText?: string;
     labelAction?: ReactNode;
     leading?: ReactNode;
@@ -18,12 +20,17 @@ interface Props extends Omit<TextInputProps, 'onBlur' | 'onChange' | 'onChangeTe
     onBlur?: () => void;
 }
 
+/**
+ * Form field. Form rhythm used across the app: label → field `spacing.sm`, field → next field or the primary action
+ * `spacing.md` (this component's bottom margin), so screens do not add their own spacers.
+ */
 export function Input({
     label,
     value,
     onChange,
     placeholder,
     error,
+    invalid = false,
     helperText,
     labelAction,
     leading,
@@ -38,16 +45,23 @@ export function Input({
 }: Props) {
     const { layout, minimumTouchTarget, radii, spacing, textStyles, tokens } = useTheme();
     const [focused, setFocused] = useState(false);
-    const borderColor = error ? tokens.danger : focused ? tokens.focus : tokens.inputBorder;
+    const hasError = invalid || Boolean(error);
+    const borderColor = hasError ? tokens.danger : focused ? tokens.focus : tokens.inputBorder;
 
     return (
         <View style={{ marginBottom: spacing.md }}>
             {label && (
                 <View style={{ alignItems: 'center', flexDirection: 'row', gap: spacing.sm, justifyContent: 'space-between', marginBottom: spacing.sm }}>
-                    <AppText variant="label" tone={error ? 'danger' : 'default'}>
+                    <AppText variant="label" tone={hasError ? 'danger' : 'default'}>
                         {label}
                     </AppText>
-                    {labelAction}
+                    {labelAction ? (
+                        // The action keeps its 44 pt target but overlaps the row, so the label stays as close to the
+                        // field as a label without an action.
+                        <View style={{ marginVertical: -Math.max(0, (minimumTouchTarget - (textStyles.label.lineHeight ?? minimumTouchTarget)) / 2) }}>
+                            {labelAction}
+                        </View>
+                    ) : null}
                 </View>
             )}
             <View
@@ -56,7 +70,7 @@ export function Input({
                     backgroundColor: tokens.inputBg,
                     borderColor,
                     borderRadius: radii.control,
-                    borderWidth: focused || error ? 2 : 1,
+                    borderWidth: focused || hasError ? 2 : 1,
                     flexDirection: 'row',
                     gap: spacing.sm,
                     minHeight: multiline ? Math.max(96, minimumTouchTarget) : Math.max(layout.controlHeight, minimumTouchTarget),

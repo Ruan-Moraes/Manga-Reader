@@ -1,3 +1,3 @@
-export { normalizeReaderSettings, selectableQualities } from './model/readerConfiguration';
+export { normalizeReaderSettings } from './model/readerConfiguration';
 export { ReaderGestureControls, type ReaderGestureControlsProps } from './ui/ReaderGestureControls';
-export { ReaderSettingsControls } from './ui/ReaderSettingsControls';
+export { type ReaderSettingsCategory, ReaderSettingsControls } from './ui/ReaderSettingsControls';

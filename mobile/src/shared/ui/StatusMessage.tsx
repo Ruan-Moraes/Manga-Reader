@@ -20,7 +20,9 @@ interface StatusMessageProps {
 }
 
 export function StatusMessage({ title, description, tone = 'info', actionLabel, onAction, icon, children }: StatusMessageProps) {
-    const { radii, spacing, tokens } = useTheme();
+    const { metrics, radii, spacing, tokens } = useTheme();
+    const surface =
+        tone === 'danger' ? tokens.dangerSoft : tone === 'warning' ? tokens.warnSoft : tone === 'success' ? tokens.successSoft : tokens.surfaceSelected;
     const color = tone === 'danger' ? tokens.danger : tone === 'warning' ? tokens.warn : tone === 'success' ? tokens.success : tokens.accentText;
     const defaultIcon: IconName =
         tone === 'danger' ? 'alert-circle' : tone === 'warning' ? 'warning' : tone === 'success' ? 'checkmark-circle' : 'information-circle';
@@ -31,8 +33,9 @@ export function StatusMessage({ title, description, tone = 'info', actionLabel, 
             accessible
             accessibilityLiveRegion={live}
             accessibilityRole={tone === 'danger' ? 'alert' : tone === 'loading' ? 'progressbar' : 'summary'}
+            testID="status-message"
             style={{
-                backgroundColor: tokens.surfaceSelected,
+                backgroundColor: surface,
                 borderColor: color,
                 borderRadius: radii.card,
                 borderWidth: 1,
@@ -41,7 +44,7 @@ export function StatusMessage({ title, description, tone = 'info', actionLabel, 
             }}
         >
             <View style={{ alignItems: 'center', flexDirection: 'row', gap: spacing.sm }}>
-                {tone === 'loading' ? <ActivityIndicator color={tokens.accent} /> : <Icon name={icon ?? defaultIcon} size={20} color={color} />}
+                {tone === 'loading' ? <ActivityIndicator color={tokens.accent} /> : <Icon name={icon ?? defaultIcon} size={metrics.icon.md} color={color} />}
                 <AppText variant="label" style={{ color, flex: 1 }}>
                     {title}
                 </AppText>

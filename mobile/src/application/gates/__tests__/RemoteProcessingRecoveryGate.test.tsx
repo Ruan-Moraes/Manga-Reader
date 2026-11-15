@@ -63,7 +63,7 @@ function setup() {
 }
 
 describe('MOB-FEAT-017 recovery callers under controlled network failure', () => {
-    it('shares an overlapping active wave across the real gate and hook and permits a fresh retry', async () => {
+    it('owns separate metadata-only requests for gate and hook and coalesces repeated foreground events', async () => {
         const fixture = setup();
         render(
             <RemoteProcessingRecoveryGate>
@@ -90,14 +90,14 @@ describe('MOB-FEAT-017 recovery callers under controlled network failure', () =>
             fixture.emit('active');
             fixture.emit('active');
         });
-        await waitFor(() => expect(mockController.reconcile).toHaveBeenCalledTimes(6));
-        expect(fixture.listRecoverable).toHaveBeenCalledTimes(3);
-        expect(fixture.request).toHaveBeenCalledTimes(1);
+        await waitFor(() => expect(mockController.reconcile).toHaveBeenCalledTimes(2));
+        expect(fixture.listRecoverable).toHaveBeenCalledTimes(1);
+        expect(fixture.request).toHaveBeenCalledTimes(2);
         await act(async () => release());
         await waitFor(() => expect(screen.getByText('ready')).toBeOnTheScreen());
 
         await act(async () => fixture.emit('active'));
-        await waitFor(() => expect(fixture.request).toHaveBeenCalledTimes(2));
+        await waitFor(() => expect(fixture.request).toHaveBeenCalledTimes(4));
         await waitFor(() => expect(screen.getByText('ready')).toBeOnTheScreen());
         expect(fixture.upload).not.toHaveBeenCalled();
     });

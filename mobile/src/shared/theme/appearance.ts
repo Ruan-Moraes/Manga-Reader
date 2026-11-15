@@ -1,4 +1,4 @@
-import { Platform, type TextStyle } from 'react-native';
+import { Easing, Platform, type TextStyle } from 'react-native';
 
 import { FONTS } from './fonts';
 import type { ColorScheme, ThemeTokens } from './tokens';
@@ -13,7 +13,7 @@ export type SpacingRole = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl';
 export type TypographyScale = Record<TypographyRole, number>;
 export type SpacingScale = Record<SpacingRole, number>;
 export type RadiusRole = 'sm' | 'control' | 'card' | 'feature' | 'pill';
-export type TypographyStyleRole = 'display' | 'title' | 'section' | 'body' | 'label' | 'caption' | 'eyebrow' | 'button';
+export type TypographyStyleRole = 'display' | 'title' | 'section' | 'heading' | 'body' | 'label' | 'caption' | 'eyebrow' | 'button';
 
 export type RadiusScale = Record<RadiusRole, number>;
 export interface LayoutScale {
@@ -42,11 +42,90 @@ export const LAYOUT_SCALES: Record<DensityPreference, LayoutScale> = {
     COMPACT: { screenGutter: 16, sectionGap: 24, controlHeight: 52, compactControlHeight: 44 },
 };
 
+export interface MetricScale {
+    icon: { sm: number; md: number; lg: number };
+    iconTile: { default: number; feature: number };
+    row: { single: number; double: number };
+    control: { compact: number; default: number; comfortable: number };
+    chip: { action: number; value: number; count: number };
+    rhythm: { itemGap: number; groupGap: number; cardPadding: number };
+    accentBar: { width: number; height: number };
+}
+
+const FIXED_METRICS: Omit<MetricScale, 'rhythm'> = {
+    icon: { sm: 16, md: 20, lg: 24 },
+    iconTile: { default: 40, feature: 48 },
+    row: { single: 56, double: 64 },
+    control: { compact: 40, default: 44, comfortable: 52 },
+    chip: { action: 36, value: 28, count: 24 },
+    accentBar: { width: 4, height: 16 },
+};
+
+export const METRIC_SCALES: Record<DensityPreference, MetricScale> = {
+    COMFORTABLE: { ...FIXED_METRICS, rhythm: { itemGap: 12, groupGap: SPACING_SCALES.COMFORTABLE.lg, cardPadding: SPACING_SCALES.COMFORTABLE.md } },
+    COMPACT: { ...FIXED_METRICS, rhythm: { itemGap: 8, groupGap: SPACING_SCALES.COMPACT.lg, cardPadding: SPACING_SCALES.COMPACT.md } },
+};
+
+export type ShadowRole = 'card' | 'sheet';
+export interface ShadowSpec {
+    offsetY: number;
+    opacity: number;
+    radius: number;
+    elevation: number;
+}
+export type ShadowScale = Record<ShadowRole, ShadowSpec>;
+
+export const SHADOWS: ShadowScale = {
+    card: { offsetY: 8, opacity: 0.12, radius: 18, elevation: 3 },
+    sheet: { offsetY: -8, opacity: 0.28, radius: 22, elevation: 18 },
+};
+
+/** Builds a platform shadow style; the color must come from a theme token. */
+export function createShadowStyle(role: ShadowRole, shadowColor: string) {
+    const shadow = SHADOWS[role];
+
+    return {
+        shadowColor,
+        shadowOffset: { width: 0, height: shadow.offsetY },
+        shadowOpacity: shadow.opacity,
+        shadowRadius: shadow.radius,
+        elevation: shadow.elevation,
+    };
+}
+
+export type MotionRole = 'instant' | 'fast' | 'base' | 'sheet' | 'exit' | 'pulse' | 'screen' | 'screenSlide';
+export type MotionScale = Record<MotionRole, number>;
+
+/**
+ * Durações em ms. `fast`: toque, hover e foco. `base`: aparecer e sumir. `sheet`: entrada de folha e
+ * deslocamentos longos. `exit`: saída de folha e diálogo (sempre mais curta que a entrada).
+ * `pulse`: ciclo completo (ida e volta) do esqueleto de carregamento.
+ * `screen`: troca de tela com fade (troca de módulo, leitor, abas). `screenSlide`: tela que desliza (ir mais fundo no
+ * iOS, fluxo que sobe de baixo). As trocas de tela são mais curtas que os elementos da tela (pedido de 2026-11-14).
+ */
+export const MOTION_DURATIONS: MotionScale = { instant: 0, fast: 120, base: 200, sheet: 280, exit: 180, pulse: 1200, screen: 140, screenSlide: 220 };
+
+const REDUCED_MOTION_DURATIONS = Object.fromEntries(Object.keys(MOTION_DURATIONS).map(role => [role, 0])) as MotionScale;
+
+export const resolveMotionDurations = (effectiveReduceMotion: boolean): MotionScale => (effectiveReduceMotion ? REDUCED_MOTION_DURATIONS : MOTION_DURATIONS);
+
+export type MotionEasingRole = 'standard' | 'enter' | 'exit' | 'pulse';
+
+/** Curvas para `Animated` (react-native). Animações em worklet do Reanimated usam o `Easing` do Reanimated. */
+export const MOTION_EASING: Record<MotionEasingRole, (value: number) => number> = {
+    standard: Easing.out(Easing.quad),
+    enter: Easing.out(Easing.cubic),
+    exit: Easing.in(Easing.cubic),
+    pulse: Easing.inOut(Easing.sin),
+};
+
 export function createTypographyStyles(scale: TypographyScale): TypographyStyleScale {
     return {
         display: { fontFamily: FONTS.extrabold, fontSize: scale.h1, lineHeight: scale.h1 * 1.12, letterSpacing: -0.7 },
         title: { fontFamily: FONTS.bold, fontSize: scale.h2, lineHeight: scale.h2 * 1.18, letterSpacing: -0.35 },
         section: { fontFamily: FONTS.bold, fontSize: scale.h3, lineHeight: scale.h3 * 1.25, letterSpacing: -0.15 },
+        // Screen title inside a navigation bar (header "Entrar", reader chapter title).
+        heading: { fontFamily: FONTS.bold, fontSize: scale.h4 + 1, lineHeight: (scale.h4 + 1) * 1.3, letterSpacing: -0.1 },
         body: { fontFamily: FONTS.regular, fontSize: scale.body, lineHeight: scale.body * 1.5, letterSpacing: 0 },
         label: { fontFamily: FONTS.bold, fontSize: scale.body, lineHeight: scale.body * 1.35, letterSpacing: 0 },
         caption: { fontFamily: FONTS.regular, fontSize: scale.small, lineHeight: scale.small * 1.45, letterSpacing: 0 },
@@ -74,6 +153,7 @@ export const darkHighContrastTokens: ThemeTokens = {
     surface: '#181818',
     surfaceMuted: '#0d0d0d',
     surfaceElevated: '#181818',
+    surfaceHover: '#262626',
     surfacePressed: '#333333',
     surfaceSelected: '#181818',
     disabledSurface: '#0d0d0d',
@@ -94,6 +174,9 @@ export const darkHighContrastTokens: ThemeTokens = {
     onDanger: '#ffffff',
     success: '#69f0ae',
     warn: '#ffe082',
+    dangerSoft: '#181818',
+    successSoft: '#181818',
+    warnSoft: '#181818',
     text: '#ffffff',
     inverseText: '#000000',
     muted: '#f2f2f2',
@@ -114,6 +197,7 @@ export const lightHighContrastTokens: ThemeTokens = {
     surface: '#ffffff',
     surfaceMuted: '#f5f5f5',
     surfaceElevated: '#f5f5f5',
+    surfaceHover: '#f2f2f2',
     surfacePressed: '#e5e5e5',
     surfaceSelected: '#f5f5f5',
     disabledSurface: '#f5f5f5',
@@ -134,6 +218,9 @@ export const lightHighContrastTokens: ThemeTokens = {
     onDanger: '#ffffff',
     success: '#005a32',
     warn: '#664000',
+    dangerSoft: '#f5f5f5',
+    successSoft: '#f5f5f5',
+    warnSoft: '#f5f5f5',
     text: '#000000',
     inverseText: '#ffffff',
     muted: '#1f1f1f',

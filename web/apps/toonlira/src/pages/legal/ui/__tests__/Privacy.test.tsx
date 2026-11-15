@@ -42,8 +42,8 @@ describe('Privacy', () => {
         renderWithProviders(<Privacy />);
 
         expect(screen.queryByRole('note', { name: /documento em rascunho/i })).not.toBeInTheDocument();
-        expect(screen.getByText(/^versão 1\.0$/i)).toBeInTheDocument();
-        expect(screen.getByText(/07\/09\/2026/i)).toBeInTheDocument();
+        expect(screen.getByText(/^versão 1\.1$/i)).toBeInTheDocument();
+        expect(screen.getByText(/01\/11\/2026/i)).toBeInTheDocument();
         expect(screen.getByRole('link', { name: 'ruanmoraessantosbarbosa@gmail.com' })).toHaveAttribute('href', 'mailto:ruanmoraessantosbarbosa@gmail.com');
         expect(screen.queryByText(/Av\. Paulista/i)).not.toBeInTheDocument();
         expect(screen.queryByText(/dpo@toonlira\.example\.com/i)).not.toBeInTheDocument();
@@ -53,7 +53,8 @@ describe('Privacy', () => {
         renderWithProviders(<Privacy />);
 
         expect(screen.getByText(/Segundo a documentação oficial do Google Cloud/i)).toHaveTextContent(/não usam o conteúdo enviado para treinar/i);
-        expect(screen.getByText(/em até uma hora/i)).toBeInTheDocument();
+        expect(screen.getByText(/processados em memória/i)).toHaveTextContent(/sem gravação de conteúdo/i);
+        expect(screen.queryByText(/em até uma hora/i)).not.toBeInTheDocument();
         expect(screen.getByText(/sete dias/i)).toBeInTheDocument();
     });
 

@@ -1,0 +1,22 @@
+# Direct authenticated ingress and worker share this instance. Requires its own resource admission.
+# Public activation remains explicit, never inherited from the retired worker deployment.
+gateway:
+  enabled: ${GATEWAY_ENABLED:false}
+  volatile-processing-enabled: ${GATEWAY_VOLATILE_PROCESSING_ENABLED:false}
+  storage:
+    mode: disabled
+  dispatch:
+    mode: disabled
+  result-download:
+    mode: disabled
+  layout:
+    mode: disabled
+
+# Budget includes parent, both provider SDKs and the isolated native JVM (64 PIDs total).
+server:
+  tomcat:
+    threads:
+      min-spare: 2
+      max: 8
+    max-connections: 32
+    accept-count: 16

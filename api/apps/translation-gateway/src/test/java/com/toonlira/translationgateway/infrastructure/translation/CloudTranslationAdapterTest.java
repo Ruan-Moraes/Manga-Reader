@@ -50,6 +50,29 @@ class CloudTranslationAdapterTest {
     }
 
     @Test
+    void pinsCanonicalProjectNumberAndRejectsAnotherProjectOrModel() {
+        var client = mock(TranslationServiceClient.class);
+        var adapter = new CloudTranslationAdapter(client, "123456789012");
+        var request = request("en", "pt-BR");
+        var text = "<div><p data-region=\"" + FIRST + "\">Primeiro</p><p data-region=\"" + SECOND + "\">Segundo</p></div>";
+        var canonical = "projects/123456789012/locations/global/models/general/translation-llm";
+        var response = TranslateTextResponse.newBuilder();
+        response.addTranslationsBuilder().setModel(canonical).setTranslatedText(text);
+        when(client.translateText(any(TranslateTextRequest.class))).thenReturn(response.build());
+        assertThat(adapter.translate(request).regions()).hasSize(2);
+        var capture = ArgumentCaptor.forClass(TranslateTextRequest.class);
+        verify(client).translateText(capture.capture());
+        assertThat(capture.getValue().getModel()).isEqualTo(canonical);
+        for (var rejected : List.of(canonical.replace("123456789012", "987654321098"),
+            canonical.replace("translation-llm", "nmt"), canonical.replace("global", "us-central1"))) {
+            var invalid = TranslateTextResponse.newBuilder();
+            invalid.addTranslationsBuilder().setModel(rejected).setTranslatedText(text);
+            when(client.translateText(any(TranslateTextRequest.class))).thenReturn(invalid.build());
+            assertCode(() -> adapter.translate(request), GatewayErrorCode.TRANSLATION_INVALID_RESPONSE);
+        }
+    }
+
+    @Test
     void rejectsOversizedWholeRequestBeforeCallingProvider() {
         var client = mock(TranslationServiceClient.class);
         var regions = java.util.stream.IntStream.range(0, 15).mapToObj(index ->
@@ -107,6 +130,7 @@ class CloudTranslationAdapterTest {
     @Test
     void settingsPinGlobalEndpointAndOneAttempt() {
         var settings = TranslationClientFactory.settings();
+        assertThat(((com.google.api.gax.core.InstantiatingExecutorProvider) settings.getExecutorProvider()).getExecutorThreadCount()).isEqualTo(2);
         assertThat(settings.getEndpoint()).isEqualTo(CloudTranslationAdapter.ENDPOINT);
         assertThat(settings.translateTextSettings().getRetryableCodes()).isEmpty();
         assertThat(settings.translateTextSettings().getRetrySettings().getMaxAttempts()).isOne();

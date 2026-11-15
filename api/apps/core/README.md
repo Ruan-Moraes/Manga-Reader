@@ -44,17 +44,17 @@ mover componentes.
 
 ## Execução local
 
-Requisitos: Java 23 e Docker.
+Requisitos: Java 25 e Docker.
 
 ```bash
 cd api
-./mvnw -pl apps/core spring-boot:run
+./mvnw -pl apps/core -am test-compile spring-boot:run
 ```
 
 Com dados de demonstração:
 
 ```bash
-./mvnw -pl apps/core spring-boot:run -Dspring-boot.run.profiles=dev
+./mvnw -pl apps/core -am test-compile spring-boot:run -Dspring-boot.run.profiles=dev
 ```
 
 Na primeira execução, o Spring Boot inicia PostgreSQL, MongoDB, Neo4j,

@@ -82,6 +82,34 @@ class CleanupAcknowledgedResultsUseCaseTest {
         verify(storage, never()).delete(any());
     }
 
+    @Test
+    void jobSpecificCleanupRequiresDurableCompletionAndNeverDeletesForAnotherLease() {
+        var owner = UUID.randomUUID();
+        var ref = UUID.randomUUID();
+        var claim = claim();
+        when(persistence.claimForJob(owner, ref, NOW, NOW.plusSeconds(300))).thenReturn(List.of(claim));
+        when(persistence.complete(claim.jobId(), claim.leaseUntil(), NOW)).thenReturn(false);
+        assertThat(cleanup().executeForJob(owner, ref)).isFalse();
+        verify(storage).delete("private/originals/fixture");
+        when(persistence.claimForJob(owner, ref, NOW, NOW.plusSeconds(300))).thenReturn(List.of());
+        when(persistence.completedForJob(owner, ref)).thenReturn(false, true);
+        assertThat(cleanup().executeForJob(owner, ref)).isFalse();
+        assertThat(cleanup().executeForJob(owner, ref)).isTrue();
+    }
+
+    @Test
+    void jobSpecificPartialFailureAttemptsOtherObjectsAndReschedules() {
+        var owner = UUID.randomUUID();
+        var ref = UUID.randomUUID();
+        var claim = claim();
+        when(persistence.claimForJob(owner, ref, NOW, NOW.plusSeconds(300))).thenReturn(List.of(claim));
+        doThrow(new IllegalStateException("synthetic")).when(storage).delete("private/originals/fixture");
+        assertThat(cleanup().executeForJob(owner, ref)).isFalse();
+        verify(storage).delete("private/translation/fixture.json");
+        verify(persistence).reschedule(claim.jobId(), claim.leaseUntil(), NOW.plusSeconds(60));
+        verify(persistence, never()).complete(any(), any(), any());
+    }
+
     private CleanupAcknowledgedResultsUseCase cleanup() {
         return new CleanupAcknowledgedResultsUseCase(persistence, storage, Clock.fixed(NOW, ZoneOffset.UTC));
     }

@@ -49,9 +49,9 @@ class LocalObjectStorageAdapterTest {
         var source = directory.resolve("source.png");
         Files.writeString(source, "synthetic source");
         var adapter = adapter();
-        adapter.store("private/expired", source, "image/png", "a".repeat(64), NOW.minusSeconds(1));
-        adapter.store("private/boundary", source, "image/png", "a".repeat(64), NOW);
-        adapter.store("private/new", source, "image/png", "a".repeat(64), NOW.plusSeconds(1));
+        seedLegacyObject("private/expired", source, "image/png", "a".repeat(64), NOW.minusSeconds(1));
+        seedLegacyObject("private/boundary", source, "image/png", "a".repeat(64), NOW);
+        seedLegacyObject("private/new", source, "image/png", "a".repeat(64), NOW.plusSeconds(1));
         Files.setLastModifiedTime(source, FileTime.from(NOW.minusSeconds(100)));
         assertThat(adapter.deleteOlderThan(NOW)).isEqualTo(2);
         assertThat(Files.exists(directory.resolve("private/expired"))).isFalse();
@@ -84,6 +84,13 @@ class LocalObjectStorageAdapterTest {
         assertThat(Files.readString(other.resolve("source.png"))).isEqualTo("synthetic source");
     }
 
+    private void seedLegacyObject(String key, Path source, String mime, String hash, Instant created) throws IOException {
+        // Tests exercise read/delete retirement of existing objects, never a new production write.
+        var target = directory.resolve(key);
+        Files.createDirectories(target.getParent()); Files.copy(source, target);
+        Files.setLastModifiedTime(target, FileTime.from(created));
+    }
+
     private LocalObjectStorageAdapter adapter() {
         var properties = new GatewayProperties();
         properties.getStorage().setLocalDirectory(directory);
@@ -97,9 +104,9 @@ class LocalObjectStorageAdapterTest {
         var adapter = adapter();
         var due = OriginalObjectKey.create(NOW, 900);
         var later = OriginalObjectKey.create(NOW, 3600);
-        adapter.store(due, source, "image/png", "a".repeat(64), NOW);
-        adapter.store(later, source, "image/png", "a".repeat(64), NOW);
-        adapter.store("private/rendering/result", source, "image/webp", "a".repeat(64), NOW);
+        seedLegacyObject(due, source, "image/png", "a".repeat(64), NOW);
+        seedLegacyObject(later, source, "image/png", "a".repeat(64), NOW);
+        seedLegacyObject("private/rendering/result", source, "image/webp", "a".repeat(64), NOW);
         assertThat(adapter.deleteExpiredOriginals(NOW.plusSeconds(900).minusNanos(1))).isZero();
         assertThat(adapter.deleteExpiredOriginals(NOW.plusSeconds(900))).isEqualTo(1);
         assertThat(Files.exists(directory.resolve(due))).isFalse();
@@ -114,7 +121,7 @@ class LocalObjectStorageAdapterTest {
         var source = directory.resolve("reusable.png");
         Files.writeString(source, "synthetic source");
         var key = OriginalObjectKey.create(NOW, 1);
-        adapter().store(key, source, "image/png", "a".repeat(64), NOW);
+        seedLegacyObject(key, source, "image/png", "a".repeat(64), NOW);
         Files.setLastModifiedTime(directory.resolve(key), FileTime.from(NOW.plusSeconds(100)));
         Files.createSymbolicLink(directory.resolve("private/originals/link"), source);
         assertThat(adapter().deleteExpiredOriginals(NOW.plusSeconds(1))).isOne();
@@ -131,7 +138,7 @@ class LocalObjectStorageAdapterTest {
         var adapter = adapter();
         var afterDeadline = NOW.plusSeconds(2);
         assertThat(adapter.deleteExpiredOriginals(afterDeadline)).isZero();
-        adapter.store(key, source, "image/png", "a".repeat(64), NOW);
+        seedLegacyObject(key, source, "image/png", "a".repeat(64), NOW);
         assertThat(adapter.deleteExpiredOriginals(afterDeadline)).isOne();
         assertThat(Files.exists(directory.resolve(key))).isFalse();
         assertThat(Files.readString(source)).isEqualTo("synthetic source");
@@ -146,9 +153,9 @@ class LocalObjectStorageAdapterTest {
         var image = ResultObjectKey.create(deadline, "webp");
         var manifest = ResultObjectKey.create(deadline, "json");
         var original = OriginalObjectKey.create(NOW, 3600);
-        adapter.store(image, source, "image/webp", "a".repeat(64), NOW);
-        adapter.store(manifest, source, "application/json", "a".repeat(64), NOW.plusSeconds(1));
-        adapter.store(original, source, "image/png", "a".repeat(64), NOW);
+        seedLegacyObject(image, source, "image/webp", "a".repeat(64), NOW);
+        seedLegacyObject(manifest, source, "application/json", "a".repeat(64), NOW.plusSeconds(1));
+        seedLegacyObject(original, source, "image/png", "a".repeat(64), NOW);
         Files.setLastModifiedTime(directory.resolve(image), FileTime.from(NOW.plusSeconds(300)));
         assertThat(adapter.deleteExpiredResults(deadline.minusNanos(1))).isZero();
         assertThat(adapter.deleteExpiredResults(deadline)).isEqualTo(2);
@@ -168,7 +175,7 @@ class LocalObjectStorageAdapterTest {
             : phase.equals("result") ? ResultObjectKey.create(NOW, "webp") : "private/first";
         var second = phase.equals("original") ? OriginalObjectKey.create(NOW.minusSeconds(1), 1)
             : phase.equals("result") ? ResultObjectKey.create(NOW, "json") : "private/second";
-        for (var key : List.of(first, second)) adapter.store(key, source, "application/json", "a".repeat(64), NOW.minusSeconds(1));
+        for (var key : List.of(first, second)) seedLegacyObject(key, source, "application/json", "a".repeat(64), NOW.minusSeconds(1));
         var calls = new AtomicInteger();
         var failed = new AtomicReference<Path>();
         try (var metadata = mockStatic(Files.class, CALLS_REAL_METHODS)) {

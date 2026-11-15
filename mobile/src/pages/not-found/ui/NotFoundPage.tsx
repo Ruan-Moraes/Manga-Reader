@@ -1,24 +1,31 @@
-import { View } from 'react-native';
-import { Stack } from 'expo-router';
+import { router, Stack } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 
-import { navigateBackOrReplace, ROUTES } from '@/shared/navigation';
-import { useTheme } from '@/shared/theme';
-import { AppText, Button, ScreenScaffold } from '@/shared/ui';
+import { ROUTES } from '@/shared/navigation';
+import { NavigationHeader, PageContainer, StateView } from '@/shared/ui';
 
 export function NotFoundPage() {
     const { t } = useTranslation('common');
-    const { spacing } = useTheme();
+
+    const hasHistory = router.canGoBack();
+
+    const goHome = () => router.replace(ROUTES.ROOT as never);
+    const goBack = () => router.back();
 
     return (
         <>
             <Stack.Screen options={{ title: t('notFound.pageTitle') }} />
-            <ScreenScaffold compact backLabel={t('navigation.back')} onBack={() => navigateBackOrReplace(ROUTES.ROOT)} title={t('notFound.pageTitle')}>
-                <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', padding: spacing.lg }}>
-                    <AppText tone="muted">{t('notFound.pageDesc')}</AppText>
-                    <Button onPress={() => navigateBackOrReplace(ROUTES.ROOT)}>{t('notFound.goHome')}</Button>
-                </View>
-            </ScreenScaffold>
+            <PageContainer>
+                {/* Single back control at the top, like every other screen (revisão 2026-11-13). */}
+                {hasHistory ? <NavigationHeader backLabel={t('navigation.back')} onBack={goBack} /> : null}
+                <StateView
+                    kind="notfound"
+                    eyebrow={t('notFound.eyebrow')}
+                    title={t('notFound.pageTitle')}
+                    text={t('notFound.pageDesc')}
+                    goHome={{ label: t('notFound.goHome'), onPress: goHome }}
+                />
+            </PageContainer>
         </>
     );
 }

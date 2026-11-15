@@ -27,6 +27,10 @@ guardrails SDD.
 4. Mova material obsoleto para `legacy/`; exclusão documental exige aprovação
    humana individual.
 
+[Auditoria e correções de design mobile](plans/auditoria-design-mobile.md) reúne o roteiro de revisão visual, padronização e validação de FPS.
+
+[Revisão tela a tela](plans/2026-11-13-revisao-tela-a-tela.md) acompanha a passagem por cada tela do app resolvendo problemas de design e de performance.
+
 ## Arquivo de performance
 
 Materiais e ferramentas de performance foram movidos para `perfomance_app/`,

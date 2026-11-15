@@ -110,7 +110,7 @@ describe('MOB-BASE-005/006 SessionGate', () => {
         expect(mockReplace).not.toHaveBeenCalled();
     });
 
-    it.each([[[]], [['offline-translation']], [['reader', 'title-1', '7.5']], [['translation-library']], [['translation-reader', '[projectId]']]] as const)(
+    it.each([[[]], [['offline-translation']], [['reader', 'title-1', '7.5']], [['translation-library']], [['translation-reader', '[projectId]']], [['work', '[workId]']], [['work', '[workId]', 'manage']]] as const)(
         'mantém a superfície pública %j sem redirecionar guest',
         async routeSegments => {
             mockSegments = [...routeSegments];

@@ -16,12 +16,6 @@ export interface Chapter {
     pages: ChapterPage[];
 }
 
-export interface ImageVariantCapabilities {
-    low: boolean;
-    medium: boolean;
-    high: boolean;
-}
-
 const record = (value: unknown): Record<string, unknown> | null =>
     value !== null && typeof value === 'object' && !Array.isArray(value) ? (value as Record<string, unknown>) : null;
 
@@ -86,8 +80,4 @@ export function mapReaderChapter(value: unknown): Chapter | null {
         status,
         pages: normalizeChapterPages(source.pages),
     };
-}
-
-export function getImageVariantCapabilities(_pages: readonly ChapterPage[]): ImageVariantCapabilities {
-    return { low: false, medium: false, high: false };
 }

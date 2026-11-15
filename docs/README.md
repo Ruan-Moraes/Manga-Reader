@@ -16,13 +16,18 @@ contêm instruções operacionais específicas.
 | [`testing.md`](testing.md)                           | Antes de escrever ou alterar testes                                                                       |
 | [`i18n-guide.md`](i18n-guide.md)                     | Para UI multilíngue, conteúdo localizado e labels de domínio                                              |
 | [`documentation-policy.md`](documentation-policy.md) | Para decidir quais documentos atualizar em cada tipo de mudança                                           |
+| [`ai-memory.md`](ai-memory.md)                       | Para retomar trabalho entre agentes e decidir o que salvar (ou não) na memória compartilhada              |
 
 ## Operação e evolução
 
 | Documento                                                                                                | Conteúdo                                                                                          |
 | -------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
 | [`deployment-plan.md`](deployment-plan.md)                                                               | Plano de deploy, infraestrutura, CI/CD e segurança                                                |
-| [`tech-debt.md`](tech-debt.md) | Dívidas `DT-NN` abertas ou adiadas; fonte única para pendências técnicas                |
+| [Primeira página real](translation-real-page-2026-10-24.md) | Vision/Translation reais capturados, renderer isolado, integridade e limites; aquisição mobile pendente |
+| [`translation-validation-2026-10-24.md`](translation-validation-2026-10-24.md)                              | Gates recuperados e validação de uma página sintética na cloud, com artefatos e retirada verificados |
+| [`volatile-processing-architecture.md`](volatile-processing-architecture.md) | Arquitetura vigente do processamento volátil do gateway de tradução |
+| [`translation-subscription-quotas.md`](translation-subscription-quotas.md) | Requisitos e precificação das cotas de tradução nas assinaturas |
+| [`tech-debt.md`](tech-debt.md) | Resumo ativo e histórico das dívidas `DT-NN`; fonte única para pendências técnicas |
 
 ## Documentação que mora no módulo
 

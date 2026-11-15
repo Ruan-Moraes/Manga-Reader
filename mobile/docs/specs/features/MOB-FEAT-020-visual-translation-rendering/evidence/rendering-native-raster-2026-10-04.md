@@ -1,5 +1,9 @@
 # Raster nativo compartilhado — evidência parcial, 2026-10-04
 
+> Registro histórico do desenho anterior. Em 2026-11-01, as classes
+> referenciadas retiradas de produção foram movidas para suporte de teste. Os
+> links acompanham essa localização; não indicam código produtivo atual.
+
 Parcela de TASK-002/003/004/007/008, AC-001/002/003/004/006. 020 continua
 `in-progress/open`, review `changes-requested`; 021 `approved/blocked`.
 Fixtures sintéticas, sem imagens privadas, provider, ADC, credenciais, instalação,
@@ -29,7 +33,7 @@ migration, OpenAPI, task, manifesto, dependência ou default mudou.
 
 Fontes/testes auditados estão em
 [rendering](../../../../../../api/apps/translation-gateway/src/main/java/com/toonlira/translationgateway/infrastructure/rendering/NativeArgbRaster.java),
-[decode](../../../../../../api/apps/translation-gateway/src/main/java/com/toonlira/translationgateway/infrastructure/rendering/ValidatedRasterDecoder.java),
+[decode](../../../../../../api/apps/translation-gateway/src/test/java/com/toonlira/translationgateway/infrastructure/rendering/ValidatedRasterDecoder.java),
 [alias/lifetime](../../../../../../api/apps/translation-gateway/src/test/java/com/toonlira/translationgateway/infrastructure/rendering/NativeArgbRasterTest.java),
 [decode compartilhado](../../../../../../api/apps/translation-gateway/src/test/java/com/toonlira/translationgateway/infrastructure/rendering/NativeRasterDecodeTest.java)
 e [pixels/placements](../../../../../../api/apps/translation-gateway/src/test/java/com/toonlira/translationgateway/infrastructure/rendering/NativeRasterPaintingTest.java).

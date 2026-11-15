@@ -37,7 +37,6 @@ public record UserSettings(
             ReadingDirection direction,
             ReadingMode mode,
             ReadingFit fit,
-            ImageQuality quality,
             int saturation,
             int gap,
             ReaderBackground background,
@@ -52,7 +51,7 @@ public record UserSettings(
         public static final int PRELOAD_MAX = 10;
 
         public ReaderSettings {
-            if (direction == null || mode == null || fit == null || quality == null || background == null) {
+            if (direction == null || mode == null || fit == null || background == null) {
                 throw new IllegalArgumentException("reader enums must not be null");
             }
             if (gap < GAP_MIN || gap > GAP_MAX) {
@@ -67,7 +66,7 @@ public record UserSettings(
         }
 
         public static ReaderSettings defaults() {
-            return new ReaderSettings(ReadingDirection.RTL, ReadingMode.VERTICAL, ReadingFit.WIDTH, ImageQuality.AUTO, 100, 0, ReaderBackground.DARK, true, 3);
+            return new ReaderSettings(ReadingDirection.RTL, ReadingMode.VERTICAL, ReadingFit.WIDTH, 100, 0, ReaderBackground.DARK, true, 3);
         }
     }
 
@@ -122,14 +121,6 @@ public record UserSettings(
     public enum ReadingFit {
         WIDTH,
         HEIGHT,
-        ORIGINAL
-    }
-
-    public enum ImageQuality {
-        AUTO,
-        LOW,
-        MEDIUM,
-        HIGH,
         ORIGINAL
     }
 

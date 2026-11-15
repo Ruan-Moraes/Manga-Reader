@@ -22,6 +22,9 @@ export interface PrivateBatchFiles {
     reconcileBatch(namespace: string, batchId: string, validFilenames: ReadonlySet<string>): Promise<void>;
     fileUri(namespace: string, batchId: string, filename: string): string;
     fileExists(namespace: string, batchId: string, filename: string): Promise<boolean>;
+    batchExists?(namespace: string, batchId: string): Promise<boolean>;
+    namespaceExists?(namespace: string): Promise<boolean>;
+    fileSize?(namespace: string, batchId: string, filename: string): Promise<number>;
 }
 
 function assertSafeSegment(segment: string): void {
@@ -98,6 +101,16 @@ export const appPrivateBatchFiles: PrivateBatchFiles = {
     },
     removeBatch(namespace, batchId) {
         return safeDelete(batchUri(namespace, batchId));
+    },
+    async batchExists(namespace, batchId) {
+        return (await FileSystem.getInfoAsync(batchUri(namespace, batchId))).exists;
+    },
+    async namespaceExists(namespace) {
+        return (await FileSystem.getInfoAsync(namespaceRoot(namespace))).exists;
+    },
+    async fileSize(namespace, batchId, filename) {
+        const info = await FileSystem.getInfoAsync(fileUri(namespace, batchId, filename));
+        return info.exists && !info.isDirectory && typeof info.size === 'number' ? Math.max(0, info.size) : 0;
     },
     removeFile(namespace, batchId, filename) {
         return safeDelete(fileUri(namespace, batchId, filename));

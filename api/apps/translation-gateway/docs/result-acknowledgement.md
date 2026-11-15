@@ -86,3 +86,10 @@ Nenhuma mudança no shape `/v1`, corpo de task, manifesto ou defaults.
 Planejamento não é evidência de implementação ou execução. Download e emissão
 do ACK pelo aplicativo permanecem na 021. Operação cloud, custo e autorização
 de uploads não são liberados por esta mudança.
+
+## Atualização de 2026-10-28
+
+O `202` agora pressupõe a confirmação durável do cleanup; falha de storage ou
+outra lease em curso retorna `503` e permite retry. O plano e os limites estão
+em [ACK: exclusão antes de 202](ack-delete-before-202-2026-10-28.md). A
+verificação local não garante revogação de uma geração em GCS versionado.

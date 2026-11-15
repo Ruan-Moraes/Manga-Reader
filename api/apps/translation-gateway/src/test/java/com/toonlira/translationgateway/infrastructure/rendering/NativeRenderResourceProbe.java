@@ -66,10 +66,10 @@ public final class NativeRenderResourceProbe {
                 throw new RenderFileException(RenderFileException.Failure.INVALID_MEDIA);
             RenderManifest manifest;
             var target = EXPORT.resolve("render-probe.webp");
-            try (var codec = settings == null ? new NativeWebpCodec(Path.of("/build/install/lib/libwebp.so.7.2.0"),
+            try (var codec = settings == null ? new LegacyNativeWebpCodec(Path.of("/build/install/lib/libwebp.so.7.2.0"),
                     "ae9bd6f135c9ccd5de96cacc19b155f5c646bf3362c6d39086f4b1e1df427eb8", Path.of("/build/install/lib/libsharpyuv.so.0.1.2"),
                     "f7ef39823cce822098b53a516262b07490a42f69522de1ff5aa9db73232fa457", Duration.ofSeconds(60))
-                    : new NativeWebpCodec(settings.library(), settings.librarySha256(), settings.sharpLibrary(), settings.sharpSha256(), settings.nativeTimeout());
+                    : new LegacyNativeWebpCodec(settings.library(), settings.librarySha256(), settings.sharpLibrary(), settings.sharpSha256(), settings.nativeTimeout());
                  var raster = new NativeArgbRaster(source.widthPx(), source.heightPx(), request.policy())) {
                 phase = "decode"; long phaseStart = System.nanoTime();
                 if (bounded) { checkpoint(phase); details.put("virtualBeforeDecodeBytes", virtualBytes()); }

@@ -1,4 +1,5 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react-native';
+import { router } from 'expo-router';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react-native';
 import AxiosMockAdapter from 'axios-mock-adapter';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
@@ -66,5 +67,27 @@ describe('MOB-FEAT-010 platform status', () => {
 
         await waitFor(() => expect(screen.getByText('Conta recuperada')).toBeOnTheScreen());
         expect(useSessionStore.getState()).toMatchObject({ identityEpoch: 9, user: { id: 'user-2', email: 'cold@example.com' } });
+    });
+
+    it('revisão 2026-11-13: sair fica ocupado, ignora o segundo toque e volta ao início uma vez', async () => {
+        jest.mocked(router.replace).mockClear();
+        useSessionStore.setState({
+            isAuthenticated: true,
+            user: { id: 'user-1', name: 'Ruan', email: 'ruan@example.com', role: 'MEMBER' },
+        });
+        useSettingsStore.setState({ settings: DEFAULT_USER_SETTINGS, syncStatus: 'synced' });
+        let release: () => void = () => undefined;
+        apiMock.onPost('/auth/logout').reply(() => new Promise(resolve => (release = () => resolve([204]))));
+        renderPage();
+
+        const logout = screen.getByRole('button', { name: 'Sair da conta' });
+        fireEvent.press(logout);
+        fireEvent.press(logout);
+        await waitFor(() => expect(apiMock.history.post).toHaveLength(1));
+        expect(screen.getAllByRole('button').some(button => button.props.accessibilityState?.busy === true)).toBe(true);
+
+        await act(async () => release());
+        await waitFor(() => expect(router.replace).toHaveBeenCalledTimes(1));
+        expect(apiMock.history.post).toHaveLength(1);
     });
 });

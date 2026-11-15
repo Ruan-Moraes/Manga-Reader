@@ -165,11 +165,11 @@ const SignUp = () => {
                             />
                             <span className="text-ui-small leading-snug tracking-mr text-ui-gray-200">
                                 {t('signUp.termsPrefix')}{' '}
-                                <a href="/legal/terms" onClick={go('/legal/terms')} className="text-ui-accent-fg no-underline">
+                                <a href={withWebBasePath(ROUTES.LEGAL_TERMS)} target="_blank" rel="noopener" className="text-ui-accent-fg no-underline">
                                     {t('signUp.termsLinkLabel')}
                                 </a>{' '}
                                 {t('signUp.termsAnd')}{' '}
-                                <a href="/legal/privacy" onClick={go('/legal/privacy')} className="text-ui-accent-fg no-underline">
+                                <a href={withWebBasePath(ROUTES.LEGAL_PRIVACY)} target="_blank" rel="noopener" className="text-ui-accent-fg no-underline">
                                     {t('signUp.privacyLinkLabel')}
                                 </a>
                                 .

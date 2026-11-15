@@ -7,6 +7,12 @@ export {
     registerLocalTranslationResultDataParticipant,
     TRANSLATION_RESULT_NAMESPACE,
 } from './api/localTranslationResultRepository';
+export {
+    createRemoteRenderedResultRepository,
+    type RemoteRenderedResultInsert,
+    type RemoteRenderedResultRepository,
+    remoteRenderedResultRepository,
+} from './api/remoteRenderedResultRepository';
 export { insertRemoteTranslationRegions, type RemoteTranslationRegionsInsert } from './api/remoteTranslationRegionsStorage';
 export {
     buildLocalTranslatedRegions,
@@ -27,3 +33,5 @@ export {
     type TextRegionVertex,
     type TranslationMetadata,
 } from './model/localTranslationResult';
+export { withLocalTranslationResultFiles } from './model/localTranslationResultFiles';
+export { parseRenderedTranslationManifest, type RenderedManifestExpectation, type RenderedTranslationManifest } from './model/renderedTranslationManifest';

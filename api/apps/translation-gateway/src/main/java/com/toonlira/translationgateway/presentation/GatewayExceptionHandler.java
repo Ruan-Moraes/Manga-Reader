@@ -24,26 +24,25 @@ public class GatewayExceptionHandler {
     ResponseEntity<GatewayProblem> gateway(GatewayException error) {
         var builder = ResponseEntity.status(error.status()).contentType(MediaType.APPLICATION_PROBLEM_JSON);
         if (error.status() == 429) builder.header(HttpHeaders.RETRY_AFTER, "86400");
-        return builder.body(GatewayProblem.of(error.code(), error.status(), error.retryable()));
+        var problem = GatewayProblem.of(error.code(), error.status(), error.retryable());
+        LOGGER.warn("event=gateway_request_failed error_code={} correlation_ref={} status={}", problem.code(), problem.correlationRef(), problem.status());
+        return builder.header("X-Toonlira-Error", problem.code()).header("X-Toonlira-Correlation", problem.correlationRef().toString()).body(problem);
     }
 
     @ExceptionHandler(MaxUploadSizeExceededException.class)
     ResponseEntity<GatewayProblem> tooLarge() {
-        return ResponseEntity.status(413).contentType(MediaType.APPLICATION_PROBLEM_JSON)
-            .body(GatewayProblem.of(GatewayErrorCode.PAYLOAD_TOO_LARGE, 413, false));
+        return gateway(new GatewayException(GatewayErrorCode.PAYLOAD_TOO_LARGE, 413, false));
     }
 
     @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
     ResponseEntity<GatewayProblem> unsupportedMediaType() {
-        return ResponseEntity.status(415).contentType(MediaType.APPLICATION_PROBLEM_JSON)
-            .body(GatewayProblem.of(GatewayErrorCode.UNSUPPORTED_MEDIA_TYPE, 415, false));
+        return gateway(new GatewayException(GatewayErrorCode.UNSUPPORTED_MEDIA_TYPE, 415, false));
     }
 
     @ExceptionHandler({MethodArgumentNotValidException.class, MissingRequestValueException.class,
         HttpMessageNotReadableException.class, ConstraintViolationException.class, IllegalArgumentException.class})
     ResponseEntity<GatewayProblem> invalidRequest() {
-        return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_PROBLEM_JSON)
-            .body(GatewayProblem.of(GatewayErrorCode.INVALID_REQUEST, 400, false));
+        return gateway(new GatewayException(GatewayErrorCode.INVALID_REQUEST, 400, false));
     }
 
     @ExceptionHandler(Exception.class)
@@ -51,6 +50,7 @@ public class GatewayExceptionHandler {
         var problem = GatewayProblem.of(GatewayErrorCode.INTERNAL_ERROR, 500, true);
         LOGGER.error("event=gateway_request_failed error_code={} correlation_ref={} exception_type={}",
             problem.code(), problem.correlationRef(), error.getClass().getSimpleName());
-        return ResponseEntity.internalServerError().contentType(MediaType.APPLICATION_PROBLEM_JSON).body(problem);
+        return ResponseEntity.internalServerError().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .header("X-Toonlira-Error", problem.code()).header("X-Toonlira-Correlation", problem.correlationRef().toString()).body(problem);
     }
 }

@@ -1,7 +1,8 @@
 export type ReviewViewMode = 'grid' | 'list';
 
 export const REVIEW_IMAGE_ASPECT_RATIO = 3 / 4;
-export const REVIEW_LIST_THUMBNAIL_WIDTH = 88;
+// Compact list rows (~96 pt): about twice as many pages per screen as the grid (revisão tela a tela, 2026-11-13).
+export const REVIEW_LIST_THUMBNAIL_WIDTH = 60;
 export const REVIEW_DRAG_LONG_PRESS_MS = 200;
 export const REVIEW_CARD_BORDER_WIDTH = 1;
 export const REVIEW_DROP_INDICATOR_WIDTH = 3;

@@ -44,6 +44,15 @@ describe('system preferences storage', () => {
         expect(readStoredUserSettings().reader.background).toBe('PAPER');
     });
 
+    it('discards the legacy reader quality without losing other preferences', () => {
+        localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify({ reader: { quality: 'LOW', gap: 12 } }));
+
+        const settings = readStoredUserSettings();
+
+        expect(settings.reader.gap).toBe(12);
+        expect(settings.reader).not.toHaveProperty('quality');
+    });
+
     it('migrates valid legacy reader preferences once and removes the old key after success', () => {
         localStorage.setItem(LEGACY_READER_SETTINGS_KEY, JSON.stringify({ mode: 'double', direction: 'ltr', fit: 'height', gap: 16, bg: 'paper' }));
 

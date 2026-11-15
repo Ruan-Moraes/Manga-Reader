@@ -24,6 +24,8 @@ export interface LocalMediaImportController {
     initialize(): Promise<LocalMediaImportDraft | null>;
     selectImages(): Promise<LocalMediaImportOutcome>;
     recoverPendingSelection(): Promise<LocalMediaImportOutcome>;
+    /** Drops the unsent selection (draft rows and its private files) so the flow starts over. */
+    discard?(): Promise<void>;
 }
 
 interface Dependencies {
@@ -124,6 +126,12 @@ export function createLocalMediaImportController(overrides: Partial<Dependencies
         },
         selectImages() {
             return runExclusively(async () => importResult(await dependencies.picker.pickImages()));
+        },
+        async discard() {
+            await dependencies.repository.initialize();
+            const active = await dependencies.repository.getActive();
+            await dependencies.repository.clear();
+            if (active) await dependencies.files.removeBatch(LOCAL_MEDIA_IMPORT_NAMESPACE, active.id).catch(() => undefined);
         },
         recoverPendingSelection() {
             if (pendingResultChecked) return Promise.resolve({ status: 'unchanged' });

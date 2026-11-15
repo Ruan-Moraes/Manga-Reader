@@ -3,6 +3,8 @@ import { canTransitionTranslationState, isTerminalTranslationState, TRANSLATION_
 describe('MOB-FEAT-016 translation state policy', () => {
     const allowed = new Set([
         'DRAFT:QUEUED',
+        'DRAFT:PROCESSING',
+        'DRAFT:FAILED',
         'DRAFT:CANCELLED',
         'QUEUED:PROCESSING',
         'QUEUED:FAILED',
@@ -11,6 +13,7 @@ describe('MOB-FEAT-016 translation state policy', () => {
         'PROCESSING:FAILED',
         'PROCESSING:CANCELLED',
         'FAILED:QUEUED',
+        'FAILED:PROCESSING',
         'FAILED:CANCELLED',
     ]);
 

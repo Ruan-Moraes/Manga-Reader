@@ -204,9 +204,19 @@ function caseHtml(item) {
 export async function createVisualReview(options) {
   try {
     require(
-      options && Object.keys(options).sort().join(",") === "gallery,output",
+      options &&
+        ["gallery,output", "architecture,gallery,output"].includes(
+          Object.keys(options).sort().join(","),
+        ),
     );
     const { gallery, output } = options;
+    const selected =
+      options.architecture === undefined
+        ? ARCHITECTURES
+        : [options.architecture];
+    require(
+      selected.every((architecture) => ARCHITECTURES.includes(architecture)),
+    );
     require(
       typeof gallery === "string" &&
         isAbsolute(gallery) &&
@@ -229,9 +239,9 @@ export async function createVisualReview(options) {
     const cases = [];
     const budget = { bytes: 0 };
     for (const language of LANGUAGES)
-      for (const architecture of ARCHITECTURES)
+      for (const architecture of selected)
         cases.push(await readCase(gallery, architecture, language, budget));
-    for (const architecture of ARCHITECTURES)
+    for (const architecture of selected)
       require(
         new Set(
           cases
@@ -239,7 +249,8 @@ export async function createVisualReview(options) {
             .map((item) => item.metadata.imageId),
         ).size === 1,
       );
-    require(cases[0].metadata.imageId !== cases[1].metadata.imageId);
+    if (selected.length === 2)
+      require(cases[0].metadata.imageId !== cases[1].metadata.imageId);
     const html = `<!doctype html><html lang="pt-BR"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
       <meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src 'self' file: data:; style-src 'unsafe-inline'; base-uri 'none'; form-action 'none'">
       <title>Revisão visual sintética — renderer</title><style>body{font:16px system-ui;margin:24px;background:#eee;color:#111}header{background:#fff3c4;padding:20px}section{margin-top:32px}.pair{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:20px}.case{background:white;padding:16px}.image{position:relative;display:block}.image img{width:100%;display:block}.image svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}polygon{fill:none;stroke:#d20;stroke-width:2}svg text{fill:#d20;font:20px sans-serif;paint-order:stroke;stroke:white;stroke-width:3}pre{white-space:pre-wrap;overflow-wrap:anywhere}details{margin:12px 0}</style>
@@ -272,11 +283,11 @@ if (
 ) {
   try {
     const args = process.argv.slice(2);
-    require(args.length === 4);
+    require(args.length === 4 || args.length === 6);
     const options = {};
     for (let index = 0; index < args.length; index += 2) {
       require(
-        ["--gallery", "--output"].includes(args[index]) &&
+        ["--gallery", "--output", "--architecture"].includes(args[index]) &&
           !Object.hasOwn(options, args[index].slice(2)),
       );
       options[args[index].slice(2)] = args[index + 1];

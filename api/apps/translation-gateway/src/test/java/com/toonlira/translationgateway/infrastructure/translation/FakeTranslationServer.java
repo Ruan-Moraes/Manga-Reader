@@ -6,6 +6,7 @@ import com.google.cloud.translate.v3.TranslateTextResponse;
 import com.google.cloud.translate.v3.TranslationServiceClient;
 import com.google.cloud.translate.v3.TranslationServiceSettings;
 import io.grpc.MethodDescriptor;
+import io.grpc.ClientInterceptor;
 import io.grpc.Server;
 import io.grpc.ServerServiceDefinition;
 import io.grpc.netty.shaded.io.grpc.netty.NettyServerBuilder;
@@ -15,6 +16,7 @@ import io.grpc.stub.StreamObserver;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.time.Duration;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
@@ -48,10 +50,15 @@ public final class FakeTranslationServer implements AutoCloseable {
     }
 
     public TranslationServiceClient client(Duration deadline) throws IOException {
+        return client(deadline, null);
+    }
+
+    public TranslationServiceClient client(Duration deadline, ClientInterceptor interceptor) throws IOException {
         var settings = TranslationClientFactory.settings().setEndpoint("127.0.0.1:" + server.getPort())
             .setCredentialsProvider(NoCredentialsProvider.create())
             .setTransportChannelProvider(TranslationServiceSettings.defaultGrpcTransportProviderBuilder()
                 .setMaxInboundMessageSize(TranslationClientFactory.MAX_RESPONSE_BYTES)
+                .setInterceptorProvider(() -> interceptor == null ? List.of() : List.of(interceptor))
                 .setChannelConfigurator(channel -> TranslationClientFactory.configureChannel(channel).usePlaintext()).build());
         var call = settings.translateTextSettings();
         call.setRetrySettings(call.getRetrySettings().toBuilder().setInitialRpcTimeoutDuration(deadline)

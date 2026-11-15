@@ -1,6 +1,5 @@
 package com.toonlira.translationgateway.infrastructure.rendering;
 
-import static com.toonlira.translationgateway.infrastructure.rendering.RenderFileException.Failure.INVALID_MEDIA;
 import static com.toonlira.translationgateway.infrastructure.rendering.RenderFileException.Failure.UNAVAILABLE;
 import static java.lang.foreign.ValueLayout.JAVA_INT;
 
@@ -11,7 +10,6 @@ import java.awt.image.ColorModel;
 import java.awt.image.DataBuffer;
 import java.awt.image.Raster;
 import java.awt.image.SinglePixelPackedSampleModel;
-import java.io.IOException;
 import java.lang.foreign.Arena;
 import java.lang.foreign.MemorySegment;
 import java.util.Arrays;
@@ -25,9 +23,8 @@ final class NativeArgbRaster implements AutoCloseable {
     private final BufferedImage image;
 
     NativeArgbRaster(int width, int height, RenderPolicy policy) {
-        ValidatedRasterDecoder.checkInterrupted();
-        try { PamRasterIo.dimensions(width, height, policy); }
-        catch (IOException error) { throw new RenderFileException(INVALID_MEDIA); }
+        RasterBounds.checkInterrupted();
+        RasterBounds.require(width, height, policy);
         arena = Arena.ofConfined();
         try {
             int count = Math.multiplyExact(width, height);

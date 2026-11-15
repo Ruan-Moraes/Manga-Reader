@@ -88,18 +88,17 @@ describe('MOB-FEAT-014 translation language selection UI', () => {
         expect(languageController.confirm).not.toHaveBeenCalled();
     });
 
-    it('keeps an equal pair visible, blocks confirmation and persists after the other field is corrected', async () => {
+    // MOB-FEAT-056/AC-013 substitui o par igual visível: o idioma usado no outro lado fica desabilitado com motivo.
+    it('disables the language used on the other side and persists after choosing another one', async () => {
         const languageController = controller();
         const onDraftChange = jest.fn();
         render(<TranslationLanguageSelectionPanel draft={draft()} onDraftChange={onDraftChange} controller={languageController} />);
 
         fireEvent.press(screen.getByRole('button', { name: 'Idioma de destino: Português (Brasil)' }));
+        expect(screen.getByRole('radio', { name: 'Japonês' }).props.accessibilityState).toMatchObject({ disabled: true });
+        expect(screen.getByText('Já escolhido como origem')).toBeOnTheScreen();
         fireEvent.press(screen.getByRole('radio', { name: 'Japonês' }));
-        expect(screen.getByText('Origem e destino precisam ser diferentes.')).toBeOnTheScreen();
-        expect(screen.getByRole('button', { name: 'Confirmar idiomas' }).props.accessibilityState.disabled).toBe(true);
         expect(languageController.update).not.toHaveBeenCalled();
-
-        fireEvent.press(screen.getByRole('button', { name: 'Idioma de destino: Japonês' }));
         fireEvent.press(screen.getByRole('radio', { name: 'Inglês' }));
         await waitFor(() => expect(languageController.update).toHaveBeenCalledWith(expect.anything(), { sourceLanguage: 'ja', targetLanguage: 'en' }));
         expect(onDraftChange).toHaveBeenCalled();
@@ -187,5 +186,18 @@ describe('MOB-FEAT-014 translation language selection UI', () => {
         expect(screen.getByText(korean)).toBeOnTheScreen();
         expect(screen.getByText(simplifiedChinese)).toBeOnTheScreen();
         expect(screen.getByText(traditionalChinese)).toBeOnTheScreen();
+    });
+});
+
+describe('MOB-FEAT-056 seletores De/Para', () => {
+    beforeEach(async () => i18n.changeLanguage('pt-BR'));
+
+    it('AC-013 "Trocar origem e destino" inverte os dois idiomas', async () => {
+        const languageController = controller();
+        render(<TranslationLanguageSelectionPanel draft={draft()} onDraftChange={jest.fn()} controller={languageController} />);
+        fireEvent.press(screen.getByRole('button', { name: 'Trocar origem e destino' }));
+        await waitFor(() => expect(languageController.update).toHaveBeenCalledWith(expect.anything(), { sourceLanguage: 'pt-BR', targetLanguage: 'ja' }));
+        expect(screen.getByRole('button', { name: 'Idioma de origem: Português (Brasil)' })).toBeOnTheScreen();
+        expect(screen.getByRole('button', { name: 'Idioma de destino: Japonês' })).toBeOnTheScreen();
     });
 });

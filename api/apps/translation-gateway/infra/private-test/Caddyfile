@@ -1,0 +1,35 @@
+{
+    admin off
+    auto_https disable_redirects
+    servers {
+        protocols h1 h2
+    }
+}
+
+{$PUBLIC_HOST} {
+    @legal path /legal/terms /legal/terms/* /legal/privacy /legal/privacy/*
+    handle @legal {
+        root * /srv
+        try_files {path} {path}/index.html
+        header Cache-Control "no-store"
+        file_server
+    }
+
+    @api path /v1/anonymous/installations /v1/anonymous/sessions /v2/capabilities /v2/page-translations /v2/page-translations/by-idempotency/*
+    handle @api {
+        request_body {
+            max_size 12582912
+        }
+        reverse_proxy {$GATEWAY_UPSTREAM:127.0.0.1:8084} {
+            header_up X-Toonlira-Client {remote_host}
+            transport http {
+                response_header_timeout 240s
+                compression off
+            }
+        }
+    }
+
+    handle {
+        respond 404
+    }
+}

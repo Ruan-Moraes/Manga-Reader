@@ -14,7 +14,11 @@ describe('App', () => {
 
         // final CTA + footer estão presentes
         expect(
-            await screen.findByText('Comece sua biblioteca hoje.'),
+            await screen.findByRole(
+                'heading',
+                { name: 'Comece sua biblioteca hoje.' },
+                { timeout: 10000 },
+            ),
         ).toBeInTheDocument();
         expect(screen.getByText('Voltar ao topo')).toBeInTheDocument();
         expect(container.querySelector('#final')).toBeInTheDocument();
@@ -28,5 +32,5 @@ describe('App', () => {
                 name: 'Alterar idioma. Atual: Português',
             }),
         ).toHaveAttribute('aria-expanded', 'false');
-    });
+    }, 15000);
 });

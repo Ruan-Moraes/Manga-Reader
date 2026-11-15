@@ -1,11 +1,11 @@
-import { useState } from 'react';
-import { Pressable, View } from 'react-native';
+import { View } from 'react-native';
 import type { ReactNode } from 'react';
 
 import { useResponsiveLayout, useTheme } from '@/shared/theme';
 
 import { AppText } from './AppText';
 import { Icon, type IconName } from './Icon';
+import { PressableBox as Pressable } from './PressableBox';
 
 interface ChoiceCardsProps<T extends string> {
     label: string;
@@ -47,9 +47,9 @@ export function ChoiceCards<T extends string>({
     compact = false,
 }: ChoiceCardsProps<T>) {
     const { sizeClass } = useResponsiveLayout();
-    const { fontScale, minimumTouchTarget, radii, spacing, tokens } = useTheme();
-    const [focusedOption, setFocusedOption] = useState<T | null>(null);
-    const stacked = compact ? fontScale >= 1.6 : resolveChoiceCardsStacked(layout, sizeClass, fontScale);
+    const { fontScale, metrics, minimumTouchTarget, radii, spacing, tokens } = useTheme();
+    // Nas folhas (compact) o layout pedido também vale: opções empilhadas têm todas a mesma altura.
+    const stacked = compact ? layout === 'stacked' || fontScale >= 1.6 : resolveChoiceCardsStacked(layout, sizeClass, fontScale);
     const cardBasis = sizeClass === 'regular' ? '46%' : '29%';
 
     return (
@@ -65,7 +65,6 @@ export function ChoiceCards<T extends string>({
             <View style={{ flexDirection: stacked ? 'column' : 'row', flexWrap: stacked ? 'nowrap' : 'wrap', gap: spacing.sm }}>
                 {options.map(option => {
                     const selected = option === value;
-                    const focused = option === focusedOption;
                     const icon = optionIcon?.(option);
                     return (
                         <Pressable
@@ -75,8 +74,6 @@ export function ChoiceCards<T extends string>({
                             accessibilityRole="radio"
                             accessibilityState={{ disabled, selected }}
                             disabled={disabled}
-                            onBlur={() => setFocusedOption(current => (current === option ? null : current))}
-                            onFocus={() => setFocusedOption(option)}
                             onPress={() => onChange(option)}
                             style={{
                                 minHeight: minimumTouchTarget,
@@ -85,19 +82,26 @@ export function ChoiceCards<T extends string>({
                                 ...(stacked ? { alignSelf: 'stretch' } : { flexBasis: compact ? '45%' : cardBasis, flexGrow: 1 }),
                             }}
                         >
-                            {({ pressed }) => (
+                            {({ pressed, hovered, focused }) => (
                                 <View
                                     testID={`choice-card-surface-${option}`}
                                     style={{
-                                        backgroundColor: selected ? tokens.surfaceSelected : pressed ? tokens.surfacePressed : tokens.surfaceMuted,
+                                        backgroundColor: selected
+                                            ? tokens.surfaceSelected
+                                            : pressed
+                                              ? tokens.surfacePressed
+                                              : hovered
+                                                ? tokens.surfaceHover
+                                                : tokens.surfaceMuted,
                                         borderColor: focused ? tokens.focus : selected ? tokens.accentBorder : tokens.separator,
                                         borderRadius: compact ? radii.control : radii.card,
-                                        borderWidth: compact ? 1 : 2,
+                                        borderWidth: 2,
                                         flex: 1,
                                         gap: spacing.xs,
                                         justifyContent: 'center',
-                                        minHeight: minimumTouchTarget,
-                                        padding: compact ? spacing.sm : spacing.md,
+                                        minHeight: Math.max(minimumTouchTarget, metrics.row.single),
+                                        paddingHorizontal: spacing.md,
+                                        paddingVertical: spacing.sm,
                                     }}
                                 >
                                     <View testID={`choice-card-row-${option}`} style={{ alignItems: 'center', flexDirection: 'row', gap: spacing.md }}>
@@ -136,9 +140,9 @@ export function ChoiceCards<T extends string>({
                                                 borderRadius: radii.pill,
                                                 borderWidth: 2,
                                                 flexShrink: 0,
-                                                height: 24,
+                                                height: 22,
                                                 justifyContent: 'center',
-                                                width: 24,
+                                                width: 22,
                                             }}
                                         >
                                             {selected ? (

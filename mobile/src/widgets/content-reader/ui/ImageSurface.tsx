@@ -57,6 +57,11 @@ interface ImageSurfaceProps {
     onRetry(): void;
 }
 
+/** Reader pages: local files in memory only; remote (platform) pages also on disk. */
+export function readerCachePolicy(uri: string): 'memory' | 'memory-disk' {
+    return /^https?:\/\//i.test(uri) ? 'memory-disk' : 'memory';
+}
+
 export function ImageSurface({ item, height, width, showOriginal, showDemoOverlay, integrity, saturation, onRetry }: ImageSurfaceProps) {
     const uri = showOriginal && item.originalUri ? item.originalUri : item.primaryUri;
     // Variant identity owns decode failures; switching variants cannot poison the other image.
@@ -95,12 +100,16 @@ function ImageVariant({ item, height, width, showOriginal, showDemoOverlay, inte
                 </View>
             ) : (
                 <View style={{ height: imageHeight, width: imageWidth }}>
-                    <View style={{ filter: [{ saturate: saturation / 100 }] }}>
+                    {/* The filter layer costs GPU work per page: only add it when saturation actually changes (revisão 2026-11-13). */}
+                    <View style={saturation === 100 ? undefined : { filter: [{ saturate: saturation / 100 }] }}>
                         <Image
                             key={attempt}
                             source={{ uri }}
+                            // Local files already on the device stay out of the disk cache; server pages keep it so a chapter
+                            // reopened later does not download again (revisão 2026-11-13).
+                            cachePolicy={readerCachePolicy(uri)}
                             contentFit="contain"
-                            accessibilityLabel={t(showOriginal ? 'viewport.originalPage' : 'viewport.resultPage')}
+                            accessibilityLabel={t(showOriginal || uri === item.originalUri ? 'viewport.originalPage' : 'viewport.resultPage')}
                             onLoad={() => setState('ready')}
                             onError={() => setState('error')}
                             style={{ height: imageHeight, width: imageWidth }}

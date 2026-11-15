@@ -8,9 +8,10 @@
         "dashboardForbidden": "Você não possui permissão para acessar o dashboard."
     },
     "notFound": {
+        "eyebrow": "Erro 404",
         "pageTitle": "Página não encontrada",
         "pageDesc": "O endereço que você acessou não existe ou foi removido. Verifique o link ou volte para o início.",
-        "goHome": "Ir para o início",
+        "goHome": "Voltar ao início",
         "searchWorks": "Buscar obras"
     },
     "aboutUs": {
@@ -77,15 +78,11 @@
     "forum": {
         "comingSoon": "Em breve: tópicos da comunidade"
     },
-    "modal": {
-        "title": "Modal"
-    },
     "user": {
         "logout": "Sair"
     },
     "dataControls": {
         "title": "Dados e armazenamento",
-        "storageLabel": "Uso temporário",
         "sections": {
             "device": { "title": "Neste dispositivo", "description": "Libere espaço sem remover sua conta ou preferências." },
             "account": { "title": "Dados da conta", "description": "Exporte suas informações ou remova atividades rastreadas." }
@@ -94,8 +91,12 @@
         "confirm": "Confirmar",
         "removes": "Remove",
         "preserves": "Preserva",
-        "storageUsage": "{{size}} em {{scope}}",
-        "storageScopes": { "temporaryExports": "exportações temporárias controladas pelo app" },
+        "success": {
+            "cache": { "title": "Cache limpo", "description": "Imagens e dados regeneráveis foram removidos deste aparelho." },
+            "offline": { "title": "Dados offline removidos", "description": "Os projetos e arquivos locais foram apagados deste aparelho." },
+            "history": { "title": "Histórico limpo", "description": "Capítulos lidos e atividades foram removidos. Sua posição atual foi mantida." }
+        },
+        "storageScopes": { "temporaryExports": "Exportações temporárias" },
         "cache": {
             "action": "Limpar cache",
             "description": "Remove imagens e dados que podem ser baixados novamente.",
@@ -124,6 +125,7 @@
             "action": "Limpar dados offline ({{size}})",
             "description": "Remove projetos e arquivos locais registrados neste aparelho.",
             "empty": "Nenhum projeto ou arquivo offline foi armazenado neste aparelho.",
+            "measureError": "Não foi possível medir os dados offline deste aparelho.",
             "confirmTitle": "Limpar dados offline?",
             "confirmBody": "Projetos e arquivos offline registrados serão removidos deste aparelho.",
             "projects": "projetos e arquivos offline"
@@ -138,6 +140,7 @@
         }
     },
     "localeControls": {
+        "dateExample": "Exemplo: {{value}}",
         "title": "Idioma e região",
         "closeSelection": "Fechar seleção",
         "interfaceSection": { "title": "Interface", "description": "Escolha o idioma usado nos menus e mensagens." },
@@ -161,6 +164,7 @@
     },
     "privacy": {
         "title": "Privacidade e conteúdo sensível",
+        "loading": "Carregando suas preferências de privacidade…",
         "comments": "Comentários",
         "history": "Histórico",
         "library": "Biblioteca",
@@ -212,6 +216,7 @@
         }
     },
     "contentLanguages": {
+        "addAction": "Adicionar",
         "title": "Idiomas do conteúdo",
         "priorityTitle": "Ordem de preferência",
         "availableTitle": "Adicionar idioma",
@@ -246,7 +251,7 @@
                     "DARK": "Fundo escuro para ambientes com pouca luz."
                 },
                 "options": {
-                    "SYSTEM": "Seguir o sistema",
+                    "SYSTEM": "Sistema",
                     "LIGHT": "Claro",
                     "DARK": "Escuro"
                 }

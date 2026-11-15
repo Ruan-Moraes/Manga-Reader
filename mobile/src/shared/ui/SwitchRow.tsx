@@ -1,11 +1,12 @@
 import { useState } from 'react';
-import { Pressable, Switch, View } from 'react-native';
+import { Switch, View } from 'react-native';
 
 import { useTheme } from '@/shared/theme';
 
 import { AppText } from './AppText';
 
-const SWITCH_CONTROL_WIDTH = 52;
+// O UISwitch do iOS 26 tem ~62 pt (51 antes); 64 cabe em iOS e Android sem vazar da margem.
+const SWITCH_CONTROL_WIDTH = 64;
 
 interface SwitchRowProps {
     label: string;
@@ -26,20 +27,12 @@ export function SwitchRow({ label, description, value, onChange, accessibilityHi
     const stacked = resolveSwitchRowStacked(fontScale);
 
     return (
-        <Pressable
-            accessible={false}
-            disabled={disabled}
-            onPress={() => onChange(!value)}
-            style={({ pressed }) => ({
-                backgroundColor: pressed ? tokens.surfacePressed : 'transparent',
-                borderColor: focused ? tokens.focus : 'transparent',
-                borderRadius: radii.control,
-                borderWidth: 2,
+        <View
+            style={{
                 minHeight: minimumTouchTarget,
                 opacity: disabled ? 0.56 : 1,
-                paddingHorizontal: spacing.xs,
                 paddingVertical: spacing.sm,
-            })}
+            }}
         >
             <View
                 testID="switch-row-content"
@@ -71,6 +64,10 @@ export function SwitchRow({ label, description, value, onChange, accessibilityHi
                         alignItems: 'flex-end',
                         alignSelf: stacked ? 'flex-end' : undefined,
                         flexShrink: 0,
+                        minHeight: minimumTouchTarget,
+                        borderColor: focused ? tokens.focus : 'transparent',
+                        borderRadius: radii.control,
+                        borderWidth: 2,
                         justifyContent: 'center',
                         minWidth: SWITCH_CONTROL_WIDTH,
                         width: SWITCH_CONTROL_WIDTH,
@@ -84,13 +81,15 @@ export function SwitchRow({ label, description, value, onChange, accessibilityHi
                         onBlur={() => setFocused(false)}
                         onFocus={() => setFocused(true)}
                         onValueChange={onChange}
-                        pointerEvents="none"
+                        // iOS paints the off state from the system appearance unless told otherwise, so an app theme that
+                        // differs from the device left the switch white on white (revisão 2026-11-13).
+                        ios_backgroundColor={tokens.inputBorder}
                         thumbColor={value ? tokens.onAccent : tokens.surface}
                         trackColor={{ false: tokens.inputBorder, true: tokens.accent }}
                         value={value}
                     />
                 </View>
             </View>
-        </Pressable>
+        </View>
     );
 }

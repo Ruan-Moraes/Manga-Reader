@@ -5,6 +5,7 @@ import com.toonlira.translationgateway.application.port.ResultAcknowledgementRep
 import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.UUID;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,6 +46,24 @@ public class CleanupAcknowledgedResultsUseCase {
             }
         }
         return new Result(completed, deferred);
+    }
+
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    public boolean executeForJob(UUID installationId, UUID jobRef) {
+        var now = Instant.now(clock);
+        for (var claim : persistence.claimForJob(installationId, jobRef, now, now.plus(LEASE))) {
+            try {
+                if (!ClaimedObjectCleanup.deleteAll(storage, claim.objectKeys())) {
+                    reschedule(claim);
+                    return false;
+                }
+                if (persistence.complete(claim.jobId(), claim.leaseUntil(), Instant.now(clock))) return true;
+            } catch (RuntimeException error) {
+                reschedule(claim);
+                return false;
+            }
+        }
+        return persistence.completedForJob(installationId, jobRef);
     }
 
     private void reschedule(ResultAcknowledgementRepository.CleanupClaim claim) {

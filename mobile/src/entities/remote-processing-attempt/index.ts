@@ -1,4 +1,11 @@
 export {
+    type BatchItemState,
+    type BatchRun,
+    type BatchRunState,
+    chapterBatchQueueRepository,
+    createChapterBatchQueueRepository,
+} from './api/chapterBatchQueueRepository';
+export {
     CREATE_REMOTE_PROCESSING_SCHEMA,
     createSqliteRemoteProcessingAttemptRepository,
     type NewRemoteProcessingAttempt,
@@ -6,11 +13,10 @@ export {
     remoteProcessingAttemptRepository,
 } from './api/remoteProcessingAttemptRepository';
 export {
+    hasProvenPageFailure,
     isAmbiguousRemoteAttempt,
     isRemoteAttemptStatus,
     isRemoteJobStatus,
-    type PageJobEnvelope,
-    pageJobEnvelopeSchema,
     REMOTE_ATTEMPT_STATUSES,
     REMOTE_JOB_STATUSES,
     REMOTE_PROCESSING_ERROR_CODES,
@@ -19,4 +25,8 @@ export {
     type RemoteProcessingAttempt,
     type RemoteProcessingConsent,
     type RemoteProcessingErrorCode,
+    volatileReceiptSchema,
+    type VolatileReceiptStatus,
 } from './model/remoteProcessingAttempt';
+export { interruptVolatileDelivery, putVolatileDelivery, reserveVolatileDelivery, takeVolatileDelivery, type VolatileDelivery } from './model/volatileDelivery';
+export { createVolatileIdempotencyKey } from './model/volatileIdempotencyKey';

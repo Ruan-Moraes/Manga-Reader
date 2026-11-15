@@ -1,5 +1,6 @@
 {
     "startup": {
+        "opening": "Abrindo o Toonlira…",
         "settings": "Carregando suas preferências…",
         "session": "Verificando a sessão…",
         "error": "Não foi possível carregar as preferências salvas. O app está usando valores seguros neste momento.",
@@ -13,6 +14,8 @@
         "novelPreview": "Abrir preview de novel (desenvolvimento)"
     },
     "platform": {
+        "notNow": "Agora não",
+        "closeSheet": "Fechar",
         "title": "Plataforma de leitura",
         "description": "Acesse sua conta e acompanhe o desenvolvimento da biblioteca.",
         "status": "Em construção",
@@ -81,7 +84,28 @@
                     "title": "Pronto para preparar?",
                     "description": "Revise os detalhes antes de criar o projeto no aparelho."
                 }
-            }
+            },
+            "exitTitle": "Sair durante o processamento?",
+            "exitDescription": "O envio ou a gravação podem ser interrompidos. O que já foi salvo permanecerá no aparelho e não haverá reenvio automático.",
+            "exitConfirm": "Sair",
+            "exitCancel": "Continuar",
+            "cancel": "Cancelar tradução",
+            "leaveTitle": "Sair da tradução?",
+            "leaveDescription": "Mantenha o rascunho para retomar a tradução neste aparelho.",
+            "leaveKeep": "Sair e manter rascunho",
+            "leaveDiscard": "Descartar páginas",
+            "leaveStay": "Continuar aqui",
+            "draftTitle": "Há uma seleção anterior",
+            "draftDescription": "Você tem {{count}} páginas escolhidas de uma tradução que não foi enviada. Quer usar essas páginas neste capítulo?",
+            "draftKeep": "Usar essas páginas",
+            "draftDiscard": "Começar do zero",
+            "restartTitle": "Limpar e recomeçar?",
+            "restartDescription_one": "A página escolhida será apagada deste aparelho. Não dá para desfazer.",
+            "restartDescription_other": "As {{count}} páginas escolhidas e a ordem serão apagadas deste aparelho. Não dá para desfazer.",
+            "restartKeep": "Manter páginas",
+            "restartConfirm": "Limpar",
+            "discarded": "Seleção descartada",
+            "backPlain": "Voltar"
         },
         "import": {
             "title": "Escolha suas páginas",
@@ -105,6 +129,9 @@
             }
         },
         "review": {
+            "pageCount_one": "{{count}} página",
+            "pageCount_other": "{{count}} páginas",
+            "addShort": "Adicionar",
             "title": "Revise suas páginas",
             "description_one": "Confira e organize {{count}} página antes de confirmar.",
             "description_other": "Confira e organize {{count}} páginas antes de confirmar.",
@@ -133,9 +160,10 @@
             "add": "Adicionar imagens",
             "confirm": "Confirmar ordem",
             "confirmedAction": "Ordem confirmada",
-            "editing": "Revise a ordem e confirme quando estiver pronta.",
             "confirmedTitle": "Lote revisado",
-            "confirmedDescription": "A ordem está salva neste aparelho. Escolha abaixo os idiomas da tradução.",
+            "confirmedDescription": "A ordem está salva. Se mexer nas páginas, confirme a ordem de novo.",
+            "continue": "Continuar",
+            "restart": "Limpar e recomeçar",
             "errorTitle": "Não foi possível atualizar o lote",
             "retry": "Tentar novamente",
             "errors": {
@@ -144,7 +172,66 @@
                 "storage-unavailable": "A alteração não pôde ser salva. O último estado seguro foi restaurado."
             }
         },
+        "flow3": {
+            "change": "Alterar",
+            "chapterOf": "Capítulo de {{date}}",
+            "translatePages_one": "Traduzir {{count}} página",
+            "translatePages_other": "Traduzir {{count}} páginas",
+            "nothingLeaves": "Nada sai do aparelho até você aceitar o envio.",
+            "editPages": "Editar páginas",
+            "rowPages": "Páginas",
+            "rowLanguages": "Idiomas",
+            "rowValidation": "Validação",
+            "validationCount": "{{ready}} de {{total}} prontas",
+            "validationLater": "Depois dos idiomas",
+            "confirmOnContinue": "Os idiomas serão confirmados ao continuar.",
+            "title": { "pages": "Escolha as páginas", "languages": "Confirme os idiomas", "translate": "Traduzir capítulo" },
+            "description": {
+                "import": "Importe as imagens do capítulo. Elas ficam só neste aparelho até você traduzir.",
+                "organize": "Confira se as páginas estão na ordem de leitura do capítulo."
+            },
+            "steps": {
+                "pages": "Páginas",
+                "languages": "Idiomas",
+                "translate": "Traduzir"
+            },
+            "counter": "Etapa {{current}} de {{total}}",
+            "hint": {
+                "pages": "Escolha as páginas do capítulo e confira a ordem.",
+                "languages": "Do idioma das páginas para o idioma da leitura.",
+                "translate": "Confira o destino e traduza o capítulo."
+            },
+            "resume": "Retomar último capítulo",
+            "thumbnailPage": "Página {{page}}",
+            "searchWorks": "Buscar obras",
+            "clearSearch": "Limpar busca",
+            "noMatchingWorks": "Nenhuma obra encontrada.",
+            "summaryTitle": "Resumo",
+            "summaryPages_one": "{{count}} página",
+            "summaryPages_other": "{{count}} páginas",
+            "summaryLanguages": "{{source}} → {{target}}",
+            "summaryValidation": "Páginas conferidas",
+            "prepareAndTranslate": "Preparar e traduzir",
+            "saveIn": "Salvar em: {{name}}",
+            "saveInMeta": "{{source}} → {{target}}",
+            "noWork": "Sem obra",
+            "yourWorks": "Suas obras",
+            "saveTitle": "Salvar em",
+            "saveDescription": "Escolha a obra que vai receber este capítulo.",
+            "saveConfirm": "Usar esta obra",
+            "chapterName": "Número ou nome do capítulo",
+            "saveChange": "Alterar destino",
+            "linkFailed": "O capítulo foi preparado, mas não entrou na obra.",
+            "linkRetry": "Tentar vincular de novo",
+            "close": "Fechar"
+        },
         "languages": {
+            "shortOptions": { "pt-BR": "Português (BR)", "zh-Hans": "Chinês simpl.", "zh-Hant": "Chinês trad." },
+            "fromShort": "De",
+            "toShort": "Para",
+            "swap": "Trocar origem e destino",
+            "usedAsTarget": "Já escolhido como destino",
+            "usedAsSource": "Já escolhido como origem",
             "title": "Escolha os idiomas",
             "description": "A seleção inicial é uma sugestão. O app ainda não analisou as imagens.",
             "source": "Idioma de origem",
@@ -181,10 +268,10 @@
             "badges": { "PENDING": "Validando", "VALID": "Pronta", "INVALID": "Ação necessária" },
             "summaryReady": "{{valid}} de {{total}} prontas",
             "summaryIssues": "{{valid}} prontas · {{invalid}} com problema",
+            "issueSummaryTitle": "Páginas com problema",
+            "reviewIssues": "Ir para correção",
             "pendingCount_one": "1 página aguarda validação",
             "pendingCount_other": "{{count}} páginas aguardam validação",
-            "issueAlert_one": "Corrija a página destacada para continuar.",
-            "issueAlert_other": "Corrija as {{count}} páginas destacadas para continuar.",
             "filterLabel": "Filtrar páginas",
             "filterIssues": "Com problema ({{count}})",
             "filterAll": "Todas ({{count}})",
@@ -193,13 +280,17 @@
             "openIssueHint": "Abre o problema e as ações desta página.",
             "openPreviewHint": "Abre a imagem em tamanho maior.",
             "replace": "Substituir arquivo",
+            "replaceShort": "Substituir",
+            "viewIssue": "Ver problema",
             "replacePageLabel": "Substituir arquivo da página {{page}}",
             "noIssues": "Nenhuma página com problema.",
             "fixIssues_one": "Corrigir 1 imagem",
             "fixIssues_other": "Corrigir {{count}} imagens",
+            "removePage": "Remover página",
+            "removePageLabel": "Remover a página {{page}} da seleção",
             "continue": "Continuar para revisão",
             "detailEyebrow": "PÁGINA {{page}}",
-            "detailIssueTitle": "Esta imagem precisa de atenção",
+            "detailIssueTitle": "Corrigir imagem",
             "detailPreviewTitle": "Visualizar imagem",
             "close": "Fechar",
             "previewUnavailable": "Prévia indisponível",
@@ -231,7 +322,9 @@
                 "FILE_CHANGED": "arquivo alterado",
                 "UNSUPPORTED_FORMAT": "formato não suportado",
                 "CORRUPTED": "arquivo corrompido",
-                "DIMENSIONS_UNSAFE": "tamanho ou dimensões fora do limite"
+                "DIMENSIONS_UNSAFE": "tamanho ou dimensões fora do limite",
+                "WHITE_OUTLINE": "contornos brancos",
+                "TRANSPARENT_BACKGROUND_FAILED": "falha no fundo transparente"
             },
             "errors": {
                 "prerequisite-required": "Confirme a ordem e os idiomas antes de validar.",
@@ -262,12 +355,15 @@
                 "file-copy-failed": "Não foi possível proteger todos os arquivos do projeto.",
                 "storage-unavailable": "Não foi possível salvar o projeto neste aparelho.",
                 "project-conflict": "Já existe um projeto diferente com esta identidade. Seus dados foram preservados."
-            }
+            },
+            "preparedRetainedDescription": "As páginas e os idiomas estão salvos neste aparelho.",
+            "chapterLinkFailed": "Projeto preparado, mas não foi possível vinculá-lo ao capítulo. Vincule-o pela biblioteca."
         }
     },
     "navigation": {
         "selector": "Módulos",
-        "backToSelector": "Voltar aos módulos"
+        "backToSelector": "Voltar aos módulos",
+        "home": "Início"
     },
     "sync": {
         "local": "Preferências salvas neste aparelho",

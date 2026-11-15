@@ -1,6 +1,14 @@
 import type { ReaderControlsMode } from '@/entities/user-setting';
 
-export const READER_GESTURE_LIMITS = { tapSlop: 8, tapDuration: 300, swipeDistance: 24, swipeHorizontal: 16, swipeDuration: 400, settleDelay: 80 } as const;
+export const READER_GESTURE_LIMITS = {
+    tapSlop: 8,
+    tapDuration: 300,
+    swipeDistance: 24,
+    swipeHorizontal: 16,
+    swipeDuration: 400,
+    settleDelay: 80,
+    motionIdleDelay: 350,
+} as const;
 export interface ReaderInteractionState {
     mode: ReaderControlsMode;
     visible: boolean;
@@ -10,7 +18,7 @@ export interface ReaderInteractionState {
 }
 export type ReaderInteractionEvent =
     | { type: 'preference'; mode: ReaderControlsMode }
-    | { type: 'hide' | 'reveal' | 'toggle' | 'dragStart' | 'dragEnd' | 'momentumStart' | 'momentumEnd' | 'background' | 'foreground' };
+    | { type: 'hide' | 'reveal' | 'toggle' | 'dragStart' | 'dragEnd' | 'momentumStart' | 'momentumEnd' | 'resetMotion' | 'background' | 'foreground' };
 
 export const createReaderInteraction = (mode: ReaderControlsMode): ReaderInteractionState => ({
     mode,
@@ -35,6 +43,10 @@ export function readerInteractionReducer(state: ReaderInteractionState, event: R
             next.momentum = true;
             break;
         case 'momentumEnd':
+            next.momentum = false;
+            break;
+        case 'resetMotion':
+            next.dragging = false;
             next.momentum = false;
             break;
         case 'background':

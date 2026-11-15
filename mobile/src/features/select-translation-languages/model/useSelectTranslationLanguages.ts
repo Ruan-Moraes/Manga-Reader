@@ -79,6 +79,14 @@ export function useSelectTranslationLanguages(
         error,
         selectSource: (value: TranslationLanguageCode) => select('sourceLanguage', value),
         selectTarget: (value: TranslationLanguageCode) => select('targetLanguage', value),
+        /** Swaps source and target in a single update (056/AC-013). */
+        swap: () => {
+            if (busy) return;
+            const next = { sourceLanguage: selection.targetLanguage, targetLanguage: selection.sourceLanguage };
+            if (!isValidTranslationLanguagePair(next)) return;
+            setSelection(next);
+            void execute(() => controller.update(draft, next));
+        },
         confirm: () => execute(() => controller.confirm(draft)),
         retry: () => (retryRef.current ? execute(retryRef.current) : Promise.resolve()),
     };

@@ -119,7 +119,7 @@ apenas as disparam e logam.
 - Contadores e refs são **mantidos** pelos use cases do `api/apps/core`; este serviço só os
   corrige/limpa.
 
-Stack: Spring Boot 3.4.3, Java 23, Spring Data MongoDB, Spring JDBC, Actuator, Lombok.
+Stack: Spring Boot 3.5.16, Java 25, Spring Data MongoDB, Spring JDBC, Actuator, Lombok.
 Testes: JUnit 5, Mockito, Testcontainers (Postgres + Mongo).
 
 ---
@@ -148,19 +148,19 @@ opcional no diretório de execução também é carregado como properties.
 
 ## Execução
 
-Pré-requisitos: Java 23, Maven 3.9.x, PostgreSQL e MongoDB. Para subir a
+Pré-requisitos: Java 25, Maven 3.9.x, PostgreSQL e MongoDB. Para subir a
 infraestrutura pelo core, execute em outro terminal:
 
 ```bash
 cd api
-./mvnw -pl apps/core spring-boot:run
+./mvnw -pl apps/core -am test-compile spring-boot:run
 ```
 
 No diretório `api/`:
 
 ```bash
 # Local (dev)
-./mvnw -pl apps/jobs/orphan-cleaner spring-boot:run
+./mvnw -pl apps/jobs/orphan-cleaner -am test-compile spring-boot:run
 
 # Build do JAR
 ./mvnw -pl apps/jobs/orphan-cleaner -am package -DskipTests

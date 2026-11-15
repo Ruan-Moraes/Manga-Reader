@@ -29,6 +29,8 @@ class VisionResponseMapperTest {
     static final OcrPort.Command COMMAND = new OcrPort.Command("private/originals/fixture", "ja",
         UUID.fromString("53c5d868-5988-48a8-b139-c83888df321b"), 100, 200);
 
+    private static final VisionResponseMapper.Context CONTEXT = new VisionResponseMapper.Context(COMMAND.jobRef(), COMMAND.widthPx(), COMMAND.heightPx());
+
     @ParameterizedTest
     @CsvSource({"ja,ja", "en,en", "es,es", "ko,ko", "zh-Hans,zh-Hans", "zh-Hant,zh-Hant", "pt-BR,pt"})
     void mapsOnlyExplicitHints(String language, String hint) {
@@ -44,8 +46,8 @@ class VisionResponseMapperTest {
     void preservesProviderOrderAndStableIdsForHorizontalAndVerticalCjk() {
         var response = response(paragraph("日本語", box(70, 10, 90, 180)), paragraph("Hello", box(0, 0, 60, 20)));
         var mapper = new VisionResponseMapper();
-        var regions = mapper.map(response, COMMAND);
-        assertThat(regions).hasSize(2).isEqualTo(mapper.map(response, COMMAND));
+        var regions = mapper.map(response, CONTEXT);
+        assertThat(regions).hasSize(2).isEqualTo(mapper.map(response, CONTEXT));
         assertThat(regions.getFirst().sourceText()).isEqualTo("日本語");
         assertThat(regions.getFirst().readingOrder()).isZero();
         assertThat(regions.getFirst().polygon().getFirst().x()).isEqualTo(0.7);
@@ -55,14 +57,14 @@ class VisionResponseMapperTest {
     @Test
     void filtersIsolatedInvalidAndDuplicateParagraphsAndReindexes() {
         var valid = paragraph("same", box(0, 0, 10, 10));
-        var regions = new VisionResponseMapper().map(response(paragraph("bad", box(-1, 0, 10, 10)), valid, valid), COMMAND);
+        var regions = new VisionResponseMapper().map(response(paragraph("bad", box(-1, 0, 10, 10)), valid, valid), CONTEXT);
         assertThat(regions).hasSize(1);
         assertThat(regions.getFirst().readingOrder()).isZero();
     }
 
     @Test
     void acceptsEmptyPageButRejectsTextWithoutUsableRegions() {
-        assertThat(new VisionResponseMapper().map(response(), COMMAND)).isEmpty();
+        assertThat(new VisionResponseMapper().map(response(), CONTEXT)).isEmpty();
         assertInvalid(response(paragraph("text", BoundingPoly.getDefaultInstance())));
         var textOnly = AnnotateImageResponse.newBuilder().setFullTextAnnotation(TextAnnotation.newBuilder().setText("orphan"));
         assertInvalid(BatchAnnotateImagesResponse.newBuilder().addResponses(textOnly).build());
@@ -79,7 +81,7 @@ class VisionResponseMapperTest {
         var paragraph = Paragraph.newBuilder().setBoundingBox(box(0, 0, 90, 90)).addWords(word)
             .addWords(Word.newBuilder().addSymbols(Symbol.newBuilder().setText("文")))
             .addWords(Word.newBuilder().addSymbols(Symbol.newBuilder().setText("字"))).build();
-        var mapped = new VisionResponseMapper().map(response(paragraph), COMMAND);
+        var mapped = new VisionResponseMapper().map(response(paragraph), CONTEXT);
         assertThat(mapped.getFirst().sourceText()).isEqualTo("日本  ab\nc-\nd\n文字");
     }
 
@@ -135,7 +137,7 @@ class VisionResponseMapperTest {
     }
 
     private void assertInvalid(BatchAnnotateImagesResponse response) {
-        assertThatThrownBy(() -> new VisionResponseMapper().map(response, COMMAND)).isInstanceOf(GatewayException.class)
+        assertThatThrownBy(() -> new VisionResponseMapper().map(response, CONTEXT)).isInstanceOf(GatewayException.class)
             .extracting("code").isEqualTo(GatewayErrorCode.OCR_INVALID_RESPONSE);
     }
 }

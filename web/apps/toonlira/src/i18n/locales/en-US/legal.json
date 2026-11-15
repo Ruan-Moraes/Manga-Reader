@@ -45,8 +45,8 @@
     "terms": {
         "title": "Terms of use",
         "sub": "The rules of conduct, the limits of the service, and your rights as a user of the platform.",
-        "updated": "September 7, 2026",
-        "version": "Version 1.0",
+        "updated": "November 1, 2026",
+        "version": "Version 1.1",
         "toc": {
             "aceite": "01. Acceptance and who we are",
             "conta": "02. Your account",
@@ -90,7 +90,7 @@
                 "title": "Copyright",
                 "tldr": "We respect creators' rights. If you are a rights holder and identified a violation, see our DMCA policy.",
                 "p1": "Toonlira respects intellectual property rights and expects users to do the same. Content made available on the platform must comply with applicable licenses.",
-                "p2": "By selecting an image for translation, you represent that you hold the rights, license or other authorization required to process it. The feature is intended for the user's private use and does not grant rights to publish, distribute or commercially exploit the translated work."
+                "p2": "By selecting an image for translation, you represent that you hold the rights, license or other authorization required to process it. The feature is intended for the user's private use and does not grant rights to publish, distribute or commercially exploit the translated work. When enabled, the tool processes the image in memory and returns the result to the app for storage on the device. It does not offer server hosting or later recovery of that content. This definition does not remove the legal obligations of the user or operator."
             },
             "pagamentos": {
                 "title": "Support and payments",
@@ -132,8 +132,8 @@
     "privacy": {
         "title": "Privacy Policy",
         "sub": "What we collect, why, and how you stay in control of what's yours.",
-        "updated": "September 7, 2026",
-        "version": "Version 1.0",
+        "updated": "November 1, 2026",
+        "version": "Version 1.1",
         "toc": {
             "tldr": "01. Quick summary",
             "coleta": "02. Data collected",
@@ -238,7 +238,7 @@
             "retencao": {
                 "title": "Retention and deletion",
                 "p1": "We keep account data for the time necessary for the purposes described or to comply with legal obligations. Requests for access, correction, anonymization, blocking, portability, objection, withdrawal or deletion may be sent to the contact in this policy.",
-                "p2": "In the translation flow, the remote original image is deleted after OCR or, as a safety limit, within one hour. The result and manifest are deleted after download acknowledgment or within one hour after becoming ready. Sanitized gateway metadata is kept for up to seven days; originals and results saved locally remain in the device's private storage until removed by the user."
+                "p2": "In volatile processing, image, pixels, OCR, translation and manifest are processed in memory and delivered to the app within the session, without writing content to server disk, databases, buckets or persistent caches. The app keeps the original and result in private device storage under the user’s control. We maintain sanitized operational logs and minimal security, audit and idempotency receipts; they contain no processed images or text. The receipt key has an absolute seven-day validity; queries return not found after expiry. A receipt becomes eligible for physical removal seven days after its creation, provided its key has also expired; cleanup runs in batches and depends on database availability. Operational logs follow a separate policy, without a promise of deletion within that same period."
             },
             "seguranca": {
                 "title": "Security",
@@ -252,7 +252,7 @@
             },
             "internacional": {
                 "title": "International transfers",
-                "p1": "The main gateway infrastructure, database and temporary storage are planned for São Paulo, Brazil. For OCR and translation, the image and extracted text may be processed by Google Cloud services in the United States regions disclosed in the consent screen. The transfer is used to provide the requested service under the contractual and security safeguards applicable to Google Cloud."
+                "p1": "The gateway is planned for São Paulo, Brazil. Synchronous OCR uses Cloud Vision’s regional us endpoint. Translation uses Cloud Translation’s global endpoint without a guarantee of remaining in a specific region. Consent identifies these subprocessors and locations before sending."
             },
             "dpo": {
                 "title": "Privacy contact",

@@ -1,5 +1,6 @@
 {
     "startup": {
+        "opening": "Opening Toonlira…",
         "settings": "Loading your preferences…",
         "session": "Checking your session…",
         "error": "Saved preferences could not be loaded. The app is using safe values for now.",
@@ -13,6 +14,8 @@
         "novelPreview": "Open novel preview (development)"
     },
     "platform": {
+        "notNow": "Not now",
+        "closeSheet": "Close",
         "title": "Reading platform",
         "description": "Access your account and follow the library development.",
         "status": "Under construction",
@@ -77,7 +80,28 @@
                     "title": "Ready to prepare?",
                     "description": "Review the details before creating the project on this device."
                 }
-            }
+            },
+            "exitTitle": "Leave during processing?",
+            "exitDescription": "Sending or saving may be interrupted. Saved work remains on this device and will not be resent automatically.",
+            "exitConfirm": "Leave",
+            "exitCancel": "Stay",
+            "cancel": "Cancel translation",
+            "leaveTitle": "Leave translation?",
+            "leaveDescription": "Keep the draft to resume your translation on this device.",
+            "leaveKeep": "Leave and keep draft",
+            "leaveDiscard": "Discard pages",
+            "leaveStay": "Stay here",
+            "draftTitle": "There is an earlier selection",
+            "draftDescription": "You have {{count}} pages chosen for a translation that was not sent. Use those pages for this chapter?",
+            "draftKeep": "Use those pages",
+            "draftDiscard": "Start over",
+            "restartTitle": "Clear and start over?",
+            "restartDescription_one": "The chosen page will be removed from this device. This can't be undone.",
+            "restartDescription_other": "The {{count}} chosen pages and their order will be removed from this device. This can't be undone.",
+            "restartKeep": "Keep pages",
+            "restartConfirm": "Clear",
+            "discarded": "Selection discarded",
+            "backPlain": "Back"
         },
         "import": {
             "title": "Choose your pages",
@@ -101,6 +125,9 @@
             }
         },
         "review": {
+            "pageCount_one": "{{count}} page",
+            "pageCount_other": "{{count}} pages",
+            "addShort": "Add",
             "title": "Review your pages",
             "description_one": "Check and organize {{count}} page before confirming.",
             "description_other": "Check and organize {{count}} pages before confirming.",
@@ -129,9 +156,10 @@
             "add": "Add images",
             "confirm": "Confirm order",
             "confirmedAction": "Order confirmed",
-            "editing": "Review the order and confirm when it is ready.",
             "confirmedTitle": "Batch reviewed",
-            "confirmedDescription": "The order is saved on this device. Choose the translation languages below.",
+            "confirmedDescription": "The order is saved. If you change the pages, confirm the order again.",
+            "continue": "Continue",
+            "restart": "Clear and start over",
             "errorTitle": "The batch could not be updated",
             "retry": "Try again",
             "errors": {
@@ -140,7 +168,66 @@
                 "storage-unavailable": "The change could not be saved. The last safe state was restored."
             }
         },
+        "flow3": {
+            "change": "Change",
+            "chapterOf": "Chapter from {{date}}",
+            "translatePages_one": "Translate {{count}} page",
+            "translatePages_other": "Translate {{count}} pages",
+            "nothingLeaves": "Nothing leaves this device until you accept sending.",
+            "editPages": "Edit pages",
+            "rowPages": "Pages",
+            "rowLanguages": "Languages",
+            "rowValidation": "Check",
+            "validationCount": "{{ready}} of {{total}} ready",
+            "validationLater": "After the languages",
+            "confirmOnContinue": "The languages are confirmed when you continue.",
+            "title": { "pages": "Choose the pages", "languages": "Confirm the languages", "translate": "Translate chapter" },
+            "description": {
+                "import": "Import the chapter images. They stay only on this device until you translate.",
+                "organize": "Check that the pages are in the chapter’s reading order."
+            },
+            "steps": {
+                "pages": "Pages",
+                "languages": "Languages",
+                "translate": "Translate"
+            },
+            "counter": "Step {{current}} of {{total}}",
+            "hint": {
+                "pages": "Choose the chapter pages and check the order.",
+                "languages": "From the language of the pages to your reading language.",
+                "translate": "Check where it is saved and translate the chapter."
+            },
+            "resume": "Resume last chapter",
+            "thumbnailPage": "Page {{page}}",
+            "searchWorks": "Search works",
+            "clearSearch": "Clear search",
+            "noMatchingWorks": "No matching works.",
+            "summaryTitle": "Summary",
+            "summaryPages_one": "{{count}} page",
+            "summaryPages_other": "{{count}} pages",
+            "summaryLanguages": "{{source}} → {{target}}",
+            "summaryValidation": "Pages checked",
+            "prepareAndTranslate": "Prepare and translate",
+            "saveIn": "Save in: {{name}}",
+            "saveInMeta": "{{source}} → {{target}}",
+            "noWork": "No work",
+            "yourWorks": "Your works",
+            "saveTitle": "Save in",
+            "saveDescription": "Choose the work that will receive this chapter.",
+            "saveConfirm": "Use this work",
+            "chapterName": "Chapter number or name",
+            "saveChange": "Change destination",
+            "linkFailed": "The chapter was prepared but did not join the work.",
+            "linkRetry": "Try linking again",
+            "close": "Close"
+        },
         "languages": {
+            "shortOptions": { "pt-BR": "Portuguese (BR)", "zh-Hans": "Chinese (Simpl.)", "zh-Hant": "Chinese (Trad.)" },
+            "fromShort": "From",
+            "toShort": "To",
+            "swap": "Swap source and target",
+            "usedAsTarget": "Already chosen as target",
+            "usedAsSource": "Already chosen as source",
             "title": "Choose languages",
             "description": "The initial selection is a suggestion. The app has not analyzed the images yet.",
             "source": "Source language",
@@ -177,10 +264,10 @@
             "badges": { "PENDING": "Validating", "VALID": "Ready", "INVALID": "Action needed" },
             "summaryReady": "{{valid}} of {{total}} ready",
             "summaryIssues": "{{valid}} ready · {{invalid}} with an issue",
+            "issueSummaryTitle": "Pages with issues",
+            "reviewIssues": "Go to affected pages",
             "pendingCount_one": "1 page is waiting for validation",
             "pendingCount_other": "{{count}} pages are waiting for validation",
-            "issueAlert_one": "Fix the highlighted page to continue.",
-            "issueAlert_other": "Fix the {{count}} highlighted pages to continue.",
             "filterLabel": "Filter pages",
             "filterIssues": "With issues ({{count}})",
             "filterAll": "All ({{count}})",
@@ -189,13 +276,17 @@
             "openIssueHint": "Opens this page's issue and actions.",
             "openPreviewHint": "Opens a larger image preview.",
             "replace": "Replace file",
+            "replaceShort": "Replace",
+            "viewIssue": "View issue",
             "replacePageLabel": "Replace the file for page {{page}}",
             "noIssues": "No pages have issues.",
             "fixIssues_one": "Fix 1 image",
             "fixIssues_other": "Fix {{count}} images",
+            "removePage": "Remove page",
+            "removePageLabel": "Remove page {{page}} from the selection",
             "continue": "Continue to review",
             "detailEyebrow": "PAGE {{page}}",
-            "detailIssueTitle": "This image needs attention",
+            "detailIssueTitle": "Fix image",
             "detailPreviewTitle": "View image",
             "close": "Close",
             "previewUnavailable": "Preview unavailable",
@@ -227,7 +318,9 @@
                 "FILE_CHANGED": "file changed",
                 "UNSUPPORTED_FORMAT": "unsupported format",
                 "CORRUPTED": "corrupted file",
-                "DIMENSIONS_UNSAFE": "size or dimensions exceed the limit"
+                "DIMENSIONS_UNSAFE": "size or dimensions exceed the limit",
+                "WHITE_OUTLINE": "white outlines",
+                "TRANSPARENT_BACKGROUND_FAILED": "transparent background failed"
             },
             "errors": {
                 "prerequisite-required": "Confirm the order and languages before validation.",
@@ -258,12 +351,15 @@
                 "file-copy-failed": "The app could not protect every project file.",
                 "storage-unavailable": "The project could not be saved on this device.",
                 "project-conflict": "A different project already uses this identity. Your data was preserved."
-            }
+            },
+            "preparedRetainedDescription": "The pages and language pair are saved on this device.",
+            "chapterLinkFailed": "Project prepared, but it could not be linked to the chapter. Link it from the library."
         }
     },
     "navigation": {
         "selector": "Modules",
-        "backToSelector": "Back to modules"
+        "backToSelector": "Back to modules",
+        "home": "Home"
     },
     "sync": {
         "local": "Preferences saved on this device",

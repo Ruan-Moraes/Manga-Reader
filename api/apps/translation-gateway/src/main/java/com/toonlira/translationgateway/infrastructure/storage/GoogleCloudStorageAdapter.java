@@ -20,19 +20,24 @@ import java.nio.channels.Channels;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.Optional;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 @Component
 @ConditionalOnProperty(prefix = "gateway.storage", name = "mode", havingValue = "gcs")
 public class GoogleCloudStorageAdapter implements ObjectStoragePort {
+    private static final int MAX_DELETE_SCAN = 256;
     private final Storage storage;
     private final String bucket;
 
+    @Autowired
     public GoogleCloudStorageAdapter(GatewayProperties properties) {
         this(StorageOptions.getDefaultInstance().getService(), properties.getStorage().getBucket());
     }
@@ -45,15 +50,8 @@ public class GoogleCloudStorageAdapter implements ObjectStoragePort {
 
     @Override
     public void store(String objectKey, Path source, String mimeType, String sha256, Instant createdAt) {
-        try { OriginalObjectKey.validateForStore(objectKey, createdAt); ResultObjectKey.validateForStore(objectKey, createdAt); }
-        catch (IllegalArgumentException invalid) { throw new GatewayException(STORAGE_UNAVAILABLE, 503, true); }
-        try (var input = Files.newInputStream(source)) {
-            var info = BlobInfo.newBuilder(BlobId.of(bucket, objectKey)).setContentType(mimeType)
-                .setMetadata(Map.of("sha256", sha256, "created-at", createdAt.toString())).build();
-            storage.createFrom(info, input, BlobWriteOption.doesNotExist());
-        } catch (IOException | StorageException error) {
-            throw new GatewayException(STORAGE_UNAVAILABLE, 503, true);
-        }
+        // Retained read/delete support is for retiring pre-volatile objects only.
+        throw new GatewayException(STORAGE_UNAVAILABLE, 410, false);
     }
 
     @Override
@@ -64,9 +62,30 @@ public class GoogleCloudStorageAdapter implements ObjectStoragePort {
 
     @Override
     public void delete(String objectKey) {
-        try { storage.delete(BlobId.of(bucket, objectKey)); }
-        catch (StorageException error) { throw new GatewayException(STORAGE_UNAVAILABLE, 503, true); }
+        try {
+            var versions = versionsForExactKey(objectKey);
+            for (var id : versions) storage.delete(id);
+            if (!versionsForExactKey(objectKey).isEmpty()) throw unavailable();
+        } catch (RuntimeException error) { throw unavailable(); }
     }
+
+    private List<BlobId> versionsForExactKey(String objectKey) {
+        if (objectKey == null || objectKey.isBlank()) throw unavailable();
+        var versions = new ArrayList<BlobId>();
+        int scanned = 0;
+        for (var blob : storage.list(bucket, BlobListOption.prefix(objectKey), BlobListOption.versions(true),
+                BlobListOption.pageSize(100)).iterateAll()) {
+            if (++scanned > MAX_DELETE_SCAN || blob == null || blob.getBlobId() == null) throw unavailable();
+            var id = blob.getBlobId();
+            if (!bucket.equals(id.getBucket()) || id.getName() == null) throw unavailable();
+            if (!objectKey.equals(id.getName())) continue;
+            if (id.getGeneration() == null || id.getGeneration() <= 0) throw unavailable();
+            versions.add(id);
+        }
+        return versions;
+    }
+
+    private GatewayException unavailable() { return new GatewayException(STORAGE_UNAVAILABLE, 503, true); }
 
     @Override
     public int deleteOlderThan(Instant cutoff) {
@@ -94,10 +113,11 @@ public class GoogleCloudStorageAdapter implements ObjectStoragePort {
         int deleted = 0;
         boolean failed = false;
         try {
-            for (var blob : storage.list(bucket, BlobListOption.prefix(prefix)).iterateAll()) {
+            for (var blob : storage.list(bucket, BlobListOption.prefix(prefix), BlobListOption.versions(true)).iterateAll()) {
                 try {
                     var id = blob.getBlobId();
                     if (!bucket.equals(id.getBucket()) || !id.getName().startsWith(prefix)) continue;
+                    if (id.getGeneration() == null || id.getGeneration() <= 0) { failed = true; continue; }
                     var created = blob.getCreateTimeOffsetDateTime();
                     var expiry = expiryRule.apply(id.getName(), created == null ? null : created.toInstant());
                     if (expiry == null) { failed = true; continue; }

@@ -17,6 +17,18 @@ Nem toda interface representa um backend concluído. O gerenciamento de
 capítulos admin ainda usa gateways locais documentados em
 [`../../docs/architecture.md`](../../docs/architecture.md) e na dívida DT-57.
 
+## Documentos legais
+
+O aplicativo web publica os [Termos de Uso](https://toonlira-rm.web.app/legal/terms)
+e a [Política de Privacidade](https://toonlira-rm.web.app/legal/privacy) nas rotas
+públicas do target `app` do Firebase Hosting. As páginas usam os arquivos
+`legal.json` dos três idiomas.
+
+Para publicar o build revisado, execute `pnpm build:app` em `web/` e depois
+`firebase deploy --project toonlira-rm --only hosting:app` na raiz do
+monorepo. Confira a versão e o conteúdo de ambos os documentos em produção
+antes de aplicar a nova configuração do disclosure no gateway.
+
 ## Estrutura
 
 ```text

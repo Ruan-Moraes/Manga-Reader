@@ -21,7 +21,6 @@ interface ReaderPrefs {
     saturation: number;
     gap: number;
     bg: Bg;
-    quality: UserSettings['reader']['quality'];
     preload: number;
     autoMarkRead: boolean;
 }
@@ -33,7 +32,6 @@ const toReaderPrefs = (settings: UserSettings): ReaderPrefs => ({
     saturation: settings.reader.saturation,
     gap: settings.reader.gap,
     bg: settings.reader.background.toLowerCase() as Bg,
-    quality: settings.reader.quality,
     preload: settings.reader.preload,
     autoMarkRead: settings.reader.autoMarkRead,
 });
@@ -50,7 +48,6 @@ const samePrefs = (left: ReaderPrefs, right: ReaderPrefs) =>
     left.saturation === right.saturation &&
     left.gap === right.gap &&
     left.bg === right.bg &&
-    left.quality === right.quality &&
     left.preload === right.preload &&
     left.autoMarkRead === right.autoMarkRead;
 
@@ -79,7 +76,6 @@ export function useChapterReader(
     const [saturation, setSaturation] = useState<number>(initialPrefs.saturation);
     const [gap, setGap] = useState<number>(initialPrefs.gap);
     const [bg, setBg] = useState<Bg>(initialPrefs.bg);
-    const [quality, setQuality] = useState(initialPrefs.quality);
     const [preload, setPreload] = useState(initialPrefs.preload);
     const [autoMarkRead, setAutoMarkRead] = useState(initialPrefs.autoMarkRead);
 
@@ -115,7 +111,7 @@ export function useChapterReader(
     const step = mode === 'double' ? 2 : 1;
     const lastPage = mode === 'vertical' ? total : total + 1;
 
-    const currentPrefs = useMemo<ReaderPrefs>(() => ({ mode, direction, fit, saturation, gap, bg, quality, preload, autoMarkRead }), [mode, direction, fit, saturation, gap, bg, quality, preload, autoMarkRead]);
+    const currentPrefs = useMemo<ReaderPrefs>(() => ({ mode, direction, fit, saturation, gap, bg, preload, autoMarkRead }), [mode, direction, fit, saturation, gap, bg, preload, autoMarkRead]);
 
     const applyPrefs = useCallback(
         (next: ReaderPrefs) => {
@@ -128,7 +124,6 @@ export function useChapterReader(
             setSaturation(next.saturation);
             setGap(next.gap);
             setBg(next.bg);
-            setQuality(next.quality);
             setPreload(next.preload);
             setAutoMarkRead(next.autoMarkRead);
         },
@@ -157,14 +152,13 @@ export function useChapterReader(
                 saturation,
                 gap,
                 background: toSettingsBackground(bg),
-                quality,
                 preload,
                 autoMarkRead,
             },
         }));
 
         if (isLoggedIn) persistSettings(next);
-    }, [currentPrefs, mode, direction, fit, saturation, gap, bg, quality, preload, autoMarkRead, isLoggedIn, persistSettings]);
+    }, [currentPrefs, mode, direction, fit, saturation, gap, bg, preload, autoMarkRead, isLoggedIn, persistSettings]);
 
     useEffect(
         () =>
@@ -374,7 +368,6 @@ export function useChapterReader(
         saturation,
         gap,
         bg,
-        quality,
         preload,
         autoMarkRead,
         setMode,

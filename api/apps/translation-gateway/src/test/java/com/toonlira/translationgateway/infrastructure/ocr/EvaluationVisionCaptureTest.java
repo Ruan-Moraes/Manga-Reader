@@ -23,7 +23,7 @@ class EvaluationVisionCaptureTest {
     @Test void capturesUnmappedSyntheticResponsePrivatelyThroughRealGrpc() throws Exception {
         var capture = new EvaluationVisionCapture(temporary, true);
         try (var server = new FakeVisionServer();
-             var adapter = new VisionOcrAdapter(server.client(Duration.ofSeconds(2), capture), "test-project", "private-fixtures")) {
+             var adapter = new LegacyVisionOcrAdapter(server.client(Duration.ofSeconds(2), capture), "test-project", "private-fixtures")) {
             adapter.recognize(new OcrPort.Command("private/originals/example", "ja", UUID.randomUUID(), 100, 200));
             assertThat(server.calls.get()).isEqualTo(1);
             assertThat(BatchAnnotateImagesResponse.parseFrom(Files.readAllBytes(temporary.resolve("vision-response.pb"))))
@@ -37,7 +37,7 @@ class EvaluationVisionCaptureTest {
     @Test void preservesInvalidProviderResponseBeforeMapperRejectsIt() throws Exception {
         var capture = new EvaluationVisionCapture(temporary, true);
         try (var server = new FakeVisionServer();
-             var adapter = new VisionOcrAdapter(server.client(Duration.ofSeconds(2), capture), "test-project", "private-fixtures")) {
+             var adapter = new LegacyVisionOcrAdapter(server.client(Duration.ofSeconds(2), capture), "test-project", "private-fixtures")) {
             server.handler = (request, observer) -> { observer.onNext(BatchAnnotateImagesResponse.getDefaultInstance()); observer.onCompleted(); };
             assertThatThrownBy(() -> adapter.recognize(
                 new OcrPort.Command("private/originals/example", "ja", UUID.randomUUID(), 100, 200)))

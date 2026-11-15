@@ -1,1 +1,1 @@
-export { OfflineTranslationPage as default } from '@/pages/offline-translation';
+export { OfflineTranslationRoute as default } from '@/pages/offline-translation';

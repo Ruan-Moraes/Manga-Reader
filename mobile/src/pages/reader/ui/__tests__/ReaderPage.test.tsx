@@ -101,7 +101,7 @@ describe('MOB-FEAT-005/AC-005/006 ReaderPage session integration', () => {
             data: { titleId: 'title-1', chapterNumber: '7.5', currentPage: 2, totalPages: 3, completed: false },
         });
         fireEvent.press(retry);
-        await waitFor(() => expect(screen.getByTestId('reader-current-page').props.children).toBe('Página 2 de 3'));
+        await waitFor(() => expect(screen.getByTestId('reader-current-page').props.accessibilityLabel).toBe('Página 2 de 3'));
         await waitFor(() => expect(apiMock.history.put).toHaveLength(1), { timeout: 1000 });
         expect(JSON.parse(apiMock.history.put[0].data as string)).toMatchObject({ chapterNumber: '7.5', currentPage: 2 });
         screen.unmount();
@@ -137,13 +137,13 @@ describe('MOB-FEAT-005/AC-005/006 ReaderPage session integration', () => {
 
         act(() => useSessionStore.setState({ identityEpoch: 11 }));
         await waitFor(() => expect(apiMock.history.get.filter(request => request.url?.includes('reading-progress'))).toHaveLength(2));
-        await waitFor(() => expect(screen.getByTestId('reader-current-page').props.children).toBe('Página 2 de 3'));
+        await waitFor(() => expect(screen.getByTestId('reader-current-page').props.accessibilityLabel).toBe('Página 2 de 3'));
 
         await act(async () => {
             resolveAccountA([200, { data: { titleId: 'title-1', chapterNumber: '7.5', currentPage: 3, totalPages: 3, completed: false } }]);
         });
         expect(screen.queryByText('Continuar de onde parou?')).toBeNull();
-        expect(screen.getByTestId('reader-current-page').props.children).toBe('Página 2 de 3');
+        expect(screen.getByTestId('reader-current-page').props.accessibilityLabel).toBe('Página 2 de 3');
         screen.unmount();
         await queryClient.cancelQueries();
         queryClient.clear();
@@ -172,7 +172,7 @@ describe('MOB-FEAT-005/AC-005/006 ReaderPage session integration', () => {
         );
 
         await waitFor(() => {
-            expect(screen.getByTestId('reader-current-page').props.children).toBe('Página 1 de 2');
+            expect(screen.getByTestId('reader-current-page').props.accessibilityLabel).toBe('Página 1 de 2');
             expect(diagnostic).toHaveBeenCalledWith({ code: 'INVALID_READING_PROGRESS', titleId: 'title-1' });
         });
         await act(async () => new Promise(resolve => setTimeout(resolve, 450)));

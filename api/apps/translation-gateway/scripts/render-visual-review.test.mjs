@@ -13,6 +13,8 @@ import {
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { createHash } from "node:crypto";
+import { spawnSync } from "node:child_process";
+import { fileURLToPath } from "node:url";
 import { createVisualReview } from "./render-visual-review.mjs";
 
 const languages = ["ja", "en", "es", "ko", "zh-Hans", "zh-Hant", "pt-BR"];
@@ -136,6 +138,44 @@ test("offline report preserves artifacts, escapes text and never approves qualit
     createVisualReview({ gallery, output }),
     /visual-review-unavailable/,
   );
+});
+
+test("explicit single architecture generates seven reviewed-pending cases", async (t) => {
+  const gallery = await fixture(t),
+    output = join(gallery, "arm-report.html");
+  await rm(join(gallery, "amd64"), { recursive: true });
+  const result = await createVisualReview({
+    gallery,
+    output,
+    architecture: "arm64",
+  });
+  assert.equal(result.cases, 7);
+  assert.equal(result.humanApproved, false);
+  const html = await readFile(output, "utf8");
+  assert.equal((html.match(/class="case"/g) || []).length, 7);
+  assert.ok(!html.includes("amd64"));
+  await assert.rejects(
+    createVisualReview({
+      gallery,
+      output: join(gallery, "bad.html"),
+      architecture: "other",
+    }),
+  );
+  const command = spawnSync(
+    process.execPath,
+    [
+      fileURLToPath(new URL("./render-visual-review.mjs", import.meta.url)),
+      "--gallery",
+      gallery,
+      "--output",
+      join(gallery, "cli-report.html"),
+      "--architecture",
+      "arm64",
+    ],
+    { encoding: "utf8" },
+  );
+  assert.equal(command.status, 0, command.stderr);
+  assert.equal(JSON.parse(command.stdout).cases, 7);
 });
 
 test("missing case and modified image fail before producing a report", async (t) => {

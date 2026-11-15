@@ -1,5 +1,7 @@
 package com.toonlira.translationgateway.application;
 
+import com.toonlira.translationgateway.infrastructure.storage.LegacyStorageFixture;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
@@ -13,17 +15,21 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import tools.jackson.databind.ObjectMapper;
 import com.toonlira.translationgateway.infrastructure.json.GatewayJsonMapper;
 import com.toonlira.translationgateway.application.config.GatewayProperties;
 import com.toonlira.translationgateway.application.port.ObjectStoragePort;
 import com.toonlira.translationgateway.application.port.RenderPort;
+import com.toonlira.translationgateway.application.port.RenderingTaskProcessPort;
 import com.toonlira.translationgateway.application.port.RenderingJobRepository;
 import com.toonlira.translationgateway.domain.GatewayErrorCode;
 import com.toonlira.translationgateway.domain.GatewayException;
 import com.toonlira.translationgateway.domain.JobStatus;
 import com.toonlira.translationgateway.domain.OcrManifest;
+import com.toonlira.translationgateway.domain.OriginalObjectKey;
 import com.toonlira.translationgateway.domain.rendering.RenderManifest;
 import com.toonlira.translationgateway.domain.rendering.RenderPolicy;
 import com.toonlira.translationgateway.domain.rendering.RenderRequest;
@@ -34,17 +40,25 @@ import com.toonlira.translationgateway.domain.translation.TranslationRequest;
 import com.toonlira.translationgateway.domain.translation.TranslationResponse;
 import com.toonlira.translationgateway.domain.translation.TranslationValidator;
 import com.toonlira.translationgateway.infrastructure.storage.LocalObjectStorageAdapter;
+import java.io.FilterInputStream;
+import java.io.InputStream;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.attribute.PosixFilePermissions;
 import java.security.MessageDigest;
 import java.time.Clock;
+import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.util.HexFormat;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
@@ -60,6 +74,23 @@ class ProcessRenderingTaskUseCaseTest {
     private static final ObjectMapper MAPPER = GatewayJsonMapper.create();
     @TempDir Path temporary;
     private final CleanupLifecycleObjectsUseCase lifecycle = mock(CleanupLifecycleObjectsUseCase.class);
+
+    @Test
+    void supervisedModeRoutesWholeTaskWithoutParentStorageOrCleanup() throws Exception {
+        var fixture = fixture();
+        fixture.properties().getRendering().setMode(GatewayProperties.Rendering.Mode.SUPERVISED_NATIVE);
+        fixture.properties().getRendering().setStorageProcessEnabled(true);
+        var task = worker(fixture);
+        var processes = mock(RenderingTaskProcessPort.class);
+        ObjectProvider<RenderingTaskProcessPort> provider = mock(ObjectProvider.class);
+        when(provider.getObject()).thenReturn(processes);
+        task.configureProcesses(provider);
+        task.execute(fixture.job().jobRef());
+        verify(processes).execute(fixture.job());
+        verify(fixture.storage(), never()).open(any());
+        verify(fixture.storage(), never()).delete(any());
+        verifyNoInteractions(fixture.renderer());
+    }
 
     @Test
     void disabledDoesNotResolveRendererOrAccessDatabaseAndStorage() {
@@ -103,6 +134,41 @@ class ProcessRenderingTaskUseCaseTest {
         verify(lifecycle).executeForJob(fixture.job().id());
     }
 
+    @Test
+    void cleanupFailureIsSanitizedAndOtherOwnedFilesAreStillRemoved() throws Exception {
+        assumeTrue(Files.getFileStore(temporary).supportsFileAttributeView("posix"));
+        var fixture = fixture();
+        var locked = Files.createDirectory(temporary.resolve("locked-cleanup"));
+        var leaked = Files.writeString(locked.resolve("private-snapshot"), "synthetic");
+        var inspector = spy(new MediaInspectionService(new MediaInspectionService.CleanupState()));
+        var injected = new java.util.concurrent.atomic.AtomicBoolean();
+        doAnswer(call -> {
+            if (injected.compareAndSet(false, true)) inspector.deleteQuietly(leaked);
+            return call.callRealMethod();
+        }).when(inspector).deleteQuietly(any());
+        when(fixture.persistence().complete(any(), any(), any())).thenReturn(true);
+        ObjectProvider<RenderPort> provider = mock(ObjectProvider.class);
+        when(provider.getObject()).thenReturn(fixture.renderer());
+        try {
+            Files.setPosixFilePermissions(locked, PosixFilePermissions.fromString("r-x------"));
+            assumeFalse(Files.isWritable(locked), "fixture requires enforced directory permissions");
+            assertThatThrownBy(() -> worker(fixture.persistence(), fixture.storage(), provider, fixture.properties(),
+                    Clock.fixed(NOW, ZoneOffset.UTC), inspector).execute(fixture.job().jobRef()))
+                .isInstanceOfSatisfying(GatewayException.class, error -> {
+                    assertThat(error.code()).isEqualTo(GatewayErrorCode.STORAGE_UNAVAILABLE);
+                    assertThat(error.getMessage()).isEqualTo("storage-unavailable");
+                    assertThat(error.getCause()).isNull();
+                });
+            assertThat(Files.exists(leaked)).isTrue();
+            assertThat(renderFiles()).isEmpty();
+            assertThat(finalObjects()).hasSize(2);
+            verify(fixture.persistence()).complete(any(), any(), any());
+        } finally {
+            Files.setPosixFilePermissions(locked, PosixFilePermissions.fromString("rwx------"));
+            Files.deleteIfExists(leaked);
+        }
+    }
+
     @ParameterizedTest
     @ValueSource(strings = {"original", "ocr", "translation", "expired", "dimensions", "pair", "job"})
     void invalidInputFailsBeforeReservation(String fault) throws Exception {
@@ -129,6 +195,469 @@ class ProcessRenderingTaskUseCaseTest {
         worker(fixture).execute(fixture.job().jobRef());
         verifyNoInteractions(fixture.renderer());
         assertThat(Files.exists(temporary.resolve(fixture.job().originalObjectKey()))).isTrue();
+    }
+
+    @Test
+    void deadlineReachedWhileReadingManifestsPreventsOpeningOriginal() throws Exception {
+        var fixture = fixture();
+        var time = new AtomicReference<>(NOW);
+        var clock = mock(Clock.class);
+        when(clock.instant()).thenAnswer(call -> time.get());
+        doAnswer(call -> {
+            var stream = call.callRealMethod();
+            time.set(NOW.plusSeconds(3600));
+            return stream;
+        }).when(fixture.storage()).open(fixture.job().translationObjectKey());
+        ObjectProvider<RenderPort> provider = mock(ObjectProvider.class);
+        when(provider.getObject()).thenReturn(fixture.renderer());
+        worker(fixture.persistence(), fixture.storage(), provider, fixture.properties(), clock).execute(fixture.job().jobRef());
+        verify(fixture.storage(), never()).open(fixture.job().originalObjectKey());
+        verify(fixture.persistence()).failUnclaimed(eq(fixture.job().id()), eq(GatewayErrorCode.INTERNAL_ERROR), eq(NOW.plusSeconds(3600)));
+        verify(fixture.persistence(), never()).claim(any(), any());
+        verifyNoInteractions(fixture.renderer());
+        assertThat(finalObjects()).isEmpty();
+    }
+
+    @Test
+    void deadlineReachedWhileReadingOriginalPreventsReservationAndRender() throws Exception {
+        var fixture = fixture();
+        var time = new AtomicReference<>(NOW);
+        var clock = mock(Clock.class);
+        when(clock.instant()).thenAnswer(call -> time.get());
+        doAnswer(call -> new java.io.FilterInputStream((java.io.InputStream) call.callRealMethod()) {
+            @Override public void close() throws java.io.IOException {
+                super.close();
+                time.set(NOW.plusSeconds(3600));
+            }
+        }).when(fixture.storage()).open(fixture.job().originalObjectKey());
+        ObjectProvider<RenderPort> provider = mock(ObjectProvider.class);
+        when(provider.getObject()).thenReturn(fixture.renderer());
+        worker(fixture.persistence(), fixture.storage(), provider, fixture.properties(), clock).execute(fixture.job().jobRef());
+        verify(fixture.persistence()).failUnclaimed(eq(fixture.job().id()), eq(GatewayErrorCode.INTERNAL_ERROR), eq(NOW.plusSeconds(3600)));
+        verify(fixture.persistence(), never()).claim(any(), any());
+        verifyNoInteractions(fixture.renderer());
+        assertThat(renderFiles()).isEmpty();
+        assertThat(finalObjects()).isEmpty();
+    }
+
+    @Test
+    void deadlineReachedDuringBlockReadStopsFurtherOriginalReads() throws Exception {
+        var fixture = fixture();
+        var time = new AtomicReference<>(NOW);
+        var reads = new java.util.concurrent.atomic.AtomicInteger();
+        var clock = mock(Clock.class);
+        when(clock.instant()).thenAnswer(call -> time.get());
+        doAnswer(call -> new java.io.FilterInputStream((java.io.InputStream) call.callRealMethod()) {
+            @Override public int read(byte[] buffer, int offset, int length) throws java.io.IOException {
+                reads.incrementAndGet();
+                int count = super.read(buffer, offset, length);
+                time.set(NOW.plusSeconds(3600));
+                return count;
+            }
+        }).when(fixture.storage()).open(fixture.job().originalObjectKey());
+        ObjectProvider<RenderPort> provider = mock(ObjectProvider.class);
+        when(provider.getObject()).thenReturn(fixture.renderer());
+        worker(fixture.persistence(), fixture.storage(), provider, fixture.properties(), clock).execute(fixture.job().jobRef());
+        assertThat(reads).hasValue(1);
+        verify(fixture.persistence()).failUnclaimed(eq(fixture.job().id()), eq(GatewayErrorCode.INTERNAL_ERROR), eq(NOW.plusSeconds(3600)));
+        verify(fixture.persistence(), never()).claim(any(), any());
+        verifyNoInteractions(fixture.renderer());
+        assertThat(renderFiles()).isEmpty();
+        assertThat(finalObjects()).isEmpty();
+    }
+
+    @Test
+    void shorterEmbeddedOriginalDeadlineStopsReadBeforeTheOneHourFailsafe() throws Exception {
+        var fixture = fixture();
+        var current = fixture.job();
+        var key = OriginalObjectKey.create(NOW, 30);
+        fixture.delegate().store(key, fixture.reusable(), "image/png", current.source().sha256(), NOW);
+        var job = new RenderingJobRepository.WorkItem(current.id(), current.jobRef(), current.status(), key, current.source(),
+            current.sourceLanguage(), current.targetLanguage(), current.createdAt(), current.ocrObjectKey(), current.ocrSha256(),
+            current.translationObjectKey(), current.translationSha256(), null, current.resultRetentionSeconds());
+        fixture.current().set(job);
+        var time = new AtomicReference<>(NOW);
+        var reads = new java.util.concurrent.atomic.AtomicInteger();
+        var clock = mock(Clock.class);
+        when(clock.instant()).thenAnswer(call -> time.get());
+        doAnswer(call -> new java.io.FilterInputStream((java.io.InputStream) call.callRealMethod()) {
+            @Override public int read(byte[] buffer, int offset, int length) throws java.io.IOException {
+                reads.incrementAndGet();
+                int count = super.read(buffer, offset, length);
+                time.set(NOW.plusSeconds(30));
+                return count;
+            }
+        }).when(fixture.storage()).open(key);
+        ObjectProvider<RenderPort> provider = mock(ObjectProvider.class);
+        when(provider.getObject()).thenReturn(fixture.renderer());
+        worker(fixture.persistence(), fixture.storage(), provider, fixture.properties(), clock).execute(job.jobRef());
+        assertThat(reads).hasValue(1);
+        verify(fixture.persistence()).failUnclaimed(eq(job.id()), eq(GatewayErrorCode.INTERNAL_ERROR), eq(NOW.plusSeconds(30)));
+        verify(fixture.persistence(), never()).claim(any(), any());
+        verifyNoInteractions(fixture.renderer());
+        assertThat(renderFiles()).isEmpty();
+    }
+
+    @Test
+    void blockedOriginalReadFailsAndCleansAfterReturningPastDeadline() throws Exception {
+        var fixture = fixture();
+        var time = new AtomicReference<>(NOW);
+        var clock = mock(Clock.class);
+        when(clock.instant()).thenAnswer(call -> time.get());
+        var entered = new CountDownLatch(1);
+        var release = new CountDownLatch(1);
+        doAnswer(call -> new java.io.FilterInputStream((java.io.InputStream) call.callRealMethod()) {
+            @Override public int read(byte[] buffer, int offset, int length) throws java.io.IOException {
+                entered.countDown();
+                try {
+                    if (!release.await(5, TimeUnit.SECONDS)) throw new java.io.IOException("test-timeout");
+                } catch (InterruptedException error) {
+                    Thread.currentThread().interrupt();
+                    throw new java.io.IOException("test-interrupted", error);
+                }
+                return super.read(buffer, offset, length);
+            }
+        }).when(fixture.storage()).open(fixture.job().originalObjectKey());
+        ObjectProvider<RenderPort> provider = mock(ObjectProvider.class);
+        when(provider.getObject()).thenReturn(fixture.renderer());
+        var executor = Executors.newSingleThreadExecutor();
+        try {
+            var running = executor.submit(() -> worker(fixture.persistence(), fixture.storage(), provider, fixture.properties(), clock)
+                .execute(fixture.job().jobRef()));
+            assertThat(entered.await(5, TimeUnit.SECONDS)).isTrue();
+            time.set(NOW.plusSeconds(3600));
+            assertThat(running.isDone()).isFalse();
+            release.countDown();
+            running.get(5, TimeUnit.SECONDS);
+            verify(fixture.persistence()).failUnclaimed(eq(fixture.job().id()), eq(GatewayErrorCode.INTERNAL_ERROR), eq(NOW.plusSeconds(3600)));
+            verify(fixture.persistence(), never()).claim(any(), any());
+            verifyNoInteractions(fixture.renderer());
+            assertThat(renderFiles()).isEmpty();
+            assertThat(finalObjects()).isEmpty();
+        } finally {
+            release.countDown();
+            executor.shutdownNow();
+            assertThat(executor.awaitTermination(5, TimeUnit.SECONDS)).isTrue();
+        }
+    }
+
+    @Test
+    void blockedOriginalOpenFailsAndClosesStreamAfterReturningPastDeadline() throws Exception {
+        var fixture = fixture();
+        var time = new AtomicReference<>(NOW);
+        var clock = mock(Clock.class);
+        when(clock.instant()).thenAnswer(call -> time.get());
+        var entered = new CountDownLatch(1);
+        var release = new CountDownLatch(1);
+        var closed = new java.util.concurrent.atomic.AtomicBoolean();
+        doAnswer(call -> {
+            entered.countDown();
+            if (!release.await(5, TimeUnit.SECONDS)) throw new IllegalStateException("test-timeout");
+            return new java.io.FilterInputStream((java.io.InputStream) call.callRealMethod()) {
+                @Override public void close() throws java.io.IOException {
+                    super.close();
+                    closed.set(true);
+                }
+            };
+        }).when(fixture.storage()).open(fixture.job().originalObjectKey());
+        ObjectProvider<RenderPort> provider = mock(ObjectProvider.class);
+        when(provider.getObject()).thenReturn(fixture.renderer());
+        var executor = Executors.newSingleThreadExecutor();
+        try {
+            var running = executor.submit(() -> worker(fixture.persistence(), fixture.storage(), provider, fixture.properties(), clock)
+                .execute(fixture.job().jobRef()));
+            assertThat(entered.await(5, TimeUnit.SECONDS)).isTrue();
+            time.set(NOW.plusSeconds(3600));
+            assertThat(running.isDone()).isFalse();
+            release.countDown();
+            running.get(5, TimeUnit.SECONDS);
+            assertThat(closed).isTrue();
+            verify(fixture.persistence()).failUnclaimed(eq(fixture.job().id()), eq(GatewayErrorCode.INTERNAL_ERROR), eq(NOW.plusSeconds(3600)));
+            verify(fixture.persistence(), never()).claim(any(), any());
+            verifyNoInteractions(fixture.renderer());
+            assertThat(renderFiles()).isEmpty();
+            assertThat(finalObjects()).isEmpty();
+        } finally {
+            release.countDown();
+            executor.shutdownNow();
+            assertThat(executor.awaitTermination(5, TimeUnit.SECONDS)).isTrue();
+        }
+    }
+
+    @Test
+    void deadlineSignalsBlockedOriginalReadAndCleansSnapshot() throws Exception {
+        var fixture = fixture();
+        var current = fixture.job();
+        var key = OriginalObjectKey.create(NOW, 2);
+        fixture.delegate().store(key, fixture.reusable(), "image/png", current.source().sha256(), NOW);
+        var job = new RenderingJobRepository.WorkItem(current.id(), current.jobRef(), current.status(), key, current.source(),
+            current.sourceLanguage(), current.targetLanguage(), current.createdAt(), current.ocrObjectKey(), current.ocrSha256(),
+            current.translationObjectKey(), current.translationSha256(), null, current.resultRetentionSeconds());
+        fixture.current().set(job);
+        var clock = Clock.offset(Clock.systemUTC(), Duration.between(Instant.now(), NOW));
+        var entered = new CountDownLatch(1);
+        var signalled = new java.util.concurrent.atomic.AtomicBoolean();
+        doAnswer(call -> new java.io.FilterInputStream((java.io.InputStream) call.callRealMethod()) {
+            @Override public int read(byte[] buffer, int offset, int length) throws java.io.IOException {
+                entered.countDown();
+                try { new CountDownLatch(1).await(); }
+                catch (InterruptedException expected) {
+                    signalled.set(true);
+                    Thread.currentThread().interrupt();
+                    throw new java.io.IOException("synthetic-interrupted");
+                }
+                throw new AssertionError("unreachable");
+            }
+        }).when(fixture.storage()).open(key);
+        ObjectProvider<RenderPort> provider = mock(ObjectProvider.class);
+        when(provider.getObject()).thenReturn(fixture.renderer());
+        var inspector = spy(new MediaInspectionService());
+        var deletedSnapshot = new AtomicReference<Path>();
+        doAnswer(call -> { deletedSnapshot.set(call.getArgument(0)); return call.callRealMethod(); })
+            .when(inspector).deleteQuietly(any());
+        var worker = Thread.ofPlatform().start(() -> worker(fixture.persistence(), fixture.storage(), provider, fixture.properties(), clock, inspector)
+            .execute(job.jobRef()));
+        try {
+            assertThat(entered.await(1, TimeUnit.SECONDS)).isTrue();
+            worker.join(4000);
+            assertThat(worker.isAlive()).isFalse();
+            assertThat(signalled).isTrue();
+        } finally {
+            worker.interrupt();
+            worker.join(2000);
+        }
+        verify(fixture.persistence()).failUnclaimed(eq(job.id()), eq(GatewayErrorCode.INTERNAL_ERROR), any());
+        verify(fixture.persistence(), never()).claim(any(), any());
+        verifyNoInteractions(fixture.renderer());
+        assertThat(deletedSnapshot.get()).isNotNull();
+        assertThat(Files.exists(deletedSnapshot.get())).isFalse();
+        assertThat(renderFiles()).isEmpty();
+        assertThat(finalObjects()).isEmpty();
+    }
+
+    @Test
+    void deadlineSignalsBlockedManifestReadBeforeOpeningOriginal() throws Exception {
+        var fixture = fixture();
+        var current = fixture.job();
+        var key = OriginalObjectKey.create(NOW, 2);
+        var job = new RenderingJobRepository.WorkItem(current.id(), current.jobRef(), current.status(), key, current.source(),
+            current.sourceLanguage(), current.targetLanguage(), current.createdAt(), current.ocrObjectKey(), current.ocrSha256(),
+            current.translationObjectKey(), current.translationSha256(), null, current.resultRetentionSeconds());
+        fixture.current().set(job);
+        var clock = Clock.offset(Clock.systemUTC(), Duration.between(Instant.now(), NOW));
+        var entered = new CountDownLatch(1);
+        var signalled = new java.util.concurrent.atomic.AtomicBoolean();
+        doAnswer(call -> new java.io.FilterInputStream((java.io.InputStream) call.callRealMethod()) {
+            @Override public int read(byte[] buffer, int offset, int length) throws java.io.IOException {
+                entered.countDown();
+                try { new CountDownLatch(1).await(); }
+                catch (InterruptedException expected) {
+                    signalled.set(true);
+                    Thread.currentThread().interrupt();
+                    throw new java.io.IOException("synthetic-interrupted");
+                }
+                throw new AssertionError("unreachable");
+            }
+        }).when(fixture.storage()).open(job.ocrObjectKey());
+        ObjectProvider<RenderPort> provider = mock(ObjectProvider.class);
+        when(provider.getObject()).thenReturn(fixture.renderer());
+        var worker = Thread.ofPlatform().start(() -> worker(fixture.persistence(), fixture.storage(), provider, fixture.properties(), clock)
+            .execute(job.jobRef()));
+        try {
+            assertThat(entered.await(1, TimeUnit.SECONDS)).isTrue();
+            worker.join(4000);
+            assertThat(worker.isAlive()).isFalse();
+            assertThat(signalled).isTrue();
+        } finally {
+            worker.interrupt();
+            worker.join(2000);
+        }
+        verify(fixture.storage(), never()).open(key);
+        verify(fixture.persistence()).failUnclaimed(eq(job.id()), eq(GatewayErrorCode.INTERNAL_ERROR), any());
+        verify(fixture.persistence(), never()).claim(any(), any());
+        verifyNoInteractions(fixture.renderer());
+        assertThat(renderFiles()).isEmpty();
+        assertThat(finalObjects()).isEmpty();
+    }
+
+    @Test
+    void uninterruptibleOriginalReadKeepsOwnershipUntilItReturns() throws Exception {
+        var fixture = fixture();
+        var current = fixture.job();
+        var key = OriginalObjectKey.create(NOW, 2);
+        fixture.delegate().store(key, fixture.reusable(), "image/png", current.source().sha256(), NOW);
+        var job = new RenderingJobRepository.WorkItem(current.id(), current.jobRef(), current.status(), key, current.source(),
+            current.sourceLanguage(), current.targetLanguage(), current.createdAt(), current.ocrObjectKey(), current.ocrSha256(),
+            current.translationObjectKey(), current.translationSha256(), null, current.resultRetentionSeconds());
+        fixture.current().set(job);
+        var clock = Clock.offset(Clock.systemUTC(), Duration.between(Instant.now(), NOW));
+        var entered = new CountDownLatch(1);
+        var interrupted = new CountDownLatch(1);
+        var release = new CountDownLatch(1);
+        doAnswer(call -> new java.io.FilterInputStream((java.io.InputStream) call.callRealMethod()) {
+            @Override public int read(byte[] buffer, int offset, int length) throws java.io.IOException {
+                entered.countDown();
+                while (true) {
+                    try { if (release.await(5, TimeUnit.SECONDS)) break; else throw new java.io.IOException("test-timeout"); }
+                    catch (InterruptedException expected) { interrupted.countDown(); }
+                }
+                return super.read(buffer, offset, length);
+            }
+        }).when(fixture.storage()).open(key);
+        ObjectProvider<RenderPort> provider = mock(ObjectProvider.class);
+        when(provider.getObject()).thenReturn(fixture.renderer());
+        var inspector = spy(new MediaInspectionService());
+        var deletedSnapshot = new AtomicReference<Path>();
+        doAnswer(call -> { deletedSnapshot.set(call.getArgument(0)); return call.callRealMethod(); })
+            .when(inspector).deleteQuietly(any());
+        var worker = Thread.ofPlatform().start(() -> worker(fixture.persistence(), fixture.storage(), provider, fixture.properties(), clock, inspector)
+            .execute(job.jobRef()));
+        try {
+            assertThat(entered.await(1, TimeUnit.SECONDS)).isTrue();
+            assertThat(interrupted.await(4, TimeUnit.SECONDS)).isTrue();
+            assertThat(worker.isAlive()).isTrue();
+            verify(inspector, never()).deleteQuietly(any());
+            verify(fixture.persistence(), never()).claim(any(), any());
+        } finally {
+            release.countDown();
+            worker.join(5000);
+        }
+        assertThat(worker.isAlive()).isFalse();
+        verify(fixture.persistence()).failUnclaimed(eq(job.id()), eq(GatewayErrorCode.INTERNAL_ERROR), any());
+        verifyNoInteractions(fixture.renderer());
+        assertThat(deletedSnapshot.get()).isNotNull();
+        assertThat(Files.exists(deletedSnapshot.get())).isFalse();
+        assertThat(renderFiles()).isEmpty();
+        assertThat(finalObjects()).isEmpty();
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"original", "ocr", "translation"})
+    void deadlineClosesReadThatIgnoresInterruptionButRespondsToClose(String stage) throws Exception {
+        var fixture = fixture();
+        var current = fixture.job();
+        var key = OriginalObjectKey.create(NOW, 2);
+        fixture.delegate().store(key, fixture.reusable(), "image/png", current.source().sha256(), NOW);
+        var job = new RenderingJobRepository.WorkItem(current.id(), current.jobRef(), current.status(), key, current.source(),
+            current.sourceLanguage(), current.targetLanguage(), current.createdAt(), current.ocrObjectKey(), current.ocrSha256(),
+            current.translationObjectKey(), current.translationSha256(), null, current.resultRetentionSeconds());
+        fixture.current().set(job);
+        var clock = Clock.offset(Clock.systemUTC(), Duration.between(Instant.now(), NOW));
+        var entered = new CountDownLatch(1);
+        var closed = new CountDownLatch(1);
+        String blockedKey = switch (stage) {
+            case "original" -> key;
+            case "ocr" -> job.ocrObjectKey();
+            default -> job.translationObjectKey();
+        };
+        doAnswer(call -> new FilterInputStream((InputStream) call.callRealMethod()) {
+            @Override public int read(byte[] buffer, int offset, int length) throws IOException {
+                entered.countDown();
+                while (closed.getCount() != 0) {
+                    try { closed.await(); }
+                    catch (InterruptedException ignored) { /* Models a read requiring an explicit close. */ }
+                }
+                throw new IOException("synthetic-closed");
+            }
+            @Override public void close() throws IOException {
+                closed.countDown();
+                super.close();
+            }
+        }).when(fixture.storage()).open(blockedKey);
+        ObjectProvider<RenderPort> provider = mock(ObjectProvider.class);
+        when(provider.getObject()).thenReturn(fixture.renderer());
+        var inspector = spy(new MediaInspectionService(new MediaInspectionService.CleanupState()));
+        var deletedSnapshot = new AtomicReference<Path>();
+        doAnswer(call -> { deletedSnapshot.set(call.getArgument(0)); return call.callRealMethod(); })
+            .when(inspector).deleteQuietly(any());
+        var running = Thread.ofPlatform().start(() -> worker(fixture.persistence(), fixture.storage(), provider,
+            fixture.properties(), clock, inspector).execute(job.jobRef()));
+        try {
+            assertThat(entered.await(1, TimeUnit.SECONDS)).isTrue();
+            assertThat(closed.await(4, TimeUnit.SECONDS)).as("deadline closes the active %s stream", stage).isTrue();
+            running.join(2000);
+            assertThat(running.isAlive()).isFalse();
+            verify(fixture.persistence()).failUnclaimed(eq(job.id()), eq(GatewayErrorCode.INTERNAL_ERROR), any());
+            verify(fixture.persistence(), never()).claim(any(), any());
+            verifyNoInteractions(fixture.renderer());
+            if (stage.equals("original")) {
+                assertThat(deletedSnapshot.get()).isNotNull();
+                assertThat(Files.exists(deletedSnapshot.get())).isFalse();
+            }
+            assertThat(renderFiles()).isEmpty();
+            assertThat(finalObjects()).isEmpty();
+        } finally {
+            closed.countDown();
+            running.interrupt();
+            running.join(5000);
+        }
+    }
+
+    @Test
+    void expiredEmbeddedOriginalDeadlinePreventsOpeningStorage() throws Exception {
+        var fixture = fixture();
+        var current = fixture.job();
+        var key = OriginalObjectKey.create(NOW, 30);
+        var job = new RenderingJobRepository.WorkItem(current.id(), current.jobRef(), current.status(), key, current.source(),
+            current.sourceLanguage(), current.targetLanguage(), current.createdAt(), current.ocrObjectKey(), current.ocrSha256(),
+            current.translationObjectKey(), current.translationSha256(), null, current.resultRetentionSeconds());
+        fixture.current().set(job);
+        var clock = Clock.fixed(NOW.plusSeconds(30), java.time.ZoneOffset.UTC);
+        ObjectProvider<RenderPort> provider = mock(ObjectProvider.class);
+        when(provider.getObject()).thenReturn(fixture.renderer());
+
+        worker(fixture.persistence(), fixture.storage(), provider, fixture.properties(), clock).execute(job.jobRef());
+
+        verify(fixture.storage(), never()).open(key);
+        verify(fixture.persistence()).failUnclaimed(eq(job.id()), eq(GatewayErrorCode.INTERNAL_ERROR), eq(NOW.plusSeconds(30)));
+        verify(fixture.persistence(), never()).claim(any(), any());
+        verifyNoInteractions(fixture.renderer());
+        assertThat(renderFiles()).isEmpty();
+    }
+
+    @Test
+    void originalDeadlineAlsoInterruptsRenderingAndCleansItsBorrowedSnapshot() throws Exception {
+        var fixture = fixture();
+        var current = fixture.job();
+        var key = OriginalObjectKey.create(NOW, 2);
+        fixture.delegate().store(key, fixture.reusable(), "image/png", current.source().sha256(), NOW);
+        var job = new RenderingJobRepository.WorkItem(current.id(), current.jobRef(), current.status(), key, current.source(),
+            current.sourceLanguage(), current.targetLanguage(), current.createdAt(), current.ocrObjectKey(), current.ocrSha256(),
+            current.translationObjectKey(), current.translationSha256(), null, current.resultRetentionSeconds());
+        fixture.current().set(job);
+        var clock = Clock.offset(Clock.systemUTC(), Duration.between(Instant.now(), NOW));
+        var entered = new CountDownLatch(1);
+        var interrupted = new CountDownLatch(1);
+        var release = new CountDownLatch(1);
+        var snapshot = new AtomicReference<Path>();
+        doAnswer(call -> {
+            snapshot.set(call.getArgument(0));
+            entered.countDown();
+            try { release.await(); }
+            catch (InterruptedException expected) { interrupted.countDown(); }
+            throw new IllegalStateException("synthetic-render-cancelled");
+        }).when(fixture.renderer()).render(any(), any());
+        doAnswer(call -> { fixture.current().set(with(job, JobStatus.FAILED, null)); return null; })
+            .when(fixture.persistence()).fail(eq(job.id()), any(), any());
+        ObjectProvider<RenderPort> provider = mock(ObjectProvider.class);
+        when(provider.getObject()).thenReturn(fixture.renderer());
+        var running = Thread.ofPlatform().start(() -> worker(fixture.persistence(), fixture.storage(), provider,
+            fixture.properties(), clock).execute(job.jobRef()));
+        try {
+            assertThat(entered.await(1, TimeUnit.SECONDS)).isTrue();
+            assertThat(interrupted.await(4, TimeUnit.SECONDS)).as("original deadline applies during native work too").isTrue();
+            running.join(2000);
+            assertThat(running.isAlive()).isFalse();
+            assertThat(Files.exists(snapshot.get())).isFalse();
+            assertThat(Files.exists(temporary.resolve(key))).isFalse();
+            assertThat(Files.exists(fixture.reusable())).isTrue();
+            verify(fixture.persistence(), never()).complete(any(), any(), any());
+            assertThat(finalObjects()).isEmpty();
+        } finally {
+            release.countDown();
+            running.interrupt();
+            running.join(5000);
+        }
     }
 
     @ParameterizedTest
@@ -308,7 +837,7 @@ class ProcessRenderingTaskUseCaseTest {
         Files.createDirectory(temporary.resolve("work"));
         properties.getRendering().setMode(GatewayProperties.Rendering.Mode.LOCAL);
         properties.getRendering().setTemporaryDirectory(temporary.resolve("work").toRealPath());
-        var delegate = new LocalObjectStorageAdapter(properties);
+        var delegate = new LegacyStorageFixture(properties);
         var storage = spy(delegate);
         var persistence = mock(RenderingPersistenceUseCase.class);
         var renderer = mock(RenderPort.class);
@@ -387,8 +916,14 @@ class ProcessRenderingTaskUseCaseTest {
 
     private ProcessRenderingTaskUseCase worker(RenderingPersistenceUseCase persistence, ObjectStoragePort storage,
                                               ObjectProvider<RenderPort> renderer, GatewayProperties properties, Clock clock) {
+        return worker(persistence, storage, renderer, properties, clock, new MediaInspectionService());
+    }
+
+    private ProcessRenderingTaskUseCase worker(RenderingPersistenceUseCase persistence, ObjectStoragePort storage,
+                                              ObjectProvider<RenderPort> renderer, GatewayProperties properties, Clock clock,
+                                              MediaInspectionService inspector) {
         when(persistence.originalAvailable(any(), any())).thenReturn(true);
-        return new ProcessRenderingTaskUseCase(persistence, storage, new MediaInspectionService(),
+        return new ProcessRenderingTaskUseCase(persistence, storage, inspector,
             new OcrManifestService(MAPPER), new TranslationManifestService(MAPPER), new RenderManifestService(MAPPER),
             renderer, properties, clock, lifecycle);
     }

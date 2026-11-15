@@ -75,6 +75,22 @@ test("only the two approved exact updates may be resolved", () => {
   ])
     assert.throws(() => verifyPlan(invalid, "arm64"), /base-update/);
 });
+test("separate ARM64 refresh allows only pinned Brotli and zlib upgrades", () => {
+  const profile = "security-refresh-2026-10-27";
+  const refreshPlan =
+    "Inst zlib1g [1:1.3.dfsg-3.1ubuntu2.2] (1:1.3.dfsg-3.1ubuntu2.3 Ubuntu:24.04/noble-security [arm64])\n" +
+    "Conf zlib1g (1:1.3.dfsg-3.1ubuntu2.3 Ubuntu:24.04/noble-security [arm64])\n" +
+    "Inst libbrotli1 [1.1.0-2build2] (1.1.0-2ubuntu0.1 Ubuntu:24.04/noble-security [arm64])\n" +
+    "Conf libbrotli1 (1.1.0-2ubuntu0.1 Ubuntu:24.04/noble-security [arm64])\n";
+  assert.deepEqual(verifyPlan(refreshPlan, "arm64", profile), ["libbrotli1", "zlib1g"]);
+  assert.throws(() => verifyPlan(refreshPlan, "arm64"), /base-update/);
+  assert.throws(() => verifyPlan(refreshPlan, "amd64", profile), /base-update/);
+  assert.throws(() => verifyPlan(refreshPlan + "Inst extra (1 Ubuntu [arm64])\n", "arm64", profile), /base-update/);
+  const before = "zlib1g:arm64\t1:1.3.dfsg-3.1ubuntu2.2\tii \nlibbrotli1:arm64\t1.1.0-2build2\tii \n";
+  const after = before.replace("ubuntu2.2", "ubuntu2.3").replace("2build2", "2ubuntu0.1");
+  assert.equal(verifyInventory(before, after, "arm64", profile).length, 2);
+  assert.throws(() => verifyInventory(before, after + "extra\t1\tii \n", "arm64", profile), /base-update/);
+});
 test("whole installed inventory differs by exactly two upgrades, no removals or extras", () => {
   const before =
     "libc6:arm64\t2.39\tii \nlibfreetype6:arm64\t2.13.2+dfsg-1ubuntu0.1\tii \nlibpng16-16t64:arm64\t1.6.43-5ubuntu0.6\tii \n";
@@ -115,4 +131,20 @@ test("package proof requires identity, architecture, SHA256 and bounded official
       () => verifyPackage(changed, "libpng16-16t64", "arm64", hash),
       /base-update/,
     );
+});
+
+test("security refresh rejects changed package hash even when authenticated metadata agrees", () => {
+  for (const [name, version, expected] of [
+    ["libbrotli1", "1.1.0-2ubuntu0.1", "911411fb6fdfb4ab91dd4242f5a0a5e1f47b38e003a25c8dc7730238cb323e18"],
+    ["zlib1g", "1:1.3.dfsg-3.1ubuntu2.3", "84536bcf440cf0f988899b24b6c7df32cb9ff9f0dfa97d5e7efcc2dc088d15dc"],
+  ]) {
+    const metadata = (hash) =>
+      `Package: ${name}\nVersion: ${version}\nArchitecture: arm64\n` +
+      `Filename: pool/main/example/${name}_arm64.deb\nSize: 200000\nSHA256: ${hash}\n`;
+    assert.equal(verifyPackage(metadata(expected), name, "arm64", expected,
+      "security-refresh-2026-10-27").sha256, expected);
+    const changed = "a".repeat(64);
+    assert.throws(() => verifyPackage(metadata(changed), name, "arm64", changed,
+      "security-refresh-2026-10-27"), /base-update/);
+  }
 });

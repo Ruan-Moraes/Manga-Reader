@@ -4,7 +4,7 @@ type: baseline
 title: Superfícies do shell e placeholders
 status: observed
 created: 2026-08-08
-updated: 2026-08-09
+updated: 2026-11-13
 supersedes: []
 superseded_by: []
 ---
@@ -29,7 +29,8 @@ Profile mostra nome e e-mail apenas quando há usuário em memória e expõe uma
 
 ### OBS-003 — Modal
 
-Modal renderiza somente um `EmptyState` com título traduzido, sem caso de uso ou ação.
+Removido na revisão tela a tela de 2026-11-13 (aprovado por Ruan Moraes): era um resto do modelo do Expo, sem caso de
+uso, ação ou entrada no app. `/modal` agora cai na página não encontrada (OBS-004).
 
 ### OBS-004 — Not found
 
@@ -45,7 +46,7 @@ Arquivos de rota delegam renderização às pages correspondentes. As três rota
 | ---------- | ----------------------------------------- | ----------------------------------------------------------- |
 | OBS-001    | `src/pages/{home,library,forum}/ui`       | Somente estado vazio traduzido                              |
 | OBS-002    | `src/pages/profile/ui/ProfilePage.tsx`    | Entrada de settings, dados condicionais e logout em finally |
-| OBS-003    | `src/pages/modal/ui/ModalPage.tsx`        | Estado vazio sem ação                                       |
+| OBS-003    | `src/app/+not-found.tsx`                  | `/modal` não existe mais e cai na 404                       |
 | OBS-004    | `src/pages/not-found/ui/NotFoundPage.tsx` | Título e link para raiz                                     |
 | OBS-005    | `src/app/`; `src/pages/*/index.ts`        | Wrappers finos e barrels observados                         |
 

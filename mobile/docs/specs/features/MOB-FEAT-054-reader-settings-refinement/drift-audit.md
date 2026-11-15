@@ -1,7 +1,7 @@
 # Drift audit — MOB-FEAT-054
 
 - Data: 2026-09-10
-- Implementação auditada: working-tree sha256:0197e775ac2875fd2619dc4a8a1a68162b97aa1591d460593588c2932c2d51b2
+- Implementação auditada: working-tree sha256:751f485409b07f18d689b9d6ab37b2b133be8503c09c2e2ca570a8c5ac7bf1d3
 - Status: verification-pending
 
 Spec aprovada, código, testes, i18n, barrels e cobertura comparados. Seções pertencem ao widget e os controles continuam nas features; helpers visuais em shared. Fallback textual e preferências remotas/locais preservados. Nenhum gate bloqueado foi ultrapassado.

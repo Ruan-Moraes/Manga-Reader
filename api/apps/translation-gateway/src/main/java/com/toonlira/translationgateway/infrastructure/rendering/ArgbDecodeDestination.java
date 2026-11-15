@@ -53,7 +53,7 @@ final class ArgbDecodeDestination {
         }
 
         @Override public void setPixel(int x, int y, int[] samples) {
-            ValidatedRasterDecoder.checkInterrupted();
+            RasterBounds.checkInterrupted();
             pixel.getRaster().setPixel(0, 0, samples);
             output.setElem(Math.addExact(Math.multiplyExact(y, width), x), pixel.getRGB(0, 0));
         }

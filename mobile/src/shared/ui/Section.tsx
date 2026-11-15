@@ -15,7 +15,8 @@ export function Section({ title, description, children }: SectionProps) {
     const { spacing } = useTheme();
 
     return (
-        <View style={{ gap: spacing.md }}>
+        // Title to content: `spacing.sm`, shared with SectionHeader and FormSection (2026-11-14).
+        <View style={{ gap: spacing.sm }}>
             {title || description ? (
                 <View style={{ gap: spacing.xs }}>
                     {title ? (

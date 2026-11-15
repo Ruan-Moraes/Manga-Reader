@@ -1,0 +1,510 @@
+# Contrato vigente de processamento; imagem/manifesto não são persistidos no servidor.
+"openapi": "3.1.0"
+"info":
+  "title": "Toonlira Translation Gateway — processamento volátil"
+  "version": "2.0.0"
+  "description": "Conteúdo em memória durante a sessão; armazenamento privado no aparelho. Logs sanitizados e recibos têm política independente. Problemas HTTP usam GatewayProblem 1.0; respostas de processamento/capabilities usam 2.0."
+"servers":
+  -
+    "url": "https://translation-api.toonlira.app"
+    "description": "Origem configurável; não comprova implantação ou ativação."
+"paths":
+  "/v1/anonymous/installations":
+    "$ref": "./translation-gateway-v1.yaml#/paths/~1v1~1anonymous~1installations"
+  "/v1/anonymous/sessions":
+    "$ref": "./translation-gateway-v1.yaml#/paths/~1v1~1anonymous~1sessions"
+  "/v2/capabilities":
+    "get":
+      "operationId": "getVolatileCapabilities"
+      "security": []
+      "parameters":
+        -
+          "name": "quotaView"
+          "in": "query"
+          "description": "Use effective para consultar as cotas aplicadas pelo servidor. Em teste sem cotas, a resposta padrão mantém os valores históricos exigidos pelos APKs instalados."
+          "schema":
+            "type": "string"
+            "enum": ["legacy", "effective"]
+            "default": "legacy"
+      "responses":
+        "200":
+          "description": "Configuração atual limitada, sem ETag ou conteúdo"
+          "content":
+            "application/json":
+              "schema":
+                "$ref": "#/components/schemas/Capabilities"
+          "headers":
+            "Cache-Control":
+              "schema":
+                "const": "no-store"
+        "503":
+          "description": "Falha sanitizada; sem retry automático de processamento"
+          "content":
+            "application/problem+json":
+              "schema":
+                "$ref": "./translation-gateway-v1.yaml#/components/schemas/GatewayProblem"
+  "/v2/page-translations":
+    "post":
+      "operationId": "processVolatilePage"
+      "security":
+        -
+          "anonymousSession": []
+      "x-log-policy": "sanitized-operational-metadata-no-content"
+      "description": "Uma sessão por instância, incluindo entrega. Sem fila persistente, URL, ACK ou recuperação remota. FINISHED não comprova persistência no aparelho. Não repetir POST automaticamente após ambiguidade."
+      "parameters":
+        -
+          "$ref": "#/components/parameters/IdempotencyKey"
+        -
+          "$ref": "#/components/parameters/ImageByteSize"
+        -
+          "$ref": "#/components/parameters/ImageWidth"
+        -
+          "$ref": "#/components/parameters/ImageHeight"
+        -
+          "$ref": "#/components/parameters/SourceLanguage"
+        -
+          "$ref": "#/components/parameters/TargetLanguage"
+        -
+          "$ref": "#/components/parameters/DisclosureVersion"
+      "requestBody":
+        "required": true
+        "content":
+          "image/jpeg":
+            "schema":
+              "type": "string"
+              "format": "binary"
+            "x-max-bytes": 12582912
+          "image/png":
+            "schema":
+              "type": "string"
+              "format": "binary"
+            "x-max-bytes": 12582912
+          "image/webp":
+            "schema":
+              "type": "string"
+              "format": "binary"
+            "x-max-bytes": 12582912
+      "responses":
+        "200":
+          "description": "TVR1: magic uint32 0x54565231, tamanho uint32 big-endian do manifesto JSON UTF-8 (1..4 MiB), manifesto, tamanho uint32 big-endian da imagem WebP (1..64 MiB), imagem; sem trailing bytes. Validar hashes/vínculos no aparelho antes de READY."
+          "content":
+            "application/vnd.toonlira.translation+binary":
+              "schema":
+                "type": "string"
+                "format": "binary"
+          "headers":
+            "Cache-Control":
+              "schema":
+                "const": "no-store"
+        "400":
+          "description": "Falha sanitizada; sem retry automático de processamento"
+          "content":
+            "application/problem+json":
+              "schema":
+                "$ref": "./translation-gateway-v1.yaml#/components/schemas/GatewayProblem"
+        "401":
+          "description": "Falha sanitizada; sem retry automático de processamento"
+          "content":
+            "application/problem+json":
+              "schema":
+                "$ref": "./translation-gateway-v1.yaml#/components/schemas/GatewayProblem"
+        "403":
+          "description": "Falha sanitizada; sem retry automático de processamento"
+          "content":
+            "application/problem+json":
+              "schema":
+                "$ref": "./translation-gateway-v1.yaml#/components/schemas/GatewayProblem"
+        "409":
+          "description": "Falha sanitizada; sem retry automático de processamento"
+          "content":
+            "application/problem+json":
+              "schema":
+                "$ref": "./translation-gateway-v1.yaml#/components/schemas/GatewayProblem"
+        "413":
+          "description": "Falha sanitizada; sem retry automático de processamento"
+          "content":
+            "application/problem+json":
+              "schema":
+                "$ref": "./translation-gateway-v1.yaml#/components/schemas/GatewayProblem"
+        "415":
+          "description": "Falha sanitizada; sem retry automático de processamento"
+          "content":
+            "application/problem+json":
+              "schema":
+                "$ref": "./translation-gateway-v1.yaml#/components/schemas/GatewayProblem"
+        "422":
+          "description": "Falha sanitizada; sem retry automático de processamento"
+          "content":
+            "application/problem+json":
+              "schema":
+                "$ref": "./translation-gateway-v1.yaml#/components/schemas/GatewayProblem"
+        "429":
+          "description": "Falha sanitizada; sem retry automático de processamento"
+          "content":
+            "application/problem+json":
+              "schema":
+                "$ref": "./translation-gateway-v1.yaml#/components/schemas/GatewayProblem"
+        "503":
+          "description": "Falha sanitizada; sem retry automático de processamento"
+          "content":
+            "application/problem+json":
+              "schema":
+                "$ref": "./translation-gateway-v1.yaml#/components/schemas/GatewayProblem"
+  "/v2/page-translations/by-idempotency/{key}":
+    "get":
+      "operationId": "getVolatileReceipt"
+      "security":
+        -
+          "anonymousSession": []
+      "parameters":
+        -
+          "name": "key"
+          "in": "path"
+          "required": true
+          "schema":
+            "type": "string"
+            "format": "uuid"
+      "description": "Consulta apenas metadados próprios, sem chamar providers ou renovar validade. Chave vencida retorna 404 mesmo antes de purge."
+      "responses":
+        "200":
+          "description": "Recibo sanitizado, sem conteúdo recuperável"
+          "content":
+            "application/json":
+              "schema":
+                "$ref": "#/components/schemas/ReceiptEnvelope"
+          "headers":
+            "Cache-Control":
+              "schema":
+                "const": "no-store"
+        "401":
+          "description": "Falha sanitizada; sem retry automático de processamento"
+          "content":
+            "application/problem+json":
+              "schema":
+                "$ref": "./translation-gateway-v1.yaml#/components/schemas/GatewayProblem"
+        "403":
+          "description": "Falha sanitizada; sem retry automático de processamento"
+          "content":
+            "application/problem+json":
+              "schema":
+                "$ref": "./translation-gateway-v1.yaml#/components/schemas/GatewayProblem"
+        "404":
+          "description": "Falha sanitizada; sem retry automático de processamento"
+          "content":
+            "application/problem+json":
+              "schema":
+                "$ref": "./translation-gateway-v1.yaml#/components/schemas/GatewayProblem"
+        "503":
+          "description": "Falha sanitizada; sem retry automático de processamento"
+          "content":
+            "application/problem+json":
+              "schema":
+                "$ref": "./translation-gateway-v1.yaml#/components/schemas/GatewayProblem"
+"components":
+  "securitySchemes":
+    "anonymousSession":
+      "type": "http"
+      "scheme": "bearer"
+      "bearerFormat": "short-lived-token"
+  "parameters":
+    "IdempotencyKey":
+      "name": "Idempotency-Key"
+      "in": "header"
+      "required": true
+      "description": "UUIDv7 durável criado com timestamp de capabilities válidas. Vence em sete dias absolutos; replay não executa providers, mesmo após purge."
+      "schema":
+        "type": "string"
+        "format": "uuid"
+        "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
+    "ImageByteSize":
+      "name": "X-Image-Byte-Size"
+      "in": "header"
+      "required": true
+      "schema":
+        "type": "integer"
+        "minimum": 1
+        "maximum": 12582912
+    "ImageWidth":
+      "name": "X-Image-Width"
+      "in": "header"
+      "required": true
+      "schema":
+        "type": "integer"
+        "minimum": 1
+        "maximum": 12000
+    "ImageHeight":
+      "name": "X-Image-Height"
+      "in": "header"
+      "required": true
+      "schema":
+        "type": "integer"
+        "minimum": 1
+        "maximum": 12000
+    "SourceLanguage":
+      "name": "X-Source-Language"
+      "in": "header"
+      "required": true
+      "schema":
+        "$ref": "#/components/schemas/TranslationLanguage"
+    "TargetLanguage":
+      "name": "X-Target-Language"
+      "in": "header"
+      "required": true
+      "schema":
+        "$ref": "#/components/schemas/TranslationLanguage"
+    "DisclosureVersion":
+      "name": "X-Disclosure-Version"
+      "in": "header"
+      "required": true
+      "schema":
+        "type": "string"
+        "pattern": "^volatile-[A-Za-z0-9._-]{1,55}$"
+  "schemas":
+    "TranslationLanguage":
+      "type": "string"
+      "enum":
+        - "ja"
+        - "en"
+        - "es"
+        - "ko"
+        - "zh-Hans"
+        - "zh-Hant"
+        - "pt-BR"
+    "LanguagePair":
+      "type": "object"
+      "additionalProperties": false
+      "required":
+        - "source"
+        - "target"
+      "properties":
+        "source":
+          "$ref": "#/components/schemas/TranslationLanguage"
+        "target":
+          "$ref": "#/components/schemas/TranslationLanguage"
+    "MediaLimits":
+      "type": "object"
+      "additionalProperties": false
+      "required":
+        - "mimeTypes"
+        - "maxBytes"
+        - "maxWidthPx"
+        - "maxHeightPx"
+        - "maxPixels"
+        - "maxResultBytes"
+        - "maxManifestBytes"
+      "properties":
+        "mimeTypes":
+          "type": "array"
+          "minItems": 1
+          "maxItems": 3
+          "uniqueItems": true
+          "items":
+            "type": "string"
+            "enum":
+              - "image/jpeg"
+              - "image/png"
+              - "image/webp"
+        "maxBytes":
+          "type": "integer"
+          "minimum": 1
+          "maximum": 12582912
+        "maxWidthPx":
+          "type": "integer"
+          "minimum": 1
+          "maximum": 12000
+        "maxHeightPx":
+          "type": "integer"
+          "minimum": 1
+          "maximum": 12000
+        "maxPixels":
+          "type": "integer"
+          "minimum": 1
+          "maximum": 80000000
+        "maxResultBytes":
+          "type": "integer"
+          "minimum": 1
+          "maximum": 67108864
+        "maxManifestBytes":
+          "type": "integer"
+          "minimum": 1
+          "maximum": 4194304
+    "LegalDisclosure":
+      "type": "object"
+      "additionalProperties": false
+      "required":
+        - "version"
+        - "operatorName"
+        - "operatorContact"
+        - "privacyPolicyUrl"
+        - "termsUrl"
+        - "gatewayRegion"
+        - "ocrRegion"
+        - "translationLocation"
+        - "contentProcessing"
+        - "resultStorage"
+        - "sanitizedOperationalLogs"
+        - "idempotencyKeyFormat"
+        - "receiptValiditySeconds"
+        - "providerTrainingPolicy"
+      "properties":
+        "version":
+          "type": "string"
+          "pattern": "^volatile-[A-Za-z0-9._-]{1,55}$"
+        "operatorName":
+          "type": "string"
+          "minLength": 1
+          "maxLength": 160
+        "operatorContact":
+          "type": "string"
+          "format": "email"
+        "privacyPolicyUrl":
+          "type": "string"
+          "format": "uri"
+          "pattern": "^https://"
+        "termsUrl":
+          "type": "string"
+          "format": "uri"
+          "pattern": "^https://"
+        "gatewayRegion":
+          "const": "southamerica-east1"
+        "ocrRegion":
+          "const": "us"
+        "translationLocation":
+          "const": "global"
+        "contentProcessing":
+          "const": "in-memory-only"
+        "resultStorage":
+          "const": "user-device"
+        "sanitizedOperationalLogs":
+          "const": true
+        "idempotencyKeyFormat":
+          "const": "uuid-v7"
+        "receiptValiditySeconds":
+          "const": 604800
+        "providerTrainingPolicy":
+          "type": "string"
+          "minLength": 1
+          "maxLength": 500
+    "Capabilities":
+      "type": "object"
+      "additionalProperties": false
+      "required":
+        - "contractVersion"
+        - "transport"
+        - "gatewayKey"
+        - "generatedAt"
+        - "validUntil"
+        - "enabled"
+        - "supportedLanguages"
+        - "supportedPairs"
+        - "mediaLimits"
+        - "dailyInstallationQuota"
+        - "dailyGlobalQuota"
+        - "disclosure"
+      "properties":
+        "contractVersion":
+          "const": "2.0"
+        "transport":
+          "const": "volatile-direct-response"
+        "gatewayKey":
+          "type": "string"
+          "pattern": "^[a-z0-9][a-z0-9-]{1,62}$"
+        "generatedAt":
+          "type": "string"
+          "format": "date-time"
+        "validUntil":
+          "type": "string"
+          "format": "date-time"
+        "enabled":
+          "type": "boolean"
+        "supportedLanguages":
+          "type": "array"
+          "minItems": 2
+          "maxItems": 7
+          "uniqueItems": true
+          "items":
+            "$ref": "#/components/schemas/TranslationLanguage"
+        "supportedPairs":
+          "type": "array"
+          "minItems": 0
+          "maxItems": 42
+          "uniqueItems": true
+          "items":
+            "$ref": "#/components/schemas/LanguagePair"
+        "mediaLimits":
+          "$ref": "#/components/schemas/MediaLimits"
+        "dailyInstallationQuota":
+          "type": "integer"
+          "enum": [0, 20]
+          "description": "Na visão efetiva, 0 indica ausência de quota diária por instalação."
+        "dailyGlobalQuota":
+          "type": "integer"
+          "enum": [0, 100]
+          "description": "Na visão efetiva, 0 indica ausência de quota diária global."
+        "disclosure":
+          "$ref": "#/components/schemas/LegalDisclosure"
+      "allOf":
+        -
+          "if":
+            "properties":
+              "enabled":
+                "const": true
+          "then":
+            "properties":
+              "supportedPairs":
+                "minItems": 1
+    "ReceiptStatus":
+      "type": "string"
+      "enum":
+        - "STARTED"
+        - "FINISHED"
+        - "FAILED"
+    "Receipt":
+      "type": "object"
+      "additionalProperties": false
+      "required":
+        - "operationRef"
+        - "status"
+        - "createdAt"
+        - "finishedAt"
+        - "errorCode"
+      "properties":
+        "operationRef":
+          "type": "string"
+          "format": "uuid"
+        "status":
+          "$ref": "#/components/schemas/ReceiptStatus"
+        "createdAt":
+          "type": "string"
+          "format": "date-time"
+        "finishedAt":
+          "type":
+            - "string"
+            - "null"
+          "format": "date-time"
+        "errorCode":
+          "type":
+            - "string"
+            - "null"
+          "enum":
+            - "ocr-unavailable"
+            - "ocr-invalid-response"
+            - "translation-unavailable"
+            - "translation-invalid-request"
+            - "translation-invalid-response"
+            - "internal-error"
+            - null
+    "ReceiptEnvelope":
+      "type": "object"
+      "additionalProperties": false
+      "required":
+        - "contractVersion"
+        - "contentRecoverable"
+        - "receipt"
+      "properties":
+        "contractVersion":
+          "const": "2.0"
+        "contentRecoverable":
+          "const": false
+        "receipt":
+          "$ref": "#/components/schemas/Receipt"

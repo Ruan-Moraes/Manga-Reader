@@ -21,7 +21,8 @@ describe('MOB-FEAT-001 user settings model', () => {
             accessibility: { reduceMotion: true, highContrast: 'yes' },
         });
 
-        expect(settings.reader).toMatchObject({ saturation: 100, gap: 0, quality: 'AUTO', autoMarkRead: false });
+        expect(settings.reader).toMatchObject({ saturation: 100, gap: 0, autoMarkRead: false });
+        expect(settings.reader).not.toHaveProperty('quality');
         expect(settings.appearance).toMatchObject({ fontSize: 'COMFORTABLE', density: 'COMFORTABLE' });
         expect(settings.accessibility).toEqual({ reduceMotion: true, highContrast: false });
     });

@@ -1,7 +1,7 @@
-import { Pressable, Text, View } from 'react-native';
+import { Text } from 'react-native';
 
-import { useTheme } from '@/shared/theme';
-import { FONTS } from '@/shared/theme';
+import { FONTS, useTheme } from '@/shared/theme';
+import { AppText, PressableBox } from '@/shared/ui';
 
 interface Props {
     prompt: string;
@@ -9,28 +9,37 @@ interface Props {
     onAction: () => void;
 }
 
+/**
+ * "Já tem conta? Entrar" (2026-11-14): one sentence with the link nested in the same text, so Android measures it
+ * once and never clips the end ("Já tem", or the "?"). The whole line is the touch target (44 min) and reads as the
+ * action for screen readers.
+ */
 export function AuthFooter({ prompt, action, onAction }: Props) {
-    const { minimumTouchTarget, spacing, tokens, typography } = useTheme();
+    const { minimumTouchTarget, spacing, tokens } = useTheme();
+
     return (
-        <View
-            style={{
-                marginTop: spacing.lg,
-                paddingTop: spacing.lg,
-                borderTopWidth: 1,
-                borderTopColor: tokens.inputBorder,
+        <PressableBox
+            testID="auth-footer"
+            accessibilityRole="button"
+            accessibilityLabel={action}
+            accessibilityHint={prompt}
+            onPress={onAction}
+            style={({ pressed }) => ({
                 alignItems: 'center',
-            }}
+                borderTopColor: tokens.separator,
+                borderTopWidth: 1,
+                justifyContent: 'center',
+                // Espaço igual acima e abaixo da linha; a altura mínima de toque já soma respiro sob ela.
+                marginTop: spacing.md,
+                minHeight: minimumTouchTarget + spacing.xs,
+                opacity: pressed ? 0.72 : 1,
+                paddingTop: spacing.xs,
+            })}
         >
-            <View style={{ alignItems: 'center', flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center' }}>
-                <Text style={{ fontFamily: FONTS.regular, fontSize: typography.body, color: tokens.subtle }}>{prompt} </Text>
-                <Pressable
-                    accessibilityRole="button"
-                    onPress={onAction}
-                    style={{ justifyContent: 'center', minHeight: minimumTouchTarget, paddingHorizontal: spacing.xs }}
-                >
-                    <Text style={{ fontFamily: FONTS.bold, fontSize: typography.body, color: tokens.accentText }}>{action}</Text>
-                </Pressable>
-            </View>
-        </View>
+            <AppText tone="muted" style={{ textAlign: 'center' }}>
+                {prompt}{' '}
+                <Text style={{ color: tokens.accentText, fontFamily: FONTS.bold }}>{action}</Text>
+            </AppText>
+        </PressableBox>
     );
 }

@@ -1,5 +1,7 @@
 package com.toonlira.translationgateway.evaluation;
 
+import com.toonlira.translationgateway.infrastructure.storage.LegacyStorageFixture;
+
 import com.google.cloud.vision.v1.BatchAnnotateImagesResponse;
 import com.toonlira.translationgateway.application.MediaInspectionService;
 import com.toonlira.translationgateway.application.port.GatewayRepository;
@@ -90,7 +92,7 @@ class ManualLayoutEvaluationIT extends EvaluationHarness {
         storage.reset(output, mapper);
         var properties = new GatewayProperties();
         properties.getStorage().setLocalDirectory(local);
-        storage.delegate = new LocalObjectStorageAdapter(properties);
+        storage.delegate = new LegacyStorageFixture(properties);
         storage.local = local;
         try (var stream = Files.newInputStream(input)) {
             var inspector = new MediaInspectionService();
@@ -105,7 +107,7 @@ class ManualLayoutEvaluationIT extends EvaluationHarness {
                     public boolean available() { return true; }
                     public List<OcrManifest.Region> recognize(Command command) {
                         calls.incrementAndGet();
-                        return new VisionResponseMapper().map(response, command);
+                        return new VisionResponseMapper().map(response, new VisionResponseMapper.Context(command.jobRef(), command.widthPx(), command.heightPx()));
                     }
                 };
                 var installation = UUID.randomUUID();

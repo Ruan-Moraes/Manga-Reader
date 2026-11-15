@@ -18,12 +18,14 @@ import java.util.stream.Stream;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.Network;
 import org.testcontainers.containers.wait.strategy.Wait;
@@ -38,7 +40,8 @@ class NativeRenderingWorkerImageLinuxTest {
 
     @BeforeAll static void privatePreparedInfrastructure() throws Exception {
         RenderArchiveNativeTest.requireCurrentArchive();
-        network = Network.builder().createNetworkCmdModifier(command -> command.withInternal(true)).build();
+        network = Boolean.getBoolean("renderer.native.cloud.enabled") ? Network.newNetwork()
+            : Network.builder().createNetworkCmdModifier(command -> command.withInternal(true)).build();
         postgres = new GenericContainer<>("postgres:17-alpine").withImagePullPolicy(image -> false)
             .withNetwork(network).withNetworkAliases("postgres")
             .withEnv("POSTGRES_DB", "renderer_probe").withEnv("POSTGRES_USER", "test").withEnv("POSTGRES_PASSWORD", "test")
@@ -48,6 +51,133 @@ class NativeRenderingWorkerImageLinuxTest {
     }
     @AfterAll static void closeOwnedInfrastructure() {
         try { if (postgres != null) postgres.stop(); } finally { if (network != null) network.close(); }
+    }
+
+    @Test void armStorageSessionDeliversPrivateArtifacts() throws Exception {
+        var staging = Files.createDirectory(temporary.resolve("session-delivery"));
+        try (var fixture = new LinuxRenderContainerFixture(temporary, true)) {
+            var state = fixture.nativeImageWorkerResourceProbe(staging, NativeCodecGlibcLinuxTest.pin(NativeCodecPlatform.ARM64_GLIBC),
+                network.getId(), System.getProperty("renderer.native.image.arm64.id"), "session-runtime-private-delivery");
+            var metrics = GatewayJsonMapper.create().readTree(Files.readAllBytes(staging.resolve("resource-metrics.json")));
+            assertThat(state.exitCode()).as("session metrics: %s", metrics).isZero();
+            assertThat(state.oomKilled()).isFalse();
+            assertThat(metrics.path("storageProcessSession").booleanValue()).isTrue();
+            assertThat(metrics.path("results").get(0).path("jobStatus").textValue()).isEqualTo("READY");
+            System.out.println("storage-session-private-delivery: " + metrics);
+        }
+    }
+
+    @Test void armStorageSessionProcessesMaximumPages() throws Exception {
+        var staging = Files.createDirectory(temporary.resolve("session-maximum"));
+        try (var fixture = new LinuxRenderContainerFixture(temporary, true)) {
+            var state = fixture.nativeImageWorkerResourceProbe(staging, NativeCodecGlibcLinuxTest.pin(NativeCodecPlatform.ARM64_GLIBC),
+                network.getId(), System.getProperty("renderer.native.image.arm64.id"), "session-runtime-parent");
+            var metrics = GatewayJsonMapper.create().readTree(Files.readAllBytes(staging.resolve("resource-metrics.json")));
+            assertThat(state.exitCode()).as("maximum session metrics: %s", metrics).isZero();
+            assertThat(state.oomKilled()).isFalse();
+            assertThat(metrics.path("storageProcessSession").booleanValue()).isTrue();
+            assertThat(metrics.path("completedJobs").intValue()).isEqualTo(3);
+            assertThat(metrics.path("memoryPeakBytes").longValue()).isPositive().isLessThanOrEqualTo(8L * 1024 * 1024 * 1024);
+            System.out.println("storage-session-maximum: " + metrics);
+        }
+    }
+
+    @ParameterizedTest @ValueSource(booleans = {false, true})
+    void armStorageSessionRecoversAfterResourceFailure(boolean disk) throws Exception {
+        var staging = Files.createDirectory(temporary.resolve(disk ? "session-disk" : "session-memory"));
+        try (var fixture = new LinuxRenderContainerFixture(temporary, true)) {
+            var state = fixture.nativeImageWorkerResourceProbe(staging, NativeCodecGlibcLinuxTest.pin(NativeCodecPlatform.ARM64_GLIBC),
+                network.getId(), System.getProperty("renderer.native.image.arm64.id"),
+                disk ? "session-runtime-disk-fault" : "session-runtime-memory-fault");
+            var metrics = GatewayJsonMapper.create().readTree(Files.readAllBytes(staging.resolve("resource-metrics.json")));
+            assertThat(state.exitCode()).as("session resource metrics: %s", metrics).isZero();
+            assertThat(state.oomKilled()).isFalse();
+            assertThat(metrics.path("storageProcessSession").booleanValue()).isTrue();
+            assertThat(metrics.path("results").get(0).path("jobStatus").textValue()).isEqualTo("FAILED");
+            assertThat(metrics.path("results").get(0).path("artifactsAbsent").booleanValue()).isTrue();
+            assertThat(metrics.path("results").get(1).path("jobStatus").textValue()).isEqualTo("READY");
+            assertThat(metrics.path("childLaunches").intValue()).isEqualTo(4);
+            assertThat(metrics.path("faultInjections").intValue()).isEqualTo(1);
+            assertThat(metrics.path("liveRenderingChildren").booleanValue()).isFalse();
+            assertThat(metrics.path("memoryPeakBytes").longValue()).isPositive().isLessThanOrEqualTo(8L * 1024 * 1024 * 1024);
+            if (disk) assertThat(metrics.path("scratchUsableAtFaultBytes").longValue()).isZero();
+            System.out.println("storage-session-resource-fault: " + metrics);
+        }
+    }
+
+    @Test void armWorkerDeliversPrivateArtifactsAndAcknowledgesIdempotently() throws Exception {
+        var staging = Files.createDirectory(temporary.resolve("private-delivery"));
+        LinuxRenderContainerFixture.ProbeState state;
+        try (var fixture = new LinuxRenderContainerFixture(temporary, true)) {
+            state = fixture.nativeImageWorkerResourceProbe(staging, NativeCodecGlibcLinuxTest.pin(NativeCodecPlatform.ARM64_GLIBC),
+                network.getId(), System.getProperty("renderer.native.image.arm64.id"), "runtime-private-delivery");
+        }
+        var metrics = GatewayJsonMapper.create().readTree(Files.readAllBytes(staging.resolve("resource-metrics.json")));
+        assertThat(state.exitCode()).as("sanitized worker metrics: %s", metrics).isZero();
+        assertThat(state.oomKilled()).isFalse();
+        assertThat(metrics.path("phase").textValue()).isEqualTo("complete");
+        var result = metrics.path("results").get(0);
+        assertThat(result.path("jobStatus").textValue()).isEqualTo("READY");
+        assertThat(result.path("privateDownloadsVerified").booleanValue()).isTrue();
+        assertThat(result.path("ackResponses").intValue()).isEqualTo(2);
+        assertThat(result.path("ackIntents").intValue()).isEqualTo(1);
+        assertThat(result.path("ackCleanupCompleted").booleanValue()).isTrue();
+        assertThat(metrics.path("memoryLimitBytes").longValue()).isEqualTo(8L * 1024 * 1024 * 1024);
+        assertThat(metrics.path("memoryPeakBytes").longValue()).isPositive().isLessThanOrEqualTo(8L * 1024 * 1024 * 1024);
+        System.out.println("worker-private-delivery-synthetic: " + metrics);
+    }
+
+    @Test void armWorkerRecoversAfterControlledMemoryFailure() throws Exception {
+        var staging = Files.createDirectory(temporary.resolve("memory-fault"));
+        LinuxRenderContainerFixture.ProbeState state;
+        try (var fixture = new LinuxRenderContainerFixture(temporary, true)) {
+            state = fixture.nativeImageWorkerResourceProbe(staging, NativeCodecGlibcLinuxTest.pin(NativeCodecPlatform.ARM64_GLIBC),
+                network.getId(), System.getProperty("renderer.native.image.arm64.id"), "runtime-memory-fault");
+        }
+        NativeRenderingWorkerLinuxTest.verifyAdmittedFault(staging, state);
+    }
+
+    @Test
+    @EnabledIfSystemProperty(named = "renderer.native.cloud.enabled", matches = "true")
+    void workerDeliversPrivateArtifactsThroughRealGcs() throws Exception {
+        CloudPrivateDeliveryProbe.configuration(System.getenv());
+        var platform = switch (System.getProperty("renderer.native.cloud.platform", "")) {
+            case "arm64" -> NativeCodecPlatform.ARM64_GLIBC;
+            case "amd64" -> NativeCodecPlatform.AMD64_GLIBC;
+            default -> throw new IllegalArgumentException("cloud-probe-platform-required");
+        };
+        var image = System.getProperty("renderer.native.image." + System.getProperty("renderer.native.cloud.platform") + ".id");
+        var staging = Files.createDirectory(temporary.resolve("gcs-private-delivery"));
+        LinuxRenderContainerFixture.ProbeState state;
+        try (var fixture = new LinuxRenderContainerFixture(temporary, true)) {
+            state = fixture.nativeImageWorkerResourceProbe(staging, NativeCodecGlibcLinuxTest.pin(platform),
+                network.getId(), image, "runtime-gcs-private-delivery");
+        }
+        var metrics = GatewayJsonMapper.create().readTree(Files.readAllBytes(staging.resolve("resource-metrics.json")));
+        assertThat(state.exitCode()).as("sanitized worker metrics: %s", metrics).isZero();
+        assertThat(state.oomKilled()).isFalse();
+        assertThat(metrics.path("phase").textValue()).isEqualTo("complete");
+        var result = metrics.path("results").get(0);
+        assertThat(result.path("jobStatus").textValue()).isEqualTo("READY");
+        assertThat(result.path("privateDownloadsVerified").booleanValue()).isTrue();
+        assertThat(result.path("gcsReal").booleanValue()).isTrue();
+        assertThat(result.path("ackResponses").intValue()).isEqualTo(2);
+        assertThat(result.path("ackIntents").intValue()).isEqualTo(1);
+        assertThat(result.path("ackCleanupCompleted").booleanValue()).isTrue();
+        assertThat(result.path("deletedSignedUrlsDenied").booleanValue()).isTrue();
+        assertThat(metrics.path("memoryLimitBytes").longValue()).isEqualTo(8L * 1024 * 1024 * 1024);
+        assertThat(metrics.path("memoryPeakBytes").longValue()).isPositive().isLessThanOrEqualTo(8L * 1024 * 1024 * 1024);
+        System.out.println("worker-gcs-private-delivery-synthetic: " + metrics);
+    }
+
+    @Test void armWorkerRecoversAfterControlledDiskFailure() throws Exception {
+        var staging = Files.createDirectory(temporary.resolve("disk-fault"));
+        LinuxRenderContainerFixture.ProbeState state;
+        try (var fixture = new LinuxRenderContainerFixture(temporary, true)) {
+            state = fixture.nativeImageWorkerResourceProbe(staging, NativeCodecGlibcLinuxTest.pin(NativeCodecPlatform.ARM64_GLIBC),
+                network.getId(), System.getProperty("renderer.native.image.arm64.id"), "runtime-disk-fault");
+        }
+        NativeRenderingWorkerLinuxTest.verifyAdmittedFault(staging, state, true);
     }
 
     static Stream<Arguments> packagedMatrix() {

@@ -8,6 +8,8 @@ export interface ThemeTokens {
     surface: string;
     surfaceMuted: string;
     surfaceElevated: string;
+    /** Ponteiro ou foco sobre um controle; fica entre `surface` e `surfacePressed`. */
+    surfaceHover: string;
     surfacePressed: string;
     surfaceSelected: string;
     disabledSurface: string;
@@ -31,6 +33,9 @@ export interface ThemeTokens {
     onDanger: string;
     success: string;
     warn: string;
+    dangerSoft: string;
+    successSoft: string;
+    warnSoft: string;
     // Text
     text: string;
     inverseText: string;
@@ -52,6 +57,7 @@ export const darkTokens: ThemeTokens = {
     surface: '#1B1B18',
     surfaceMuted: '#24231F',
     surfaceElevated: '#2B2A25',
+    surfaceHover: '#282722',
     surfacePressed: '#34332D',
     surfaceSelected: 'rgba(230,224,55,0.12)',
     disabledSurface: '#24231F',
@@ -72,6 +78,9 @@ export const darkTokens: ThemeTokens = {
     onDanger: '#ffffff',
     success: '#10b981',
     warn: '#e0a32e',
+    dangerSoft: 'rgba(255,138,104,0.14)',
+    successSoft: 'rgba(16,185,129,0.14)',
+    warnSoft: 'rgba(224,163,46,0.14)',
     text: '#F7F4EA',
     inverseText: '#151510',
     muted: '#C8C2B6',
@@ -92,6 +101,7 @@ export const lightTokens: ThemeTokens = {
     surface: '#FFFEFA',
     surfaceMuted: '#EFEDE5',
     surfaceElevated: '#FFFFFF',
+    surfaceHover: '#F2EFE8',
     surfacePressed: '#E5E1D7',
     surfaceSelected: 'rgba(220,214,41,0.16)',
     disabledSurface: '#EFEDE5',
@@ -112,6 +122,9 @@ export const lightTokens: ThemeTokens = {
     onDanger: '#ffffff',
     success: '#087a4f',
     warn: '#845500',
+    dangerSoft: 'rgba(184,61,27,0.06)',
+    successSoft: 'rgba(8,122,79,0.06)',
+    warnSoft: 'rgba(132,85,0,0.06)',
     text: '#1B1A17',
     inverseText: '#ffffff',
     muted: '#57544D',

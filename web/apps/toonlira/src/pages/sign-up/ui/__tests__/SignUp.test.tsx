@@ -144,9 +144,14 @@ describe('SignUp', () => {
         expect(screen.getByText(/ótima|forte/i)).toBeInTheDocument();
     });
 
-    it('renders terms links', () => {
+    it('opens legal documents in a separate tab so the sign-up form stays open', () => {
         renderWithProviders(<SignUp />);
-        expect(screen.getByText(/termos de uso/i)).toBeInTheDocument();
-        expect(screen.getByText(/política de privacidade/i)).toBeInTheDocument();
+        const terms = screen.getByRole('link', { name: /termos de uso/i });
+        const privacy = screen.getByRole('link', { name: /política de privacidade/i });
+
+        expect(terms).toHaveAttribute('href', '/legal/terms');
+        expect(terms).toHaveAttribute('target', '_blank');
+        expect(privacy).toHaveAttribute('href', '/legal/privacy');
+        expect(privacy).toHaveAttribute('target', '_blank');
     });
 });

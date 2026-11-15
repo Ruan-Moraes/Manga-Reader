@@ -1,12 +1,13 @@
 import { useContext, useEffect, useRef, useState } from 'react';
-import { AccessibilityInfo, Modal, Platform, Pressable, ScrollView, useWindowDimensions, View } from 'react-native';
+import { AccessibilityInfo, Platform, useWindowDimensions, View } from 'react-native';
 import { SafeAreaInsetsContext } from 'react-native-safe-area-context';
 
 import { useTheme } from '@/shared/theme';
 
 import { AppText } from './AppText';
+import { BottomSheet, type BottomSheetTestIDs } from './BottomSheet';
 import { Icon } from './Icon';
-import { IconButton } from './IconButton';
+import { PressableBox as Pressable } from './PressableBox';
 
 const SELECT_SHEET_MINIMUM_RATIO = 0.44;
 const SELECT_SHEET_MAXIMUM_RATIO = 0.82;
@@ -15,6 +16,14 @@ const SELECT_SHEET_HEADER_HEIGHT = 112;
 const SELECT_SHEET_VERTICAL_PADDING = 32;
 const SELECT_OPTION_MINIMUM_HEIGHT = 88;
 const SELECT_OPTION_DESCRIPTION_HEIGHT = 112;
+const SELECT_SHEET_TEST_IDS: Partial<BottomSheetTestIDs> = {
+    layer: 'select-field-sheet-layer',
+    backdrop: 'select-field-backdrop',
+    sheet: 'select-field-sheet',
+    handle: 'select-field-sheet-handle',
+    header: 'select-field-sheet-header',
+    scroll: 'select-field-options-scroll',
+};
 
 interface SelectViewport {
     height: number;
@@ -53,10 +62,17 @@ interface SelectFieldProps<T extends string> {
     options: readonly T[];
     optionLabel: (option: T) => string;
     optionDescription?: (option: T) => string | undefined;
+    /** Options shown but not selectable, e.g. the language already used on the other side. */
+    optionDisabled?: (option: T) => boolean;
     onChange: (option: T) => void;
     closeLabel: string;
     disabled?: boolean;
-    variant?: 'default' | 'input';
+    /** card: compact trigger for side-by-side pairs; the full label stays the accessible name. */
+    variant?: 'default' | 'input' | 'card';
+    /** Short visible label of the card variant. */
+    shortLabel?: string;
+    /** Text shown in the trigger instead of `optionLabel(value)`, e.g. a shorter name. */
+    valueLabel?: (option: T) => string;
 }
 
 export function SelectField<T extends string>({
@@ -66,18 +82,22 @@ export function SelectField<T extends string>({
     options,
     optionLabel,
     optionDescription,
+    optionDisabled,
     onChange,
     closeLabel,
     disabled = false,
     variant = 'default',
+    shortLabel,
+    valueLabel,
 }: SelectFieldProps<T>) {
     const { height } = useWindowDimensions();
 
     const insets = useContext(SafeAreaInsetsContext) ?? { bottom: 0, left: 0, right: 0, top: 0 };
 
-    const { effectiveReduceMotion, layout, minimumTouchTarget, radii, spacing, tokens } = useTheme();
+    const { layout, metrics, minimumTouchTarget, radii, spacing, tokens } = useTheme();
 
-    const inputVariant = variant === 'input';
+    const cardVariant = variant === 'card';
+    const inputVariant = variant === 'input' || cardVariant;
     const triggerRef = useRef<View>(null);
     const selectedOptionRef = useRef<View>(null);
     const wasOpen = useRef(false);
@@ -117,7 +137,7 @@ export function SelectField<T extends string>({
 
     return (
         <View style={{ alignSelf: 'stretch', gap: spacing.sm, width: '100%' }}>
-            <View style={{ gap: spacing.xs }}>
+            <View style={{ display: cardVariant ? 'none' : 'flex', gap: spacing.xs }}>
                 <AppText variant="label">{label}</AppText>
                 {description ? (
                     <AppText variant="caption" tone="muted">
@@ -148,12 +168,14 @@ export function SelectField<T extends string>({
                                       ? tokens.surfaceSelected
                                       : tokens.inputBg,
                               borderColor: open || focused ? tokens.focus : tokens.inputBorder,
-                              borderRadius: radii.card,
+                              // Padrão de campo das folhas: raio de controle e 16 de respiro vertical (~72 pt com o tile de 40).
+                              borderRadius: radii.control,
                               borderWidth: 2,
+                              justifyContent: 'center',
                               minHeight: Math.max(minimumTouchTarget, 64),
                               opacity: disabled ? 0.56 : 1,
-                              paddingHorizontal: spacing.sm,
-                              paddingVertical: spacing.sm,
+                              paddingHorizontal: spacing.md,
+                              paddingVertical: spacing.md,
                               width: '100%',
                           })
                 }
@@ -172,63 +194,49 @@ export function SelectField<T extends string>({
                                 ? {
                                       backgroundColor: disabled ? tokens.disabledSurface : pressed ? tokens.surfacePressed : tokens.inputBg,
                                       borderColor: open || focused ? tokens.focus : tokens.inputBorder,
-                                      borderRadius: radii.control,
+                                      borderRadius: cardVariant ? radii.card : radii.control,
                                       borderWidth: open || focused ? 2 : 1,
-                                      minHeight: Math.max(minimumTouchTarget, layout.controlHeight),
+                                      gap: cardVariant ? spacing.xs : spacing.md,
+                                      minHeight: Math.max(minimumTouchTarget, cardVariant ? 56 : layout.controlHeight),
                                       opacity: disabled ? 0.56 : 1,
-                                      paddingHorizontal: spacing.md,
-                                      paddingVertical: spacing.md,
+                                      paddingHorizontal: cardVariant ? spacing.sm + 4 : spacing.md,
+                                      paddingVertical: cardVariant ? spacing.sm : spacing.md,
                                   }
                                 : {}),
                         }}
                     >
-                        {!inputVariant && (
-                            <View
-                                testID="select-field-leading-icon"
-                                style={{
-                                    alignItems: 'center',
-                                    backgroundColor: open ? tokens.accentSoft : tokens.surfaceMuted,
-                                    borderRadius: radii.control,
-                                    flexShrink: 0,
-                                    height: 40,
-                                    justifyContent: 'center',
-                                    width: 40,
-                                }}
-                            >
-                                <Icon name="list-outline" color={open ? tokens.accentText : tokens.muted} decorative size={20} />
-                            </View>
-                        )}
                         <View style={{ flex: 1, minWidth: 0 }}>
-                            <AppText variant="label" numberOfLines={inputVariant ? undefined : 2}>
-                                {optionLabel(value)}
+                            {cardVariant && shortLabel ? (
+                                <AppText variant="eyebrow" tone="subtle" numberOfLines={1}>
+                                    {shortLabel}
+                                </AppText>
+                            ) : null}
+                            <AppText variant="label" numberOfLines={cardVariant ? 1 : inputVariant ? undefined : 2}>
+                                {(valueLabel ?? optionLabel)(value)}
                             </AppText>
                         </View>
                         {inputVariant ? (
                             <Icon name={open ? 'chevron-up' : 'chevron-down'} color={tokens.muted} decorative size={20} />
                         ) : (
+                            // Campo limpo (pedido de 2026-11-09): só o valor e a seta, sem tile nem caixa.
                             <View
                                 testID="select-field-expand-affordance"
-                                style={{
-                                    alignItems: 'center',
-                                    backgroundColor: open ? tokens.accent : tokens.accentSoft,
-                                    borderColor: tokens.accentBorder,
-                                    borderRadius: radii.control,
-                                    borderWidth: 1,
-                                    flexShrink: 0,
-                                    height: 40,
-                                    justifyContent: 'center',
-                                    width: 40,
-                                }}
+                                style={{ alignItems: 'center', flexShrink: 0, height: 24, justifyContent: 'center', width: 24 }}
                             >
-                                <Icon name={open ? 'chevron-down' : 'chevron-up'} color={open ? tokens.onAccent : tokens.accentText} decorative size={20} />
+                                <Icon name={open ? 'chevron-up' : 'chevron-down'} color={open ? tokens.accentText : tokens.muted} decorative size={20} />
                             </View>
                         )}
                     </View>
                 )}
             </Pressable>
-            <Modal
-                animationType={effectiveReduceMotion ? 'none' : 'slide'}
-                navigationBarTranslucent
+            <BottomSheet
+                visible={open}
+                onClose={() => setOpen(false)}
+                closeLabel={closeLabel}
+                title={label}
+                description={optionLabel(value)}
+                height={sheetHeight}
+                maxHeightRatio={SELECT_SHEET_MAXIMUM_RATIO}
                 onDismiss={inputVariant ? restoreFocus : undefined}
                 onShow={
                     inputVariant
@@ -240,168 +248,97 @@ export function SelectField<T extends string>({
                           }
                         : undefined
                 }
-                onRequestClose={() => setOpen(false)}
-                presentationStyle="overFullScreen"
-                statusBarTranslucent
-                transparent
-                visible={open}
+                testIDs={SELECT_SHEET_TEST_IDS}
             >
-                <View accessibilityViewIsModal onAccessibilityEscape={() => setOpen(false)} style={{ flex: 1 }} testID="select-field-sheet-layer">
-                    <Pressable
-                        testID="select-field-backdrop"
-                        accessibilityLabel={closeLabel}
-                        accessibilityRole="button"
-                        onPress={() => setOpen(false)}
-                        style={{ backgroundColor: tokens.scrim, bottom: 0, left: 0, position: 'absolute', right: 0, top: 0 }}
-                    />
-                    <View
-                        testID="select-field-sheet"
-                        style={{
-                            backgroundColor: tokens.surface,
-                            borderColor: tokens.separator,
-                            borderTopLeftRadius: radii.feature,
-                            borderTopRightRadius: radii.feature,
-                            borderTopWidth: 1,
-                            bottom: 0,
-                            elevation: Platform.OS === 'android' ? 18 : undefined,
-                            height: sheetHeight,
-                            left: 0,
-                            maxHeight: '82%',
-                            position: 'absolute',
-                            right: 0,
-                            shadowColor: tokens.overlay,
-                            shadowOffset: { height: -8, width: 0 },
-                            shadowOpacity: 0.28,
-                            shadowRadius: 22,
-                        }}
-                    >
-                        <View style={{ alignItems: 'center', height: 24, justifyContent: 'center' }}>
-                            <View
-                                testID="select-field-sheet-handle"
-                                style={{ backgroundColor: tokens.borderStrong, borderRadius: radii.pill, height: 5, width: 44 }}
-                            />
-                        </View>
-                        <View
-                            testID="select-field-sheet-header"
-                            style={{
-                                alignItems: 'center',
-                                borderBottomColor: tokens.separator,
-                                borderBottomWidth: 1,
-                                flexDirection: 'row',
-                                gap: spacing.md,
-                                paddingBottom: spacing.md,
-                                paddingHorizontal: layout.screenGutter,
-                            }}
-                        >
-                            <View style={{ flex: 1, gap: spacing.xs, minWidth: 0 }}>
-                                <AppText accessibilityRole="header" variant="section" numberOfLines={2}>
-                                    {label}
-                                </AppText>
-                                <AppText variant="caption" tone="muted" numberOfLines={2}>
-                                    {optionLabel(value)}
-                                </AppText>
-                            </View>
-                            <IconButton icon="close" accessibilityLabel={closeLabel} onPress={() => setOpen(false)} surface="surface" />
-                        </View>
-                        <ScrollView
-                            testID="select-field-options-scroll"
-                            bounces={false}
-                            contentContainerStyle={{
-                                paddingBottom: Math.max(insets.bottom, spacing.lg),
-                                paddingHorizontal: layout.screenGutter,
-                                paddingTop: spacing.lg,
-                            }}
-                            keyboardShouldPersistTaps="handled"
-                            showsVerticalScrollIndicator={false}
-                        >
-                            <View
-                                accessibilityLabel={label}
-                                accessibilityRole="radiogroup"
-                                testID="select-field-options-group"
-                                style={{
-                                    backgroundColor: tokens.surfaceElevated,
-                                    borderColor: tokens.separator,
-                                    borderRadius: radii.card,
-                                    borderWidth: 1,
-                                    gap: spacing.sm,
-                                    padding: spacing.xs,
-                                }}
+                <View
+                    accessibilityLabel={label}
+                    accessibilityRole="radiogroup"
+                    testID="select-field-options-group"
+                    style={{
+                        backgroundColor: tokens.surfaceElevated,
+                        borderColor: tokens.separator,
+                        borderRadius: radii.card,
+                        borderWidth: 1,
+                        gap: spacing.sm,
+                        padding: spacing.xs,
+                    }}
+                >
+                    {options.map(option => {
+                        const selected = option === value;
+
+                        const optionFocused = option === focusedOption;
+
+                        const currentDescription = optionDescription?.(option);
+
+                        const unavailable = !selected && !!optionDisabled?.(option);
+
+                        return (
+                            <Pressable
+                                key={option}
+                                ref={selected && inputVariant ? selectedOptionRef : undefined}
+                                accessibilityLabel={optionLabel(option)}
+                                accessibilityHint={inputVariant ? currentDescription : undefined}
+                                accessibilityRole="radio"
+                                accessibilityState={{ selected, disabled: unavailable }}
+                                disabled={unavailable}
+                                onBlur={() => setFocusedOption(current => (current === option ? null : current))}
+                                onFocus={() => setFocusedOption(option)}
+                                onPress={() => choose(option)}
+                                testID={`select-field-option-${option}`}
+                                style={{ borderRadius: radii.control, opacity: unavailable ? 0.56 : 1 }}
                             >
-                                {options.map(option => {
-                                    const selected = option === value;
-
-                                    const optionFocused = option === focusedOption;
-
-                                    const currentDescription = optionDescription?.(option);
-
-                                    return (
-                                        <Pressable
-                                            key={option}
-                                            ref={selected && inputVariant ? selectedOptionRef : undefined}
-                                            accessibilityLabel={optionLabel(option)}
-                                            accessibilityHint={inputVariant ? currentDescription : undefined}
-                                            accessibilityRole="radio"
-                                            accessibilityState={{ selected }}
-                                            onBlur={() => setFocusedOption(current => (current === option ? null : current))}
-                                            onFocus={() => setFocusedOption(option)}
-                                            onPress={() => choose(option)}
-                                            testID={`select-field-option-${option}`}
-                                            style={{ borderRadius: radii.control }}
+                                {({ pressed }) => (
+                                    <View
+                                        testID={`select-field-option-surface-${option}`}
+                                        style={{
+                                            backgroundColor: pressed ? tokens.surfacePressed : selected ? tokens.surfaceSelected : 'transparent',
+                                            borderColor: optionFocused ? tokens.focus : selected ? tokens.accentBorder : 'transparent',
+                                            borderRadius: radii.control,
+                                            borderWidth: 2,
+                                            justifyContent: 'center',
+                                            paddingHorizontal: spacing.md,
+                                            minHeight: Math.max(minimumTouchTarget, metrics.row.single),
+                                            paddingVertical: spacing.sm,
+                                        }}
+                                    >
+                                        <View
+                                            testID={`select-field-option-row-${option}`}
+                                            style={{ alignItems: 'center', flexDirection: 'row', gap: spacing.md }}
                                         >
-                                            {({ pressed }) => (
-                                                <View
-                                                    testID={`select-field-option-surface-${option}`}
-                                                    style={{
-                                                        backgroundColor: pressed ? tokens.surfacePressed : selected ? tokens.surfaceSelected : 'transparent',
-                                                        borderColor: optionFocused ? tokens.focus : selected ? tokens.accentBorder : 'transparent',
-                                                        borderRadius: radii.control,
-                                                        borderWidth: 2,
-                                                        justifyContent: 'center',
-                                                        paddingHorizontal: spacing.md,
-                                                        paddingVertical: spacing.md,
-                                                    }}
-                                                >
-                                                    <View
-                                                        testID={`select-field-option-row-${option}`}
-                                                        style={{ alignItems: 'center', flexDirection: 'row', gap: spacing.md }}
-                                                    >
-                                                        <View testID={`select-field-option-copy-${option}`} style={{ flex: 1, gap: spacing.xs, minWidth: 0 }}>
-                                                            <AppText variant="label" tone={selected ? 'accent' : 'default'}>
-                                                                {optionLabel(option)}
-                                                            </AppText>
-                                                            {currentDescription ? (
-                                                                <AppText variant="caption" tone="muted">
-                                                                    {currentDescription}
-                                                                </AppText>
-                                                            ) : null}
-                                                        </View>
-                                                        <View
-                                                            testID={`select-field-option-indicator-${option}`}
-                                                            style={{
-                                                                alignItems: 'center',
-                                                                backgroundColor: selected ? tokens.accent : tokens.surfaceMuted,
-                                                                borderColor: selected ? tokens.accent : tokens.borderStrong,
-                                                                borderRadius: radii.pill,
-                                                                borderWidth: 2,
-                                                                flexShrink: 0,
-                                                                height: 28,
-                                                                justifyContent: 'center',
-                                                                width: 28,
-                                                            }}
-                                                        >
-                                                            {selected ? <Icon name="checkmark" color={tokens.onAccent} decorative size={18} /> : null}
-                                                        </View>
-                                                    </View>
-                                                </View>
-                                            )}
-                                        </Pressable>
-                                    );
-                                })}
-                            </View>
-                        </ScrollView>
-                    </View>
+                                            <View testID={`select-field-option-copy-${option}`} style={{ flex: 1, gap: spacing.xs, minWidth: 0 }}>
+                                                <AppText variant="label" tone={selected ? 'accent' : 'default'}>
+                                                    {optionLabel(option)}
+                                                </AppText>
+                                                {currentDescription ? (
+                                                    <AppText variant="caption" tone="muted">
+                                                        {currentDescription}
+                                                    </AppText>
+                                                ) : null}
+                                            </View>
+                                            <View
+                                                testID={`select-field-option-indicator-${option}`}
+                                                style={{
+                                                    alignItems: 'center',
+                                                    backgroundColor: selected ? tokens.accent : tokens.surfaceMuted,
+                                                    borderColor: selected ? tokens.accent : tokens.borderStrong,
+                                                    borderRadius: radii.pill,
+                                                    borderWidth: 2,
+                                                    flexShrink: 0,
+                                                    height: 28,
+                                                    justifyContent: 'center',
+                                                    width: 28,
+                                                }}
+                                            >
+                                                {selected ? <Icon name="checkmark" color={tokens.onAccent} decorative size={18} /> : null}
+                                            </View>
+                                        </View>
+                                    </View>
+                                )}
+                            </Pressable>
+                        );
+                    })}
                 </View>
-            </Modal>
+            </BottomSheet>
         </View>
     );
 }

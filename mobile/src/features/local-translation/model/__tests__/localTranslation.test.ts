@@ -4,6 +4,7 @@ import type { TranslationProject, TranslationProjectRepository } from '@/entitie
 import type { PrivateBatchFiles } from '@/shared/files';
 
 import { createGenerateDemoTranslationResultController, GenerateDemoResultError } from '../generateDemoTranslationResult';
+import { createOpenLocalTranslationResultController } from '../openLocalTranslationResult';
 import { createRecoverLocalTranslationDataController } from '../recoverLocalTranslationData';
 import { createRemoveLocalTranslationProjectController } from '../removeLocalTranslationProject';
 import { createTrackLocalReadingProgressController } from '../trackLocalReadingProgress';
@@ -86,6 +87,24 @@ function results(): jest.Mocked<LocalTranslationResultRepository> {
         clear: jest.fn(),
     };
 }
+
+it('checks the private original before using it as the page fallback', async () => {
+    const fileAdapter = files();
+    const controller = createOpenLocalTranslationResultController({
+        projects: projects(),
+        results: results(),
+        progress: {} as LocalReadingProgressRepository,
+        files: fileAdapter,
+        hash: jest.fn(),
+        now: () => 20,
+    });
+
+    expect(await controller.validateOriginal(project, 0)).toBe(true);
+    expect(fileAdapter.fileExists).toHaveBeenCalledWith('translation-projects', project.id, 'page-1.jpg');
+    fileAdapter.fileExists.mockResolvedValue(false);
+    expect(await controller.validateOriginal(project, 0)).toBe(false);
+    expect(await controller.validateOriginal(project, 99)).toBe(false);
+});
 
 describe('MOB-FEAT-050 local translation simulator', () => {
     it('refuses execution outside development before reading local data', async () => {

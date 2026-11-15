@@ -1,18 +1,19 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
+import { router } from 'expo-router';
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 
-import { chapterReaderQueryOptions, getImageVariantCapabilities } from '@/entities/chapter';
+import { chapterReaderQueryOptions } from '@/entities/chapter';
 import { getReadingProgress, type ReadingProgress, readingProgressQueryKeys, reportInvalidReadingProgress } from '@/entities/reading-progress';
 import { useSessionStore } from '@/entities/session';
-import { normalizeReaderSettings, ReaderGestureControls, ReaderSettingsControls } from '@/features/configure-chapter-reader';
+import { normalizeReaderSettings, ReaderSettingsControls } from '@/features/configure-chapter-reader';
 import { useSettingsStore } from '@/features/manage-settings';
 import { clampLogicalPage } from '@/features/navigate-chapter-reader';
 import { createProgressSnapshot, isReadingProgressValidForChapter, ProgressSynchronizer, resolveResumeChoice } from '@/features/track-reading-progress';
 import { navigateBackOrReplace, ROUTES } from '@/shared/navigation';
 import { useTheme } from '@/shared/theme';
-import { Button, EmptyState, NavigationHeader, PageContainer, StatusMessage } from '@/shared/ui';
+import { AppText, Button, LoadingBlock, NavigationHeader, PageContainer, StateView, StatusMessage } from '@/shared/ui';
 import { ContentReader, type ImageSequenceDocument } from '@/widgets/content-reader';
 
 interface Props {
@@ -27,13 +28,10 @@ interface IdentityProps extends Props {
 
 function IdentityReaderPage({ titleId, requestedChapter, identityEpoch, isAuthenticated }: IdentityProps) {
     const { t } = useTranslation('reader');
-    const { spacing, tokens, typography } = useTheme();
+    const { spacing } = useTheme();
     const settings = useSettingsStore(state => state.settings);
     const updateSettings = useSettingsStore(state => state.updateSettings);
     const readerGestures = useSettingsStore(state => state.readerGestures);
-    const updateReaderGestures = useSettingsStore(state => state.updateReaderGestures);
-    const localError = useSettingsStore(state => state.localError);
-    const retryReaderGesturesPersistence = useSettingsStore(state => state.retryReaderGesturesPersistence);
     const synchronizer = useRef(new ProgressSynchronizer()).current;
     const [chapterNumber, setChapterNumber] = useState(requestedChapter);
     const [currentPage, setCurrentPage] = useState(1);
@@ -136,7 +134,7 @@ function IdentityReaderPage({ titleId, requestedChapter, identityEpoch, isAuthen
         return (
             <PageContainer>
                 <NavigationHeader backLabel={t('actions.exit')} onBack={exitReader} />
-                <EmptyState title={t('states.loading')} />
+                <LoadingBlock label={t('states.loading')} />
             </PageContainer>
         );
     }
@@ -144,18 +142,17 @@ function IdentityReaderPage({ titleId, requestedChapter, identityEpoch, isAuthen
         return (
             <PageContainer>
                 <NavigationHeader backLabel={t('actions.exit')} onBack={exitReader} />
-                <EmptyState
+                <StateView
+                    kind="error"
                     title={t('states.error')}
-                    description={t('states.safeExit')}
-                    action={
-                        <View style={{ gap: spacing.sm }}>
-                            <Button onPress={() => void chapterQuery.refetch()}>{t('actions.retry')}</Button>
-                            {pendingResume ? (
-                                <Button variant="outline" onPress={openRequestedChapter}>
-                                    {t('resume.requested')}
-                                </Button>
-                            ) : null}
-                        </View>
+                    text={t('states.safeExit')}
+                    retry={{ label: t('actions.retry'), onPress: () => void chapterQuery.refetch() }}
+                    actions={
+                        pendingResume ? (
+                            <Button variant="outline" onPress={openRequestedChapter}>
+                                {t('resume.requested')}
+                            </Button>
+                        ) : null
                     }
                 />
             </PageContainer>
@@ -165,10 +162,11 @@ function IdentityReaderPage({ titleId, requestedChapter, identityEpoch, isAuthen
         return (
             <PageContainer>
                 <NavigationHeader backLabel={t('actions.exit')} onBack={exitReader} />
-                <EmptyState
+                <StateView
+                    kind="empty"
                     title={t('states.unavailable')}
-                    description={t('states.safeExit')}
-                    action={
+                    text={t('states.safeExit')}
+                    actions={
                         pendingResume ? (
                             <Button variant="outline" onPress={openRequestedChapter}>
                                 {t('resume.requested')}
@@ -184,26 +182,30 @@ function IdentityReaderPage({ titleId, requestedChapter, identityEpoch, isAuthen
 
     if (isAuthenticated && progressQuery.isSuccess && resume.kind === 'choose' && !resumeResolved) {
         return (
-            <View style={{ flex: 1, justifyContent: 'center', padding: spacing.lg, gap: spacing.md, backgroundColor: tokens.bg }}>
-                <Text accessibilityRole="header" style={{ color: tokens.text, fontSize: typography.h2 }}>
-                    {t('resume.title')}
-                </Text>
-                <Text style={{ color: tokens.muted, fontSize: typography.body }}>
-                    {t('resume.description', { chapter: resume.recent?.chapterNumber, page: resume.recent?.currentPage })}
-                </Text>
-                <Button
-                    onPress={() => {
-                        setChapterNumber(resume.recent!.chapterNumber);
-                        setPendingResume(resume.recent!);
-                        unavailableDiagnosticReported.current = false;
-                    }}
-                >
-                    {t('resume.continue')}
-                </Button>
-                <Button variant="outline" onPress={openRequestedChapter}>
-                    {t('resume.requested')}
-                </Button>
-            </View>
+            // Same frame as the other reader states: safe area and the visible way out (revisão 2026-11-13).
+            <PageContainer>
+                <NavigationHeader backLabel={t('actions.exit')} onBack={exitReader} />
+                <View testID="reader-resume-choice" style={{ flex: 1, justifyContent: 'center', gap: spacing.md }}>
+                    <AppText accessibilityRole="header" variant="title">
+                        {t('resume.title')}
+                    </AppText>
+                    <AppText tone="muted">{t('resume.description', { chapter: resume.recent?.chapterNumber, page: resume.recent?.currentPage })}</AppText>
+                    <View style={{ gap: spacing.xs }}>
+                        <Button
+                            onPress={() => {
+                                setChapterNumber(resume.recent!.chapterNumber);
+                                setPendingResume(resume.recent!);
+                                unavailableDiagnosticReported.current = false;
+                            }}
+                        >
+                            {t('resume.continue')}
+                        </Button>
+                        <Button variant="outline" onPress={openRequestedChapter}>
+                            {t('resume.requested')}
+                        </Button>
+                    </View>
+                </View>
+            </PageContainer>
         );
     }
 
@@ -216,48 +218,17 @@ function IdentityReaderPage({ titleId, requestedChapter, identityEpoch, isAuthen
             settings={settings.reader}
             gesturePreferences={readerGestures}
             location={{ itemId: chapterQuery.data.pages[logicalPage - 1].id, index: logicalPage - 1 }}
-            controlSections={[
-                {
-                    id: 'reading',
-                    title: t('panel.tabs.reading'),
-                    content: (
-                        <ReaderSettingsControls
-                            compact
-                            category="reading"
-                            value={settings.reader}
-                            capabilities={getImageVariantCapabilities(chapterQuery.data.pages)}
-                            onChange={patch => void updateSettings(current => ({ ...current, reader: normalizeReaderSettings(patch, current) }), 'reader')}
-                        />
-                    ),
-                },
-                {
-                    id: 'appearance',
-                    title: t('panel.tabs.appearance'),
-                    content: (
-                        <ReaderSettingsControls
-                            compact
-                            category="appearance"
-                            value={settings.reader}
-                            capabilities={getImageVariantCapabilities(chapterQuery.data.pages)}
-                            onChange={patch => void updateSettings(current => ({ ...current, reader: normalizeReaderSettings(patch, current) }), 'reader')}
-                        />
-                    ),
-                },
-                {
-                    id: 'gestures',
-                    title: t('panel.tabs.gestures'),
-                    content: (
-                        <ReaderGestureControls
-                            compact
-                            value={readerGestures}
-                            onChange={patch => void updateReaderGestures(patch)}
-                            sideNavigationAvailable={settings.reader.mode !== 'VERTICAL' && settings.reader.direction !== 'WEBTOON'}
-                            persistenceError={!!localError}
-                            onRetry={() => void retryReaderGesturesPersistence()}
-                        />
-                    ),
-                },
-            ]}
+            settingsSheet={{
+                content: (
+                    <ReaderSettingsControls
+                        compact
+                        category="quick"
+                        value={settings.reader}
+                        onChange={patch => void updateSettings(current => ({ ...current, reader: normalizeReaderSettings(patch, current) }), 'reader')}
+                    />
+                ),
+                onOpenAllSettings: () => router.push(ROUTES.SETTINGS.READER as never),
+            }}
             statusContent={
                 <>
                     {isAuthenticated && progressQuery.isError ? (

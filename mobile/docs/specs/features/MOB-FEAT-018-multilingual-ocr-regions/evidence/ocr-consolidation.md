@@ -1,5 +1,9 @@
 # Consolidação auditada OCR — 2026-09-27
 
+> Registro histórico do desenho anterior. Em 2026-11-01, as classes
+> referenciadas retiradas de produção foram movidas para suporte de teste. Os
+> links acompanham essa localização; não indicam código produtivo atual.
+
 Evidência sanitizada da implementação, não certificado de qualidade linguística
 ou operação cloud. Auditoria local sem credenciais, chamadas Google, aquisição,
 regeneração de relatórios antigos ou alteração de runtime. Implementação candidata
@@ -55,7 +59,7 @@ Fontes e testes auditados, relativos ao módulo
 
 - [Mapper e limites](../../../../../../api/apps/translation-gateway/src/main/java/com/toonlira/translationgateway/infrastructure/ocr/VisionResponseMapper.java)
   e [fixtures](../../../../../../api/apps/translation-gateway/src/test/java/com/toonlira/translationgateway/infrastructure/ocr/VisionResponseMapperTest.java).
-- [Processamento](../../../../../../api/apps/translation-gateway/src/main/java/com/toonlira/translationgateway/application/ProcessOcrTaskUseCase.java),
+- [Processamento](../../../../../../api/apps/translation-gateway/src/test/java/com/toonlira/translationgateway/application/ProcessOcrTaskUseCase.java),
   [reserva/commit](../../../../../../api/apps/translation-gateway/src/main/java/com/toonlira/translationgateway/infrastructure/persistence/JdbcOcrJobRepository.java)
   e [testes PostgreSQL](../../../../../../api/apps/translation-gateway/src/test/java/com/toonlira/translationgateway/infrastructure/persistence/GatewaySchemaMigrationTest.java).
 - [Transporte e retry](../../../../../../api/apps/translation-gateway/src/main/java/com/toonlira/translationgateway/infrastructure/ocr/VisionClientFactory.java),

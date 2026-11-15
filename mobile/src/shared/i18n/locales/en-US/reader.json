@@ -1,5 +1,6 @@
 {
     "actions": {
+        "resetZoom": "Reset zoom",
         "controlsHint": "Opens or closes reader controls and preferences",
         "exit": "Exit reader",
         "hideControls": "Hide controls",
@@ -27,17 +28,17 @@
         "progress": "Progress is pending. Tap to try again.",
         "progressHydration": "Your progress could not be loaded. Reading remains available."
     },
+    "shortOptions": {
+        "LTR": "Left → Right",
+        "RTL": "Right → Left"
+    },
     "options": {
-        "AUTO": "Automatic",
         "BLACK": "Black",
         "DARK": "Dark",
         "DOUBLE": "Double",
         "HEIGHT": "Height",
-        "HIGH": "High",
         "LIGHT": "Light",
-        "LOW": "Low",
         "LTR": "Left to right",
-        "MEDIUM": "Medium",
         "ORIGINAL": "Original",
         "PAGED": "Paged",
         "PAPER": "Paper",
@@ -66,21 +67,14 @@
                 "VERTICAL": "Continuous flow for scrolling."
             },
             "preload": "Number of pages prepared around the current one.",
-            "quality": {
-                "AUTO": "Balances sharpness and data usage.",
-                "HIGH": "Prioritizes sharpness with higher data usage.",
-                "LOW": "Prioritizes lower data usage and faster loading.",
-                "MEDIUM": "Keeps good sharpness with moderate data usage.",
-                "ORIGINAL": "Keeps the page at its original resolution."
-            },
             "saturation": "Adjust the color intensity of pages."
         },
         "direction": "Direction",
         "fit": "Fit",
         "gap": "Gap",
         "mode": "Mode",
+        "modeLong": "Reading mode",
         "preload": "Preload",
-        "quality": "Quality",
         "saturation": "Saturation",
         "sections": {
             "behavior": {
@@ -88,7 +82,7 @@
                 "title": "Behavior"
             },
             "image": {
-                "description": "Page quality, background, and visual treatment.",
+                "description": "Page background and visual treatment.",
                 "title": "Image"
             },
             "navigation": {
@@ -158,7 +152,7 @@
         "size": "Text size",
         "decrease": "Decrease text size",
         "increase": "Increase text size",
-        "sizeValue": "{{size}} sp",
+        "sizeValue": "{{size}} pt",
         "spacing": "Line spacing",
         "lineSpacing": {
             "COMPACT": "Compact",
@@ -192,5 +186,46 @@
             "appearance": "Appearance",
             "gestures": "Gestures"
         }
+    },
+    "kit": {
+        "settingsTitle": "Reader settings",
+        "settingsDescription": "Changes apply right away and are saved in your settings.",
+        "allSettings": "All reader settings",
+        "close": "Close",
+        "chapterList": "Chapter list",
+        "chapterListTitle": "Chapters",
+        "chapterSearch": "Search chapters by name",
+        "chapterSort": "Sort by",
+        "chapterSortOptions": {
+            "numeric": "Numeric",
+            "alphabetic": "Alphabetical"
+        },
+        "chapterSearchEmpty": "No chapters found.",
+        "currentChapter": "Current chapter",
+        "previousChapter": "Previous chapter",
+        "nextChapter": "Next chapter",
+        "previous": "Previous",
+        "next": "Next",
+        "version": "Page version",
+        "translated": "Translated",
+        "original": "Original",
+        "pageOfTotal": "{{page}} / {{total}}",
+        "endEyebrow": "End of chapter",
+        "nextTitle": "Next: {{name}}",
+        "upToDate": "You are caught up with {{name}}",
+        "upToDateUntitled": "You reached the end of this chapter",
+        "readNext": "Read next chapter",
+        "backToWork": "Back to the work",
+        "back": "Back",
+        "processingTitle": "Translation in progress",
+        "processingText_one": "The page shows up here as soon as it is ready. You can read the original meanwhile.",
+        "processingText_other": "The {{count}} pages show up here as soon as they are ready. You can read the original meanwhile.",
+        "failedTitle": "Could not translate",
+        "failedText": "The translation stopped before finishing. No page was sent again.",
+        "retry": "Try again",
+        "readOriginal": "Read original",
+        "retryTitle": "Try translating again",
+        "retryDescription": "Only the pages that failed are sent, and only after you accept.",
+        "chapterUnavailable": "This chapter is no longer available."
     }
 }

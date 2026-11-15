@@ -1,4 +1,4 @@
-import { openDatabaseAsync, type SQLiteBindParams, type SQLiteDatabase } from 'expo-sqlite';
+import { openDatabaseAsync, type SQLiteBindParams } from 'expo-sqlite';
 
 export interface SqlExecutor {
     execAsync(source: string): Promise<void>;
@@ -11,16 +11,47 @@ export interface AppDatabase extends SqlExecutor {
     withExclusiveTransactionAsync(task: (transaction: SqlExecutor) => Promise<void>): Promise<void>;
 }
 
-let databasePromise: Promise<SQLiteDatabase> | null = null;
+let databasePromise: Promise<AppDatabase> | null = null;
 let schemaVersionQueue: Promise<void> = Promise.resolve();
 let schemaMigrationQueue: Promise<void> = Promise.resolve();
 
 export async function openAppDatabase(): Promise<AppDatabase> {
-    databasePromise ??= openDatabaseAsync('toonlira-local.db').then(async database => {
-        await database.execAsync('PRAGMA foreign_keys = ON;');
-        return database;
-    });
-    return (await databasePromise) as AppDatabase;
+    databasePromise ??= openDatabaseAsync('toonlira-local.db')
+        .then(async database => {
+            await database.execAsync('PRAGMA foreign_keys = ON;');
+            await database.execAsync('PRAGMA journal_mode = WAL;');
+            return {
+                execAsync: source => database.execAsync(source),
+                runAsync: (source, params) => database.runAsync(source, params),
+                getFirstAsync: <T>(source: string, params?: SQLiteBindParams) => database.getFirstAsync<T>(source, params ?? []),
+                getAllAsync: <T>(source: string, params?: SQLiteBindParams) => database.getAllAsync<T>(source, params ?? []),
+                async withExclusiveTransactionAsync(task) {
+                    // Expo's built-in exclusive transaction opens another connection.
+                    // PRAGMA foreign_keys is connection-local and cannot be enabled inside BEGIN.
+                    const transaction = await openDatabaseAsync('toonlira-local.db', { useNewConnection: true });
+                    let begun = false;
+                    try {
+                        await transaction.execAsync('PRAGMA foreign_keys = ON; PRAGMA busy_timeout = 5000;');
+                        await transaction.execAsync('BEGIN IMMEDIATE');
+                        begun = true;
+                        await task(transaction);
+                        await transaction.execAsync('COMMIT');
+                        begun = false;
+                    } catch (error) {
+                        if (begun) await transaction.execAsync('ROLLBACK').catch(() => undefined);
+                        throw error;
+                    } finally {
+                        // A close error must not turn a confirmed COMMIT into a failed publication.
+                        await transaction.closeAsync().catch(() => undefined);
+                    }
+                },
+            } satisfies AppDatabase;
+        })
+        .catch(error => {
+            databasePromise = null;
+            throw error;
+        });
+    return databasePromise;
 }
 
 export async function readAppSchemaVersion(executor: SqlExecutor): Promise<number> {

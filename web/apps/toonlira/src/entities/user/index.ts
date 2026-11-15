@@ -40,7 +40,6 @@ export {
     type ReadingDirection,
     type ReadingMode,
     type ReadingFit,
-    type ImageQuality,
     type ReaderBackground,
     type ThemePreference,
     type FontSizePreference,

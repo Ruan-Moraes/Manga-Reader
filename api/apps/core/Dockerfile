@@ -1,4 +1,4 @@
-FROM maven:3.9-eclipse-temurin-23-alpine AS build
+FROM maven:3.9-eclipse-temurin-25-alpine AS build
 
 WORKDIR /workspace
 
@@ -15,7 +15,7 @@ COPY libs/testing-support/src libs/testing-support/src
 COPY apps/core/src apps/core/src
 RUN mvn -pl apps/core -am package -DskipTests -B
 
-FROM eclipse-temurin:23-jre-alpine
+FROM eclipse-temurin:25-jre-alpine
 
 WORKDIR /app
 

@@ -41,31 +41,48 @@ export function SortableReviewItem({
     renderItem,
 }: Props) {
     const { effectiveReduceMotion, spacing, tokens } = useTheme();
+
     const itemRef = useAnimatedRef<View>();
+
     // List cells survive reordering. Reanimated 4.1 does not forward a newly supplied
     // ref until its native child remounts, so register the already-mounted ref explicitly.
     useLayoutEffect(() => {
         if (landingRef && itemRef.current) landingRef(itemRef.current);
     }, [itemRef, landingRef]);
+
     const duration = effectiveReduceMotion ? 0 : REVIEW_ITEM_SHIFT_MS;
+
     const id = item.id;
+
     const animatedStyle = useAnimatedStyle(() => {
         const idle = state.phase.value === REVIEW_DRAG_PHASE.idle;
+
         const originIndex = state.sourceIds.value.indexOf(id);
+
         const active = !idle && originIndex === state.activeIndex.value;
+
         const pitch = idle ? state.rowPitch.value : state.sessionPitch.value;
+
         const base = resolveReviewSlot(index, columnCount, itemWidth, spacing.sm, pitch);
+
         const origin = resolveReviewSlot(Math.max(0, originIndex), columnCount, itemWidth, spacing.sm, pitch);
+
         const destinationIndex = idle || originIndex < 0 ? index : projectReviewIndex(originIndex, state.activeIndex.value, state.targetIndex.value);
+
         const destination = resolveReviewSlot(destinationIndex, columnCount, itemWidth, spacing.sm, pitch);
+
         const dragging = state.phase.value === REVIEW_DRAG_PHASE.dragging;
+
         const x = dragging
             ? state.translationX.value
             : state.settleFromX.value + (state.settleToX.value - state.settleFromX.value) * state.settleProgress.value;
+
         const y = dragging
             ? state.translationY.value
             : state.settleFromY.value + (state.settleToY.value - state.settleFromY.value) * state.settleProgress.value;
+
         const floating = overlay || (active && !state.overlayReady.value);
+
         return {
             minHeight: pitch - spacing.sm,
             opacity: overlay ? (state.overlayReady.value ? 1 : 0) : active && state.overlayReady.value ? 0 : 1,
@@ -103,11 +120,15 @@ export function SortableReviewItem({
             importantForAccessibility={overlay ? 'no-hide-descendants' : 'auto'}
             onLayout={event => {
                 if (landingRef && itemRef.current) landingRef(itemRef.current);
+
                 if (overlay) {
                     onOverlayLayout?.();
+
                     return;
                 }
+
                 const measuredPitch = event.nativeEvent.layout.height + spacing.sm;
+
                 onRowHeightChange?.(measuredPitch);
             }}
             style={[
@@ -123,14 +144,17 @@ export function SortableReviewItem({
 
 export function ReviewDropIndicator({ state, columnCount, itemWidth }: Pick<Props, 'state' | 'columnCount' | 'itemWidth'>) {
     const { radii, spacing, tokens } = useTheme();
+
     const style = useAnimatedStyle(() => {
         const slot = resolveReviewSlot(Math.max(0, state.targetIndex.value), columnCount, itemWidth, spacing.sm, state.sessionPitch.value);
+
         return {
             height: state.sessionPitch.value - spacing.sm,
             opacity: state.feedback.value,
             transform: [{ translateX: slot.x }, { translateY: slot.y - state.scrollOffset.value }],
         };
     });
+
     return (
         <Reanimated.View
             testID="review-drop-indicator"

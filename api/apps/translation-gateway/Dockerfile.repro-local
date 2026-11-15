@@ -1,0 +1,14 @@
+# Diagnostic rebuild from the preserved, ID-verified ARM64 parent image.
+ARG RUNTIME_IMAGE
+FROM ${RUNTIME_IMAGE}
+USER 0:0
+ARG GATEWAY_JAR_SHA256
+ARG CODEC_MANIFEST_SHA256
+COPY gateway.jar /app/gateway.jar
+COPY image-inputs.json /app/image-inputs.json
+COPY native/libwebp.so.7 native/libsharpyuv.so.0 native/COPYING native/PATENTS native/manifest.properties /relocated/lib/
+RUN ["chmod", "0444", "/app/gateway.jar", "/app/image-inputs.json", "/relocated/lib/libwebp.so.7", "/relocated/lib/libsharpyuv.so.0", "/relocated/lib/COPYING", "/relocated/lib/PATENTS", "/relocated/lib/manifest.properties"]
+ENV GATEWAY_NATIVE_IMAGE_JAR_SHA256=${GATEWAY_JAR_SHA256} \
+    GATEWAY_RENDERING_NATIVE_DISTRIBUTION_SHA256=${CODEC_MANIFEST_SHA256}
+RUN ["java", "--enable-native-access=ALL-UNNAMED", "-Xmx128m", "-Dloader.main=com.toonlira.translationgateway.infrastructure.rendering.NativeCodecImageAdmissionMain", "-Dloader.path=BOOT-INF/classes/,BOOT-INF/lib/", "-Dloader.config.location=classpath:/META-INF/render-child-no-config.properties", "-cp", "/app/gateway.jar", "org.springframework.boot.loader.launch.PropertiesLauncher"]
+USER 1000:1000

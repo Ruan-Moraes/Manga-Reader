@@ -1,18 +1,19 @@
 import { useEffect, useRef, useState } from 'react';
-import { Text, TouchableOpacity, View } from 'react-native';
+import { View } from 'react-native';
 import { Image } from 'expo-image';
 import { useTranslation } from 'react-i18next';
 
 import { AuthHeader, MRIcon, requestPasswordReset } from '@/features/authenticate';
 import { navigateBackOrReplace, ROUTES } from '@/shared/navigation';
-import { useTheme } from '@/shared/theme';
-import { FONTS } from '@/shared/theme';
-import { Button, Input, NavigationHeader, PageContainer } from '@/shared/ui';
+import { FONTS, useTheme } from '@/shared/theme';
+import { AppText, Button, Card, Input, NavigationHeader, PageContainer, TextAction } from '@/shared/ui';
 
-const MASCOT_PENSANDO = require('../../../../assets/images/mascot-pensando.png');
+const MASCOT_PENSANDO = require('../../../../assets/images/mascot-pensando.webp');
+const SENT_ILLUSTRATION_SIZE = 132;
+const TEXT_MAX_WIDTH = 320;
 
 export function ForgotPage() {
-    const { minimumTouchTarget, radii, spacing, tokens, typography } = useTheme();
+    const { metrics, radii, spacing, tokens } = useTheme();
     const { t } = useTranslation('auth');
 
     const [email, setEmail] = useState('');
@@ -66,98 +67,105 @@ export function ForgotPage() {
     };
 
     if (sent) {
+        const steps = [t('forgotPassword.sentStep1'), t('forgotPassword.sentStep2'), t('forgotPassword.sentStep3')];
+
         return (
             <PageContainer scroll>
-                <View style={{ alignSelf: 'center', flex: 1, maxWidth: 440, paddingBottom: spacing.xl, paddingTop: spacing.sm, width: '100%' }}>
-                    <NavigationHeader backLabel={t('forgotPassword.backToLoginLink')} onBack={() => navigateBackOrReplace(ROUTES.AUTH.LOGIN)} />
-                    <View style={{ alignItems: 'center', flex: 1, justifyContent: 'center', paddingVertical: spacing.lg }}>
-                        <View style={{ marginBottom: spacing.lg }}>
-                            <Image source={MASCOT_PENSANDO} style={{ width: 140, height: 140 }} contentFit="contain" />
-                        </View>
-
+                <View style={{ alignSelf: 'center', flex: 1, maxWidth: 440, paddingBottom: spacing.xl, width: '100%' }}>
+                    <NavigationHeader
+                        backLabel={t('forgotPassword.backToLoginLink')}
+                        onBack={() => navigateBackOrReplace(ROUTES.AUTH.LOGIN)}
+                        title={t('navigation.forgot')}
+                    />
+                    <View style={{ alignItems: 'center', gap: spacing.md, paddingVertical: spacing.lg }}>
+                        <Image
+                            testID="forgot-sent-illustration"
+                            accessible={false}
+                            source={MASCOT_PENSANDO}
+                            style={{ height: SENT_ILLUSTRATION_SIZE, width: SENT_ILLUSTRATION_SIZE }}
+                            contentFit="contain"
+                        />
                         <View
+                            testID="forgot-sent-pill"
                             style={{
-                                flexDirection: 'row',
                                 alignItems: 'center',
-                                gap: spacing.sm,
-                                marginBottom: spacing.md,
-                                paddingHorizontal: spacing.md,
-                                paddingVertical: spacing.xs,
-                                borderRadius: radii.pill,
                                 backgroundColor: tokens.accentSoft,
-                                borderWidth: 1,
                                 borderColor: tokens.accentBorder,
+                                borderRadius: radii.pill,
+                                borderWidth: 1,
+                                flexDirection: 'row',
+                                gap: spacing.xs,
+                                minHeight: metrics.chip.value,
+                                paddingHorizontal: spacing.md,
                             }}
                         >
-                            <MRIcon name="send" size={13} color={tokens.accentText} />
-                            <Text
-                                style={{
-                                    fontFamily: FONTS.extrabold,
-                                    fontSize: typography.minimum,
-                                    color: tokens.accentText,
-                                    letterSpacing: 1.6,
-                                    textTransform: 'uppercase',
-                                }}
-                            >
+                            <MRIcon name="send" size={metrics.icon.sm} color={tokens.accentText} />
+                            <AppText variant="eyebrow" tone="accent">
                                 {t('forgotPassword.sentEyebrow')}
-                            </Text>
+                            </AppText>
                         </View>
-
-                        <Text
-                            style={{
-                                fontFamily: FONTS.extrabold,
-                                fontSize: typography.h2,
-                                color: tokens.text,
-                                letterSpacing: 0,
-                                lineHeight: typography.h2 * 1.2,
-                                textAlign: 'center',
-                                marginBottom: spacing.md,
-                            }}
-                        >
+                        <AppText accessibilityRole="header" variant="display" style={{ textAlign: 'center' }}>
                             {t('forgotPassword.sentTitle')}
-                        </Text>
-
-                        <Text
-                            style={{
-                                fontFamily: FONTS.regular,
-                                fontSize: typography.body,
-                                color: tokens.subtle,
-                                letterSpacing: 0,
-                                lineHeight: typography.body * 1.45,
-                                textAlign: 'center',
-                                maxWidth: 300,
-                                marginBottom: spacing.xl,
-                            }}
-                        >
-                            {t('forgotPassword.sentLinkSentTo')} <Text style={{ color: tokens.text, fontFamily: FONTS.bold }}>{email.trim()}</Text>
-                            {'. '}
-                            {expirationMinutes === null
-                                ? t('forgotPassword.sentExpiryUnknown')
-                                : t('forgotPassword.sentExpiry', { minutes: expirationMinutes })}
-                        </Text>
-
-                        <View style={{ width: '100%', maxWidth: 340 }}>
-                            <Button
-                                leading={<MRIcon name="mail" size={20} color={tokens.accentText} />}
-                                disabled={cooldown > 0}
-                                loading={loading}
-                                onPress={() => void submit()}
-                                variant="outline"
-                            >
-                                {cooldown > 0 ? `${t('forgotPassword.sentNotReceived')} ${cooldown}s` : t('forgotPassword.sentTryAgain')}
-                            </Button>
+                        </AppText>
+                        <AppText tone="muted" style={{ maxWidth: TEXT_MAX_WIDTH, textAlign: 'center' }}>
+                            {t('forgotPassword.sentSubtitle')}
+                        </AppText>
+                        <View style={{ alignItems: 'center', gap: spacing.xs }}>
+                            <AppText variant="caption" tone="muted" style={{ textAlign: 'center' }}>
+                                {t('forgotPassword.sentLinkSentTo')}{' '}
+                                <AppText variant="caption" style={{ fontFamily: FONTS.bold }}>
+                                    {email.trim()}
+                                </AppText>
+                            </AppText>
+                            <AppText variant="caption" tone="subtle" style={{ maxWidth: TEXT_MAX_WIDTH, textAlign: 'center' }}>
+                                {expirationMinutes === null
+                                    ? t('forgotPassword.sentExpiryUnknown')
+                                    : t('forgotPassword.sentExpiry', { minutes: expirationMinutes })}
+                            </AppText>
                         </View>
-
-                        <TouchableOpacity
-                            accessibilityRole="button"
-                            onPress={() => navigateBackOrReplace(ROUTES.AUTH.LOGIN)}
-                            style={{ marginTop: spacing.lg, minHeight: minimumTouchTarget, justifyContent: 'center' }}
+                    </View>
+                    <View testID="forgot-next-steps">
+                        <Card padded>
+                            <View style={{ gap: spacing.md }}>
+                                <AppText variant="label">{t('forgotPassword.sentNextSteps')}</AppText>
+                                {steps.map((step, index) => (
+                                    <View key={step} style={{ alignItems: 'center', flexDirection: 'row', gap: metrics.rhythm.itemGap }}>
+                                        <View
+                                            style={{
+                                                alignItems: 'center',
+                                                backgroundColor: tokens.accentSoft,
+                                                borderRadius: radii.pill,
+                                                height: metrics.chip.count,
+                                                justifyContent: 'center',
+                                                width: metrics.chip.count,
+                                            }}
+                                        >
+                                            <AppText variant="caption" tone="accent" style={{ fontFamily: FONTS.bold }}>
+                                                {String(index + 1)}
+                                            </AppText>
+                                        </View>
+                                        <AppText variant="caption" style={{ flex: 1 }}>
+                                            {step}
+                                        </AppText>
+                                    </View>
+                                ))}
+                            </View>
+                        </Card>
+                    </View>
+                    <View style={{ gap: spacing.sm, marginTop: spacing.lg }}>
+                        <Button
+                            leading={<MRIcon name="mail" size={metrics.icon.md} color={tokens.accentText} />}
+                            disabled={cooldown > 0}
+                            loading={loading}
+                            onPress={() => void submit()}
+                            variant="outline"
                         >
-                            <Text style={{ fontFamily: FONTS.regular, fontSize: typography.body, color: tokens.subtle }}>
-                                {t('forgotPassword.remembered')}{' '}
-                                <Text style={{ color: tokens.accentText, fontFamily: FONTS.bold }}>{t('forgotPassword.backToLoginLink')}</Text>
-                            </Text>
-                        </TouchableOpacity>
+                            {cooldown > 0 ? `${t('forgotPassword.sentNotReceived')} ${cooldown}s` : t('forgotPassword.sentTryAgain')}
+                        </Button>
+                        <View style={{ alignItems: 'center', flexDirection: 'row', flexWrap: 'wrap', gap: spacing.xs, justifyContent: 'center' }}>
+                            <AppText tone="muted">{t('forgotPassword.remembered')}</AppText>
+                            <TextAction label={t('forgotPassword.backToLoginLink')} onPress={() => navigateBackOrReplace(ROUTES.AUTH.LOGIN)} />
+                        </View>
                     </View>
                 </View>
             </PageContainer>
@@ -171,11 +179,14 @@ export function ForgotPage() {
                     alignSelf: 'center',
                     maxWidth: 440,
                     paddingBottom: spacing.xl,
-                    paddingTop: spacing.sm,
                     width: '100%',
                 }}
             >
-                <NavigationHeader backLabel={t('forgotPassword.backToLoginLink')} onBack={() => navigateBackOrReplace(ROUTES.AUTH.LOGIN)} />
+                <NavigationHeader
+                    backLabel={t('forgotPassword.backToLoginLink')}
+                    onBack={() => navigateBackOrReplace(ROUTES.AUTH.LOGIN)}
+                    title={t('navigation.forgot')}
+                />
 
                 <AuthHeader layout="minimal" eyebrow={t('forgotPassword.eyebrow')} title={t('forgotPassword.title')} sub={t('forgotPassword.subtitle')} />
 
@@ -184,6 +195,11 @@ export function ForgotPage() {
                     leading={<MRIcon name="mail" size={18} color={tokens.tertiary} />}
                     keyboardType="email-address"
                     autoCapitalize="none"
+                    // Offers the saved account and sends from the keyboard (revisão 2026-11-13).
+                    autoComplete="email"
+                    textContentType="username"
+                    returnKeyType="send"
+                    onSubmitEditing={() => void submit()}
                     value={email}
                     onChange={v => {
                         setEmail(v);
@@ -194,7 +210,6 @@ export function ForgotPage() {
                     helperText={t('forgotPassword.emailHint')}
                 />
 
-                <View style={{ height: spacing.sm }} />
                 <Button onPress={() => void submit()} loading={loading}>
                     {t('forgotPassword.submitAction')}
                 </Button>

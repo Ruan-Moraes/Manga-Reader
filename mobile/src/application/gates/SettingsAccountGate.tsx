@@ -19,16 +19,16 @@ export function SettingsAccountBoundary({ children, identityEpoch, isAuthenticat
 
     const { t } = useTranslation('settingsNavigation');
 
-    if (!isAuthenticated) return activeIdentityEpoch === null ? children : <StartupFeedback label={t('sync.syncing')} />;
+    if (!isAuthenticated) return activeIdentityEpoch === null ? children : <StartupFeedback label={t('sync.syncing')} title={t('launcher:startup.opening')} />;
 
-    if (activeIdentityEpoch !== identityEpoch) return <StartupFeedback label={t('sync.syncing')} />;
+    if (activeIdentityEpoch !== identityEpoch) return <StartupFeedback label={t('sync.syncing')} title={t('launcher:startup.opening')} />;
 
     const accountHydrationFailed = syncStatus === 'error' && pendingVersion === null;
     const accountHydrated = syncStatus === 'synced' || pendingVersion !== null;
 
     if (accountHydrationFailed) return children;
 
-    return accountHydrated ? children : <StartupFeedback label={t('sync.syncing')} />;
+    return accountHydrated ? children : <StartupFeedback label={t('sync.syncing')} title={t('launcher:startup.opening')} />;
 }
 
 export function SettingsAccountGate({ children }: PropsWithChildren) {

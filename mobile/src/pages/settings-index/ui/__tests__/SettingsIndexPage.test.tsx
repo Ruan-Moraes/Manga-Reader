@@ -1,4 +1,5 @@
-import { render, screen } from '@testing-library/react-native';
+import { Profiler } from 'react';
+import { act, render, screen } from '@testing-library/react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { useSessionStore } from '@/entities/session';
@@ -52,5 +53,40 @@ describe('MOB-FEAT-008 settings index integration', () => {
         expect(screen.getAllByRole('button')).toHaveLength(8);
         expect(screen.getByRole('button', { name: 'Voltar aos módulos' })).toBeOnTheScreen();
         expect(screen.getAllByText('Login necessário')).toHaveLength(2);
+    });
+
+    const renderIndex = (onRender: () => void = () => undefined) =>
+        render(
+            <SafeAreaProvider initialMetrics={{ frame: { x: 0, y: 0, width: 390, height: 844 }, insets: { top: 0, right: 0, bottom: 0, left: 0 } }}>
+                <ThemeProvider initialOverride="light" waitForPlatform={false}>
+                    <Profiler id="settings-index" onRender={onRender}>
+                        <SettingsIndexPage />
+                    </Profiler>
+                </ThemeProvider>
+            </SafeAreaProvider>,
+        );
+
+    it('revisão 2026-11-13: cada linha anuncia o próprio destino ao leitor de tela', () => {
+        renderIndex();
+
+        expect(screen.getByLabelText('Aparência e acessibilidade')).toHaveProp('accessibilityHint', 'Abrir Aparência e acessibilidade');
+        expect(screen.getByLabelText('Sobre')).toHaveProp('accessibilityHint', 'Abrir Sobre');
+        expect(screen.getByLabelText('Privacidade')).toHaveProp('accessibilityHint', 'Login necessário');
+    });
+
+    it('revisão 2026-11-13: não renderiza de novo quando muda um campo que o índice não usa', () => {
+        const onRender = jest.fn();
+        renderIndex(onRender);
+        const commits = onRender.mock.calls.length;
+
+        act(() => {
+            useSettingsStore.setState({ localRevision: useSettingsStore.getState().localRevision + 1 });
+            useDataControlsStore.setState({ failedCategories: ['cache'] as never });
+        });
+        expect(onRender).toHaveBeenCalledTimes(commits);
+
+        act(() => useDataControlsStore.setState({ errorKey: 'export' as never }));
+        expect(onRender.mock.calls.length).toBeGreaterThan(commits);
+        expect(screen.getByLabelText(/^Dados e armazenamento\. /)).toBeOnTheScreen();
     });
 });

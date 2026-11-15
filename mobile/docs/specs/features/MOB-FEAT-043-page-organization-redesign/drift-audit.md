@@ -2,7 +2,7 @@
 
 Data: 2026-08-30
 
-- Implementação auditada: working-tree sha256:0197e775ac2875fd2619dc4a8a1a68162b97aa1591d460593588c2932c2d51b2
+- Implementação auditada: working-tree sha256:751f485409b07f18d689b9d6ab37b2b133be8503c09c2e2ca570a8c5ac7bf1d3
 - Status da feature: `verification-pending`
 
 ## Resultado
@@ -59,3 +59,7 @@ Consolidação documental (2026-09-06): checksum global atualizado após reconci
 Preparação de commit (2026-09-06): rebase global após excluir scripts avulsos de ensaio, listagens Git e metadados do sistema dos arquivos versionados, conforme solicitação humana. Resultados históricos preservados; runtime e verdict inalterados.
 
 Rebase C06 (2026-09-12): referência global recalculada para a árvore local com recuperação compartilhada. Escopo (arquivo externo: `perfomance_app/mobile/docs/active/performance-evidence/recovery-2026-09-12/review.md`). Não altera verdict nem valida implementações locais de outras tarefas ou medições físicas.
+
+## Revisão de 2026-11-11
+
+Badge opaco compartilhado na grade de revisão e na grade de validação, com o texto semântico do tema.

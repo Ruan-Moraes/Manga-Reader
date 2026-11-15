@@ -119,3 +119,22 @@ describe('MOB-FEAT-028 continue with an existing import', () => {
         expect(onDraftChange).not.toHaveBeenCalled();
     });
 });
+
+describe('seleção de imagens (revisão 2026-11-13)', () => {
+    beforeEach(async () => i18n.changeLanguage('pt-BR'));
+
+    it('mostra progresso no botão do rodapé enquanto a galeria do sistema abre', async () => {
+        const selection = deferred<LocalMediaImportOutcome>();
+        const importer = controller({ initialize: jest.fn().mockResolvedValue(null), selectImages: jest.fn(() => selection.promise) });
+        render(<ImportLocalMediaPanel controller={importer} footerSelect onDraftChange={jest.fn()} />);
+        await waitFor(() => expect(screen.getAllByRole('button', { name: 'Selecionar imagens' })).toHaveLength(2));
+        const footer = () => screen.getAllByRole('button', { name: 'Selecionar imagens' })[1];
+        expect(footer().props.accessibilityState).toMatchObject({ busy: false });
+
+        fireEvent.press(footer());
+
+        await waitFor(() => expect(footer().props.accessibilityState).toMatchObject({ busy: true, disabled: true }));
+        await act(async () => selection.resolve({ status: 'cancelled' }));
+        expect(footer().props.accessibilityState).toMatchObject({ busy: false, disabled: false });
+    });
+});

@@ -1,4 +1,4 @@
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 
@@ -7,11 +7,11 @@ import { ContentLanguagesEditor, useContentLanguagesStore } from '@/features/man
 import { resolveSettingsAccess, SETTINGS_SECTIONS } from '@/features/navigate-settings';
 import { navigateBackOrReplace, ROUTES } from '@/shared/navigation';
 import { useTheme } from '@/shared/theme';
-import { Button, ScreenScaffold } from '@/shared/ui';
+import { AppText, Button, LoadingBlock, ScreenScaffold } from '@/shared/ui';
 
 export function SettingsContentLanguagesPage() {
     const { t } = useTranslation('settingsNavigation');
-    const { spacing, tokens } = useTheme();
+    const { spacing } = useTheme();
     const isAuthenticated = useSessionStore(state => state.isAuthenticated);
     const identityEpoch = useSessionStore(state => state.identityEpoch);
     const contentIdentityEpoch = useContentLanguagesStore(state => state.identityEpoch);
@@ -30,12 +30,11 @@ export function SettingsContentLanguagesPage() {
             {aligned ? (
                 <ContentLanguagesEditor />
             ) : access.kind === 'open' ? (
-                <Text accessibilityLiveRegion="polite" style={{ color: tokens.muted }}>
-                    {t('sync.syncing')}
-                </Text>
+                // App typeface and a spinner while the account settles (revisão 2026-11-13).
+                <LoadingBlock inline label={t('sync.syncing')} testID="settings-content-languages-loading" />
             ) : (
                 <View style={{ gap: spacing.md }}>
-                    <Text style={{ color: tokens.muted }}>{t('access.hint')}</Text>
+                    <AppText tone="muted">{t('access.hint')}</AppText>
                     <Button onPress={() => router.push({ pathname: ROUTES.AUTH.LOGIN, params: { returnTo: ROUTES.SETTINGS.CONTENT_LANGUAGES } } as never)}>
                         {t('actions.login')}
                     </Button>

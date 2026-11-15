@@ -3,12 +3,14 @@ import { View } from 'react-native';
 import { router, useGlobalSearchParams } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 
-import { AuthFooter, AuthHeader, DemoCredentials, MRIcon, signIn } from '@/features/authenticate';
+import { AuthFooter, AuthHeader, DemoCredentials, MRIcon, signIn, SignInLegalNotice } from '@/features/authenticate';
+import { useDeveloperModeEnabled } from '@/shared/config';
 import { navigateBackOrReplace, ROUTES } from '@/shared/navigation';
 import { useTheme } from '@/shared/theme';
-import { Button, IconButton, Input, NavigationHeader, PageContainer } from '@/shared/ui';
+import { Button, IconButton, Input, NavigationHeader, PageContainer, TextAction } from '@/shared/ui';
 
 export function LoginPage() {
+    const developerModeEnabled = useDeveloperModeEnabled();
     const params = useGlobalSearchParams<{ returnTo?: string | string[] }>();
 
     const { spacing, tokens } = useTheme();
@@ -43,7 +45,6 @@ export function LoginPage() {
                 style={{
                     alignSelf: 'center',
                     maxWidth: 440,
-                    paddingTop: spacing.sm,
                     paddingBottom: spacing.xl,
                     width: '100%',
                 }}
@@ -55,19 +56,26 @@ export function LoginPage() {
                     leading={<MRIcon name="mail" size={18} color={tokens.tertiary} />}
                     keyboardType="email-address"
                     autoCapitalize="none"
+                    // Lets the system password manager offer saved accounts (revisão 2026-11-13).
+                    autoComplete="email"
+                    textContentType="username"
                     value={email}
                     onChange={v => {
                         setEmail(v);
                         if (error) setError('');
                     }}
                     placeholder={t('login.emailPlaceholder')}
-                    error={error ? ' ' : ''}
+                    invalid={Boolean(error)}
                 />
 
                 <Input
                     label={t('login.passwordLabel')}
                     leading={<MRIcon name="lock" size={18} color={tokens.tertiary} />}
                     secureTextEntry={!showPw}
+                    autoComplete="current-password"
+                    textContentType="password"
+                    returnKeyType="go"
+                    onSubmitEditing={() => void submit()}
                     value={password}
                     onChange={v => {
                         setPassword(v);
@@ -75,8 +83,10 @@ export function LoginPage() {
                     }}
                     placeholder={t('login.passwordPlaceholder')}
                     error={error}
+                    labelAction={<TextAction label={t('login.forgotPassword')} onPress={() => router.push('/(auth)/forgot')} />}
                     trailing={
                         <IconButton
+                            bare
                             icon={showPw ? 'eye-off-outline' : 'eye-outline'}
                             accessibilityLabel={showPw ? t('resetPassword.hidePassword') : t('resetPassword.showPassword')}
                             onPress={() => setShowPw(s => !s)}
@@ -84,16 +94,12 @@ export function LoginPage() {
                     }
                 />
 
-                <View style={{ height: spacing.sm }} />
                 <Button onPress={submit} loading={loading} disabled={!email.trim() || !password}>
                     {t('login.submit')}
                 </Button>
+                <SignInLegalNotice />
 
-                <Button size="compact" fullWidth={false} variant="ghost" onPress={() => router.push('/(auth)/forgot')}>
-                    {t('login.forgotPassword')}
-                </Button>
-
-                {__DEV__ && (
+                {__DEV__ && developerModeEnabled && (
                     <DemoCredentials
                         onFill={(e, p) => {
                             setEmail(e);

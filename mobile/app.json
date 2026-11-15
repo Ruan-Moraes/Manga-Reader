@@ -9,7 +9,12 @@
         "userInterfaceStyle": "automatic",
         "ios": {
             "bundleIdentifier": "com.toonlira.app",
-            "supportsTablet": true
+            "supportsTablet": true,
+            "icon": {
+                "light": "./assets/images/icon.png",
+                "dark": "./assets/images/icon-dark.png",
+                "tinted": "./assets/images/icon-tinted.png"
+            }
         },
         "android": {
             "package": "com.toonlira.app",
@@ -22,9 +27,8 @@
                 "android.permission.WRITE_EXTERNAL_STORAGE"
             ],
             "adaptiveIcon": {
-                "backgroundColor": "#E6F4FE",
-                "foregroundImage": "./assets/images/android-icon-foreground.png",
-                "backgroundImage": "./assets/images/android-icon-background.png",
+                "backgroundColor": "#000000",
+                "foregroundImage": "./assets/images/adaptive-icon.png",
                 "monochromeImage": "./assets/images/android-icon-monochrome.png"
             },
             "predictiveBackGestureEnabled": false
@@ -40,10 +44,12 @@
                 "expo-splash-screen",
                 {
                     "image": "./assets/images/splash-icon.png",
+                    "imageWidth": 240,
                     "resizeMode": "contain",
-                    "backgroundColor": "#161616",
+                    "backgroundColor": "#F6F4EE",
                     "dark": {
-                        "backgroundColor": "#161616"
+                        "image": "./assets/images/splash-icon.png",
+                        "backgroundColor": "#11110F"
                     }
                 }
             ],
@@ -62,6 +68,12 @@
         ],
         "experiments": {
             "typedRoutes": true
+        },
+        "extra": {
+            "externalLinks": {
+                "terms": "https://toonlira-rm.web.app/legal/terms",
+                "privacy": "https://toonlira-rm.web.app/legal/privacy"
+            }
         }
     }
 }

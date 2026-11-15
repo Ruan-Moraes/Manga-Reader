@@ -56,7 +56,7 @@
 
 | Componente | Requisito |
 |-----------|-----------|
-| **Backend** | Java 23 JRE, 512MB~1GB RAM, porta 8080 |
+| **Backend** | Java 25 JRE, 512MB~1GB RAM, porta 8080 |
 | **Frontend** | Servidor de arquivos estáticos (Nginx, CDN) |
 | **Reverse Proxy** | Nginx ou equivalente (roteamento, SSL termination) |
 
@@ -107,8 +107,8 @@ docker run -d \
 ```
 
 **Dockerfile já existente** com:
-- **Stage 1**: `maven:3.9-eclipse-temurin-23-alpine` (build)
-- **Stage 2**: `eclipse-temurin:23-jre-alpine` (runtime)
+- **Stage 1**: `maven:3.9-eclipse-temurin-25-alpine` (build)
+- **Stage 2**: `eclipse-temurin:25-jre-alpine` (runtime)
 - Usuário non-root (`appuser`)
 - Healthcheck: `GET /actuator/health`
 
@@ -159,7 +159,7 @@ docker-compose -f docker-compose.prod.yml up -d
           │                                │
    ┌──────┴──────┐                  ┌──────┴──────┐
    │  Frontend   │                  │   Backend   │
-   │  (Estático) │                  │ (Java 23)   │
+   │  (Estático) │                  │ (Java 25)   │
    │  /dist/     │                  │ :8080       │
    └─────────────┘                  └──────┬──────┘
                                            │

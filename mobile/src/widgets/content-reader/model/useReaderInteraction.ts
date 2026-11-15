@@ -1,19 +1,26 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { AppState, type GestureResponderEvent, type NativeScrollEvent, type NativeSyntheticEvent } from 'react-native';
 
 import type { ReaderGesturePreferences } from '@/entities/user-setting';
 
 import { createReaderInteraction, READER_GESTURE_LIMITS, type ReaderInteractionEvent, readerInteractionReducer, resolveReaderTap } from './readerInteraction';
 
-export type ReaderScrollPhase = 'dragStart' | 'dragEnd' | 'momentumStart' | 'momentumEnd';
+export type ReaderScrollPhase = 'dragStart' | 'dragEnd' | 'momentumStart' | 'momentumEnd' | 'activity';
 export type ReaderScrollHandler = (phase: ReaderScrollPhase, event?: NativeSyntheticEvent<NativeScrollEvent>) => void;
 
-export function useReaderInteraction(preferences: ReaderGesturePreferences, paged: boolean, rtl: boolean, navigate: (direction: 'next' | 'previous') => void) {
+export function useReaderInteraction(
+    preferences: ReaderGesturePreferences,
+    paged: boolean,
+    rtl: boolean,
+    navigate: (direction: 'next' | 'previous') => void,
+    viewportKey?: string,
+) {
     const [state, setState] = useState(() => createReaderInteraction(preferences.controlsMode));
     const current = useRef(state);
     const touch = useRef<{ x: number; y: number; time: number } | null>(null);
     const surface = useRef({ x: 0, width: 1 });
     const settle = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const motionIdle = useRef<ReturnType<typeof setTimeout> | null>(null);
     const dispatch = useCallback((event: ReaderInteractionEvent) => {
         current.current = readerInteractionReducer(current.current, event);
         setState(current.current);
@@ -22,6 +29,10 @@ export function useReaderInteraction(preferences: ReaderGesturePreferences, page
         if (settle.current !== null) clearTimeout(settle.current);
         settle.current = null;
     }, []);
+    const clearMotionIdle = useCallback(() => {
+        if (motionIdle.current !== null) clearTimeout(motionIdle.current);
+        motionIdle.current = null;
+    }, []);
     useEffect(() => {
         dispatch({ type: 'preference', mode: preferences.controlsMode });
     }, [dispatch, preferences.controlsMode]);
@@ -29,15 +40,40 @@ export function useReaderInteraction(preferences: ReaderGesturePreferences, page
         const listener = AppState.addEventListener('change', value => {
             touch.current = null;
             clearSettle();
+            clearMotionIdle();
             dispatch({ type: value === 'active' ? 'foreground' : 'background' });
         });
         return () => {
             listener.remove();
             clearSettle();
+            clearMotionIdle();
         };
-    }, [clearSettle, dispatch]);
+    }, [clearMotionIdle, clearSettle, dispatch]);
+    useLayoutEffect(() => {
+        touch.current = null;
+        clearSettle();
+        clearMotionIdle();
+        dispatch({ type: 'resetMotion' });
+    }, [clearMotionIdle, clearSettle, dispatch, viewportKey]);
+    const viewport = useMemo(() => Symbol(viewportKey), [viewportKey]);
+    const activeViewport = useRef(viewport);
+    activeViewport.current = viewport;
     const onScrollPhase = useCallback<ReaderScrollHandler>(
         phase => {
+            if (activeViewport.current !== viewport || !current.current.active) return;
+            const movement =
+                phase === 'dragStart' || phase === 'momentumStart' || (phase === 'activity' && (current.current.dragging || current.current.momentum));
+            if (paged && movement) {
+                // A native scroll can be cancelled without delivering its terminal callback.
+                clearMotionIdle();
+                motionIdle.current = setTimeout(() => {
+                    motionIdle.current = null;
+                    clearSettle();
+                    dispatch({ type: 'resetMotion' });
+                }, READER_GESTURE_LIMITS.motionIdleDelay);
+            }
+            if (phase === 'activity') return;
+            if (phase === 'momentumEnd') clearMotionIdle();
             touch.current = null;
             if (phase === 'dragEnd') {
                 // Native end-drag precedes momentum-start. Keep the interaction locked across that handoff.
@@ -45,6 +81,7 @@ export function useReaderInteraction(preferences: ReaderGesturePreferences, page
                 settle.current = setTimeout(() => {
                     settle.current = null;
                     dispatch({ type: 'dragEnd' });
+                    if (!current.current.momentum) clearMotionIdle();
                 }, READER_GESTURE_LIMITS.settleDelay);
             } else {
                 if (phase === 'dragStart' || phase === 'momentumEnd') clearSettle();
@@ -52,7 +89,7 @@ export function useReaderInteraction(preferences: ReaderGesturePreferences, page
                 if (phase === 'momentumEnd') dispatch({ type: 'dragEnd' });
             }
         },
-        [clearSettle, dispatch],
+        [clearMotionIdle, clearSettle, dispatch, paged, viewport],
     );
     const busy = () => current.current.dragging || current.current.momentum || !current.current.active;
     const cancelTouch = () => {

@@ -122,6 +122,39 @@ class IsolatedRenderAdapterTest {
     }
 
     @Test
+    void parentRemovesChildSnapshotAfterChildFailureWithoutTouchingOtherFiles() throws Exception {
+        var process = new AtomicReference<Process>();
+        var original = original();
+        var before = Files.readAllBytes(original);
+        var sentinel = Files.writeString(temporary.resolve("keep-child-test.txt"), "keep");
+        var adapter = adapter("orphaned-snapshot", Duration.ofSeconds(20), process);
+        try (var executor = Executors.newSingleThreadExecutor()) {
+            var result = executor.submit(() -> adapter.render(original, request(original)));
+            Path staging = null;
+            try {
+                long end = System.nanoTime() + TimeUnit.SECONDS.toNanos(10);
+                while (System.nanoTime() < end && staging == null) {
+                    try (var paths = Files.list(temporary)) {
+                        staging = paths.filter(path -> path.getFileName().toString().startsWith("render-jvm-"))
+                            .filter(path -> Files.exists(path.resolve("snapshot-ready"))).findFirst().orElse(null);
+                    }
+                    if (staging == null) Thread.sleep(10);
+                }
+                assertThat(staging).isNotNull();
+                assertThat(Files.readString(staging.resolve("translation-page-orphan.upload"))).isEqualTo("synthetic");
+            } finally {
+                if (staging != null) Files.writeString(staging.resolve("release-child"), "release");
+            }
+            assertThatThrownBy(() -> result.get(10, TimeUnit.SECONDS))
+                .hasCauseInstanceOf(RenderFileException.class).cause().hasMessage("render-unavailable");
+        }
+        assertThat(process.get().isAlive()).isFalse();
+        assertNoStaging();
+        assertThat(Files.readAllBytes(original)).containsExactly(before);
+        assertThat(Files.readString(sentinel)).isEqualTo("keep");
+    }
+
+    @Test
     void malformedOutputAndSymlinkCannotEscapeOwnedDirectoryOrExposeChildDiagnostics() throws Exception {
         var original = original();
         var before = Files.readAllBytes(original);
@@ -228,6 +261,12 @@ class IsolatedRenderAdapterTest {
                     while (true) allocations.add(new byte[8 * 1024 * 1024]);
                 }
                 case "invalid" -> Files.writeString(Path.of("result.bin"), "private diagnostic and text");
+                case "orphaned-snapshot" -> {
+                    Files.writeString(Path.of(System.getProperty("java.io.tmpdir"), "translation-page-orphan.upload"), "synthetic");
+                    Files.writeString(Path.of("snapshot-ready"), "ready");
+                    while (!Files.exists(Path.of("release-child"))) Thread.sleep(10);
+                    System.exit(17);
+                }
                 case "symlink" -> {
                     var envelope = RenderSubprocessProtocol.readRequest(Path.of("request.bin").toAbsolutePath());
                     Files.createSymbolicLink(Path.of("result.bin"), envelope.original());

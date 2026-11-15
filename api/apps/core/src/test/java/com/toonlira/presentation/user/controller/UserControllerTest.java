@@ -406,7 +406,7 @@ class UserControllerTest {
 
     private static final String VALID_SETTINGS = """
             {
-              "reader": {"direction":"RTL","mode":"VERTICAL","fit":"WIDTH","quality":"AUTO","gap":8,"background":"DARK","autoMarkRead":true,"preload":3},
+              "reader": {"direction":"RTL","mode":"VERTICAL","fit":"WIDTH","gap":8,"background":"DARK","autoMarkRead":true,"preload":3},
               "appearance": {"theme":"DARK","fontSize":"DEFAULT","density":"COMFORTABLE","animations":true},
               "locale": {"dateFormat":"D_MON","timezone":"America/Sao_Paulo"},
               "accessibility": {"reduceMotion":false,"highContrast":false}
@@ -426,6 +426,7 @@ class UserControllerTest {
                     .andExpect(jsonPath("$.success").value(true))
                     .andExpect(jsonPath("$.data.reader.direction").value("RTL"))
                     .andExpect(jsonPath("$.data.reader.saturation").value(100))
+                    .andExpect(jsonPath("$.data.reader.quality").doesNotExist())
                     .andExpect(jsonPath("$.data.appearance.theme").value("DARK"));
         }
     }
@@ -445,6 +446,19 @@ class UserControllerTest {
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.success").value(true))
                     .andExpect(jsonPath("$.data.reader.direction").value("RTL"));
+        }
+
+        @Test
+        @DisplayName("Deve ignorar a qualidade enviada por clientes antigos")
+        void deveIgnorarQualidadeLegada() throws Exception {
+            when(updateUserSettingsUseCase.execute(any(), any())).thenReturn(UserSettings.defaults());
+
+            mockMvc.perform(patch("/api/users/me/settings")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(VALID_SETTINGS.replace("\"fit\":\"WIDTH\"", "\"fit\":\"WIDTH\",\"quality\":\"HIGH\""))
+                            .principal(mockAuth()))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.data.reader.quality").doesNotExist());
         }
 
         @Test

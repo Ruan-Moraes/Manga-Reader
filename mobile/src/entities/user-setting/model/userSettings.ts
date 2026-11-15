@@ -11,7 +11,6 @@ import type { DensityPreference, FontSizePreference, ThemePreference } from '@/s
 export type ReadingDirection = 'LTR' | 'RTL' | 'WEBTOON';
 export type ReadingMode = 'VERTICAL' | 'PAGED' | 'DOUBLE';
 export type ReadingFit = 'WIDTH' | 'HEIGHT' | 'ORIGINAL';
-export type ImageQuality = 'AUTO' | 'LOW' | 'MEDIUM' | 'HIGH' | 'ORIGINAL';
 export type ReaderBackground = 'BLACK' | 'DARK' | 'PAPER' | 'LIGHT' | 'WHITE';
 export type { DateFormatPreference, SupportedTimezone } from '@/shared/locale';
 export type { DensityPreference, FontSizePreference, ThemePreference } from '@/shared/theme';
@@ -21,7 +20,6 @@ export interface ReaderSettings {
     direction: ReadingDirection;
     mode: ReadingMode;
     fit: ReadingFit;
-    quality: ImageQuality;
     saturation: number;
     gap: number;
     background: ReaderBackground;
@@ -68,7 +66,6 @@ export const DEFAULT_USER_SETTINGS: UserSettings = {
         direction: 'RTL',
         mode: 'VERTICAL',
         fit: 'WIDTH',
-        quality: 'AUTO',
         saturation: 100,
         gap: 0,
         background: 'DARK',
@@ -94,7 +91,6 @@ export const DEFAULT_USER_SETTINGS: UserSettings = {
 const DIRECTIONS = ['LTR', 'RTL', 'WEBTOON'] as const;
 const MODES = ['VERTICAL', 'PAGED', 'DOUBLE'] as const;
 const FITS = ['WIDTH', 'HEIGHT', 'ORIGINAL'] as const;
-const QUALITIES = ['AUTO', 'LOW', 'MEDIUM', 'HIGH', 'ORIGINAL'] as const;
 const BACKGROUNDS = ['BLACK', 'DARK', 'PAPER', 'LIGHT', 'WHITE'] as const;
 const THEMES = ['DARK', 'LIGHT', 'SYSTEM'] as const;
 const FONT_SIZES = ['COMPACT', 'DEFAULT', 'COMFORTABLE'] as const;
@@ -126,7 +122,6 @@ export function normalizeUserSettings(value: unknown, defaults: UserSettings = D
             direction: enumValue(reader.direction, DIRECTIONS, defaults.reader.direction),
             mode: enumValue(reader.mode, MODES, defaults.reader.mode),
             fit: enumValue(reader.fit, FITS, defaults.reader.fit),
-            quality: enumValue(reader.quality, QUALITIES, defaults.reader.quality),
             saturation: boundedInteger(reader.saturation, 0, 100, defaults.reader.saturation),
             gap: boundedInteger(reader.gap, 0, 32, defaults.reader.gap),
             background: enumValue(reader.background, BACKGROUNDS, defaults.reader.background),

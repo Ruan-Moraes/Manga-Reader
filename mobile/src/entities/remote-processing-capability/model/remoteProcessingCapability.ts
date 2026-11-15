@@ -8,11 +8,7 @@ const languagePairSchema = z.object({ source: remoteLanguageSchema, target: remo
 
 export const legalDisclosureSchema = z
     .object({
-        version: z
-            .string()
-            .min(1)
-            .max(64)
-            .refine(version => version !== '2026-09-07.v1'),
+        version: z.string().regex(/^volatile-[A-Za-z0-9._-]{1,55}$/),
         operatorName: z.string().min(1).max(160),
         operatorContact: z.email(),
         privacyPolicyUrl: httpsUrl,
@@ -20,16 +16,19 @@ export const legalDisclosureSchema = z
         gatewayRegion: z.literal('southamerica-east1'),
         ocrRegion: z.literal('us'),
         translationLocation: z.literal('global'),
-        originalRetentionSeconds: z.number().int().positive().max(3600),
-        resultRetentionSeconds: z.number().int().positive().max(3600),
-        metadataRetentionDays: z.number().int().positive().max(7),
+        contentProcessing: z.literal('in-memory-only'),
+        resultStorage: z.literal('user-device'),
+        sanitizedOperationalLogs: z.literal(true),
+        idempotencyKeyFormat: z.literal('uuid-v7'),
+        receiptValiditySeconds: z.literal(604800),
         providerTrainingPolicy: z.string().min(1).max(500),
     })
     .strict();
 
 export const remoteProcessingCapabilitiesSchema = z
     .object({
-        contractVersion: z.literal('1.0'),
+        contractVersion: z.literal('2.0'),
+        transport: z.literal('volatile-direct-response'),
         gatewayKey: z.string().regex(/^[a-z0-9][a-z0-9-]{1,62}$/),
         generatedAt: z.iso.datetime(),
         validUntil: z.iso.datetime(),
@@ -39,13 +38,27 @@ export const remoteProcessingCapabilitiesSchema = z
         mediaLimits: z
             .object({
                 mimeTypes: z.array(z.enum(['image/jpeg', 'image/png', 'image/webp'])).min(1),
-                maxBytes: z.number().int().positive(),
-                maxWidthPx: z.number().int().positive(),
-                maxHeightPx: z.number().int().positive(),
-                maxPixels: z.number().int().positive(),
+                maxBytes: z
+                    .number()
+                    .int()
+                    .positive()
+                    .max(12 * 1024 * 1024),
+                maxWidthPx: z.number().int().positive().max(12000),
+                maxHeightPx: z.number().int().positive().max(12000),
+                maxPixels: z.number().int().positive().max(80000000),
+                maxResultBytes: z
+                    .number()
+                    .int()
+                    .positive()
+                    .max(64 * 1024 * 1024),
+                maxManifestBytes: z
+                    .number()
+                    .int()
+                    .positive()
+                    .max(4 * 1024 * 1024),
             })
             .strict(),
-        dailyInstallationQuota: z.literal(20),
+        dailyInstallationQuota: z.literal([0, 20]),
         dailyGlobalQuota: z.literal(100),
         disclosure: legalDisclosureSchema,
     })
@@ -101,5 +114,7 @@ export function capabilityAcceptsMedia(
 }
 
 export function capabilitiesAreUsable(capabilities: RemoteProcessingCapabilities, now = Date.now()): boolean {
-    return capabilities.enabled && Date.parse(capabilities.generatedAt) <= now && Date.parse(capabilities.validUntil) > now;
+    const maximumClockSkewMs = 5_000;
+
+    return capabilities.enabled && Date.parse(capabilities.generatedAt) <= now + maximumClockSkewMs && Date.parse(capabilities.validUntil) > now;
 }

@@ -44,7 +44,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
 
-@WebMvcTest(GatewayController.class)
+@WebMvcTest({GatewayController.class, LegacyGatewayController.class})
 @AutoConfigureMockMvc(addFilters = false)
 class GatewayControllerTest {
     @Autowired private MockMvc mockMvc;

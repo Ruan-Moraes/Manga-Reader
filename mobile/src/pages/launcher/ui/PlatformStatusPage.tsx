@@ -18,6 +18,7 @@ export function PlatformStatusPage() {
     const syncStatus = useSettingsStore(state => state.syncStatus);
     const retry = useSettingsStore(state => state.retry);
     const [accountStatus, setAccountStatus] = useState<'ready' | 'loading' | 'error'>(user ? 'ready' : 'loading');
+    const [signingOut, setSigningOut] = useState(false);
 
     const loadAccount = useCallback(async () => {
         setAccountStatus('loading');
@@ -38,15 +39,25 @@ export function PlatformStatusPage() {
         }
     }, [loadAccount, user]);
 
+    // One sign-out at a time, and always back to the start: the local session is cleared even when the server call
+    // fails (revisão 2026-11-13).
     const handleLogout = async () => {
-        await signOut();
-        router.replace(ROUTES.ROOT as never);
+        if (signingOut) return;
+        setSigningOut(true);
+        try {
+            await signOut();
+        } catch {
+            // The session is already cleared locally; nothing else to show on a page that is closing.
+        } finally {
+            router.replace(ROUTES.ROOT as never);
+        }
     };
 
     return (
         <PageContainer scroll>
-            <View style={{ flex: 1, gap: layout.sectionGap, paddingBottom: spacing.xl, paddingTop: spacing.xl }}>
-                <NavigationHeader backLabel={t('navigation.backToSelector')} onBack={() => navigateBackOrReplace(ROUTES.ROOT)} />
+            {/* Header outside the section gap: same header rhythm as every screen (revisão 2026-11-14). */}
+            <NavigationHeader backLabel={t('navigation.backToSelector')} onBack={() => navigateBackOrReplace(ROUTES.ROOT)} />
+            <View style={{ flex: 1, gap: layout.sectionGap, paddingBottom: spacing.xl }}>
                 <View style={{ gap: spacing.sm }}>
                     <AppText variant="eyebrow" tone="accent">
                         {t('platform.status')}
@@ -89,12 +100,14 @@ export function PlatformStatusPage() {
                         <AppText tone="muted">{t('platform.constructionDescription')}</AppText>
                     </View>
                 </Card>
-                <Button onPress={() => router.push(ROUTES.SETTINGS.INDEX as never)} variant="outline">
-                    {t('selector.settings')}
-                </Button>
-                <Button onPress={() => void handleLogout()} tone="danger" variant="outline">
-                    {t('platform.logout')}
-                </Button>
+                <View style={{ gap: spacing.xs }}>
+                    <Button onPress={() => router.push(ROUTES.SETTINGS.INDEX as never)} variant="outline">
+                        {t('selector.settings')}
+                    </Button>
+                    <Button loading={signingOut} onPress={() => void handleLogout()} tone="danger" variant="outline">
+                        {t('platform.logout')}
+                    </Button>
+                </View>
             </View>
         </PageContainer>
     );

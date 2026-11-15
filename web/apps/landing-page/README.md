@@ -34,7 +34,9 @@ pnpm install
 | `VITE_APP_URL` | Destino centralizado dos links para a aplicação principal | `http://localhost:5173` em desenvolvimento e `https://toonlira-rm.firebaseapp.com` em produção |
 
 Defina `VITE_APP_URL` no ambiente de build para apontar planos, gift codes,
-suporte e páginas legais para a URL pública da aplicação principal.
+suporte e contato para a URL pública da aplicação principal. Os links para
+termos, privacidade e cookies apontam para o site público do aplicativo em
+`toonlira-rm.web.app`.
 
 O servidor de desenvolvimento usa a porta `5174` e encaminha `/api` para
 `http://localhost:8080`.

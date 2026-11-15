@@ -9,9 +9,12 @@ import {
     type RemoteProcessingAttempt,
     type RemoteProcessingConsent,
     type RemoteProcessingErrorCode,
+    type VolatileReceiptStatus,
 } from '../model/remoteProcessingAttempt';
 
-const CURRENT_SCHEMA_VERSION = 7;
+const CURRENT_SCHEMA_VERSION = 10;
+const VOLATILE_RECEIPT_COLUMN = `volatile_receipt_status TEXT CHECK (volatile_receipt_status IS NULL OR
+    (gateway_contract_version = '2.0' AND remote_job_ref IS NOT NULL AND volatile_receipt_status IN ('STARTED','FINISHED','FAILED')))`;
 const ATTEMPT_STATUS_CHECK = "'CREATED', 'SUBMITTING', 'ACCEPTED', 'REJECTED', 'UNKNOWN', 'FAILED', 'CANCEL_PENDING', 'CANCELLED'";
 const REMOTE_STATUS_CHECK = "'QUEUED', 'OCR', 'TRANSLATING', 'RENDERING', 'READY', 'FAILED', 'CANCEL_PENDING', 'CANCELLED', 'RESULT_EXPIRED'";
 const ERROR_CODE_CHECK =
@@ -37,6 +40,7 @@ CREATE TABLE IF NOT EXISTS remote_processing_attempts (
     status TEXT NOT NULL CHECK (status IN (${ATTEMPT_STATUS_CHECK})),
     remote_status TEXT CHECK (remote_status IS NULL OR remote_status IN (${REMOTE_STATUS_CHECK})),
     remote_job_ref TEXT,
+    ${VOLATILE_RECEIPT_COLUMN},
     error_code TEXT CHECK (error_code IS NULL OR error_code IN (${ERROR_CODE_CHECK})),
     created_at INTEGER NOT NULL CHECK (created_at > 0),
     updated_at INTEGER NOT NULL CHECK (updated_at >= created_at),
@@ -73,6 +77,7 @@ interface AttemptRow {
     status: string;
     remote_status: string | null;
     remote_job_ref: string | null;
+    volatile_receipt_status: string | null;
     error_code: string | null;
     created_at: number;
     updated_at: number;
@@ -100,19 +105,26 @@ export interface RemoteProcessingAttemptRepository {
     getById(id: string): Promise<RemoteProcessingAttempt | null>;
     getActiveByPage(pageId: string): Promise<RemoteProcessingAttempt | null>;
     getLatestByPage(pageId: string): Promise<RemoteProcessingAttempt | null>;
+    /** Latest attempt of each page in one query per chunk; pages without attempts are absent from the map. */
+    listLatestByPages(pageIds: readonly string[]): Promise<ReadonlyMap<string, RemoteProcessingAttempt>>;
     getProjectIdForPage(pageId: string): Promise<string | null>;
     listRecoverable(): Promise<RemoteProcessingAttempt[]>;
     markSubmitting(id: string, now: number): Promise<RemoteProcessingAttempt>;
     markUnknown(id: string, now: number, errorCode?: RemoteProcessingErrorCode): Promise<RemoteProcessingAttempt>;
     markRejected(id: string, now: number, errorCode: RemoteProcessingErrorCode): Promise<RemoteProcessingAttempt>;
+    acceptDirectResponse(id: string, projectId: string, pageId: string, operationRef: string, now: number): Promise<RemoteProcessingAttempt>;
+    observeVolatileReceipt(id: string, receipt: { operationRef: string; status: VolatileReceiptStatus } | null, now: number): Promise<RemoteProcessingAttempt>;
+    failVolatileAttempt(id: string, now: number, errorCode: RemoteProcessingErrorCode): Promise<RemoteProcessingAttempt>;
     acceptAndQueue(id: string, projectId: string, pageId: string, jobRef: string, remoteStatus: RemoteJobStatus, now: number): Promise<RemoteProcessingAttempt>;
     observe(id: string, remoteStatus: RemoteJobStatus, now: number, errorCode?: RemoteProcessingErrorCode | null): Promise<RemoteProcessingAttempt>;
     markCancelPending(id: string, now: number): Promise<RemoteProcessingAttempt>;
     confirmCancelled(id: string, projectId: string, pageId: string, now: number): Promise<RemoteProcessingAttempt>;
 }
 
+const LATEST_BY_PAGES_CHUNK = 500;
+
 const ATTEMPT_COLUMNS = `id, page_id, attempt_number, idempotency_key, gateway_key, gateway_contract_version,
-    status, remote_status, remote_job_ref, error_code, created_at, updated_at, submitted_at, accepted_at,
+    status, remote_status, remote_job_ref, volatile_receipt_status, error_code, created_at, updated_at, submitted_at, accepted_at,
     last_queried_at, cancellation_requested_at, cancelled_at`;
 
 function mapAttempt(row: AttemptRow | null): RemoteProcessingAttempt | null {
@@ -121,6 +133,10 @@ function mapAttempt(row: AttemptRow | null): RemoteProcessingAttempt | null {
     if (
         !isRemoteAttemptStatus(row.status) ||
         (row.remote_status !== null && !isRemoteJobStatus(row.remote_status)) ||
+        (row.volatile_receipt_status != null &&
+            (!['STARTED', 'FINISHED', 'FAILED'].includes(row.volatile_receipt_status) ||
+                row.gateway_contract_version !== '2.0' ||
+                row.remote_job_ref === null)) ||
         !isRemoteProcessingErrorCode(row.error_code)
     ) {
         throw new Error('remoteProcessing.invalidStoredValue');
@@ -135,6 +151,7 @@ function mapAttempt(row: AttemptRow | null): RemoteProcessingAttempt | null {
         gatewayContractVersion: row.gateway_contract_version,
         status: row.status,
         remoteStatus: row.remote_status,
+        volatileReceiptStatus: (row.volatile_receipt_status ?? null) as VolatileReceiptStatus | null,
         remoteJobRef: row.remote_job_ref,
         errorCode: row.error_code,
         createdAt: row.created_at,
@@ -159,6 +176,26 @@ async function requireAttempt(executor: SqlExecutor, id: string): Promise<Remote
     return attempt;
 }
 
+async function failVolatileInTransaction(tx: SqlExecutor, attempt: RemoteProcessingAttempt, now: number, errorCode: RemoteProcessingErrorCode) {
+    const id = attempt.id;
+    const page = await tx.getFirstAsync<{ project_id: string; status: string; project_status: string }>(
+        'SELECT p.project_id,p.status,pr.status AS project_status FROM translation_pages p JOIN translation_projects pr ON pr.id=p.project_id WHERE p.id=?',
+        [attempt.pageId],
+    );
+    if (
+        !page ||
+        ['READY', 'CANCELLED'].includes(page.status) ||
+        page.project_status === 'CANCELLED' ||
+        ['FAILED', 'REJECTED', 'CANCELLED'].includes(attempt.status)
+    )
+        return;
+    await tx.runAsync("UPDATE remote_processing_attempts SET status='FAILED',remote_status=NULL,error_code=?,updated_at=? WHERE id=?", [errorCode, now, id]);
+    await tx.runAsync(
+        "UPDATE translation_pages SET status='FAILED',updated_at=?,status_updated_at=? WHERE id=? AND status IN ('DRAFT','QUEUED','PROCESSING','FAILED')",
+        [now, now, attempt.pageId],
+    );
+}
+
 export function createSqliteRemoteProcessingAttemptRepository(
     openDatabase: () => Promise<AppDatabase> = openAppDatabase,
     projects: Pick<TranslationProjectRepository, 'initialize'> = translationProjectRepository,
@@ -175,6 +212,9 @@ export function createSqliteRemoteProcessingAttemptRepository(
 
             await db.withExclusiveTransactionAsync(async transaction => {
                 await transaction.execAsync(CREATE_REMOTE_PROCESSING_SCHEMA);
+                const columns = await transaction.getAllAsync<{ name: string }>('PRAGMA table_info(remote_processing_attempts)');
+                if (!columns.some(column => column.name === 'volatile_receipt_status'))
+                    await transaction.execAsync(`ALTER TABLE remote_processing_attempts ADD COLUMN ${VOLATILE_RECEIPT_COLUMN};`);
                 await advanceAppSchemaVersion(transaction, CURRENT_SCHEMA_VERSION);
             });
         }).catch(error => {
@@ -289,6 +329,29 @@ export function createSqliteRemoteProcessingAttemptRepository(
                 ),
             );
         },
+        async listLatestByPages(pageIds) {
+            const latest = new Map<string, RemoteProcessingAttempt>();
+            const unique = [...new Set(pageIds)];
+            if (unique.length === 0) return latest;
+            const db = await database();
+            // Stay well under SQLite's bound-parameter limit; (page_id, attempt_number) is indexed by its UNIQUE constraint.
+            for (let start = 0; start < unique.length; start += LATEST_BY_PAGES_CHUNK) {
+                const chunk = unique.slice(start, start + LATEST_BY_PAGES_CHUNK);
+                const rows = await db.getAllAsync<AttemptRow>(
+                    `SELECT ${ATTEMPT_COLUMNS} FROM remote_processing_attempts AS attempt
+                     WHERE attempt.page_id IN (${chunk.map(() => '?').join(', ')})
+                       AND attempt.attempt_number = (
+                           SELECT MAX(latest.attempt_number) FROM remote_processing_attempts AS latest WHERE latest.page_id = attempt.page_id
+                       )`,
+                    chunk,
+                );
+                for (const row of rows) {
+                    const attempt = mapAttempt(row);
+                    if (attempt) latest.set(attempt.pageId, attempt);
+                }
+            }
+            return latest;
+        },
         async getProjectIdForPage(pageId) {
             const row = await (
                 await database()
@@ -338,6 +401,86 @@ export function createSqliteRemoteProcessingAttemptRepository(
                 [now, errorCode, id],
             );
 
+            return requireAttempt(db, id);
+        },
+        async acceptDirectResponse(id, projectId, pageId, jobRef, now) {
+            const db = await database();
+
+            await db.withExclusiveTransactionAsync(async transaction => {
+                const attempt = await requireAttempt(transaction, id);
+
+                if (attempt.status === 'ACCEPTED' && attempt.remoteJobRef === jobRef) return;
+
+                if (!['CREATED', 'SUBMITTING', 'UNKNOWN'].includes(attempt.status)) throw new Error('remoteProcessing.invalidTransition');
+
+                if (attempt.pageId !== pageId || attempt.gatewayContractVersion !== '2.0') throw new Error('remoteProcessing.staleProject');
+
+                const page = await transaction.getFirstAsync<{ page_status: string; project_status: string; language_review_required: number }>(
+                    `SELECT p.status AS page_status, pr.status AS project_status, pr.language_review_required
+                     FROM translation_pages p JOIN translation_projects pr ON pr.id = p.project_id
+                     WHERE p.id = ? AND p.project_id = ? LIMIT 1`,
+                    [pageId, projectId],
+                );
+
+                if (
+                    !page ||
+                    !['DRAFT', 'FAILED'].includes(page.page_status) ||
+                    page.project_status === 'CANCELLED' ||
+                    page.language_review_required !== 0
+                ) {
+                    throw new Error('remoteProcessing.staleProject');
+                }
+
+                await transaction.runAsync(
+                    `UPDATE remote_processing_attempts
+                     SET status = 'ACCEPTED', remote_status = ?, remote_job_ref = ?, volatile_receipt_status = 'FINISHED', accepted_at = ?, updated_at = ?, error_code = NULL
+                     WHERE id = ?`,
+                    ['READY', jobRef, now, now, id],
+                );
+
+                await transaction.runAsync(
+                    `UPDATE translation_pages SET status = 'PROCESSING', updated_at = ?, status_updated_at = ?
+                     WHERE id = ? AND project_id = ? AND status IN ('DRAFT','FAILED')`,
+                    [now, now, pageId, projectId],
+                );
+
+                await transaction.runAsync(
+                    `UPDATE translation_projects SET status = 'PROCESSING', updated_at = ?, status_updated_at = ?
+                     WHERE id = ? AND status <> 'CANCELLED' AND language_review_required = 0`,
+                    [now, now, projectId],
+                );
+            });
+
+            return requireAttempt(db, id);
+        },
+        async observeVolatileReceipt(id, receipt, now) {
+            const db = await database();
+            await db.withExclusiveTransactionAsync(async tx => {
+                const attempt = await requireAttempt(tx, id);
+                if (attempt.gatewayContractVersion !== '2.0' || (receipt && attempt.remoteJobRef && attempt.remoteJobRef !== receipt.operationRef))
+                    throw new Error('remoteProcessing.invalidTransition');
+                if (attempt.volatileReceiptStatus === 'FINISHED' || attempt.volatileReceiptStatus === 'FAILED') {
+                    if (receipt && receipt.status !== attempt.volatileReceiptStatus) throw new Error('remoteProcessing.invalidTransition');
+                    if (!receipt) return;
+                }
+                await tx.runAsync(
+                    'UPDATE remote_processing_attempts SET remote_job_ref=COALESCE(remote_job_ref,?),volatile_receipt_status=?,last_queried_at=?,updated_at=? WHERE id=?',
+                    [receipt?.operationRef ?? null, receipt?.status ?? null, now, now, id],
+                );
+                if (receipt?.status === 'STARTED')
+                    await tx.runAsync(
+                        "UPDATE remote_processing_attempts SET status='UNKNOWN',error_code='submission-unknown' WHERE id=? AND status IN ('CREATED','SUBMITTING','UNKNOWN')",
+                        [id],
+                    );
+                else if (receipt) await failVolatileInTransaction(tx, attempt, now, 'submission-unknown');
+            });
+            return requireAttempt(db, id);
+        },
+        async failVolatileAttempt(id, now, errorCode) {
+            const db = await database();
+            await db.withExclusiveTransactionAsync(async tx => {
+                await failVolatileInTransaction(tx, await requireAttempt(tx, id), now, errorCode);
+            });
             return requireAttempt(db, id);
         },
         async acceptAndQueue(id, projectId, pageId, jobRef, remoteStatus, now) {

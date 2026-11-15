@@ -7,7 +7,7 @@ disponíveis e tenham sido conferidos.
 
 O arquivo [`terraform.tfvars.example`](terraform.tfvars.example) documenta o
 operador e o contato reais e usa as URLs públicas de
-`toonlira-rm.firebaseapp.com`. A versão anterior do disclosure
+`toonlira-rm.web.app`. A versão anterior do disclosure
 (`2026-09-07.v1`) não cobre a tradução pelo endpoint global; por isso o exemplo
 deixa `disclosure.version` vazio. Copiá-lo mantém capabilities indisponíveis,
 mesmo com `gateway_enabled = false`. Revisão e publicação da nova versão são
@@ -80,10 +80,13 @@ e `terraform validate` são os gates locais. Para conferir os exemplos, usar
 forma para `terraform.tfvars.example`, pois `fmt` não aceita o sufixo `.example`
 como arquivo de entrada nomeado.
 
-Antes de habilitar o gateway, as rotas `/legal/terms` e `/legal/privacy` precisam
-continuar respondendo `200` publicamente, sem autenticação e também por acesso
-direto. A aprovação final do operador, a revisão da configuração implantada e o
-worker com OCR real continuam gates independentes.
+Antes de aplicar as novas URLs de disclosure, confirme por HTTPS que os
+[Termos de Uso](https://toonlira-rm.web.app/legal/terms) e a
+[Política de Privacidade](https://toonlira-rm.web.app/legal/privacy) exibem a
+mesma versão e o mesmo conteúdo das páginas em uso pelo gateway. Após aplicar,
+confirme as novas URLs em `/v2/capabilities` antes de retirar as rotas legais
+do proxy. A aprovação final do operador, a revisão da configuração implantada
+e o worker com OCR real continuam gates independentes.
 
 ## Sequência de implantação
 

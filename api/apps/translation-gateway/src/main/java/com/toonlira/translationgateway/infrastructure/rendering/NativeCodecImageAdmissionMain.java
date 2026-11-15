@@ -20,7 +20,7 @@ public final class NativeCodecImageAdmissionMain {
             require(arguments.length == 0);
             var archive = Path.of("/app/gateway.jar");
             verifyArchiveHash(archive, System.getenv("GATEWAY_NATIVE_IMAGE_JAR_SHA256"));
-            RenderJvmLauncher.builder(Path.of("/tmp"), 128, RenderChildMain.class.getName(), List.of(archive), true);
+            RenderJvmLauncher.builder(Path.of("/tmp"), 128, VolatileRenderChildMain.class.getName(), List.of(archive), true);
             var codec = NativeCodecDistribution.admitForRuntime(Path.of("/relocated/lib"),
                 System.getenv("GATEWAY_RENDERING_NATIVE_DISTRIBUTION_SHA256"), Duration.ofSeconds(60));
             try (var loaded = new NativeWebpCodec(codec.library(), codec.librarySha256(), codec.sharpLibrary(),

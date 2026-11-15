@@ -11,6 +11,9 @@ import com.toonlira.translationgateway.application.MediaInspectionService;
 import com.toonlira.translationgateway.application.CancelJobUseCase;
 import com.toonlira.translationgateway.application.DispatchPersistenceUseCase;
 import com.toonlira.translationgateway.application.RenderingPersistenceUseCase;
+import com.toonlira.translationgateway.application.LifecycleCleanupPersistenceUseCase;
+import com.toonlira.translationgateway.application.port.RenderingTaskProcessPort;
+import java.time.Clock;
 import com.toonlira.translationgateway.application.ReserveJobUseCase;
 import com.toonlira.translationgateway.application.config.GatewayProperties;
 import com.toonlira.translationgateway.application.port.GatewayRepository;
@@ -29,6 +32,7 @@ import com.toonlira.translationgateway.domain.translation.TranslationResponse;
 import jakarta.annotation.PreDestroy;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.LinkOption;
 import java.lang.management.ManagementFactory;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
@@ -66,7 +70,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.transaction.support.TransactionTemplate;
 
-/** Test-only full context: synthetic ports or official SDK loopback; never ADC, Google or private media. */
+/** Test-only context: synthetic/replayed providers; real GCS requires the dedicated metadata-credential opt-in. */
 public final class NativeRenderingWorkerProbe {
     private static final long PREVENTIVE_ADDRESS_BYTES = 1536L * 1024 * 1024;
     private static final Path WORK = Path.of("/work"), EXPORT = Path.of("/export"), ORIGINAL = Path.of("/original");
@@ -80,6 +84,16 @@ public final class NativeRenderingWorkerProbe {
         String outcome = "failed"; RenderSource source = null;
         try {
             if (arguments.length != 2) invalid();
+            boolean storageSession = arguments[0].startsWith("session-");
+            if (storageSession) arguments[0] = arguments[0].substring("session-".length());
+            details.put("storageProcessSession", storageSession);
+            boolean gcsDelivery = arguments[0].equals("runtime-gcs-private-delivery");
+            var cloudConfiguration = gcsDelivery ? CloudPrivateDeliveryProbe.configuration(System.getenv()) : null;
+            if (gcsDelivery) CloudPrivateDeliveryProbe.verifyMetadataCredentials();
+            boolean privateDelivery = arguments[0].equals("runtime-private-delivery") || gcsDelivery;
+            boolean cloudSmoke = arguments[0].equals("cloud-smoke-pt-BR") || privateDelivery;
+            boolean recorded = arguments[0].equals("recorded-real-page");
+            if (recorded) details.put("providerMode", "captured-real-provider-replay-no-network");
             boolean painted = arguments[0].startsWith("runtime-painted-")
                 && SyntheticWorkerText.languages().contains(arguments[0].substring("runtime-painted-".length()));
             boolean scripts = painted || arguments[0].startsWith("runtime-script-")
@@ -88,7 +102,7 @@ public final class NativeRenderingWorkerProbe {
             boolean alternateFormat = List.of("runtime-format-jpeg", "runtime-format-webp").contains(arguments[0]);
             boolean layout = arguments[0].equals("runtime-sdk-layout");
             boolean sdk = arguments[0].equals("runtime-sdk") || layout;
-            if (!(scripts || dimensions || alternateFormat || sdk || List.of("small", "maximum", "memory-fault", "address-bounded", "parent-bounded", "runtime-parent", "runtime-memory-fault", "runtime-disk-fault", "runtime-timeout", "runtime-cancel").contains(arguments[0]))) invalid();
+            if (!(recorded || cloudSmoke || scripts || dimensions || alternateFormat || sdk || List.of("small", "maximum", "memory-fault", "address-bounded", "parent-bounded", "runtime-parent", "runtime-memory-fault", "runtime-disk-fault", "runtime-timeout", "runtime-cancel").contains(arguments[0]))) invalid();
             if (sdk) details.put("providerMode", "official-sdk-loopback");
             details.put("scenario", arguments[0]);
             details.put("javaVendor", System.getProperty("java.vendor"));
@@ -106,7 +120,7 @@ public final class NativeRenderingWorkerProbe {
             boolean timing = timeout || cancellation;
             boolean allocationFault = arguments[0].equals("runtime-memory-fault") || diskFault;
             boolean admittedFault = allocationFault || timing;
-            boolean runtimeParent = arguments[0].equals("runtime-parent") || admittedFault || scripts || dimensions || alternateFormat || sdk;
+            boolean runtimeParent = recorded || cloudSmoke || arguments[0].equals("runtime-parent") || admittedFault || scripts || dimensions || alternateFormat || sdk;
             if (runtimeParent) {
                 var limits = control("/proc/self/limits", 4096).lines().map(String::strip)
                     .filter(line -> line.startsWith("Max address space")).toList();
@@ -127,6 +141,7 @@ public final class NativeRenderingWorkerProbe {
                 TranslationGatewayApplication.class, Providers.class, PreventiveAddressConfiguration.class, AdmittedFaultConfiguration.class, AdmittedTimingConfiguration.class).profiles("worker", "renderer-resource-probe")
                 .run("--server.port=-1", "--spring.main.banner-mode=off",
                     "--renderer.probe.sdk-loopback=" + sdk,
+                    "--renderer.probe.storage-session=" + storageSession,
                     "--gateway.layout.mode=" + (layout ? "shadow" : "disabled"),
                     "--gateway.layout.model-path=/model/detector.onnx", "--gateway.layout.direction=ltr",
                     "--renderer.probe.preventive-address=" + preventive,
@@ -137,8 +152,11 @@ public final class NativeRenderingWorkerProbe {
                     "--renderer.probe.cancellation=" + cancellation,
                     "--spring.datasource.url=jdbc:postgresql://postgres:5432/renderer_probe",
                     "--spring.datasource.username=test", "--spring.datasource.password=test",
+                    "--gateway.storage.mode=" + (gcsDelivery ? "gcs" : "local"),
+                    "--gateway.storage.bucket=" + (gcsDelivery ? cloudConfiguration.bucket() : ""),
                     "--gateway.storage.local-directory=" + WORK.resolve("objects"),
                     "--gateway.rendering.mode=supervised-native",
+                    "--gateway.rendering.storage-process-enabled=" + storageSession,
                     "--gateway.rendering.temporary-directory=" + WORK.resolve("render"),
                     "--gateway.rendering.native-distribution=/relocated/lib",
                     "--gateway.rendering.native-distribution-sha256=" + arguments[1])) {
@@ -159,7 +177,7 @@ public final class NativeRenderingWorkerProbe {
                 require(!properties.isEnabled());
                 require(properties.getOcr().getMode() == GatewayProperties.Ocr.Mode.DISABLED);
                 require(properties.getTranslation().getMode() == GatewayProperties.Translation.Mode.DISABLED);
-                // Only a test fake port is enabled after a disabled/credential-free bootstrap. Not a runtime option.
+                // Only test replay/synthetic ports are enabled after a credential-free bootstrap. Not a runtime option.
                 properties.getTranslation().setMode(GatewayProperties.Translation.Mode.GOOGLE);
                 properties.getTranslation().setEnabledPairs(scripts ? SyntheticWorkerText.languages().stream()
                     .map(target -> SyntheticWorkerText.sourceLanguage(target) + ":" + target).toList() : List.of("en:pt-BR"));
@@ -189,14 +207,27 @@ public final class NativeRenderingWorkerProbe {
                     "SELECT count(*) FROM flyway_schema_history WHERE success AND type = 'SQL'").query(Integer.class).single());
                 details.put("migrationCount", migrations); require(migrations == 9);
                 var providers = context.getBean(Providers.class);
+                providers.cloudSmoke = cloudSmoke;
+                providers.privateDelivery = privateDelivery;
+                providers.cloudConfiguration = cloudConfiguration;
+                if (recorded) providers.recorded = RecordedWorkerPage.load(Path.of("/recorded"));
                 providers.scripted = scripts;
                 if (scripts) { providers.targetLanguage = arguments[0].substring(painted ? "runtime-painted-".length() : "runtime-script-".length()); details.put("targetLanguage", providers.targetLanguage); }
                 details.put("phase", "media-check");
                 source = inspectedSource(context, ORIGINAL);
+                if (recorded) require(source.sha256().equals(providers.recorded.sourceSha256()));
                 details.put("inputMimeType", source.mimeType());
                 var rows = new ArrayList<Map<String, Object>>(); details.put("results", rows);
                 details.put("phase", "processing");
-                if (sdk) {
+                if (recorded) {
+                    var result = process(context, mvc, providers, source, providers.recorded.regions().size(), 0, 0);
+                    require(Integer.valueOf(0).equals(result.get("overflowRegions")));
+                    rows.add(result);
+                } else if (cloudSmoke) {
+                    var result = process(context, mvc, providers, source, 1, 16, providers.outputText().length());
+                    require(Integer.valueOf(0).equals(result.get("overflowRegions")));
+                    rows.add(result);
+                } else if (sdk) {
                     rows.add(process(context, mvc, providers, source, 64, 256, 8192));
                     rows.add(process(context, mvc, providers, source, 1, 4096, 8192));
                     rows.add(process(context, mvc, providers, source, 0, 0, 0));
@@ -241,19 +272,37 @@ public final class NativeRenderingWorkerProbe {
                 details.put("completedJobs", rows.size() - (arguments[0].equals("memory-fault") || preventive || admittedFault ? 1 : 0));
                 if (allocationFault) {
                     var fault = context.getBean(AdmittedFaultConfiguration.class);
-                    require(fault.launches.get() == 2 && fault.injections.get() == 1);
-                    require(fault.children.size() == 2 && fault.children.stream().noneMatch(Process::isAlive)
-                        && fault.children.get(0).exitValue() != 0 && fault.children.get(1).exitValue() == 0);
+                    int expectedLaunches = storageSession ? 4 : 2;
+                    require(fault.launches.get() == expectedLaunches && fault.injections.get() == 1);
+                    require(fault.children.size() == expectedLaunches && fault.children.stream().noneMatch(Process::isAlive));
+                    require(storageSession
+                        ? fault.children.stream().allMatch(child -> child.exitValue() == 0)
+                        : fault.children.get(0).exitValue() != 0 && fault.children.get(1).exitValue() == 0);
                     details.put("childLaunches", fault.launches.get()); details.put("faultInjections", fault.injections.get());
                     details.put("firstChildExit", fault.children.get(0).exitValue());
                     details.put("secondChildExit", fault.children.get(1).exitValue());
                     details.put("liveRenderingChildren", false);
-                    details.put("faultType", diskFault ? "test-only-owned-scratch-full" : "test-only-child-AS");
+                    details.put("faultType", diskFault ? "test-only-owned-scratch-full"
+                        : storageSession ? "test-only-child-address-pressure" : "test-only-child-AS");
                     if (diskFault) {
+                        if (storageSession) {
+                            var pressure = context.getBean(ObjectMapper.class).readTree(Files.readAllBytes(EXPORT.resolve("session-pressure.json")));
+                            fault.pressureBytes = pressure.path("bytes").longValue();
+                            fault.usableAtFault = pressure.path("usable").longValue();
+                        }
                         require(fault.pressureBytes > 0 && fault.usableAtFault == 0);
                         details.put("scratchPressureBytes", fault.pressureBytes);
                         details.put("scratchUsableAtFaultBytes", fault.usableAtFault);
-                    } else details.put("injectedChildAddressSpaceBytes", AdmittedRenderFaults.FAILURE_ADDRESS_BYTES);
+                    } else {
+                        if (storageSession) {
+                            var address = context.getBean(ObjectMapper.class).readTree(Files.readAllBytes(EXPORT.resolve("session-address.json")));
+                            require(address.path("phase").textValue().equals("predecode")
+                                && address.path("ceilingBytes").longValue() == NativeProcessLimits.initial().addressSpaceBytes()
+                                && address.path("reservedBytes").longValue() > 0);
+                            details.put("reservedAddressBytes", address.path("reservedBytes").longValue());
+                        }
+                        if (!storageSession) details.put("injectedChildAddressSpaceBytes", AdmittedRenderFaults.FAILURE_ADDRESS_BYTES);
+                    }
                 }
                 if (timing) {
                     var fault = context.getBean(AdmittedTimingConfiguration.class);
@@ -289,6 +338,11 @@ public final class NativeRenderingWorkerProbe {
                 chain.add(cause.getClass().getSimpleName());
             details.put("failureTypes", List.copyOf(chain));
             details.put("failureType", error.getClass().getSimpleName());
+            details.put("failureLocation", Arrays.stream(error.getStackTrace())
+                .filter(frame -> frame.getClassName().startsWith("com.toonlira.translationgateway."))
+                .limit(4).map(frame -> frame.getClassName() + "#" + frame.getMethodName() + ":" + frame.getLineNumber()).toList());
+            if (error.getMessage() != null && error.getMessage().matches("cloud-probe-[a-z0-9-]{1,80}"))
+                details.put("failureCode", error.getMessage());
             if ("bootstrap".equals(details.get("phase"))) {
                 try { details.put("parentVirtualAtFailureBytes", LinuxWorkerMemoryAdmission.virtualBytes(control("/proc/self/status", 16384))); }
                 catch (Exception ignored) { details.put("parentVirtualAtFailureUnavailable", true); }
@@ -327,7 +381,8 @@ public final class NativeRenderingWorkerProbe {
         var transaction = context.getBean(TransactionTemplate.class); var gateway = context.getBean(GatewayRepository.class);
         var persistence = context.getBean(RenderingPersistenceUseCase.class);
         var reserve = context.getBean(ReserveJobUseCase.class);
-        var now = Instant.now(); var installation = UUID.randomUUID(); var jobId = UUID.randomUUID(); var jobRef = UUID.randomUUID();
+        var now = Instant.now(); var installation = UUID.randomUUID(); var jobId = UUID.randomUUID();
+        var jobRef = providers.recorded == null ? UUID.randomUUID() : providers.recorded.jobRef();
         transaction.executeWithoutResult(ignored -> gateway.createInstallation(installation, "synthetic-test-hash-" + installation, now));
         var originalKey = (providers.sdkEnabled ? "private/originals/" : "private/original/") + jobId;
         storage.store(originalKey, reusable, source.mimeType(), source.sha256(), now);
@@ -391,11 +446,13 @@ public final class NativeRenderingWorkerProbe {
         int overflowRegions = 0;
         for (int index = 0; index < count; index++) {
             var region = document.path("regions").get(index);
-            require(region.path("id").textValue().equals((providers.sdkEnabled
-                ? LoopbackWorkerProviders.regionId(jobRef, index) : new UUID(0, index + 1)).toString()));
+            require(region.path("id").textValue().equals((providers.recorded != null ? providers.recorded.regions().get(index).id()
+                : providers.sdkEnabled ? LoopbackWorkerProviders.regionId(jobRef, index) : new UUID(0, index + 1)).toString()));
             require(region.path("readingOrder").intValue() == index);
-            require(region.path("sourceText").textValue().equals("a".repeat(inputChars)));
-            require(region.path("translatedText").textValue().equals(providers.outputText()));
+            require(region.path("sourceText").textValue().equals(providers.recorded == null
+                ? "a".repeat(inputChars) : providers.recorded.regions().get(index).sourceText()));
+            require(region.path("translatedText").textValue().equals(providers.recorded == null
+                ? providers.outputText() : providers.recorded.translatedText(index)));
             require(region.path("overflow").isBoolean());
             if (region.path("overflow").booleanValue()) overflowRegions++;
         }
@@ -403,17 +460,28 @@ public final class NativeRenderingWorkerProbe {
             "SELECT count(*) FROM processing_job_stages WHERE job_id = :id AND status = 'SUCCEEDED'")
             .param("id", jobId).query(Integer.class).single());
         require(succeeded == 3);
-        require(!Files.exists(WORK.resolve("objects").resolve(originalKey)));
+        if (providers.cloudConfiguration == null) require(!Files.exists(WORK.resolve("objects").resolve(originalKey)));
+        else CloudPrivateDeliveryProbe.requireAbsent(providers.cloudConfiguration, originalKey);
         verifyReusable(reusable, source);
         verifyRedelivery(mvc, body, providers, count, oldOcr, oldTranslation);
         require(artifacts.equals(persistence.find(jobRef).artifacts()));
         verifyTemporaryCleanup();
+        if (providers.cloudSmoke || providers.recorded != null) {
+            var prefix = providers.recorded == null ? "smoke" : "real-page";
+            Files.write(EXPORT.resolve(prefix + ".webp"), read(storage, artifacts.imageObjectKey(), 64 * 1024 * 1024), StandardOpenOption.CREATE_NEW);
+            Files.write(EXPORT.resolve(prefix + "-manifest.json"), manifest, StandardOpenOption.CREATE_NEW);
+        }
         var result = new LinkedHashMap<String, Object>(Map.of("jobStatus", "READY", "succeededStages", succeeded, "regions", count,
             "imageSha256", artifacts.image().sha256(), "manifestSha256", artifacts.manifestSha256(),
             "imageBytes", artifacts.image().byteSize(), "elapsedNanos", System.nanoTime() - started,
             "inputChars", inputChars, "outputChars", outputChars, "targetLanguage", providers.targetLanguage));
         result.put("overflowRegions", overflowRegions);
         result.put("policyVersion", document.path("policyVersion").textValue());
+        if (providers.privateDelivery) result.putAll(providers.cloudConfiguration == null
+            ? PrivateDeliveryProbe.verify(context, installation, jobRef, jobId, originalKey, completed.ocrObjectKey(),
+                completed.translationObjectKey(), artifacts.imageObjectKey(), artifacts.manifestObjectKey())
+            : CloudPrivateDeliveryProbe.verify(context, providers.cloudConfiguration, installation, jobRef, jobId, originalKey,
+                completed.ocrObjectKey(), completed.translationObjectKey(), artifacts.imageObjectKey(), artifacts.manifestObjectKey()));
         if (context.getBean(GatewayProperties.class).getLayout().getMode() == GatewayProperties.Layout.Mode.SHADOW) {
             var layout = transaction.execute(ignored -> jdbc.sql(
                 "SELECT status, output_object_key, output_sha256, error_code FROM processing_job_layouts WHERE job_id = :id")
@@ -505,9 +573,29 @@ public final class NativeRenderingWorkerProbe {
     }
 
     private static void verifyTemporaryCleanup() throws Exception {
-        try (var files = Files.list(WORK.resolve("render"))) { require(files.findAny().isEmpty()); }
+        try (var files = Files.list(WORK.resolve("render"))) {
+            var entries = files.toList();
+            require(entries.isEmpty() || entries.size() == 1 && entries.getFirst().getFileName().toString().equals("render-sessions-v1"));
+            if (!entries.isEmpty()) {
+                var root = entries.getFirst();
+                require(Files.isDirectory(root, LinkOption.NOFOLLOW_LINKS));
+                try (var sessions = Files.list(root)) {
+                    var remaining = sessions.toList();
+                    require(remaining.size() == 1 && remaining.getFirst().getFileName().toString().equals(".owner.lock"));
+                    require(Files.isRegularFile(remaining.getFirst(), LinkOption.NOFOLLOW_LINKS) && Files.size(remaining.getFirst()) == 0);
+                }
+            }
+        }
+        var snapshots = WORK.resolve("tmp/translation-media-snapshots-v1");
+        require(Files.isDirectory(snapshots, LinkOption.NOFOLLOW_LINKS));
+        try (var files = Files.list(snapshots)) {
+            var entries = files.toList();
+            require(entries.size() == 1 && entries.getFirst().getFileName().toString().equals(".owner.lock"));
+            require(Files.isRegularFile(entries.getFirst(), LinkOption.NOFOLLOW_LINKS)
+                && Files.size(entries.getFirst()) == 0);
+        }
         try (var files = Files.list(WORK.resolve("tmp"))) {
-            require(files.noneMatch(path -> path.getFileName().toString().startsWith("translation-")));
+            require(files.noneMatch(path -> !path.equals(snapshots) && path.getFileName().toString().startsWith("translation-")));
         }
     }
 
@@ -610,6 +698,33 @@ public final class NativeRenderingWorkerProbe {
         final AtomicInteger launches = new AtomicInteger(), injections = new AtomicInteger();
         final List<Process> children = new CopyOnWriteArrayList<>();
         volatile long pressureBytes, usableAtFault;
+        @Bean @Primary
+        @ConditionalOnProperty(name = "renderer.probe.storage-session", havingValue = "true")
+        RenderingTaskProcessPort admittedSessionFault(GatewayProperties properties, RenderingPersistenceUseCase persistence,
+                LifecycleCleanupPersistenceUseCase cleanup, Clock clock,
+                @Value("${renderer.probe.disk-fault:false}") boolean diskFault) {
+            var configuration = properties.getRendering();
+            var codec = NativeCodecDistribution.admitForRuntime(configuration.getNativeDistribution(),
+                configuration.getNativeDistributionSha256(), configuration.getNativeTimeout());
+            var admission = NativeWorkerParentPreparation.prepare(configuration.getTemporaryDirectory(), NativeProcessLimits.initial());
+            return new StorageBackedRenderingTaskProcess(properties, codec, admission::requireAvailable, persistence, cleanup, clock,
+                (directory, heap) -> {
+                    boolean inject = launches.getAndIncrement() == 0;
+                    var builder = RenderJvmLauncher.builder(directory, heap, RenderingTaskChildMain.class.getName(),
+                        new BoundedNativeRenderChildSettings(codec, NativeProcessLimits.initial()));
+                    if (inject) {
+                        Files.createFile(directory.resolve(diskFault ? "disk-fault" : "memory-fault"));
+                        var command = builder.command();
+                        command.set(command.indexOf("-Dloader.main=" + RenderingTaskChildMain.class.getName()),
+                            "-Dloader.main=" + RenderingSessionFaultChildMain.class.getName());
+                        command.set(command.indexOf("-Dloader.path=BOOT-INF/classes/,BOOT-INF/lib/"),
+                            "-Dloader.path=/probe,BOOT-INF/classes/,BOOT-INF/lib/");
+                        injections.incrementAndGet();
+                    }
+                    var process = builder.redirectOutput(ProcessBuilder.Redirect.PIPE).start();
+                    children.add(process); return process;
+                });
+        }
         @Bean @Primary RenderPort admittedFaultRenderer(GatewayProperties properties,
                 @Value("${renderer.probe.disk-fault:false}") boolean diskFault) {
             return NativeRenderingConfiguration.preparedRenderer(properties, (directory, heap) -> {
@@ -651,11 +766,13 @@ public final class NativeRenderingWorkerProbe {
     public static class Providers {
         final AtomicInteger ocrCalls = new AtomicInteger(), translationCalls = new AtomicInteger();
         int count, inputChars, outputChars;
-        boolean scripted;
+        boolean scripted, cloudSmoke, privateDelivery;
+        CloudPrivateDeliveryProbe.Configuration cloudConfiguration;
+        RecordedWorkerPage recorded;
         @Value("${renderer.probe.sdk-loopback:false}") boolean sdkEnabled;
         private LoopbackWorkerProviders sdk;
         String targetLanguage = "pt-BR";
-        String outputText() { return scripted ? SyntheticWorkerText.text(targetLanguage, outputChars) : "b".repeat(outputChars); }
+        String outputText() { return cloudSmoke ? "Olá, ação e café." : scripted ? SyntheticWorkerText.text(targetLanguage, outputChars) : "b".repeat(outputChars); }
         @Bean @Primary OcrPort syntheticOcr() throws Exception {
             if (sdkEnabled) sdk = new LoopbackWorkerProviders();
             return new SyntheticOcr();
@@ -665,6 +782,7 @@ public final class NativeRenderingWorkerProbe {
                 @Override public boolean available() { return true; }
                 @Override public List<OcrManifest.Region> recognize(Command command) {
                     require(!TransactionSynchronizationManager.isActualTransactionActive()); ocrCalls.incrementAndGet();
+                    if (recorded != null) return recorded.recognize(command);
                     if (sdkEnabled) return sdk.recognize(command, count, inputChars);
                     var regions = new ArrayList<OcrManifest.Region>();
                     int columns = (int) Math.ceil(Math.sqrt(count));
@@ -681,6 +799,7 @@ public final class NativeRenderingWorkerProbe {
         @Bean @Primary TranslationPort syntheticTranslation() {
             return request -> {
                 require(!TransactionSynchronizationManager.isActualTransactionActive()); translationCalls.incrementAndGet();
+                if (recorded != null) return recorded.translate(request);
                 if (sdkEnabled) return sdk.translate(request, outputText());
                 return new TranslationResponse(request.regions().stream()
                     .map(region -> new TranslationResponse.Region(region.id(), outputText())).toList());

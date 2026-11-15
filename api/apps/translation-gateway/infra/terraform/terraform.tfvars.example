@@ -17,9 +17,9 @@ disclosure = {
   operator_name    = "Ruan Moraes"
   operator_contact = "ruanmoraessantosbarbosa@gmail.com"
   # Rotas públicas; usar o disclosure somente após revisão jurídica do conteúdo.
-  privacy_policy_url = "https://toonlira-rm.firebaseapp.com/legal/privacy"
-  terms_url          = "https://toonlira-rm.firebaseapp.com/legal/terms"
+  privacy_policy_url = "https://toonlira-rm.web.app/legal/privacy"
+  terms_url          = "https://toonlira-rm.web.app/legal/terms"
   # URL pública complementar (não integra o shape atual do disclosure):
-  # https://toonlira-rm.firebaseapp.com/legal/contact
+  # https://toonlira-rm.web.app/legal/contact
   provider_training_policy = "Google Cloud does not use customer content submitted to Cloud Vision or Cloud Translation to train or improve its models."
 }

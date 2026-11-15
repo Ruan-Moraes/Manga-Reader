@@ -48,6 +48,8 @@ export function SessionGate({ children }: PropsWithChildren) {
         const inReader = first === 'reader';
         const inTranslationLibrary = first === 'translation-library';
         const inTranslationReader = first === 'translation-reader';
+        // Obra e gerenciar obra (060) são locais e públicas como a biblioteca.
+        const inLocalWork = first === 'work';
         const inDevelopmentReaderPreview = __DEV__ && first === 'reader-preview';
         const atRoot = first === undefined || first === 'index';
         const inNotFound = first === '+not-found';
@@ -64,6 +66,7 @@ export function SessionGate({ children }: PropsWithChildren) {
                 !inReader &&
                 !inTranslationLibrary &&
                 !inTranslationReader &&
+                !inLocalWork &&
                 !inDevelopmentReaderPreview &&
                 !atRoot &&
                 !inNotFound
@@ -89,7 +92,7 @@ export function SessionGate({ children }: PropsWithChildren) {
         }
     }, [identityEpoch, isAuthenticated, isHydrated, params.returnTo, router, segments]);
 
-    if (!isHydrated) return <StartupFeedback label={t('startup.session')} />;
+    if (!isHydrated) return <StartupFeedback label={t('startup.session')} title={t('startup.opening')} />;
 
     return children;
 }

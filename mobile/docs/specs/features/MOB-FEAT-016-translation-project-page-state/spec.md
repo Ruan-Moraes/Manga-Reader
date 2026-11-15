@@ -6,7 +6,7 @@ status: implemented
 implementation_gate: open
 blocked_by: [MOB-FEAT-013, MOB-FEAT-014, MOB-FEAT-015]
 created: 2026-08-15
-updated: 2026-09-06
+updated: 2026-11-01
 supersedes: []
 superseded_by: []
 ---
@@ -36,8 +36,9 @@ pipeline sem iniciar rede, OCR, tradução ou renderização.
   editorial, endpoints ou identidade da plataforma.
 - O schema v6 aceita sete códigos/42 pares e bloqueia projeto `zh` legado até
   revisão explícita, conforme `MOB-FEAT-014`.
-- `MOB-FEAT-017` consumirá projetos `DRAFT` e poderá realizar a primeira
-  transição real para `QUEUED`, após consentimento e contrato remoto aprovados.
+- `MOB-FEAT-017` consome projetos preparados e, na revisão volátil aprovada,
+  pode iniciar `PROCESSING` diretamente após as pré-condições e o vínculo de
+  tentativa, sem simular `QUEUED` ou uma fila durável no servidor.
 
 ## Requisitos e regras
 
@@ -81,11 +82,21 @@ pipeline sem iniciar rede, OCR, tradução ou renderização.
 - Estados canônicos de projeto e página:
   `DRAFT`, `QUEUED`, `PROCESSING`, `READY`, `FAILED`, `CANCELLED`.
 - Transições base permitidas:
-    - `DRAFT → QUEUED | CANCELLED`;
+    - `DRAFT → QUEUED | PROCESSING | FAILED | CANCELLED`;
     - `QUEUED → PROCESSING | FAILED | CANCELLED`;
     - `PROCESSING → READY | FAILED | CANCELLED`;
-    - `FAILED → QUEUED | CANCELLED`, reservada para retry explícito futuro;
+    - `FAILED → QUEUED | PROCESSING | CANCELLED`, com nova execução remota
+      sempre explícita e subordinada à feature proprietária;
     - `READY` e `CANCELLED` são terminais.
+- No fluxo direto da 017, `DRAFT → PROCESSING` representa processamento
+  iniciado com vínculo de tentativa; `DRAFT → FAILED` registra falha local
+  comprovada; `FAILED → PROCESSING` exige nova ação explícita, nova tentativa e
+  nova chave, com todas as pré-condições revalidadas. Essas transições não
+  representam recebimento do resultado nem permitem antecipar `READY`.
+- `QUEUED` permanece no conjunto canônico para compatibilidade com registros
+  anteriores; sua existência no schema não autoriza inventar fila durável no
+  processamento volátil. Nenhum enum, coluna, CHECK ou migration SQLite muda
+  apenas por admitir as transições novas entre estados já existentes.
 - MOB-FEAT-016 implementa e testa o contrato de transição, mas a única criação
   exposta ao usuário termina em `DRAFT`. Não há CTA para avançar estado sem a
   feature proprietária do processamento.
@@ -349,6 +360,22 @@ attempt, progresso fictício, reader, biblioteca ou transição remota exposta.
   compartilhamento, export, sync, backup ou conta.
 - Attempts e erros por etapa; os contratos agora estão aprovados em
   `MOB-FEAT-017..021`, mas permanecem fora desta implementação histórica.
+
+## Delta de integração autorizado — 2026-11-01
+
+Ruan autorizou a mudança para processamento volátil e retorno direto ao
+aplicativo, e solicitou substituir as especificações anteriores pelo novo
+requisito. O delta acima ajusta somente a máquina de estados consumida pela
+017; criação local, originais, snapshots, integridade e limites desta fundação
+permanecem os mesmos. [DEC-008](../../../decisions/MOB-DEC-008-volatile-processing.md)
+registra a direção e a posse da revisão.
+
+O status desta feature conserva o aceite da fundação local anteriormente
+executada, sem aprovar a integração da 017 ou reabrir gates dependentes por
+inferência. Código/testes e revisão desse delta são parte da 017 ainda em
+execução; nenhum resultado de teste ou aprovação nova é declarado aqui.
+[Contrato anterior](evidence/pre-volatile-state-delta-spec-2026-11-01.md)
+preservado para auditoria.
 
 ## Aprovação humana
 

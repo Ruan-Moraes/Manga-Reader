@@ -12,7 +12,6 @@ function ControlledReaderSettingsControls() {
 
     return (
         <ReaderSettingsControls
-            capabilities={{ high: true, low: true, medium: true }}
             onChange={patch => setValue(current => ({ ...current, ...patch }))}
             value={value}
         />
@@ -24,7 +23,7 @@ describe('MOB-FEAT-031 reader settings controls', () => {
         const onChange = jest.fn();
         const view = render(
             <ThemeProvider waitForPlatform={false}>
-                <ReaderSettingsControls capabilities={{ high: true, low: true, medium: true }} onChange={onChange} value={DEFAULT_USER_SETTINGS.reader} />
+                <ReaderSettingsControls onChange={onChange} value={DEFAULT_USER_SETTINGS.reader} />
             </ThemeProvider>,
         );
 
@@ -41,23 +40,20 @@ describe('MOB-FEAT-031 reader settings controls', () => {
         expect(onChange).toHaveBeenCalledWith({ saturation: 95 });
         expect(onChange).toHaveBeenCalledWith({ gap: 1 });
         expect(onChange).toHaveBeenCalledWith({ autoMarkRead: false });
-        expect(view.getByRole('button', { name: 'Qualidade: Automática' })).toBeOnTheScreen();
+        expect(view.queryByRole('button', { name: /Qualidade/ })).toBeNull();
         expect(['Preto', 'Escuro', 'Papel', 'Claro', 'Branco'].map(name => view.getByRole('radio', { name }))).toHaveLength(5);
     });
 
-    it('mapeia direção, ajuste, qualidade, fundo e preload para patches independentes', () => {
+    it('mapeia direção, ajuste, fundo e preload para patches independentes', () => {
         const onChange = jest.fn();
         const view = render(
             <ThemeProvider waitForPlatform={false}>
-                <ReaderSettingsControls capabilities={{ high: true, low: true, medium: true }} onChange={onChange} value={DEFAULT_USER_SETTINGS.reader} />
+                <ReaderSettingsControls onChange={onChange} value={DEFAULT_USER_SETTINGS.reader} />
             </ThemeProvider>,
         );
 
         fireEvent.press(view.getByRole('radio', { name: 'Webtoon' }));
         fireEvent.press(view.getByRole('radio', { name: 'Altura' }));
-        fireEvent.press(view.getByRole('button', { name: 'Qualidade: Automática' }));
-        expect(view.getByText('Prioriza nitidez com maior uso de dados.')).toBeOnTheScreen();
-        fireEvent.press(view.getByRole('radio', { name: 'Alta' }));
         fireEvent.press(view.getByRole('radio', { name: 'Papel' }));
         fireEvent(view.getByRole('adjustable', { name: 'Pré-carregamento' }), 'accessibilityAction', {
             nativeEvent: { actionName: 'increment' },
@@ -65,12 +61,11 @@ describe('MOB-FEAT-031 reader settings controls', () => {
 
         expect(onChange).toHaveBeenCalledWith({ direction: 'WEBTOON' });
         expect(onChange).toHaveBeenCalledWith({ fit: 'HEIGHT' });
-        expect(onChange).toHaveBeenCalledWith({ quality: 'HIGH' });
         expect(onChange).toHaveBeenCalledWith({ background: 'PAPER' });
         expect(onChange).toHaveBeenCalledWith({ preload: 4 });
     });
 
-    it('mantém a nova cor de fundo selecionada sem aplicar borda ao item', () => {
+    it('mantém a nova cor de fundo selecionada com amostras de mesma largura e borda estável', () => {
         const view = render(
             <ThemeProvider waitForPlatform={false}>
                 <ControlledReaderSettingsControls />
@@ -80,10 +75,10 @@ describe('MOB-FEAT-031 reader settings controls', () => {
         fireEvent.press(view.getByRole('radio', { name: 'Papel' }));
 
         expect(view.getByRole('radio', { name: 'Papel' }).props.accessibilityState.selected).toBe(true);
-        fireEvent(view.getByTestId('swatch-picker-track'), 'layout', { nativeEvent: { layout: { width: 342 } } });
+        fireEvent(view.getByTestId('swatch-picker-track'), 'layout', { nativeEvent: { layout: { width: 372 } } });
         expect(view.getByTestId('swatch-picker-surface-PAPER').props.style).toEqual(expect.objectContaining({ width: 68 }));
         expect(StyleSheet.flatten(view.getByTestId('swatch-picker-surface-PAPER').props.style)).toEqual(
-            expect.objectContaining({ alignItems: 'center', borderWidth: 0, justifyContent: 'center' }),
+            expect.objectContaining({ alignItems: 'center', borderWidth: 2, justifyContent: 'center' }),
         );
         expect(view.UNSAFE_getByProps({ testID: 'swatch-picker-badge-PAPER' })).toBeDefined();
 
@@ -98,7 +93,7 @@ describe('MOB-FEAT-031 reader settings controls', () => {
         const onChange = jest.fn();
         const view = render(
             <ThemeProvider waitForPlatform={false}>
-                <ReaderSettingsControls capabilities={{ high: true, low: true, medium: true }} onChange={onChange} value={DEFAULT_USER_SETTINGS.reader} />
+                <ReaderSettingsControls onChange={onChange} value={DEFAULT_USER_SETTINGS.reader} />
             </ThemeProvider>,
         );
         const paper = view.getByRole('radio', { name: 'Papel' });
@@ -125,7 +120,6 @@ it('separa categorias compactas e mantém ajuda e alteração de preferências',
             <ReaderSettingsControls
                 compact
                 category={category}
-                capabilities={{ high: false, low: false, medium: false }}
                 onChange={onChange}
                 value={DEFAULT_USER_SETTINGS.reader}
             />
@@ -142,4 +136,30 @@ it('separa categorias compactas e mantém ajuda e alteração de preferências',
     fireEvent.press(screen.getByRole('radio', { name: 'Papel' }));
     expect(onChange).toHaveBeenCalledWith({ background: 'PAPER' });
     expect(screen.getByRole('adjustable', { name: 'Saturação' })).toBeOnTheScreen();
+});
+
+describe('MOB-FEAT-063 categoria quick da folha do leitor', () => {
+    const quick = (reader = DEFAULT_USER_SETTINGS.reader) =>
+        render(
+            <ThemeProvider waitForPlatform={false}>
+                <ReaderSettingsControls category="quick" compact onChange={jest.fn()} value={reader} />
+            </ThemeProvider>,
+        );
+
+    it('AC-006 mostra modo, direção, ajuste com Original, fundo e saturação, sem qualidade, pré-carregamento nem marcação', () => {
+        const view = quick({ ...DEFAULT_USER_SETTINGS.reader, mode: 'PAGED', direction: 'LTR' });
+        expect(view.getByRole('radio', { name: 'Paginado' })).toBeOnTheScreen();
+        expect(view.getByText('Original')).toBeOnTheScreen();
+        expect(view.getByRole('adjustable', { name: 'Saturação' })).toBeOnTheScreen();
+        expect(view.getByRole('radio', { name: 'Papel' })).toBeOnTheScreen();
+        expect(view.queryByRole('button', { name: /Qualidade/ })).toBeNull();
+        expect(view.queryByRole('adjustable', { name: 'Pré-carregamento' })).toBeNull();
+        expect(view.UNSAFE_queryByType(Switch)).toBeNull();
+        expect(view.queryByRole('adjustable', { name: 'Espaçamento' })).toBeNull();
+    });
+
+    it('AC-006 mostra o espaçamento só no fluxo vertical', () => {
+        const view = quick({ ...DEFAULT_USER_SETTINGS.reader, mode: 'VERTICAL' });
+        expect(view.getByRole('adjustable', { name: 'Espaçamento' })).toBeOnTheScreen();
+    });
 });

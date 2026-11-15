@@ -29,22 +29,14 @@ class OcrTaskControllerTest {
     @MockitoBean ProcessRenderingTaskUseCase rendering;
 
     @Test
-    void shouldAcceptOnlyTheOpaqueJobReference() throws Exception {
-        var jobRef = UUID.randomUUID();
+    void retiredCloudTaskRouteCannotInvokeAnyStage() throws Exception {
         mvc.perform(post("/internal/tasks/ocr").contentType("application/json")
-                .content("{\"jobRef\":\"" + jobRef + "\"}"))
-            .andExpect(status().isNoContent());
-        var order = inOrder(process, translation, rendering);
-        order.verify(process).execute(jobRef);
-        order.verify(translation).execute(jobRef);
-        order.verify(rendering).execute(jobRef);
+            .content("{\"jobRef\":\"" + UUID.randomUUID() + "\"}"))
+            .andExpect(status().isGone());
+        org.mockito.Mockito.verifyNoInteractions(process, translation, rendering);
     }
-
-    @Test
-    void shouldKeepGatewayRoutesUnavailableInWorkerProfile() throws Exception {
-        mvc.perform(get("/v1/capabilities")).andExpect(status().isForbidden());
-        mvc.perform(post("/internal/tasks/ocr").contentType("application/json")
-                .content("{\"jobRef\":\"" + UUID.randomUUID() + "\",\"media\":\"private\"}"))
-            .andExpect(status().isBadRequest());
+    @Test void workerCannotExposeTheDirectPublicEndpoint() throws Exception {
+        mvc.perform(post("/v2/page-translations").contentType("image/png").content(new byte[]{1})).andExpect(status().isForbidden());
+        org.mockito.Mockito.verifyNoInteractions(process, translation, rendering);
     }
 }

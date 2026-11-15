@@ -4,9 +4,7 @@ import static com.toonlira.translationgateway.infrastructure.rendering.RenderCod
 import static java.lang.foreign.MemoryLayout.PathElement.groupElement;
 import static java.lang.foreign.ValueLayout.*;
 
-import com.toonlira.translationgateway.application.MediaInspectionService;
 import com.toonlira.translationgateway.domain.rendering.RenderPolicy;
-import com.toonlira.translationgateway.domain.rendering.RenderedImage;
 import com.toonlira.translationgateway.domain.rendering.RenderSource;
 import java.io.IOException;
 import java.lang.foreign.Arena;
@@ -16,11 +14,13 @@ import java.lang.foreign.MemorySegment;
 import java.lang.foreign.SymbolLookup;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
-import java.nio.channels.FileChannel;
 import java.nio.file.Files;
+import java.io.ByteArrayOutputStream;
+import java.nio.channels.Channels;
+import java.nio.channels.WritableByteChannel;
+import com.toonlira.translationgateway.domain.rendering.InMemoryMedia;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
 import java.security.MessageDigest;
 import java.time.Duration;
 import java.util.HexFormat;
@@ -38,7 +38,6 @@ final class NativeWebpCodec implements AutoCloseable {
     private final Duration timeout;
     private final Linker linker;
     private final MethodHandle initConfig, validateConfig, initPicture, freePicture, encode, decode;
-    private final MediaInspectionService inspector = new MediaInspectionService();
 
     NativeWebpCodec(Path library, String libraryHash, Path sharp, String sharpHash, Duration timeout) {
         if (timeout == null || timeout.isZero() || timeout.isNegative() || timeout.compareTo(Duration.ofSeconds(60)) > 0)
@@ -68,94 +67,67 @@ final class NativeWebpCodec implements AutoCloseable {
         } catch (Throwable error) { libraries.close(); throw new RenderCodecException(CONFIGURATION); }
     }
 
-    WebpProcessCodec.Artifact encode(NativeArgbRaster source, Path directory, RenderPolicy policy) {
-        checkOwner(); long started = start(); Path output = null; boolean returned = false;
-        try {
-            if (source == null || policy == null || directory == null || !directory.isAbsolute()
-                || !Files.isDirectory(directory, LinkOption.NOFOLLOW_LINKS)) throw new RenderCodecException(INVALID_MEDIA);
+    byte[] encodeMemory(NativeArgbRaster source, RenderPolicy policy) {
+        checkOwner(); long started = start();
+        try (var arena = Arena.ofConfined()) {
             var image = source.image(); checkDimensions(image.getWidth(), image.getHeight(), policy);
-            try (var arena = Arena.ofConfined()) {
-                var config = arena.allocate(WebpNativeAbi.CONFIG); var picture = arena.allocate(WebpNativeAbi.PICTURE);
-                if ((int) initConfig.invokeExact(config, 0, 100f, WebpNativeAbi.ENCODER_VERSION) == 0
-                    || (int) initPicture.invokeExact(picture, WebpNativeAbi.ENCODER_VERSION) == 0)
-                    throw new RenderCodecException(CONFIGURATION);
-                try {
-                    config.set(JAVA_INT, configOffset("lossless"), 1); config.set(JAVA_INT, configOffset("method"), policy.compressionMethod());
-                    config.set(JAVA_INT, configOffset("exact"), 1);
-                    if ((int) validateConfig.invokeExact(config) == 0) throw new RenderCodecException(CONFIGURATION);
-                    picture.set(JAVA_INT, pictureOffset("use_argb"), 1);
-                    picture.set(JAVA_INT, pictureOffset("width"), image.getWidth());
-                    picture.set(JAVA_INT, pictureOffset("height"), image.getHeight());
-                    picture.set(ADDRESS, pictureOffset("argb"), source.pixels());
-                    picture.set(JAVA_INT, pictureOffset("argb_stride"), image.getWidth());
-                    output = Files.createTempFile(directory, "render-native-", ".webp");
-                    try (var channel = FileChannel.open(output, StandardOpenOption.WRITE)) {
-                        var writer = new BoundedWriter(channel, policy.maxOutputBytes(), started, timeout);
-                        var lookup = MethodHandles.lookup();
-                        var write = lookup.findVirtual(BoundedWriter.class, "write", WRITER.toMethodType()).bindTo(writer);
-                        var progress = lookup.findVirtual(BoundedWriter.class, "progress", PROGRESS.toMethodType()).bindTo(writer);
-                        picture.set(ADDRESS, pictureOffset("writer"), linker.upcallStub(write, WRITER, arena));
-                        picture.set(ADDRESS, pictureOffset("progress_hook"), linker.upcallStub(progress, PROGRESS, arena));
-                        writer.check();
-                        int success = (int) encode.invokeExact(config, picture);
-                        writer.check();
-                        if (success == 0) throw RenderCodecException.nativeEncodeFailure(picture.get(JAVA_INT, pictureOffset("error_code")));
-                    }
-                } finally { freePicture.invokeExact(picture); }
-            }
-            MediaInspectionService.InspectedMedia checked;
-            try (var input = Files.newInputStream(output)) { checked = inspector.inspect(input, policy.maxOutputBytes()); }
-            WebpProcessCodec.Artifact result;
+            var config = arena.allocate(WebpNativeAbi.CONFIG); var picture = arena.allocate(WebpNativeAbi.PICTURE);
+            if ((int) initConfig.invokeExact(config, 0, 100f, WebpNativeAbi.ENCODER_VERSION) == 0
+                || (int) initPicture.invokeExact(picture, WebpNativeAbi.ENCODER_VERSION) == 0)
+                throw new RenderCodecException(CONFIGURATION);
             try {
-                if (!"image/webp".equals(checked.mimeType()) || checked.widthPx() != image.getWidth()
-                    || checked.heightPx() != image.getHeight()) throw new RenderCodecException(UNAVAILABLE);
-                checkTime(started, timeout);
-                result = new WebpProcessCodec.Artifact(output, new RenderedImage(checked.mimeType(), checked.byteSize(),
-                    checked.widthPx(), checked.heightPx(), checked.sha256()));
-            } finally { Files.delete(checked.path()); }
-            returned = true; return result;
+                config.set(JAVA_INT, configOffset("lossless"), 1);
+                config.set(JAVA_INT, configOffset("method"), policy.compressionMethod());
+                config.set(JAVA_INT, configOffset("exact"), 1);
+                if ((int) validateConfig.invokeExact(config) == 0) throw new RenderCodecException(CONFIGURATION);
+                picture.set(JAVA_INT, pictureOffset("use_argb"), 1);
+                picture.set(JAVA_INT, pictureOffset("width"), image.getWidth());
+                picture.set(JAVA_INT, pictureOffset("height"), image.getHeight());
+                picture.set(ADDRESS, pictureOffset("argb"), source.pixels());
+                picture.set(JAVA_INT, pictureOffset("argb_stride"), image.getWidth());
+                var bytes = new ByteArrayOutputStream();
+                var writer = new BoundedWriter(Channels.newChannel(bytes), policy.maxOutputBytes(), started, timeout);
+                var lookup = MethodHandles.lookup();
+                var write = lookup.findVirtual(BoundedWriter.class, "write", WRITER.toMethodType()).bindTo(writer);
+                var progress = lookup.findVirtual(BoundedWriter.class, "progress", PROGRESS.toMethodType()).bindTo(writer);
+                picture.set(ADDRESS, pictureOffset("writer"), linker.upcallStub(write, WRITER, arena));
+                picture.set(ADDRESS, pictureOffset("progress_hook"), linker.upcallStub(progress, PROGRESS, arena));
+                writer.check();
+                int success = (int) encode.invokeExact(config, picture);
+                writer.check();
+                if (success == 0) throw RenderCodecException.nativeEncodeFailure(picture.get(JAVA_INT, pictureOffset("error_code")));
+                return bytes.toByteArray();
+            } finally { freePicture.invokeExact(picture); }
         } catch (RenderCodecException error) { throw error; }
         catch (Throwable error) { throw new RenderCodecException(UNAVAILABLE); }
-        finally { try { cleanup(returned ? null : output); } finally { CAPACITY.release(); } }
+        finally { CAPACITY.release(); }
     }
 
-    void decodeInto(Path source, RenderedImage expected, RenderPolicy policy, NativeArgbRaster destination) {
-        decodeInto(source, expected, policy, destination, policy == null ? 0 : policy.maxOutputBytes());
+    void decodeMemory(byte[] bytes, RenderSource expected, RenderPolicy policy, NativeArgbRaster destination) {
+        decodeMemory(bytes, expected, policy, destination, false);
     }
 
-    void decodeOriginalInto(Path source, RenderSource expected, RenderPolicy policy, NativeArgbRaster destination) {
-        if (expected == null) throw new RenderCodecException(INVALID_MEDIA);
-        decodeInto(source, new RenderedImage(expected.mimeType(), expected.byteSize(), expected.widthPx(), expected.heightPx(),
-            expected.sha256()), policy, destination, policy == null ? 0 : policy.maxOriginalBytes());
+    void decodeOutputMemory(byte[] bytes, RenderSource expected, RenderPolicy policy, NativeArgbRaster destination) {
+        decodeMemory(bytes, expected, policy, destination, true);
     }
 
-    private void decodeInto(Path source, RenderedImage expected, RenderPolicy policy, NativeArgbRaster destination, long byteLimit) {
-        checkOwner(); long started = start(); Path snapshot = null;
-        try {
-            if (source == null || expected == null || policy == null || destination == null || expected.byteSize() > byteLimit)
-                throw new RenderCodecException(INVALID_MEDIA);
-            checkDimensions(expected.widthPx(), expected.heightPx(), policy);
-            var image = destination.image();
-            if (image.getWidth() != expected.widthPx() || image.getHeight() != expected.heightPx()) throw new RenderCodecException(INVALID_MEDIA);
-            MediaInspectionService.InspectedMedia media;
-            try (var input = Files.newInputStream(source)) { media = inspector.inspect(input, byteLimit); }
-            snapshot = media.path();
-            if (!"image/webp".equals(media.mimeType()) || media.byteSize() != expected.byteSize()
-                || media.widthPx() != expected.widthPx() || media.heightPx() != expected.heightPx()
-                || !media.sha256().equals(expected.sha256())) throw new RenderCodecException(INVALID_MEDIA);
-            ValidatedRasterDecoder.validateContainer(media);
-            try (var arena = Arena.ofConfined(); var input = FileChannel.open(snapshot, StandardOpenOption.READ)) {
-                var compressed = arena.allocate(media.byteSize()); var bytes = compressed.asByteBuffer();
-                while (bytes.hasRemaining()) { checkTime(started, timeout); if (input.read(bytes) < 0) throw new RenderCodecException(INVALID_MEDIA); }
-                checkTime(started, timeout);
-                var pixels = destination.pixels();
-                var result = (MemorySegment) decode.invokeExact(compressed, media.byteSize(), pixels, pixels.byteSize(), image.getWidth() * Integer.BYTES);
-                checkTime(started, timeout);
-                if (result.address() != pixels.address()) throw new RenderCodecException(INVALID_MEDIA);
-            }
+    private void decodeMemory(byte[] bytes, RenderSource expected, RenderPolicy policy, NativeArgbRaster destination, boolean output) {
+        checkOwner(); long started = start();
+        try (var arena = Arena.ofConfined()) {
+            if (!(output ? InMemoryMedia.inspectOutput(bytes, policy) : InMemoryMedia.inspect(bytes, policy)).equals(expected)
+                || destination.image().getWidth() != expected.widthPx() || destination.image().getHeight() != expected.heightPx()
+                || !"image/webp".equals(expected.mimeType())) throw new RenderCodecException(INVALID_MEDIA);
+            var compressed = arena.allocate(bytes.length);
+            compressed.copyFrom(MemorySegment.ofArray(bytes));
+            var pixels = destination.pixels();
+            checkTime(started, timeout);
+            var result = (MemorySegment) decode.invokeExact(compressed, (long) bytes.length,
+                pixels, pixels.byteSize(), expected.widthPx() * Integer.BYTES);
+            checkTime(started, timeout);
+            if (result.address() != pixels.address()) throw new RenderCodecException(INVALID_MEDIA);
         } catch (RenderCodecException error) { throw error; }
         catch (Throwable error) { throw new RenderCodecException(INVALID_MEDIA); }
-        finally { try { cleanup(snapshot); } finally { CAPACITY.release(); } }
+        finally { CAPACITY.release(); }
     }
 
     private MethodHandle function(SymbolLookup symbols, String name, FunctionDescriptor descriptor) {
@@ -164,8 +136,8 @@ final class NativeWebpCodec implements AutoCloseable {
     private static long configOffset(String name) { return WebpNativeAbi.CONFIG.byteOffset(groupElement(name)); }
     private static long pictureOffset(String name) { return WebpNativeAbi.PICTURE.byteOffset(groupElement(name)); }
     private static void checkDimensions(int width, int height, RenderPolicy policy) {
-        try { PamRasterIo.dimensions(width, height, policy); }
-        catch (IOException error) { throw new RenderCodecException(INVALID_MEDIA); }
+        try { RasterBounds.require(width, height, policy); }
+        catch (RenderFileException error) { throw new RenderCodecException(INVALID_MEDIA); }
     }
     private void checkOwner() {
         if (Thread.currentThread() != owner || !libraries.scope().isAlive()) throw new RenderCodecException(UNAVAILABLE);
@@ -196,10 +168,6 @@ final class NativeWebpCodec implements AutoCloseable {
         } catch (RenderCodecException error) { throw error; }
         catch (Exception error) { throw new RenderCodecException(CONFIGURATION); }
     }
-    private static void cleanup(Path path) {
-        if (path != null) try { Files.deleteIfExists(path); }
-        catch (IOException error) { throw new RenderCodecException(CLEANUP_FAILED); }
-    }
     @Override public void close() {
         if (Thread.currentThread() != owner) throw new RenderCodecException(UNAVAILABLE);
         if (libraries.scope().isAlive()) libraries.close();
@@ -207,9 +175,9 @@ final class NativeWebpCodec implements AutoCloseable {
     @Override public String toString() { return "NativeWebpCodec[redacted]"; }
 
     static final class BoundedWriter {
-        private final FileChannel output; private final long limit, started; private final Duration timeout;
+        private final WritableByteChannel output; private final long limit, started; private final Duration timeout;
         private long count; private RenderCodecException.Failure failure;
-        BoundedWriter(FileChannel output, long limit, long started, Duration timeout) {
+        BoundedWriter(WritableByteChannel output, long limit, long started, Duration timeout) {
             this.output = output; this.limit = limit; this.started = started; this.timeout = timeout;
         }
         void check() { if (failure != null) throw new RenderCodecException(failure); checkTime(started, timeout); }

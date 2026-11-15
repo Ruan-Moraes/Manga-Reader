@@ -20,7 +20,7 @@
 
     <properties>
         <testcontainers.version>1.21.4</testcontainers.version>
-        <java.version>23</java.version>
+        <java.version>25</java.version>
         <!-- Suíte leve sem Docker: mvn test -Dtest.excludedGroups=testcontainers -->
         <test.excludedGroups></test.excludedGroups>
     </properties>

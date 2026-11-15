@@ -19,7 +19,8 @@
     <description>Gateway privado e assíncrono para processamento de páginas do aplicativo mobile.</description>
 
     <properties>
-        <java.version>23</java.version>
+        <java.version>25</java.version>
+        <project.build.outputTimestamp>2026-01-01T00:00:00Z</project.build.outputTimestamp>
         <testcontainers.version>1.21.4</testcontainers.version>
         <!-- Coordinated security patches not yet supplied by the Boot BOM. -->
         <jackson-bom.version>3.1.7</jackson-bom.version>
@@ -146,13 +147,6 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <jdkToolchain><version>${java.version}</version></jdkToolchain>
-                </configuration>
-            </plugin>
-            <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
@@ -160,7 +154,6 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
-                    <jdkToolchain><version>${java.version}</version></jdkToolchain>
                     <excludedGroups>${test.excludedGroups}</excludedGroups>
                     <argLine>-javaagent:${settings.localRepository}/net/bytebuddy/byte-buddy-agent/${byte-buddy.version}/byte-buddy-agent-${byte-buddy.version}.jar</argLine>
                     <systemPropertyVariables>

@@ -83,6 +83,21 @@ test('checksum cobre recursos e configuração, mas não é autorreferente às e
     assert.notEqual(implementationChecksum(root), initial);
 });
 
+test('checksum ignora somente metadados Finder e continua detectando alterações de código', () => {
+    const root = mkdtempSync(resolve(tmpdir(), 'mobile-finder-integrity-'));
+    mkdirSync(resolve(root, 'src'), { recursive: true });
+    const source = resolve(root, 'src', 'app.ts');
+    writeFileSync(source, 'export const value = 1;');
+    const initial = implementationChecksum(root);
+    const metadata = resolve(root, 'src', '.DS_Store');
+    writeFileSync(metadata, 'Finder state one');
+    assert.equal(implementationChecksum(root), initial);
+    writeFileSync(metadata, 'Finder state two');
+    assert.equal(implementationChecksum(root), initial);
+    writeFileSync(source, 'export const value = 2;');
+    assert.notEqual(implementationChecksum(root), initial);
+});
+
 test('checksum inclui criação e alteração da configuração local do pnpm', () => {
     const root = mkdtempSync(resolve(tmpdir(), 'mobile-pnpm-integrity-'));
     const configPath = resolve(root, 'pnpm-workspace.yaml');

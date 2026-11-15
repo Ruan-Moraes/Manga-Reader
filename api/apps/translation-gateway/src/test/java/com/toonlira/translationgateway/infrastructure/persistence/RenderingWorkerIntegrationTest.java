@@ -65,7 +65,7 @@ import com.toonlira.translationgateway.domain.ProcessingJob;
 import com.toonlira.translationgateway.domain.translation.TranslationRequest;
 import com.toonlira.translationgateway.domain.translation.TranslationResponse;
 import com.toonlira.translationgateway.infrastructure.ocr.FakeVisionServer;
-import com.toonlira.translationgateway.infrastructure.ocr.VisionOcrAdapter;
+import com.toonlira.translationgateway.infrastructure.ocr.LegacyVisionOcrAdapter;
 import com.toonlira.translationgateway.infrastructure.translation.CloudTranslationAdapter;
 import com.toonlira.translationgateway.infrastructure.translation.FakeTranslationServer;
 import io.grpc.Status;
@@ -194,7 +194,7 @@ class RenderingWorkerIntegrationTest {
         var fixture = prepare(empty, true);
         try (var visionServer = new FakeVisionServer();
              var translationServer = new FakeTranslationServer();
-             var vision = new VisionOcrAdapter(visionServer.client(Duration.ofSeconds(5)), "test-project", "private-fixtures");
+             var vision = new LegacyVisionOcrAdapter(visionServer.client(Duration.ofSeconds(5)), "test-project", "private-fixtures");
              var translator = new CloudTranslationAdapter(translationServer.client(Duration.ofSeconds(1)), "test-project")) {
             visionServer.handler = (request, observer) -> {
                 if (scenario.equals("ocr-unavailable")) {

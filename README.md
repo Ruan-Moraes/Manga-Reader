@@ -51,8 +51,7 @@ Documentação por área:
 
 | Ferramenta              | Uso                                              |
 | ----------------------- | ------------------------------------------------ |
-| Java 23                 | Core e jobs Spring Boot                          |
-| Java 25 LTS             | Gateway/worker de tradução (toolchain separado)  |
+| Java 25 LTS             | Todos os serviços backend e o worker de tradução |
 | Docker e Docker Compose | Bancos, mensageria, cache e testes de integração |
 | Node.js 20 ou superior  | Aplicações web                                   |
 | pnpm 9 ou superior      | Workspace web e aplicativo mobile                |
@@ -68,13 +67,13 @@ execução local.
 
 ```bash
 cd api
-./mvnw -pl apps/core spring-boot:run
+./mvnw -pl apps/core -am test-compile spring-boot:run
 ```
 
 Para carregar os dados de demonstração, ative explicitamente o profile `dev`:
 
 ```bash
-./mvnw -pl apps/core spring-boot:run -Dspring-boot.run.profiles=dev
+./mvnw -pl apps/core -am test-compile spring-boot:run -Dspring-boot.run.profiles=dev
 ```
 
 - API: `http://localhost:8080`

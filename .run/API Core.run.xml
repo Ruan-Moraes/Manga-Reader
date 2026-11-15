@@ -12,6 +12,8 @@
             <list>
               <option value="-pl" />
               <option value="apps/core" />
+              <option value="-am" />
+              <option value="test-compile" />
               <option value="spring-boot:run" />
             </list>
           </option>

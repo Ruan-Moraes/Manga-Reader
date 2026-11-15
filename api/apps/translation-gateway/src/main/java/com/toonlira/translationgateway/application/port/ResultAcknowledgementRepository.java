@@ -13,6 +13,10 @@ public interface ResultAcknowledgementRepository {
 
     List<CleanupClaim> claim(int limit, Instant now, Instant leaseUntil);
 
+    List<CleanupClaim> claimForJob(UUID installationId, UUID jobRef, Instant now, Instant leaseUntil);
+
+    boolean completedForJob(UUID installationId, UUID jobRef);
+
     boolean complete(UUID jobId, Instant leaseUntil, Instant now);
 
     void reschedule(UUID jobId, Instant leaseUntil, Instant nextAttemptAt);

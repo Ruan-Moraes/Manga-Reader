@@ -3,8 +3,8 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 
 import { SUPPORTED_CONTENT_LANGUAGES } from '@/entities/content-language-preference';
-import { useTheme } from '@/shared/theme';
-import { AppText, Button, FormSection, Icon, IconButton, type IconName, SectionStack, StatusMessage } from '@/shared/ui';
+import { FONTS, useTheme } from '@/shared/theme';
+import { AppText, FormSection, Icon, IconButton, type IconName, PressableBox as Pressable,SectionStack, StatusMessage } from '@/shared/ui';
 
 import { hydrateContentLanguages } from '../model/contentLanguagesHydration';
 import { useContentLanguagesStore } from '../model/contentLanguagesStore';
@@ -19,7 +19,7 @@ import {
 export function ContentLanguagesEditor() {
     const queryClient = useQueryClient();
     const { t } = useTranslation('common');
-    const { minimumTouchTarget, radii, spacing, tokens } = useTheme();
+    const { metrics, minimumTouchTarget, radii, spacing, tokens } = useTheme();
     const state = useContentLanguagesStore();
 
     if (state.identityEpoch === null) return null;
@@ -66,12 +66,12 @@ export function ContentLanguagesEditor() {
                                     alignItems: 'center',
                                     backgroundColor: tokens.accentSoft,
                                     borderRadius: radii.pill,
-                                    height: 32,
+                                    height: metrics.chip.count,
                                     justifyContent: 'center',
-                                    width: 32,
+                                    width: metrics.chip.count,
                                 }}
                             >
-                                <AppText variant="label" tone="accent">
+                                <AppText variant="caption" tone="accent" style={{ fontFamily: FONTS.bold }}>
                                     {index + 1}
                                 </AppText>
                             </View>
@@ -111,20 +111,32 @@ export function ContentLanguagesEditor() {
             </FormSection>
             {missing.length > 0 ? (
                 <FormSection title={t('contentLanguages.availableTitle')} description={t('contentLanguages.availableDescription')}>
-                    <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm }}>
-                        {missing.map(language => (
-                            <Button
-                                fullWidth={false}
-                                key={language}
-                                disabled={!canEdit}
-                                leading={<Icon name="add-circle-outline" decorative />}
-                                onPress={() => run(addContentLanguage(language, queryClient))}
-                                variant="outline"
-                            >
+                    {missing.map(language => (
+                        <Pressable
+                            key={language}
+                            testID={`content-language-add-${language}`}
+                            accessibilityLabel={t('contentLanguages.add', { language: t(`language.${language}`) })}
+                            accessibilityRole="button"
+                            accessibilityState={{ disabled: !canEdit }}
+                            disabled={!canEdit}
+                            onPress={() => run(addContentLanguage(language, queryClient))}
+                            style={({ pressed }) => ({
+                                alignItems: 'center',
+                                flexDirection: 'row',
+                                gap: spacing.md,
+                                minHeight: minimumTouchTarget,
+                                opacity: !canEdit ? 0.56 : pressed ? 0.72 : 1,
+                            })}
+                        >
+                            <AppText variant="label" style={{ flex: 1 }}>
                                 {t(`language.${language}`)}
-                            </Button>
-                        ))}
-                    </View>
+                            </AppText>
+                            <Icon name="add" size={metrics.icon.sm} color={tokens.accentText} decorative />
+                            <AppText variant="button" tone="accent">
+                                {t('contentLanguages.addAction')}
+                            </AppText>
+                        </Pressable>
+                    ))}
                 </FormSection>
             ) : null}
             {state.hydrationStatus === 'loading' && <StatusMessage title={t('contentLanguages.loading')} tone="loading" />}

@@ -1,7 +1,7 @@
 # Drift audit — MOB-FEAT-052
 
 - Data: 2026-09-09
-- Implementação auditada: working-tree sha256:0197e775ac2875fd2619dc4a8a1a68162b97aa1591d460593588c2932c2d51b2
+- Implementação auditada: working-tree sha256:751f485409b07f18d689b9d6ab37b2b133be8503c09c2e2ca570a8c5ac7bf1d3
 - Status: verification-pending
 
 ## Auditoria
@@ -27,3 +27,9 @@ Matriz nativa, execução física de gestos e frames/memória em 10/67/200 image
 Formatação global preexistente permanece fora do escopo. Ver review.md e evidência.
 
 Rebase C06 (2026-09-12): referência global recalculada para a árvore local com recuperação compartilhada. Escopo (arquivo externo: `perfomance_app/mobile/docs/active/performance-evidence/recovery-2026-09-12/review.md`). Não altera verdict nem valida implementações locais de outras tarefas ou medições físicas.
+
+## Regressão de 2026-11-11
+
+O teste de interação cobre a substituição da viewport paginada enquanto há movimento, incluindo descarte de eventos tardios e recuperação por toque. A reprodução física do relato Android permanece pendente.
+
+No emulador Android API 37, o modo paginado recuperou as duas barras por toque. As setas funcionaram após rolar uma página alta e bloquear/desbloquear o emulador. A reprodução da falha original em aparelho físico permanece pendente.

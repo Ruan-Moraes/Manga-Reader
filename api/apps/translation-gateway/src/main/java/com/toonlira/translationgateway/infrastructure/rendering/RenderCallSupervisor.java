@@ -7,11 +7,11 @@ import static com.toonlira.translationgateway.infrastructure.rendering.RenderFil
 import static com.toonlira.translationgateway.infrastructure.rendering.RenderFileException.Failure.TIMEOUT;
 import static com.toonlira.translationgateway.infrastructure.rendering.RenderFileException.Failure.UNAVAILABLE;
 
-import com.toonlira.translationgateway.application.port.RenderPort;
 import java.time.Duration;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 import java.util.function.LongFunction;
@@ -21,23 +21,35 @@ final class RenderCallSupervisor {
     private static final Duration MAX_DEADLINE = Duration.ofMinutes(5);
     private final Semaphore capacity = new Semaphore(1);
     private final Consumer<Thread> cancellationSignal;
+    private final ThreadFactory workers;
 
     RenderCallSupervisor() { this(Thread::interrupt); }
     RenderCallSupervisor(Consumer<Thread> cancellationSignal) {
-        if (cancellationSignal == null) throw new RenderFileException(CONFIGURATION);
+        this(cancellationSignal, Thread.ofVirtual().name("render-call-supervisor").inheritInheritableThreadLocals(false).factory());
+    }
+    RenderCallSupervisor(Consumer<Thread> cancellationSignal, ThreadFactory workers) {
+        if (cancellationSignal == null || workers == null) throw new RenderFileException(CONFIGURATION);
         this.cancellationSignal = cancellationSignal;
+        this.workers = workers;
     }
 
-    RenderPort.Output execute(Duration deadline, LongFunction<RenderPort.Output> operation,
-                              Consumer<RenderPort.Output> discard) {
+    <T> T execute(Duration deadline, LongFunction<T> operation, Consumer<T> discard) {
+        return execute(deadline, operation, discard, () -> { });
+    }
+
+    <T> T execute(Duration deadline, LongFunction<T> operation, Consumer<T> discard, Runnable cancellation) {
+        return execute(deadline, operation, discard, cancellation, new AtomicBoolean());
+    }
+
+    <T> T execute(Duration deadline, LongFunction<T> operation, Consumer<T> discard, Runnable cancellation,
+                  AtomicBoolean abandonment) {
         if (deadline == null || deadline.isZero() || deadline.isNegative() || deadline.compareTo(MAX_DEADLINE) > 0
-            || operation == null || discard == null) throw new RenderFileException(CONFIGURATION);
+            || operation == null || discard == null || cancellation == null) throw new RenderFileException(CONFIGURATION);
         if (Thread.currentThread().isInterrupted()) throw new RenderFileException(CANCELLED);
         if (!capacity.tryAcquire()) throw new RenderFileException(BUSY);
-        var call = new Call(deadline.toNanos());
+        var call = new Call<T>(deadline.toNanos(), cancellation, abandonment);
         try {
-            call.worker = Thread.ofVirtual().name("render-call-supervisor").inheritInheritableThreadLocals(false)
-                .unstarted(() -> call.run(operation, discard));
+            call.worker = workers.newThread(() -> call.run(operation, discard));
             call.worker.start();
         } catch (Throwable error) {
             call.release();
@@ -60,7 +72,7 @@ final class RenderCallSupervisor {
     boolean isAvailable() { return capacity.availablePermits() == 1; }
     @Override public String toString() { return "RenderCallSupervisor[redacted]"; }
 
-    private final class Call {
+    private final class Call<T> {
         private final long started = System.nanoTime();
         private final long deadlineNanos;
         private final CountDownLatch ready = new CountDownLatch(1);
@@ -68,17 +80,21 @@ final class RenderCallSupervisor {
         private final CountDownLatch cancellationFinished = new CountDownLatch(1);
         private final AtomicBoolean released = new AtomicBoolean();
         private Thread worker;
-        private RenderPort.Output output;
+        private T output;
         private RenderFileException failure;
         private boolean abandoned;
         private boolean accepted;
         private boolean cancellationRequested;
 
-        private Call(long deadlineNanos) { this.deadlineNanos = deadlineNanos; }
+        private final Runnable cancellation;
+        private final AtomicBoolean abandonment;
+        private Call(long deadlineNanos, Runnable cancellation, AtomicBoolean abandonment) {
+            this.deadlineNanos = deadlineNanos; this.cancellation = cancellation; this.abandonment = abandonment;
+        }
         private long remaining() { return deadlineNanos - (System.nanoTime() - started); }
 
-        private void run(LongFunction<RenderPort.Output> operation, Consumer<RenderPort.Output> discard) {
-            RenderPort.Output candidate;
+        private void run(LongFunction<T> operation, Consumer<T> discard) {
+            T candidate;
             try {
                 if (Thread.currentThread().isInterrupted()) throw new RenderFileException(CANCELLED);
                 if (remaining() <= 0) throw new RenderFileException(TIMEOUT);
@@ -103,6 +119,7 @@ final class RenderCallSupervisor {
             synchronized (this) {
                 if (accepted) { release(); return; }
                 abandoned = true;
+                abandonment.set(true);
             }
             Thread.interrupted();
             try {
@@ -113,7 +130,7 @@ final class RenderCallSupervisor {
             }
         }
 
-        private synchronized RenderPort.Output take() {
+        private synchronized T take() {
             if (Thread.currentThread().isInterrupted()) {
                 abandon();
                 throw new RenderFileException(CANCELLED);
@@ -135,13 +152,14 @@ final class RenderCallSupervisor {
             synchronized (this) {
                 if (accepted) return;
                 abandoned = true;
+                abandonment.set(true);
                 decided.countDown();
                 if (cancellationRequested || released.get()) return;
                 cancellationRequested = true;
             }
             try {
                 Thread.ofVirtual().name("render-cancel-signal").inheritInheritableThreadLocals(false).start(() -> {
-                    try { cancellationSignal.accept(worker); }
+                    try { cancellationSignal.accept(worker); cancellation.run(); }
                     catch (Throwable ignored) { /* The operation still owns capacity and must finish/clean up. */ }
                     finally { cancellationFinished.countDown(); }
                 });

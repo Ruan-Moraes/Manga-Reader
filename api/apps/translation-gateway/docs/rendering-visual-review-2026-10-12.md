@@ -169,3 +169,24 @@ Mesmo escopo/algoritmo: `src/`, `scripts/`, `openapi/`, `pom.xml` e `.tf`/
 com sequência `path + NUL + bytes completos + NUL`. A fotografia de 412 arquivos
 da matriz anterior não foi renovada retroativamente. Nenhuma fonte/configuração
 mobile foi alterada; seu checksum não é cobertura desse Java/Node.
+
+## Repetição ARM64 para revisão humana — 2026-10-28
+
+A pedido de Ruan foram regeneradas as mesmas sete fixtures sintéticas com a
+imagem já existente `sha256:f6bafc617a13f019b20c602c3fd858b138697144ce931d502a3d3c208a066c36`,
+que contém o JAR histórico `6aa86b3fe3a45137a6daf221a62dbdf728310fad754c4c3cc48a039cbe6eec9c`.
+A mudança atual do deadline não está nessa imagem; o caminho de desenho foi
+usado como fotografia visual, não prova do worker atual. A execução não usou
+provider nem rede. O `dwebp` 1.6.0 do host foi verificado por SHA-256
+`c549d49727bb6d06487114b0bfde6e56fdb2fbb8022201e1df1a03765778207a`
+e decodificou os WebPs. Dez testes passaram sem skips, incluindo sete destinos,
+diff de pixels e manifestação de fallback. Não houve matriz amd64 nova.
+
+Relatório local privado:
+`.local/worker-isolation/repro-020-2026-10-26/visual-arm64-2026-10-28/gallery/report.html`,
+SHA-256 `4e69aec0bef5d892c4be93db54a88c4a56aa58533db0295f2b4edd36fa23da00`.
+O XML da prova tem SHA-256
+`558019189c77eb3179d3d33c835bf0093d0126fb5783268cc48cd06ef731ae16`.
+A galeria permanece explicitamente pendente de avaliação humana; texto sintético,
+arte residual fora do polígono e marcador de overflow pequeno não constituem
+revisão linguística ou qualidade de página real.

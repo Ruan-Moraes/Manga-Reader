@@ -1,8 +1,9 @@
 import assert from 'node:assert/strict';
-import { mkdtempSync, mkdirSync, writeFileSync } from 'node:fs';
+import { mkdtempSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { resolve } from 'node:path';
 import test from 'node:test';
+import { URL } from 'node:url';
 
 import { validateCoverage } from '../lib/spec-coverage.mjs';
 
@@ -69,6 +70,18 @@ test('rejeita arquivo runtime novo sem mapa individual', () => {
     const { errors } = fixture({ extraFiles: ['src/new-feature.ts'] });
 
     assert.ok(errors.some(error => error.includes('src/new-feature.ts: arquivo sem classificação')));
+});
+
+test('política CNG ignora projetos nativos gerados sem ocultar código runtime novo', () => {
+    const { ignored } = JSON.parse(readFileSync(new URL('../../docs/specs/coverage.json', import.meta.url), 'utf8'));
+    const { errors } = fixture({
+        extraFiles: ['ios/Podfile', 'ios/Pods/Example/Example.h', 'android/app/build/generated/Example.java', 'modules/translation-background/android/build/generated/Example.java', 'src/native/new-feature.ts'],
+        mutate: coverage => {
+            coverage.ignored = ignored;
+        },
+    });
+
+    assert.deepEqual(errors, ['src/native/new-feature.ts: arquivo sem classificação no coverage.json']);
 });
 
 test('rejeita caminho obsoleto', () => {

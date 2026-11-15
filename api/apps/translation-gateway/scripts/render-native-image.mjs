@@ -18,10 +18,12 @@ import {
   MAX_LIBRARY_BYTES,
   SOURCE_HASH,
 } from "./render-native-package.mjs";
-import { UPDATES } from "./ubuntu-base-update.mjs";
+import { SECURITY_REFRESH, UPDATES } from "./ubuntu-base-update.mjs";
 import { verifySingleJreProof } from "./single-jre-proof.mjs";
 
 const MAX_JAR_BYTES = 512 * 1024 * 1024;
+export const REPRO_LOCAL_PARENT =
+  "sha256:c194a9f2a2c03113cbfd71f38b04f043e65ce25a8cf6dee5adfe19c7c36635a3";
 const OPTIONS = [
   "jar",
   "jar-sha256",
@@ -279,6 +281,48 @@ export async function prepareImageContext(options) {
   return prepareContext(options, runtimeBase);
 }
 
+/** Local reproducibility fixture: explicit ARM64 parent and directly supplied codec. */
+export async function prepareReproImageContext(options) {
+  validate(options);
+  if (options.platform !== "linux-aarch64-glibc" || "base-proof" in options)
+    fail();
+  return prepareContext(
+    options,
+    async () => ({
+      dockerPlatform: "linux/arm64",
+      baseImage: REPRO_LOCAL_PARENT,
+      baseSecurityApproved: false,
+    }),
+    "../Dockerfile.repro-local",
+  );
+}
+
+/** Explicit diagnostic route for the two additional OS fixes; never changes the default base. */
+export async function prepareSecurityRefreshImageContext(options) {
+  return prepareContext(options, async (validated) => {
+    if (validated.platform !== "linux-aarch64-glibc" || !("base-proof" in validated)) fail();
+    await readonly(validated["base-proof"]);
+    const bytes = await checkedFile(validated["base-proof"], validated["base-proof-sha256"], 65536);
+    const proof = JSON.parse(bytes.toString("utf8"));
+    if (proof.format !== "toonlira-local-security-refresh-1" || proof.base !== SECURITY_REFRESH.bases.arm64
+        || proof.architecture !== "arm64" || proof.status !== "local-only-not-security-approved"
+        || !/^sha256:[0-9a-f]{64}$/.test(proof.imageId ?? "")
+        || proof.jreInventorySha256 !== "70262bcefe0ea863a04e86afc7f797655a8ff6a18571f6e3e8a8c42de13fec81"
+        || !Array.isArray(proof.packages) || proof.packages.length !== 2
+        || !Array.isArray(proof.changes) || proof.changes.length !== 2) fail();
+    const hashes = SECURITY_REFRESH.hashes;
+    for (const [name, versions] of Object.entries(SECURITY_REFRESH.updates)) {
+      const matches = proof.packages.filter((item) => item?.name === name);
+      const changes = proof.changes.filter((item) => item?.package === `${name}:arm64`);
+      if (matches.length !== 1 || matches[0].version !== versions.after || matches[0].architecture !== "arm64"
+          || matches[0].sha256 !== hashes[name] || changes.length !== 1
+          || changes[0].before !== versions.before || changes[0].after !== versions.after) fail();
+    }
+    return { dockerPlatform: "linux/arm64", baseImage: proof.imageId, baseParentImage: proof.base,
+      baseProofSha256: validated["base-proof-sha256"], baseSecurityApproved: false };
+  });
+}
+
 /** Explicit experimental route; never widens the default two-patch proof contract. */
 export async function prepareSingleJreImageContext(options) {
   const prepared = await prepareContext(options, async (validated) => {
@@ -299,7 +343,11 @@ export async function prepareSingleJreImageContext(options) {
   };
 }
 
-async function prepareContext(options, resolveBase) {
+async function prepareContext(
+  options,
+  resolveBase,
+  dockerfilePath = "../Dockerfile.native",
+) {
   let reserved = false,
     archive,
     output;
@@ -311,9 +359,7 @@ async function prepareContext(options, resolveBase) {
     await streamArchive(archive.handle, archive.size, options["jar-sha256"]);
     const destination = options.destination;
     if ((await realpath(dirname(destination))) !== dirname(destination)) fail();
-    const dockerfile = await readFile(
-      new URL("../Dockerfile.native", import.meta.url),
-    );
+    const dockerfile = await readFile(new URL(dockerfilePath, import.meta.url));
     await mkdir(destination, { mode: 0o700 });
     reserved = true;
     await mkdir(join(destination, "native"), { mode: 0o700 });

@@ -34,7 +34,7 @@ Permitir a leitura mobile de capítulos publicados com navegação acessível, p
 - O ajuste de imagem aceita `WIDTH`, `HEIGHT` e `ORIGINAL`; nenhuma opção pode cortar conteúdo sem uma ação explícita de zoom ou pan da pessoa.
 - Saturação deve aceitar valores inteiros de 0 a 100, espaçamento entre páginas de 0 a 32 e preload de 0 a 10 páginas adjacentes.
 - O fundo aceita `BLACK`, `DARK`, `PAPER`, `LIGHT` e `WHITE` e afeta somente a superfície do leitor, sem alterar o tema global.
-- A preferência de qualidade aceita `AUTO`, `LOW`, `MEDIUM`, `HIGH` e `ORIGINAL` no modelo sincronizado. O controle só pode aparecer quando a resposta ou o serviço de imagens oferecer fontes materialmente distintas para todas as opções exibidas; com apenas `imageUrl` e `thumbnailUrl`, a UI não deve prometer LOW/MEDIUM/HIGH.
+- O leitor carrega a imagem da página automaticamente, sem preferência de qualidade na interface ou na conta.
 - A pessoa autenticada deve retomar o título no capítulo e página retornados pelo progresso mais recente, oferecendo escolha entre continuar e iniciar o capítulo solicitado quando os dois diferirem.
 - O progresso deve usar páginas numeradas a partir de 1, nunca exceder `totalPages` e ser enviado somente para pessoa autenticada. Falha de sincronização não deve interromper a leitura e deve permanecer indicada como pendente para nova tentativa.
 - Com `autoMarkRead` ativo, alcançar a última página de um capítulo com total conhecido deve persistir `completed: true`; fora dessa condição, o leitor não pode marcar o capítulo como concluído.
@@ -63,9 +63,9 @@ Dadas as mesmas páginas, quando a pessoa alternar entre `VERTICAL`, `PAGED` e `
 
 Quando fit, saturação, gap, fundo ou preload forem alterados, então o leitor deve aplicar valores dentro dos intervalos definidos, persistir pelo contrato único de settings e restaurá-los na próxima abertura.
 
-### AC-004 — Qualidade com efeito comprovável
+### AC-004 — Carregamento automático da imagem
 
-Dado que o contrato disponível fornece somente `imageUrl` e `thumbnailUrl`, quando as configurações do leitor forem exibidas, então opções LOW, MEDIUM e HIGH não devem ser selecionáveis; elas só podem ser liberadas por fontes distintas verificáveis.
+Ao exibir uma página, o leitor usa a imagem fornecida pelo capítulo. O campo legado de qualidade é ignorado ao carregar ou atualizar preferências.
 
 ### AC-005 — Leitura guest sem escrita privada
 
@@ -94,7 +94,7 @@ Quando leitor de tela, escala de fonte, redução de movimento ou rotação do d
 | AC-001   | Teste de integração do mapper/query e da renderização ordenada, incluindo capítulo vazio         |
 | AC-002   | Testes de unidade da sequência por modo/direção e testes de interação do leitor                  |
 | AC-003   | Testes de integração com o store de settings e testes visuais funcionais por valor limite        |
-| AC-004   | Teste de capacidade que oculta opções sem variantes e as libera somente com fontes distintas     |
+| AC-004   | Teste dos ajustes sem seletor de qualidade e da normalização de preferências legadas     |
 | AC-005   | Teste de integração com sessão guest e as chamadas HTTP inspecionadas                            |
 | AC-006   | Testes de integração de retomada, capítulo divergente e mudança de conta                         |
 | AC-007   | Testes de payload nos limites, auto-mark ativo/inativo e total desconhecido                      |

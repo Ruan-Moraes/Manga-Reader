@@ -1,34 +1,52 @@
 import { useState } from 'react';
-import { Pressable, type PressableProps } from 'react-native';
+import { type PressableProps } from 'react-native';
 
 import { useTheme } from '@/shared/theme';
 
 import { Icon } from './Icon';
+import { AnimatedPressable, usePressFeedback } from './usePressFeedback';
+
+const BACK_BUTTON_SIZE = 40;
 
 export type BackButtonAppearance = 'transparent' | 'surface' | 'scrim';
-export type BackButtonTone = 'default' | 'inverse';
+export type BackButtonTone = 'default' | 'inverse' | 'neutral';
+export type BackButtonShape = 'pill' | 'control';
 
 interface BackButtonProps extends Omit<PressableProps, 'accessibilityLabel' | 'children' | 'style'> {
     accessibilityLabel: string;
     appearance?: BackButtonAppearance;
     tone?: BackButtonTone;
+    shape?: BackButtonShape;
 }
 
-export function BackButton({ accessibilityLabel, appearance = 'transparent', tone = 'default', disabled, ...props }: BackButtonProps) {
+// Padrão único (2026-11-09): quadrado com fundo e borda, igual ao botão de fechar das folhas.
+export function BackButton({ accessibilityLabel, appearance = 'surface', tone = 'default', shape = 'control', disabled, ...props }: BackButtonProps) {
     const { minimumTouchTarget, radii, tokens } = useTheme();
     const [focused, setFocused] = useState(false);
-    const [pressed, setPressed] = useState(false);
-    const normalBackground = appearance === 'surface' ? tokens.surfaceElevated : appearance === 'scrim' ? tokens.scrim : 'transparent';
-    const iconColor = tone === 'inverse' ? tokens.inverseText : tokens.accentText;
+    const normalBackground = appearance === 'surface' ? tokens.surface : appearance === 'scrim' ? tokens.scrim : 'transparent';
+    const feedback = usePressFeedback(
+        {
+            background: normalBackground,
+            pressedBackground: appearance === 'scrim' ? tokens.overlay : tokens.surfacePressed,
+            hoverBackground: appearance === 'scrim' ? tokens.overlay : tokens.surfaceHover,
+            pressedScale: disabled ? 1 : 0.97,
+            opacity: disabled ? 0.5 : 1,
+            disabled: !!disabled,
+        },
+        props,
+    );
+    const iconColor = tone === 'inverse' ? tokens.inverseText : tone === 'neutral' ? tokens.text : tokens.accentText;
 
     return (
-        <Pressable
+        <AnimatedPressable
             {...props}
+            {...feedback.handlers}
             accessibilityLabel={accessibilityLabel}
             accessibilityRole="button"
             accessibilityState={{ disabled: !!disabled }}
             disabled={disabled}
-            hitSlop={4}
+            // Compact visual box; the hit area still reaches the platform minimum touch target.
+            hitSlop={Math.max(4, (minimumTouchTarget - BACK_BUTTON_SIZE) / 2)}
             onBlur={event => {
                 setFocused(false);
                 props.onBlur?.(event);
@@ -37,28 +55,20 @@ export function BackButton({ accessibilityLabel, appearance = 'transparent', ton
                 setFocused(true);
                 props.onFocus?.(event);
             }}
-            onPressIn={event => {
-                setPressed(true);
-                props.onPressIn?.(event);
-            }}
-            onPressOut={event => {
-                setPressed(false);
-                props.onPressOut?.(event);
-            }}
-            style={{
-                alignItems: 'center',
-                backgroundColor: pressed ? (appearance === 'scrim' ? tokens.overlay : tokens.surfacePressed) : normalBackground,
-                borderColor: focused ? tokens.focus : appearance === 'surface' ? tokens.separator : 'transparent',
-                borderRadius: radii.pill,
-                borderWidth: focused || appearance === 'surface' ? 1 : 0,
-                justifyContent: 'center',
-                minHeight: minimumTouchTarget,
-                minWidth: minimumTouchTarget,
-                opacity: disabled ? 0.5 : 1,
-                ...(pressed && !disabled ? { transform: [{ scale: 0.96 }] } : {}),
-            }}
+            style={[
+                {
+                    alignItems: 'center',
+                    borderColor: focused ? tokens.focus : appearance === 'surface' ? tokens.separator : 'transparent',
+                    borderRadius: shape === 'control' ? radii.control : radii.pill,
+                    borderWidth: focused || appearance === 'surface' ? 1 : 0,
+                    justifyContent: 'center',
+                    height: BACK_BUTTON_SIZE,
+                    width: BACK_BUTTON_SIZE,
+                },
+                feedback.animatedStyle,
+            ]}
         >
-            <Icon name="chevron-back" size={22} color={iconColor} />
-        </Pressable>
+            <Icon name="chevron-back" size={20} color={iconColor} />
+        </AnimatedPressable>
     );
 }

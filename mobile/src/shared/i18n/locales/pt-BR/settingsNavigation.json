@@ -75,6 +75,11 @@
     "about": {
         "title": "Sobre",
         "version": "Versão",
+        "developerEnabled": "Modo desenvolvedor ativado",
+        "developerMode": "Modo desenvolvedor",
+        "developerDescription": "Exibe detalhes técnicos de tradução.",
+        "developerError": "Não foi possível salvar o modo desenvolvedor.",
+        "developerDisable": "Toque para desativar os detalhes técnicos.",
         "build": "Build",
         "appSection": {
             "title": "Aplicativo",
@@ -82,7 +87,7 @@
         },
         "linksSection": {
             "title": "Links oficiais",
-            "description": "Ajuda, documentos e código do projeto."
+            "description": "Documentos e páginas oficiais do projeto."
         },
         "links": {
             "support": "Suporte",
@@ -108,5 +113,8 @@
     },
     "errors": {
         "externalLink": "Não foi possível abrir o link externo. Tente novamente."
+    },
+    "readerSheets": {
+        "close": "Fechar"
     }
 }

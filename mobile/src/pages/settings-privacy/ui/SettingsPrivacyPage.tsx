@@ -1,4 +1,4 @@
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 
@@ -8,11 +8,11 @@ import { resolveSettingsAccess, SETTINGS_SECTIONS } from '@/features/navigate-se
 import { PrivacyControlsPanel } from '@/features/update-privacy';
 import { navigateBackOrReplace, ROUTES } from '@/shared/navigation';
 import { useTheme } from '@/shared/theme';
-import { Button, ScreenScaffold } from '@/shared/ui';
+import { AppText, Button, LoadingBlock, ScreenScaffold } from '@/shared/ui';
 
 export function SettingsPrivacyPage() {
     const { t } = useTranslation('settingsNavigation');
-    const { spacing, tokens } = useTheme();
+    const { spacing } = useTheme();
     const isAuthenticated = useSessionStore(state => state.isAuthenticated);
     const identityEpoch = useSessionStore(state => state.identityEpoch);
     const privacyIdentityEpoch = usePrivacySettingsStore(state => state.identityEpoch);
@@ -31,12 +31,11 @@ export function SettingsPrivacyPage() {
             {aligned ? (
                 <PrivacyControlsPanel />
             ) : access.kind === 'open' ? (
-                <Text accessibilityLiveRegion="polite" style={{ color: tokens.muted }}>
-                    {t('sync.syncing')}
-                </Text>
+                // App typeface and a spinner while the account settles (revisão 2026-11-13).
+                <LoadingBlock inline label={t('sync.syncing')} testID="settings-privacy-loading" />
             ) : (
                 <View style={{ gap: spacing.md }}>
-                    <Text style={{ color: tokens.muted }}>{t('access.hint')}</Text>
+                    <AppText tone="muted">{t('access.hint')}</AppText>
                     <Button onPress={() => router.push({ pathname: ROUTES.AUTH.LOGIN, params: { returnTo: ROUTES.SETTINGS.PRIVACY } } as never)}>
                         {t('actions.login')}
                     </Button>
