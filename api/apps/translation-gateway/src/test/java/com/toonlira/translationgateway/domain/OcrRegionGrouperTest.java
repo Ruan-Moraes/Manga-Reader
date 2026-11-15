@@ -71,6 +71,20 @@ class OcrRegionGrouperTest {
             .extracting(OcrManifest.Region::sourceText).containsExactly("謳歌してろよなによそれっ");
     }
 
+    @Test
+    void piecesClearlyInsideOneBalloonAreOneSpeechEvenWhenFarApart() {
+        // Real geometry (Ubunchu! ep.1 p.09, scaled 0.6): a column broken by a pause and a column widened by Latin.
+        var pause = region(0, "こっ\n", 206, 809, 217, 837);
+        var rest = region(1, "この\n", 204, 857, 216, 887);
+        var latin = region(2, "CCSMってコンパネ", 155, 808, 191, 904);
+        var other = region(3, "アヤしくないですか?", 73, 819, 110, 914);
+        var balloons = List.of(box(140, 790, 232, 916), box(60, 800, 125, 925));
+        assertThat(OcrRegionGrouper.group(List.of(pause, rest, latin, other), "ja", W, H, balloons))
+            .extracting(OcrManifest.Region::sourceText).containsExactly("こっこのCCSMってコンパネ", "アヤしくないですか?");
+        // Without balloons nothing proves they belong together.
+        assertThat(OcrRegionGrouper.group(List.of(pause, rest, latin), "ja", W, H)).hasSizeGreaterThan(1);
+    }
+
     private static com.toonlira.translationgateway.domain.layout.LayoutBox box(int l, int t, int r, int b) {
         return new com.toonlira.translationgateway.domain.layout.LayoutBox(l / (double) W, t / (double) H, r / (double) W, b / (double) H);
     }

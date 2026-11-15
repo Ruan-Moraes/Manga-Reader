@@ -232,6 +232,12 @@ caixas parciais para um mesmo balão vertical, que não vetam.
 Exemplos reais: 「試しにちょっと」「インスコしてみる」「だけだかんな」 (vindos fora de ordem) →
 「試しにちょっとインスコしてみるだけだかんな」 → "É só para instalar e testar um pouco, viu?";
 SFX 「カタカタ…」 (linhas ~2× mais altas) não gruda mais na legenda abaixo dele.
+**Mesma fala por balão (2026-11-15)**: em CJK, pedaços **claramente no mesmo balão** (vencedor claro da
+contenção) viram uma fala mesmo afastados — coluna partida por pausa (「こっ」 「この」) ou alargada por letras
+latinas (「CCSMって」) — desde que ambos tenham escrita CJK e letra de tamanho parecido (≤ 1,75×): sem isso,
+texto de tela e dígitos dentro da caixa grudavam (「完成っと4ラスの3」). Bancada ja: 440 → 429 regiões, 9 falas
+completadas (「こっこのCCSMってコンパネ」, 「この縦線はパイプ」, 「大量のテキスト処理は」…), nenhuma junção errada.
+
 Fonte em balão vertical estreito: piso pelo tamanho do glifo de origem + expansão a partir da faixa central
 (ver `rendering-contracts.md`): "Eu tenho o trabalho do comitê…" 15 → 19 px, "A tela ficou com um visual
 impressionante." 13 → 21 px, "Risa-chan!?" 14 → 25 px.

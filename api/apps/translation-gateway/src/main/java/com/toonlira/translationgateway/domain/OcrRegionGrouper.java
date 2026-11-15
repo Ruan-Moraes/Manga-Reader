@@ -294,6 +294,13 @@ public final class OcrRegionGrouper {
                 if (bubble >= 0 && unit.bubble >= 0 && unit.bubble != bubble
                     && distinctBalloons(bubbles.get(unit.bubble), bubbles.get(bubble))) continue;
                 if (chars(unit.members(), region) > MAX_MERGED_CHARS) continue;
+                // Clearly inside the same balloon is one speech even when the lettering is far apart: a column
+                // broken by a pause (「こっ」 「この」) or widened by Latin letters (「CCSMって」) next to it. Only for
+                // lettering of the same kind: screen text, digits or a small hand-written aside in the box is not.
+                if (bubble >= 0 && unit.bubble == bubble) {
+                    for (var member : unit.members()) if (sameLettering(member, region, w, h)) { target = unit; break; }
+                    if (target != null) break;
+                }
                 for (var member : unit.members()) if (sameCjkSpeech(member, region, w, h)) { target = unit; break; }
             }
             if (target == null) { target = new Unit(bubble); units.add(target); }
@@ -348,6 +355,26 @@ public final class OcrRegionGrouper {
             * Math.max(0, Math.min(a.bottom(), b.bottom()) - Math.max(a.top(), b.top()));
         double smaller = Math.min((a.right() - a.left()) * (a.bottom() - a.top()), (b.right() - b.left()) * (b.bottom() - b.top()));
         return smaller <= 0 || overlap < DISTINCT_BALLOON_OVERLAP * smaller;
+    }
+
+    /** Both written in a CJK script with glyphs of similar size (within {@link #MAX_LINE_RATIO}). */
+    private static boolean sameLettering(OcrManifest.Region a, OcrManifest.Region b, int w, int h) {
+        if (!hasCjkScript(a.sourceText()) || !hasCjkScript(b.sourceText())) return false;
+        double glyphA = glyph(a, w, h), glyphB = glyph(b, w, h);
+        return glyphA > 0 && glyphB > 0 && Math.max(glyphA, glyphB) <= MAX_LINE_RATIO * Math.min(glyphA, glyphB);
+    }
+
+    /** Glyph size: column width of vertical lettering, line height of horizontal lettering. */
+    private static double glyph(OcrManifest.Region region, int w, int h) {
+        var b = box(region, w, h);
+        return isVertical(region, w, h) ? b[2] - b[0] : (b[3] - b[1]) / lines(region);
+    }
+
+    private static boolean hasCjkScript(String text) {
+        return text.codePoints().anyMatch(c -> switch (Character.UnicodeScript.of(c)) {
+            case HAN, HIRAGANA, KATAKANA, HANGUL -> true;
+            default -> false;
+        });
     }
 
     /** Lines of a provider paragraph (it ends each line with a break). */
