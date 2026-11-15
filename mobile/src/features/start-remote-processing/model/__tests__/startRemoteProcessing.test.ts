@@ -29,6 +29,7 @@ function capabilities(enabled = true) {
             gatewayRegion: 'southamerica-east1',
             ocrRegion: 'us',
             translationLocation: 'global',
+            languageModelLocation: null,
             originalRetentionSeconds: 3600,
             resultRetentionSeconds: 3600,
             metadataRetentionDays: 7,

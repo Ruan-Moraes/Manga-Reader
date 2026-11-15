@@ -21,6 +21,7 @@ function fixture() {
             gatewayRegion: 'southamerica-east1',
             ocrRegion: 'us',
             translationLocation: 'global',
+            languageModelLocation: null,
             originalRetentionSeconds: 3600,
             resultRetentionSeconds: 3600,
             metadataRetentionDays: 7,
@@ -39,6 +40,12 @@ describe('MOB-FEAT-017 remote processing capabilities', () => {
         expect(capabilitySupportsPair(parsed, 'pt-BR', 'ja')).toBe(false);
         expect(capabilityAcceptsMedia(parsed, { mimeType: 'image/jpeg', byteSize: 100, widthPx: 100, heightPx: 200 })).toBe(true);
         expect(capabilityAcceptsMedia(parsed, { mimeType: 'image/png', byteSize: 100, widthPx: 100, heightPx: 200 })).toBe(false);
+    });
+
+    it('accepts the language model location only as a Vertex location or null', () => {
+        const on = remoteProcessingCapabilitiesSchema.parse({ ...fixture(), disclosure: { ...fixture().disclosure, languageModelLocation: 'us' } });
+        expect(on.disclosure.languageModelLocation).toBe('us');
+        expect(remoteProcessingCapabilitiesSchema.parse(fixture()).disclosure.languageModelLocation).toBeNull();
     });
 
     it('accepts an empty operational set only while the gateway is disabled', () => {
@@ -64,6 +71,8 @@ describe('MOB-FEAT-017 remote processing capabilities', () => {
             { disclosure: { ...fixture().disclosure, ocrRegion: undefined, translationLocation: undefined, processingRegions: ['us', 'us-central1'] } },
         ],
         ['unsupported translation location', { disclosure: { ...fixture().disclosure, translationLocation: 'us' } }],
+        ['undisclosed language model layer', { disclosure: { ...fixture().disclosure, languageModelLocation: undefined } }],
+        ['malformed language model location', { disclosure: { ...fixture().disclosure, languageModelLocation: 'US Central' } }],
         [
             'duplicate pair',
             {

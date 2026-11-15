@@ -56,6 +56,7 @@ import com.toonlira.translationgateway.application.port.ObjectStoragePort;
 import com.toonlira.translationgateway.application.port.OcrPort;
 import com.toonlira.translationgateway.application.port.RenderingJobRepository;
 import com.toonlira.translationgateway.application.port.ResultAcknowledgementRepository;
+import com.toonlira.translationgateway.application.port.TranslationRefinerPort;
 import com.toonlira.translationgateway.application.port.TranslationPort;
 import com.toonlira.translationgateway.domain.JobStatus;
 import com.toonlira.translationgateway.domain.GatewayErrorCode;
@@ -418,7 +419,8 @@ class RenderingWorkerIntegrationTest {
                     throw new IllegalStateException("synthetic commit outcome not yet resolved");
                 }).when(injected).complete(any(), any(), any(), any());
                 var worker = new ProcessTranslationTaskUseCase(injected, storage, new OcrManifestService(mapper),
-                    new TranslationManifestService(mapper), translation, properties, clock, lifecycleCleanup);
+                    new TranslationManifestService(mapper), translation,
+                    TranslationRefinerPort.NONE, properties, clock, lifecycleCleanup);
                 invocation = () -> worker.execute(fixture.job().jobRef());
             } else {
                 var injected = mock(RenderingPersistenceUseCase.class, withSettings().defaultAnswer(delegatesTo(rendering)));

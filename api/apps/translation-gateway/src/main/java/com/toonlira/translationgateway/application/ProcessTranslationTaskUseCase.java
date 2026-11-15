@@ -5,11 +5,14 @@ import com.toonlira.translationgateway.application.config.GatewayProperties;
 import com.toonlira.translationgateway.application.port.ObjectStoragePort;
 import com.toonlira.translationgateway.application.port.TranslationJobRepository;
 import com.toonlira.translationgateway.application.port.TranslationPort;
+import com.toonlira.translationgateway.application.port.TranslationRefinerPort;
 import com.toonlira.translationgateway.domain.GatewayErrorCode;
 import com.toonlira.translationgateway.domain.GatewayException;
 import com.toonlira.translationgateway.domain.JobStatus;
 import com.toonlira.translationgateway.domain.OcrLimits;
+import com.toonlira.translationgateway.domain.translation.FragmentJoiner;
 import com.toonlira.translationgateway.domain.translation.LanguagePair;
+import com.toonlira.translationgateway.domain.translation.TranslationLimits;
 import com.toonlira.translationgateway.domain.translation.TranslationRequest;
 import com.toonlira.translationgateway.domain.translation.TranslationResponse;
 import com.toonlira.translationgateway.domain.translation.TranslationValidationException;
@@ -26,30 +29,35 @@ import java.util.HexFormat;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ProcessTranslationTaskUseCase {
+    private static final Logger LOG = LoggerFactory.getLogger(ProcessTranslationTaskUseCase.class);
     private final TranslationPersistenceUseCase persistence;
     private final ObjectStoragePort storage;
     private final OcrManifestService ocrManifests;
     private final TranslationManifestService translationManifests;
     private final TranslationPort translation;
+    private final TranslationRefinerPort refiner;
     private final GatewayProperties properties;
     private final Clock clock;
     private final CleanupLifecycleObjectsUseCase lifecycle;
 
     public ProcessTranslationTaskUseCase(TranslationPersistenceUseCase persistence, ObjectStoragePort storage,
                                          OcrManifestService ocrManifests, TranslationManifestService translationManifests,
-                                         TranslationPort translation, GatewayProperties properties, Clock clock,
-                                         CleanupLifecycleObjectsUseCase lifecycle) {
+                                         TranslationPort translation, TranslationRefinerPort refiner,
+                                         GatewayProperties properties, Clock clock, CleanupLifecycleObjectsUseCase lifecycle) {
         this.persistence = persistence;
         this.storage = storage;
         this.ocrManifests = ocrManifests;
         this.translationManifests = translationManifests;
         this.translation = translation;
+        this.refiner = refiner;
         this.properties = properties;
         this.clock = clock;
         this.lifecycle = lifecycle;
@@ -129,11 +137,11 @@ public class ProcessTranslationTaskUseCase {
         String outputHash = null;
         try {
             requireOriginal(job);
-            // A word split one character per balloon (「あ」「ら」) is translated as one segment.
-            var fragments = com.toonlira.translationgateway.domain.translation.FragmentJoiner.of(request);
+            // A word split one character per balloon (「あ」「ら」) is translated, and reviewed, as one segment.
+            var fragments = FragmentJoiner.of(request);
             var response = request.regions().isEmpty()
                 ? new TranslationResponse(List.of())
-                : fragments.expand(translation.translate(fragments.request()));
+                : fragments.expand(refineOrKeep(fragments.request(), translation.translate(fragments.request())));
             requireOriginal(job);
             var result = validator.validateResponse(request, response);
             var encoded = translationManifests.encode(result, job.ocrSha256());
@@ -174,6 +182,36 @@ public class ProcessTranslationTaskUseCase {
                 try { Files.deleteIfExists(manifestFile); } catch (IOException ignored) { }
             }
         }
+    }
+
+    /**
+     * The optional language review runs on the joined segments, before the synthetic follower ellipses exist, so it
+     * can neither rewrite them nor split the joined word again. Any failure (timeout, quota, a reply that is not a
+     * review of this page) keeps the machine translation: the layer can improve a page, never fail it.
+     */
+    private TranslationResponse refineOrKeep(TranslationRequest request, TranslationResponse translated) {
+        if (refiner == TranslationRefinerPort.NONE) return translated;
+        try {
+            var refined = refiner.refine(request, translated);
+            if (refined != null && sameRegions(translated, refined)) return refined;
+            LOG.warn("translation refine discarded: regions={} reply did not match the page", request.regions().size());
+        } catch (RuntimeException error) {
+            LOG.warn("translation refine skipped: regions={} cause={}", request.regions().size(), error.getClass().getSimpleName());
+        }
+        return translated;
+    }
+
+    private static boolean sameRegions(TranslationResponse translated, TranslationResponse refined) {
+        if (refined.regions().size() != translated.regions().size()) return false;
+        for (int index = 0; index < translated.regions().size(); index++) {
+            var region = refined.regions().get(index);
+            if (!translated.regions().get(index).id().equals(region.id()) || region.translatedText() == null
+                || region.translatedText().isBlank()
+                || region.translatedText().length() > TranslationLimits.MAX_TRANSLATED_PER_REGION) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private Set<LanguagePair> enabledPairs() {

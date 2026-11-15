@@ -78,6 +78,15 @@ class TranslationGatewayOpenApiTest {
     }
 
     @Test
+    void shouldAlwaysDiscloseWhetherALanguageModelReceivesText() throws IOException {
+        var disclosure = schema(loadContract(), "LegalDisclosure");
+        assertThat(list(disclosure.get("required"))).contains("languageModelLocation");
+        var variants = list(map(map(disclosure.get("properties")).get("languageModelLocation")).get("oneOf"));
+        assertThat(variants).hasSize(2);
+        assertThat(variants.stream().map(variant -> map(variant).get("type")).toList()).containsExactly("string", "null");
+    }
+
+    @Test
     void shouldAllowAnEmptyOperationalSetOnlyForADisabledGateway() throws IOException {
         var capabilities = schema(loadContract(), "Capabilities");
         var pairs = map(map(capabilities.get("properties")).get("supportedPairs"));

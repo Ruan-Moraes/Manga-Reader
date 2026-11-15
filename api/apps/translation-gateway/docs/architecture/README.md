@@ -9,6 +9,7 @@ Contratos de tradução, entrega/expiração de resultados, retenção, cleanup 
 - [cleanup-isolation.md](cleanup-isolation.md) — Isolamento do purge por objeto — plano antes do código
 - [cleanup-owned-objects-2026-10-12.md](cleanup-owned-objects-2026-10-12.md) — Cleanup de referências de um job — 2026-10-12
 - [hybrid-rendering-options-2026-10-18.md](hybrid-rendering-options-2026-10-18.md) — Renderização híbrida — investigação urgente
+- [language-layer.md](language-layer.md) — Camada de linguagem opcional (Gemini no Vertex AI): revisão de OCR e tradução pelo contexto
 - [lifecycle-retention.md](lifecycle-retention.md) — Retenção terminal e original — plano de implementação
 - [location-disclosure-draft.md](location-disclosure-draft.md) — Rascunho de localização para revisão — 2026-10-02
 - [original-retention.md](original-retention.md) — Retenção original por snapshot — plano anterior ao código

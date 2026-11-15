@@ -599,6 +599,13 @@ privado próprio e somente então avança para `RENDERING`. Reentrega não repet
 chamada cobrada. Tradução real, compatibilidade de marcação HTML do provider e
 qualidade linguística ainda não foram verificadas.
 
+Camada de linguagem opcional: com `GATEWAY_TRANSLATION_REFINE_MODE=gemini`
+(padrão `disabled`) o worker manda o texto da página — nunca a imagem — e a
+tradução do Google ao Gemini no Vertex AI (`us`, mesmo projeto), que pode
+corrigir leitura de OCR claramente errada e revisar a tradução pelo contexto.
+Cada região é aceita ou descartada isoladamente; erro ou timeout mantém o
+Google. Ver [docs/architecture/language-layer.md](docs/architecture/language-layer.md).
+
 Falha anterior à reserva não pode alterar uma etapa reservada por outra
 entrega. O worker distingue essa falha da falha da execução ativa, com lock
 transacional por job, sem manter transação durante storage/provider. Cancelamento

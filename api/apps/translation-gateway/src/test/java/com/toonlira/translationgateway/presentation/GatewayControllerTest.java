@@ -71,7 +71,7 @@ class GatewayControllerTest {
     @Test
     void shouldExposeCapabilitiesWithEtagOutsideTheBody() throws Exception {
         var disclosure = new CapabilitiesView.LegalDisclosure("privacy-1", "Toonlira", "privacy@example.com",
-            "https://example.com/privacy", "https://example.com/terms", "southamerica-east1", "us", "global",
+            "https://example.com/privacy", "https://example.com/terms", "southamerica-east1", "us", "global", "us",
             3600, 3600, 7, "No training");
         when(getCapabilities.execute()).thenReturn(new CapabilitiesView("1.0", "toonlira-alpha", job.serverTime(),
             job.serverTime().plusSeconds(300), false, List.of("ja", "pt-BR"),
@@ -83,6 +83,7 @@ class GatewayControllerTest {
             .andExpect(jsonPath("$.etag").doesNotExist()).andExpect(jsonPath("$.enabled").value(false))
             .andExpect(jsonPath("$.disclosure.ocrRegion").value("us"))
             .andExpect(jsonPath("$.disclosure.translationLocation").value("global"))
+            .andExpect(jsonPath("$.disclosure.languageModelLocation").value("us"))
             .andExpect(jsonPath("$.disclosure.processingRegions").doesNotExist());
 
         mockMvc.perform(get("/v1/capabilities").header(HttpHeaders.IF_NONE_MATCH, "\"etag\""))

@@ -66,7 +66,9 @@ Não houve comparação antes/depois controlada nem teste com o original em japo
    com a máscara do balão.)
 5. **Erros de OCR** (parcial): releitura por confiança em mosaico com votação apoiada em dicionário —
    ver [ocr-reread.md](../ocr-evaluation/ocr-reread.md). Falta: casos em que todas as variantes erram
-   igual ("THE CHOSEN 05...") — candidato a camada de linguagem opcional.
+   igual ("THE CHOSEN 05...") — agora coberto pela camada de linguagem opcional (Gemini no Vertex AI,
+   desligada por padrão; corrige a leitura pelo contexto e revisa a tradução, só texto — ver
+   [language-layer.md](../architecture/language-layer.md)). Falta validar com o Vertex real (custo a autorizar).
 
 ### Contrato e produto
 6. ~~**`quality` na API**~~ — feito: `ReadyResult.quality` (V10 + OpenAPI + zod do mobile).

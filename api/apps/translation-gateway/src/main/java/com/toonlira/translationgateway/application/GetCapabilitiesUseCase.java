@@ -32,6 +32,7 @@ public class GetCapabilitiesUseCase {
     private static final String GATEWAY_REGION = "southamerica-east1";
     private static final String OCR_REGION = "us";
     private static final String TRANSLATION_LOCATION = "global";
+    private static final Pattern LANGUAGE_MODEL_LOCATION = Pattern.compile("^[a-z][a-z0-9-]{0,28}[a-z0-9]$");
     private static final Set<String> SUPERSEDED_DISCLOSURE_VERSIONS = Set.of("2026-09-07.v1");
 
     private final GatewayProperties properties;
@@ -48,6 +49,7 @@ public class GetCapabilitiesUseCase {
         var disclosure = properties.getDisclosure();
         var pairs = operationalPairs();
         var media = properties.getMedia();
+        var languageModelLocation = languageModelLocation();
         var canonical = Stream.of(
             "1.0", properties.getKey(), Boolean.toString(properties.isEnabled()),
             String.join(",", LANGUAGES), String.join(",", MIME_TYPES),
@@ -58,7 +60,7 @@ public class GetCapabilitiesUseCase {
             Integer.toString(properties.getInstallationDailyQuota()), Integer.toString(properties.getGlobalDailyQuota()),
             disclosure.getVersion(), disclosure.getOperatorName(), disclosure.getOperatorContact(),
             disclosure.getPrivacyPolicyUrl(), disclosure.getTermsUrl(), disclosure.getProviderTrainingPolicy(),
-            GATEWAY_REGION, OCR_REGION, TRANSLATION_LOCATION,
+            GATEWAY_REGION, OCR_REGION, TRANSLATION_LOCATION, languageModelLocation == null ? "" : languageModelLocation,
             Integer.toString(disclosure.getOriginalRetentionSeconds()),
             Integer.toString(disclosure.getResultRetentionSeconds()),
             Integer.toString(disclosure.getMetadataRetentionDays()))
@@ -71,6 +73,7 @@ public class GetCapabilitiesUseCase {
             properties.getInstallationDailyQuota(), properties.getGlobalDailyQuota(),
             new CapabilitiesView.LegalDisclosure(disclosure.getVersion(), disclosure.getOperatorName(), disclosure.getOperatorContact(),
                 disclosure.getPrivacyPolicyUrl(), disclosure.getTermsUrl(), GATEWAY_REGION, OCR_REGION, TRANSLATION_LOCATION,
+                languageModelLocation,
                 disclosure.getOriginalRetentionSeconds(), disclosure.getResultRetentionSeconds(), disclosure.getMetadataRetentionDays(),
                 disclosure.getProviderTrainingPolicy()),
             "W/\"" + sha256(canonical) + '"'
@@ -109,8 +112,17 @@ public class GetCapabilitiesUseCase {
             && disclosure.getOriginalRetentionSeconds() > 0 && disclosure.getOriginalRetentionSeconds() <= 3600
             && disclosure.getResultRetentionSeconds() > 0 && disclosure.getResultRetentionSeconds() <= 3600
             && disclosure.getMetadataRetentionDays() > 0 && disclosure.getMetadataRetentionDays() <= 7
+            && (languageModelLocation() == null || LANGUAGE_MODEL_LOCATION.matcher(languageModelLocation()).matches())
             && (!properties.isEnabled() || (validOperationalConfiguration() && !operationalPairs().isEmpty()));
         if (!valid) throw new GatewayException(CAPABILITIES_UNAVAILABLE, 503, true);
+    }
+
+    /** Disclosed only while the worker would actually send text to the model: translation on and refine on. */
+    private String languageModelLocation() {
+        var translation = properties.getTranslation();
+        if (translation.getMode() == GatewayProperties.Translation.Mode.DISABLED
+            || translation.getRefine().getMode() == GatewayProperties.Translation.Refine.Mode.DISABLED) return null;
+        return translation.getRefine().getLocation();
     }
 
     private List<CapabilitiesView.LanguagePair> operationalPairs() {

@@ -91,7 +91,7 @@ class SubmissionCommitResolutionTest {
         when(ocr.recognize(any())).thenReturn(List.of());
         var now = Instant.now();
         var disclosure = new CapabilitiesView.LegalDisclosure("synthetic-v1", "Synthetic operator", "test@example.com",
-            "https://example.com/privacy", "https://example.com/terms", "southamerica-east1", "us", "global",
+            "https://example.com/privacy", "https://example.com/terms", "southamerica-east1", "us", "global", null,
             3600, 3600, 7, "Synthetic configuration");
         when(capabilities.execute()).thenReturn(new CapabilitiesView("1.0", "synthetic-test", now, now.plusSeconds(300), true,
             GetCapabilitiesUseCase.LANGUAGES, List.of(new CapabilitiesView.LanguagePair("ja", "pt-BR")),

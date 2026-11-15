@@ -44,6 +44,7 @@ const capabilities = {
         gatewayRegion: 'southamerica-east1',
         ocrRegion: 'us',
         translationLocation: 'global',
+        languageModelLocation: null,
         originalRetentionSeconds: 1,
         resultRetentionSeconds: 1,
         metadataRetentionDays: 1,
