@@ -21,4 +21,32 @@ class CaptionFilterTest {
         assertThat(CaptionFilter.isCaption("AKANE!", "akane!", EN)).isFalse(); // unchanged
         assertThat(CaptionFilter.isCaption("ナルト だ", "É o Naruto", Lexicon.NONE)).isTrue(); // no word list: two tokens suffice
     }
+
+    @Test
+    void textTheDetectorDoesNotSeeAsTextIsNeverACaption() {
+        // "AKANE IS COMING" reads as a sentence, but the detector classed it as artwork (stylized lettering).
+        var request = request("Thank you for finally calling it", "Obrigado por finalmente chamar");
+        var id = request.regions().getFirst().id();
+        assertThat(CaptionFilter.captions(request, EN, java.util.Map.of())).containsExactly(id);
+        assertThat(CaptionFilter.captions(request, EN, java.util.Map.of(id, "text_free"))).containsExactly(id);
+        assertThat(CaptionFilter.captions(request, EN, java.util.Map.of(id, "unknown"))).isEmpty();
+    }
+
+    private static RenderRequest request(String source, String translated) {
+        var job = java.util.UUID.randomUUID();
+        var id = java.util.UUID.randomUUID();
+        var pair = new com.toonlira.translationgateway.domain.translation.LanguagePair("en", "pt-BR");
+        var polygon = java.util.List.of(new com.toonlira.translationgateway.domain.OcrManifest.Vertex(.1, .1),
+            new com.toonlira.translationgateway.domain.OcrManifest.Vertex(.5, .1), new com.toonlira.translationgateway.domain.OcrManifest.Vertex(.5, .2),
+            new com.toonlira.translationgateway.domain.OcrManifest.Vertex(.1, .2));
+        var ocr = new com.toonlira.translationgateway.domain.OcrManifest("1.0", job, "en", 100, 100,
+            java.util.List.of(new com.toonlira.translationgateway.domain.OcrManifest.Region(id, 0, source, polygon)));
+        var input = new com.toonlira.translationgateway.domain.translation.TranslationRequest(job, pair,
+            java.util.List.of(new com.toonlira.translationgateway.domain.translation.TranslationRequest.Region(id, 0, source)));
+        var translation = new com.toonlira.translationgateway.domain.translation.TranslationValidator(Set.of(pair)).validateResponse(input,
+            new com.toonlira.translationgateway.domain.translation.TranslationResponse(java.util.List.of(
+                new com.toonlira.translationgateway.domain.translation.TranslationResponse.Region(id, translated))));
+        return RenderRequest.create(new RenderSource("image/png", 100, 100, 100, "a".repeat(64)), ocr, translation,
+            "b".repeat(64), "c".repeat(64), RenderPolicy.initial());
+    }
 }

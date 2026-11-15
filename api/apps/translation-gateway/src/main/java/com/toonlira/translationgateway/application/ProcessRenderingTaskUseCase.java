@@ -140,36 +140,48 @@ public class ProcessRenderingTaskUseCase {
             .map(region -> new TranslationRequest.Region(region.id(), region.readingOrder(), region.sourceText())).toList());
         var translationBytes = readVerified(job.translationObjectKey(), job.translationSha256(), MAX_TRANSLATION_MANIFEST_BYTES);
         var translation = translationManifests.decode(translationBytes, job.translationSha256(), translationRequest, job.ocrSha256());
-        var request = RenderRequest.create(job.source(), ocr, translation, job.ocrSha256(), job.translationSha256(), policy)
-            .withBubbles(bubbles(job));
+        var request = RenderRequest.create(job.source(), ocr, translation, job.ocrSha256(), job.translationSha256(), policy);
+        var hints = layoutHints(job);
+        request = request.withBubbles(hints.bubbles());
         // Which regions read as speech/captions (vs sound effects): a renderer that can inpaint may retype them
         // over reconstructed artwork; the others keep their lettering.
         if (lexicons == null) return request;
         return request.withCaptionHints(com.toonlira.translationgateway.domain.rendering.CaptionFilter.captions(
-            request, lexicons.forLanguage(job.sourceLanguage())));
+            request, lexicons.forLanguage(job.sourceLanguage()), hints.kinds()));
+    }
+
+    /** What the layout artifact tells the renderer: balloon boxes and the detector class of each OCR region. */
+    record LayoutHints(List<com.toonlira.translationgateway.domain.layout.LayoutBox> bubbles, java.util.Map<UUID, String> kinds) {
+        static final LayoutHints NONE = new LayoutHints(List.of(), java.util.Map.of());
     }
 
     /**
-     * Balloon boxes of the layout artifact, only when it describes this very image and OCR manifest. Best effort:
-     * a missing, unreadable or foreign artifact gives no boxes and never fails rendering.
+     * Hints from the layout artifact, only when it describes this very image and OCR manifest. Best effort: a
+     * missing, unreadable or foreign artifact gives no hints and never fails rendering.
      */
-    private List<com.toonlira.translationgateway.domain.layout.LayoutBox> bubbles(RenderingJobRepository.WorkItem job) {
-        if (job.layoutObjectKey() == null || job.layoutSha256() == null) return List.of();
+    private LayoutHints layoutHints(RenderingJobRepository.WorkItem job) {
+        if (job.layoutObjectKey() == null || job.layoutSha256() == null) return LayoutHints.NONE;
         try {
             var bytes = readVerified(job.layoutObjectKey(), job.layoutSha256(), com.toonlira.translationgateway.domain.layout.LayoutParameters.MAX_BYTES);
             var root = LAYOUT_JSON.readTree(bytes);
             if (!job.source().sha256().equals(root.path("imageSha256").asText())
-                || !job.ocrSha256().equals(root.path("ocrManifestSha256").asText())) return List.of();
+                || !job.ocrSha256().equals(root.path("ocrManifestSha256").asText())) return LayoutHints.NONE;
             var boxes = new java.util.ArrayList<com.toonlira.translationgateway.domain.layout.LayoutBox>();
             for (var bubble : root.path("bubbles")) {
                 var b = bubble.path("bounds");
                 boxes.add(new com.toonlira.translationgateway.domain.layout.LayoutBox(b.path("left").asDouble(),
                     b.path("top").asDouble(), b.path("right").asDouble(), b.path("bottom").asDouble()));
-                if (boxes.size() > 256) return List.of();
+                if (boxes.size() > 256) return LayoutHints.NONE;
             }
-            return List.copyOf(boxes);
+            var kinds = new java.util.HashMap<UUID, String>();
+            for (var kind : root.path("regionKinds")) {
+                var value = kind.path("kind").asText();
+                if (!java.util.Set.of("text_bubble", "text_free", "unknown").contains(value)) return LayoutHints.NONE;
+                kinds.put(UUID.fromString(kind.path("regionId").asText()), value);
+            }
+            return new LayoutHints(List.copyOf(boxes), java.util.Map.copyOf(kinds));
         } catch (RuntimeException | IOException unusable) {
-            return List.of();
+            return LayoutHints.NONE;
         }
     }
 

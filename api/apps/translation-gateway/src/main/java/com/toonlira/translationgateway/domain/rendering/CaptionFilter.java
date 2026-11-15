@@ -18,8 +18,21 @@ public final class CaptionFilter {
     private CaptionFilter() { }
 
     public static Set<UUID> captions(RenderRequest request, Lexicon lexicon) {
+        return captions(request, lexicon, java.util.Map.of());
+    }
+
+    /**
+     * {@code kinds}: detector class per region (layout 1.2), possibly empty. A region the detector does not see as
+     * text at all ({@code unknown}: stylized sound effects such as "FREEK" or "clatter") is never a caption, whatever
+     * the word list says: its hand-drawn lettering stays. Text boxes ({@code text_bubble}, {@code text_free}) and
+     * regions without a class follow the word-list rule.
+     */
+    public static Set<UUID> captions(RenderRequest request, Lexicon lexicon, java.util.Map<UUID, String> kinds) {
         var result = new HashSet<UUID>();
-        for (var region : request.regions()) if (isCaption(region.sourceText(), region.translatedText(), lexicon)) result.add(region.id());
+        for (var region : request.regions()) {
+            if ("unknown".equals(kinds.get(region.id()))) continue;
+            if (isCaption(region.sourceText(), region.translatedText(), lexicon)) result.add(region.id());
+        }
         return Set.copyOf(result);
     }
 
