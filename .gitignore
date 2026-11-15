@@ -43,6 +43,7 @@ yarn-error.log*
 /.local/rendering-linux/
 /.local/worker-isolation/
 /.local/inpainting/
+/.local/bench/
 
 # =====================================================
 # Yarn

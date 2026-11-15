@@ -214,3 +214,33 @@ maior ganho pendente para mangá japonês.
 **Recomendação:** `grouping` como modo de produção para fontes horizontais (en/es/pt-BR) quando o
 modelo estiver provisionado. O default do código continua `disabled` porque o modelo não é versionado.
 
+## Texto vertical CJK e uso das classes no render (2026-11-15)
+
+**Agrupamento CJK** (`OcrRegionGrouper.groupCjk`, ja/zh/ko, com ou sem balões): o Vision devolve cada
+coluna vertical como um parágrafo e fora da ordem de leitura. Colunas vizinhas (espaço ≤ 1 largura de
+coluna, sobreposição vertical ≥ 30%) e linhas horizontais empilhadas (altura de linha parecida, razão
+≤ 1,75) formam uma fala, lida da direita para a esquerda (cada coluna de cima para baixo) e unida sem
+espaço em japonês/chinês (com espaço em coreano). Balões detectados só **vetam**: colunas claramente em
+dois balões distintos (caixas que se sobrepõem < 10%) não se juntam; o detector costuma devolver várias
+caixas parciais para um mesmo balão vertical, que não vetam.
+
+| Bancada (ja, ch01–02, 24 páginas) | Antes | Agora |
+|---|---|---|
+| Regiões traduzidas | 855 (≈ 1 por coluna) | 434 sem balões / 440 com balões |
+| Páginas em que balões mudam o resultado | — | 4 (3 melhores, 1 empate em tela de computador) |
+
+Exemplos reais: 「試しにちょっと」「インスコしてみる」「だけだかんな」 (vindos fora de ordem) →
+「試しにちょっとインスコしてみるだけだかんな」 → "É só para instalar e testar um pouco, viu?";
+SFX 「カタカタ…」 (linhas ~2× mais altas) não gruda mais na legenda abaixo dele.
+Limite: texto horizontal em português num balão vertical estreito sai com fonte pequena (12–15 px).
+
+**Classes no render**: o render lê `regionKinds` do artefato (mesma verificação de hash/imagem/OCR dos
+balões). Região `unknown` (o detector não a vê como texto — letreiro/SFX estilizado) nunca recebe
+inpainting, mesmo que o dicionário a leia como frase.
+
+**Provisionamento**: o `Dockerfile` baixa o detector da revisão fixada e confere o SHA-256 no build
+(`/app/models/comic-detector-16e8a622/detector.onnx`); Terraform ganhou `layout_mode`
+(`disabled`|`shadow`|`grouping`) e `layout_direction`, e com layout ligado o worker baseline sobe para 2 GiB
+(medido: detector +366 MiB ao carregar, +178 MiB na inferência, ~0,30 s por página). `terraform validate`
+não foi executado (Terraform ausente na máquina de desenvolvimento).
+

@@ -48,13 +48,13 @@ Não houve comparação antes/depois controlada nem teste com o original em japo
 ### Qualidade visual
 2. **Agrupamento por layout ONNX** (avaliado — ver [layout-experimental.md](../ocr-evaluation/layout-experimental.md)):
    balões melhores que a heurística em 10 de 12 páginas inglesas com diferença; os balões chegam ao
-   render e limitam máscara e expansão de fonte. Falta: **agrupar texto vertical CJK por balão** (72% dos
-   balões japoneses têm várias colunas traduzidas isoladas) e provisionar o modelo para usar `grouping`
-   em produção.
+   render e limitam máscara e expansão de fonte. Texto vertical CJK agora agrupado (855 → ~440 regiões
+   em 24 páginas japonesas) e modelo provisionado (Dockerfile + Terraform `layout_mode`). Falta: ligar
+   `layout_mode = "grouping"` ao ativar o produto e validar o Terraform; fonte pequena em balão vertical estreito.
 3. **SFX/texto livre** (parcial): falas/legendas sobre arte agora são traduzidas com inpainting
    ([inpainting.md](inpainting.md)); SFX preservados por decisão de produto; letreiro manuscrito partido
-   em parágrafos sobrepostos agora vira uma fala só ("Podemos ser a Brigada da GUI!", 23 px). Falta: (c) usar `regionKinds` no render exige
-   levar o layout até a requisição de render (hoje só no bucket privado).
+   em parágrafos sobrepostos agora vira uma fala só ("Podemos ser a Brigada da GUI!", 23 px). `regionKinds` chega ao render: região `unknown`
+   (SFX estilizado) nunca recebe inpainting.
 4. **Inpainting real** (parcial): LaMa em CPU para falas sobre arte, só no render `local`
    ([inpainting.md](inpainting.md)). Falta: levar aos modos isolado/nativo sem quebrar o isolamento;
    balões com fundo de retícula ainda usam preenchimento liso. (O fringe da moldura de retícula saiu

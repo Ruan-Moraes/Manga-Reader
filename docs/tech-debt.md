@@ -553,9 +553,9 @@ apoiada em dicionário, inpainting LaMa de falas sobre arte no render local). Pe
 - **Inpainting real** (feito: fringe de 4 px para glifos que vazam do polígono;
   falta fundo texturizado/gradiente, onde o preenchimento por cor mediana ainda
   deixa remendos).
-- **Agrupamento por balão ONNX** (`GATEWAY_LAYOUT_MODE=grouping`) avaliado em 48 páginas e
-  recomendado para fontes horizontais; balões já chegam ao render. Falta agrupar texto
-  vertical CJK por balão (72% dos balões japoneses com colunas traduzidas isoladas).
+- **Agrupamento por balão ONNX** avaliado (48 páginas en/ja), texto vertical CJK agrupado, classes
+  e balões chegam ao render, modelo provisionado (Dockerfile com SHA fixado + Terraform `layout_mode`,
+  worker 2 GiB). Falta ligar `grouping` ao ativar o produto e rodar `terraform validate`.
 - **SFX/texto livre**: texto livre preservado fica no idioma original (falta tipografia
   estilizada ou inpainting real); letreiros à mão sobre fundo liso viram fonte comum pequena.
 - **Comparação com a edição original** (Ubunchu! ep. 01, Hiroshi Seo) e regressão visual.
