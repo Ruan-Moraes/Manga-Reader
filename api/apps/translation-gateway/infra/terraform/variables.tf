@@ -89,3 +89,25 @@ variable "database_disk_autoresize_limit_gb" {
   type        = number
   default     = 20
 }
+
+variable "layout_mode" {
+  description = "Worker balloon/text detector: disabled, shadow (records layout only) or grouping (balloons drive OCR grouping and bound render masks). Needs the model baked in the image and raises worker memory to 2Gi."
+  type        = string
+  default     = "disabled"
+  nullable    = false
+  validation {
+    condition     = contains(["disabled", "shadow", "grouping"], var.layout_mode)
+    error_message = "layout_mode must be disabled, shadow or grouping."
+  }
+}
+
+variable "layout_direction" {
+  description = "Reading direction recorded in the layout artifact (panel order): rtl for Japanese manga, ltr for left-to-right editions."
+  type        = string
+  default     = "rtl"
+  nullable    = false
+  validation {
+    condition     = contains(["ltr", "rtl"], var.layout_direction)
+    error_message = "layout_direction must be ltr or rtl."
+  }
+}

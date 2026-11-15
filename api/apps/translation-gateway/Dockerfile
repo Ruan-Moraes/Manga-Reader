@@ -24,6 +24,17 @@ COPY apps/translation-gateway/src     apps/translation-gateway/src
 COPY apps/translation-gateway/openapi apps/translation-gateway/openapi
 RUN mvn -f apps/translation-gateway/pom.xml package -DskipTests -B
 
+# ---- Detector de balões/texto (layout ONNX) -----------------------------------
+# Revisão e SHA-256 fixados (iguais a ComicDetectorModel.REVISION/SHA256); o build falha se o hash divergir.
+# Apache-2.0: https://huggingface.co/ogkalu/comic-text-and-bubble-detector — usado só com GATEWAY_LAYOUT_MODE≠disabled.
+FROM alpine:3.20 AS layout-model
+ARG LAYOUT_MODEL_REVISION=16e8a622f91fabc6b5b65c96d32d1183f8843546
+ARG LAYOUT_MODEL_SHA256=065744e91c0594ad8663aa8b870ce3fb27222942eded5a3cc388ce23421bd195
+RUN apk add --no-cache curl \
+    && curl -fsSL -o /detector.onnx \
+       "https://huggingface.co/ogkalu/comic-text-and-bubble-detector/resolve/${LAYOUT_MODEL_REVISION}/detector.onnx" \
+    && echo "${LAYOUT_MODEL_SHA256}  /detector.onnx" | sha256sum -c -
+
 # ---- Runtime -----------------------------------------------------------------
 FROM eclipse-temurin:23-jre-alpine
 
@@ -33,6 +44,8 @@ RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 
 COPY --from=build /workspace/apps/translation-gateway/target/*.jar app.jar
 RUN chown appuser:appgroup app.jar
+# Somente leitura; o worker lê com GATEWAY_LAYOUT_MODEL_PATH (Terraform aponta para cá).
+COPY --from=layout-model /detector.onnx /app/models/comic-detector-16e8a622/detector.onnx
 
 USER appuser
 

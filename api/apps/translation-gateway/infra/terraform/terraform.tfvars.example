@@ -5,6 +5,10 @@ gateway_enabled         = false
 worker_enabled          = false
 worker_resource_profile = "baseline"
 worker_container_image  = null
+# Detector de balões (modelo embutido na imagem). grouping recomendado ao ativar o produto
+# (docs/ocr-evaluation/layout-experimental.md); eleva a memória do worker para 2Gi.
+layout_mode      = "disabled"
+layout_direction = "rtl"
 # O ambiente do worker também mantém GATEWAY_OCR_MODE=disabled neste incremento.
 database_tier                     = "db-f1-micro"
 database_disk_size_gb             = 10

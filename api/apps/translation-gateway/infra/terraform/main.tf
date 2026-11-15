@@ -11,7 +11,11 @@ locals {
       concurrency = 1
     }
   }
-  worker_resources = local.worker_resource_profiles[var.worker_resource_profile]
+  worker_profile = local.worker_resource_profiles[var.worker_resource_profile]
+  # The layout detector adds ~550 MiB of native memory (measured: load +366, inference +178); 1Gi does not fit it.
+  worker_resources = var.layout_mode == "disabled" || var.worker_resource_profile != "baseline" ? local.worker_profile : merge(
+    local.worker_profile, { memory = "2Gi" })
+  layout_model_path = "/app/models/comic-detector-16e8a622/detector.onnx"
   name             = "translation-gateway"
   database_name    = "translation_gateway"
   database_user    = "translation_gateway"
@@ -59,7 +63,9 @@ locals {
     GATEWAY_DISPATCH_MODE        = "disabled"
     GATEWAY_OCR_MODE             = "disabled"
     GATEWAY_TRANSLATION_MODE     = "disabled"
-    GATEWAY_LAYOUT_MODE          = "disabled"
+    GATEWAY_LAYOUT_MODE          = var.layout_mode
+    GATEWAY_LAYOUT_MODEL_PATH    = var.layout_mode == "disabled" ? "" : local.layout_model_path
+    GATEWAY_LAYOUT_DIRECTION     = var.layout_mode == "disabled" ? "" : var.layout_direction
     GATEWAY_RENDERING_MODE       = "disabled"
     GATEWAY_RESULT_DOWNLOAD_MODE = "disabled"
     GATEWAY_GCP_PROJECT_ID       = var.project_id
