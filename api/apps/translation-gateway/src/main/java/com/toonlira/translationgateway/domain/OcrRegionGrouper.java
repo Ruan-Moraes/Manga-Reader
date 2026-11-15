@@ -364,10 +364,17 @@ public final class OcrRegionGrouper {
         return glyphA > 0 && glyphB > 0 && Math.max(glyphA, glyphB) <= MAX_LINE_RATIO * Math.min(glyphA, glyphB);
     }
 
-    /** Glyph size: column width of vertical lettering, line height of horizontal lettering. */
+    /**
+     * Glyph size of square-glyph lettering: sqrt(box area / letters). Robust to how the provider laid the block out
+     * — two vertical columns returned as one paragraph of two "lines" (「じゃあ⏎これ」) measure like their neighbours.
+     */
+    /** Glyph size ratio from which two columns are different lettering unless glued (furigana is about 2x). */
+    static final double SIZE_JUMP = 2.2;
+
     private static double glyph(OcrManifest.Region region, int w, int h) {
         var b = box(region, w, h);
-        return isVertical(region, w, h) ? b[2] - b[0] : (b[3] - b[1]) / lines(region);
+        long letters = region.sourceText().codePoints().filter(Character::isLetterOrDigit).count();
+        return letters == 0 ? 0 : Math.sqrt((b[2] - b[0]) * (b[3] - b[1]) / letters);
     }
 
     private static boolean hasCjkScript(String text) {
@@ -396,7 +403,12 @@ public final class OcrRegionGrouper {
         double smaller = Math.min((ba[2] - ba[0]) * (ba[3] - ba[1]), (bb[2] - bb[0]) * (bb[3] - bb[1]));
         if (smaller > 0 && overlapArea >= MIN_SHARED_AREA * smaller) return true;
         if (isVertical(a, w, h) && isVertical(b, w, h)) {
-            double width = Math.max(ba[2] - ba[0], bb[2] - bb[0]);
+            double width = Math.max(ba[2] - ba[0], bb[2] - bb[0]), narrower = Math.min(ba[2] - ba[0], bb[2] - bb[0]);
+            // Lettering of very different size joins only when glued (furigana beside its column): a big hand-lettered
+            // shout (「わんのか」) a column away from a speech is another block, though its width alone allows the gap.
+            double glyphA = glyph(a, w, h), glyphB = glyph(b, w, h);
+            if (glyphA > 0 && glyphB > 0 && Math.max(glyphA, glyphB) > SIZE_JUMP * Math.min(glyphA, glyphB)
+                && horizontalGap > narrower) return false;
             double shorter = Math.min(ba[3] - ba[1], bb[3] - bb[1]);
             return horizontalGap <= COLUMN_GAP * width && verticalOverlap >= COLUMN_OVERLAP * shorter;
         }

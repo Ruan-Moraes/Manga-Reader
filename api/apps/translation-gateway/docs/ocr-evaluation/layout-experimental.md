@@ -238,6 +238,14 @@ latinas (「CCSMって」) — desde que ambos tenham escrita CJK e letra de tam
 texto de tela e dígitos dentro da caixa grudavam (「完成っと4ラスの3」). Bancada ja: 440 → 429 regiões, 9 falas
 completadas (「こっこのCCSMってコンパネ」, 「この縦線はパイプ」, 「大量のテキスト処理は」…), nenhuma junção errada.
 
+**Tamanho de letra no agrupamento (2026-11-15, 2ª rodada)**: o tamanho da letra passou a ser sqrt(área /
+letras) — duas colunas devolvidas como um parágrafo de duas "linhas" (「じゃあ⏎これ」) mediam o dobro e
+travavam a junção; voltaram 「じゃあこれよろしくね」 e 「ついておいでなさい」. E colunas com letra > 2,2× maior
+só se juntam coladas (furigana): o letreiro grande 「わんのか」 alargava o vão permitido até a própria largura e
+grudava em 「をおいて他には無いっ!」, cuja letra original ficava por baixo da tradução. Bancada ja: 427 → 429
+regiões, só essas mudanças (mais 「√ √ > > N」 de tela separado da fala); duas regras mais simples (só razão de
+tamanho; vão pela coluna mais estreita) quebravam furigana ou falas normais e foram descartadas.
+
 Fonte em balão vertical estreito: piso pelo tamanho do glifo de origem + expansão a partir da faixa central
 (ver `rendering-contracts.md`): "Eu tenho o trabalho do comitê…" 15 → 19 px, "A tela ficou com um visual
 impressionante." 13 → 21 px, "Risa-chan!?" 14 → 25 px.

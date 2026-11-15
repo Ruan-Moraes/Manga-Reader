@@ -85,6 +85,18 @@ class OcrRegionGrouperTest {
         assertThat(OcrRegionGrouper.group(List.of(pause, rest, latin), "ja", W, H)).hasSizeGreaterThan(1);
     }
 
+    @Test
+    void aBigHandLetteredShoutBesideASpeechIsAnotherBlockButFuriganaStaysWithItsColumn() {
+        // Real geometry (Ubunchu! ep.1 p.03, scaled 0.6): the shout's own width would allow the gap to the speech.
+        var speech = List.of(region(0, "をおいて\n", 447, 560, 460, 619), region(1, "他には無いっ!\n", 423, 559, 439, 662),
+            region(2, "わんのか\n", 331, 548, 402, 662));
+        assertThat(OcrRegionGrouper.group(speech, "ja", W, H)).extracting(OcrManifest.Region::sourceText)
+            .containsExactly("をおいて他には無いっ!", "わんのか\n");
+        // Furigana (half-size reading) glued to its column joins it.
+        var ruby = List.of(region(0, "迷宮における\n", 100, 100, 124, 300), region(1, "ディレクトリ\n", 126, 100, 136, 160));
+        assertThat(OcrRegionGrouper.group(ruby, "ja", W, H)).hasSize(1);
+    }
+
     private static com.toonlira.translationgateway.domain.layout.LayoutBox box(int l, int t, int r, int b) {
         return new com.toonlira.translationgateway.domain.layout.LayoutBox(l / (double) W, t / (double) H, r / (double) W, b / (double) H);
     }

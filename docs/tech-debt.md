@@ -552,8 +552,9 @@ apoiada em dicionário, inpainting LaMa de falas sobre arte no render local, pis
 origem CJK, recuperação de texto não lido ou lido pela metade pelas caixas do detector, falas CJK
 juntadas pelo mesmo balão, fragmentos de balões vizinhos traduzidos juntos, retícula pelo LaMa, legenda
 em japonês/chinês reconhecida, inpainting nos modos isolado/nativo com o modelo no pai).
-Limite conhecido: dois textos no mesmo balão (fala + aparte manuscrito) dividem o espaço e saem
-menores. Pendente:
+Limites conhecidos: dois textos no mesmo balão (fala + aparte manuscrito) dividem o espaço e saem
+menores; letra à mão que encosta na borda do balão fica (「がま」, pág. 03 — apagar tinta ligada à borda
+apagaria o contorno); retícula sem página real de validação nas amostras. Pendente:
 
 - **Inpainting real** (feito: fringe de 4 px para glifos que vazam do polígono;
   falta fundo texturizado/gradiente, onde o preenchimento por cor mediana ainda
