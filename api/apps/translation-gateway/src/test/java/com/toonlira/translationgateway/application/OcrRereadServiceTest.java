@@ -8,6 +8,8 @@ import com.toonlira.translationgateway.application.port.OcrPort;
 import com.toonlira.translationgateway.application.port.RereadImagingPort;
 import com.toonlira.translationgateway.domain.OcrManifest;
 import com.toonlira.translationgateway.domain.OcrParagraph;
+import com.toonlira.translationgateway.domain.layout.LayoutBox;
+import com.toonlira.translationgateway.domain.layout.TextBox;
 import com.toonlira.translationgateway.domain.ocr.Lexicon;
 import com.toonlira.translationgateway.domain.ocr.MosaicLayout;
 import java.nio.file.Path;
@@ -60,6 +62,36 @@ class OcrRereadServiceTest {
         assertThat(service(8, tile -> { throw new IllegalStateException("provider down"); })
             .improve(List.of(confused), Path.of("p"), "en", W, H)).containsExactly(confused);
         assertThat(calls.get()).isEqualTo(1); // only the failing call reached the provider
+    }
+
+    @Test
+    void textBoxesTheProviderLeftUnreadAreRecoveredAsNewParagraphs() {
+        var read = List.of(paragraph("HELLO THERE", .98, 100, 100, 300, 140));
+        var unread = new TextBox("t1", TextBox.Kind.text_free, new LayoutBox(.5, .5, .6, .54), .9);
+        var alreadyRead = new TextBox("t2", TextBox.Kind.text_bubble, new LayoutBox(.12, .105, .2, .135), .95);
+        var service = service(8, tile -> "第1話");
+        var job = UUID.randomUUID();
+        var result = service.recover(read, List.of(unread, alreadyRead), Path.of("page.png"), "ja", job, W, H);
+        assertThat(result).hasSize(2);
+        assertThat(result.getFirst()).isSameAs(read.getFirst());
+        var recovered = result.get(1).region();
+        assertThat(recovered.sourceText()).isEqualTo("第1話");
+        assertThat(recovered.readingOrder()).isEqualTo(1);
+        assertThat(recovered.polygon()).isEqualTo(box(500, 500, 600, 540, W, H));
+        assertThat(recovered.id()).isEqualTo(UUID.nameUUIDFromBytes((job + ":recovered:t1").getBytes(java.nio.charset.StandardCharsets.UTF_8)));
+        assertThat(calls.get()).isEqualTo(1); // only the unread box was sent, in one mosaic
+    }
+
+    @Test
+    void readingAcrossVerticalColumnsOrNothingToRecoverAddsNothing() {
+        var read = List.of(paragraph("HELLO THERE", .98, 100, 100, 300, 140));
+        var vertical = new TextBox("t1", TextBox.Kind.text_bubble, new LayoutBox(.7, .1, .74, .3), .9);
+        // The provider laid "であ" out horizontally inside a tall box: characters of two columns, discarded.
+        assertThat(service(8, tile -> "であも").recover(read, List.of(vertical), Path.of("p"), "ja", UUID.randomUUID(), W, H))
+            .isEqualTo(read);
+        assertThat(service(8, tile -> "X").recover(read, List.of(), Path.of("p"), "ja", UUID.randomUUID(), W, H)).isSameAs(read);
+        assertThat(service(0, tile -> "X").recover(read, List.of(vertical), Path.of("p"), "ja", UUID.randomUUID(), W, H)).isSameAs(read);
+        assertThat(calls.get()).isEqualTo(1);
     }
 
     @Test

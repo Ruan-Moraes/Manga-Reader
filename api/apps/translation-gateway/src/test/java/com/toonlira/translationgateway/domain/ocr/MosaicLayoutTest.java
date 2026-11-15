@@ -24,4 +24,16 @@ class MosaicLayoutTest {
         assertThat(MosaicLayout.tileOf(layout, third.x() + 10, third.y() + 10, third.x() + 50, third.y() + 30)).isEqualTo(2);
         assertThat(MosaicLayout.tileOf(layout, 1, 1, 5, 5)).isEqualTo(-1);
     }
+
+    @Test
+    void tallTilesSideBySideAreSeparatedByAtLeastTheirHeightAndWordsAcrossTilesAreDetected() {
+        // Enlarged single glyphs: 160 px tall, so 48 px would read as one line of text.
+        var layout = MosaicLayout.pack(List.of(new int[]{150, 160}, new int[]{150, 160}));
+        var a = layout.tiles().get(0); var b = layout.tiles().get(1);
+        assertThat(b.y()).isEqualTo(a.y());
+        assertThat(b.x() - (a.x() + a.width())).isGreaterThanOrEqualTo(160);
+        assertThat(layout.width()).isEqualTo(b.x() + b.width() + MosaicLayout.GAP);
+        assertThat(MosaicLayout.spansTiles(layout, a.x() + 10, a.y() + 10, b.x() + 10, a.y() + 50)).isTrue();
+        assertThat(MosaicLayout.spansTiles(layout, a.x() + 10, a.y() + 10, a.x() + 60, a.y() + 50)).isFalse();
+    }
 }

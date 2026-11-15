@@ -52,6 +52,32 @@ public final class OcrReread {
         return doubts.stream().limit(Math.max(0, max)).map(Doubt::index).toList();
     }
 
+    /**
+     * Reading of text the provider missed on the page (a detector text box with no word in it), or null. There is
+     * no original to compare against, so the bar is agreement alone: at least two variants read the same lettering
+     * (letters or digits, not only punctuation or ellipses) with confident words. Most agreed reading wins, then the
+     * most confident one.
+     */
+    public static Reading recover(List<Reading> readings) {
+        var support = new HashMap<String, Integer>();
+        for (var reading : readings) {
+            var key = normalize(reading.text());
+            if (!key.isEmpty() && key.codePoints().anyMatch(Character::isLetterOrDigit)) support.merge(key, 1, Integer::sum);
+        }
+        Reading best = null;
+        int bestSupport = 0;
+        for (var reading : readings) {
+            int agreement = support.getOrDefault(normalize(reading.text()), 0);
+            double confidence = Double.isNaN(reading.confidence()) ? 0 : reading.confidence();
+            if (agreement < MIN_AGREEMENT || confidence < WEAK_CONFIDENCE) continue;
+            if (agreement > bestSupport || agreement == bestSupport && confidence > best.confidence()) {
+                best = reading;
+                bestSupport = agreement;
+            }
+        }
+        return best;
+    }
+
     /** Text to keep: the original reading unless a re-reading clearly wins the vote. */
     public static String choose(Reading original, List<Reading> rereads, Lexicon lexicon) {
         var support = new HashMap<String, Integer>();

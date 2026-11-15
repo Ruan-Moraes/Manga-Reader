@@ -89,4 +89,16 @@ class OcrRereadTest {
         for (var word : words) text.append(word.text());
         return new OcrParagraph(new OcrManifest.Region(UUID.randomUUID(), 0, text.isEmpty() ? "x" : text.toString(), BOX), List.of(words));
     }
+
+    @Test
+    void textTheProviderMissedIsRecoveredOnlyWhenConfidentVariantsAgreeOnLetters() {
+        var waai = new OcrReread.Reading("わーい", .97);
+        assertThat(OcrReread.recover(List.of(waai, new OcrReread.Reading("わ\nーい", .95), new OcrReread.Reading("1", .67))))
+            .isEqualTo(waai);
+        // One variant alone, punctuation or ellipses only, or unsure words: nothing is invented.
+        assertThat(OcrReread.recover(List.of(waai, new OcrReread.Reading("0000", .82)))).isNull();
+        assertThat(OcrReread.recover(List.of(new OcrReread.Reading("!", .98), new OcrReread.Reading("!", .97)))).isNull();
+        assertThat(OcrReread.recover(List.of(new OcrReread.Reading("……", .9), new OcrReread.Reading("……", .9)))).isNull();
+        assertThat(OcrReread.recover(List.of(new OcrReread.Reading("つ", .67), new OcrReread.Reading("つ", .7)))).isNull();
+    }
 }

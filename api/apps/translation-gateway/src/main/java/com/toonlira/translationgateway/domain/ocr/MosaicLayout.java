@@ -6,7 +6,9 @@ import java.util.List;
 /**
  * Packs re-read tiles into one image so all of a page's doubtful regions cost a single extra OCR call (the
  * provider bills per image, not per pixel). Shelf packing left to right, top to bottom, with a white gap wide
- * enough that the provider never merges text of neighbouring tiles.
+ * enough that the provider never merges text of neighbouring tiles. Side by side the gap is at least the tile's own
+ * height: enlarged single glyphs (a lone 「あ」 at 3x) are taller than {@link #GAP}, and the provider read a row of
+ * them as one line ("あらららら").
  */
 public final class MosaicLayout {
     public static final int GAP = 48;
@@ -31,11 +33,21 @@ public final class MosaicLayout {
             if (x + w + GAP > MAX_WIDTH) { x = GAP; y += shelf + GAP; shelf = 0; }
             if (y + h + GAP > MAX_HEIGHT) { tiles.add(null); continue; }
             tiles.add(new Tile(x, y, w, h));
-            x += w + GAP;
+            width = Math.max(width, x + w + GAP);
+            x += w + Math.max(GAP, h);
             shelf = Math.max(shelf, h);
-            width = Math.max(width, x);
         }
         return new Layout(tiles, Math.max(width, 2 * GAP), y + shelf + GAP);
+    }
+
+    /** True when a word box overlaps two or more tiles: the provider joined lettering of different crops. */
+    public static boolean spansTiles(Layout layout, double left, double top, double right, double bottom) {
+        int touched = 0;
+        for (var tile : layout.tiles()) {
+            if (tile != null && left < tile.x() + tile.width() && right > tile.x() && top < tile.y() + tile.height()
+                && bottom > tile.y() && ++touched > 1) return true;
+        }
+        return false;
     }
 
     public static int tileOf(Layout layout, double left, double top, double right, double bottom) {

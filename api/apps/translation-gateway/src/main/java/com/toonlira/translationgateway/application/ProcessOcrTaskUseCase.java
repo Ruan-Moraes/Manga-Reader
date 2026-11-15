@@ -143,6 +143,11 @@ public class ProcessOcrTaskUseCase {
             if (bubbles == null && !rereading) paragraphs = ocr.recognize(command);
             else {
                 read = ocr.recognizeParagraphs(command);
+                // Text the provider skipped entirely (short balloons like 「わーい」) is read again where the detector
+                // saw lettering; recovered boxes join the page as ordinary paragraphs before grouping.
+                if (rereading && detections != null)
+                    read = reread.recover(read, detections.texts(), media.path(), job.sourceLanguage(), job.jobRef(),
+                        media.widthPx(), media.heightPx());
                 paragraphs = bubbles == null ? read.stream().map(com.toonlira.translationgateway.domain.OcrParagraph::region).toList()
                     : OcrRegionGrouper.splitByBubbles(read, bubbles);
             }

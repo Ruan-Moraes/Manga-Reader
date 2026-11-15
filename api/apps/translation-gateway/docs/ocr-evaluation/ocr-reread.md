@@ -52,3 +52,24 @@ O traço engrossado repetia os erros e saiu do conjunto.
 - Léxico só para en/es/pt-BR (`src/main/resources/lexicon/`, FrequencyWords 50k, CC BY-SA 4.0 — ver
   `NOTICE.md`); ja/ko/zh usam só confiança e concordância. Página WebP sem leitor ImageIO local pula a
   releitura.
+
+## Recuperação de texto não lido (2026-11-15)
+
+O Vision às vezes não devolve nada para falas curtas isoladas (「わーい」, 「あ」, 「で」, 「第1話」). Com o
+agrupamento por balão ligado, caixas de texto do detector sem nenhuma palavra do OCR dentro são relidas com as
+mesmas variantes, numa chamada extra só nas páginas que têm esse tipo de caixa (até o mesmo orçamento de 8). A
+caixa vira parágrafo novo, antes do agrupamento, só quando 2+ variantes concordam numa leitura com letras e
+confiança ≥ 0,8; reticências e pontuação sozinha não contam.
+
+Medido em 24 páginas japonesas (16 caixas sem leitura):
+
+| Recorte | Resultado |
+|---|---|
+| margem 6–24 px | a borda do balão confunde: 「わーい」 vira "0000"/"ll" |
+| caixa exata do detector | 9 recuperadas (「わーい」 4/4 variantes, 「第1話」, 「アキバ帰りの」, 「あ」, 「ら」, 「うん」, 「で」); nada inventado |
+
+Duas proteções saíram da bancada: no mosaico, a distância lateral entre recortes passou a ser ≥ a altura do
+recorte (glifos sozinhos ampliados 3× eram lidos como uma linha só, "あらららら") e palavra que cruza dois
+recortes é descartada; numa caixa vertical, palavra de várias letras deitada na horizontal (「であも」 para
+「あー」「でも」 — leitura atravessando colunas) é descartada.
+
