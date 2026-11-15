@@ -77,6 +77,14 @@ gateway:
     mode: ${GATEWAY_TRANSLATION_MODE:disabled}
     project-id: ${GATEWAY_TRANSLATION_PROJECT_ID:}
     enabled-pairs: ${GATEWAY_TRANSLATION_ENABLED_PAIRS:}
+    # Optional language layer (Gemini on Vertex AI, same project): reviews OCR readings and the machine translation
+    # with the whole page as context. Text only; the image never reaches the model. Off unless set to "gemini".
+    refine:
+      mode: ${GATEWAY_TRANSLATION_REFINE_MODE:disabled}
+      model: ${GATEWAY_TRANSLATION_REFINE_MODEL:gemini-2.5-flash}
+      location: ${GATEWAY_TRANSLATION_REFINE_LOCATION:us}
+      timeout: ${GATEWAY_TRANSLATION_REFINE_TIMEOUT:PT20S}
+      max-chars: ${GATEWAY_TRANSLATION_REFINE_MAX_CHARS:12000}
   rendering:
     mode: ${GATEWAY_RENDERING_MODE:disabled}
     temporary-directory: ${GATEWAY_RENDERING_TEMP_DIR:}

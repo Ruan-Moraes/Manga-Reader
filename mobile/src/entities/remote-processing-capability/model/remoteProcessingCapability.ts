@@ -20,6 +20,11 @@ export const legalDisclosureSchema = z
         gatewayRegion: z.literal('southamerica-east1'),
         ocrRegion: z.literal('us'),
         translationLocation: z.literal('global'),
+        // Vertex AI location of the optional language model (text only, never the image); null while it is off.
+        languageModelLocation: z
+            .string()
+            .regex(/^[a-z][a-z0-9-]{0,28}[a-z0-9]$/)
+            .nullable(),
         originalRetentionSeconds: z.number().int().positive().max(3600),
         resultRetentionSeconds: z.number().int().positive().max(3600),
         metadataRetentionDays: z.number().int().positive().max(7),

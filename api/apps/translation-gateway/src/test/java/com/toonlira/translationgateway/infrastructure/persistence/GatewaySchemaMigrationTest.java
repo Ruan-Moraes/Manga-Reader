@@ -60,6 +60,7 @@ import com.toonlira.translationgateway.application.AcknowledgeResultUseCase;
 import com.toonlira.translationgateway.application.CleanupAcknowledgedResultsUseCase;
 import com.toonlira.translationgateway.application.ResultAcknowledgementPersistenceUseCase;
 import com.toonlira.translationgateway.application.port.ResultAcknowledgementRepository;
+import com.toonlira.translationgateway.application.port.TranslationRefinerPort;
 import com.toonlira.translationgateway.application.ProcessTranslationTaskUseCase;
 import com.toonlira.translationgateway.application.TranslationManifestService;
 import com.toonlira.translationgateway.domain.GatewayErrorCode;
@@ -738,7 +739,7 @@ class GatewaySchemaMigrationTest {
                 try { assertThat(release.await(10, TimeUnit.SECONDS)).isTrue(); }
                 catch (InterruptedException error) { Thread.currentThread().interrupt(); throw new IllegalStateException("test interrupted"); }
                 return new TranslationResponse(List.of(new TranslationResponse.Region(regionId, "synthetic target")));
-            }, properties, Clock.systemUTC(),
+            }, TranslationRefinerPort.NONE, properties, Clock.systemUTC(),
             new CleanupLifecycleObjectsUseCase(lifecyclePersistence, storage, Clock.systemUTC()));
         try (var executor = Executors.newSingleThreadExecutor()) {
             var first = executor.submit(() -> worker.execute(job.jobRef()));
@@ -830,7 +831,7 @@ class GatewaySchemaMigrationTest {
                 request -> {
                     assertThat(TransactionSynchronizationManager.isActualTransactionActive()).isFalse();
                     return adapter.translate(request);
-                }, properties, Clock.systemUTC(),
+                }, TranslationRefinerPort.NONE, properties, Clock.systemUTC(),
                 new CleanupLifecycleObjectsUseCase(lifecyclePersistence, storage, Clock.systemUTC()));
             worker.execute(job.jobRef());
             worker.execute(job.jobRef());

@@ -29,6 +29,8 @@ public record CapabilitiesView(
         String gatewayRegion,
         String ocrRegion,
         String translationLocation,
+        /** Where the optional language model reviews translated text; null while that layer is off. */
+        String languageModelLocation,
         int originalRetentionSeconds,
         int resultRetentionSeconds,
         int metadataRetentionDays,

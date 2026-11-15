@@ -16,6 +16,7 @@ import com.toonlira.translationgateway.infrastructure.json.GatewayJsonMapper;
 import com.toonlira.translationgateway.application.config.GatewayProperties;
 import com.toonlira.translationgateway.application.port.TranslationJobRepository;
 import com.toonlira.translationgateway.application.port.TranslationPort;
+import com.toonlira.translationgateway.application.port.TranslationRefinerPort;
 import com.toonlira.translationgateway.domain.GatewayErrorCode;
 import com.toonlira.translationgateway.domain.JobStatus;
 import com.toonlira.translationgateway.domain.OcrManifest;
@@ -110,6 +111,72 @@ class ProcessTranslationTaskUseCaseTest {
             assertThat(json).contains("Olá", "mundo", "ocrManifestSha256")
                 .doesNotContain("Hello", "world");
             assertThat(json.indexOf("Olá")).isLessThan(json.indexOf("mundo"));
+        }
+    }
+
+    @Test
+    void refinedTranslationReplacesTheMachineOneInTheManifest() throws Exception {
+        var fixture = fixture(List.of(region(0, "WINDOWS 15 50 PATHETIC")));
+        when(fixture.persistence().claim(eq(fixture.job().jobRef()), any())).thenReturn(TranslationJobRepository.Claim.STARTED);
+        when(fixture.persistence().complete(eq(fixture.job().id()), any(), any(), any())).thenReturn(true);
+        TranslationRefinerPort refiner = (request, translated) -> new TranslationResponse(List.of(
+            new TranslationResponse.Region(translated.regions().getFirst().id(), "O WINDOWS É TÃO PATÉTICO")));
+
+        worker(fixture.persistence(), translatingProvider(), refiner, fixture.properties()).execute(fixture.job().jobRef());
+
+        assertThat(writtenManifest()).contains("O WINDOWS É TÃO PATÉTICO").doesNotContain("alvo");
+        verify(fixture.persistence()).complete(eq(fixture.job().id()), any(), any(), eq(NOW));
+    }
+
+    @Test
+    void refinerFailureKeepsTheMachineTranslationAndCompletesTheJob() throws Exception {
+        var fixture = fixture(List.of(region(0, "source")));
+        when(fixture.persistence().claim(eq(fixture.job().jobRef()), any())).thenReturn(TranslationJobRepository.Claim.STARTED);
+        when(fixture.persistence().complete(eq(fixture.job().id()), any(), any(), any())).thenReturn(true);
+        TranslationRefinerPort refiner = (request, translated) -> { throw new IllegalStateException("deadline exceeded"); };
+
+        worker(fixture.persistence(), translatingProvider(), refiner, fixture.properties()).execute(fixture.job().jobRef());
+
+        assertThat(writtenManifest()).contains("alvo");
+        verify(fixture.persistence()).complete(eq(fixture.job().id()), any(), any(), eq(NOW));
+        verify(fixture.persistence(), never()).fail(any(), any(), any());
+    }
+
+    @Test
+    void refinerReplyForOtherRegionsIsDiscarded() throws Exception {
+        var fixture = fixture(List.of(region(0, "source")));
+        when(fixture.persistence().claim(eq(fixture.job().jobRef()), any())).thenReturn(TranslationJobRepository.Claim.STARTED);
+        when(fixture.persistence().complete(eq(fixture.job().id()), any(), any(), any())).thenReturn(true);
+        TranslationRefinerPort refiner = (request, translated) -> new TranslationResponse(List.of(
+            new TranslationResponse.Region(UUID.randomUUID(), "outra região")));
+
+        worker(fixture.persistence(), translatingProvider(), refiner, fixture.properties()).execute(fixture.job().jobRef());
+
+        assertThat(writtenManifest()).contains("alvo").doesNotContain("outra região");
+    }
+
+    @Test
+    void joinedFragmentsAreReviewedAsOneSegmentBeforeTheirFollowersExist() throws Exception {
+        var fixture = fixture(List.of(region(0, "あ"), region(1, "ら")), "ja");
+        when(fixture.persistence().claim(eq(fixture.job().jobRef()), any())).thenReturn(TranslationJobRepository.Claim.STARTED);
+        when(fixture.persistence().complete(eq(fixture.job().id()), any(), any(), any())).thenReturn(true);
+        var reviewed = new java.util.ArrayList<String>();
+        TranslationRefinerPort refiner = (request, translated) -> {
+            request.regions().forEach(region -> reviewed.add(region.sourceText()));
+            return new TranslationResponse(List.of(new TranslationResponse.Region(translated.regions().getFirst().id(), "Nossa")));
+        };
+
+        worker(fixture.persistence(), translatingProvider(), refiner, fixture.properties()).execute(fixture.job().jobRef());
+
+        assertThat(reviewed).containsExactly("あら");
+        assertThat(writtenManifest()).contains("Nossa", "…");
+    }
+
+    private String writtenManifest() throws Exception {
+        try (var paths = Files.walk(temporary.resolve("private/translation"))) {
+            var files = paths.filter(Files::isRegularFile).toList();
+            assertThat(files).hasSize(1);
+            return Files.readString(files.getFirst());
         }
     }
 
@@ -269,17 +336,22 @@ class ProcessTranslationTaskUseCaseTest {
     }
 
     private Fixture fixture(List<OcrManifest.Region> regions) throws Exception {
+        return fixture(regions, "en");
+    }
+
+    private Fixture fixture(List<OcrManifest.Region> regions, String sourceLanguage) throws Exception {
         var properties = properties();
+        properties.getTranslation().setEnabledPairs(List.of(sourceLanguage + ":pt-BR"));
         var jobId = UUID.randomUUID();
         var jobRef = UUID.randomUUID();
-        var manifest = new OcrManifest("1.0", jobRef, "en", 100, 100, regions);
+        var manifest = new OcrManifest("1.0", jobRef, sourceLanguage, 100, 100, regions);
         var encoded = new OcrManifestService(GatewayJsonMapper.create()).encode(manifest);
         var source = Files.createTempFile(temporary, "ocr-source-", ".json");
         Files.write(source, encoded.bytes());
         var key = "private/ocr/fixture.json";
         new LocalObjectStorageAdapter(properties).store(key, source, "application/json", encoded.sha256(), NOW);
         var job = new TranslationJobRepository.WorkItem(jobId, jobRef, JobStatus.TRANSLATING,
-            "en", "pt-BR", key, encoded.sha256(), null, null);
+            sourceLanguage, "pt-BR", key, encoded.sha256(), null, null);
         var persistence = mock(TranslationPersistenceUseCase.class);
         when(persistence.find(jobRef)).thenReturn(job);
         return new Fixture(job, persistence, properties);
@@ -287,10 +359,15 @@ class ProcessTranslationTaskUseCaseTest {
 
     private ProcessTranslationTaskUseCase worker(TranslationPersistenceUseCase persistence, TranslationPort provider,
                                                   GatewayProperties properties) {
+        return worker(persistence, provider, TranslationRefinerPort.NONE, properties);
+    }
+
+    private ProcessTranslationTaskUseCase worker(TranslationPersistenceUseCase persistence, TranslationPort provider,
+                                                  TranslationRefinerPort refiner, GatewayProperties properties) {
         when(persistence.originalAvailable(any(), any())).thenReturn(true);
         var mapper = GatewayJsonMapper.create();
         return new ProcessTranslationTaskUseCase(persistence, new LocalObjectStorageAdapter(properties),
-            new OcrManifestService(mapper), new TranslationManifestService(mapper), provider,
+            new OcrManifestService(mapper), new TranslationManifestService(mapper), provider, refiner,
             properties, Clock.fixed(NOW, ZoneOffset.UTC), lifecycle);
     }
 

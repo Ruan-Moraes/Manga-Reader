@@ -116,6 +116,29 @@ public class GatewayProperties {
         public void setProjectId(String value) { projectId = value; }
         public List<String> getEnabledPairs() { return enabledPairs; }
         public void setEnabledPairs(List<String> value) { enabledPairs = value == null ? List.of() : List.copyOf(value); }
+        private final Refine refine = new Refine();
+        public Refine getRefine() { return refine; }
+
+        /** Optional language layer reviewing the machine translation with the page context (text only, never the image). */
+        public static class Refine {
+            public enum Mode { DISABLED, GEMINI }
+            private Mode mode = Mode.DISABLED;
+            private String model = "gemini-2.5-flash";
+            private String location = "us";
+            private Duration timeout = Duration.ofSeconds(20);
+            /** Source plus machine translation of one page, in UTF-16 units; larger pages skip the review. */
+            private int maxChars = 12_000;
+            public Mode getMode() { return mode; }
+            public void setMode(Mode value) { mode = value; }
+            public String getModel() { return model; }
+            public void setModel(String value) { model = value == null ? "" : value; }
+            public String getLocation() { return location; }
+            public void setLocation(String value) { location = value == null ? "" : value; }
+            public Duration getTimeout() { return timeout; }
+            public void setTimeout(Duration value) { timeout = value; }
+            public int getMaxChars() { return maxChars; }
+            public void setMaxChars(int value) { maxChars = value; }
+        }
     }
 
     public static class Layout {

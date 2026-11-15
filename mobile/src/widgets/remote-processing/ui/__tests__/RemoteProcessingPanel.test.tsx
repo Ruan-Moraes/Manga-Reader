@@ -56,6 +56,7 @@ const capabilities: RemoteProcessingCapabilities = {
         gatewayRegion: 'southamerica-east1',
         ocrRegion: 'us',
         translationLocation: 'global',
+        languageModelLocation: null,
         originalRetentionSeconds: 3600,
         resultRetentionSeconds: 3600,
         metadataRetentionDays: 7,
@@ -86,6 +87,7 @@ describe('MOB-FEAT-017 disclosure UI', () => {
         expect(screen.getByText(/southamerica-east1/)).toBeOnTheScreen();
         expect(screen.getByText(/OCR usa a região us dos EUA/)).toBeOnTheScreen();
         expect(screen.getByText(/sem garantia de processamento nos EUA/)).toBeOnTheScreen();
+        expect(screen.queryByText(/Gemini/)).toBeNull();
         expect(screen.getByRole('button', { name: 'Abrir política de privacidade' })).toBeOnTheScreen();
         fireEvent.press(screen.getByRole('button', { name: 'Agora não' }));
 
@@ -102,6 +104,20 @@ describe('MOB-FEAT-017 disclosure UI', () => {
 
         await waitFor(() => expect(start.acceptConsent).toHaveBeenCalledWith(project.id, capabilities, 'pt-BR'));
         expect(start.submit).toHaveBeenCalledWith(project.id);
+    });
+
+    it.each([
+        ['pt-BR', 'Iniciar processamento', /revisa o texto lido e a tradução na região us\. Ela recebe só o texto da página, nunca a imagem/],
+        ['en-US', 'Start processing', /reviews the recognized text and the translation in the us region\. It receives only the page text, never the image/],
+        ['es-ES', 'Iniciar procesamiento', /revisa el texto reconocido y la traducción en la región us\. Solo recibe el texto de la página, nunca la imagen/],
+    ])('discloses the language model layer and that it never receives the image in %s', async (locale, label, disclosure) => {
+        await i18n.changeLanguage(locale);
+        const start = controller();
+        const withModel = { ...capabilities, disclosure: { ...capabilities.disclosure, languageModelLocation: 'us' } };
+        start.initialize.mockResolvedValue({ project, capabilities: withModel, attempt: null, error: null });
+        render(<RemoteProcessingPanel startController={start} />);
+        fireEvent.press(await screen.findByRole('button', { name: label }));
+        expect(screen.getByText(disclosure)).toBeOnTheScreen();
     });
 
     it.each([

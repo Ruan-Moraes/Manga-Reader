@@ -445,6 +445,7 @@ components:
         - gatewayRegion
         - ocrRegion
         - translationLocation
+        - languageModelLocation
         - originalRetentionSeconds
         - resultRetentionSeconds
         - metadataRetentionDays
@@ -479,6 +480,14 @@ components:
           type: string
           const: global
           description: Global endpoint; translation processing has no guaranteed US residency.
+        languageModelLocation:
+          description: >-
+            Vertex AI location where the optional language model (Gemini) reviews the OCR text and its machine
+            translation, text only (never the image); null while that layer is off.
+          oneOf:
+            - type: string
+              pattern: "^[a-z][a-z0-9-]{0,28}[a-z0-9]$"
+            - type: "null"
         originalRetentionSeconds:
           type: integer
           minimum: 1

@@ -565,5 +565,10 @@ apagaria o contorno); retícula sem página real de validação nas amostras. Pe
 - **SFX/texto livre**: texto livre preservado fica no idioma original (falta tipografia
   estilizada ou inpainting real); letreiros à mão sobre fundo liso viram fonte comum pequena.
 - **Comparação com a edição original** (Ubunchu! ep. 01, Hiroshi Seo) e regressão visual.
+- **Camada de linguagem opcional** (2026-11-15): Gemini no Vertex AI (`us`) revisa leitura do OCR e
+  tradução com o contexto da página, só texto; desligada por padrão (`translation_refine_mode`),
+  fallback para o Google em qualquer erro, aceitação por região, `languageModelLocation` no disclosure.
+  Falta: validação real com o Vertex (custo a autorizar), nova `disclosure.version` antes de ligar e
+  ligar a tradução no Terraform — ver `api/apps/translation-gateway/docs/architecture/language-layer.md`.
 
 Fonte: auditoria visual das 12 páginas pt-BR (relatório anexado na conversa de 2026-11-14).

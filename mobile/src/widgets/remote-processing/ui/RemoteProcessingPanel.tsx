@@ -109,6 +109,9 @@ export function RemoteProcessingPanel({ startController, cancelController = canc
                                     translation: capability.disclosure.translationLocation,
                                 })}
                             </AppText>
+                            {capability.disclosure.languageModelLocation ? (
+                                <AppText>{t('disclosure.languageModel', { location: capability.disclosure.languageModelLocation })}</AppText>
+                            ) : null}
                             <AppText>
                                 {t('disclosure.retention', {
                                     originalMinutes: Math.ceil(capability.disclosure.originalRetentionSeconds / 60),

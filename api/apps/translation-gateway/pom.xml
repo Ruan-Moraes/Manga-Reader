@@ -101,6 +101,12 @@
             <artifactId>google-cloud-translate</artifactId>
         </dependency>
         <dependency>
+            <!-- Camada de linguagem opcional (Gemini no Vertex AI); fora do libraries-bom. -->
+            <groupId>com.google.genai</groupId>
+            <artifactId>google-genai</artifactId>
+            <version>1.80.0</version>
+        </dependency>
+        <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-text</artifactId>
             <version>1.12.0</version>
