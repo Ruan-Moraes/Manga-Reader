@@ -37,7 +37,7 @@ class FragmentJoinerTest {
     void wordsLonelySyllablesApartSpacedScriptsAndPunctuationAreLeftAlone() {
         // Not consecutive in reading order, a lone fragment, real words, digits and punctuation only.
         for (var request : List.of(request("ja", "あ", "大丈夫?", "ら"), request("ja", "あ"), request("ja", "まあね", "うん"),
-            request("ja", "1", "2"), request("ja", "!", "?"), request("en", "A", "H"))) {
+            request("ja", "1", "2"), request("ja", "!", "?"), request("en", "A", "H"), request("ja", "c", "C"))) {
             assertThat(FragmentJoiner.of(request).request()).isSameAs(request);
         }
         // Runs are capped: four single kana are a run of three and a lone one.

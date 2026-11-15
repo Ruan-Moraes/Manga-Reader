@@ -19,7 +19,22 @@ class CaptionFilterTest {
         assertThat(CaptionFilter.isCaption("clatter", "barulho", EN)).isFalse(); // single word
         assertThat(CaptionFilter.isCaption("JPTIL(F) ZZRK", "JPTIL(F) ZZRK!", EN)).isFalse(); // non-words
         assertThat(CaptionFilter.isCaption("AKANE!", "akane!", EN)).isFalse(); // unchanged
-        assertThat(CaptionFilter.isCaption("ナルト だ", "É o Naruto", Lexicon.NONE)).isTrue(); // no word list: two tokens suffice
+        assertThat(CaptionFilter.isCaption("Hola amigo", "Olá, amigo", Lexicon.NONE)).isTrue(); // no word list: two tokens suffice
+    }
+
+    @Test
+    void japaneseSpeechIsACaptionWithoutSpacesWhileSoundEffectsAreNot() {
+        assertThat(CaptionFilter.isCaption("保護してやんねーと世界遺産な意味", "Se não for protegido...", Lexicon.NONE)).isTrue();
+        assertThat(CaptionFilter.isCaption("試しにちょっとインスコしてみるだけだかんな", "É só para instalar e testar", Lexicon.NONE)).isTrue();
+        assertThat(CaptionFilter.isCaption("インストールしないで", "Não instale", Lexicon.NONE)).isTrue(); // katakana word in a sentence
+        assertThat(CaptionFilter.isCaption("カタカタカタカタカタカタナ", "Katakana", Lexicon.NONE)).isFalse(); // repeated unit
+        assertThat(CaptionFilter.isCaption("ドキドキ", "Tum-tum", Lexicon.NONE)).isFalse();
+        assertThat(CaptionFilter.isCaption("ガチャ", "Clique", Lexicon.NONE)).isFalse(); // short
+        assertThat(CaptionFilter.isCaption("わーい", "Eba!", Lexicon.NONE)).isFalse(); // interjection
+        assertThat(CaptionFilter.isCaption("うずうず", "Inquieto", Lexicon.NONE)).isFalse();
+        assertThat(CaptionFilter.isCaption("ひゅるる", "Fiuuu", Lexicon.NONE)).isFalse(); // short kana sound effect
+        assertThat(CaptionFilter.isCaption("※ウブントゥですよ", "※É o Ubuntu.", Lexicon.NONE)).isTrue(); // kana caption
+        assertThat(CaptionFilter.isCaption("你好吗朋友", "Tudo bem, amigo?", Lexicon.NONE)).isTrue(); // Chinese
     }
 
     @Test

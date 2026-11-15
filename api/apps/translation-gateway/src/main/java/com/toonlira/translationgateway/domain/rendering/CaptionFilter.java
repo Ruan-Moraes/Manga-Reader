@@ -38,6 +38,7 @@ public final class CaptionFilter {
 
     public static boolean isCaption(String source, String translated, Lexicon lexicon) {
         if (source == null || translated == null || UnchangedText.unchanged(source, translated)) return false;
+        if (unspaced(source)) return unspacedCaption(source);
         var tokens = new java.util.ArrayList<String>();
         for (var token : source.split("\\s+")) {
             var core = Lexicon.core(token);
@@ -47,5 +48,45 @@ public final class CaptionFilter {
         if (!lexicon.available()) return true;
         long known = tokens.stream().filter(lexicon::knows).count();
         return known >= MIN_KNOWN * tokens.size();
+    }
+
+    /**
+     * Minimum letters of a Japanese/Chinese caption ({@link #unspacedCaption}): with kanji, and in kana only — sound
+     * effects are written in kana and are short (ひゅるる, カタカタ), so kana-only text needs more to read as speech.
+     */
+    static final int MIN_UNSPACED_LETTERS = 4, MIN_KANA_ONLY_LETTERS = 6, MIN_UNSPACED_DISTINCT = 3;
+    /** Share of letters that repeat the letter one period earlier: カタカタカタ, ドキドキ. */
+    private static final double REPETITION = .8;
+
+    /** Mostly Han/Hiragana/Katakana: written without spaces, so word tokens say nothing. */
+    private static boolean unspaced(String text) {
+        long letters = 0, cjk = 0;
+        for (int c : text.codePoints().toArray()) {
+            if (!Character.isLetter(c)) continue;
+            letters++;
+            var script = Character.UnicodeScript.of(c);
+            if (script == Character.UnicodeScript.HAN || script == Character.UnicodeScript.HIRAGANA
+                || script == Character.UnicodeScript.KATAKANA) cjk++;
+        }
+        return letters > 0 && cjk * 2 >= letters;
+    }
+
+    /**
+     * Scripts without spaces: a caption has at least {@link #MIN_UNSPACED_LETTERS} letters (the long-vowel mark and
+     * wave dash aside; {@link #MIN_KANA_ONLY_LETTERS} without any kanji), {@link #MIN_UNSPACED_DISTINCT} different
+     * ones, and is not one short unit repeated — sound effects are short (ガチャ, ひゅるる), few-lettered (ドキドキ) or
+     * repetitive (カタカタカタカタ).
+     */
+    static boolean unspacedCaption(String source) {
+        int[] letters = source.codePoints().filter(Character::isLetter).filter(c -> c != 'ー' && c != '〜' && c != '～').toArray();
+        boolean kanji = java.util.Arrays.stream(letters).anyMatch(c -> Character.UnicodeScript.of(c) == Character.UnicodeScript.HAN);
+        if (letters.length < (kanji ? MIN_UNSPACED_LETTERS : MIN_KANA_ONLY_LETTERS)) return false;
+        if (java.util.Arrays.stream(letters).distinct().count() < MIN_UNSPACED_DISTINCT) return false;
+        for (int period = 1; period <= letters.length / 2; period++) {
+            int same = 0;
+            for (int i = period; i < letters.length; i++) if (letters[i] == letters[i - period]) same++;
+            if (same >= REPETITION * (letters.length - period)) return false;
+        }
+        return true;
     }
 }

@@ -75,9 +75,13 @@ public final class FragmentJoiner {
         return new TranslationResponse(regions);
     }
 
-    /** Exactly one letter, the rest punctuation or spaces: 「あ」, 「ら…」, 「え?」. */
+    /** Exactly one letter, a CJK one, the rest punctuation or spaces: 「あ」, 「ら…」, 「え?」 (never "c" on a screen). */
     static boolean fragment(String text) {
-        return text != null && text.codePoints().filter(Character::isLetter).count() == 1
-            && text.codePoints().noneMatch(Character::isDigit);
+        if (text == null || text.codePoints().anyMatch(Character::isDigit)) return false;
+        int[] letters = text.codePoints().filter(Character::isLetter).toArray();
+        return letters.length == 1 && switch (Character.UnicodeScript.of(letters[0])) {
+            case HAN, HIRAGANA, KATAKANA, HANGUL -> true;
+            default -> false;
+        };
     }
 }
