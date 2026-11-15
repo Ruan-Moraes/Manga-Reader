@@ -16,6 +16,16 @@ import java.util.UUID;
  */
 public final class OcrRegionGrouper {
     private static final Set<String> HORIZONTAL_LANGUAGES = Set.of("en", "es", "pt-BR");
+    /** CJK sources and how the lines of one speech are joined: no space in Japanese/Chinese, a space in Korean. */
+    private static final java.util.Map<String, String> CJK_JOINERS = java.util.Map.of("ja", "", "zh-Hans", "", "zh-Hant", "", "ko", " ");
+    /** A text box at least this much taller than wide is a vertical column. */
+    private static final double VERTICAL_RATIO = 1.5;
+    /** Neighbouring columns of one speech: horizontal gap (in column widths) and minimum vertical overlap. */
+    private static final double COLUMN_GAP = 1.0, COLUMN_OVERLAP = .3;
+    /** Detector boxes sharing less than this share of the smaller one are different balloons. */
+    private static final double DISTINCT_BALLOON_OVERLAP = .1;
+    /** Stacked lines whose line heights differ more than this are different blocks. */
+    private static final double MAX_LINE_RATIO = 1.75;
     private static final double MAX_GAP_RATIO = 0.8, MIN_OVERLAP_GAP_RATIO = -0.25, MIN_HORIZONTAL_OVERLAP = 0.4;
     private static final int MAX_MERGED_CHARS = 1500;
     /** Share of the smaller box two paragraph boxes must share to be one block of (slanted) text. */
@@ -37,6 +47,8 @@ public final class OcrRegionGrouper {
 
     public static List<OcrManifest.Region> group(List<OcrManifest.Region> regions, String sourceLanguage,
                                                  int widthPx, int heightPx) {
+        if (regions != null && regions.size() >= 2 && CJK_JOINERS.containsKey(sourceLanguage))
+            return groupCjk(regions, sourceLanguage, widthPx, heightPx, null);
         if (regions == null || regions.size() < 2 || !HORIZONTAL_LANGUAGES.contains(sourceLanguage)) return regions;
         var merged = new ArrayList<OcrManifest.Region>();
         var run = new ArrayList<OcrManifest.Region>();
@@ -59,6 +71,8 @@ public final class OcrRegionGrouper {
     public static List<OcrManifest.Region> group(List<OcrManifest.Region> regions, String sourceLanguage,
                                                  int widthPx, int heightPx, List<LayoutBox> bubbles) {
         if (bubbles == null) return group(regions, sourceLanguage, widthPx, heightPx);
+        if (regions != null && regions.size() >= 2 && CJK_JOINERS.containsKey(sourceLanguage))
+            return groupCjk(regions, sourceLanguage, widthPx, heightPx, bubbles);
         if (regions == null || regions.size() < 2 || !HORIZONTAL_LANGUAGES.contains(sourceLanguage)) return regions;
         record Unit(int bubble, List<OcrManifest.Region> members) { }
         var units = new ArrayList<Unit>();
@@ -253,6 +267,123 @@ public final class OcrRegionGrouper {
         if (overlap > 0 && overlapHeight > 0 && overlap * overlapHeight >= MIN_SHARED_AREA * smallerArea) return true;
         return gap <= MAX_GAP_RATIO * minHeight && gap >= MIN_OVERLAP_GAP_RATIO * minHeight
             && overlap >= MIN_HORIZONTAL_OVERLAP * minWidth;
+    }
+
+    /**
+     * CJK speeches: vertical columns side by side (the provider returns each column as a paragraph, not in reading
+     * order) and stacked horizontal lines form one speech; with balloons, only within the same balloon. Members are
+     * read in order (vertical: right-to-left columns, each top-down; horizontal: top-down) and joined without
+     * spaces for Japanese/Chinese. Detector boxes only bound which lines may join; they never change text.
+     */
+    static List<OcrManifest.Region> groupCjk(List<OcrManifest.Region> regions, String language, int w, int h,
+                                             List<LayoutBox> bubbles) {
+        final class Unit {
+            int bubble;
+            final List<OcrManifest.Region> members = new ArrayList<>();
+            Unit(int bubble) { this.bubble = bubble; }
+            List<OcrManifest.Region> members() { return members; }
+        }
+        var units = new ArrayList<Unit>();
+        for (var region : regions) {
+            int bubble = bubbles == null ? OUTSIDE : bubbleOf(region, bubbles);
+            Unit target = null;
+            for (int u = units.size() - 1; u >= 0 && target == null; u--) {
+                var unit = units.get(u);
+                // Balloons veto, they do not require: lines clearly in two different balloons never join, while a
+                // column a loose box missed still joins its neighbours.
+                if (bubble >= 0 && unit.bubble >= 0 && unit.bubble != bubble
+                    && distinctBalloons(bubbles.get(unit.bubble), bubbles.get(bubble))) continue;
+                if (chars(unit.members(), region) > MAX_MERGED_CHARS) continue;
+                for (var member : unit.members()) if (sameCjkSpeech(member, region, w, h)) { target = unit; break; }
+            }
+            if (target == null) { target = new Unit(bubble); units.add(target); }
+            else if (target.bubble < 0 && bubble >= 0) target.bubble = bubble;
+            target.members().add(region);
+        }
+        var result = new ArrayList<OcrManifest.Region>(units.size());
+        for (var unit : units) {
+            var members = new ArrayList<>(unit.members());
+            if (members.size() == 1) {
+                var only = members.getFirst();
+                result.add(new OcrManifest.Region(only.id(), result.size(), only.sourceText(), only.polygon()));
+                continue;
+            }
+            long vertical = members.stream().filter(m -> isVertical(m, w, h)).count();
+            if (vertical * 2 >= members.size()) {
+                // Right-to-left columns; within one column (same x span) top-down.
+                members.sort((a, b) -> {
+                    var ba = box(a, w, h); var bb = box(b, w, h);
+                    double overlap = Math.min(ba[2], bb[2]) - Math.max(ba[0], bb[0]);
+                    if (overlap > .5 * Math.min(ba[2] - ba[0], bb[2] - bb[0])) return Double.compare(ba[1], bb[1]);
+                    return Double.compare(bb[2], ba[2]);
+                });
+            } else {
+                members.sort((a, b) -> Double.compare(box(a, w, h)[1], box(b, w, h)[1]));
+            }
+            var text = new StringBuilder();
+            double left = 1, top = 1, right = 0, bottom = 0;
+            for (var member : members) {
+                var part = member.sourceText().strip().replaceAll("\\s*\\R\\s*", CJK_JOINERS.get(language));
+                if (!text.isEmpty() && !part.isEmpty()) text.append(CJK_JOINERS.get(language));
+                text.append(part);
+                for (var vertex : member.polygon()) {
+                    left = Math.min(left, vertex.x()); right = Math.max(right, vertex.x());
+                    top = Math.min(top, vertex.y()); bottom = Math.max(bottom, vertex.y());
+                }
+            }
+            var polygon = List.of(new OcrManifest.Vertex(left, top), new OcrManifest.Vertex(right, top),
+                new OcrManifest.Vertex(right, bottom), new OcrManifest.Vertex(left, bottom));
+            if (OcrGeometry.valid(polygon)) result.add(new OcrManifest.Region(members.getFirst().id(), result.size(), text.toString(), polygon));
+            else for (var member : members) result.add(new OcrManifest.Region(member.id(), result.size(), member.sourceText(), member.polygon()));
+        }
+        return List.copyOf(result);
+    }
+
+    /**
+     * Two detector boxes are different balloons only when they barely overlap: on vertical Japanese balloons the
+     * detector often returns several partial, overlapping boxes for one balloon.
+     */
+    private static boolean distinctBalloons(LayoutBox a, LayoutBox b) {
+        double overlap = Math.max(0, Math.min(a.right(), b.right()) - Math.max(a.left(), b.left()))
+            * Math.max(0, Math.min(a.bottom(), b.bottom()) - Math.max(a.top(), b.top()));
+        double smaller = Math.min((a.right() - a.left()) * (a.bottom() - a.top()), (b.right() - b.left()) * (b.bottom() - b.top()));
+        return smaller <= 0 || overlap < DISTINCT_BALLOON_OVERLAP * smaller;
+    }
+
+    /** Lines of a provider paragraph (it ends each line with a break). */
+    private static int lines(OcrManifest.Region region) {
+        return Math.max(1, (int) region.sourceText().strip().lines().count());
+    }
+
+    private static boolean isVertical(OcrManifest.Region region, int w, int h) {
+        var b = box(region, w, h);
+        return b[3] - b[1] >= VERTICAL_RATIO * (b[2] - b[0]);
+    }
+
+    /** Neighbouring vertical columns, stacked horizontal lines, or overlapping boxes. */
+    private static boolean sameCjkSpeech(OcrManifest.Region a, OcrManifest.Region b, int w, int h) {
+        var ba = box(a, w, h); var bb = box(b, w, h);
+        double horizontalGap = Math.max(ba[0], bb[0]) - Math.min(ba[2], bb[2]);
+        double verticalOverlap = Math.min(ba[3], bb[3]) - Math.max(ba[1], bb[1]);
+        double overlapArea = Math.max(0, Math.min(ba[2], bb[2]) - Math.max(ba[0], bb[0])) * Math.max(0, verticalOverlap);
+        double smaller = Math.min((ba[2] - ba[0]) * (ba[3] - ba[1]), (bb[2] - bb[0]) * (bb[3] - bb[1]));
+        if (smaller > 0 && overlapArea >= MIN_SHARED_AREA * smaller) return true;
+        if (isVertical(a, w, h) && isVertical(b, w, h)) {
+            double width = Math.max(ba[2] - ba[0], bb[2] - bb[0]);
+            double shorter = Math.min(ba[3] - ba[1], bb[3] - bb[1]);
+            return horizontalGap <= COLUMN_GAP * width && verticalOverlap >= COLUMN_OVERLAP * shorter;
+        }
+        if (!isVertical(a, w, h) && !isVertical(b, w, h)) {
+            // Lettering of very different size is a different block: a sound effect over a caption ("カタカタ…").
+            double lineA = (ba[3] - ba[1]) / lines(a), lineB = (bb[3] - bb[1]) / lines(b);
+            if (Math.max(lineA, lineB) > MAX_LINE_RATIO * Math.min(lineA, lineB)) return false;
+            double minHeight = Math.min(ba[3] - ba[1], bb[3] - bb[1]);
+            double horizontalOverlap = Math.min(ba[2], bb[2]) - Math.max(ba[0], bb[0]);
+            double verticalGap = Math.max(ba[1], bb[1]) - Math.min(ba[3], bb[3]);
+            return verticalGap <= MAX_GAP_RATIO * minHeight && verticalGap >= MIN_OVERLAP_GAP_RATIO * minHeight
+                && horizontalOverlap >= MIN_HORIZONTAL_OVERLAP * Math.min(ba[2] - ba[0], bb[2] - bb[0]);
+        }
+        return false;
     }
 
     private static void flush(List<OcrManifest.Region> run, List<OcrManifest.Region> out, int w, int h) {

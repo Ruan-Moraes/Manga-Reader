@@ -34,9 +34,41 @@ class OcrRegionGrouperTest {
     }
 
     @Test
-    void leavesVerticalCjkSourcesUntouched() {
+    void verticalJapaneseColumnsOfOneSpeechAreReadRightToLeftAndJoinedWithoutSpaces() {
+        // Real columns (Ubunchu! ep.1 p.04, scaled to this 1000 px fixture), provider order middle, right, left.
+        var middle = region(0, "インスコしてみる\n", 846, 446, 865, 566);
+        var right = region(1, "試しにちょっと\n", 877, 444, 896, 551);
+        var left = region(2, "だけだかんな\n", 818, 445, 835, 536);
+        var far = region(3, "イラネ\n", 80, 264, 99, 313);
+        var result = OcrRegionGrouper.group(List.of(middle, right, left, far), "ja", W, H);
+        assertThat(result).extracting(OcrManifest.Region::sourceText).containsExactly("試しにちょっとインスコしてみるだけだかんな", "イラネ\n"); // single paragraphs keep their text
+        assertThat(result.getFirst().id()).isEqualTo(right.id()); // first column in reading order
+        // A column stacked under another in the same x span stays apart unless it continues it.
         var input = List.of(region(0, "あ", 100, 100, 140, 400), region(1, "い", 100, 410, 140, 700));
-        assertThat(OcrRegionGrouper.group(input, "ja", W, H)).isSameAs(input);
+        assertThat(OcrRegionGrouper.group(input, "ja", W, H)).hasSize(2);
+    }
+
+    @Test
+    void horizontalCjkLinesJoinTopDownAndKoreanKeepsItsSpaces() {
+        var lines = List.of(region(0, "LiveCD,\n", 59, 439, 138, 457), region(1, "てゆーらしい\n", 59, 461, 152, 480),
+            region(2, "ですよ\n", 63, 483, 121, 500));
+        assertThat(OcrRegionGrouper.group(lines, "ja", W, H)).extracting(OcrManifest.Region::sourceText)
+            .containsExactly("LiveCD,てゆーらしいですよ");
+        var korean = List.of(region(0, "우리는\n", 100, 100, 300, 130), region(1, "친구야\n", 100, 135, 300, 165));
+        assertThat(OcrRegionGrouper.group(korean, "ko", W, H)).extracting(OcrManifest.Region::sourceText).containsExactly("우리는 친구야");
+    }
+
+    @Test
+    void distinctBalloonsKeepNeighbouringColumnsApartButOverlappingBoxesOfOneBalloonDoNot() {
+        var reply = region(0, "なによそれっ\n", 300, 100, 324, 260);
+        var speech = region(1, "謳歌してろよ\n", 334, 100, 358, 280);
+        assertThat(OcrRegionGrouper.group(List.of(reply, speech), "ja", W, H)).hasSize(1); // no balloons: neighbours join
+        // Two separate balloons (boxes barely touch): never one speech.
+        assertThat(OcrRegionGrouper.group(List.of(reply, speech), "ja", W, H, List.of(box(280, 80, 328, 290), box(329, 80, 380, 300))))
+            .hasSize(2);
+        // Two partial boxes of the same balloon (they overlap a lot): one speech, right column first.
+        assertThat(OcrRegionGrouper.group(List.of(reply, speech), "ja", W, H, List.of(box(280, 80, 340, 290), box(290, 80, 380, 300))))
+            .extracting(OcrManifest.Region::sourceText).containsExactly("謳歌してろよなによそれっ");
     }
 
     private static com.toonlira.translationgateway.domain.layout.LayoutBox box(int l, int t, int r, int b) {
@@ -135,5 +167,13 @@ class OcrRegionGrouperTest {
         var second = region(1, "OF YOUR TIME?\n", 130, 138, 270, 168);
         assertThat(OcrRegionGrouper.group(List.of(first, second), "en", W, H, List.of(box(90, 90, 310, 150))))
             .extracting(OcrManifest.Region::sourceText).containsExactly("CAN I HAVE A MOMENT OF YOUR TIME?");
+    }
+
+    @Test
+    void aBigSoundEffectAboveACaptionIsNotTheSameSpeech() {
+        // Real boxes (ep.1 p.04, scaled): one-line effect 47 px high, two-line caption ~25 px per line right under it.
+        var effect = region(0, "カタカタカタカタカタカタナ\n", 60, 552, 453, 588);
+        var caption = region(1, "でこの\nアイコンを\n", 79, 611, 178, 650);
+        assertThat(OcrRegionGrouper.group(List.of(effect, caption), "ja", W, H)).hasSize(2);
     }
 }
