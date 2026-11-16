@@ -38,6 +38,7 @@ public class ProcessOcrTaskUseCase {
     private final ShadowLayoutService layouts;
     private final CleanupLifecycleObjectsUseCase lifecycle;
     private final OcrRereadService reread;
+    private final com.toonlira.translationgateway.application.port.LexiconPort lexicons;
 
     public ProcessOcrTaskUseCase(OcrPersistenceUseCase persistence, ObjectStoragePort storage,
                                  MediaInspectionService inspector, OcrPort ocr, OcrManifestService manifests,
@@ -52,11 +53,21 @@ public class ProcessOcrTaskUseCase {
         this(persistence, storage, inspector, ocr, manifests, properties, clock, layouts, lifecycle, null);
     }
 
-    @Autowired
     public ProcessOcrTaskUseCase(OcrPersistenceUseCase persistence, ObjectStoragePort storage,
                                  MediaInspectionService inspector, OcrPort ocr, OcrManifestService manifests,
                                  GatewayProperties properties, Clock clock, ShadowLayoutService layouts,
                                  CleanupLifecycleObjectsUseCase lifecycle, OcrRereadService reread) {
+        this(persistence, storage, inspector, ocr, manifests, properties, clock, layouts, lifecycle, reread, null);
+    }
+
+    /** {@code lexicons}: language resources for repairing lettering misreadings; may be null. */
+    @Autowired
+    public ProcessOcrTaskUseCase(OcrPersistenceUseCase persistence, ObjectStoragePort storage,
+                                 MediaInspectionService inspector, OcrPort ocr, OcrManifestService manifests,
+                                 GatewayProperties properties, Clock clock, ShadowLayoutService layouts,
+                                 CleanupLifecycleObjectsUseCase lifecycle, OcrRereadService reread,
+                                 com.toonlira.translationgateway.application.port.LexiconPort lexicons) {
+        this.lexicons = lexicons;
         this.persistence = persistence;
         this.storage = storage;
         this.inspector = inspector;
@@ -157,7 +168,8 @@ public class ProcessOcrTaskUseCase {
             // Doubtful speeches are re-read whole, after grouping: context is what lets the provider read "THIS OS"
             // where a lone "05..." fragment stays ambiguous.
             if (rereading) regions = reread.improveRegions(regions, read, media.path(), job.sourceLanguage(), media.widthPx(), media.heightPx());
-            regions = com.toonlira.translationgateway.domain.ocr.LetteringRepair.repair(regions, job.sourceLanguage());
+            regions = com.toonlira.translationgateway.domain.ocr.LetteringRepair.repair(regions, job.sourceLanguage(),
+                lexicons == null ? com.toonlira.translationgateway.domain.ocr.Lexicon.NONE : lexicons.forLanguage(job.sourceLanguage()));
             requireOriginal(job);
             var manifest = new OcrManifest("1.0", job.jobRef(), job.sourceLanguage(), job.widthPx(), job.heightPx(), regions);
             var encoded = manifests.encode(manifest);

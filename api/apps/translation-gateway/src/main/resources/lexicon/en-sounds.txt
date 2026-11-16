@@ -34,13 +34,19 @@ fwoosh
 glug
 gurgle
 hiss
+hmm
 honk
 jingle
 kaboom
 kerplunk
 klunk
 knock
+mm
+mmm
 munch
+ouch
+ow
+oww
 ping
 plink
 plip
@@ -86,6 +92,7 @@ tock
 toot
 twack
 twang
+ugh
 vroom
 whack
 wham

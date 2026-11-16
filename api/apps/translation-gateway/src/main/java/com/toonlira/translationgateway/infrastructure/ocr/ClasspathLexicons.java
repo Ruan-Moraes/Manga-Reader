@@ -19,11 +19,16 @@ public class ClasspathLexicons implements LexiconPort {
 
     @Override
     public Lexicon forLanguage(String sourceLanguage) {
-        var file = sourceLanguage == null ? null : FILES.get(sourceLanguage);
-        if (file == null) return Lexicon.NONE;
-        return cache.computeIfAbsent(sourceLanguage, ignored -> {
-            var words = load(file);
-            return words.isEmpty() ? Lexicon.NONE : new Lexicon(words, load(file.replace(".txt", "-sounds.txt")));
+        if (sourceLanguage == null || !com.toonlira.translationgateway.domain.SupportedLanguages.contains(sourceLanguage)) return Lexicon.NONE;
+        return cache.computeIfAbsent(sourceLanguage, language -> {
+            // Word list where there is one; named lists (sounds, particles...) for any language that has them.
+            var words = FILES.containsKey(language) ? load(FILES.get(language)) : java.util.Set.<String>of();
+            var lists = new java.util.HashMap<String, java.util.Set<String>>();
+            for (var name : Lexicon.LISTS) {
+                var list = load("lexicon/" + language + "-" + name + ".txt");
+                if (!list.isEmpty()) lists.put(name, list);
+            }
+            return words.isEmpty() && lists.isEmpty() ? Lexicon.NONE : new Lexicon(words, lists);
         });
     }
 

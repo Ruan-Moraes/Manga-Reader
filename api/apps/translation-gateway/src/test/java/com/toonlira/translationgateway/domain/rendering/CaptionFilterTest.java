@@ -7,6 +7,9 @@ import java.util.Set;
 import org.junit.jupiter.api.Test;
 
 class CaptionFilterTest {
+    // Stand-in for lexicon/ja-particles.txt.
+    private static final Lexicon JA = new Lexicon(Set.of(), java.util.Map.of(Lexicon.PARTICLES,
+        Set.of("の", "か", "よ", "ね", "ぞ", "て")));
     private static final Lexicon EN = new Lexicon(Set.of("thank", "you", "for", "finally", "calling", "it", "now", "fine",
         "then", "is", "survey", "summaries", "clatter"));
 
@@ -40,11 +43,11 @@ class CaptionFilterTest {
     @Test
     void handDrawnShoutsAreLetteringWhileSoundEffectsAndShortWordsAreNot() {
         assertThat(CaptionFilter.isLettering("ターミナルがあれば全てが上手くいく", "Com um terminal, tudo dá certo", Lexicon.NONE)).isTrue();
-        assertThat(CaptionFilter.isLettering("やんのかゴラァ", "Tá querendo briga?", Lexicon.NONE)).isTrue(); // kana phrase (の, か)
-        assertThat(CaptionFilter.isLettering("まってくれよ", "Espera aí!", Lexicon.NONE)).isTrue();
-        assertThat(CaptionFilter.isLettering("ひゅるるる", "Fiuuu", Lexicon.NONE)).isFalse(); // sound: no particle
-        assertThat(CaptionFilter.isLettering("がたがたがた", "Treme treme", Lexicon.NONE)).isFalse(); // repeated sound
-        assertThat(CaptionFilter.isLettering("きゅう", "Kyu", Lexicon.NONE)).isFalse(); // too short
+        assertThat(CaptionFilter.isLettering("やんのかゴラァ", "Tá querendo briga?", JA)).isTrue(); // kana phrase (の, か)
+        assertThat(CaptionFilter.isLettering("まってくれよ", "Espera aí!", JA)).isTrue();
+        assertThat(CaptionFilter.isLettering("ひゅるるる", "Fiuuu", JA)).isFalse(); // sound: no particle
+        assertThat(CaptionFilter.isLettering("がたがたがた", "Treme treme", JA)).isFalse(); // repeated sound
+        assertThat(CaptionFilter.isLettering("きゅう", "Kyu", JA)).isFalse(); // too short
         assertThat(CaptionFilter.isLettering("全然", "De jeito nenhum", Lexicon.NONE)).isFalse(); // too short
         assertThat(CaptionFilter.isLettering("カタカタカタカタカタカタ", "Tec tec", Lexicon.NONE)).isFalse(); // repeated
         assertThat(CaptionFilter.isLettering("Now Akane... Fine then!! Ubunchu it is...", "Olha, Akane...", EN)).isTrue();

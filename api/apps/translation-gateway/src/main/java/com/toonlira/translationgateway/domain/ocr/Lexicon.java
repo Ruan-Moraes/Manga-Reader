@@ -10,16 +10,34 @@ import java.util.Set;
  */
 public final class Lexicon {
     public static final Lexicon NONE = new Lexicon(Set.of());
-    private final Set<String> words;
-    private final Set<String> sounds;
+    /** Onomatopoeia drawn in comics ({@code <language>-sounds.txt}). */
+    public static final String SOUNDS = "sounds";
+    /** Words that open a clause ({@code <language>-clause-openers.txt}): "then", "so", "but". */
+    public static final String CLAUSE_OPENERS = "clause-openers";
+    /** Words that join alternatives ({@code <language>-alternatives.txt}): "and", "or". */
+    public static final String ALTERNATIVES = "alternatives";
+    /** Grammatical particles written in kana ({@code <language>-particles.txt}, one character per line). */
+    public static final String PARTICLES = "particles";
+    public static final java.util.List<String> LISTS = java.util.List.of(SOUNDS, CLAUSE_OPENERS, ALTERNATIVES, PARTICLES);
 
-    public Lexicon(Set<String> words) { this(words, Set.of()); }
+    private final Set<String> words;
+    private final java.util.Map<String, Set<String>> lists;
+
+    public Lexicon(Set<String> words) { this(words, java.util.Map.of()); }
 
     /** {@code sounds}: onomatopoeia of the language (sound effects drawn in comics), possibly empty. */
-    public Lexicon(Set<String> words, Set<String> sounds) {
+    public Lexicon(Set<String> words, Set<String> sounds) { this(words, java.util.Map.of(SOUNDS, sounds)); }
+
+    /** {@code lists}: named lists of the language ({@link #LISTS}), each possibly absent. */
+    public Lexicon(Set<String> words, java.util.Map<String, Set<String>> lists) {
         this.words = Set.copyOf(words);
-        this.sounds = Set.copyOf(sounds);
+        var copy = new java.util.HashMap<String, Set<String>>();
+        lists.forEach((name, list) -> copy.put(name, Set.copyOf(list)));
+        this.lists = java.util.Map.copyOf(copy);
     }
+
+    /** A named list of the language, empty when the language has none. */
+    public Set<String> list(String name) { return lists.getOrDefault(name, Set.of()); }
 
     /** A sound effect word, also when drawn stretched ("Pooof", "BEEEP"). */
     public boolean isSound(String core) {
@@ -27,6 +45,7 @@ public final class Lexicon {
         // A drawn chain of sounds ("clickty-tap-clack-key"): at least half of its parts are sounds.
         var parts = core.split("-");
         if (parts.length > 1) return java.util.Arrays.stream(parts).filter(this::isSound).count() * 2 >= parts.length;
+        var sounds = list(SOUNDS);
         if (sounds.contains(core)) return true;
         String twice = core.replaceAll("(\\p{L})\\1{2,}", "$1$1"), once = core.replaceAll("(\\p{L})\\1+", "$1");
         return sounds.contains(twice) || sounds.contains(once);

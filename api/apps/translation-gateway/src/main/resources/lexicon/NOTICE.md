@@ -13,6 +13,14 @@ Usadas apenas para pontuar leituras do OCR (a palavra existe no idioma?), nunca 
 
 ## Onomatopeias (`<idioma>-sounds.txt`)
 
-`en-sounds.txt` é uma lista curta de onomatopeias comuns em quadrinhos em inglês, escrita para este
-projeto e dedicada ao domínio público (CC0). Usada só para decidir que um texto livre de uma palavra é
-efeito sonoro e deve ficar com o desenho original; nunca exibida ao leitor.
+`en-sounds.txt`, `es-sounds.txt`, `pt-BR-sounds.txt` e `ko-sounds.txt` são listas curtas de onomatopeias
+comuns em quadrinhos de cada idioma, escritas para este projeto e dedicadas ao domínio público (CC0). Usadas só
+para decidir que um texto livre de uma palavra é efeito sonoro e deve ficar com o desenho original; nunca
+exibidas ao leitor.
+
+## Classes gramaticais (`<idioma>-clause-openers.txt`, `-alternatives.txt`, `-particles.txt`)
+
+Listas fechadas da gramática do idioma, escritas para este projeto (CC0): palavras que abrem uma oração e
+palavras que ligam alternativas em inglês (reparo do "I" com serifa lido como `/`), e partículas do japonês em
+hiragana (grito curto em kana com partícula é frase). Descrevem o idioma, nunca o texto de uma obra
+(`docs/principios-de-correcao.md`).

@@ -1,0 +1,5 @@
+# Palavras que ligam alternativas em inglês ("AND / OR"). Escrita para este projeto (CC0).
+and
+or
+not
+nor
