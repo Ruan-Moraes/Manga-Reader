@@ -27,7 +27,7 @@ class RenderCallSupervisorTest {
 
     @Test
     void successfulResultTransfersExactlyOnceAndRunsWithoutInheritedContext() throws Exception {
-        var supervisor = new RenderCallSupervisor();
+        var supervisor = new RenderCallSupervisor(Thread::interrupt, java.time.Duration.ofMillis(100));
         var output = output();
         var inherited = new InheritableThreadLocal<String>();
         inherited.set("private caller context");
@@ -49,7 +49,7 @@ class RenderCallSupervisorTest {
     @ParameterizedTest
     @ValueSource(strings = {"timeout", "cancel"})
     void abandonedCallerDoesNotReleaseBusyCapacityOrReceiveLateOutput(String reason) throws Exception {
-        var supervisor = new RenderCallSupervisor();
+        var supervisor = new RenderCallSupervisor(Thread::interrupt, java.time.Duration.ofMillis(100));
         var entered = new CountDownLatch(1);
         var release = new CountDownLatch(1);
         var discarded = new CountDownLatch(1);
@@ -89,7 +89,7 @@ class RenderCallSupervisorTest {
 
     @Test
     void blockedLateCleanupKeepsCapacityWhileCallerAlreadyHasTimedOut() throws Exception {
-        var supervisor = new RenderCallSupervisor();
+        var supervisor = new RenderCallSupervisor(Thread::interrupt, java.time.Duration.ofMillis(100));
         var releaseOperation = new CountDownLatch(1);
         var cleanupEntered = new CountDownLatch(1);
         var releaseCleanup = new CountDownLatch(1);
@@ -114,7 +114,7 @@ class RenderCallSupervisorTest {
 
     @Test
     void unconfirmedCleanupPoisonsCapacityWithoutReplacingTheCallersDeadlineFailure() throws Exception {
-        var supervisor = new RenderCallSupervisor();
+        var supervisor = new RenderCallSupervisor(Thread::interrupt, java.time.Duration.ofMillis(100));
         var release = new CountDownLatch(1);
         var cleanup = new CountDownLatch(1);
         var output = output();
@@ -142,7 +142,7 @@ class RenderCallSupervisorTest {
             signalEntered.countDown();
             awaitIgnoringInterrupt(releaseSignal);
             worker.interrupt();
-        });
+        }, java.time.Duration.ofMillis(100));
         var output = output();
         try (var executor = Executors.newSingleThreadExecutor()) {
             var call = executor.submit(() -> supervisor.execute(Duration.ofMillis(250), started -> {
@@ -165,12 +165,12 @@ class RenderCallSupervisorTest {
 
     @Test
     void unknownTerminationFailureKeepsCapacityButOrdinaryFailureIsSanitizedAndReleasesIt() {
-        var poisoned = new RenderCallSupervisor();
+        var poisoned = new RenderCallSupervisor(Thread::interrupt, java.time.Duration.ofMillis(100));
         assertThatThrownBy(() -> poisoned.execute(Duration.ofSeconds(1), started -> {
             throw new RenderFileException(RenderFileException.Failure.CLEANUP_FAILED);
         }, ignored -> { })).hasMessage("render-cleanup-failed").hasNoCause();
         assertThat(poisoned.isAvailable()).isFalse();
-        var healthy = new RenderCallSupervisor();
+        var healthy = new RenderCallSupervisor(Thread::interrupt, java.time.Duration.ofMillis(100));
         assertThatThrownBy(() -> healthy.execute(Duration.ofSeconds(1), started -> {
             throw new IllegalStateException("private text/id/path");
         }, ignored -> { })).hasMessage("render-unavailable").hasNoCause();
@@ -180,7 +180,7 @@ class RenderCallSupervisorTest {
 
     @Test
     void alreadyInterruptedCallerDoesNotStartWorkAndRetainsItsInterruptFlag() {
-        var supervisor = new RenderCallSupervisor();
+        var supervisor = new RenderCallSupervisor(Thread::interrupt, java.time.Duration.ofMillis(100));
         var started = new AtomicBoolean();
         Thread.currentThread().interrupt();
         try {
@@ -196,7 +196,7 @@ class RenderCallSupervisorTest {
     @ParameterizedTest
     @ValueSource(longs = {0, -1, 301})
     void invalidDeadlineCannotAdmitWork(long seconds) {
-        var supervisor = new RenderCallSupervisor();
+        var supervisor = new RenderCallSupervisor(Thread::interrupt, java.time.Duration.ofMillis(100));
         assertThatThrownBy(() -> supervisor.execute(Duration.ofSeconds(seconds), started -> null, ignored -> { }))
             .hasMessage("render-configuration").hasNoCause();
         assertThat(supervisor.isAvailable()).isTrue();
@@ -204,7 +204,7 @@ class RenderCallSupervisorTest {
 
     @Test
     void nullArgumentsOrOutputDoNotTransferOwnershipOrExposeDiagnostics() {
-        var supervisor = new RenderCallSupervisor();
+        var supervisor = new RenderCallSupervisor(Thread::interrupt, java.time.Duration.ofMillis(100));
         assertThatThrownBy(() -> supervisor.execute(null, started -> null, ignored -> { })).hasMessage("render-configuration");
         assertThatThrownBy(() -> supervisor.execute(Duration.ofSeconds(1), null, ignored -> { })).hasMessage("render-configuration");
         assertThatThrownBy(() -> supervisor.execute(Duration.ofSeconds(1), started -> null, null)).hasMessage("render-configuration");
@@ -239,5 +239,27 @@ class RenderCallSupervisorTest {
             try { latch.await(); return; }
             catch (InterruptedException ignored) { }
         }
+    }
+
+    @Test
+    void aSecondPageWaitsForTheSlotAndRendersWhenTheFirstFinishes() throws Exception {
+        var supervisor = new RenderCallSupervisor(Thread::interrupt, Duration.ofSeconds(5));
+        var entered = new java.util.concurrent.CountDownLatch(1);
+        var release = new java.util.concurrent.CountDownLatch(1);
+        var first = output();
+        var second = output();
+        try (var executor = Executors.newFixedThreadPool(2)) {
+            var owner = executor.submit(() -> supervisor.execute(Duration.ofSeconds(5), started -> {
+                entered.countDown(); awaitIgnoringInterrupt(release); return first;
+            }, ignored -> { }));
+            assertThat(entered.await(2, java.util.concurrent.TimeUnit.SECONDS)).isTrue();
+            var waiting = executor.submit(() -> supervisor.execute(Duration.ofSeconds(5), started -> second, ignored -> { }));
+            Thread.sleep(150);
+            assertThat(waiting.isDone()).isFalse(); // waiting its turn, not refused
+            release.countDown();
+            assertThat(owner.get(2, java.util.concurrent.TimeUnit.SECONDS)).isSameAs(first);
+            assertThat(waiting.get(2, java.util.concurrent.TimeUnit.SECONDS)).isSameAs(second);
+        }
+        assertThat(supervisor.isAvailable()).isTrue();
     }
 }

@@ -21,11 +21,25 @@ final class RenderCallSupervisor {
     private static final Duration MAX_DEADLINE = Duration.ofMinutes(5);
     private final Semaphore capacity = new Semaphore(1);
     private final Consumer<Thread> cancellationSignal;
+    /**
+     * How long a page waits for the one render slot while another page (or an abandoned call still cleaning up) holds
+     * it. Failing at once lost pages submitted together (render-busy); the slot itself stays exclusive.
+     */
+    private volatile Duration capacityWait;
 
     RenderCallSupervisor() { this(Thread::interrupt); }
-    RenderCallSupervisor(Consumer<Thread> cancellationSignal) {
-        if (cancellationSignal == null) throw new RenderFileException(CONFIGURATION);
+    RenderCallSupervisor(Consumer<Thread> cancellationSignal) { this(cancellationSignal, LocalFileRenderAdapter.RENDER_WAIT); }
+    RenderCallSupervisor(Consumer<Thread> cancellationSignal, Duration capacityWait) {
+        if (cancellationSignal == null || capacityWait == null || capacityWait.isNegative()) throw new RenderFileException(CONFIGURATION);
         this.cancellationSignal = cancellationSignal;
+        this.capacityWait = capacityWait;
+    }
+
+    /** Tests only: how long callers wait for the slot; returns a handle that restores the previous wait. */
+    AutoCloseable waitForCapacityAtMost(Duration wait) {
+        var previous = capacityWait;
+        capacityWait = wait;
+        return () -> capacityWait = previous;
     }
 
     RenderPort.Output execute(Duration deadline, LongFunction<RenderPort.Output> operation,
@@ -33,7 +47,12 @@ final class RenderCallSupervisor {
         if (deadline == null || deadline.isZero() || deadline.isNegative() || deadline.compareTo(MAX_DEADLINE) > 0
             || operation == null || discard == null) throw new RenderFileException(CONFIGURATION);
         if (Thread.currentThread().isInterrupted()) throw new RenderFileException(CANCELLED);
-        if (!capacity.tryAcquire()) throw new RenderFileException(BUSY);
+        try {
+            if (!capacity.tryAcquire(capacityWait.toNanos(), TimeUnit.NANOSECONDS)) throw new RenderFileException(BUSY);
+        } catch (InterruptedException error) {
+            Thread.currentThread().interrupt();
+            throw new RenderFileException(CANCELLED);
+        }
         var call = new Call(deadline.toNanos());
         try {
             call.worker = Thread.ofVirtual().name("render-call-supervisor").inheritInheritableThreadLocals(false)

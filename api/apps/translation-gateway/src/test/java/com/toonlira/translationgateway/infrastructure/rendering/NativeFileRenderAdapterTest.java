@@ -27,6 +27,15 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 class NativeFileRenderAdapterTest {
+
+    private AutoCloseable shortWait;
+
+    // The shared render slot stays exclusive; a short wait keeps the "busy" assertions fast.
+    @org.junit.jupiter.api.BeforeEach
+    void waitBriefly() { shortWait = IsolatedRenderAdapter.waitForCallCapacityAtMost(java.time.Duration.ofMillis(100)); }
+
+    @org.junit.jupiter.api.AfterEach
+    void restoreWait() throws Exception { shortWait.close(); }
     @TempDir Path temporary;
     private final NativeWebpCodec codec = mock(NativeWebpCodec.class);
     private final PageRasterPainter painter = mock(PageRasterPainter.class);

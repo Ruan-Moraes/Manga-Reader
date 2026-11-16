@@ -266,5 +266,8 @@ public final class IsolatedRenderAdapter implements RenderPort {
 
     @Override public String toString() { return "IsolatedRenderAdapter[redacted]"; }
     static boolean isCallCapacityAvailable() { return CALLS.isAvailable(); }
+
+    /** Tests only: callers wait at most {@code wait} for the shared render slot until the handle is closed. */
+    static AutoCloseable waitForCallCapacityAtMost(Duration wait) { return CALLS.waitForCapacityAtMost(wait); }
     @FunctionalInterface interface ChildLauncher { Process start(Path directory, int heapMiB) throws IOException; }
 }
