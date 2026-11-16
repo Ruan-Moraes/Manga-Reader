@@ -11,8 +11,26 @@ import java.util.Set;
 public final class Lexicon {
     public static final Lexicon NONE = new Lexicon(Set.of());
     private final Set<String> words;
+    private final Set<String> sounds;
 
-    public Lexicon(Set<String> words) { this.words = Set.copyOf(words); }
+    public Lexicon(Set<String> words) { this(words, Set.of()); }
+
+    /** {@code sounds}: onomatopoeia of the language (sound effects drawn in comics), possibly empty. */
+    public Lexicon(Set<String> words, Set<String> sounds) {
+        this.words = Set.copyOf(words);
+        this.sounds = Set.copyOf(sounds);
+    }
+
+    /** A sound effect word, also when drawn stretched ("Pooof", "BEEEP"). */
+    public boolean isSound(String core) {
+        if (core.isEmpty()) return false;
+        // A drawn chain of sounds ("clickty-tap-clack-key"): at least half of its parts are sounds.
+        var parts = core.split("-");
+        if (parts.length > 1) return java.util.Arrays.stream(parts).filter(this::isSound).count() * 2 >= parts.length;
+        if (sounds.contains(core)) return true;
+        String twice = core.replaceAll("(\\p{L})\\1{2,}", "$1$1"), once = core.replaceAll("(\\p{L})\\1+", "$1");
+        return sounds.contains(twice) || sounds.contains(once);
+    }
 
     public boolean available() { return !words.isEmpty(); }
 

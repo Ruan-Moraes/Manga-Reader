@@ -21,19 +21,24 @@ public class ClasspathLexicons implements LexiconPort {
     public Lexicon forLanguage(String sourceLanguage) {
         var file = sourceLanguage == null ? null : FILES.get(sourceLanguage);
         if (file == null) return Lexicon.NONE;
-        return cache.computeIfAbsent(sourceLanguage, ignored -> load(file));
+        return cache.computeIfAbsent(sourceLanguage, ignored -> {
+            var words = load(file);
+            return words.isEmpty() ? Lexicon.NONE : new Lexicon(words, load(file.replace(".txt", "-sounds.txt")));
+        });
     }
 
-    private static Lexicon load(String file) {
+    /** Lines of a bundled list as word cores ({@code #} comments skipped); empty when the file is missing. */
+    private static java.util.Set<String> load(String file) {
         var stream = ClasspathLexicons.class.getClassLoader().getResourceAsStream(file);
-        if (stream == null) return Lexicon.NONE;
+        if (stream == null) return java.util.Set.of();
         var words = new HashSet<String>(65_536);
         try (var reader = new BufferedReader(new InputStreamReader(stream, StandardCharsets.UTF_8))) {
             for (String line; (line = reader.readLine()) != null; ) {
+                if (line.startsWith("#")) continue;
                 var core = Lexicon.core(line);
                 if (!core.isEmpty()) words.add(core);
             }
-        } catch (IOException unreadable) { return Lexicon.NONE; }
-        return new Lexicon(words);
+        } catch (IOException unreadable) { return java.util.Set.of(); }
+        return words;
     }
 }

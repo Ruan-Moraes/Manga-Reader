@@ -40,7 +40,11 @@ class CaptionFilterTest {
     @Test
     void handDrawnShoutsAreLetteringWhileSoundEffectsAndShortWordsAreNot() {
         assertThat(CaptionFilter.isLettering("ターミナルがあれば全てが上手くいく", "Com um terminal, tudo dá certo", Lexicon.NONE)).isTrue();
-        assertThat(CaptionFilter.isLettering("わんのかゴラァ", "Tá querendo briga?", Lexicon.NONE)).isFalse(); // kana only, short
+        assertThat(CaptionFilter.isLettering("やんのかゴラァ", "Tá querendo briga?", Lexicon.NONE)).isTrue(); // kana phrase (の, か)
+        assertThat(CaptionFilter.isLettering("まってくれよ", "Espera aí!", Lexicon.NONE)).isTrue();
+        assertThat(CaptionFilter.isLettering("ひゅるるる", "Fiuuu", Lexicon.NONE)).isFalse(); // sound: no particle
+        assertThat(CaptionFilter.isLettering("がたがたがた", "Treme treme", Lexicon.NONE)).isFalse(); // repeated sound
+        assertThat(CaptionFilter.isLettering("きゅう", "Kyu", Lexicon.NONE)).isFalse(); // too short
         assertThat(CaptionFilter.isLettering("全然", "De jeito nenhum", Lexicon.NONE)).isFalse(); // too short
         assertThat(CaptionFilter.isLettering("カタカタカタカタカタカタ", "Tec tec", Lexicon.NONE)).isFalse(); // repeated
         assertThat(CaptionFilter.isLettering("Now Akane... Fine then!! Ubunchu it is...", "Olha, Akane...", EN)).isTrue();
@@ -79,6 +83,17 @@ class CaptionFilterTest {
         // Missed by the detector but inside a balloon: speech, not drawn text.
         var balloon = sign.withBubbles(java.util.List.of(new com.toonlira.translationgateway.domain.layout.LayoutBox(0, 0, .6, .3)));
         assertThat(CaptionFilter.drawn(balloon, EN, unknown)).isEmpty();
+        // Free text of one word: a sound of the language stays drawn, single-word speech is retyped.
+        var sounds = new Lexicon(Set.of("indeed", "stop", "shuffle"), Set.of("shuffle", "poof"));
+        for (var text : java.util.List.of("Shuffle", "Pooof!")) {
+            var region = request(text, "Embaralhar");
+            assertThat(CaptionFilter.drawn(region, sounds, java.util.Map.of(region.regions().getFirst().id(), "text_free")))
+                .as(text).containsExactly(region.regions().getFirst().id());
+        }
+        for (var text : java.util.List.of("Indeed!", "stop!")) {
+            var region = request(text, "De fato!");
+            assertThat(CaptionFilter.drawn(region, sounds, java.util.Map.of(region.regions().getFirst().id(), "text_free"))).as(text).isEmpty();
+        }
         // A drawn sentence is lettering, retyped: not kept.
         var shout = request("Thank you for finally calling it", "Obrigado por finalmente chamar");
         assertThat(CaptionFilter.drawn(shout, EN, java.util.Map.of(shout.regions().getFirst().id(), "unknown"))).isEmpty();

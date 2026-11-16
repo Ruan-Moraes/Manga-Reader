@@ -10,3 +10,9 @@ construída a partir do corpus OpenSubtitles2018 (OPUS).
 
 Por exigência da licença, estas listas derivadas permanecem sob CC BY-SA 4.0, com esta atribuição.
 Usadas apenas para pontuar leituras do OCR (a palavra existe no idioma?), nunca exibidas ao leitor.
+
+## Onomatopeias (`<idioma>-sounds.txt`)
+
+`en-sounds.txt` é uma lista curta de onomatopeias comuns em quadrinhos em inglês, escrita para este
+projeto e dedicada ao domínio público (CC0). Usada só para decidir que um texto livre de uma palavra é
+efeito sonoro e deve ficar com o desenho original; nunca exibida ao leitor.

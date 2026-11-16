@@ -71,7 +71,12 @@ public final class CaptionFilter {
         var letterings = letterings(request, lexicon, kinds);
         var result = new HashSet<UUID>();
         for (var region : request.regions()) {
-            if (!"unknown".equals(kinds.get(region.id())) || letterings.contains(region.id())) continue;
+            var kind = kinds.get(region.id());
+            if (letterings.contains(region.id())) continue;
+            // Free text of one word that is a sound of the language ("shuffle", "Pooof"): a drawn effect too. Single-word
+            // speech outside balloons ("Indeed!", "stop!") is not a sound and is still retyped.
+            boolean sound = "text_free".equals(kind) && stems(region.sourceText()) == 1 && lexicon.isSound(soundCore(region.sourceText()));
+            if (!"unknown".equals(kind) && !sound) continue;
             double x = 0, y = 0;
             for (var vertex : region.polygon()) { x += vertex.x() / region.polygon().size(); y += vertex.y() / region.polygon().size(); }
             double cx = x, cy = y;
@@ -80,6 +85,15 @@ public final class CaptionFilter {
             if (!inBalloon) result.add(region.id());
         }
         return Set.copyOf(result);
+    }
+
+    /** The core of the first word of a one-word region (a repeated sound counts as one word). */
+    private static String soundCore(String source) {
+        for (var token : source.split("\\s+")) {
+            var core = Lexicon.core(token).toLowerCase(Locale.ROOT);
+            if (!core.isEmpty()) return core;
+        }
+        return "";
     }
 
     /** Distinct words, a word that only extends another counting once ("Ha Haha", "owl OW!"). */
@@ -91,6 +105,23 @@ public final class CaptionFilter {
             if (stems.stream().noneMatch(stem -> stem.startsWith(core) || core.startsWith(stem))) stems.add(core);
         }
         return stems.size();
+    }
+
+    /**
+     * Japanese particles and sentence-final words written in hiragana: a short kana shout that has one is a phrase
+     * (「やんのかゴラァ」, 「いくぞ」), while sound effects have none (「きゅう」, 「ひゅるる」, 「うずうず」).
+     */
+    private static final String PARTICLES = "のかよねぞぜをがだなわてに";
+    static final int MIN_KANA_PHRASE_LETTERS = 5, MIN_KANA_PHRASE_DISTINCT = 4;
+
+    /** Kana only: long and varied enough, and holding a particle; a repeated sound ("がたがた") never is. */
+    private static boolean kanaPhrase(int[] letters) {
+        if (letters.length < MIN_KANA_PHRASE_LETTERS) return false;
+        if (java.util.Arrays.stream(letters).distinct().count() < MIN_KANA_PHRASE_DISTINCT) return false;
+        var text = new String(letters, 0, letters.length);
+        int half = letters.length / 2;
+        if (letters.length % 2 == 0 && text.substring(0, half).equals(text.substring(half))) return false;
+        return java.util.Arrays.stream(letters).anyMatch(c -> PARTICLES.indexOf(c) >= 0);
     }
 
     /** Glyph size from which lettering counts as drawn bigger than the page's speech, and regions needed to judge it. */
@@ -111,7 +142,8 @@ public final class CaptionFilter {
         if (unspaced(source)) {
             int[] letters = source.codePoints().filter(Character::isLetter).filter(c -> c != 'ー' && c != '〜' && c != '～').toArray();
             boolean kanji = java.util.Arrays.stream(letters).anyMatch(c -> Character.UnicodeScript.of(c) == Character.UnicodeScript.HAN);
-            return kanji && letters.length >= MIN_LETTERING_LETTERS;
+            if (kanji) return letters.length >= MIN_LETTERING_LETTERS;
+            return kanaPhrase(letters);
         }
         // Spaced scripts: any phrase that reads as a caption (2+ distinct words, mostly of the language) is retyped;
         // onomatopoeia (one word, repeated, or not words: BEEP, Swish, Clickty-tap-clack-key) keeps its drawing. A word
