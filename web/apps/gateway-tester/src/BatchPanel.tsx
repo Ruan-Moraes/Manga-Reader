@@ -2,10 +2,17 @@ import { useState } from 'react'
 import { useBatchTranslation } from './hooks/useBatchTranslation'
 import type { BatchItemStatus } from './hooks/useBatchTranslation'
 
+interface LanguagePair {
+  source: string
+  target: string
+}
+
 interface Props {
   accessToken: string
   disclosureVersion: string
   languages: string[]
+  /** Pairs the gateway translates; any other combination is refused with unsupported-pair. */
+  pairs?: LanguagePair[]
   dailyQuota?: number
 }
 
@@ -20,10 +27,23 @@ const STATUS_STYLE: Record<BatchItemStatus, string> = {
 
 const DEFAULT_LANGUAGES = ['ja', 'en', 'es', 'ko', 'zh-Hans', 'zh-Hant', 'pt-BR']
 
-export default function BatchPanel({ accessToken, disclosureVersion, languages, dailyQuota }: Props) {
+export default function BatchPanel({ accessToken, disclosureVersion, languages, pairs = [], dailyQuota }: Props) {
   const options = languages.length > 0 ? languages : DEFAULT_LANGUAGES
-  const [sourceLanguage, setSourceLanguage] = useState(options.includes('ja') ? 'ja' : options[0])
-  const [targetLanguage, setTargetLanguage] = useState(options.includes('pt-BR') ? 'pt-BR' : options[0])
+  // Only offer what the gateway translates: sources that have a pair, then that source's targets.
+  const sources = pairs.length > 0 ? [...new Set(pairs.map((pair) => pair.source))] : options
+  const targetsOf = (source: string) =>
+    pairs.length > 0 ? pairs.filter((pair) => pair.source === source).map((pair) => pair.target) : options
+  const [sourceLanguage, setSourceLanguage] = useState(sources.includes('ja') ? 'ja' : sources[0])
+  const [targetLanguage, setTargetLanguage] = useState(() => {
+    const targets = targetsOf(sourceLanguage)
+    return targets.includes('pt-BR') ? 'pt-BR' : targets[0]
+  })
+  const targets = targetsOf(sourceLanguage)
+  const chooseSource = (source: string) => {
+    setSourceLanguage(source)
+    const next = targetsOf(source)
+    if (!next.includes(targetLanguage)) setTargetLanguage(next.includes('pt-BR') ? 'pt-BR' : next[0])
+  }
   const [directory, setDirectory] = useState<FileSystemDirectoryHandle | null>(null)
   const { items, running, addFiles, clearFinished, start, stop } = useBatchTranslation()
 
@@ -53,9 +73,9 @@ export default function BatchPanel({ accessToken, disclosureVersion, languages, 
       <div className="space-y-4">
         <div className="grid grid-cols-2 gap-4">
           {[
-            { label: 'Source language', value: sourceLanguage, set: setSourceLanguage },
-            { label: 'Target language', value: targetLanguage, set: setTargetLanguage },
-          ].map(({ label, value, set }) => (
+            { label: 'Source language', value: sourceLanguage, set: chooseSource, codes: sources },
+            { label: 'Target language', value: targetLanguage, set: setTargetLanguage, codes: targets },
+          ].map(({ label, value, set, codes }) => (
             <div key={label}>
               <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{label}</label>
               <select
@@ -64,7 +84,7 @@ export default function BatchPanel({ accessToken, disclosureVersion, languages, 
                 disabled={running}
                 className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg dark:bg-slate-700 dark:text-white"
               >
-                {options.map((code) => (
+                {codes.map((code) => (
                   <option key={code} value={code}>
                     {code}
                   </option>

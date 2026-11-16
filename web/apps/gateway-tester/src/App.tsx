@@ -168,6 +168,7 @@ export default function App() {
                 accessToken={session.accessToken}
                 disclosureVersion={capabilities?.disclosure?.version ?? ''}
                 languages={capabilities?.supportedLanguages ?? []}
+                pairs={capabilities?.supportedPairs ?? []}
                 dailyQuota={capabilities?.dailyInstallationQuota}
               />
             )}
