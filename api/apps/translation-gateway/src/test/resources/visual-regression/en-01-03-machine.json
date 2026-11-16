@@ -245,8 +245,8 @@
       "font" : 23,
       "residualInk" : 0
     }, {
-      "overflow" : true,
-      "font" : 0,
+      "overflow" : false,
+      "font" : 8,
       "residualInk" : 0
     }, {
       "overflow" : true,

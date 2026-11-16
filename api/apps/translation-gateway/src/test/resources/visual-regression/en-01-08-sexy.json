@@ -117,8 +117,8 @@
       "residualInk" : 0
     }, {
       "overflow" : false,
-      "font" : 14,
-      "residualInk" : 127
+      "font" : 15,
+      "residualInk" : 1
     }, {
       "overflow" : false,
       "font" : 18,

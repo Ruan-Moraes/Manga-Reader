@@ -128,6 +128,13 @@ public final class PageRasterPainter {
             if (plans[i] != null || preserved[i] || lettering[i]) continue;
             plans[i] = plan(regions.get(i), request, cap, inpaint[i], true);
         }
+        // Then type a little smaller than the original lettering (a translation longer than its source), whole
+        // words first, syllables only if that is not enough.
+        for (int i = 0; i < plans.length; i++) {
+            if (plans[i] != null || preserved[i] || lettering[i]) continue;
+            plans[i] = plan(regions.get(i), request, cap, inpaint[i], false, true);
+            if (plans[i] == null) plans[i] = plan(regions.get(i), request, cap, inpaint[i], true, true);
+        }
         for (int i = 0; i < plans.length; i++) if (lettering[i]) plans[i] = letteringPlans[i];
         // Halo sets are computed on the untouched raster, so no region erases text another one already drew.
         var halos = new ArrayList<List<Integer>>(plans.length);
@@ -185,14 +192,20 @@ public final class PageRasterPainter {
 
     /** {@code syllables}: words may break at their syllables (last resort, see {@link #compose}). */
     private Plan plan(CleanBoxPainter.CleanRegion region, RenderRequest request, int maximumFontPx, boolean inpainted, boolean syllables) {
-        if (!inpainted) return planFor(region, request, maximumFontPx, syllables);
+        return plan(region, request, maximumFontPx, inpainted, syllables, false);
+    }
+
+    /** {@code smaller}: the minimum may go down to {@link #SOURCE_SIZE_SHARE} of the source lettering (last resort). */
+    private Plan plan(CleanBoxPainter.CleanRegion region, RenderRequest request, int maximumFontPx, boolean inpainted,
+                      boolean syllables, boolean smaller) {
+        if (!inpainted) return planFor(region, request, maximumFontPx, syllables, smaller);
         // The whole box is reconstructed, so text may use the polygon's inscribed box (no balloon mask), leaving
         // room for the outline; it is clipped to the inpainted box.
         var bounds = region.polygon().bounds();
         var clip = new RasterPolygon.Bounds(bounds.left() - INPAINT_MARGIN, bounds.top() - INPAINT_MARGIN,
             bounds.right() + INPAINT_MARGIN, bounds.bottom() + INPAINT_MARGIN);
         var box = region.polygon().interiorBox(request.policy().paddingPx());
-        int minimum = minimumFor(region, request.policy());
+        int minimum = minimumFor(region, request.policy(), smaller);
         var plan = compose(region.region().translatedText(), request.pair().target(), box, request.policy(), maximumFontPx, clip, false, false, minimum, syllables);
         if (plan != null) return plan;
         // Everything inside the clip is reconstructed: text that does not fit the OCR box may use all of it.
@@ -263,12 +276,23 @@ public final class PageRasterPainter {
     }
 
     private Plan planFor(CleanBoxPainter.CleanRegion region, RenderRequest request, int maximumFontPx, boolean syllables) {
+        return planFor(region, request, maximumFontPx, syllables, false);
+    }
+
+    private Plan planFor(CleanBoxPainter.CleanRegion region, RenderRequest request, int maximumFontPx, boolean syllables,
+                         boolean smaller) {
         var text = region.region().translatedText();
         var target = request.pair().target();
         // The layout box is the polygon's inscribed box shrunk until it lies on balloon interior only.
         var padded = region.mask().fit(region.polygon().interiorBox(request.policy().paddingPx()));
-        int minimum = minimumFor(region, request.policy());
+        int minimum = minimumFor(region, request.policy(), smaller);
         var plan = compose(text, target, padded, request.policy(), maximumFontPx, padded, false, false, minimum, syllables);
+        // Edge letters completed by the mask (outlined/glowing lettering) may free more room: keep the bigger text.
+        var completed = region.mask().fitCompleted(region.polygon().interiorBox(request.policy().paddingPx()));
+        if (!completed.equals(padded)) {
+            var other = compose(text, target, completed, request.policy(), maximumFontPx, completed, false, false, minimum, syllables);
+            if (other != null && (plan == null || other.size() > plan.size())) plan = other;
+        }
         if (plan != null || request.policy().paddingPx() == 0) return plan;
         // A tight bubble gets a second chance with the whole inscribed box before the text is given up on.
         var whole = region.mask().fit(region.polygon().interiorBox(0));
@@ -339,13 +363,22 @@ public final class PageRasterPainter {
      * is smaller (a low-resolution scan, where 12 px is bigger than the original letters), never below the policy's
      * legibility floor. The size is sqrt(box area / letters), which does not depend on how lines were joined.
      */
-    static int minimumFor(CleanBoxPainter.CleanRegion region, RenderPolicy policy) {
+    static int minimumFor(CleanBoxPainter.CleanRegion region, RenderPolicy policy) { return minimumFor(region, policy, false); }
+
+    /**
+     * {@code smaller}: a translation longer than its source that fits nowhere else (not in its balloon grown, nor
+     * with syllables) may go down to {@link #SOURCE_SIZE_SHARE} of the original lettering, as a letterer shrinks the
+     * type of a longer line; at the original size it cannot fit the same box at all.
+     */
+    static int minimumFor(CleanBoxPainter.CleanRegion region, RenderPolicy policy, boolean smaller) {
         long letters = region.region().sourceText().codePoints().filter(Character::isLetterOrDigit).count();
         if (letters == 0) return RenderPolicy.COMFORT_FONT_PX;
         var bounds = region.polygon().bounds();
         double pitch = Math.sqrt((double) (bounds.right() - bounds.left()) * (bounds.bottom() - bounds.top()) / letters);
-        return Math.clamp((int) Math.floor(pitch), policy.minimumFontPx(), RenderPolicy.COMFORT_FONT_PX);
+        return Math.clamp((int) Math.floor((smaller ? SOURCE_SIZE_SHARE : 1) * pitch), policy.minimumFontPx(), RenderPolicy.COMFORT_FONT_PX);
     }
+
+    static final double SOURCE_SIZE_SHARE = .75;
 
     /** The vertically centred share {@code fraction} of a box, full width; null when too thin to grow from. */
     private static RasterPolygon.Bounds band(RasterPolygon.Bounds box, double fraction) {

@@ -14,6 +14,10 @@ import java.util.List;
 final class BalloonMask {
     static final int MARGIN_PX = CleanBoxPainter.HALO_PX + 4;
     private static final int FLAT = 1, BALLOON = 2, OUTSIDE = 4, CLEAN = 8, ALLOWED = 16, GLYPH = 32;
+    /** Light halo of an outlined/glowing letter: cleaned with it, but not room the new text may take. */
+    private static final int HALO = 64;
+    /** Dark letter completed by {@link #markDarkGlyphs} (outlined/glowing lettering at the polygon's edge). */
+    private static final int DARK = 128;
     private final int left, top, width, height;
     private final byte[] state;
     /** Tiny enclosed blobs (screentone dots) at most this many pixels. */
@@ -35,6 +39,12 @@ final class BalloonMask {
     /** {@code limit}: when a detected balloon bounds the region, flat pixels beyond it are not balloon interior. */
     static BalloonMask of(BufferedImage image, RasterPolygon polygon, List<RasterPolygon> others, int argb,
                           RasterPolygon.Bounds limit) {
+        return of(image, polygon, others, argb, limit, false);
+    }
+
+    /** {@code noisyScan}: the page is an old printed scan ({@link #noisyScan}), whose paper is far from flat. */
+    static BalloonMask of(BufferedImage image, RasterPolygon polygon, List<RasterPolygon> others, int argb,
+                          RasterPolygon.Bounds limit, boolean noisyScan) {
         var bounds = polygon.bounds();
         int left = Math.max(0, bounds.left() - MARGIN_PX), right = Math.min(image.getWidth(), bounds.right() + MARGIN_PX);
         int top = Math.max(0, bounds.top() - MARGIN_PX), bottom = Math.min(image.getHeight(), bounds.bottom() + MARGIN_PX);
@@ -42,33 +52,104 @@ final class BalloonMask {
         var state = new byte[width * height];
         var inside = new boolean[width * height];
         var ink = new boolean[width * height];
+        var distances = new int[width * height];
         for (int y = 0; y < height; y++) {
             CleanBoxPainter.checkInterrupted();
             var span = polygon.span(top + y);
             for (int x = 0; x < width; x++) {
-                int i = y * width + x, distance = CleanBoxPainter.distance(image.getRGB(left + x, top + y), argb);
-                boolean inLimit = limit == null || left + x >= limit.left() && left + x < limit.right()
-                    && top + y >= limit.top() && top + y < limit.bottom();
-                if (distance <= CleanBoxPainter.BACKGROUND_DISTANCE && inLimit) state[i] |= FLAT;
+                int i = y * width + x;
+                distances[i] = CleanBoxPainter.distance(image.getRGB(left + x, top + y), argb);
                 inside[i] = span != null && left + x >= span.start() && left + x < span.end();
-                ink[i] = distance > CleanBoxPainter.INK_DISTANCE;
+                ink[i] = distances[i] > CleanBoxPainter.INK_DISTANCE;
             }
         }
+        int flat = noisyScan ? flatTolerance(distances, inside, ink) : CleanBoxPainter.BACKGROUND_DISTANCE;
+        for (int y = 0; y < height; y++) for (int x = 0; x < width; x++) {
+            int i = y * width + x;
+            boolean inLimit = limit == null || left + x >= limit.left() && left + x < limit.right()
+                && top + y >= limit.top() && top + y < limit.bottom();
+            if (distances[i] <= flat && inLimit) state[i] |= FLAT;
+        }
         markLargestFlatComponent(state, inside, width, height);
-        markOutside(state, width, height);
+        markOutside(state, width, height, noisyScan);
         int dots = markGlyphs(state, inside, ink, width, height);
+        // Only text the mask already sees on a plain background (most of its ink enclosed) gets its outlined or glowing
+        // edge letters completed; lettering drawn over the art (sound effects, labels) stays exactly as before.
+        if (enclosedShare(state, inside, ink) >= MIN_ENCLOSED_FOR_DARK_GLYPHS) markDarkGlyphs(state, inside, ink, width, height);
         int inkInside = 0, enclosedInkInside = 0;
         for (int y = 0; y < height; y++) for (int x = 0; x < width; x++) {
             int i = y * width + x;
             boolean balloon = (state[i] & BALLOON) != 0, enclosed = (state[i] & GLYPH) != 0;
             if (inside[i] && ink[i]) { inkInside++; if (enclosed) enclosedInkInside++; }
             // Overlaps inside the own polygon resolve in OCR order, as before; outside it other regions are off limits.
+            if ((state[i] & HALO) != 0 && !(balloon || enclosed) && !(!inside[i] && insideAny(others, left + x, top + y))) {
+                // Cleaned with its letter; inside the polygon the new text may use it, as the room around any glyph.
+                state[i] |= inside[i] ? CLEAN | ALLOWED : CLEAN;
+                continue;
+            }
             if (!(balloon || enclosed) || !inside[i] && insideAny(others, left + x, top + y)) continue;
             state[i] |= ALLOWED;
             if (inside[i] && balloon || enclosed) state[i] |= CLEAN;
         }
         return new BalloonMask(left, top, width, height, state, inkInside == 0 ? 1 : (double) enclosedInkInside / inkInside,
             dots >= MIN_TONE_DOTS);
+    }
+
+    /** Median local deviation from which a page is a noisy scan: digital and clean scans 0-3, 1940s print 8-19. */
+    static final int NOISY_SCAN = 5;
+    private static final int NOISE_STEP = 3;
+
+    /**
+     * Whether the page is an old printed scan: the median, over a sparse grid, of each pixel's distance to the mean
+     * of its 3x3 neighbourhood. Flat paper and solid blacks dominate a page, so the median measures their grain, not
+     * the edges of the drawing. A page property: inside one region, art behind a sound effect is no evidence of
+     * noisy paper.
+     */
+    static boolean noisyScan(BufferedImage image) {
+        int width = image.getWidth(), height = image.getHeight();
+        var histogram = new int[256 * 3 + 1];
+        int count = 0;
+        for (int y = 1; y < height - 1; y += NOISE_STEP) {
+            CleanBoxPainter.checkInterrupted();
+            for (int x = 1; x < width - 1; x += NOISE_STEP) {
+                int r = 0, g = 0, b = 0;
+                for (int dy = -1; dy <= 1; dy++) for (int dx = -1; dx <= 1; dx++) {
+                    int p = image.getRGB(x + dx, y + dy);
+                    r += (p >>> 16) & 255; g += (p >>> 8) & 255; b += p & 255;
+                }
+                int c = image.getRGB(x, y);
+                int deviation = (Math.abs(9 * ((c >>> 16) & 255) - r) + Math.abs(9 * ((c >>> 8) & 255) - g)
+                    + Math.abs(9 * (c & 255) - b)) / 9;
+                histogram[Math.min(deviation, histogram.length - 1)]++;
+                count++;
+            }
+        }
+        if (count == 0) return false;
+        int median = 0;
+        for (int seen = 0; median < histogram.length; median++) if ((seen += histogram[median]) * 2 >= count) break;
+        return median >= NOISY_SCAN;
+    }
+
+    /** Paper noise this many times the typical distance of the paper still counts as the same flat background. */
+    static final double NOISE_FACTOR = 2;
+    /** Widest flat tolerance: well under the ink threshold, so lettering and line art never pass for paper. */
+    static final int MAX_BACKGROUND_DISTANCE = 75;
+
+    /**
+     * Distance to the balloon colour up to which a pixel is flat background on a noisy scan page. Clean digital paper
+     * sits within a few units of it and keeps {@link CleanBoxPainter#BACKGROUND_DISTANCE}; an old printed scan (halftone, JPEG noise,
+     * yellowed paper) spreads its paper far wider, and a fixed bound sees two thirds of it as art and finds no room
+     * for text. The bound follows the median distance of the non-ink pixels inside the polygon (the paper between the
+     * letters), within {@link #MAX_BACKGROUND_DISTANCE}.
+     */
+    static int flatTolerance(int[] distances, boolean[] inside, boolean[] ink) {
+        int[] histogram = new int[CleanBoxPainter.INK_DISTANCE + 1];
+        int count = 0;
+        for (int i = 0; i < distances.length; i++) if (inside[i] && !ink[i]) { histogram[distances[i]]++; count++; }
+        if (count == 0) return CleanBoxPainter.BACKGROUND_DISTANCE;
+        int median = 0;
+        for (int seen = 0; median < histogram.length; median++) if ((seen += histogram[median]) * 2 >= count) break;
+        return Math.clamp(Math.round(NOISE_FACTOR * median), CleanBoxPainter.BACKGROUND_DISTANCE, MAX_BACKGROUND_DISTANCE);
     }
 
     /** The plain clean-box policy: every polygon pixel is cleaned and may be drawn on. */
@@ -159,17 +240,31 @@ final class BalloonMask {
     }
 
     /** Shrinks {@code box} edge by edge, dropping the edge with most forbidden pixels, until every pixel is allowed. */
-    RasterPolygon.Bounds fit(RasterPolygon.Bounds box) {
+    RasterPolygon.Bounds fit(RasterPolygon.Bounds box) { return fit(box, true); }
+
+    /**
+     * Like {@link #fit}, also using the room of completed edge letters and their halos ({@link #markDarkGlyphs}). Their
+     * islands can mislead the edge-by-edge shrink, so callers compose in both boxes and keep the better text.
+     */
+    RasterPolygon.Bounds fitCompleted(RasterPolygon.Bounds box) { return fit(box, false); }
+
+    private boolean allowed(int x, int y, boolean strict) {
+        if (x < left || y < top || x >= left + width || y >= top + height) return false;
+        int value = state[(y - top) * width + x - left];
+        return (value & ALLOWED) != 0 && (!strict || (value & (HALO | DARK)) == 0);
+    }
+
+    private RasterPolygon.Bounds fit(RasterPolygon.Bounds box, boolean strict) {
         int l = box.left(), t = box.top(), r = box.right(), b = box.bottom();
         while (l < r && t < b) {
             CleanBoxPainter.checkInterrupted();
             int leftBad = 0, rightBad = 0, topBad = 0, bottomBad = 0;
-            for (int y = t; y < b; y++) { if (!allowed(l, y)) leftBad++; if (!allowed(r - 1, y)) rightBad++; }
-            for (int x = l; x < r; x++) { if (!allowed(x, t)) topBad++; if (!allowed(x, b - 1)) bottomBad++; }
+            for (int y = t; y < b; y++) { if (!allowed(l, y, strict)) leftBad++; if (!allowed(r - 1, y, strict)) rightBad++; }
+            for (int x = l; x < r; x++) { if (!allowed(x, t, strict)) topBad++; if (!allowed(x, b - 1, strict)) bottomBad++; }
             int worst = Math.max(Math.max(leftBad, rightBad), Math.max(topBad, bottomBad));
             if (worst == 0) {
                 // Edges are clean; interior forbidden pixels (art islands) still shrink the box from the nearest side.
-                int bad = firstForbiddenRow(l, t, r, b);
+                int bad = firstForbiddenRow(l, t, r, b, strict);
                 if (bad < 0) return new RasterPolygon.Bounds(l, t, r, b);
                 if (bad - t < b - bad) t = bad + 1; else b = bad;
                 continue;
@@ -182,8 +277,8 @@ final class BalloonMask {
         return new RasterPolygon.Bounds(box.left(), box.top(), box.left(), box.top());
     }
 
-    private int firstForbiddenRow(int l, int t, int r, int b) {
-        for (int y = t; y < b; y++) for (int x = l; x < r; x++) if (!allowed(x, y)) return y;
+    private int firstForbiddenRow(int l, int t, int r, int b, boolean strict) {
+        for (int y = t; y < b; y++) for (int x = l; x < r; x++) if (!allowed(x, y, strict)) return y;
         return -1;
     }
 
@@ -216,7 +311,13 @@ final class BalloonMask {
         return tail + 1;
     }
 
-    private static void markOutside(byte[] state, int width, int height) {
+    /**
+     * Non-balloon pixels reachable from the window edge are outside the balloon (its border, the art around it). On a
+     * noisy scan ({@code narrow}), the walk does not squeeze through necks of 1-2 px between balloon pixels: the
+     * grain of the paper ties a letter set close to the border to that border, and the letter would pass for art.
+     * The pixels bordering what was reached are added back, so the border itself stays outside whole.
+     */
+    private static void markOutside(byte[] state, int width, int height, boolean narrow) {
         var queue = new int[state.length];
         int head = 0, tail = 0;
         for (int i = 0; i < state.length; i++) {
@@ -231,11 +332,32 @@ final class BalloonMask {
                 int nx = x + dx, ny = y + dy;
                 if (nx < 0 || ny < 0 || nx >= width || ny >= height) continue;
                 int n = ny * width + nx;
-                if ((state[n] & (BALLOON | OUTSIDE)) != 0) continue;
+                if ((state[n] & (BALLOON | OUTSIDE)) != 0 || narrow && nearBalloon(state, width, height, nx, ny)) continue;
                 state[n] |= OUTSIDE; queue[tail++] = n;
             }
             if ((head & 0xffff) == 0) CleanBoxPainter.checkInterrupted();
         }
+        if (!narrow) return;
+        var ring = new java.util.ArrayList<Integer>();
+        for (int k = 0; k < tail; k++) {
+            int i = queue[k], x = i % width, y = i / width;
+            for (int dy = -1; dy <= 1; dy++) for (int dx = -1; dx <= 1; dx++) {
+                int nx = x + dx, ny = y + dy;
+                if (nx < 0 || ny < 0 || nx >= width || ny >= height) continue;
+                int n = ny * width + nx;
+                if ((state[n] & (BALLOON | OUTSIDE)) == 0) ring.add(n);
+            }
+        }
+        for (int n : ring) state[n] |= OUTSIDE;
+    }
+
+    /** A balloon pixel among the 8 neighbours: ({@code x},{@code y}) lies in a neck, not in open art. */
+    private static boolean nearBalloon(byte[] state, int width, int height, int x, int y) {
+        for (int dy = -1; dy <= 1; dy++) for (int dx = -1; dx <= 1; dx++) {
+            int nx = x + dx, ny = y + dy;
+            if (nx >= 0 && ny >= 0 && nx < width && ny < height && (state[ny * width + nx] & BALLOON) != 0) return true;
+        }
+        return false;
     }
 
     /**
@@ -270,6 +392,74 @@ final class BalloonMask {
             CleanBoxPainter.checkInterrupted();
         }
         return dots;
+    }
+
+    /**
+     * Enclosed share of the polygon's ink from which edge letters are completed ({@link #markDarkGlyphs}): text already
+     * seen mostly on a plain box (a caption whose edge letters escape, ~0.9), not a half-drawn interface button (~0.5).
+     */
+    static final double MIN_ENCLOSED_FOR_DARK_GLYPHS = .75;
+
+    private static double enclosedShare(byte[] state, boolean[] inside, boolean[] ink) {
+        int inkInside = 0, enclosed = 0;
+        for (int i = 0; i < state.length; i++) if (inside[i] && ink[i]) { inkInside++; if ((state[i] & GLYPH) != 0) enclosed++; }
+        return inkInside == 0 ? 1 : (double) enclosed / inkInside;
+    }
+
+    /** Share of a dark blob's pixels inside the polygon from which it is lettering, not artwork touching the box. */
+    static final double MIN_DARK_GLYPH_INSIDE = .6;
+    /** Light halo cleaned around such a glyph, as a share of its height (outlined or glowing lettering). */
+    static final double HALO_SHARE = .25;
+    static final int MAX_HALO_PX = 16;
+
+    /**
+     * Lettering a light outline or glow connects to the window edge ("TIME FOR…" with a white stroke on a gradient,
+     * a caption with a glow): the blob test above sees it as artwork and leaves the whole letter. Judged by its dark ink
+     * alone it is a glyph — a dark blob mostly inside the polygon that does not reach the window edge through dark ink
+     * (balloon borders and art lines do). Its light halo, up to a quarter of its height, is cleaned with it; dark pixels
+     * never join the halo, so a border next to the text stays.
+     */
+    private static void markDarkGlyphs(byte[] state, boolean[] inside, boolean[] ink, int width, int height) {
+        var seen = new boolean[state.length];
+        var queue = new int[state.length];
+        var distance = new int[state.length];
+        for (int start = 0; start < state.length; start++) {
+            if (seen[start] || !ink[start] || (state[start] & (GLYPH | BALLOON)) != 0) continue;
+            int head = 0, tail = 0, insideCount = 0, minY = height, maxY = 0;
+            boolean edge = false;
+            seen[start] = true; queue[tail++] = start;
+            while (head < tail) {
+                int i = queue[head++], x = i % width, y = i / width;
+                if (inside[i]) insideCount++;
+                minY = Math.min(minY, y); maxY = Math.max(maxY, y);
+                edge |= x == 0 || y == 0 || x == width - 1 || y == height - 1;
+                for (int dy = -1; dy <= 1; dy++) for (int dx = -1; dx <= 1; dx++) {
+                    int nx = x + dx, ny = y + dy;
+                    if (nx < 0 || ny < 0 || nx >= width || ny >= height) continue;
+                    int n = ny * width + nx;
+                    if (seen[n] || !ink[n] || (state[n] & BALLOON) != 0) continue;
+                    seen[n] = true; queue[tail++] = n;
+                }
+            }
+            CleanBoxPainter.checkInterrupted();
+            if (edge || insideCount < MIN_DARK_GLYPH_INSIDE * tail) continue;
+            int radius = Math.clamp(Math.round((maxY - minY + 1) * HALO_SHARE), 2, MAX_HALO_PX);
+            // The blob, then its light halo by breadth-first distance (8-connected), never through dark ink or balloon.
+            int halo = tail;
+            for (int k = 0; k < tail; k++) { state[queue[k]] |= GLYPH | DARK; distance[queue[k]] = 0; }
+            head = 0;
+            while (head < halo) {
+                int i = queue[head++], x = i % width, y = i / width;
+                if (distance[i] >= radius) continue;
+                for (int dy = -1; dy <= 1; dy++) for (int dx = -1; dx <= 1; dx++) {
+                    int nx = x + dx, ny = y + dy;
+                    if (nx < 0 || ny < 0 || nx >= width || ny >= height) continue;
+                    int n = ny * width + nx;
+                    if (ink[n] || (state[n] & (GLYPH | BALLOON | HALO)) != 0) continue;
+                    state[n] |= HALO; distance[n] = distance[i] + 1; queue[halo++] = n;
+                }
+            }
+        }
     }
 
     private static boolean insideAny(List<RasterPolygon> polygons, int x, int y) {

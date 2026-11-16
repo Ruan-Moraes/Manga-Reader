@@ -602,6 +602,45 @@ class PageRasterPainterTest {
         assertThat(PageRasterPainter.minimumFor(floor, policy)).isEqualTo(policy.minimumFontPx());
     }
 
+    @Test
+    void noisyScanPaperWidensTheFlatToleranceWhileCleanPaperKeepsIt() {
+        int n = 1000;
+        var inside = new boolean[n];
+        var ink = new boolean[n];
+        java.util.Arrays.fill(inside, true);
+        var clean = new int[n];
+        for (int i = 0; i < n; i++) clean[i] = i % 6;                  // digital paper: a few units of noise
+        assertThat(BalloonMask.flatTolerance(clean, inside, ink)).isEqualTo(CleanBoxPainter.BACKGROUND_DISTANCE);
+        var scan = new int[n];
+        for (int i = 0; i < n; i++) scan[i] = i % 70;                  // halftone + JPEG: median 34
+        assertThat(BalloonMask.flatTolerance(scan, inside, ink)).isEqualTo(68);
+        var art = new int[n];
+        for (int i = 0; i < n; i++) art[i] = 60 + i % 60;              // never past the bound, far below ink
+        assertThat(BalloonMask.flatTolerance(art, inside, ink)).isEqualTo(BalloonMask.MAX_BACKGROUND_DISTANCE);
+        // Ink and pixels outside the polygon do not count.
+        var mixed = new int[n];
+        for (int i = 0; i < n; i++) { mixed[i] = i < 500 ? 2 : 100; ink[i] = i >= 500 && i < 900; inside[i] = i < 900; }
+        assertThat(BalloonMask.flatTolerance(mixed, inside, ink)).isEqualTo(CleanBoxPainter.BACKGROUND_DISTANCE);
+    }
+
+    @Test
+    void aLongTranslationInANarrowCaptionGoesSmallerThanTheSourceOnlyAsALastResort() {
+        // A narrow paper caption boxed in by dark artwork, with ~12 px source letters and a translation half again as long.
+        var image = blankPage();
+        for (int y = 0; y < image.getHeight(); y++) for (int x = 0; x < image.getWidth(); x++)
+            if (x < 8 || x >= 78 || y < 8 || y >= 182) image.setRGB(x, y, 0xff202020);
+        var narrow = CleanBoxPainterTest.rectangle(10 / 360.0, 10 / 220.0, 76 / 360.0, 180 / 220.0);
+        String source = "FLOATING IN THE AIR TO THEM, SHE SEES THE APES, MAN-LIKE, POWERFUL, BEAR OFF A YOUNG HUNTER AND GIRL.";
+        String translation = "Flutuando pelo ar em direção a eles, ela vê os símios — poderosos e de aparência humana — "
+            + "arrebatarem um jovem caçador e uma garota.";
+        var prepared = new CleanBoxPainter().prepare(image, request("pt-BR", translation, narrow, source)).getFirst();
+        int normal = PageRasterPainter.minimumFor(prepared, RenderPolicy.initial());
+        assertThat(PageRasterPainter.minimumFor(prepared, RenderPolicy.initial(), true)).isLessThan(normal);
+        var result = painter.paint(image, request("pt-BR", translation, narrow, source));
+        assertThat(result.getFirst().overflow()).isFalse();
+        assertThat(result.getFirst().fontSizePx()).isLessThan(normal);
+    }
+
     private static BufferedImage blankPage() {
         var page = new BufferedImage(360, 220, BufferedImage.TYPE_INT_ARGB);
         for (int y = 0; y < 220; y++) for (int x = 0; x < 360; x++) page.setRGB(x, y, 0xffffffff);
@@ -628,6 +667,41 @@ class PageRasterPainterTest {
         var image = CleanBoxPainterTest.fixture(WIDTH, HEIGHT, 0xffffffff);
         outline(image, 142, 12, 228, 208, 0xff000000);
         return image;
+    }
+
+    @Test
+    void anEdgeLetterTiedToTheWindowOnlyByItsGlowIsCleanedButArtTouchingTheBoxIsNot() {
+        // A caption on a grey box: letters inside the OCR box, the first one crossing its left edge with a white glow
+        // that reaches past the mask's window (so the old blob test saw it as art), and dark art mostly outside the box.
+        var image = new BufferedImage(360, 220, BufferedImage.TYPE_INT_ARGB);
+        for (int y = 0; y < 220; y++) for (int x = 0; x < 360; x++) image.setRGB(x, y, 0xffe0e0e0);
+        for (int y = 86; y < 134; y++) for (int x = 70; x < 112; x++) image.setRGB(x, y, 0xffffffff);      // glow
+        for (int y = 95; y < 125; y++) for (int x = 98; x < 110; x++) image.setRGB(x, y, 0xff000000);     // edge letter, 2 px out
+        for (int bar = 0; bar < 7; bar++)
+            for (int y = 95; y < 125; y++) for (int x = 120 + bar * 18; x < 126 + bar * 18; x++) image.setRGB(x, y, 0xff000000);
+        for (int y = 100; y < 120; y++) for (int x = 255; x < 300; x++) image.setRGB(x, y, 0xff202020);   // art
+        var polygon = CleanBoxPainterTest.rectangle(100 / 360.0, 90 / 220.0, 260 / 360.0, 130 / 220.0);
+        var mask = new CleanBoxPainter().prepare(image, request("pt-BR", "Obrigado", polygon, "Thanks for the report")).getFirst().mask();
+        assertThat(mask.clean(99, 110)).as("edge letter").isTrue();
+        assertThat(mask.clean(101, 110)).as("edge letter inside").isTrue();
+        assertThat(mask.clean(285, 110)).as("art beside the box").isFalse();
+    }
+
+    @Test
+    void onANoisyScanALetterTiedToTheBalloonBorderByAOnePixelNeckIsStillALetter() {
+        // A cream balloon on dark art; its first letter is tied to the left border by a 1 px dark neck (scan grain).
+        var image = new BufferedImage(360, 220, BufferedImage.TYPE_INT_ARGB);
+        for (int y = 0; y < 220; y++) for (int x = 0; x < 360; x++) image.setRGB(x, y, 0xff202020);
+        for (int y = 60; y < 160; y++) for (int x = 100; x < 260; x++) image.setRGB(x, y, 0xffdcc099);
+        for (int y = 90; y < 120; y++) for (int x = 108; x < 116; x++) image.setRGB(x, y, 0xff101010);   // letter
+        for (int x = 100; x < 108; x++) image.setRGB(x, 105, 0xff101010);                               // neck
+        var polygon = new RasterPolygon(CleanBoxPainterTest.rectangle(104 / 360.0, 70 / 220.0, 256 / 360.0, 150 / 220.0), 360, 220);
+        var plain = BalloonMask.of(image, polygon, List.of(), 0xffdcc099, null, false);
+        var noisy = BalloonMask.of(image, polygon, List.of(), 0xffdcc099, null, true);
+        assertThat(plain.clean(112, 100)).as("clean page: tied to the border, kept as art").isFalse();
+        assertThat(noisy.clean(112, 100)).as("noisy scan: the letter").isTrue();
+        assertThat(noisy.clean(50, 100)).as("art around the balloon").isFalse();
+        assertThat(noisy.clean(99, 100)).as("balloon border").isFalse();
     }
 
     @Test

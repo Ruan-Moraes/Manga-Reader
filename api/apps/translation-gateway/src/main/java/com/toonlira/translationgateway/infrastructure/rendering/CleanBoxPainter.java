@@ -38,6 +38,7 @@ final class CleanBoxPainter {
         var polygons = request.regions().stream().map(region ->
             new RasterPolygon(region.polygon(), image.getWidth(), image.getHeight())).toList();
         var prepared = new ArrayList<CleanRegion>(polygons.size());
+        boolean noisyScan = !polygons.isEmpty() && BalloonMask.noisyScan(image);
         for (int i = 0; i < polygons.size(); i++) {
             checkInterrupted();
             int padding = Math.max(1, request.policy().paddingPx());
@@ -48,7 +49,7 @@ final class CleanBoxPainter {
             // reference colour: the whole polygon is cleaned, as the plain clean-box policy does.
             var limit = balloonLimit(request, request.regions().get(i), image.getWidth(), image.getHeight());
             var mask = hasSurroundings(image, polygons.get(i), polygons, padding)
-                ? BalloonMask.of(image, polygons.get(i), others, argb, limit) : BalloonMask.polygonOnly(polygons.get(i));
+                ? BalloonMask.of(image, polygons.get(i), others, argb, limit, noisyScan) : BalloonMask.polygonOnly(polygons.get(i));
             prepared.add(new CleanRegion(request.regions().get(i), polygons.get(i), argb, mask, limit));
         }
         // All surroundings refer to the same untouched raster; earlier paint cannot influence later color estimates.
