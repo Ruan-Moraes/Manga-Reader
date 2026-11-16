@@ -54,6 +54,21 @@ class OcrRereadServiceTest {
     }
 
     @Test
+    void aRegionWhoseCropHoldsAnotherRegionsWordsIsNotReReadSoNoTextIsDuplicated() {
+        // A wide dialog line region whose box spans the lines of a second region read apart.
+        var wide = paragraph("Failed to st4rt the X server", .6, 100, 100, 700, 200);
+        var inner = paragraph("kely that it is not set", .6, 400, 150, 690, 190);
+        var dialog = new OcrManifest.Region(wide.region().id(), 0, "Failed to st4rt the X server", box(100, 100, 700, 200, W, H));
+        var lines = new OcrManifest.Region(inner.region().id(), 1, "kely that it is not set", box(400, 150, 690, 190, W, H));
+        // Every tile reads the whole wide crop: its own line plus the inner one.
+        var service = service(8, tile -> "Failed to start the X server kely that it is not set");
+        var result = service.improveRegions(List.of(dialog, lines), List.of(wide, inner), Path.of("page.png"), "en", W, H);
+        assertThat(result.get(0).sourceText()).isEqualTo("Failed to st4rt the X server");
+        assertThat(result.get(1).sourceText()).isEqualTo("kely that it is not set");
+        assertThat(calls.get()).isEqualTo(1);
+    }
+
+    @Test
     void disabledNothingDoubtfulOrProviderFailureKeepTheOriginalReading() {
         var confused = paragraph("WINDOWS 15 50 PATHETIC!", .55, 100, 100, 300, 140);
         var sure = paragraph("OH, WHAT'S THE MATTER?", .98, 500, 100, 700, 140);

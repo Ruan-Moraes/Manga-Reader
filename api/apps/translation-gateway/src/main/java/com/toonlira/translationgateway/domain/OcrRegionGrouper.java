@@ -239,6 +239,9 @@ public final class OcrRegionGrouper {
      * hand lettering inflates its box height but not its area per letter, so it still joins.
      */
     private static boolean differentLineSize(OcrManifest.Region a, OcrManifest.Region b, double[] boxA, double[] boxB) {
+        // Words of one line side by side ("You" "may" "see"): a box's height depends on ascenders and descenders, not
+        // on the lettering's size, so it says nothing here. The size test is for blocks stacked one over the other.
+        if (sameLine(a, b, boxA, boxB)) return false;
         double lineA = (boxA[3] - boxA[1]) / lines(a), lineB = (boxB[3] - boxB[1]) / lines(b);
         if (lineA <= 0 || lineB <= 0 || Math.max(lineA, lineB) <= MAX_LINE_RATIO * Math.min(lineA, lineB)) return false;
         double glyphA = areaGlyph(a, boxA), glyphB = areaGlyph(b, boxB);
@@ -246,6 +249,34 @@ public final class OcrRegionGrouper {
     }
 
     private static final double AREA_GLYPH_RATIO = 1.5;
+
+    /** Share of the smaller height two one-line boxes must overlap vertically to sit on the same line. */
+    private static final double SAME_LINE_OVERLAP = .5;
+    private static final double MAX_SAME_LINE_RATIO = 2.5;
+    /** A word's space: at most this share of the taller box (two speeches side by side sit a line height apart). */
+    private static final double WORD_GAP_RATIO = .6;
+
+    private static boolean sameLine(OcrManifest.Region a, OcrManifest.Region b, double[] boxA, double[] boxB) {
+        if (lines(a) != 1 || lines(b) != 1) return false;
+        double overlap = Math.min(boxA[3], boxB[3]) - Math.max(boxA[1], boxB[1]);
+        double smaller = Math.min(boxA[3] - boxA[1], boxB[3] - boxB[1]);
+        double gap = Math.max(boxA[0], boxB[0]) - Math.min(boxA[2], boxB[2]);
+        double taller = Math.max(boxA[3] - boxA[1], boxB[3] - boxB[1]);
+        // Ascenders and descenders double a short word's box at most; a logo seven times taller is another block.
+        // The next word on a line never covers the previous one, and a word's space is narrower than a letter:
+        // a sound effect drawn beside a speech overlaps it or sits a few letters away.
+        return smaller > 0 && taller <= MAX_SAME_LINE_RATIO * smaller && overlap >= SAME_LINE_OVERLAP * smaller
+            && gap >= -MAX_WORD_OVERLAP * smaller && gap <= WORD_GAP_RATIO * taller
+            && gap <= Math.max(advance(a, boxA), advance(b, boxB));
+    }
+
+    private static final double MAX_WORD_OVERLAP = .1;
+
+    /** Width per character of a one-line box (spaces included): about one letter's advance. */
+    private static double advance(OcrManifest.Region region, double[] box) {
+        long characters = region.sourceText().strip().codePoints().count();
+        return characters == 0 ? 0 : (box[2] - box[0]) / characters;
+    }
 
     private static double areaGlyph(OcrManifest.Region region, double[] box) {
         long letters = region.sourceText().codePoints().filter(Character::isLetterOrDigit).count();
@@ -291,6 +322,9 @@ public final class OcrRegionGrouper {
         int chars = b.sourceText().length();
         for (var member : run) chars += member.sourceText().length();
         if (minHeight <= 0 || minWidth <= 0 || chars > MAX_MERGED_CHARS) return false;
+        // Fragments of one line the provider read apart ("You" "may" "see" "…"), side by side with a word's gap. Only
+        // a run of single lines: a speech of several lines does not grow sideways into text beside it.
+        if (run.stream().allMatch(member -> lines(member) == 1) && sameLine(a, b, boxA, boxB)) return true;
         // Lettering of very different size is a different block, even overlapping: a title logo under its subtitle
         // ("Ubunchu!" 7x the line height), a word drawn on an object beside the credits.
         if (bySize && differentLineSize(a, b, boxA, boxB)) return false;

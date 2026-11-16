@@ -54,18 +54,45 @@ public class OcrRereadService {
                                                    String sourceLanguage, int widthPx, int heightPx) {
         if (!enabled() || regions.isEmpty()) return regions;
         var words = read.stream().flatMap(paragraph -> paragraph.words().stream()).toList();
-        var units = new ArrayList<OcrParagraph>(regions.size());
-        for (var region : regions) {
-            var box = crop(region, widthPx, heightPx, 0);
-            var mine = new ArrayList<OcrParagraph.Word>();
-            for (var word : words) {
-                double cx = 0, cy = 0;
-                for (var vertex : word.polygon()) { cx += vertex.x() / word.polygon().size(); cy += vertex.y() / word.polygon().size(); }
-                if (cx * widthPx >= box[0] && cx * widthPx <= box[2] && cy * heightPx >= box[1] && cy * heightPx <= box[3]) mine.add(word);
+        var boxes = regions.stream().map(region -> crop(region, widthPx, heightPx, 0)).toList();
+        var crops = regions.stream().map(region -> crop(region, widthPx, heightPx, CROP_MARGIN)).toList();
+        // A word belongs to the smallest region box holding its centre: a dialog box drawn around a neighbour's lines
+        // (lettering behind an "ERROR!" effect split in two regions) does not own them.
+        var owners = new int[words.size()];
+        var centres = new double[words.size()][];
+        for (int w = 0; w < words.size(); w++) {
+            centres[w] = centre(words.get(w), widthPx, heightPx);
+            owners[w] = -1;
+            double smallest = Double.MAX_VALUE;
+            for (int r = 0; r < boxes.size(); r++) {
+                var box = boxes.get(r);
+                double area = (double) (box[2] - box[0]) * (box[3] - box[1]);
+                if (inside(box, centres[w]) && area < smallest) { smallest = area; owners[w] = r; }
             }
-            units.add(new OcrParagraph(region, mine));
+        }
+        var units = new ArrayList<OcrParagraph>(regions.size());
+        for (int r = 0; r < regions.size(); r++) {
+            var mine = new ArrayList<OcrParagraph.Word>();
+            boolean crowded = false;
+            for (int w = 0; w < words.size(); w++) {
+                if (inside(boxes.get(r), centres[w])) mine.add(words.get(w));
+                if (owners[w] >= 0 && owners[w] != r && inside(crops.get(r), centres[w])) crowded = true;
+            }
+            // The crop of a region holding another region's words would read that text into this one (the same
+            // sentence then reaches the page twice): such a region keeps the provider's reading.
+            units.add(new OcrParagraph(regions.get(r), crowded ? List.of() : mine));
         }
         return improve(units, image, sourceLanguage, widthPx, heightPx).stream().map(OcrParagraph::region).toList();
+    }
+
+    private static double[] centre(OcrParagraph.Word word, int widthPx, int heightPx) {
+        double cx = 0, cy = 0;
+        for (var vertex : word.polygon()) { cx += vertex.x() / word.polygon().size(); cy += vertex.y() / word.polygon().size(); }
+        return new double[]{cx * widthPx, cy * heightPx};
+    }
+
+    private static boolean inside(int[] box, double[] point) {
+        return point[0] >= box[0] && point[0] <= box[2] && point[1] >= box[1] && point[1] <= box[3];
     }
 
     public List<OcrParagraph> improve(List<OcrParagraph> paragraphs, Path image, String sourceLanguage,

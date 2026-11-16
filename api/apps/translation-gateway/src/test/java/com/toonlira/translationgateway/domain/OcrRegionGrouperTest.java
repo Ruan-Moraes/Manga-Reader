@@ -16,6 +16,30 @@ class OcrRegionGrouperTest {
     }
 
     @Test
+    void wordsOfOneLineJoinWhateverTheirAscendersButStackedTitlesOfDifferentSizeDoNot() {
+        // A footnote read as four paragraphs: "may" (descender) is twice as tall as "see", yet it is one line.
+        var line = OcrRegionGrouper.group(List.of(region(0, "You\n", 60, 740, 87, 750), region(1, "may\n", 94, 744, 129, 757),
+            region(2, "see\n", 133, 744, 159, 750), region(3, "Ubuntu referred to as Ubunchu. Please enjoy it!\n", 167, 740, 557, 754)),
+            "en", W, H);
+        assertThat(line).hasSize(1);
+        // A big title over a small subtitle (stacked) stays apart, as before.
+        var stacked = OcrRegionGrouper.group(List.of(region(0, "BIG TITLE\n", 100, 100, 700, 220),
+            region(1, "a small subtitle\n", 120, 230, 680, 260)), "en", W, H);
+        assertThat(stacked).hasSize(2);
+    }
+
+    @Test
+    void aSoundEffectBesideASpeechLineIsNotAWordOfIt() {
+        // "clatter" a few letters away from "YOU LINUX" (gap wider than a letter), and one covering the line's end.
+        var away = OcrRegionGrouper.group(List.of(region(0, "YOU LINUX\n", 230, 81, 353, 121),
+            region(1, "clatter\n", 371, 71, 448, 107)), "en", W, H);
+        assertThat(away).hasSize(2);
+        var covering = OcrRegionGrouper.group(List.of(region(0, "YOU LINUX clatter\n", 230, 72, 448, 121),
+            region(1, "clatter\n", 440, 70, 502, 115)), "en", W, H);
+        assertThat(covering).hasSize(2);
+    }
+
+    @Test
     void longProviderParagraphsKeepTheirBreakWhileSpeechIsJoinedBySpaces() {
         var first = region(0, "This comic is presented in its original Japanese\nright-to-left format, in order to preserve as much\nof the detail of the original artwork as possible.\n", 100, 100, 800, 220);
         var second = region(1, "But if you prefer authenticity or simply wish to\nhave fun trying something new, all you need to do\nis start from the top-right panel of each page.\n", 100, 240, 800, 360);
