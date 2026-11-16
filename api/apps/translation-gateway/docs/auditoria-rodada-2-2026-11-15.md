@@ -64,16 +64,16 @@ Todas gerais (nada específico de Ubunchu!), com teste unitário e regressão vi
 | Autor duplicado ("WE BY HIROSHI SEO") | **corrigido** | parágrafo curto em que toda palavra é palpite (confiança < .5) sai antes do agrupamento: era 瀬尾 浩史 forçado para inglês |
 | Terminal (05), ícones e telas (09), "bin", "Win", "UN" | **corrigido** | região que o detector não vê como texto, fora de balão e que não é frase fica desenhada (`drawnHints`) |
 | Nomes de arquivo traduzidos ("caso_Wellcome.pdf") | **corrigido** | nome de arquivo e `snake_case` protegidos na tradução |
-| "/ Concordo!" (11), "/ THINK…" | **corrigido** | `LetteringRepair` (en): `/` ou `|` isolado abrindo frase antes de palavra maiúscula é o "I" com serifa |
+| "/ Concordo!" (11), "/ THINK…", "THEN / THINK" (04, 10) | **corrigido** | `LetteringRepair` (en): `/` ou `|` isolado abrindo frase, ou depois de conjunção/advérbio de abertura ("THEN", "SO"…), antes de palavra maiúscula, é o "I" com serifa; "AND / OR", "YES / NO" e "CLI / GUI" ficam |
 | "ush" (05) | **corrigido** | idem texto de tela (fica desenhado) |
 | "…é o único / A ÚNICA RESPOSTA…" (03) | **não é bug** | no original são falas separadas ("WINDOWS XP…!!" / "SLACKWARE…!!" / "…IS THE ONLY ACCEPTABLE ANSWER!!") |
-| "Aleatório"/"Shuffle" (08) | **aceito** | rótulo de interface (`text_free`), traduzido como previsto |
+| "Aleatório"/"Shuffle" (08) | **corrigido** | era onomatopeia: texto livre de uma palavra que é som do idioma (`lexicon/en-sounds.txt`, também formas esticadas e cadeias como "Clickty-tap-clack-key") fica desenhado |
 | "stop!" com remendo branco no degradê | **corrigido** | o preenchimento segue o fundo (interpola as bordas de cada trecho), em vez de uma cor só |
 | Parágrafos do 01b colados | **corrigido** | parágrafos longos do OCR mantêm a linha em branco; cada parágrafo vai como peça própria ao tradutor e volta junto |
 | Aspas com espaço (`" Ubuntu "`) | **corrigido** | termo protegido entre um par de aspas é colado a elas |
 | "15" no lugar de "IS" | **corrigido com Gemini** | 4 de 4 casos lidos de novo como "IS" pela camada de linguagem (ver abaixo) |
 | "Jingle do Drumbeat" (05) | limite | descrição de som em palavras (`text_free`); indistinguível de legenda sem contexto visual |
-| "やんのかゴラァ" (ja) | limite | grito só em kana e curto não vira letreiro; agora fica desenhado (antes saía retipado com resíduo) |
+| "やんのかゴラァ" (ja) | **corrigido** | grito só em kana com partícula (の, か, よ…) é frase e vira letreiro traduzido; som sem partícula ("きゅう", "ひゅるる") ou repetido fica desenhado |
 
 Fidelidade com o original japonês: [`fidelidade-cap1-2026-11-15.md`](fidelidade-cap1-2026-11-15.md).
 
@@ -98,6 +98,13 @@ nada"). Agora a página espera a vez (até 60 s) e a falha é logada com `Failur
   balança"), o que fazia o render retipá-las — agora rejeitado em código (`TranslationRefinement.sound`) e pedido no
   prompt. Variação entre execuções: numa saiu "servidora dessas" e "ISSO É PRIVACIDADE", na seguinte "SERVIDOR
   ASSIM" e "PROPRIEDADE PRIVADA" — revisão humana continua necessária.
+- **Prompt reforçado (2026-11-15, noite):** concordância de gênero segue o substantivo, não quem fala; expressões
+  fixas mantêm o sentido inteiro. Na 08, três execuções seguidas: "SERVIDOR ASSIM" e "PROPRIEDADE PRIVADA" nas três.
+- **Estado final no modo padrão (sem Gemini):** 12/12 `READY`; páginas `OK` passaram de 2 para 4 (02, 07, 08, 10)
+  com o campo `kept` (texto desenhado de propósito não pede revisão). Restavam 16 regiões não renderizadas em 8
+  páginas; com as cadeias de sons e "SIGH" na lista, "Clickty-tap-clack-key" (04) e "SIGH" (03) também ficam
+  desenhados (14, medido nos testes, não numa nova execução real). O resto: texto real sobre a arte ("RtL Edition", "Club President", "...WE WILL NEVER EVER…"), interjeições
+  ("Ouch!") e restos de interface ("VPN Mobile", "dd/Remove Progr").
 - **Recomendação:** ligar a camada para en→pt-BR depois de nova `disclosure.version`; padrão do código segue
   `disabled`.
 

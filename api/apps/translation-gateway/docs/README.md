@@ -1,5 +1,7 @@
 # Documentação do translation-gateway
 
+> **Normativo:** [`principios-de-correcao.md`](principios-de-correcao.md) — sem correção estática; corrigir a classe do erro.
+
 Organizada por assunto. Documentos datados são registros históricos (ver [política de documentação](../../../../docs/documentation-policy.md)); comandos e scripts ficam em [`scripts/`](../scripts/README.md).
 
 | Pasta | Conteúdo |

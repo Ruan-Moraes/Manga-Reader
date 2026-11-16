@@ -12,7 +12,7 @@ Contrato do manifesto: [rendering-contracts.md](rendering-contracts.md).
 | Texto que não cabe **preserva o original** (sem balão apagado nem marcador); retentativa com a caixa inscrita inteira | `PageRasterPainter` |
 | Fonte limitada a 1,35× a mediana da página (3+ regiões) | `PageRasterPainter.fontCap` |
 | Fringe de 4 px: apaga traços de glifo que vazam do polígono OCR, só se encadeados à tinta dentro dele | `CleanBoxPainter.fillWithFringe` |
-| Termos protegidos (glossário, URLs, `$var`) em `<span translate="no">`; região que perde o termo volta ao texto-fonte | `ProtectedTerms`, `TranslationEnvelopeCodec`, `glossary/protected-terms.txt` |
+| Termos protegidos (nomes reconhecidos pelo texto — glossário fixo removido em 2026-11-16 —, URLs, `$var`) em `<span translate="no">`; região que perde o termo volta ao texto-fonte | `ProtectedTerms`, `TranslationEnvelopeCodec`, `glossary/protected-terms.txt` |
 | Regiões só-literais (números, URLs, nomes) não vão ao provedor | `CloudTranslationAdapter` |
 | `quality` (`OK`/`NEEDS_REVIEW`; `TEXT_NOT_RENDERED`, `ALL_TEXT_NOT_RENDERED`) no manifesto, revalidado no decode; não bloqueia a entrega | `PageQuality`, `RenderManifestService` |
 | Agrupamento heurístico de parágrafos por balão (en/es/pt-BR; CJK intocado) | `OcrRegionGrouper`, `ProcessOcrTaskUseCase` |

@@ -53,7 +53,7 @@ do Google se:
 2. a região não é só-literal (números/URLs/nomes que o adaptador do Google já mantém intactos);
 3. a leitura corrigida, se houver, está a no máximo 40% de distância de edição da leitura do OCR
    (correção, não reescrita: o exemplo acima é 4/22 ≈ 18%);
-4. todo termo protegido (`ProtectedTerms`: glossário + URLs + `$VAR`) do texto-fonte aparece na tradução;
+4. todo termo protegido (`ProtectedTerms`: nomes reconhecidos pelo texto e pelo dicionário do idioma + URLs, `$VAR`, nomes de arquivo; sem lista fixa) do texto-fonte aparece na tradução;
 5. a tradução não cresce nem encolhe mais de 2× em relação à do Google (textos de até 16 caracteres
    ficam livres: "Ok" → "Tudo bem").
 
