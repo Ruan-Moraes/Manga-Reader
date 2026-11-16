@@ -50,7 +50,7 @@ public final class CloudTranslationAdapter implements TranslationPort, AutoClose
         var piecesOf = new java.util.HashMap<java.util.UUID, List<java.util.UUID>>();
         boolean reshaped = false;
         for (var region : request.regions()) {
-            if (codec.isLiteralOnly(region.sourceText())) { reshaped = true; continue; }
+            if (codec.isLiteralOnly(region.sourceText(), request.pair().source())) { reshaped = true; continue; }
             var paragraphs = PARAGRAPH_BREAK.split(region.sourceText().strip());
             if (paragraphs.length == 1) {
                 pieces.add(new TranslationRequest.Region(region.id(), pieces.size(), region.sourceText()));

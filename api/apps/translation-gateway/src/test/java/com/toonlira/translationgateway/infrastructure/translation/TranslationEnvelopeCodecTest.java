@@ -26,8 +26,9 @@ class TranslationEnvelopeCodecTest {
     }
 
     @Test
-    void doesNotProtectTermsInsideLongerWords() {
-        assertThat(codec.encode(request("Linuxish and Ubuntuland"))).doesNotContain("translate=\"no\"");
+    void ordinaryWordsAndAllCapsLetteringAreLeftToTheTranslator() {
+        assertThat(codec.encode(request("Windows are open and the door is shut."))).doesNotContain("translate=\"no\"");
+        assertThat(codec.encode(request("THE COMMAND LINE ROCKS!"))).doesNotContain("translate=\"no\"");
     }
 
     @Test
@@ -54,23 +55,23 @@ class TranslationEnvelopeCodecTest {
 
     @Test
     void regionThatLostAProtectedLiteralFallsBackToSource() {
-        var req = request("Install GNOME now");
-        var lost = codec.restoreProtected(req, new TranslationResponse(List.of(new TranslationResponse.Region(ID, "Instale o Gnomo agora"))));
-        var kept = codec.restoreProtected(req, new TranslationResponse(List.of(new TranslationResponse.Region(ID, "Instale o GNOME agora"))));
-        assertThat(lost.regions().getFirst().translatedText()).isEqualTo("Install GNOME now");
-        assertThat(kept.regions().getFirst().translatedText()).isEqualTo("Instale o GNOME agora");
+        var req = request("Install XFCE now");
+        var lost = codec.restoreProtected(req, new TranslationResponse(List.of(new TranslationResponse.Region(ID, "Instale o Xfce agora"))));
+        var kept = codec.restoreProtected(req, new TranslationResponse(List.of(new TranslationResponse.Region(ID, "Instale o XFCE agora"))));
+        assertThat(lost.regions().getFirst().translatedText()).isEqualTo("Install XFCE now");
+        assertThat(kept.regions().getFirst().translatedText()).isEqualTo("Instale o XFCE agora");
     }
 
     @Test
     void literalOnlyTextIsRecognised() {
-        assertThat(codec.isLiteralOnly("15")).isTrue();
-        assertThat(codec.isLiteralOnly("https://example.com/a")).isTrue();
-        assertThat(codec.isLiteralOnly("YouTube")).isTrue();
-        assertThat(codec.isLiteralOnly("Open YouTube")).isFalse();
-        assertThat(codec.isLiteralOnly("case_Wellcome.pdf")).isTrue();
-        assertThat(codec.isLiteralOnly("case_ubuntu_ johnhopkins_v2.pdf")).isTrue();
-        assertThat(codec.isLiteralOnly("Open notes.txt now")).isFalse();
-        assertThat(codec.isLiteralOnly("It is the end.")).isFalse(); // a sentence end is not an extension
-        assertThat(codec.isLiteralOnly("e.g. this")).isFalse();
+        assertThat(codec.isLiteralOnly("15", "en")).isTrue();
+        assertThat(codec.isLiteralOnly("https://example.com/a", "en")).isTrue();
+        assertThat(codec.isLiteralOnly("YouTube", "en")).isTrue();
+        assertThat(codec.isLiteralOnly("Open YouTube", "en")).isFalse();
+        assertThat(codec.isLiteralOnly("case_Wellcome.pdf", "en")).isTrue();
+        assertThat(codec.isLiteralOnly("case_ubuntu_ johnhopkins_v2.pdf", "en")).isTrue();
+        assertThat(codec.isLiteralOnly("Open notes.txt now", "en")).isFalse();
+        assertThat(codec.isLiteralOnly("It is the end.", "en")).isFalse(); // a sentence end is not an extension
+        assertThat(codec.isLiteralOnly("e.g. this", "en")).isFalse();
     }
 }

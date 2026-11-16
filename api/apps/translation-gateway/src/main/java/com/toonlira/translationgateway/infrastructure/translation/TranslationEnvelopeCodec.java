@@ -39,7 +39,7 @@ final class TranslationEnvelopeCodec {
         var html = new StringBuilder("<div>");
         for (var region : request.regions()) {
             html.append("<p data-region=\"").append(region.id()).append("\">")
-                .append(terms.wrap(region.sourceText(), StringEscapeUtils::escapeHtml4)).append("</p>");
+                .append(terms.wrap(region.sourceText(), request.pair().source(), StringEscapeUtils::escapeHtml4)).append("</p>");
         }
         html.append("</div>");
         String content = html.toString();
@@ -53,7 +53,7 @@ final class TranslationEnvelopeCodec {
      * Regions whose protected literals did not survive translation fall back to their source text, so a product name
      * or URL is never silently altered; the renderer then keeps the original art for text it cannot draw.
      */
-    boolean isLiteralOnly(String text) { return terms.isLiteralOnly(text); }
+    boolean isLiteralOnly(String text, String language) { return terms.isLiteralOnly(text, language); }
 
     TranslationResponse restoreProtected(TranslationRequest request, TranslationResponse translated) {
         var source = new java.util.HashMap<UUID, String>();
@@ -61,7 +61,7 @@ final class TranslationEnvelopeCodec {
         var regions = new ArrayList<TranslationResponse.Region>();
         for (var region : translated.regions()) {
             String original = source.get(region.id());
-            boolean lost = original != null && terms.find(original).stream().anyMatch(term -> !region.translatedText().contains(term));
+            boolean lost = original != null && terms.find(original, request.pair().source()).stream().anyMatch(term -> !region.translatedText().contains(term));
             regions.add(lost ? new TranslationResponse.Region(region.id(), original) : region);
         }
         return new TranslationResponse(regions);
