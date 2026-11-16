@@ -260,10 +260,10 @@ class PageRasterPainterTest {
         outline(english, borderLeft, borderTop, borderRight, borderBottom, 0xff000000);
         var japanese = copy(english);
         var original = copy(english);
-        int confined = painter.paint(english, page(english, List.of(columns), text)).getFirst().fontSizePx();
         var grown = painter.paint(japanese, page(japanese, List.of(columns), text, "ja", List.of("あたしは通信委員の仕事がある"))).getFirst();
         assertThat(grown.overflow()).isFalse();
-        assertThat(grown.fontSizePx()).isGreaterThan(confined + 3);
+        // Confined to the columns "comunicação" would need a tiny font; the source glyphs (~25 px) set the goal.
+        assertThat(grown.fontSizePx()).isGreaterThanOrEqualTo(16);
         for (int y = 0; y < HEIGHT; y++) for (int x = 0; x < WIDTH; x++) {
             boolean insideBalloon = x > borderLeft && x < borderRight && y > borderTop && y < borderBottom;
             if (!insideBalloon) assertThat(japanese.getRGB(x, y)).as("(%d,%d)", x, y).isEqualTo(original.getRGB(x, y));
@@ -387,10 +387,15 @@ class PageRasterPainterTest {
     @Test
     void wordWiderThanTheBalloonIsNeverSplitMidWord() {
         var narrowAndTall = CleanBoxPainterTest.rectangle(.45, .1, .55, .9); // ~36 x 176 px: room for many short lines
+        // A balloon exactly that narrow: the word has nowhere to grow, so it may only fit whole or not at all.
         var image = CleanBoxPainterTest.fixture(WIDTH, HEIGHT, 0xffffffff);
+        int left = (int) (.45 * WIDTH) - 8, right = (int) Math.ceil(.55 * WIDTH) + 8, top = (int) (.1 * HEIGHT) - 8, bottom = (int) Math.ceil(.9 * HEIGHT) + 8;
+        outline(image, left, top, right, bottom, 0xff000000);
         var result = painter.paint(image, request("pt-BR", "Inconstitucionalissimamente", narrowAndTall));
         assertThat(result.getFirst().overflow()).isTrue();
-        var fits = painter.paint(CleanBoxPainterTest.fixture(WIDTH, HEIGHT, 0xffffffff), request("pt-BR", "Oi tu", narrowAndTall));
+        var balloon = CleanBoxPainterTest.fixture(WIDTH, HEIGHT, 0xffffffff);
+        outline(balloon, left, top, right, bottom, 0xff000000);
+        var fits = painter.paint(balloon, request("pt-BR", "Oi tu", narrowAndTall));
         assertThat(fits.getFirst().overflow()).isFalse();
     }
 
@@ -559,6 +564,32 @@ class PageRasterPainterTest {
         assertThat(kept.getFirst().kept()).isTrue(); // on purpose, not text left to review
         assertThat(plain.getFirst().kept()).isFalse();
         assertThat(sameAs(image, before)).isTrue();
+    }
+
+    @Test
+    void smallTextAloneOnPlainPaperGrowsIntoThePaperInsteadOfKeepingItsOriginal() {
+        // A cover line: its OCR box is just the lettering's height, too small for the font floor, and the page has
+        // too few regions to know a typical size. The paper around it is free.
+        var image = CleanBoxPainterTest.fixture(WIDTH, HEIGHT, 0xfffff3e8);
+        for (int x = 40; x < 128; x += 7) for (int y = 101; y < 111; y++) image.setRGB(x, y, 0xff000000);
+        var line = CleanBoxPainterTest.rectangle(38 / 360.0, 100 / 220.0, 130 / 360.0, 112 / 220.0);
+        var result = painter.paint(image, request("pt-BR", "Edição RtL", line));
+        assertThat(result.getFirst().overflow()).isFalse();
+        assertThat(result.getFirst().fontSizePx()).isGreaterThanOrEqualTo(12);
+    }
+
+    @Test
+    void aSymbolMissingFromTheTextFaceComesFromAnotherBundledFaceButLettersNeverDo() {
+        assertThat(FONTS.canDisplay("pt-BR", "Por Hiroshi ♥ ★ ♪ →")).isTrue();
+        assertThat(FONTS.symbolFallback('♥', false)).isNotNull();
+        assertThat(FONTS.symbolFallback('A', false)).isNull();        // letters keep the destination face only
+        assertThat(FONTS.canDisplay("pt-BR", "مرحبا")).isFalse();      // unsupported script: original kept
+        var polygon = CleanBoxPainterTest.rectangle(.1, .3, .9, .7);
+        var page = new BufferedImage(360, 220, BufferedImage.TYPE_INT_ARGB);
+        for (int y = 0; y < 220; y++) for (int x = 0; x < 360; x++) page.setRGB(x, y, 0xffffffff);
+        for (int y = 90; y < 120; y++) for (int x = 60; x < 300; x += 9) page.setRGB(x, y, 0xff000000); // source lettering
+        var result = painter.paint(page, request("pt-BR", "Jingle de batuque! ♪", polygon));
+        assertThat(result.getFirst().overflow()).isFalse();
     }
 
     @Test

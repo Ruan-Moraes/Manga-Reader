@@ -91,7 +91,11 @@ public final class BundledRenderingFonts {
         return face(destination).deriveFont(sizePx);
     }
 
-    /** Unsupported text is left intact for the renderer's full fallback, not drawn with a substitute font. */
+    /**
+     * Unsupported letters are left intact for the renderer's full fallback, never drawn with a substitute font. A
+     * symbol (not a letter or digit: ♥, ★, ♪, →) missing from the destination face may come from another bundled
+     * face ({@link #symbolFallback}), so one symbol does not cost the whole region.
+     */
     public boolean canDisplay(String destination, String text) {
         Font font = face(destination);
         if (text == null) throw new RenderFontException(INVALID_INPUT);
@@ -99,9 +103,25 @@ public final class BundledRenderingFonts {
             int point = text.codePointAt(offset);
             offset += Character.charCount(point);
             if (point >= Character.MIN_SURROGATE && point <= Character.MAX_SURROGATE) return false;
-            if (point != '\n' && point != '\r' && point != '\t' && !font.canDisplay(point)) return false;
+            if (point == '\n' || point == '\r' || point == '\t' || font.canDisplay(point)) continue;
+            if (symbolFallback(point, false) == null) return false;
         }
         return true;
+    }
+
+    /**
+     * The first bundled face (regular, or black for {@code heavy}) that draws {@code point}, for symbols only; null for
+     * letters and digits, or when no face has it.
+     */
+    public Font symbolFallback(int point, boolean heavy) {
+        if (Character.isLetterOrDigit(point)) return null;
+        for (var asset : assets) {
+            boolean black = asset.id().endsWith("-black");
+            if (black != heavy) continue;
+            var font = fonts.get(asset.id());
+            if (font != null && font.canDisplay(point)) return font;
+        }
+        return null;
     }
 
     /**

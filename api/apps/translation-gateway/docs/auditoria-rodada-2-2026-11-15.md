@@ -116,3 +116,18 @@ nada"). Agora a página espera a vez (até 60 s) e a falha é logada com `Failur
 3. Erros que o OCR repete ("IS"→"15"): validar a camada Gemini (já implementada, desligada) com 3–4 páginas reais.
 4. Classe de interface/código para terminal e telas.
 5. Confronto com a edição original antes de afirmar fidelidade.
+
+### Regiões sem render — análise por classe (2026-11-16)
+
+Medido com uma bancada que renderiza com o LaMa real (`.local/bench/render/RealRender.java`), não só com a caixa
+branca da regressão. 15 regiões em 8 páginas, em 4 classes:
+
+| Classe | Casos | Causa | Decisão |
+|---|---|---|---|
+| A. Texto real em papel liso | autor/URL, "RtL Edition", "Rev 03" (capa), "…WE WILL NEVER EVER…" (11) | (1) um símbolo sem glifo na fonte latina ("♥") recusava a região inteira; (2) sem mediana de fonte na página (poucas regiões) o resgate para o papel liso nem era tentado; (3) no caminho com reconstrução da arte o texto ficava preso à caixa do OCR, embora a área reconstruída seja maior | **corrigido**: símbolo (nunca letra) vem de outra fonte embutida; sem mediana, texto que não coube é resgatado até a fonte mínima se a caixa comporta uma letra; texto pode usar toda a área reconstruída |
+| B. Rótulos desenhados na arte/interface | "Club President", "VPN Mobile", "Options", "CLI-based", "dd/Remove Progr", "and" | fazem parte do desenho (braçadeira, botão, gráfico) | **aceito** — ficam no original |
+| C. Som/interjeição desenhada | "Ouch!", "mm… mm..", "SIGH" | interjeições desenhadas como efeito | "Ouch!" **corrigido** (interjeições desenhadas na lista de sons, só fora de balão); "SIGH" num balãozinho e "Imm…" (OCR) ficam |
+| D. Terminal | ":: then enter the text…" | classe do detector diverge (não sai como `unknown`) | limite |
+
+Render real das 12 páginas depois disso: 12/12 `READY`, páginas `OK` de 4 para **7** (01a, 02, 04, 07, 08, 10, 11);
+regiões sem render de 15 para **11**, quase todas da classe B.

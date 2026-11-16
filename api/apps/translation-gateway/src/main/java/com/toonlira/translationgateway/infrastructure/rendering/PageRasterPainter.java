@@ -182,7 +182,12 @@ public final class PageRasterPainter {
         var clip = new RasterPolygon.Bounds(bounds.left() - INPAINT_MARGIN, bounds.top() - INPAINT_MARGIN,
             bounds.right() + INPAINT_MARGIN, bounds.bottom() + INPAINT_MARGIN);
         var box = region.polygon().interiorBox(request.policy().paddingPx());
-        return compose(region.region().translatedText(), request.pair().target(), box, request.policy(), maximumFontPx, clip, false);
+        var plan = compose(region.region().translatedText(), request.pair().target(), box, request.policy(), maximumFontPx, clip, false);
+        if (plan != null) return plan;
+        // Everything inside the clip is reconstructed: text that does not fit the OCR box may use all of it.
+        int padding = request.policy().paddingPx();
+        var whole = new RasterPolygon.Bounds(clip.left() + padding, clip.top() + padding, clip.right() - padding, clip.bottom() - padding);
+        return compose(region.region().translatedText(), request.pair().target(), whole, request.policy(), maximumFontPx, clip, false);
     }
 
     private static int outline(int fontSize) { return Math.max(2, Math.round(fontSize / 8f)); }
@@ -274,7 +279,6 @@ public final class PageRasterPainter {
                               boolean[] preserved, RenderRequest request, int cap) {
         double median = median(plans);
         boolean squareGlyphs = SQUARE_GLYPH_SOURCES.contains(request.pair().source());
-        if (Double.isNaN(median) && !squareGlyphs) return;
         var policy = request.policy();
         int floor = Double.isNaN(median) ? policy.minimumFontPx()
             : Math.clamp((int) Math.ceil(median * MEDIAN_FLOOR_FACTOR), policy.minimumFontPx(), cap);
@@ -284,6 +288,12 @@ public final class PageRasterPainter {
             var region = regions.get(i);
             int target = squareGlyphs ? Math.max(floor, Math.min(cap, glyphFloor(region))) : floor;
             if (preserved[i] || plans[i] != null && plans[i].size() >= target) continue;
+            // Without the page's size (a cover, a credits page), only text that did not fit at all is rescued, to the
+            // minimum size, and only from a box that holds at least one glyph; text that fits keeps its box.
+            if (Double.isNaN(median) && !squareGlyphs) {
+                var own = region.polygon().bounds();
+                if (plans[i] != null || Math.min(own.right() - own.left(), own.bottom() - own.top()) < policy.minimumFontPx() / 2) continue;
+            }
             var start = region.mask().fit(region.polygon().interiorBox(0));
             int limit = Math.max(start.bottom() - start.top(), 2 * target);
             Plan best = plans[i];
@@ -361,6 +371,15 @@ public final class PageRasterPainter {
                 }
                 var attributed = new AttributedString(paragraph);
                 attributed.addAttribute(TextAttribute.FONT, font);
+                // Symbols the face lacks (♥, ♪) come from another bundled face; letters never do (canDisplay above).
+                for (int at = 0; at < paragraph.length(); ) {
+                    int point = paragraph.codePointAt(at), next = at + Character.charCount(point);
+                    if (!font.canDisplay(point)) {
+                        var fallback = fonts.symbolFallback(point, heavy);
+                        if (fallback != null) attributed.addAttribute(TextAttribute.FONT, fallback.deriveFont(font.getSize2D()), at, next);
+                    }
+                    at = next;
+                }
                 attributed.addAttribute(TextAttribute.RUN_DIRECTION, TextAttribute.RUN_DIRECTION_LTR);
                 var measurer = new LineBreakMeasurer(attributed.getIterator(),
                     new UnbrokenSpanBreaks(BreakIterator.getLineInstance(LOCALES.get(target))), FONT_CONTEXT);
