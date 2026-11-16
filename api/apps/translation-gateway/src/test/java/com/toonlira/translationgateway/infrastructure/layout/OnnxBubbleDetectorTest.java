@@ -32,7 +32,7 @@ class OnnxBubbleDetectorTest {
         assertThat(result[2 * 640 * 640]).isZero();
     }
 
-    @Test void filtersClassesAndThresholdWithoutTruncatingOrClamping() {
+    @Test void filtersClassesAndThresholdClampingOnlySubPixelOvershoot() {
         var result = OnnxBubbleDetector.decode(new long[][]{{0, 1, 2, 0}},
             new float[][][]{{{10, 20, 50, 80}, {10, 20, 50, 80}, {10, 20, 50, 80}, {10, 20, 50, 80}}},
             new float[][]{{.5f, .9f, .9f, .49f}}, 100, 200);
@@ -43,6 +43,12 @@ class OnnxBubbleDetectorTest {
             new float[][]{{.9f}}, 100, 200)).isInstanceOf(LayoutFailure.class);
         assertThatThrownBy(() -> OnnxBubbleDetector.decode(new long[][]{{0}}, new float[][][]{{{1, 0, 10, 10}}},
             new float[][]{{Float.NaN}}, 100, 200)).isInstanceOf(LayoutFailure.class);
+        // Sub-pixel overshoot of the page edge is rounding: clamped, the page keeps its balloons.
+        var edge = OnnxBubbleDetector.decode(new long[][]{{0}}, new float[][][]{{{1.2f, 2.8f, 100.2f, 128.7f}}},
+            new float[][]{{.86f}}, 100, 200);
+        assertThat(edge.getFirst().bounds().right()).isEqualTo(1.0);
+        assertThatThrownBy(() -> OnnxBubbleDetector.decode(new long[][]{{0}}, new float[][][]{{{1, 0, 101.5f, 10}}},
+            new float[][]{{.9f}}, 100, 200)).isInstanceOf(LayoutFailure.class); // a pixel and more: misconfiguration
         var labels = new long[][]{new long[257]};
         var boxes = new float[1][257][4];
         var scores = new float[1][257];

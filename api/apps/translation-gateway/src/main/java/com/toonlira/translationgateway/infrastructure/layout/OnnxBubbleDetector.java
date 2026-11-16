@@ -132,9 +132,14 @@ public final class OnnxBubbleDetector implements BubbleDetectionPort, AutoClosea
             for (float coordinate : boxes[0][i]) if (!Float.isFinite(coordinate)) throw invalid();
             if (score < CONFIDENCE) continue;
             var b = boxes[0][i];
+            // Box regression may overshoot the page by a fraction of a pixel (499.2 on a 499 px page): rounding, so it
+            // is clamped. A whole pixel or more outside still means a misconfigured model and rejects the response.
+            if (b[0] <= -1 || b[1] <= -1 || b[2] >= width + 1 || b[3] >= height + 1) throw invalid();
             LayoutBox bounds;
-            try { bounds = new LayoutBox(b[0] / width, b[1] / height, b[2] / width, b[3] / height); }
-            catch (IllegalArgumentException error) { throw invalid(); }
+            try {
+                bounds = new LayoutBox(Math.clamp(b[0], 0, width) / (double) width, Math.clamp(b[1], 0, height) / (double) height,
+                    Math.clamp(b[2], 0, width) / (double) width, Math.clamp(b[3], 0, height) / (double) height);
+            } catch (IllegalArgumentException error) { throw invalid(); }
             if (labels[0][i] == 0) result.add(new Bubble("bubble-" + i, bounds, score));
             else texts.add(new TextBox("text-" + i, labels[0][i] == 1 ? TextBox.Kind.text_bubble : TextBox.Kind.text_free,
                 bounds, score));
