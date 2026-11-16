@@ -193,6 +193,23 @@ class OcrRegionGrouperTest {
     }
 
     @Test
+    void aParagraphIsNeverSplitInsideAWordTheProviderReadWithoutABreak() {
+        // A terminal line "pok:/usr$ ls" whose first fragment a loose balloon box covers: one token, not a speech word.
+        var balloon = box(80, 80, 320, 200);
+        var terminal = new OcrParagraph(region(0, "pok:/usr$ ls", 280, 150, 600, 180), List.of(
+            word("pok", 280, 150, 315, 180), word(":/usr$ ", 315, 150, 450, 180), word("ls", 470, 150, 500, 180)));
+        assertThat(OcrRegionGrouper.splitByBubbles(List.of(terminal), List.of(balloon))).containsExactly(terminal.region());
+        // With a real break the same geometry still splits.
+        var spaced = new OcrParagraph(region(1, "pok :/usr$ ls", 280, 150, 600, 180), List.of(
+            word("pok ", 280, 150, 315, 180), word(":/usr$ ", 330, 150, 450, 180), word("ls", 470, 150, 500, 180)));
+        assertThat(OcrRegionGrouper.splitByBubbles(List.of(spaced), List.of(balloon))).hasSize(2);
+        // Japanese has no breaks between words: the rule does not apply and a paragraph across two balloons splits.
+        var japanese = new OcrParagraph(region(2, "三人しか居ません", 100, 150, 600, 180), List.of(
+            word("三人", 100, 150, 200, 180), word("しか", 210, 150, 300, 180), word("居", 400, 150, 450, 180), word("ません", 460, 150, 560, 180)));
+        assertThat(OcrRegionGrouper.splitByBubbles(List.of(japanese), List.of(balloon, box(380, 80, 620, 200)))).hasSize(2);
+    }
+
+    @Test
     void paragraphCrossingTheBalloonBorderIsSplitThenRegroupedWithItsSpeech() {
         var balloon = box(80, 80, 320, 200);
         var mixed = new OcrParagraph(region(0, "YOU LINUX clatter", 100, 100, 420, 130), List.of(

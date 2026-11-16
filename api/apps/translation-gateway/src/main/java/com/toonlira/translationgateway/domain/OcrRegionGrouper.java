@@ -133,6 +133,11 @@ public final class OcrRegionGrouper {
                 continue;
             }
             for (int i = 0; i < owners.length; i++) if (owners[i] == AMBIGUOUS) owners[i] = i > 0 ? owners[i - 1] : nextKnown(owners);
+            glueTokens(words, owners);
+            if (java.util.Arrays.stream(owners).distinct().count() <= 1) {
+                result.add(paragraph.region());
+                continue;
+            }
             int start = 0, part = 0;
             for (int i = 1; i <= words.size(); i++) {
                 if (i < words.size() && owners[i] == owners[start]) continue;
@@ -147,6 +152,32 @@ public final class OcrRegionGrouper {
             }
         }
         return List.copyOf(result);
+    }
+
+    /**
+     * In spaced scripts, a paragraph is only split where the provider saw a break between words. Words with no break between them are one
+     * token ("pok" + ":/usr$" of a terminal line whose edge a loose balloon box cuts): the whole token goes with the
+     * owner of its longest word, so a token is never torn between a speech and the text beside it.
+     */
+    private static void glueTokens(List<OcrParagraph.Word> words, int[] owners) {
+        // Only scripts that separate words with spaces: in Japanese or Chinese no word has a break after it, and the
+        // whole paragraph would read as one token.
+        if (words.stream().noneMatch(word -> word.text().endsWith(" "))) return;
+        int start = 0;
+        for (int i = 0; i < words.size(); i++) {
+            boolean ends = i == words.size() - 1 || endsWithBreak(words.get(i).text());
+            if (!ends) continue;
+            if (i > start) {
+                int longest = start;
+                for (int k = start; k <= i; k++) if (words.get(k).text().strip().length() > words.get(longest).text().strip().length()) longest = k;
+                for (int k = start; k <= i; k++) owners[k] = owners[longest];
+            }
+            start = i + 1;
+        }
+    }
+
+    private static boolean endsWithBreak(String text) {
+        return !text.isEmpty() && (Character.isWhitespace(text.charAt(text.length() - 1)) || text.endsWith("-"));
     }
 
     /**
