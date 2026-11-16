@@ -21,10 +21,17 @@ import java.nio.file.Path;
 import java.security.MessageDigest;
 import java.util.HexFormat;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
+import java.time.Duration;
 
 /** Explicit, local-only adapter. Success transfers ownership of the new output file to the caller. */
 public final class LocalFileRenderAdapter implements RenderPort {
     private static final Semaphore RENDER_CAPACITY = new Semaphore(1);
+    /**
+     * One page renders at a time; another page waits its turn instead of failing at once. Locally the dispatcher and
+     * the tester send several pages together, and an immediate "busy" turned a whole page into a permanent failure.
+     */
+    static final Duration RENDER_WAIT = Duration.ofMinutes(2);
     private final WebpProcessCodec codec;
     private final PageRasterPainter painter;
     private final Path temporaryDirectory;
@@ -42,7 +49,12 @@ public final class LocalFileRenderAdapter implements RenderPort {
 
     @Override public Output render(Path original, RenderRequest request) {
         ValidatedRasterDecoder.checkInterrupted();
-        if (!RENDER_CAPACITY.tryAcquire()) throw new RenderFileException(BUSY);
+        try {
+            if (!RENDER_CAPACITY.tryAcquire(RENDER_WAIT.toMillis(), TimeUnit.MILLISECONDS)) throw new RenderFileException(BUSY);
+        } catch (InterruptedException error) {
+            Thread.currentThread().interrupt();
+            throw new RenderFileException(CANCELLED);
+        }
         Path snapshot = null, output = null;
         boolean returned = false;
         try {

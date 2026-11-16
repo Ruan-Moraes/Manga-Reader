@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class ShadowLayoutService {
+    private static final org.slf4j.Logger LOG = org.slf4j.LoggerFactory.getLogger(ShadowLayoutService.class);
     private final LayoutPort layout;
     private final ObjectStoragePort storage;
     private final ObjectMapper mapper;
@@ -44,7 +45,11 @@ public class ShadowLayoutService {
         try {
             var detected = layout.detect(image);
             return detected == null ? null : new Detections(BubbleDeduplicator.filter(detected.bubbles()).retained(), detected.texts());
-        } catch (RuntimeException | LinkageError error) { return null; }
+        } catch (RuntimeException | LinkageError error) {
+            // Grouping falls back to proximity; say so, or split balloons look like an OCR problem.
+            LOG.warn("balloon detection failed, grouping by proximity: {}", FailureDiagnostics.describe(error));
+            return null;
+        }
     }
 
     public static List<LayoutBox> boxes(Detections detections) {

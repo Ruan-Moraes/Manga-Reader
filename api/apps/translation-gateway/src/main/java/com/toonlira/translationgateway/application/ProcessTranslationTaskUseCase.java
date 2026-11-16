@@ -154,6 +154,7 @@ public class ProcessTranslationTaskUseCase {
                 deleteBestEffort(objectKey);
             }
         } catch (RuntimeException | IOException error) {
+            LOG.warn("translation failed: {}", FailureDiagnostics.describe(error));
             var current = findBestEffort(job.jobRef());
             // A later transition can occur before the commit acknowledgement is
             // observed. The persisted key/hash, not the current job status, prove ownership.

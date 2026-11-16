@@ -43,7 +43,7 @@ class LocalLayoutAdapterTest {
             entered.countDown();
             try { release.await(5, TimeUnit.SECONDS); } catch (InterruptedException error) { Thread.currentThread().interrupt(); }
             return List.of();
-        }, ReadingDirection.ltr, Duration.ofMillis(100)); var executor = Executors.newSingleThreadExecutor()) {
+        }, ReadingDirection.ltr, Duration.ofMillis(100), false, Duration.ofMillis(50)); var executor = Executors.newSingleThreadExecutor()) {
             var first = executor.submit(() -> adapter.analyze(image, ocr, "a".repeat(64), "b".repeat(64)));
             try {
                 assertThat(entered.await(2, TimeUnit.SECONDS)).isTrue();
@@ -54,6 +54,27 @@ class LocalLayoutAdapterTest {
                     .hasMessage("layout-unavailable");
             } finally { release.countDown(); }
             assertThatThrownBy(() -> first.get(2, TimeUnit.SECONDS)).hasCauseInstanceOf(LayoutFailure.class);
+        }
+    }
+
+    @Test void aSecondPageWaitsForTheDetectorInsteadOfLosingItsBalloons() throws Exception {
+        var image = temporary.resolve("image.png");
+        ImageIO.write(new BufferedImage(20, 20, BufferedImage.TYPE_INT_RGB), "png", image.toFile());
+        var entered = new CountDownLatch(1);
+        var release = new CountDownLatch(1);
+        try (var adapter = new LocalLayoutAdapter((pixels, remaining) -> {
+            entered.countDown();
+            try { release.await(5, TimeUnit.SECONDS); } catch (InterruptedException error) { Thread.currentThread().interrupt(); }
+            return List.of();
+        }, ReadingDirection.ltr, Duration.ofSeconds(10), true, Duration.ofSeconds(5)); var executor = Executors.newFixedThreadPool(2)) {
+            var first = executor.submit(() -> adapter.detect(image));
+            assertThat(entered.await(2, TimeUnit.SECONDS)).isTrue();
+            var second = executor.submit(() -> adapter.detect(image));
+            Thread.sleep(100);
+            assertThat(second.isDone()).isFalse(); // waiting its turn, not failed
+            release.countDown();
+            assertThat(first.get(2, TimeUnit.SECONDS)).isNotNull();
+            assertThat(second.get(2, TimeUnit.SECONDS)).isNotNull();
         }
     }
 }

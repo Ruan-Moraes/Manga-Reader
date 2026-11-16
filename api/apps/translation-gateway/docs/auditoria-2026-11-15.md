@@ -32,8 +32,17 @@ worker resolvia). Como as retentativas são desligadas de propósito (sem cobran
 `idleTimeout` de 2 min (conexão ociosa é fechada e reaberta na próxima chamada) e keepalive de 60 s/20 s durante
 chamadas, em Vision e Translation (`VisionClientFactory`, `TranslationClientFactory`, `ProviderChannelHygieneTest`).
 
+**Incidente 2026-11-15 (`internal-error` intermitente em lote):** o render local aceita uma página por vez e, se
+outra estava renderizando, falhava na hora com `render-busy` (o job virava falha permanente). Com o dispatcher/tester
+mandando várias páginas juntas, 1 em ~12 caía. Agora a página **espera a vez** (até 2 min; `LocalFileRenderAdapter`),
+sem nunca pintar duas ao mesmo tempo. Validado: 12 páginas em 3 lotes paralelos, todas `READY`. Também passou a
+existir um log seguro das falhas engolidas nas etapas de OCR, tradução e render (`FailureDiagnostics`: tipos da
+cadeia, código fixo como `render-busy` e a linha do código — nunca a mensagem, que pode conter texto da página).
+
 Conferir:
 - [ ] Mesmo problema pode ocorrer no Cloud Run (instância ociosa): a correção vale para os dois ambientes.
+- [ ] O modo isolado (`RenderCallSupervisor`) ainda falha na hora com `render-busy` — em produção o worker atende uma
+  requisição por vez, mas avaliar se deve esperar também.
 - [ ] `scripts/local/gateway-real.env.example` não contém segredos; o env real fica em `~/.config/toonlira/` (fora do repo).
 - [ ] O dispatcher é **só dev** (substitui Cloud Tasks) e cada job pode gerar custo de OCR/tradução.
 

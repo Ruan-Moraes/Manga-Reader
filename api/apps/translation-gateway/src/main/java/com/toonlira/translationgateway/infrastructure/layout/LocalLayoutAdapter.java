@@ -22,19 +22,30 @@ public final class LocalLayoutAdapter implements LayoutPort, AutoCloseable {
     private final ReadingDirection direction;
     private final Duration budget;
     private final Semaphore capacity = new Semaphore(1);
+    /**
+     * How long a page waits for the detector while another page uses it. Failing at once made concurrent pages lose
+     * balloon grouping silently (balloons split into lines translated apart).
+     */
+    static final Duration CAPACITY_WAIT = Duration.ofSeconds(60);
     private final boolean grouping;
+    private final Duration capacityWait;
 
     public LocalLayoutAdapter(BubbleDetectionPort bubbles, ReadingDirection direction, Duration budget) {
         this(bubbles, direction, budget, false);
     }
 
     public LocalLayoutAdapter(BubbleDetectionPort bubbles, ReadingDirection direction, Duration budget, boolean grouping) {
+        this(bubbles, direction, budget, grouping, CAPACITY_WAIT);
+    }
+
+    LocalLayoutAdapter(BubbleDetectionPort bubbles, ReadingDirection direction, Duration budget, boolean grouping, Duration capacityWait) {
         if (direction == null || budget.isNegative() || budget.isZero() || budget.compareTo(Duration.ofSeconds(30)) > 0)
             throw new IllegalArgumentException("Invalid layout configuration");
         this.bubbles = bubbles;
         this.direction = direction;
         this.budget = budget;
         this.grouping = grouping;
+        this.capacityWait = capacityWait;
     }
 
     @Override public boolean available() { return true; }
@@ -42,7 +53,7 @@ public final class LocalLayoutAdapter implements LayoutPort, AutoCloseable {
 
     @Override
     public Detections detect(Path validatedImage) {
-        if (!capacity.tryAcquire()) throw new LayoutFailure(LayoutFailure.Code.UNAVAILABLE);
+        acquire();
         long deadline = System.nanoTime() + budget.toNanos();
         try {
             var detected = bubbles.detectAll(pixels(validatedImage, -1, -1), Duration.ofNanos(deadline - System.nanoTime()));
@@ -59,7 +70,7 @@ public final class LocalLayoutAdapter implements LayoutPort, AutoCloseable {
 
     @Override
     public LayoutManifest analyze(Path validatedImage, OcrManifest ocr, String imageHash, String ocrHash, Detections reused) {
-        if (!capacity.tryAcquire()) throw new LayoutFailure(LayoutFailure.Code.UNAVAILABLE);
+        acquire();
         long deadline = System.nanoTime() + budget.toNanos();
         try {
             var pixels = pixels(validatedImage, ocr.widthPx(), ocr.heightPx());
@@ -73,6 +84,16 @@ public final class LocalLayoutAdapter implements LayoutPort, AutoCloseable {
         finally {
             // Native detect is synchronous. Never release the slot on Future.cancel while JNI is still running.
             capacity.release();
+        }
+    }
+
+    private void acquire() {
+        try {
+            if (!capacity.tryAcquire(capacityWait.toMillis(), java.util.concurrent.TimeUnit.MILLISECONDS))
+                throw new LayoutFailure(LayoutFailure.Code.UNAVAILABLE);
+        } catch (InterruptedException error) {
+            Thread.currentThread().interrupt();
+            throw new LayoutFailure(LayoutFailure.Code.UNAVAILABLE);
         }
     }
 

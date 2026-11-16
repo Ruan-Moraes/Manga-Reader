@@ -131,24 +131,30 @@ class LocalFileRenderAdapterTest {
     }
 
     @Test
-    void oneCapacityCoversTheWholeRenderNotJustNativeEncode() throws Exception {
+    void oneCapacityCoversTheWholeRenderAndASecondPageWaitsItsTurn() throws Exception {
         var file = png();
         var request = request(metadata(file), List.of(), RenderPolicy.initial());
-        var entered = new CountDownLatch(1);
+        var entered = new java.util.concurrent.atomic.AtomicInteger();
+        var first = new CountDownLatch(1);
         var release = new CountDownLatch(1);
         when(painter.paint(any(), eq(request))).thenAnswer(invocation -> {
-            entered.countDown();
+            entered.incrementAndGet();
+            first.countDown();
             if (!release.await(10, TimeUnit.SECONDS)) throw new IllegalStateException("test deadline");
             throw new RenderPaintingException(RenderPaintingException.Failure.UNAVAILABLE);
         });
-        try (var executor = Executors.newSingleThreadExecutor()) {
-            var first = executor.submit(() -> adapter().render(file, request));
-            try {
-                assertThat(entered.await(10, TimeUnit.SECONDS)).isTrue();
-                assertThatThrownBy(() -> adapter().render(file, request)).isInstanceOf(RenderFileException.class)
-                    .hasMessage("render-busy").hasNoCause();
-            } finally { release.countDown(); }
-            assertThatThrownBy(() -> first.get(10, TimeUnit.SECONDS)).hasCauseInstanceOf(RenderFileException.class);
+        try (var executor = Executors.newFixedThreadPool(2)) {
+            var one = executor.submit(() -> adapter().render(file, request));
+            assertThat(first.await(10, TimeUnit.SECONDS)).isTrue();
+            var two = executor.submit(() -> adapter().render(file, request));
+            Thread.sleep(300);
+            // Never two pages painting at once: the second waits instead of failing "busy".
+            assertThat(entered.get()).isEqualTo(1);
+            assertThat(two.isDone()).isFalse();
+            release.countDown();
+            assertThatThrownBy(() -> one.get(10, TimeUnit.SECONDS)).hasCauseInstanceOf(RenderFileException.class);
+            assertThatThrownBy(() -> two.get(10, TimeUnit.SECONDS)).hasCauseInstanceOf(RenderFileException.class);
+            assertThat(entered.get()).isEqualTo(2);
         }
         assertThat(ownedOutputs()).isEmpty();
     }
