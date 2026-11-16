@@ -38,7 +38,10 @@ public final class GeminiTranslationRefiner implements TranslationRefinerPort {
           "THE D00R 1S L0CKED" becomes "THE DOOR IS LOCKED"). Never rephrase a reading.
         - "translation": the best %s translation of the (corrected) source, using the whole page as context: keep
           speakers, names and tone consistent and fix mistranslations and unnatural phrasing. Keep the machine
-          translation when it is already right. Keep it about as long as the machine translation: it must fit the
+          translation when it is already right. When the original lettering itself has an evident slip (a word that
+          makes no sense in its line while the page states the intended word, a speaker repeating or correcting it),
+          translate the intended word, as the reader understands it; a deliberate pun or a name stays as it is.
+          Keep it about as long as the machine translation: it must fit the
           same balloon.
 
         Rules:

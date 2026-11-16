@@ -246,3 +246,23 @@ fonte < 12). A execução real completa ficou para depois: a cota diária local 
 - **Restos no diálogo de erro (P03-01)** — diagnosticado, não corrigido: "inter", "se", "r" estão encostados
   diretamente no traço preto do "R" gigante (não presos por ruído, nem fundo dividido). Separar pixel de letra de
   pixel de traço quando se tocam pede análise de espessura de traço; fica como limite.
+
+### WebP, token partido, Gemini e pares novos (2026-11-16, noite)
+
+- **Páginas WebP perdiam os balões** — a detecção de balões e a releitura do OCR liam a página com `ImageIO`, que
+  não lê WebP (devolvia null → `layout-invalid-response`, agrupamento por proximidade, releitura pulada). Agora um
+  leitor único (`PageRasterReader`) usa o mesmo `dwebp` fixado por hash do render (WebP não confiável nunca é
+  decodificado no processo); a leitura espera a vez no slot nativo em vez de falhar. Execução real com duas páginas
+  WebP: nenhuma falha de detecção.
+- **"pok" na fala (cap. 2, p. 6)** — o parágrafo do terminal "pok:/usr$ ls -la" era dividido pela caixa folgada do
+  balão no meio de um token sem espaço. Em escritas com espaço, um parágrafo só é dividido onde o OCR viu quebra
+  entre palavras; o token inteiro vai com a palavra mais longa. Japonês (sem espaços) não muda. Bancada: corrige
+  também um caminho de terminal partido no cap. 2, p. 10.
+- **Gemini e deslize do original ("NAVY")** — regra de prompt para deslize evidente do letreiro que a própria página
+  corrige (um falante repete ou corrige a palavra): traduz-se a palavra pretendida; trocadilho e nome ficam.
+  Execução real: "Eu nunca seria tão inocente!!", coerente com "Ino... inocente..." do quadro seguinte; controles
+  ("Japmese", "Fim.") iguais.
+- **Pares novos** — en→ja/ko/zh-Hans e ja→en rodados de ponta a ponta: legíveis, quebra de linha por idioma, texto
+  horizontal. Origem coreana segue sem dicionário para a releitura (só confiança do provedor).
+- **Restos no diálogo de erro (cap. 3, p. 3)** — continua: separar tinta da letra de tinta do "R" exige a geometria
+  de cada palavra no render (hoje só o polígono da região chega lá), o que muda o manifesto do OCR.
