@@ -138,9 +138,9 @@
   "expect" : {
     "maxChangedOutside" : 0,
     "regions" : [ {
-      "overflow" : false,
-      "font" : 25,
-      "residualInk" : 57
+      "overflow" : true,
+      "font" : 0,
+      "residualInk" : 0
     }, {
       "overflow" : true,
       "font" : 0,

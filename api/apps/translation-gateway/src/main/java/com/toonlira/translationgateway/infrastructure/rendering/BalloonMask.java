@@ -112,11 +112,50 @@ final class BalloonMask {
         return x >= left && y >= top && x < left + width && y < top + height && (state[(y - top) * width + x - left] & CLEAN) != 0;
     }
 
+    /** Farthest an edge sample may be from the region's colour (sum of channel differences) and still be background. */
+    static final int BACKGROUND_SAMPLE = 90;
+    private static final int SAMPLE_PX = 3;
+
+    /**
+     * Paints the clean pixels. Each clean run of a row goes from the background just left of it to the background just
+     * right of it, so a gradient (a cover, a tinted page) gets no flat patch. A side whose neighbour is not background
+     * (balloon border, art) takes the other side's colour; with neither, the region's own colour, as a flat fill.
+     */
     void fill(BufferedImage image, int argb) {
         for (int y = 0; y < height; y++) {
             CleanBoxPainter.checkInterrupted();
-            for (int x = 0; x < width; x++) if ((state[y * width + x] & CLEAN) != 0) image.setRGB(left + x, top + y, argb);
+            int x = 0;
+            while (x < width) {
+                if ((state[y * width + x] & CLEAN) == 0) { x++; continue; }
+                int start = x;
+                while (x < width && (state[y * width + x] & CLEAN) != 0) x++;
+                int from = sample(image, left + start - 1, top + y, -1, argb), to = sample(image, left + x, top + y, 1, argb);
+                if (from == 0 && to == 0) from = to = argb;
+                else if (from == 0) from = to;
+                else if (to == 0) to = from;
+                int span = x - start;
+                for (int k = 0; k < span; k++) image.setRGB(left + start + k, top + y, mix(from, to, span == 1 ? 0 : k / (double) (span - 1)));
+            }
         }
+    }
+
+    /** Mean of a few pixels outward from ({@code x},{@code y}), or 0 when any of them is not background. */
+    private static int sample(BufferedImage image, int x, int y, int step, int argb) {
+        int r = 0, g = 0, b = 0, n = 0;
+        for (int k = 0; k < SAMPLE_PX; k++, x += step) {
+            if (x < 0 || x >= image.getWidth() || y < 0 || y >= image.getHeight()) break;
+            int pixel = image.getRGB(x, y);
+            if (CleanBoxPainter.distance(pixel, argb) > BACKGROUND_SAMPLE) return 0;
+            r += (pixel >>> 16) & 255; g += (pixel >>> 8) & 255; b += pixel & 255; n++;
+        }
+        return n == 0 ? 0 : 0xff000000 | (r / n) << 16 | (g / n) << 8 | (b / n);
+    }
+
+    private static int mix(int a, int b, double t) {
+        int r = (int) Math.round(((a >>> 16) & 255) * (1 - t) + ((b >>> 16) & 255) * t);
+        int g = (int) Math.round(((a >>> 8) & 255) * (1 - t) + ((b >>> 8) & 255) * t);
+        int bl = (int) Math.round((a & 255) * (1 - t) + (b & 255) * t);
+        return 0xff000000 | r << 16 | g << 8 | bl;
     }
 
     /** Shrinks {@code box} edge by edge, dropping the edge with most forbidden pixels, until every pixel is allowed. */

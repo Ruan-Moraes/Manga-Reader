@@ -68,7 +68,8 @@ class RealPageRegressionTest {
         // Same hints as production: CaptionFilter on the detector classes (unknown never inpainted).
         var lexicon = new ClasspathLexicons().forLanguage(language);
         request = request.withCaptionHints(CaptionFilter.captions(request, lexicon, kinds))
-            .withLetteringHints(CaptionFilter.letterings(request, lexicon, kinds));
+            .withLetteringHints(CaptionFilter.letterings(request, lexicon, kinds))
+            .withDrawnHints(CaptionFilter.drawn(request, lexicon, kinds));
         // Deterministic stand-in for LaMa: white box (the real model is not part of the regression).
         Inpainter white = (raster, box) -> {
             for (int y = Math.max(0, box[1]); y < Math.min(h, box[3]); y++)
@@ -77,6 +78,9 @@ class RealPageRegressionTest {
         };
         var before = RegionChecks.copy(original);
         var placements = new PageRasterPainter(FONTS, white).paint(image, request);
+        // DUMP_VISUAL=<dir>: save the render to look at it (diagnostics only).
+        var dump = System.getenv("DUMP_VISUAL");
+        if (dump != null) ImageIO.write(image, "png", Path.of(dump).resolve(fixture.getFileName().toString().replace(".json", ".png")).toFile());
 
         var allowed = new ArrayList<Rectangle>();
         for (var b : bubbles) {

@@ -26,9 +26,10 @@ public final class RenderRequest {
     private final List<Region> regions;
     private final Set<UUID> captionHints;
     private final Set<UUID> letteringHints;
+    private final Set<UUID> drawnHints;
     private final List<com.toonlira.translationgateway.domain.layout.LayoutBox> bubbles;
 
-    private RenderRequest(RenderRequest base, Set<UUID> captionHints, Set<UUID> letteringHints,
+    private RenderRequest(RenderRequest base, Set<UUID> captionHints, Set<UUID> letteringHints, Set<UUID> drawnHints,
                           List<com.toonlira.translationgateway.domain.layout.LayoutBox> bubbles) {
         this.jobRef = base.jobRef;
         this.source = base.source;
@@ -39,6 +40,7 @@ public final class RenderRequest {
         this.regions = base.regions;
         this.captionHints = Set.copyOf(captionHints);
         this.letteringHints = Set.copyOf(letteringHints);
+        this.drawnHints = Set.copyOf(drawnHints);
         this.bubbles = List.copyOf(bubbles);
     }
 
@@ -55,6 +57,7 @@ public final class RenderRequest {
             List.copyOf(region.polygon()))).toList();
         this.captionHints = Set.of();
         this.letteringHints = Set.of();
+        this.drawnHints = Set.of();
         this.bubbles = List.of();
     }
 
@@ -65,7 +68,7 @@ public final class RenderRequest {
     public RenderRequest withCaptionHints(Set<UUID> hints) {
         var ids = regions.stream().map(Region::id).collect(java.util.stream.Collectors.toSet());
         if (hints == null || !ids.containsAll(hints)) invalid();
-        return new RenderRequest(this, hints, letteringHints, bubbles);
+        return new RenderRequest(this, hints, letteringHints, drawnHints, bubbles);
     }
 
     public Set<UUID> captionHints() { return captionHints; }
@@ -78,10 +81,22 @@ public final class RenderRequest {
     public RenderRequest withLetteringHints(Set<UUID> hints) {
         var ids = regions.stream().map(Region::id).collect(java.util.stream.Collectors.toSet());
         if (hints == null || !ids.containsAll(hints)) invalid();
-        return new RenderRequest(this, captionHints, hints, bubbles);
+        return new RenderRequest(this, captionHints, hints, drawnHints, bubbles);
     }
 
     public Set<UUID> letteringHints() { return letteringHints; }
+
+    /**
+     * Drawn text that is not speech: regions the detector does not see as text, outside every balloon, that do not
+     * read as a sentence (sound effects, screens, signs, file names on a drawn desktop). A renderer keeps them as drawn.
+     */
+    public RenderRequest withDrawnHints(Set<UUID> hints) {
+        var ids = regions.stream().map(Region::id).collect(java.util.stream.Collectors.toSet());
+        if (hints == null || !ids.containsAll(hints)) invalid();
+        return new RenderRequest(this, captionHints, letteringHints, hints, bubbles);
+    }
+
+    public Set<UUID> drawnHints() { return drawnHints; }
 
     /**
      * Speech balloons detected on this page (normalized boxes, from the layout artifact of the same image and OCR
@@ -90,7 +105,7 @@ public final class RenderRequest {
     public RenderRequest withBubbles(List<com.toonlira.translationgateway.domain.layout.LayoutBox> detected) {
         // stream check: List.of(...).contains(null) itself throws on immutable lists.
         if (detected == null || detected.size() > 256 || detected.stream().anyMatch(java.util.Objects::isNull)) invalid();
-        return new RenderRequest(this, captionHints, letteringHints, detected);
+        return new RenderRequest(this, captionHints, letteringHints, drawnHints, detected);
     }
 
     public List<com.toonlira.translationgateway.domain.layout.LayoutBox> bubbles() { return bubbles; }

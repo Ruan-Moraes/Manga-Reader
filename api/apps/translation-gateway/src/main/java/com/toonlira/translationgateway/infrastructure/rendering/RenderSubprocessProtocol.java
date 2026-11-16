@@ -106,6 +106,8 @@ final class RenderSubprocessProtocol {
                 for (var id : request.captionHints()) uuid(out, id);
                 out.writeInt(request.letteringHints().size());
                 for (var id : request.letteringHints()) uuid(out, id);
+                out.writeInt(request.drawnHints().size());
+                for (var id : request.drawnHints()) uuid(out, id);
                 out.writeInt(request.bubbles().size());
                 for (var box : request.bubbles()) {
                     out.writeDouble(box.left()); out.writeDouble(box.top()); out.writeDouble(box.right()); out.writeDouble(box.bottom());
@@ -157,6 +159,9 @@ final class RenderSubprocessProtocol {
             int letteringCount = count(in, count);
             var letterings = new java.util.HashSet<UUID>(letteringCount);
             for (int index = 0; index < letteringCount; index++) letterings.add(uuid(in));
+            int drawnCount = count(in, count);
+            var drawn = new java.util.HashSet<UUID>(drawnCount);
+            for (int index = 0; index < drawnCount; index++) drawn.add(uuid(in));
             int bubbleCount = count(in, MAX_BUBBLES);
             var bubbles = new ArrayList<com.toonlira.translationgateway.domain.layout.LayoutBox>(bubbleCount);
             for (int index = 0; index < bubbleCount; index++)
@@ -167,7 +172,7 @@ final class RenderSubprocessProtocol {
                 new TranslationRequest.Region(region.id(), region.readingOrder(), region.sourceText())).toList());
             var result = new TranslationValidator(Set.of(pair)).validateResponse(input, new TranslationResponse(translations));
             return new Request(original, settings, RenderRequest.create(source, ocr, result, ocrHash, translationHash, policy)
-                .withBubbles(bubbles).withCaptionHints(hints).withLetteringHints(letterings));
+                .withBubbles(bubbles).withCaptionHints(hints).withLetteringHints(letterings).withDrawnHints(drawn));
         } catch (IOException | RuntimeException error) { throw new RenderFileException(UNAVAILABLE); }
     }
 

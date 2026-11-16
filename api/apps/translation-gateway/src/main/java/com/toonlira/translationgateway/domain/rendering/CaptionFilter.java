@@ -37,7 +37,8 @@ public final class CaptionFilter {
     }
 
     /** Hand-drawn lettering of a sentence: letters needed with kanji / words needed in spaced scripts. */
-    static final int MIN_LETTERING_LETTERS = 8, MIN_LETTERING_WORDS = 3;
+    static final int MIN_LETTERING_LETTERS = 8;
+    private static final Set<String> UNSPACED_SOURCES = Set.of("ja", "zh-Hans", "zh-Hant");
 
     /**
      * Regions the detector does not see as text ({@code unknown}) whose text is nonetheless a sentence: hand-drawn
@@ -53,9 +54,43 @@ public final class CaptionFilter {
             // Not seen as text by the detector, or drawn much bigger than the page's lettering: a shout.
             boolean shout = "unknown".equals(kinds.get(region.id()))
                 || median > 0 && glyphs.length >= MIN_REGIONS_FOR_SIZE && glyph(region, width, height) >= SHOUT_SIZE * median;
-            if (shout && isLettering(region.sourceText(), region.translatedText(), lexicon)) result.add(region.id());
+            // On a Japanese/Chinese page, text mostly in Latin letters is screen or interface text, not a drawn shout.
+            boolean sourceScript = !UNSPACED_SOURCES.contains(request.pair().source()) || unspaced(region.sourceText());
+            if (shout && sourceScript && isLettering(region.sourceText(), region.translatedText(), lexicon)) result.add(region.id());
         }
         return Set.copyOf(result);
+    }
+
+    /**
+     * Drawn text that stays as drawn: regions the detector does not see as text ({@code unknown}) whose centre lies
+     * outside every detected balloon and that are not a sentence ({@link #letterings}). Sound effects ("BEEP"), drawn
+     * screens and desktops ("case_Wellcome.pdf", "logos"), signs ("bin"): retyping them only replaces the art. Speech the
+     * detector missed inside a balloon is not affected.
+     */
+    public static Set<UUID> drawn(RenderRequest request, Lexicon lexicon, java.util.Map<UUID, String> kinds) {
+        var letterings = letterings(request, lexicon, kinds);
+        var result = new HashSet<UUID>();
+        for (var region : request.regions()) {
+            if (!"unknown".equals(kinds.get(region.id())) || letterings.contains(region.id())) continue;
+            double x = 0, y = 0;
+            for (var vertex : region.polygon()) { x += vertex.x() / region.polygon().size(); y += vertex.y() / region.polygon().size(); }
+            double cx = x, cy = y;
+            boolean inBalloon = request.bubbles().stream()
+                .anyMatch(box -> cx >= box.left() && cx <= box.right() && cy >= box.top() && cy <= box.bottom());
+            if (!inBalloon) result.add(region.id());
+        }
+        return Set.copyOf(result);
+    }
+
+    /** Distinct words, a word that only extends another counting once ("Ha Haha", "owl OW!"). */
+    private static int stems(String source) {
+        var stems = new java.util.ArrayList<String>();
+        for (var token : source.split("\\s+")) {
+            var core = Lexicon.core(token).toLowerCase(Locale.ROOT);
+            if (core.isEmpty() || core.codePoints().noneMatch(Character::isLetter)) continue;
+            if (stems.stream().noneMatch(stem -> stem.startsWith(core) || core.startsWith(stem))) stems.add(core);
+        }
+        return stems.size();
     }
 
     /** Glyph size from which lettering counts as drawn bigger than the page's speech, and regions needed to judge it. */
@@ -78,8 +113,10 @@ public final class CaptionFilter {
             boolean kanji = java.util.Arrays.stream(letters).anyMatch(c -> Character.UnicodeScript.of(c) == Character.UnicodeScript.HAN);
             return kanji && letters.length >= MIN_LETTERING_LETTERS;
         }
-        long words = java.util.Arrays.stream(source.split("\\s+")).filter(token -> token.codePoints().anyMatch(Character::isLetter)).distinct().count();
-        return words >= MIN_LETTERING_WORDS;
+        // Spaced scripts: any phrase that reads as a caption (2+ distinct words, mostly of the language) is retyped;
+        // onomatopoeia (one word, repeated, or not words: BEEP, Swish, Clickty-tap-clack-key) keeps its drawing. A word
+        // that only extends another is the same sound drawn twice ("Ha Haha"), or OCR reading one shout twice ("owl OW!").
+        return stems(source) >= 2;
     }
 
     public static boolean isCaption(String source, String translated, Lexicon lexicon) {

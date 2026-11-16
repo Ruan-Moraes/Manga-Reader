@@ -488,6 +488,78 @@ class PageRasterPainterTest {
     }
 
     @Test
+    void bigTextInAPlainBoxIsOrdinaryTextNotHandLettering() {
+        // A page of instructions: large lettering on plain paper inside a box. Even with the lettering hint (drawn
+        // bigger than the page median) it stays ordinary text: no inpainting, no heavy outlined face.
+        var image = CleanBoxPainterTest.fixture(WIDTH, HEIGHT, 0xffffffff);
+        outline(image, 40, 30, 320, 190, 0xff000000);
+        for (int bar = 0; bar < 10; bar++)
+            for (int y = 80; y < 140; y++) for (int x = 70 + bar * 22; x < 78 + bar * 22; x++) image.setRGB(x, y, 0xff000000);
+        var polygon = CleanBoxPainterTest.rectangle(65 / 360.0, 75 / 220.0, 295 / 360.0, 145 / 220.0);
+        var calls = new java.util.ArrayList<int[]>();
+        Inpainter recorder = (raster, box) -> { calls.add(box); return true; };
+        var result = new PageRasterPainter(FONTS, recorder).paint(image,
+            request("pt-BR", "Esta HQ é apresentada no formato original", polygon).withLetteringHints(Set.of(REGION)));
+        assertThat(result.getFirst().overflow()).isFalse();
+        assertThat(calls).isEmpty();
+    }
+
+    @Test
+    void cleanedTextOnAGradientFollowsTheGradientInsteadOfAFlatPatch() {
+        // Background from light grey (left) to white (right), with dark "lettering" in the middle.
+        var image = new BufferedImage(360, 220, BufferedImage.TYPE_INT_ARGB);
+        for (int y = 0; y < 220; y++) for (int x = 0; x < 360; x++) {
+            int v = 215 + x * 40 / 359;
+            image.setRGB(x, y, 0xff000000 | v << 16 | v << 8 | v);
+        }
+        for (int bar = 0; bar < 6; bar++)
+            for (int y = 95; y < 125; y++) for (int x = 70 + bar * 42; x < 76 + bar * 42; x++) image.setRGB(x, y, 0xff000000);
+        var polygon = CleanBoxPainterTest.rectangle(60 / 360.0, 80 / 220.0, 300 / 360.0, 140 / 220.0);
+        var result = new PageRasterPainter(FONTS).paint(image, request("pt-BR", "Pare", polygon));
+        assertThat(result.getFirst().overflow()).isFalse();
+        // Every repainted background pixel (light, not the new glyphs or their antialiasing) matches the gradient
+        // at its column: a flat fill would be off by up to 20 levels at the ends.
+        int repainted = 0, off = 0;
+        for (int y = 0; y < 220; y++) for (int x = 0; x < 360; x++) {
+            int value = image.getRGB(x, y) & 255, gradient = 215 + x * 40 / 359;
+            boolean wasInk = x >= 70 && x < 286 && y >= 95 && y < 125 && ((x - 70) % 42) < 6;
+            if (!wasInk || value < 200 || nearDark(image, x, y)) continue;
+            repainted++;
+            if (Math.abs(value - gradient) > 6) off++;
+        }
+        assertThat(repainted).isPositive();
+        assertThat(off).isZero();
+    }
+
+    /** Antialiasing of a glyph just drawn: any dark pixel within two pixels. */
+    private static boolean nearDark(BufferedImage image, int x, int y) {
+        for (int dy = -2; dy <= 2; dy++) for (int dx = -2; dx <= 2; dx++) {
+            int nx = x + dx, ny = y + dy;
+            if (nx >= 0 && ny >= 0 && nx < image.getWidth() && ny < image.getHeight() && (image.getRGB(nx, ny) & 255) < 150) return true;
+        }
+        return false;
+    }
+
+    @Test
+    void drawnTextKeepsItsDrawingEvenOnPlainPaper() {
+        // "bin" lettered on white paper: the flat path could retype it, but drawn text that is not speech stays.
+        var image = new BufferedImage(360, 220, BufferedImage.TYPE_INT_ARGB);
+        for (int y = 0; y < 220; y++) for (int x = 0; x < 360; x++) image.setRGB(x, y, 0xffffffff);
+        for (int bar = 0; bar < 6; bar++)
+            for (int y = 90; y < 130; y++) for (int x = 120 + bar * 18; x < 126 + bar * 18; x++) image.setRGB(x, y, 0xff000000);
+        var before = new BufferedImage(360, 220, BufferedImage.TYPE_INT_ARGB);
+        before.getGraphics().drawImage(image, 0, 0, null);
+        var polygon = CleanBoxPainterTest.rectangle(110 / 360.0, 85 / 220.0, 240 / 360.0, 135 / 220.0);
+        var plain = new PageRasterPainter(FONTS).paint(image, request("pt-BR", "lixeira", polygon));
+        assertThat(plain.getFirst().overflow()).isFalse(); // without the hint it would be retyped
+
+        for (int y = 0; y < 220; y++) for (int x = 0; x < 360; x++) image.setRGB(x, y, before.getRGB(x, y));
+        var kept = new PageRasterPainter(FONTS).paint(image, request("pt-BR", "lixeira", polygon).withDrawnHints(Set.of(REGION)));
+        assertThat(kept.getFirst().overflow()).isTrue();
+        assertThat(sameAs(image, before)).isTrue();
+    }
+
+    @Test
     void failedInpaintingKeepsTheOriginalLettering() {
         var polygon = CleanBoxPainterTest.rectangle(.3, .3, .7, .7);
         var failing = new PageRasterPainter(FONTS, (image, box) -> false);

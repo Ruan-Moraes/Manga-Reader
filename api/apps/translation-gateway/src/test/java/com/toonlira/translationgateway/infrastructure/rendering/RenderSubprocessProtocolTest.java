@@ -27,7 +27,7 @@ class RenderSubprocessProtocolTest {
     void privateProtocolPreservesValidatedRequestWithoutTextNormalization() throws Exception {
         var request = LocalFileRenderAdapterTest.request(new RenderSource("image/png", 42, 320, 220, "a".repeat(64)),
             List.of(new OcrManifest.Region(new UUID(0, 1), 0, "日本語 😀 <b>\n ç", CleanBoxPainterTest.rectangle(.1, .1, .9, .9))),
-            RenderPolicy.initial()).withCaptionHints(java.util.Set.of(new UUID(0, 1))).withLetteringHints(java.util.Set.of(new UUID(0, 1)))
+            RenderPolicy.initial()).withCaptionHints(java.util.Set.of(new UUID(0, 1))).withLetteringHints(java.util.Set.of(new UUID(0, 1))).withDrawnHints(java.util.Set.of(new UUID(0, 1)))
             .withBubbles(List.of(new com.toonlira.translationgateway.domain.layout.LayoutBox(.05, .05, .95, .95)));
         var file = temporary.resolve("request.bin");
         var original = temporary.resolve("original.png");
@@ -37,6 +37,7 @@ class RenderSubprocessProtocolTest {
         // The child paints like the in-process renderer: speech hints (inpainting) and detected balloons travel too.
         assertThat(decoded.request().captionHints()).isEqualTo(request.captionHints());
         assertThat(decoded.request().letteringHints()).isEqualTo(request.letteringHints());
+        assertThat(decoded.request().drawnHints()).isEqualTo(request.drawnHints());
         assertThat(decoded.request().bubbles()).isEqualTo(request.bubbles());
         assertThat(decoded.settings()).isEqualTo(settings());
         assertThat(decoded.request().regions()).containsExactlyElementsOf(request.regions());

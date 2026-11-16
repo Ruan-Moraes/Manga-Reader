@@ -43,6 +43,8 @@ public final class PageRasterPainter {
     private static final java.util.Set<String> SQUARE_GLYPH_SOURCES = java.util.Set.of("ja", "zh-Hans", "zh-Hant", "ko");
     /** Below this share of source ink inside the balloon the text sits on artwork: the original is preserved. */
     private static final double MIN_ENCLOSED_INK = .25;
+    /** Share of a big lettering's ink that a flat clean must reach for it to be retyped as ordinary text. */
+    private static final double ORDINARY_LETTERING_INK = .9;
     private static final int BLACK = 0xff000000, WHITE = 0xffffffff;
     private static final int[] COLOR_CHANNEL_SHIFTS = {16, 8, 0};
     /** Pixels added around an inpainted box so antialiased source strokes are reconstructed too. */
@@ -84,9 +86,21 @@ public final class PageRasterPainter {
         for (int i = 0; i < plans.length; i++) {
             CleanBoxPainter.checkInterrupted();
             var region = regions.get(i);
-            // Hand-drawn shouts are planned apart: their size follows their own drawing, not the page median.
-            lettering[i] = letters(region, request);
-            if (lettering[i]) { inpaint[i] = true; letteringPlans[i] = planLettering(region, request); continue; }
+            // Hand-drawn shouts are planned apart: their size follows their own drawing, not the page median. Only
+            // lettering that ordinary text cannot replace cleanly: big text whose ink sits (almost) whole in a box or on
+            // plain paper (a page of instructions, a cover subtitle) stays ordinary text, without the heavy face; when
+            // part of it runs over the art or out of its balloon the flat clean would leave pieces behind.
+            if (letters(region, request)) {
+                Plan ordinary = region.mask().enclosedInk() < ORDINARY_LETTERING_INK ? null
+                    : planFor(region, request, policy.maximumFontPx());
+                if (ordinary == null) {
+                    lettering[i] = inpaint[i] = true;
+                    letteringPlans[i] = planLettering(region, request);
+                    continue;
+                }
+            }
+            // Drawn text that is not speech (sound effects, screens, signs) keeps its drawing.
+            if (request.drawnHints().contains(region.region().id())) { preserved[i] = true; continue; }
             inpaint[i] = inpaints(region, request);
             preserved[i] = !inpaint[i] && preserveOriginal(region);
             if (!preserved[i]) plans[i] = plan(region, request, policy.maximumFontPx(), inpaint[i]);
@@ -347,7 +361,8 @@ public final class PageRasterPainter {
                 var attributed = new AttributedString(paragraph);
                 attributed.addAttribute(TextAttribute.FONT, font);
                 attributed.addAttribute(TextAttribute.RUN_DIRECTION, TextAttribute.RUN_DIRECTION_LTR);
-                var measurer = new LineBreakMeasurer(attributed.getIterator(), BreakIterator.getLineInstance(LOCALES.get(target)), FONT_CONTEXT);
+                var measurer = new LineBreakMeasurer(attributed.getIterator(),
+                    new UnbrokenSpanBreaks(BreakIterator.getLineInstance(LOCALES.get(target))), FONT_CONTEXT);
                 while (measurer.getPosition() < paragraph.length()) {
                     CleanBoxPainter.checkInterrupted();
                     int before = measurer.getPosition();

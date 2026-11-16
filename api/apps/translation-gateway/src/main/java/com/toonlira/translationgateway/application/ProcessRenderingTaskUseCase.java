@@ -39,6 +39,7 @@ import org.springframework.transaction.annotation.Transactional;
 /** Coordinates bounded private files. Only the persistence wrapper opens database transactions. */
 @Service
 public class ProcessRenderingTaskUseCase {
+    private static final org.slf4j.Logger LOG = org.slf4j.LoggerFactory.getLogger(ProcessRenderingTaskUseCase.class);
     private static final Duration ORIGINAL_TTL = Duration.ofHours(1);
     private static final int MAX_TRANSLATION_MANIFEST_BYTES = 4 * 1024 * 1024;
     private final RenderingPersistenceUseCase persistence;
@@ -117,6 +118,7 @@ public class ProcessRenderingTaskUseCase {
                 }
                 if (!source(original).equals(job.source())) invalid();
             } catch (RuntimeException | IOException error) {
+                LOG.warn("render preparation failed: {}", FailureDiagnostics.describe(error));
                 persistence.failUnclaimed(job.id(), INTERNAL_ERROR, now());
                 deleteOriginalIfTerminal(job);
                 return;
@@ -150,7 +152,8 @@ public class ProcessRenderingTaskUseCase {
         // Hand-drawn shouts the detector does not see as text, but that read as a sentence, may be retyped too.
         return request.withCaptionHints(com.toonlira.translationgateway.domain.rendering.CaptionFilter.captions(
             request, lexicon, hints.kinds())).withLetteringHints(com.toonlira.translationgateway.domain.rendering.CaptionFilter
-            .letterings(request, lexicon, hints.kinds()));
+            .letterings(request, lexicon, hints.kinds())).withDrawnHints(com.toonlira.translationgateway.domain.rendering.CaptionFilter
+            .drawn(request, lexicon, hints.kinds()));
     }
 
     /** What the layout artifact tells the renderer: balloon boxes and the detector class of each OCR region. */
@@ -239,6 +242,7 @@ public class ProcessRenderingTaskUseCase {
                 deleteOriginalIfTerminal(job);
             }
         } catch (RuntimeException | IOException error) {
+            LOG.warn("render failed: {}", FailureDiagnostics.describe(error));
             var current = findBestEffort(job.jobRef());
             // Exact references survive READY -> RESULT_EXPIRED; uncertain DB state must not delete an accepted result.
             boolean committed = artifacts != null && current != null && artifacts.equals(current.artifacts());

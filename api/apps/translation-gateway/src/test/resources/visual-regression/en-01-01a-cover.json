@@ -66,7 +66,7 @@
   } ],
   "bubbles" : [ ],
   "expect" : {
-    "maxChangedOutside" : 375,
+    "maxChangedOutside" : 248,
     "regions" : [ {
       "overflow" : false,
       "font" : 19,
@@ -77,11 +77,11 @@
       "residualInk" : 0
     }, {
       "overflow" : false,
-      "font" : 24,
+      "font" : 20,
       "residualInk" : 0
     }, {
       "overflow" : false,
-      "font" : 29,
+      "font" : 27,
       "residualInk" : 0
     }, {
       "overflow" : true,
