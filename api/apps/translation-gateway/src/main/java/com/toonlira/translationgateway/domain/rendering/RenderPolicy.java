@@ -11,10 +11,16 @@ public record RenderPolicy(String version, long maxOriginalBytes, int maxWidthPx
     public static final long MAX_PIXELS = 80_000_000;
     public static final long MAX_OUTPUT_BYTES = 64L * 1024 * 1024;
     public static final int MAX_MANIFEST_BYTES = 4 * 1024 * 1024;
-    private static final int MINIMUM_FONT_PX = 12;
+    /**
+     * Absolute legibility floor. Each region's own minimum is {@link #COMFORT_FONT_PX}, or its source lettering's size
+     * when that is smaller (a low-resolution scan): never below this.
+     */
+    private static final int MINIMUM_FONT_PX = 8;
+    /** Smallest size chosen for text whose source lettering is at least this big. */
+    public static final int COMFORT_FONT_PX = 12;
     private static final int MAXIMUM_FONT_PX = 48;
     private static final int PADDING_PX = 2;
-    private static final String CURRENT_VERSION = "clean-box-1.1";
+    private static final String CURRENT_VERSION = "clean-box-1.2";
 
     public RenderPolicy {
         if (version == null || !version.matches("[a-z0-9][a-z0-9.-]{0,63}")

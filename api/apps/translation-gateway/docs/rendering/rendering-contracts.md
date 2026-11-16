@@ -24,8 +24,18 @@ liga renderer ao worker. Não envia mídia ou chama providers.
 ## Políticas versionadas
 
 `clean-box-1.0` é a política histórica (compressão método 4).
-`clean-box-1.1` é a política corrente (compressão método 0), com os mesmos
-pixels lossless/exact e qualidade de configuração 100. O esforço foi reduzido
+`clean-box-1.1` usou compressão método 0, com os mesmos pixels lossless/exact e qualidade de configuração 100.
+`clean-box-1.2` (2026-11-16) é a política corrente: mesma compressão; o piso de fonte do contrato passa de 12 para
+**8 px** (legibilidade absoluta) e o mínimo de cada região é `min(12, tamanho do letreiro de origem)`, com o
+tamanho estimado por √(área do polígono ÷ letras). Em digitalização de alta resolução (letreiro ≥ 12 px) nada
+muda; em scan pequeno (Jungle Comics, 975 px de largura, letreiro ~10 px) o texto pode acompanhar o original em
+vez de ficar sem tradução.
+
+**Hifenização (último recurso da página)**: quando uma região não cabe nem com palavras inteiras, nem na fonte
+mínima, nem crescendo pelo balão, as palavras podem quebrar nas sílabas do idioma de destino, com hífen desenhado
+no fim da linha (padrões TeX `hyph-utf8` em `resources/hyphenation`, mínimos de letras antes/depois lidos do
+arquivo de cada idioma; nunca dentro de URL, e-mail ou caminho). Português, espanhol e inglês têm padrões; os
+demais destinos mantêm só palavras inteiras. O esforço foi reduzido
 para resolver a alocação do JPEG máximo sem elevar caps ou alterar a imagem.
 Java FFM e CLI usam a versão, sem fallback silencioso entre métodos.
 Fonte entre 12 e 48 pixels da imagem, padding de 2 pixels,
@@ -87,7 +97,7 @@ JSON UTF-8, versão `1.1` (2026-11-15: campo `kept`), separado dos artefatos OCR
   derivados por `PageQuality.of(RenderTextCounts)`, a mesma regra do manifesto. Resultados
   renderizados antes da V10 não têm contagens e a API omite `quality`.
 
-Política de composição (`clean-box-1.1`, auditoria Ubunchu! 2026-11-14):
+Política de composição (`clean-box-1.1`+, auditoria Ubunchu! 2026-11-14):
 região cujo texto não cabe (`overflow=true`) **não é limpa** — os pixels
 originais permanecem, em vez de um balão apagado. A fonte de cada região é
 limitada a 1,35× a mediana das regiões da página (com 3 ou mais regiões).

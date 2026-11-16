@@ -145,10 +145,14 @@ class PageRasterPainterTest {
     }
 
     static RenderRequest request(String target, String text, List<OcrManifest.Vertex> polygon) {
+        return request(target, text, polygon, "source");
+    }
+
+    static RenderRequest request(String target, String text, List<OcrManifest.Vertex> polygon, String source) {
         var pair = new LanguagePair(target.equals("pt-BR") ? "en" : "pt-BR", target);
         var ocr = new OcrManifest("1.0", JOB, pair.source(), WIDTH, HEIGHT,
-            List.of(new OcrManifest.Region(REGION, 0, "source", polygon)));
-        var input = new TranslationRequest(JOB, pair, List.of(new TranslationRequest.Region(REGION, 0, "source")));
+            List.of(new OcrManifest.Region(REGION, 0, source, polygon)));
+        var input = new TranslationRequest(JOB, pair, List.of(new TranslationRequest.Region(REGION, 0, source)));
         var translation = new TranslationValidator(Set.of(pair)).validateResponse(input,
             new TranslationResponse(List.of(new TranslationResponse.Region(REGION, text))));
         return RenderRequest.create(new RenderSource("image/png", 100, WIDTH, HEIGHT, "a".repeat(64)),
@@ -391,8 +395,10 @@ class PageRasterPainterTest {
         var image = CleanBoxPainterTest.fixture(WIDTH, HEIGHT, 0xffffffff);
         int left = (int) (.45 * WIDTH) - 8, right = (int) Math.ceil(.55 * WIDTH) + 8, top = (int) (.1 * HEIGHT) - 8, bottom = (int) Math.ceil(.9 * HEIGHT) + 8;
         outline(image, left, top, right, bottom, 0xff000000);
-        var result = painter.paint(image, request("pt-BR", "Inconstitucionalissimamente", narrowAndTall));
+        // Japanese has no hyphenation patterns: the word may only fit whole, never split at an arbitrary letter.
+        var result = painter.paint(image, request("ja", "Inconstitucionalissimamente", narrowAndTall));
         assertThat(result.getFirst().overflow()).isTrue();
+        // (Breaking at syllables, where the language has patterns: aWordWiderThanANarrowBalloonBreaksAtItsSyllables...)
         var balloon = CleanBoxPainterTest.fixture(WIDTH, HEIGHT, 0xffffffff);
         outline(balloon, left, top, right, bottom, 0xff000000);
         var fits = painter.paint(balloon, request("pt-BR", "Oi tu", narrowAndTall));
@@ -576,6 +582,52 @@ class PageRasterPainterTest {
         var result = painter.paint(image, request("pt-BR", "Edição RtL", line));
         assertThat(result.getFirst().overflow()).isFalse();
         assertThat(result.getFirst().fontSizePx()).isGreaterThanOrEqualTo(12);
+    }
+
+    @Test
+    void smallSourceLetteringLowersTheRegionsMinimumButNeverBelowTheLegibilityFloor() {
+        var policy = RenderPolicy.initial();
+        // ~10 px letters (a low-resolution scan): 34 letters in a 170 x 20 box.
+        var small = CleanBoxPainterTest.rectangle(10 / 360.0, 10 / 220.0, 180 / 360.0, 30 / 220.0);
+        var lowRes = new CleanBoxPainter().prepare(blankPage(),
+            request("pt-BR", "Texto", small, "HER SUPERNATURAL VISION REVEALS IT")).getFirst();
+        assertThat(PageRasterPainter.minimumFor(lowRes, policy)).isBetween(policy.minimumFontPx(), 11);
+        // Big source lettering keeps the comfortable minimum.
+        var big = CleanBoxPainterTest.rectangle(.1, .1, .9, .9);
+        var highRes = new CleanBoxPainter().prepare(blankPage(), request("pt-BR", "Texto", big, "HELLO THERE")).getFirst();
+        assertThat(PageRasterPainter.minimumFor(highRes, policy)).isEqualTo(RenderPolicy.COMFORT_FONT_PX);
+        // Tiny letters never go below the legibility floor.
+        var tiny = CleanBoxPainterTest.rectangle(10 / 360.0, 10 / 220.0, 60 / 360.0, 13 / 220.0);
+        var floor = new CleanBoxPainter().prepare(blankPage(), request("pt-BR", "Texto", tiny, "ABCDEFGHIJKLMNOPQRST")).getFirst();
+        assertThat(PageRasterPainter.minimumFor(floor, policy)).isEqualTo(policy.minimumFontPx());
+    }
+
+    private static BufferedImage blankPage() {
+        var page = new BufferedImage(360, 220, BufferedImage.TYPE_INT_ARGB);
+        for (int y = 0; y < 220; y++) for (int x = 0; x < 360; x++) page.setRGB(x, y, 0xffffffff);
+        return page;
+    }
+
+    @Test
+    void aWordWiderThanANarrowBalloonBreaksAtItsSyllablesWhileTextThatFitsIsNeverBroken() {
+        // A narrow, tall balloon (~70 px wide): "verdadeiramente" is wider than it even at the smallest size.
+        var image = CleanBoxPainterTest.fixture(WIDTH, HEIGHT, 0xffffffff);
+        var narrow = CleanBoxPainterTest.rectangle(150 / 360.0, 20 / 220.0, 220 / 360.0, 200 / 220.0);
+        outline(image, 142, 12, 228, 208, 0xff000000);
+        var portuguese = painter.paint(image, request("pt-BR", "Eles são verdadeiramente dignos", narrow));
+        assertThat(portuguese.getFirst().overflow()).isFalse();
+        // Spanish breaks by its own patterns; Japanese has none and keeps the original when a word cannot fit.
+        var spanish = painter.paint(copyOfBalloon(), request("es", "Son verdaderamente dignos", narrow));
+        assertThat(spanish.getFirst().overflow()).isFalse();
+        // Short words fit whole: the first pass never hyphenates, so nothing is broken.
+        var whole = painter.paint(copyOfBalloon(), request("pt-BR", "Oi tu", narrow));
+        assertThat(whole.getFirst().overflow()).isFalse();
+    }
+
+    private static BufferedImage copyOfBalloon() {
+        var image = CleanBoxPainterTest.fixture(WIDTH, HEIGHT, 0xffffffff);
+        outline(image, 142, 12, 228, 208, 0xff000000);
+        return image;
     }
 
     @Test

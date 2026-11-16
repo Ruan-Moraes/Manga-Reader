@@ -59,4 +59,22 @@ class UnbrokenSpanBreaksTest {
         int start = text.indexOf(span), end = start + span.length();
         return breaks.stream().filter(at -> at > start && at < end).toList();
     }
+
+    @Test
+    void syllablesBecomeBreaksOnlyWithAHyphenatorAndNeverInsideAnAddress() {
+        String text = "verdadeiramente em http://exemplo.com/verdadeiramente";
+        var plain = new UnbrokenSpanBreaks(BreakIterator.getLineInstance(Locale.ROOT));
+        plain.setText(text);
+        var whole = new ArrayList<Integer>();
+        for (int at = plain.first(); at != BreakIterator.DONE; at = plain.next()) whole.add(at);
+        assertThat(whole).doesNotContain(3); // "ver|dadeiramente" only with syllables
+
+        var syllables = new UnbrokenSpanBreaks(BreakIterator.getLineInstance(Locale.ROOT), Hyphenator.forLanguage("pt-BR"));
+        syllables.setText(text);
+        var all = new ArrayList<Integer>();
+        for (int at = syllables.first(); at != BreakIterator.DONE; at = syllables.next()) all.add(at);
+        assertThat(all).contains(3, 5, 8, 10);
+        assertThat(insideOf(text, "http://exemplo.com/verdadeiramente", all)).isEmpty();
+        for (int offset = 0; offset < text.length(); offset++) assertThat(all).contains(syllables.following(offset));
+    }
 }

@@ -268,7 +268,7 @@ final class LinuxRenderContainerFixture implements AutoCloseable {
         var codec = new NativeRenderChildSettings(Path.of("/relocated/lib/libwebp.so.7"), admitted.librarySha256(),
             Path.of("/relocated/lib/libsharpyuv.so.0"), admitted.sharpSha256(), admitted.nativeTimeout());
         var initial = RenderPolicy.initial();
-        var policy = new RenderPolicy(method == 4 ? "clean-box-1.0" : "clean-box-1.1", initial.maxOriginalBytes(),
+        var policy = new RenderPolicy(method == 4 ? "clean-box-1.0" : initial.version(), initial.maxOriginalBytes(),
             initial.maxWidthPx(), initial.maxHeightPx(), initial.maxPixels(), initial.maxOutputBytes(), initial.maxManifestBytes(),
             initial.minimumFontPx(), initial.maximumFontPx(), initial.paddingPx());
         RenderSubprocessProtocol.writeRequest(staging.resolve("request.bin"), Path.of("/original"),

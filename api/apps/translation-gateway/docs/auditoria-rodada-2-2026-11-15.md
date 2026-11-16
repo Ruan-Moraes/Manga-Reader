@@ -131,3 +131,21 @@ branca da regressão. 15 regiões em 8 páginas, em 4 classes:
 
 Render real das 12 páginas depois disso: 12/12 `READY`, páginas `OK` de 4 para **7** (01a, 02, 04, 07, 08, 10, 11);
 regiões sem render de 15 para **11**, quase todas da classe B.
+
+### Validação em duas obras (2026-11-16)
+
+| Obra | Páginas | Regiões | Sem render antes → depois | Observação |
+|---|---|---|---|---|
+| Ubunchu! cap. 3 (nunca usado para calibrar) | 12/12 `READY` | 303 | 11 → 10 | nenhuma fonte < 12: alta resolução intacta |
+| Jungle Comics (anos 1940, domínio público, 975 px) | 3/3 `READY` | 30 | 9 → 6 | fonte mínima por região (política `clean-box-1.2`) |
+
+A tradução da 2ª obra saiu boa (nomes, caixa alta e sentido corretos). O que ela revelou e Ubunchu! não tinha:
+fonte mínima fixa grande demais para scan pequeno (corrigido), balões estreitos e altos onde palavras longas do
+português não cabem (hifenização) e o detector de balões rejeitando a página inteira por uma detecção ruim.
+
+Depois (bancada com LaMa real, sem cota): detector agora aceita ultrapassagem de borda < 1 px (a pág. 15 tinha uma
+caixa em 499,2 numa página de 499) e a hifenização entrou como último recurso da página ("Tecnica-mente",
+"Vice-presi-dente"). Os dois balões estreitos da Jungle 16 continuam sem render por **outra classe**: a máscara do
+balão não acha fundo limpo (tinta cercada 0,00, caixa útil 0×0) porque a cor estimada não bate com o papel
+amarelado e ruidoso do scan (JPEG q60) — próximo item. Ubunchu! cap. 3 ficou estável (10 sem render, nenhuma
+fonte < 12). A execução real completa ficou para depois: a cota diária local (100 páginas/dia) acabou.

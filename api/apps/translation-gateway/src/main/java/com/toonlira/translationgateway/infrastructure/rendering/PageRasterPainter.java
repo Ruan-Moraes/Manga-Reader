@@ -123,6 +123,11 @@ public final class PageRasterPainter {
             var fallback = plan(regions.get(i), request, cap, true);
             if (fallback != null) { inpaint[i] = true; plans[i] = fallback; }
         }
+        // Last resort, as a letterer does in a narrow balloon: words break at their syllables, with a hyphen.
+        for (int i = 0; i < plans.length; i++) {
+            if (plans[i] != null || preserved[i] || lettering[i]) continue;
+            plans[i] = plan(regions.get(i), request, cap, inpaint[i], true);
+        }
         for (int i = 0; i < plans.length; i++) if (lettering[i]) plans[i] = letteringPlans[i];
         // Halo sets are computed on the untouched raster, so no region erases text another one already drew.
         var halos = new ArrayList<List<Integer>>(plans.length);
@@ -175,19 +180,25 @@ public final class PageRasterPainter {
     }
 
     private Plan plan(CleanBoxPainter.CleanRegion region, RenderRequest request, int maximumFontPx, boolean inpainted) {
-        if (!inpainted) return planFor(region, request, maximumFontPx);
+        return plan(region, request, maximumFontPx, inpainted, false);
+    }
+
+    /** {@code syllables}: words may break at their syllables (last resort, see {@link #compose}). */
+    private Plan plan(CleanBoxPainter.CleanRegion region, RenderRequest request, int maximumFontPx, boolean inpainted, boolean syllables) {
+        if (!inpainted) return planFor(region, request, maximumFontPx, syllables);
         // The whole box is reconstructed, so text may use the polygon's inscribed box (no balloon mask), leaving
         // room for the outline; it is clipped to the inpainted box.
         var bounds = region.polygon().bounds();
         var clip = new RasterPolygon.Bounds(bounds.left() - INPAINT_MARGIN, bounds.top() - INPAINT_MARGIN,
             bounds.right() + INPAINT_MARGIN, bounds.bottom() + INPAINT_MARGIN);
         var box = region.polygon().interiorBox(request.policy().paddingPx());
-        var plan = compose(region.region().translatedText(), request.pair().target(), box, request.policy(), maximumFontPx, clip, false);
+        int minimum = minimumFor(region, request.policy());
+        var plan = compose(region.region().translatedText(), request.pair().target(), box, request.policy(), maximumFontPx, clip, false, false, minimum, syllables);
         if (plan != null) return plan;
         // Everything inside the clip is reconstructed: text that does not fit the OCR box may use all of it.
         int padding = request.policy().paddingPx();
         var whole = new RasterPolygon.Bounds(clip.left() + padding, clip.top() + padding, clip.right() - padding, clip.bottom() - padding);
-        return compose(region.region().translatedText(), request.pair().target(), whole, request.policy(), maximumFontPx, clip, false);
+        return compose(region.region().translatedText(), request.pair().target(), whole, request.policy(), maximumFontPx, clip, false, false, minimum, syllables);
     }
 
     private static int outline(int fontSize) { return Math.max(2, Math.round(fontSize / 8f)); }
@@ -229,7 +240,7 @@ public final class PageRasterPainter {
         var clip = new RasterPolygon.Bounds(bounds.left() - INPAINT_MARGIN, bounds.top() - INPAINT_MARGIN,
             bounds.right() + INPAINT_MARGIN, bounds.bottom() + INPAINT_MARGIN);
         var upright = compose(region.region().translatedText(), request.pair().target(), box, request.policy(),
-            request.policy().maximumFontPx(), clip, false, true);
+            request.policy().maximumFontPx(), clip, false, true, minimumFor(region, request.policy()));
         if (upright == null || tilt == 0) return upright;
         var rotate = AffineTransform.getRotateInstance(tilt, cx, cy);
         var lines = new ArrayList<GlyphLine>(upright.lines().size());
@@ -248,15 +259,20 @@ public final class PageRasterPainter {
     }
 
     private Plan planFor(CleanBoxPainter.CleanRegion region, RenderRequest request, int maximumFontPx) {
+        return planFor(region, request, maximumFontPx, false);
+    }
+
+    private Plan planFor(CleanBoxPainter.CleanRegion region, RenderRequest request, int maximumFontPx, boolean syllables) {
         var text = region.region().translatedText();
         var target = request.pair().target();
         // The layout box is the polygon's inscribed box shrunk until it lies on balloon interior only.
         var padded = region.mask().fit(region.polygon().interiorBox(request.policy().paddingPx()));
-        var plan = compose(text, target, padded, request.policy(), maximumFontPx, padded, false);
+        int minimum = minimumFor(region, request.policy());
+        var plan = compose(text, target, padded, request.policy(), maximumFontPx, padded, false, false, minimum, syllables);
         if (plan != null || request.policy().paddingPx() == 0) return plan;
         // A tight bubble gets a second chance with the whole inscribed box before the text is given up on.
         var whole = region.mask().fit(region.polygon().interiorBox(0));
-        return compose(text, target, whole, request.policy(), maximumFontPx, whole, false);
+        return compose(text, target, whole, request.policy(), maximumFontPx, whole, false, false, minimum, syllables);
     }
 
     /** Median-relative ceiling so one balloon cannot be typeset several times larger than its neighbours. */
@@ -292,7 +308,7 @@ public final class PageRasterPainter {
             // minimum size, and only from a box that holds at least one glyph; text that fits keeps its box.
             if (Double.isNaN(median) && !squareGlyphs) {
                 var own = region.polygon().bounds();
-                if (plans[i] != null || Math.min(own.right() - own.left(), own.bottom() - own.top()) < policy.minimumFontPx() / 2) continue;
+                if (plans[i] != null || Math.min(own.right() - own.left(), own.bottom() - own.top()) < RenderPolicy.COMFORT_FONT_PX / 2) continue;
             }
             var start = region.mask().fit(region.polygon().interiorBox(0));
             int limit = Math.max(start.bottom() - start.top(), 2 * target);
@@ -310,11 +326,25 @@ public final class PageRasterPainter {
                 if (grown.equals(seed) && band == 1) continue;
                 var padded = new RasterPolygon.Bounds(grown.left() + policy.paddingPx(), grown.top() + policy.paddingPx(),
                     grown.right() - policy.paddingPx(), grown.bottom() - policy.paddingPx());
-                var plan = compose(region.region().translatedText(), request.pair().target(), padded, policy, cap, grown, true);
+                var plan = compose(region.region().translatedText(), request.pair().target(), padded, policy, cap, grown, true,
+                    minimumFor(region, policy));
                 if (plan != null && (best == null || plan.size() > best.size())) { best = plan; bestBox = grown; }
             }
             if (bestBox != null) { plans[i] = best; claimed.add(bestBox); }
         }
+    }
+
+    /**
+     * Smallest font for a region: {@link RenderPolicy#COMFORT_FONT_PX}, or the size of its own source lettering when that
+     * is smaller (a low-resolution scan, where 12 px is bigger than the original letters), never below the policy's
+     * legibility floor. The size is sqrt(box area / letters), which does not depend on how lines were joined.
+     */
+    static int minimumFor(CleanBoxPainter.CleanRegion region, RenderPolicy policy) {
+        long letters = region.region().sourceText().codePoints().filter(Character::isLetterOrDigit).count();
+        if (letters == 0) return RenderPolicy.COMFORT_FONT_PX;
+        var bounds = region.polygon().bounds();
+        double pitch = Math.sqrt((double) (bounds.right() - bounds.left()) * (bounds.bottom() - bounds.top()) / letters);
+        return Math.clamp((int) Math.floor(pitch), policy.minimumFontPx(), RenderPolicy.COMFORT_FONT_PX);
     }
 
     /** The vertically centred share {@code fraction} of a box, full width; null when too thin to grow from. */
@@ -346,16 +376,28 @@ public final class PageRasterPainter {
     }
 
     private Plan compose(String text, String target, RasterPolygon.Bounds box, RenderPolicy policy, int maximumFontPx,
-                         RasterPolygon.Bounds clipBox, boolean grown) {
-        return compose(text, target, box, policy, maximumFontPx, clipBox, grown, false);
+                         RasterPolygon.Bounds clipBox, boolean grown, int minimumFontPx) {
+        return compose(text, target, box, policy, maximumFontPx, clipBox, grown, false, minimumFontPx, false);
     }
 
     /** {@code heavy}: the hand-lettering face ({@link BundledRenderingFonts#letteringFontFor}). */
     private Plan compose(String text, String target, RasterPolygon.Bounds box, RenderPolicy policy, int maximumFontPx,
-                         RasterPolygon.Bounds clipBox, boolean grown, boolean heavy) {
+                         RasterPolygon.Bounds clipBox, boolean grown, boolean heavy, int minimumFontPx) {
+        return compose(text, target, box, policy, maximumFontPx, clipBox, grown, heavy, minimumFontPx, false);
+    }
+
+    /**
+     * {@code syllables}: words may break at the target language's syllables, with a hyphen. Only the page's last resort
+     * ({@link #paintVerifiedRaster}): whole words, a smaller size and growing into the balloon all come first.
+     */
+    private Plan compose(String text, String target, RasterPolygon.Bounds box, RenderPolicy policy, int maximumFontPx,
+                         RasterPolygon.Bounds clipBox, boolean grown, boolean heavy, int minimumFontPx, boolean syllables) {
         if (!fonts.canDisplay(target, text) || unsupportedControl(text) || box.right() <= box.left() || box.bottom() <= box.top())
             return null;
-        for (int size = maximumFontPx; size >= policy.minimumFontPx(); size--) {
+        var hyphenator = Hyphenator.forLanguage(target);
+        boolean hyphenate = syllables && hyphenator.available();
+        if (syllables && !hyphenate) return null;
+        for (int size = maximumFontPx; size >= Math.max(policy.minimumFontPx(), minimumFontPx); size--) {
             CleanBoxPainter.checkInterrupted();
             var font = heavy ? fonts.letteringFontFor(target, size) : fonts.fontFor(target, size);
             var metrics = font.getLineMetrics("Ag", FONT_CONTEXT);
@@ -369,27 +411,25 @@ public final class PageRasterPainter {
                     if (lines.size() * lineHeight > box.bottom() - box.top()) { fits = false; break; }
                     continue;
                 }
-                var attributed = new AttributedString(paragraph);
-                attributed.addAttribute(TextAttribute.FONT, font);
-                // Symbols the face lacks (♥, ♪) come from another bundled face; letters never do (canDisplay above).
-                for (int at = 0; at < paragraph.length(); ) {
-                    int point = paragraph.codePointAt(at), next = at + Character.charCount(point);
-                    if (!font.canDisplay(point)) {
-                        var fallback = fonts.symbolFallback(point, heavy);
-                        if (fallback != null) attributed.addAttribute(TextAttribute.FONT, fallback.deriveFont(font.getSize2D()), at, next);
-                    }
-                    at = next;
-                }
-                attributed.addAttribute(TextAttribute.RUN_DIRECTION, TextAttribute.RUN_DIRECTION_LTR);
+                var attributed = attributed(paragraph, font, heavy);
                 var measurer = new LineBreakMeasurer(attributed.getIterator(),
-                    new UnbrokenSpanBreaks(BreakIterator.getLineInstance(LOCALES.get(target))), FONT_CONTEXT);
+                    new UnbrokenSpanBreaks(BreakIterator.getLineInstance(LOCALES.get(target)), hyphenate ? hyphenator : null), FONT_CONTEXT);
+                // Room kept for the hyphen a broken word gets at the end of its line.
+                float hyphenWidth = hyphenate ? new TextLayout("-", font, FONT_CONTEXT).getAdvance() : 0;
+                // The JDK measurer fails on a width of zero or less: no room left means this pass does not fit.
+                if (box.right() - box.left() - hyphenWidth <= 1) { fits = false; break; }
                 while (measurer.getPosition() < paragraph.length()) {
                     CleanBoxPainter.checkInterrupted();
                     int before = measurer.getPosition();
-                    // requireNextWord: a word wider than the box is never split mid-word ("YouTu / be"); the font
-                    // shrinks instead, and if it still does not fit the region keeps its original.
-                    var line = measurer.nextLayout(box.right() - box.left(), paragraph.length(), true);
-                    if (line == null || measurer.getPosition() <= before || visualWidth(line) > box.right() - box.left()) {
+                    // requireNextWord: a word wider than the box is never split at an arbitrary letter ("YouTu / be");
+                    // the font shrinks instead, and if it still does not fit the region keeps its original.
+                    var line = measurer.nextLayout(box.right() - box.left() - hyphenWidth, paragraph.length(), true);
+                    int after = measurer.getPosition();
+                    if (line != null && hyphenate && after < paragraph.length() && after > before
+                        && Character.isLetter(paragraph.charAt(after - 1)) && Character.isLetter(paragraph.charAt(after))) {
+                        line = new TextLayout(attributed(paragraph.substring(before, after) + "-", font, heavy).getIterator(), FONT_CONTEXT);
+                    }
+                    if (line == null || after <= before || visualWidth(line) > box.right() - box.left()) {
                         fits = false; break;
                     }
                     lines.add(line);
@@ -412,6 +452,22 @@ public final class PageRasterPainter {
             return new Plan(size, List.copyOf(outlines), clipBox, grown);
         }
         return null;
+    }
+
+    /** The face at its size, symbols it lacks from another bundled face (letters never: canDisplay), left to right. */
+    private AttributedString attributed(String text, java.awt.Font font, boolean heavy) {
+        var attributed = new AttributedString(text);
+        attributed.addAttribute(TextAttribute.FONT, font);
+        for (int at = 0; at < text.length(); ) {
+            int point = text.codePointAt(at), next = at + Character.charCount(point);
+            if (!font.canDisplay(point)) {
+                var fallback = fonts.symbolFallback(point, heavy);
+                if (fallback != null) attributed.addAttribute(TextAttribute.FONT, fallback.deriveFont(font.getSize2D()), at, next);
+            }
+            at = next;
+        }
+        attributed.addAttribute(TextAttribute.RUN_DIRECTION, TextAttribute.RUN_DIRECTION_LTR);
+        return attributed;
     }
 
     private static double visualWidth(TextLayout line) {

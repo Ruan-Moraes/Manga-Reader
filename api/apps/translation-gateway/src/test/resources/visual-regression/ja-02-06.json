@@ -185,9 +185,9 @@
       "font" : 22,
       "residualInk" : 0
     }, {
-      "overflow" : true,
-      "font" : 0,
-      "residualInk" : 0
+      "overflow" : false,
+      "font" : 14,
+      "residualInk" : 83
     }, {
       "overflow" : false,
       "font" : 23,

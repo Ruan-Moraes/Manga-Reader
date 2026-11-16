@@ -35,7 +35,7 @@ class RenderingContractsTest {
     private static final RenderPolicy POLICY = RenderPolicy.initial();
 
     @Test void compressionPolicyIsVersionedWithoutChangingVisualOrMediaLimits() {
-        assertThat(POLICY.version()).isEqualTo("clean-box-1.1");
+        assertThat(POLICY.version()).isEqualTo("clean-box-1.2");
         assertThat(POLICY.compressionMethod()).isZero();
         var legacy = new RenderPolicy("clean-box-1.0", POLICY.maxOriginalBytes(), POLICY.maxWidthPx(), POLICY.maxHeightPx(),
             POLICY.maxPixels(), POLICY.maxOutputBytes(), POLICY.maxManifestBytes(), POLICY.minimumFontPx(), POLICY.maximumFontPx(), POLICY.paddingPx());
@@ -43,7 +43,8 @@ class RenderingContractsTest {
         assertThat(POLICY.encoding()).isEqualTo(legacy.encoding()).isEqualTo("webp-lossless");
         assertThat(POLICY.maxPixels()).isEqualTo(80_000_000);
         assertThat(POLICY.maxOutputBytes()).isEqualTo(64L * 1024 * 1024);
-        assertThat(POLICY.minimumFontPx()).isEqualTo(12); assertThat(POLICY.maximumFontPx()).isEqualTo(48);
+        assertThat(POLICY.minimumFontPx()).isEqualTo(8); assertThat(RenderPolicy.COMFORT_FONT_PX).isEqualTo(12);
+        assertThat(POLICY.maximumFontPx()).isEqualTo(48);
         assertThat(POLICY.paddingPx()).isEqualTo(2);
     }
 
@@ -241,7 +242,7 @@ class RenderingContractsTest {
         invalidOutput(() -> RenderManifest.create(request, image(100), List.of(first, second, new RenderManifest.Placement(UUID.randomUUID(), true, 0))));
         invalidOutput(() -> RenderManifest.create(request, image(100), List.of(first, new RenderManifest.Placement(UUID.randomUUID(), true, 0))));
         invalidOutput(() -> RenderManifest.create(request, image(100), List.of(first, new RenderManifest.Placement(null, true, 0))));
-        invalidOutput(() -> RenderManifest.create(request, image(100), List.of(first, new RenderManifest.Placement(second.regionId(), false, 11))));
+        invalidOutput(() -> RenderManifest.create(request, image(100), List.of(first, new RenderManifest.Placement(second.regionId(), false, 7))));
         invalidOutput(() -> RenderManifest.create(request, image(100), List.of(first, new RenderManifest.Placement(second.regionId(), false, 49))));
         invalidOutput(() -> RenderManifest.create(request, image(100), List.of(first, new RenderManifest.Placement(second.regionId(), true, 12))));
         var withNull = new ArrayList<RenderManifest.Placement>();
