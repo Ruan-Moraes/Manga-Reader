@@ -24,6 +24,9 @@ final class TranslationEnvelopeCodec {
      */
     private static final Pattern SPACE_AFTER_SPAN = Pattern.compile("</span>[ \\u00A0]+(?=[!?.,;:…)\\]}»”’])");
     private static final Pattern SPACE_BEFORE_SPAN = Pattern.compile("(?<=[(\\[{«“‘])[ \\u00A0]+<span translate=\"no\">");
+    // Straight quotes cannot tell opening from closing: only a protected term quoted on both sides is tightened.
+    private static final Pattern SPACES_INSIDE_QUOTES = Pattern.compile(
+        "(?<=^|[\\s(\\[>])(&quot;|\"|')[ \\u00A0]+(<span translate=\"no\">[^<>]*</span>)[ \\u00A0]+\\1(?=$|[\\s!?.,;:…)\\]<])");
     private final ProtectedTerms terms = new ProtectedTerms();
     private static final TranslationValidator CONTRACT = new TranslationValidator(Set.copyOf(LanguagePair.all()));
 
@@ -80,6 +83,7 @@ final class TranslationEnvelopeCodec {
             }
             var body = SPACE_AFTER_SPAN.matcher(matcher.group(2)).replaceAll("</span>");
             body = SPACE_BEFORE_SPAN.matcher(body).replaceAll("<span translate=\"no\">");
+            body = SPACES_INSIDE_QUOTES.matcher(body).replaceAll("$1$2$1");
             regions.add(new TranslationResponse.Region(id, StringEscapeUtils.unescapeHtml4(SPAN_TAGS.matcher(body).replaceAll(""))));
             offset = matcher.end();
         }

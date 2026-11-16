@@ -39,6 +39,14 @@ class TranslationEnvelopeCodecTest {
     }
 
     @Test
+    void decodeTightensAQuotedProtectedTerm() {
+        var decoded = codec.decode("<div><p data-region=\"" + ID + "\">Não &quot;Ubunchu&quot;, mas &quot; <span translate=\"no\">Ubuntu</span> &quot;."
+            + " Diga \" <span translate=\"no\">GNOME</span> \" e \"oi\" <span translate=\"no\">Linux</span> \"fim\"</p></div>");
+        assertThat(decoded.regions().getFirst().translatedText())
+            .isEqualTo("Não \"Ubunchu\", mas \"Ubuntu\". Diga \"GNOME\" e \"oi\" Linux \"fim\"");
+    }
+
+    @Test
     void decodeStripsProtectionSpansButKeepsLiterals() {
         var decoded = codec.decode("<div><p data-region=\"" + ID + "\">Abra o <span translate=\"no\">YouTube</span> agora</p></div>");
         assertThat(decoded.regions().getFirst().translatedText()).isEqualTo("Abra o YouTube agora");
@@ -59,5 +67,10 @@ class TranslationEnvelopeCodecTest {
         assertThat(codec.isLiteralOnly("https://example.com/a")).isTrue();
         assertThat(codec.isLiteralOnly("YouTube")).isTrue();
         assertThat(codec.isLiteralOnly("Open YouTube")).isFalse();
+        assertThat(codec.isLiteralOnly("case_Wellcome.pdf")).isTrue();
+        assertThat(codec.isLiteralOnly("case_ubuntu_ johnhopkins_v2.pdf")).isTrue();
+        assertThat(codec.isLiteralOnly("Open notes.txt now")).isFalse();
+        assertThat(codec.isLiteralOnly("It is the end.")).isFalse(); // a sentence end is not an extension
+        assertThat(codec.isLiteralOnly("e.g. this")).isFalse();
     }
 }

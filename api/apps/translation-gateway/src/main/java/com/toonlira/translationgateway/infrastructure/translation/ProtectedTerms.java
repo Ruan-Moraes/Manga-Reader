@@ -12,7 +12,11 @@ final class ProtectedTerms {
     static final String OPEN = "<span translate=\"no\">";
     static final String CLOSE = "</span>";
     private static final String RESOURCE = "/glossary/protected-terms.txt";
-    private static final String PATTERNS = "https?://[^\\s<>\"]+|\\$[A-Za-z_][A-Za-z0-9_]*";
+    // URLs, $variables, file names ("Skegness.pdf": lower-case extension right after the dot) and snake_case
+    // identifiers ("case_ubuntu_v2"): names a translator would mangle ("caso_Wellcome.pdf").
+    private static final String PATTERNS = "https?://[^\\s<>\"]+|\\$[A-Za-z_][A-Za-z0-9_]*"
+        + "|[\\p{L}\\p{N}_-]+\\.[a-z][a-z0-9]{1,3}(?![\\p{L}\\p{N}.])"
+        + "|[\\p{L}\\p{N}]+(?:_[\\p{L}\\p{N}]*)+";
     private final Pattern pattern;
 
     ProtectedTerms() { this(load()); }
