@@ -1,5 +1,7 @@
 package com.toonlira.translationgateway.infrastructure.ocr;
 
+import com.toonlira.translationgateway.infrastructure.rendering.PageRasterReader;
+
 import com.toonlira.translationgateway.application.port.RereadImagingPort;
 import com.toonlira.translationgateway.domain.ocr.MosaicLayout;
 import java.awt.Color;
@@ -30,6 +32,12 @@ public class RereadMosaicBuilder implements RereadImagingPort {
     private static final int MAX_TILE_HEIGHT = 1200;
     private static final int MAX_TILE_WIDTH = MosaicLayout.MAX_WIDTH - 2 * MosaicLayout.GAP;
     private static final double[] SCALES = {2, 3, 3, 3};
+    private final PageRasterReader pages;
+
+    public RereadMosaicBuilder() { this(PageRasterReader.jdkOnly()); }
+
+    @org.springframework.beans.factory.annotation.Autowired
+    public RereadMosaicBuilder(PageRasterReader pages) { this.pages = pages; }
 
     @Override
     public Mosaic build(Path validatedImage, List<int[]> crops) {
@@ -39,8 +47,8 @@ public class RereadMosaicBuilder implements RereadImagingPort {
     @Override
     public Mosaic build(Path validatedImage, List<int[]> crops, boolean framed) {
         BufferedImage page;
-        try { page = ImageIO.read(validatedImage.toFile()); }
-        catch (IOException | RuntimeException unreadable) { return null; }
+        // WebP through the pinned decoder: the JDK cannot read it and WebP pages were never re-read.
+        page = pages.read(validatedImage);
         if (page == null || crops.isEmpty()) return null;
         var tiles = new ArrayList<BufferedImage>();
         for (var crop : crops) {

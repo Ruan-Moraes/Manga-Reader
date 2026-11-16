@@ -121,6 +121,35 @@ public final class WebpProcessCodec {
         finally { cleanup(snapshot); }
     }
 
+    /**
+     * Decodes a validated WebP page for analysis (balloon detection, OCR re-reading), whose expected size and hash
+     * come from the file itself. Waits up to the native timeout for the single decoder slot instead of refusing at
+     * once: those readers run next to rendering and must not fail just because a render is encoding.
+     */
+    public BufferedImage decode(Path source, RenderPolicy policy) {
+        Path snapshot = null;
+        try {
+            if (source == null || policy == null) throw new RenderCodecException(INVALID_MEDIA);
+            MediaInspectionService.InspectedMedia media;
+            try (var input = Files.newInputStream(source)) { media = inspector.inspect(input, policy.maxOutputBytes()); }
+            snapshot = media.path();
+            if (!"image/webp".equals(media.mimeType())) throw new RenderCodecException(INVALID_MEDIA);
+            PamRasterIo.dimensions(media.widthPx(), media.heightPx(), policy);
+            verify(decoder);
+            if (!NATIVE_CAPACITY.tryAcquire(timeout.toNanos(), TimeUnit.NANOSECONDS)) throw new RenderCodecException(BUSY);
+            try {
+                return runAcquired(List.of(decoder.path().toString(), "-quiet", "-pam", "-o", "-", "--", snapshot.toString()),
+                    input -> PamRasterIo.read(input, media.widthPx(), media.heightPx(), policy));
+            } finally { NATIVE_CAPACITY.release(); }
+        } catch (RenderCodecException error) { throw error; }
+        catch (InterruptedException error) {
+            Thread.currentThread().interrupt();
+            throw new RenderCodecException(UNAVAILABLE);
+        }
+        catch (IOException | RuntimeException error) { throw new RenderCodecException(INVALID_MEDIA); }
+        finally { cleanup(snapshot); }
+    }
+
     private void version(Binary executable) {
         try {
             String value = run(List.of(executable.path().toString(), "-version"), input -> {
@@ -134,6 +163,12 @@ public final class WebpProcessCodec {
 
     private <T> T run(List<String> command, Reader<T> reader) {
         if (!NATIVE_CAPACITY.tryAcquire()) throw new RenderCodecException(BUSY);
+        try { return runAcquired(command, reader); }
+        finally { NATIVE_CAPACITY.release(); }
+    }
+
+    /** Runs {@code command} holding the native slot the caller already acquired. */
+    private <T> T runAcquired(List<String> command, Reader<T> reader) {
         Process process = null;
         var expired = new AtomicBoolean();
         var timer = Executors.newSingleThreadScheduledExecutor(Thread.ofPlatform().daemon().factory());
@@ -158,7 +193,6 @@ public final class WebpProcessCodec {
         } finally {
             timer.shutdownNow();
             if (process != null) terminateAndWait(process);
-            NATIVE_CAPACITY.release();
         }
     }
 

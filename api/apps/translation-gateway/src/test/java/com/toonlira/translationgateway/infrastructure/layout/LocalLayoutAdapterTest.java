@@ -26,11 +26,11 @@ class LocalLayoutAdapterTest {
         properties.getLayout().setModelPath(temporary.resolve("absent.onnx"));
         var environment = new MockEnvironment().withProperty("unused", "unused");
         environment.setActiveProfiles("worker");
-        assertThat(new LayoutConfiguration().layoutPort(properties, environment).available()).isFalse();
+        assertThat(new LayoutConfiguration().layoutPort(properties, environment, com.toonlira.translationgateway.infrastructure.rendering.PageRasterReader.jdkOnly()).available()).isFalse();
         properties.getLayout().setMode(GatewayProperties.Layout.Mode.SHADOW);
-        assertThatThrownBy(() -> new LayoutConfiguration().layoutPort(properties, environment)).hasMessageContaining("direction");
+        assertThatThrownBy(() -> new LayoutConfiguration().layoutPort(properties, environment, com.toonlira.translationgateway.infrastructure.rendering.PageRasterReader.jdkOnly())).hasMessageContaining("direction");
         properties.getLayout().setDirection("ltr");
-        assertThatThrownBy(() -> new LayoutConfiguration().layoutPort(properties, environment)).hasMessageContaining("model");
+        assertThatThrownBy(() -> new LayoutConfiguration().layoutPort(properties, environment, com.toonlira.translationgateway.infrastructure.rendering.PageRasterReader.jdkOnly())).hasMessageContaining("model");
     }
 
     @Test void retainsCapacityUntilNativeWorkActuallyReturnsEvenAfterDeadline() throws Exception {

@@ -1,5 +1,7 @@
 package com.toonlira.translationgateway.infrastructure.layout;
 
+import com.toonlira.translationgateway.infrastructure.rendering.PageRasterReader;
+
 import com.toonlira.translationgateway.application.port.BubbleDetectionPort;
 import com.toonlira.translationgateway.application.port.LayoutPort;
 import com.toonlira.translationgateway.domain.OcrManifest;
@@ -30,6 +32,8 @@ public final class LocalLayoutAdapter implements LayoutPort, AutoCloseable {
     private final boolean grouping;
     private final Duration capacityWait;
 
+    private final PageRasterReader pages;
+
     public LocalLayoutAdapter(BubbleDetectionPort bubbles, ReadingDirection direction, Duration budget) {
         this(bubbles, direction, budget, false);
     }
@@ -39,6 +43,19 @@ public final class LocalLayoutAdapter implements LayoutPort, AutoCloseable {
     }
 
     LocalLayoutAdapter(BubbleDetectionPort bubbles, ReadingDirection direction, Duration budget, boolean grouping, Duration capacityWait) {
+        this(bubbles, direction, budget, grouping, capacityWait, PageRasterReader.jdkOnly());
+    }
+
+    /** {@code pages}: reads the validated page, WebP included when a pinned decoder is configured. */
+    public LocalLayoutAdapter(BubbleDetectionPort bubbles, ReadingDirection direction, Duration budget, boolean grouping,
+                              PageRasterReader pages) {
+        this(bubbles, direction, budget, grouping, CAPACITY_WAIT, pages);
+    }
+
+    LocalLayoutAdapter(BubbleDetectionPort bubbles, ReadingDirection direction, Duration budget, boolean grouping,
+                       Duration capacityWait, PageRasterReader pages) {
+        if (pages == null) throw new IllegalArgumentException("Invalid layout configuration");
+        this.pages = pages;
         if (direction == null || budget.isNegative() || budget.isZero() || budget.compareTo(Duration.ofSeconds(30)) > 0)
             throw new IllegalArgumentException("Invalid layout configuration");
         this.bubbles = bubbles;
@@ -97,8 +114,9 @@ public final class LocalLayoutAdapter implements LayoutPort, AutoCloseable {
         }
     }
 
-    private static PixelImage pixels(Path validatedImage, int width, int height) throws IOException {
-        var image = ImageIO.read(validatedImage.toFile());
+    private PixelImage pixels(Path validatedImage, int width, int height) throws IOException {
+        // A WebP page used to read as null here (no JDK reader) and every WebP page lost its balloons.
+        var image = pages.read(validatedImage);
         if (image == null || width >= 0 && (image.getWidth() != width || image.getHeight() != height))
             throw new LayoutFailure(LayoutFailure.Code.INVALID_RESPONSE);
         return new PixelImage() {
