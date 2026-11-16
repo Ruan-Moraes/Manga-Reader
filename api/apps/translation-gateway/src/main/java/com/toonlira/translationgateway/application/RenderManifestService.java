@@ -52,6 +52,7 @@ public final class RenderManifestService {
                 || manifest.image().heightPx() > policy.maxHeightPx()
                 || (long) manifest.image().widthPx() * manifest.image().heightPx() > policy.maxPixels()) invalid();
             for (var region : manifest.regions()) {
+                if (region.kept() && !region.overflow()) invalid();
                 if (!region.overflow() && (region.fontSizePx() < policy.minimumFontPx()
                     || region.fontSizePx() > policy.maximumFontPx())) invalid();
             }
@@ -80,7 +81,7 @@ public final class RenderManifestService {
             Document document = reader.readValue(json);
             validateBinding(document, request, expectedImage);
             var placements = document.regions().stream()
-                .map(region -> new RenderManifest.Placement(region.id(), region.overflow(), region.fontSizePx())).toList();
+                .map(region -> new RenderManifest.Placement(region.id(), region.overflow(), region.fontSizePx(), region.kept())).toList();
             return RenderManifest.create(request, expectedImage, placements);
         } catch (IOException | NoSuchAlgorithmException | RuntimeException error) {
             // Parser messages and causes may contain text, object identifiers or raw bytes.

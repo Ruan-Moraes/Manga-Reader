@@ -20,6 +20,8 @@ public record RenderTextCounts(int textRegions, int missing) {
         for (var region : regions) {
             // An unchanged region keeps its original lettering on purpose; it is not text to review.
             if (UnchangedText.unchanged(region.sourceText(), region.translatedText())) continue;
+            // Drawn text kept as drawn (sound effects, screens) is not missing either.
+            if (region.kept()) continue;
             text++;
             if (region.overflow()) missing++;
         }

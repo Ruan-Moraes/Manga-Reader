@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 
 class PageQualityTest {
     private static RenderManifest.Region region(boolean overflow) {
-        return new RenderManifest.Region(UUID.randomUUID(), 0, "s", "t", List.of(), overflow, overflow ? 0 : 20);
+        return new RenderManifest.Region(UUID.randomUUID(), 0, "s", "t", List.of(), overflow, overflow ? 0 : 20, false);
     }
 
     @Test
@@ -32,16 +32,23 @@ class PageQualityTest {
 
     @Test
     void unchangedLetteringKeptOnPurposeIsNotAReviewIssue() {
-        var name = new RenderManifest.Region(UUID.randomUUID(), 0, "AKANE!\n", " akane! ", List.of(), true, 0);
+        var name = new RenderManifest.Region(UUID.randomUUID(), 0, "AKANE!\n", " akane! ", List.of(), true, 0, false);
         assertThat(PageQuality.evaluate(List.of(region(false), name))).isEqualTo(new PageQuality("OK", List.of()));
         assertThat(PageQuality.evaluate(List.of(name, region(true))).issues())
             .containsExactly("TEXT_NOT_RENDERED", "ALL_TEXT_NOT_RENDERED");
     }
 
     @Test
+    void drawnTextKeptOnPurposeIsNotAReviewIssue() {
+        var sound = new RenderManifest.Region(UUID.randomUUID(), 0, "BEEP", "BIP", List.of(), true, 0, true);
+        assertThat(PageQuality.evaluate(List.of(region(false), sound))).isEqualTo(new PageQuality("OK", List.of()));
+        assertThat(RenderTextCounts.of(List.of(region(false), sound, region(true)))).isEqualTo(new RenderTextCounts(2, 1));
+    }
+
+    @Test
     void persistedCountsDeriveTheSameQualityAsTheManifest() {
         var regions = List.of(region(false), region(true),
-            new RenderManifest.Region(UUID.randomUUID(), 0, "AKANE!", "AKANE!", List.of(), true, 0));
+            new RenderManifest.Region(UUID.randomUUID(), 0, "AKANE!", "AKANE!", List.of(), true, 0, false));
         var counts = RenderTextCounts.of(regions);
         assertThat(counts).isEqualTo(new RenderTextCounts(2, 1));
         assertThat(PageQuality.of(counts)).isEqualTo(PageQuality.evaluate(regions));

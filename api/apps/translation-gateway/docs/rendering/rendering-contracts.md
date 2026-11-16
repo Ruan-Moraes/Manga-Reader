@@ -69,15 +69,17 @@ reler mídia/manifests limitados e comprovar seus hashes antes da reserva.
 
 ## Manifesto final — contrato de bytes
 
-JSON UTF-8, versão `1.0`, separado dos artefatos OCR/tradução existentes:
+JSON UTF-8, versão `1.1` (2026-11-15: campo `kept`), separado dos artefatos OCR/tradução existentes:
 
 - `version`, `policyVersion`, `jobRef`, `sourceLanguage`, `targetLanguage`;
 - `originalSha256`, `ocrSha256`, `translationSha256`;
 - `image`: `mimeType`, `byteSize`, `widthPx`, `heightPx`, `sha256`;
 - `regions`: `id`, `readingOrder`, `sourceText`, `translatedText`, `polygon`
-  (quatro vértices normalizados `x`/`y`), `overflow`, `fontSizePx`;
+  (quatro vértices normalizados `x`/`y`), `overflow`, `fontSizePx`, `kept` (original mantido **de propósito**:
+  texto desenhado que não é fala — onomatopeia, tela, placa —; só com `overflow=true`);
 - `quality`: `status` (`OK` | `NEEDS_REVIEW`) e `issues` (`TEXT_NOT_RENDERED`,
-  `ALL_TEXT_NOT_RENDERED`), derivados de `overflow` e revalidados no decode.
+  `ALL_TEXT_NOT_RENDERED`), derivados de `overflow` e revalidados no decode. Região `kept` (como região com
+  tradução igual ao original) não conta como texto não renderizado.
   Não bloqueia a entrega: o job continua `READY`.
 - Exposto também em `ReadyResult.quality` (OpenAPI `PageQuality`, opcional). A V10 persiste na
   etapa `RENDERING` só `rendered_text_region_count` (regiões cuja tradução difere do original) e

@@ -556,6 +556,8 @@ class PageRasterPainterTest {
         for (int y = 0; y < 220; y++) for (int x = 0; x < 360; x++) image.setRGB(x, y, before.getRGB(x, y));
         var kept = new PageRasterPainter(FONTS).paint(image, request("pt-BR", "lixeira", polygon).withDrawnHints(Set.of(REGION)));
         assertThat(kept.getFirst().overflow()).isTrue();
+        assertThat(kept.getFirst().kept()).isTrue(); // on purpose, not text left to review
+        assertThat(plain.getFirst().kept()).isFalse();
         assertThat(sameAs(image, before)).isTrue();
     }
 

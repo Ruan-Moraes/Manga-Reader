@@ -102,7 +102,7 @@ class RenderSubprocessProtocolTest {
             RenderPolicy.initial());
         var image = new RenderedImage("image/webp", 30, 32, 22, "d".repeat(64));
         var result = new RenderPort.Output(temporary.resolve("render-fixture.webp"), RenderManifest.create(request, image,
-            List.of(new RenderManifest.Placement(request.regions().getFirst().id(), false, 12))));
+            List.of(new RenderManifest.Placement(request.regions().getFirst().id(), true, 0, true))));
         var file = temporary.resolve("result.bin");
         RenderSubprocessProtocol.writeResult(file, result);
         var bytes = Files.readAllBytes(file);
@@ -110,6 +110,7 @@ class RenderSubprocessProtocolTest {
         var decoded = RenderSubprocessProtocol.readResult(file, temporary, request);
         assertThat(decoded.path()).isEqualTo(result.path());
         assertThat(decoded.manifest().regions()).containsExactlyElementsOf(result.manifest().regions());
+        assertThat(decoded.manifest().regions().getFirst().kept()).isTrue();
         var missing = LocalFileRenderAdapterTest.request(request.source(), List.of(), request.policy());
         assertThatThrownBy(() -> RenderSubprocessProtocol.readResult(file, temporary, missing)).hasMessage("render-unavailable");
         bytes[bytes.length - Integer.BYTES - 1] = 2;

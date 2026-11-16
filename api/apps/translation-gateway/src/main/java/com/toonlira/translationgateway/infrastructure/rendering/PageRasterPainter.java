@@ -80,6 +80,7 @@ public final class PageRasterPainter {
         var policy = request.policy();
         var plans = new Plan[regions.size()];
         var preserved = new boolean[regions.size()];
+        var kept = new boolean[regions.size()];
         var inpaint = new boolean[regions.size()];
         var lettering = new boolean[regions.size()];
         var letteringPlans = new Plan[regions.size()];
@@ -100,7 +101,7 @@ public final class PageRasterPainter {
                 }
             }
             // Drawn text that is not speech (sound effects, screens, signs) keeps its drawing.
-            if (request.drawnHints().contains(region.region().id())) { preserved[i] = true; continue; }
+            if (request.drawnHints().contains(region.region().id())) { preserved[i] = kept[i] = true; continue; }
             inpaint[i] = inpaints(region, request);
             preserved[i] = !inpaint[i] && preserveOriginal(region);
             if (!preserved[i]) plans[i] = plan(region, request, policy.maximumFontPx(), inpaint[i]);
@@ -145,7 +146,7 @@ public final class PageRasterPainter {
             var plan = plans[i];
             if (plan == null) {
                 // Not drawn (no fit, text over artwork, or nothing to replace): the original stays untouched.
-                placements.add(new RenderManifest.Placement(region.region().id(), true, 0));
+                placements.add(new RenderManifest.Placement(region.region().id(), true, 0, kept[i]));
                 continue;
             }
             if (inpaint[i]) {

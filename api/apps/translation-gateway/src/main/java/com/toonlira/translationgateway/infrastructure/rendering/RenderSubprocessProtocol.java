@@ -37,7 +37,7 @@ final class RenderSubprocessProtocol {
     private static final int REQUEST_MAGIC = 0x54524e31;
     private static final int NATIVE_REQUEST_MAGIC = 0x54524e32;
     private static final int BOUNDED_NATIVE_REQUEST_MAGIC = 0x54524e33;
-    private static final int RESULT_MAGIC = 0x54525331;
+    private static final int RESULT_MAGIC = 0x54525332;
     /** Same bound as the layout artifact the bubbles come from. */
     private static final int MAX_BUBBLES = 256;
 
@@ -189,6 +189,7 @@ final class RenderSubprocessProtocol {
                     uuid(out, region.id());
                     out.writeBoolean(region.overflow());
                     out.writeInt(region.fontSizePx());
+                    out.writeBoolean(region.kept());
                 }
             }
             writePrivate(file, bytes.toByteArray(), MAX_RESULT_BYTES);
@@ -207,7 +208,10 @@ final class RenderSubprocessProtocol {
                 var id = uuid(in);
                 int overflow = in.readUnsignedByte();
                 if (overflow > 1) invalid();
-                placements.add(new RenderManifest.Placement(id, overflow == 1, in.readInt()));
+                int font = in.readInt();
+                int kept = in.readUnsignedByte();
+                if (kept > 1) invalid();
+                placements.add(new RenderManifest.Placement(id, overflow == 1, font, kept == 1));
             }
             end(in);
             return new RenderPort.Output(directory.resolve(name), RenderManifest.create(request, image, placements));

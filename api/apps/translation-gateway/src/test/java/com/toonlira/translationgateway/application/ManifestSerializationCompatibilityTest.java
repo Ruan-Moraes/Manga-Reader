@@ -68,13 +68,13 @@ class ManifestSerializationCompatibilityTest {
         var image = new RenderedImage("image/webp", 100, 100, 80, "d".repeat(64));
         var manifest = RenderManifest.create(request, image, List.of(new RenderManifest.Placement(REGION, true, 0)));
         var encoded = service.encode(manifest, policy);
-        String expected = "{\"version\":\"1.0\",\"policyVersion\":\"clean-box-1.1\",\"jobRef\":\"" + JOB
+        String expected = "{\"version\":\"1.1\",\"policyVersion\":\"clean-box-1.1\",\"jobRef\":\"" + JOB
             + "\",\"sourceLanguage\":\"ja\",\"targetLanguage\":\"pt-BR\",\"originalSha256\":\"" + "a".repeat(64)
             + "\",\"ocrSha256\":\"" + "b".repeat(64) + "\",\"translationSha256\":\"" + "c".repeat(64)
             + "\",\"image\":{\"mimeType\":\"image/webp\",\"byteSize\":100,\"widthPx\":100,\"heightPx\":80,\"sha256\":\""
             + "d".repeat(64) + "\"},\"regions\":[{\"id\":\"" + REGION
             + "\",\"readingOrder\":0,\"sourceText\":\"" + SOURCE_JSON + "\",\"translatedText\":\"" + TARGET_JSON
-            + "\",\"polygon\":" + POLYGON_JSON + ",\"overflow\":true,\"fontSizePx\":0}],\"quality\":{\"status\":\"NEEDS_REVIEW\",\"issues\":[\"TEXT_NOT_RENDERED\",\"ALL_TEXT_NOT_RENDERED\"]}}";
+            + "\",\"polygon\":" + POLYGON_JSON + ",\"overflow\":true,\"fontSizePx\":0,\"kept\":false}],\"quality\":{\"status\":\"NEEDS_REVIEW\",\"issues\":[\"TEXT_NOT_RENDERED\",\"ALL_TEXT_NOT_RENDERED\"]}}";
         bytesAndHash(encoded.bytes(), encoded.sha256(), expected);
         assertThat(service.decode(expected.getBytes(StandardCharsets.UTF_8), encoded.sha256(), request, image)
             .regions()).isEqualTo(manifest.regions());

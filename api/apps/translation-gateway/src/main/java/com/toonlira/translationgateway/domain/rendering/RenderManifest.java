@@ -9,7 +9,7 @@ import java.util.UUID;
 
 /** Private, ephemeral fallback artifact. Source and translation remain complete and unmodified. */
 public final class RenderManifest {
-    public static final String VERSION = "1.0";
+    public static final String VERSION = "1.1";
     private final RenderRequest request;
     private final RenderedImage image;
     private final List<Region> regions;
@@ -35,12 +35,13 @@ public final class RenderManifest {
             var placement = byId.get(region.id());
             if (placement == null) invalid();
             return new Region(region.id(), region.readingOrder(), region.sourceText(), region.translatedText(),
-                region.polygon(), placement.overflow(), placement.fontSizePx());
+                region.polygon(), placement.overflow(), placement.fontSizePx(), placement.kept());
         }).toList();
         return new RenderManifest(request, image, regions);
     }
 
     private static boolean validFont(Placement placement, RenderPolicy policy) {
+        if (placement.kept() && !placement.overflow()) return false;
         return placement.overflow() ? placement.fontSizePx() == 0
             : placement.fontSizePx() >= policy.minimumFontPx() && placement.fontSizePx() <= policy.maximumFontPx();
     }
@@ -60,12 +61,17 @@ public final class RenderManifest {
     public PageQuality quality() { return PageQuality.evaluate(regions); }
     @Override public String toString() { return "RenderManifest[redacted]"; }
 
-    public record Placement(UUID regionId, boolean overflow, int fontSizePx) {
+    /**
+     * {@code overflow}: the original stays (nothing drawn). {@code kept}: it stays on purpose — drawn text that is not
+     * speech (sound effects, screens, signs) — so it is not text left to review.
+     */
+    public record Placement(UUID regionId, boolean overflow, int fontSizePx, boolean kept) {
+        public Placement(UUID regionId, boolean overflow, int fontSizePx) { this(regionId, overflow, fontSizePx, false); }
         @Override public String toString() { return "RenderManifest.Placement[redacted]"; }
     }
 
     public record Region(UUID id, int readingOrder, String sourceText, String translatedText,
-                         List<OcrManifest.Vertex> polygon, boolean overflow, int fontSizePx) {
+                         List<OcrManifest.Vertex> polygon, boolean overflow, int fontSizePx, boolean kept) {
         public Region { polygon = List.copyOf(polygon); }
         @Override public String toString() { return "RenderManifest.Region[redacted]"; }
     }

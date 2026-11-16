@@ -45,7 +45,7 @@ class RenderManifestServiceTest {
         var encoded = SERVICE.encode(manifest, REQUEST.policy());
         var decoded = SERVICE.decode(encoded.bytes(), encoded.sha256(), REQUEST, IMAGE);
 
-        assertThat(decoded.version()).isEqualTo("1.0");
+        assertThat(decoded.version()).isEqualTo("1.1");
         assertThat(decoded.policyVersion()).isEqualTo(POLICY.version());
         assertThat(decoded.jobRef()).isEqualTo(REQUEST.jobRef());
         assertThat(decoded.regions()).isEqualTo(manifest.regions());
@@ -84,7 +84,7 @@ class RenderManifestServiceTest {
         invalidBytes(new byte[] {(byte) 0xc3, (byte) 0x28});
         invalidBytes(raw.getBytes(StandardCharsets.UTF_16));
         invalidBytes((raw + " {}").getBytes(StandardCharsets.UTF_8));
-        invalidBytes(raw.replace("\"version\":\"1.0\"", "\"version\":\"1.0\",\"version\":\"1.0\"").getBytes(StandardCharsets.UTF_8));
+        invalidBytes(raw.replace("\"version\":\"1.1\"", "\"version\":\"1.1\",\"version\":\"1.1\"").getBytes(StandardCharsets.UTF_8));
         invalidBytes(raw.replace("\"overflow\":true", "\"overflow\":true,\"overflow\":true").getBytes(StandardCharsets.UTF_8));
     }
 
@@ -170,6 +170,10 @@ class RenderManifestServiceTest {
             node -> ((ObjectNode) node.get("regions").get(0)).putNull("overflow"),
             node -> ((ObjectNode) node.get("regions").get(0)).put("overflow", "true"),
             node -> ((ObjectNode) node.get("regions").get(0)).put("fontSizePx", 12),
+            node -> ((ObjectNode) node.get("regions").get(0)).remove("kept"),
+            node -> ((ObjectNode) node.get("regions").get(0)).put("kept", "false"),
+            // Flipping "kept" changes the page quality the document claims.
+            node -> ((ObjectNode) node.get("regions").get(0)).put("kept", true),
             node -> ((ObjectNode) node.get("regions").get(0).get("polygon").get(0)).put("x", 0.2),
             node -> ((ObjectNode) node.get("regions").get(0).get("polygon").get(0)).put("x", "0.1"));
     }
