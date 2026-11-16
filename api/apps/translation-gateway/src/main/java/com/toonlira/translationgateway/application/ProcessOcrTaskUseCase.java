@@ -27,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ProcessOcrTaskUseCase {
+    private static final org.slf4j.Logger LOG = org.slf4j.LoggerFactory.getLogger(ProcessOcrTaskUseCase.class);
     private final OcrPersistenceUseCase persistence;
     private final ObjectStoragePort storage;
     private final MediaInspectionService inspector;
@@ -148,6 +149,7 @@ public class ProcessOcrTaskUseCase {
                 if (rereading && detections != null)
                     read = reread.recover(read, detections.texts(), media.path(), job.sourceLanguage(), job.jobRef(),
                         media.widthPx(), media.heightPx());
+                read = com.toonlira.translationgateway.domain.OcrParagraph.withoutGuesses(read);
                 paragraphs = bubbles == null ? read.stream().map(com.toonlira.translationgateway.domain.OcrParagraph::region).toList()
                     : OcrRegionGrouper.splitByBubbles(read, bubbles);
             }
@@ -155,6 +157,7 @@ public class ProcessOcrTaskUseCase {
             // Doubtful speeches are re-read whole, after grouping: context is what lets the provider read "THIS OS"
             // where a lone "05..." fragment stays ambiguous.
             if (rereading) regions = reread.improveRegions(regions, read, media.path(), job.sourceLanguage(), media.widthPx(), media.heightPx());
+            regions = com.toonlira.translationgateway.domain.ocr.LetteringRepair.repair(regions, job.sourceLanguage());
             requireOriginal(job);
             var manifest = new OcrManifest("1.0", job.jobRef(), job.sourceLanguage(), job.widthPx(), job.heightPx(), regions);
             var encoded = manifests.encode(manifest);
@@ -172,6 +175,7 @@ public class ProcessOcrTaskUseCase {
                 if (layouts != null) layouts.discard(layout);
             }
         } catch (RuntimeException | IOException error) {
+            LOG.warn("ocr failed: {}", FailureDiagnostics.describe(error));
             // A database commit can succeed even when its acknowledgement is lost.
             // Keep the referenced artifact in that case; an uncertain orphan is
             // reclaimed by the one-hour bucket cleanup instead.
