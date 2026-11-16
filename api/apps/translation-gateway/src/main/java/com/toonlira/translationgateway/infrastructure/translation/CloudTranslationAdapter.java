@@ -38,21 +38,47 @@ public final class CloudTranslationAdapter implements TranslationPort, AutoClose
         this.model = parent + "/models/general/translation-llm";
     }
 
+    /** A blank line between two paragraphs of one region (instructions, credits). */
+    private static final Pattern PARAGRAPH_BREAK = Pattern.compile("\\s*\\R\\s*\\R\\s*");
+
     @Override
     public TranslationResponse translate(TranslationRequest request) {
-        // Literal-only regions (numbers, URLs, product names) never go to the provider; they keep their text.
-        var sendable = request.regions().stream().filter(region -> !codec.isLiteralOnly(region.sourceText())).toList();
-        if (sendable.size() == request.regions().size()) return translateAll(request);
-        var reindexed = new java.util.ArrayList<TranslationRequest.Region>();
-        for (var region : sendable) reindexed.add(new TranslationRequest.Region(region.id(), reindexed.size(), region.sourceText()));
+        // Literal-only regions (numbers, URLs, product names) never go to the provider; they keep their text. Regions
+        // with several paragraphs go as one piece per paragraph and are joined back with the blank line: the HTML the
+        // provider translates would collapse the break.
+        var pieces = new java.util.ArrayList<TranslationRequest.Region>();
+        var piecesOf = new java.util.HashMap<java.util.UUID, List<java.util.UUID>>();
+        boolean reshaped = false;
+        for (var region : request.regions()) {
+            if (codec.isLiteralOnly(region.sourceText())) { reshaped = true; continue; }
+            var paragraphs = PARAGRAPH_BREAK.split(region.sourceText().strip());
+            if (paragraphs.length == 1) {
+                pieces.add(new TranslationRequest.Region(region.id(), pieces.size(), region.sourceText()));
+                piecesOf.put(region.id(), List.of(region.id()));
+                continue;
+            }
+            reshaped = true;
+            var ids = new java.util.ArrayList<java.util.UUID>();
+            for (var paragraph : paragraphs) {
+                var id = java.util.UUID.randomUUID();
+                pieces.add(new TranslationRequest.Region(id, pieces.size(), paragraph));
+                ids.add(id);
+            }
+            piecesOf.put(region.id(), ids);
+        }
+        if (!reshaped) return translateAll(request);
         var translated = new java.util.HashMap<java.util.UUID, String>();
-        if (!reindexed.isEmpty()) {
-            for (var region : translateAll(new TranslationRequest(request.jobRef(), request.pair(), reindexed)).regions()) {
+        if (!pieces.isEmpty()) {
+            for (var region : translateAll(new TranslationRequest(request.jobRef(), request.pair(), pieces)).regions()) {
                 translated.put(region.id(), region.translatedText());
             }
         }
-        var merged = request.regions().stream().map(region -> new TranslationResponse.Region(
-            region.id(), translated.getOrDefault(region.id(), region.sourceText()))).toList();
+        var merged = request.regions().stream().map(region -> {
+            var ids = piecesOf.get(region.id());
+            if (ids == null) return new TranslationResponse.Region(region.id(), region.sourceText());
+            var text = String.join("\n\n", ids.stream().map(id -> translated.getOrDefault(id, "")).toList());
+            return new TranslationResponse.Region(region.id(), text);
+        }).toList();
         return new TranslationResponse(merged);
     }
 

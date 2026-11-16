@@ -418,6 +418,21 @@ public final class OcrRegionGrouper {
         });
     }
 
+    /** Words a provider paragraph needs, on each side, for the break between two of them to be kept. */
+    static final int MIN_PARAGRAPH_WORDS = 15, MIN_PARAGRAPH_LINES = 3;
+
+    /**
+     * Two long provider paragraphs where the first ends a sentence: a page of instructions or credits, whose paragraph
+     * break the reader expects to keep. Speech in a balloon (short paragraphs) is joined by a space as before.
+     */
+    static boolean paragraphBreak(OcrManifest.Region previous, OcrManifest.Region next) {
+        if (previous == null) return false;
+        for (var region : List.of(previous, next)) {
+            if (lines(region) < MIN_PARAGRAPH_LINES || region.sourceText().strip().split("\\s+").length < MIN_PARAGRAPH_WORDS) return false;
+        }
+        return previous.sourceText().strip().matches("(?s).*[.!?:…][\"'”’)]?");
+    }
+
     /** Lines of a provider paragraph (it ends each line with a break). */
     private static int lines(OcrManifest.Region region) {
         return Math.max(1, (int) region.sourceText().strip().lines().count());
@@ -464,12 +479,14 @@ public final class OcrRegionGrouper {
         if (run.size() == 1) { out.add(run.getFirst()); run.clear(); return; }
         double left = 1, top = 1, right = 0, bottom = 0;
         var text = new StringBuilder();
+        OcrManifest.Region previous = null;
         for (var region : run) {
             for (var vertex : region.polygon()) {
                 left = Math.min(left, vertex.x()); right = Math.max(right, vertex.x());
                 top = Math.min(top, vertex.y()); bottom = Math.max(bottom, vertex.y());
             }
-            if (!text.isEmpty()) text.append(' ');
+            if (!text.isEmpty()) text.append(paragraphBreak(previous, region) ? "\n\n" : " ");
+            previous = region;
             text.append(region.sourceText().strip().replaceAll("\\s*\\R\\s*", " "));
         }
         var polygon = List.of(new OcrManifest.Vertex(left, top), new OcrManifest.Vertex(right, top),

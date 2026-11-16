@@ -16,6 +16,19 @@ class OcrRegionGrouperTest {
     }
 
     @Test
+    void longProviderParagraphsKeepTheirBreakWhileSpeechIsJoinedBySpaces() {
+        var first = region(0, "This comic is presented in its original Japanese\nright-to-left format, in order to preserve as much\nof the detail of the original artwork as possible.\n", 100, 100, 800, 220);
+        var second = region(1, "But if you prefer authenticity or simply wish to\nhave fun trying something new, all you need to do\nis start from the top-right panel of each page.\n", 100, 240, 800, 360);
+        assertThat(OcrRegionGrouper.paragraphBreak(first, second)).isTrue();
+        assertThat(OcrRegionGrouper.paragraphBreak(null, second)).isFalse();
+        // Short speech paragraphs in one balloon stay one line of thought.
+        assertThat(OcrRegionGrouper.paragraphBreak(region(0, "HUH?!\n", 0, 0, 50, 20), region(1, "WHAT?\n", 0, 25, 50, 45))).isFalse();
+        // A long paragraph that does not end a sentence continues in the next one.
+        var unfinished = region(0, "This comic is presented in its original Japanese\nright-to-left format, in order to preserve as much\nof the detail of the original artwork and\n", 100, 100, 800, 220);
+        assertThat(OcrRegionGrouper.paragraphBreak(unfinished, second)).isFalse();
+    }
+
+    @Test
     void mergesStackedLinesOfOneBubbleIntoOneSentence() {
         var result = OcrRegionGrouper.group(List.of(region(0, "I'M JUST ON\n", 217, 356, 430, 381),
             region(1, "MY WAY TO\n", 228, 397, 421, 423), region(2, "THE CLUB ROOM!\n", 178, 437, 473, 462)), "en", W, H);

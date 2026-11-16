@@ -15,6 +15,7 @@ import com.toonlira.translationgateway.domain.GatewayErrorCode;
 import com.toonlira.translationgateway.domain.GatewayException;
 import com.toonlira.translationgateway.domain.translation.LanguagePair;
 import com.toonlira.translationgateway.domain.translation.TranslationRequest;
+import com.toonlira.translationgateway.domain.translation.TranslationResponse;
 import java.util.List;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
@@ -107,6 +108,27 @@ class CloudTranslationAdapterTest {
         when(client.translateText(any(TranslateTextRequest.class))).thenReturn(numbered.build());
 
         assertThat(new CloudTranslationAdapter(client, "test-project").translate(request).regions()).hasSize(2);
+    }
+
+    @Test
+    void eachParagraphOfARegionIsTranslatedApartAndTheBlankLineComesBack() {
+        var client = mock(TranslationServiceClient.class);
+        var sent = new java.util.ArrayList<String>();
+        // The provider stand-in prefixes every piece, like a translation; the HTML itself carries no line breaks.
+        when(client.translateText(any(TranslateTextRequest.class))).thenAnswer(call -> {
+            String content = call.<TranslateTextRequest>getArgument(0).getContents(0);
+            sent.add(content);
+            return response(content.replaceAll("(<p data-region=\"[^\"]+\">)", "$1pt "));
+        });
+        var request = new TranslationRequest(UUID.randomUUID(), new LanguagePair("en", "pt-BR"), List.of(
+            new TranslationRequest.Region(FIRST, 0, "First paragraph ends.\n\nSecond paragraph."),
+            new TranslationRequest.Region(SECOND, 1, "speech")));
+
+        var result = new CloudTranslationAdapter(client, "test-project").translate(request).regions();
+
+        assertThat(result).extracting(TranslationResponse.Region::translatedText)
+            .containsExactly("pt First paragraph ends.\n\npt Second paragraph.", "pt speech");
+        assertThat(sent).singleElement().satisfies(html -> assertThat(html).doesNotContain("\n").contains(SECOND.toString()));
     }
 
     @Test
