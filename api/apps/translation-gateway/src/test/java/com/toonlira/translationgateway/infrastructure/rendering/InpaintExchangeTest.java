@@ -89,7 +89,7 @@ class InpaintExchangeTest {
         mask[0] = 7;
         Files.delete(request);
         InpaintExchange.writeWindows(request, java.util.List.of(new InpaintWindow(window.wx(), window.wy(), window.side(),
-            window.left(), window.top(), window.right(), window.bottom(), window.rgb(), mask)));
+            window.left(), window.top(), window.right(), window.bottom(), window.rgb(), mask, null, null)));
         assertThatThrownBy(() -> InpaintExchange.readWindows(request)).isInstanceOf(IOException.class);
         // Patches for a different number of windows are refused.
         var patches = dir.resolve(InpaintExchange.PATCHES);

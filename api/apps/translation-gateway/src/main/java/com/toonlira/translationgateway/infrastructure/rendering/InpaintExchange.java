@@ -31,8 +31,11 @@ import java.util.function.BooleanSupplier;
  */
 final class InpaintExchange {
     static final String ENABLED = "inpaint.enabled", REQUEST = "inpaint-request.bin", PATCHES = "inpaint-patches.bin";
-    /** Windows per page: a page has typically 0-3 speeches over artwork. */
-    static final int MAX_WINDOWS = 8;
+    /**
+     * Windows per page: a page has typically 0-3 speeches over artwork, a long title line up to
+     * {@link InpaintWindow#MAX_PIECES} windows.
+     */
+    static final int MAX_WINDOWS = 16;
     private static final int REQUEST_MAGIC = 0x54524931, PATCHES_MAGIC = 0x54525031;
     private static final int GEOMETRY_BYTES = 7 * Integer.BYTES;
     static final long MAX_REQUEST_BYTES = Integer.BYTES * 2L + MAX_WINDOWS * (GEOMETRY_BYTES + InpaintWindow.RGB_BYTES + (long) InpaintWindow.MASK_BYTES);
@@ -45,9 +48,15 @@ final class InpaintExchange {
         private final List<InpaintWindow> windows = new ArrayList<>();
 
         @Override public boolean inpaint(BufferedImage image, int[] box) {
-            if (windows.size() >= MAX_WINDOWS) return false;
-            var window = InpaintWindow.prepare(image, box);
-            if (window != null) windows.add(window);
+            int pieces = InpaintWindow.pieces(image, box);
+            if (windows.size() + pieces > MAX_WINDOWS) return false;
+            var prepared = new ArrayList<InpaintWindow>(pieces);
+            for (int piece = 0; piece < pieces; piece++) {
+                var window = InpaintWindow.prepare(image, box, piece);
+                if (window == null) return false;   // all pieces or none: the replay asks for the same ones
+                prepared.add(window);
+            }
+            windows.addAll(prepared);
             return false;
         }
 
@@ -67,11 +76,19 @@ final class InpaintExchange {
         }
 
         @Override public boolean inpaint(BufferedImage image, int[] box) {
-            if (next >= windows.size()) return false;
-            int index = next++;
-            var window = InpaintWindow.prepare(image, box);
-            if (window == null || !window.sameGeometry(windows.get(index)) || patches.get(index) == null) return false;
-            window.apply(image, patches.get(index));
+            int pieces = InpaintWindow.pieces(image, box);
+            if (next + pieces > windows.size()) return false;
+            int first = next;
+            next += pieces;
+            // Every piece must match before any is applied (a lettering half rebuilt keeps its original instead), and
+            // all are prepared on the page as it was, the source of the lettering's shape, as in the first pass.
+            var prepared = new ArrayList<InpaintWindow>(pieces);
+            for (int piece = 0; piece < pieces; piece++) {
+                var window = InpaintWindow.prepare(image, box, piece);
+                if (window == null || !window.sameGeometry(windows.get(first + piece)) || patches.get(first + piece) == null) return false;
+                prepared.add(window);
+            }
+            for (int piece = 0; piece < pieces; piece++) prepared.get(piece).apply(image, patches.get(first + piece));
             return true;
         }
     }
@@ -109,7 +126,7 @@ final class InpaintExchange {
                 var rgb = in.readNBytes(InpaintWindow.RGB_BYTES);
                 var mask = in.readNBytes(InpaintWindow.MASK_BYTES);
                 for (byte value : mask) if (value != 0 && value != 1) throw new IOException("invalid");
-                windows.add(new InpaintWindow(wx, wy, side, left, top, right, bottom, rgb, mask));
+                windows.add(new InpaintWindow(wx, wy, side, left, top, right, bottom, rgb, mask, null, null));
             }
             if (in.read() != -1) throw new IOException("invalid");
             return List.copyOf(windows);

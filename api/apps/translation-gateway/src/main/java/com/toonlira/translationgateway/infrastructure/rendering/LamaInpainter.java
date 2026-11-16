@@ -44,12 +44,23 @@ public final class LamaInpainter implements Inpainter, InpaintModel, AutoCloseab
 
     @Override
     public boolean inpaint(BufferedImage image, int[] box) {
-        var window = InpaintWindow.prepare(image, box);
-        if (window == null) return false;
-        var painted = run(window.rgb(), window.mask());
-        if (painted == null) return false;
-        window.apply(image, painted);
+        // All pieces are rebuilt before any is written: a failure leaves the raster untouched.
+        int pieces = InpaintWindow.pieces(image, box);
+        var work = pieces == 1 ? image : copy(image);
+        for (int piece = 0; piece < pieces; piece++) {
+            var window = InpaintWindow.prepare(image, work, box, piece);
+            if (window == null) return false;
+            var painted = run(window.rgb(), window.mask());
+            if (painted == null) return false;
+            window.apply(work, painted);
+        }
+        if (work != image) image.setData(work.getRaster());
         return true;
+    }
+
+    private static BufferedImage copy(BufferedImage image) {
+        var copy = new BufferedImage(image.getColorModel(), image.copyData(null), image.isAlphaPremultiplied(), null);
+        return copy;
     }
 
     @Override
