@@ -79,6 +79,15 @@ locals {
   })
 }
 
+# Mirrors GetCapabilitiesUseCase.LANGUAGE_MODEL_DISCLOSURE_VERSIONS: the language layer only under a disclosure whose
+# published privacy text names it (Gemini on Vertex AI, text only, cache and training policy).
+check "language_layer_disclosure" {
+  assert {
+    condition     = !local.refine_enabled || contains(["2026-11-15.v1"], var.disclosure.version)
+    error_message = "translation_refine_mode = gemini requires disclosure.version 2026-11-15.v1 (privacy policy v1.1, which names the language layer)."
+  }
+}
+
 check "enabled_configuration" {
   assert {
     condition = !var.gateway_enabled || (

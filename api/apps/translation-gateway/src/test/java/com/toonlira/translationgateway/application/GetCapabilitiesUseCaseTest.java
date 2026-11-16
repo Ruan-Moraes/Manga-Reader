@@ -164,6 +164,7 @@ class GetCapabilitiesUseCaseTest {
         var properties = validProperties();
         var off = new GetCapabilitiesUseCase(properties, clock).execute();
         properties.getTranslation().getRefine().setMode(GatewayProperties.Translation.Refine.Mode.GEMINI);
+        properties.getDisclosure().setVersion("2026-11-15.v1");
         var on = new GetCapabilitiesUseCase(properties, clock).execute();
         assertThat(off.disclosure().languageModelLocation()).isNull();
         assertThat(on.disclosure().languageModelLocation()).isEqualTo("us");
@@ -171,6 +172,18 @@ class GetCapabilitiesUseCaseTest {
 
         properties.getTranslation().setMode(GatewayProperties.Translation.Mode.DISABLED);
         assertThat(new GetCapabilitiesUseCase(properties, clock).execute().disclosure().languageModelLocation()).isNull();
+    }
+
+    @Test
+    void shouldRefuseTheLanguageLayerUnderADisclosureThatDoesNotNameIt() {
+        var properties = validProperties();
+        properties.getTranslation().getRefine().setMode(GatewayProperties.Translation.Refine.Mode.GEMINI);
+        // validProperties carries a disclosure published before the language layer.
+        assertThatThrownBy(new GetCapabilitiesUseCase(properties, Clock.fixed(NOW, ZoneOffset.UTC))::execute)
+            .isInstanceOfSatisfying(GatewayException.class,
+                error -> assertThat(error.code()).isEqualTo(GatewayErrorCode.CAPABILITIES_UNAVAILABLE));
+        properties.getDisclosure().setVersion("2026-11-15.v1");
+        assertThatCode(new GetCapabilitiesUseCase(properties, Clock.fixed(NOW, ZoneOffset.UTC))::execute).doesNotThrowAnyException();
     }
 
     @Test

@@ -553,6 +553,8 @@ origem CJK, recuperação de texto não lido ou lido pela metade pelas caixas do
 juntadas pelo mesmo balão, fragmentos de balões vizinhos traduzidos juntos, retícula pelo LaMa, legenda
 em japonês/chinês reconhecida, inpainting nos modos isolado/nativo com o modelo no pai, regressão visual por fala
 (sintética + páginas reais locais), letreiros-frase em Noto Sans Black inclinada).
+Manifesto de render `1.1` (2026-11-15): `kept` separa o original mantido de propósito (texto desenhado) do que
+não coube, e só este conta como `TEXT_NOT_RENDERED`; render isolado também espera a vez do slot exclusivo.
 Limites conhecidos: dois textos no mesmo balão (fala + aparte manuscrito) dividem o espaço e saem
 menores; letra à mão que encosta na borda do balão fica (「がま」, pág. 03 — apagar tinta ligada à borda
 apagaria o contorno); retícula sem página real de validação nas amostras; fim de letreiro que nem OCR nem
@@ -571,7 +573,9 @@ detector leem (「上手くいく」, pág. 03) fica no original. Pendente:
   fallback para o Google em qualquer erro, aceitação por região, `languageModelLocation` no disclosure.
   **Validada no Vertex real em 2026-11-15** (12 páginas, `gemini-3.8-flash` em `us`; o `gemini-2.5-flash` não é
   acessível para projetos novos e deixou de ser o padrão): corrige "IS"→"15" e erros de contexto; onomatopeia deixada
-  como desenho pelo Google não é mais trocada pelo modelo. Falta: nova `disclosure.version` antes de ligar e ligar a
-  tradução no Terraform — ver `api/apps/translation-gateway/docs/auditoria-rodada-2-2026-11-15.md`.
+  como desenho pelo Google não é mais trocada pelo modelo. Disclosure `2026-11-15.v1` + Política de Privacidade
+  v1.1 (cita a camada) preparadas e exigidas pelo gateway/Terraform com o refino ligado; `translation_refine_mode =
+  "gemini"` no exemplo de tfvars. Falta: revisão jurídica e deploy da política v1.1, aprovar a versão no tfvars e
+  ligar OCR/tradução do worker no Terraform — ver `api/apps/translation-gateway/docs/architecture/language-layer.md`.
 
 Fonte: auditoria visual das 12 páginas pt-BR (relatório anexado na conversa de 2026-11-14).

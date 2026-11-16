@@ -94,8 +94,16 @@ publica o disclosure) e para o worker (que chama o modelo). Hoje o Terraform ain
 Vertex quando a camada pode receber texto (tradução **e** refino ligados), `null` caso contrário. O
 campo é obrigatório e anulável; o mobile (schema estrito) mostra no consentimento um parágrafo extra
 — "recebe só o texto da página, nunca a imagem" — nos três idiomas. Como o contrato é estrito, app e
-gateway desta versão precisam ser publicados juntos. **Ligar a camada muda o que é divulgado: publicar
-uma nova `disclosure.version` (e a política de privacidade) antes de ligar em produção.**
+gateway desta versão precisam ser publicados juntos. **Ligar a camada muda o que é divulgado.**
+
+Versão de disclosure da camada: `2026-11-15.v1`, ligada à Política de Privacidade **v1.1** (web, três
+idiomas), que cita o Gemini na Vertex AI como provedor (só texto, nunca a imagem), o cache de até 24 h
+isolado ao projeto e que esse cache não treina modelos ([documentação do Google
+Cloud](https://cloud.google.com/vertex-ai/generative-ai/docs/data-governance)). Com o refino ligado, o
+gateway recusa qualquer outra versão (`GetCapabilitiesUseCase.LANGUAGE_MODEL_DISCLOSURE_VERSIONS`,
+`capabilities-unavailable`) e o Terraform avisa (`check "language_layer_disclosure"`). O texto ainda
+precisa de revisão jurídica e aprovação do operador antes do deploy da página. Para retenção zero, o
+cache do Vertex pode ser desligado no projeto.
 
 ## Custo e validação real
 

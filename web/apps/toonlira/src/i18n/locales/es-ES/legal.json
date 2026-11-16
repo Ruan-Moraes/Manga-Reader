@@ -132,8 +132,8 @@
     "privacy": {
         "title": "Política de Privacidad",
         "sub": "Qué recopilamos, por qué, y cómo mantienes el control de lo que es tuyo.",
-        "updated": "07/09/2026",
-        "version": "Versión 1.0",
+        "updated": "15/11/2026",
+        "version": "Versión 1.1",
         "toc": {
             "tldr": "01. Resumen rápido",
             "coleta": "02. Datos recopilados",
@@ -213,10 +213,10 @@
                 "lead": "Solo compartimos datos con:",
                 "items": [
                     "<strong>Firebase Hosting</strong> — publicación de las páginas web públicas;",
-                    "<strong>Google Cloud</strong> — infraestructura del gateway y procesamiento mediante Cloud Vision y Cloud Translation;",
+                    "<strong>Google Cloud</strong> — infraestructura del gateway y procesamiento por Cloud Vision, Cloud Translation y, cuando la revisión por modelo de lenguaje esté activa, Gemini en Vertex AI (solo el texto extraído y la traducción automática, nunca la imagen);",
                     "<strong>Autoridades públicas</strong> — cuando lo exija la ley o una orden válida."
                 ],
-                "outro": "Según la documentación oficial de Google Cloud, Google Cloud Vision y Cloud Translation no usan el contenido enviado para entrenar o mejorar sus modelos. Los proveedores procesan los datos para prestar y proteger los servicios contratados."
+                "outro": "Según la documentación oficial de Google Cloud, Google Cloud Vision y Cloud Translation no usan el contenido enviado para entrenar ni mejorar sus modelos. En Gemini en Vertex AI, las entradas y respuestas pueden quedar en una caché aislada del proyecto durante hasta 24 horas, solo para atender las solicitudes, y esa caché no se usa para entrenar modelos. Los proveedores tratan los datos para prestar y proteger los servicios contratados."
             },
             "cookies": {
                 "title": "Cookies",
@@ -252,7 +252,7 @@
             },
             "internacional": {
                 "title": "Transferencias internacionales",
-                "p1": "La infraestructura principal del gateway, la base de datos y el almacenamiento temporal están planificados para São Paulo, Brasil. Para OCR y traducción, la imagen y el texto extraído pueden ser procesados por servicios de Google Cloud en las regiones de Estados Unidos indicadas en la pantalla de consentimiento. La transferencia se utiliza para prestar el servicio solicitado con las salvaguardas contractuales y de seguridad aplicables a Google Cloud."
+                "p1": "La infraestructura principal del gateway, la base de datos y el almacenamiento temporal está prevista en São Paulo, Brasil. Para el OCR, la traducción y, cuando esté activa, la revisión por modelo de lenguaje, la imagen (solo en el OCR) y el texto extraído pueden ser procesados por servicios de Google Cloud en las regiones de Estados Unidos indicadas en el consentimiento. La transferencia ocurre para ejecutar el servicio solicitado, con las salvaguardas contractuales y de seguridad aplicables a Google Cloud."
             },
             "dpo": {
                 "title": "Contacto de privacidad",

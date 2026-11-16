@@ -132,8 +132,8 @@
     "privacy": {
         "title": "Privacy Policy",
         "sub": "What we collect, why, and how you stay in control of what's yours.",
-        "updated": "September 7, 2026",
-        "version": "Version 1.0",
+        "updated": "11/15/2026",
+        "version": "Version 1.1",
         "toc": {
             "tldr": "01. Quick summary",
             "coleta": "02. Data collected",
@@ -213,10 +213,10 @@
                 "lead": "We share data only with:",
                 "items": [
                     "<strong>Firebase Hosting</strong> — delivery of public web pages;",
-                    "<strong>Google Cloud</strong> — gateway infrastructure and processing through Cloud Vision and Cloud Translation;",
+                    "<strong>Google Cloud</strong> — gateway infrastructure and processing by Cloud Vision, Cloud Translation and, when language-model review is enabled, Gemini on Vertex AI (only the extracted text and the machine translation, never the image);",
                     "<strong>Public authorities</strong> — when required by law or a valid order."
                 ],
-                "outro": "According to official Google Cloud documentation, Google Cloud Vision and Cloud Translation do not use submitted customer content to train or improve their models. Providers process data to deliver and protect the contracted services."
+                "outro": "According to Google Cloud's official documentation, Google Cloud Vision and Cloud Translation do not use submitted content to train or improve their models. With Gemini on Vertex AI, inputs and responses may be kept in a project-isolated cache for up to 24 hours, only to serve requests, and that cache is not used to train models. The providers process data to deliver and protect the contracted services."
             },
             "cookies": {
                 "title": "Cookies",
@@ -252,7 +252,7 @@
             },
             "internacional": {
                 "title": "International transfers",
-                "p1": "The main gateway infrastructure, database and temporary storage are planned for São Paulo, Brazil. For OCR and translation, the image and extracted text may be processed by Google Cloud services in the United States regions disclosed in the consent screen. The transfer is used to provide the requested service under the contractual and security safeguards applicable to Google Cloud."
+                "p1": "The main gateway, database and temporary storage infrastructure is planned for São Paulo, Brazil. For OCR, translation and, when enabled, language-model review, the image (OCR only) and the extracted text may be processed by Google Cloud services in the United States regions shown in the consent. The transfer happens to perform the requested service, under the contractual and security safeguards applicable to Google Cloud."
             },
             "dpo": {
                 "title": "Privacy contact",

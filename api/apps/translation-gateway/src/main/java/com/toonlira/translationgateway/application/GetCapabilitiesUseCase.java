@@ -34,6 +34,12 @@ public class GetCapabilitiesUseCase {
     private static final String TRANSLATION_LOCATION = "global";
     private static final Pattern LANGUAGE_MODEL_LOCATION = Pattern.compile("^[a-z][a-z0-9-]{0,28}[a-z0-9]$");
     private static final Set<String> SUPERSEDED_DISCLOSURE_VERSIONS = Set.of("2026-09-07.v1");
+    /**
+     * Disclosure versions whose published privacy text names the language layer (Gemini on Vertex AI, text only, its
+     * cache and training policy). With the layer on, any other version is refused: the app would show a disclosure that
+     * does not mention where the text goes.
+     */
+    static final Set<String> LANGUAGE_MODEL_DISCLOSURE_VERSIONS = Set.of("2026-11-15.v1");
 
     private final GatewayProperties properties;
     private final Clock clock;
@@ -112,7 +118,8 @@ public class GetCapabilitiesUseCase {
             && disclosure.getOriginalRetentionSeconds() > 0 && disclosure.getOriginalRetentionSeconds() <= 3600
             && disclosure.getResultRetentionSeconds() > 0 && disclosure.getResultRetentionSeconds() <= 3600
             && disclosure.getMetadataRetentionDays() > 0 && disclosure.getMetadataRetentionDays() <= 7
-            && (languageModelLocation() == null || LANGUAGE_MODEL_LOCATION.matcher(languageModelLocation()).matches())
+            && (languageModelLocation() == null || LANGUAGE_MODEL_LOCATION.matcher(languageModelLocation()).matches()
+                && LANGUAGE_MODEL_DISCLOSURE_VERSIONS.contains(disclosure.getVersion()))
             && (!properties.isEnabled() || (validOperationalConfiguration() && !operationalPairs().isEmpty()));
         if (!valid) throw new GatewayException(CAPABILITIES_UNAVAILABLE, 503, true);
     }
