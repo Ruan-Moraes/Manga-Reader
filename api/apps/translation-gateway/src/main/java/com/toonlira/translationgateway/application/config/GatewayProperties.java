@@ -13,6 +13,11 @@ public class GatewayProperties {
     private Duration capabilitiesTtl = Duration.ofMinutes(5);
     private int installationDailyQuota = 20;
     private int globalDailyQuota = 100;
+    /**
+     * Whether reservations enforce the daily quotas. Always true in deployments (the quotas stay disclosed in
+     * capabilities as a public contract); the local development scripts turn it off to process test batches.
+     */
+    private boolean quotaEnforced = true;
     private final Media media = new Media();
     private final Disclosure disclosure = new Disclosure();
     private final Storage storage = new Storage();
@@ -35,6 +40,8 @@ public class GatewayProperties {
     public void setInstallationDailyQuota(int value) { this.installationDailyQuota = value; }
     public int getGlobalDailyQuota() { return globalDailyQuota; }
     public void setGlobalDailyQuota(int value) { this.globalDailyQuota = value; }
+    public boolean isQuotaEnforced() { return quotaEnforced; }
+    public void setQuotaEnforced(boolean value) { this.quotaEnforced = value; }
     public Media getMedia() { return media; }
     public Disclosure getDisclosure() { return disclosure; }
     public Storage getStorage() { return storage; }

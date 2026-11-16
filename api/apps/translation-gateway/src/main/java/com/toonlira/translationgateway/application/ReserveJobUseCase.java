@@ -47,8 +47,9 @@ public class ReserveJobUseCase {
         var dayStart = day.atStartOfDay().toInstant(ZoneOffset.UTC);
         var dayEnd = day.plusDays(1).atStartOfDay().toInstant(ZoneOffset.UTC);
         repository.acquireGlobalQuotaLock(day.toEpochDay());
-        if (repository.countInstallationJobs(candidate.installationId(), dayStart, dayEnd) >= properties.getInstallationDailyQuota()
-            || repository.countGlobalJobs(dayStart, dayEnd) >= properties.getGlobalDailyQuota()) {
+        // Local development may process test batches beyond the quotas (gateway.quota-enforced=false); deployments never.
+        if (properties.isQuotaEnforced() && (repository.countInstallationJobs(candidate.installationId(), dayStart, dayEnd) >= properties.getInstallationDailyQuota()
+            || repository.countGlobalJobs(dayStart, dayEnd) >= properties.getGlobalDailyQuota())) {
             throw new GatewayException(QUOTA_EXCEEDED, 429, true);
         }
         return new Result(repository.insertJob(candidate), true);

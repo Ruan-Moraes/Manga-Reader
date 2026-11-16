@@ -105,6 +105,8 @@ gateway:
   capabilities-ttl: ${GATEWAY_CAPABILITIES_TTL:PT5M}
   installation-daily-quota: 20
   global-daily-quota: 100
+  # Always true in deployments; only the local development scripts turn it off (scripts/local/dev-api.sh).
+  quota-enforced: ${GATEWAY_QUOTA_ENFORCED:true}
   media:
     max-bytes: ${GATEWAY_MEDIA_MAX_BYTES:12582912}
     max-width-px: ${GATEWAY_MEDIA_MAX_WIDTH_PX:12000}

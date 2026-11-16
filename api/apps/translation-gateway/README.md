@@ -203,6 +203,10 @@ e storage fora de transação, inclusive quando o chamador possuir uma TX extern
 
 ## Execução local
 
+> **Cota diária no dev local**: `scripts/local/dev-api.sh` exporta `GATEWAY_QUOTA_ENFORCED=false`, para lotes de teste
+> passarem das 20 páginas por instalação / 100 por dia. As capabilities continuam divulgando 20/100 (contrato do app)
+> e qualquer implantação aplica a cota (`gateway.quota-enforced` é `true` por padrão).
+
 Uma [fronteira isolada em JVM filha](docs/rendering/rendering-isolation.md) também está
 preparada e testada explicitamente: IPC privado, heap limitado, prazo supervisionado
 e equivalência com a composição atual. A [admissão do JAR Boot](docs/rendering/rendering-archive.md)
