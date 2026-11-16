@@ -149,3 +149,100 @@ caixa em 499,2 numa página de 499) e a hifenização entrou como último recurs
 balão não acha fundo limpo (tinta cercada 0,00, caixa útil 0×0) porque a cor estimada não bate com o papel
 amarelado e ruidoso do scan (JPEG q60) — próximo item. Ubunchu! cap. 3 ficou estável (10 sem render, nenhuma
 fonte < 12). A execução real completa ficou para depois: a cota diária local (100 páginas/dia) acabou.
+
+### Auditoria do cap. 3 (P0/P1) — andamento (2026-11-16)
+
+- Cota diária não aplicada no dev local (`GATEWAY_QUOTA_ENFORCED=false` em `dev-api.sh`; produção e contrato 20/100
+  intactos). Execução real das duas obras feita: Ubunchu! cap. 3 estável (10 sem render); Jungle 8 de 32.
+- **P11-02 corrigido** (letras soltas "M", "N", "fo"): a máscara agora reconhece letra pela tinta escura — borrão
+  escuro ≥ 60% dentro do polígono que não alcança a borda da janela por tinta escura — e limpa a auréola clara
+  (¼ da altura da letra); só em regiões já ≥ 75% reconhecidas como texto em caixa lisa, então efeitos e letreiros
+  sobre a arte não mudam (regressão de 16 páginas sem diferença). A caixa útil é composta com e sem as letras
+  completadas e fica a de fonte maior.
+- **P11-03**: não é bug (área já vazia no original).
+- **P01-02 diagnosticado, não corrigido** (letreiro com contorno branco da capa): a máscara do LaMa é o retângulo
+  da caixa do OCR; o contorno branco (~13 px) fica fora dela e o modelo o usa como contexto, reconstruindo letras.
+  Testado e descartado: margem proporcional (apaga traços da arte vizinha, ghost continua), colagem por crescimento
+  (sem efeito), reconstrução em pedaços (o modelo "completa" letras). Correção certa: máscara no formato do letreiro
+  (tinta + contorno claro ligado a ela), o que muda a interface do inpaint e o protocolo do modo isolado.
+- **P03-03 corrigido** (nota de rodapé partida em "You" / "may" / "see" / resto): o Vision devolve parágrafos
+  separados numa mesma linha e o teste de tamanho os afastava (a caixa de "may", com descendente, tem o dobro da
+  altura de "see"). Agora fragmentos de **uma linha** se juntam quando se sobrepõem na vertical (≥ ½ da menor
+  altura), o vão é de um espaço de palavra (≤ 0,6 da maior altura **e** ≤ a largura de um caractere) e não se
+  cobrem (o próximo termo de uma linha nunca invade o anterior). Só sequências de linhas únicas: fala de várias
+  linhas não cresce de lado. Bancada de agrupamento (cache do Vision, 13 páginas em inglês + 24 em japonês): só o
+  rodapé do cap. 3 muda; efeito sonoro ao lado de fala ("clatter") e texto de terminal continuam separados.
+- **P03-01** (diálogo de erro em fragmentos): diagnosticado, não corrigido — mesma família, mas são linhas
+  empilhadas de UI; fica como limite.
+- **Erros de leitura — dois são do original**: o balão diz literalmente "SO NAVY!!" (OCR 0,99) e o logo é desenhado
+  "Japnese Team" (o OCR leu "Japmese", 0,84; na pág. 10 o próprio quadro corta "Tea"). Só **"The Endo"** é erro de
+  OCR: o ponto final desenhado como bolinha virou "o".
+  - Camada Gemini (prompt passa a citar a classe "pontuação tomada por letra e colada à palavra, ou o inverso", sem
+    exemplo do caso): execução real das 4 páginas → **"The Endo" vira "Fim"**. "NAVY" saiu "marinha" (o modelo
+    traduziu literalmente mesmo com "NAIVE" no quadro seguinte) e "Japmese" fica, porque palavra capitalizada fora
+    do dicionário é nome protegido — é esse guarda que impede o modelo de apagar nomes reais. Uma regra de prompt
+    para "erro de grafia do próprio original" foi testada e retirada (não resolveu e arrisca trocadilhos).
+  - Limite registrado: erro de grafia no letreiro original não é corrigido automaticamente.
+
+### Máscara do letreiro, diálogo de UI e scan antigo (2026-11-16)
+
+- **P03-01 (diálogo de erro)** — causa real: não era só fragmentação. O agrupamento dá regiões separadas, mas a caixa
+  da primeira linha do diálogo engloba as linhas da segunda; a **releitura** recortava a caixa inteira e puxava o
+  texto vizinho, e a mesma frase ia para a página duas vezes, uma sobre a outra. Agora uma região cujo recorte
+  contém palavras de outra (dona = a menor caixa que contém o centro da palavra) não é relida e fica com a leitura
+  do provedor. Execução real: frase única, fonte maior. Fica: restos do original ("inter", "se") entre as letras do
+  "ERROR!", que o OCR não leu.
+- **Scan antigo (Jungle)** — duas classes:
+  - papel ruidoso (retícula + JPEG): a distância típica ao fundo é 34–37, contra 0–3 em páginas digitais, e o
+    limite fixo de 30 via ⅔ do papel como arte (caixa útil 0×0). A página é medida (mediana do desvio de cada pixel
+    à média 3×3: Jungle 8–19, Ubunchu/Theft 0–3); **só em página ruidosa** (≥ 5) a tolerância de fundo segue o ruído
+    do papel da região (2× a mediana, 30–75). Medir só a região confundia arte com papel (efeitos sonoros sobre a
+    arte passavam a ser redesenhados);
+  - letras do original de 12 px numa legenda estreita com tradução 50% mais longa: a fonte mínima igual ao
+    original não cabia. **Último recurso**, depois da caixa ampliada e da hifenização: até ¾ do tamanho do
+    original. Como regra geral reduzia regiões que antes cabiam ampliadas (13→11, 11→9), por isso ficou por último.
+  - Execução real: Jungle 16 de 5 para **3** sem render (2 são logotipos); Jungle 15 de 6 para **4**. O balão
+    "YOU HAVE SERVED ME…" continua: no scan, "SUBJECTS" encosta no contorno do balão e a máscara o vê como arte.
+  - Regressão de 16 páginas: "Club President" (cap. 1, p. 3) passa a ser traduzido (antes ficava em inglês);
+    fixture regravada.
+- **P01-02 (máscara do inpaint no formato do letreiro)** — o modelo recebe a caixa mais o contorno claro das letras
+  ligado a ela (cor do contorno = mediana do décimo mais claro da caixa; cresce só por pixels a ≤ 30 dessa cor, até
+  30% do lado menor da caixa, máx. 32 px; nunca por tinta escura). Os pixels do contorno são sempre substituídos
+  (branco→rosa muda só ~60, abaixo do limiar de colagem, e ficavam letras ocas). Sem contorno quando a faixa em
+  volta da caixa tem a mesma cor (letras escuras em balão branco): primeiras versões espalharam a máscara pelo
+  papel e o modelo inventou textura nos balões — pego pela bancada LaMa real antes/depois em 17 páginas. A
+  geometria continua dependendo só da caixa: o protocolo do modo isolado não muda.
+  - Resultado: capa do cap. 3 sem os fantasmas de "TIME FOR THE FORUMS"; créditos da capa do cap. 1 mais limpos;
+    demais páginas iguais. Fica: "DEBUT!?" sobre o cabelo (caixa de 1522 px → janela da página inteira reduzida 5×
+    para 512; é resolução, não máscara).
+
+### Letra presa ao contorno, letreiro largo e restos do diálogo (2026-11-16, tarde)
+
+- **Letra presa ao contorno do balão (scan antigo)** — no balão "YOU HAVE SERVED ME…" (Jungle 16) o grão do papel
+  liga "SUBJECTS" à borda, e a varredura "fora do balão" (pixels não-fundo ligados à borda da janela) levava a
+  palavra junto com a borda. Em página ruidosa, essa varredura não passa por gargalos de 1–2 px entre pixels de
+  fundo; o anel vizinho do que foi alcançado é devolvido, então a borda continua inteira. Caixa útil 5×121 →
+  71×121; o balão é traduzido; Jungle 16 fica só com os 2 logotipos sem render. Página limpa não muda (testado
+  ligar em todas: "stop!" perdia tamanho).
+- **Letreiro largo (P01-02, "DEBUT!?")** — o inpaint agora:
+  - divide em até 4 pedaços ao longo do lado maior quando uma janela só o reduziria mais de 4× (a linha de 1522 px
+    ia ao modelo 5× menor); cada janela mascara **todo** o letreiro que contém (um vizinho visível é "completado"
+    pelo modelo) e escreve só o seu pedaço; com limite de 1,5× uma faixa fina de papel ficava sem contexto e o
+    modelo a pintava de cinza;
+  - calcula a máscara sempre na página **original**: peça a peça, sobre a página já limpa, a cor do contorno
+    mudava e o resto do contorno ficava fora (era a causa real dos fantasmas sobre o cabelo);
+  - o contorno segue só até a **própria espessura** (mediana das faixas de contorno que saem das bordas da tinta:
+    13 px no título, poucos px no brilho dos créditos) — crescer pela caixa engolia a barriga branca do mascote
+    meio dentro do bloco de créditos (cap. 1, p. 1);
+  - o buraco é o retângulo do letreiro com o contorno (lados até o percentil 75 do alcance), dilatado pela borda
+    suavizada: um buraco com a silhueta das letras voltava como traços claros no lugar delas;
+  - a folga do contorno segue a altura das letras (bandas de tinta), não o tamanho da caixa.
+  - Testado e descartado: zerar a área mascarada na entrada (sem efeito: o export já faz); exigir que o contorno
+    "envolva" as letras (a medida saiu invertida: título 0,46, créditos 0,84).
+  - Bancada LaMa real em 17 páginas: capa do cap. 3 limpa nas três partes; demais iguais ou um pouco mais limpas.
+    Execução real (worker, modo local em processo): capa do cap. 3 sem fantasmas. O protocolo isolado continua com
+    7 inteiros de geometria (só depende da caixa); máx. de janelas por página 8 → 16. Coberto por testes de
+    unidade; o ponta a ponta isolado fica pulado neste ambiente.
+- **Restos no diálogo de erro (P03-01)** — diagnosticado, não corrigido: "inter", "se", "r" estão encostados
+  diretamente no traço preto do "R" gigante (não presos por ruído, nem fundo dividido). Separar pixel de letra de
+  pixel de traço quando se tocam pede análise de espessura de traço; fica como limite.

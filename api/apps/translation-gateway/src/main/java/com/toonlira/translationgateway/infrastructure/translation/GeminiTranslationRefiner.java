@@ -33,8 +33,9 @@ public final class GeminiTranslationRefiner implements TranslationRefinerPort {
         For every region return:
         - "id": the same id.
         - "source": null when the OCR reading makes sense. Only when it is clearly misread (digits or symbols where
-          letters belong, letters swapped for look-alikes), the corrected reading, keeping its letter case and
-          wording (for example, "THE D00R 1S L0CKED" becomes "THE DOOR IS LOCKED"). Never rephrase a reading.
+          letters belong, letters swapped for look-alikes, punctuation taken for a letter and glued to a word or a
+          letter taken for punctuation), the corrected reading, keeping its letter case and wording (for example,
+          "THE D00R 1S L0CKED" becomes "THE DOOR IS LOCKED"). Never rephrase a reading.
         - "translation": the best %s translation of the (corrected) source, using the whole page as context: keep
           speakers, names and tone consistent and fix mistranslations and unnatural phrasing. Keep the machine
           translation when it is already right. Keep it about as long as the machine translation: it must fit the
