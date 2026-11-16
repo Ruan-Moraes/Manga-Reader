@@ -74,7 +74,7 @@ continua com a leitura original.
 | Propriedade | Env | Padrão |
 | --- | --- | --- |
 | `mode` (`disabled`\|`gemini`) | `GATEWAY_TRANSLATION_REFINE_MODE` | `disabled` |
-| `model` | `GATEWAY_TRANSLATION_REFINE_MODEL` | `gemini-2.5-flash` |
+| `model` | `GATEWAY_TRANSLATION_REFINE_MODEL` | `gemini-3.8-flash` (o `gemini-2.5-flash` não está acessível para projetos novos; validado 2026-11-15) |
 | `location` | `GATEWAY_TRANSLATION_REFINE_LOCATION` | `us` (endpoint multirregional `aiplatform.us.rep.googleapis.com`) |
 | `timeout` (≤ 60 s) | `GATEWAY_TRANSLATION_REFINE_TIMEOUT` | `PT20S` |
 | `max-chars` (≤ 60 000) | `GATEWAY_TRANSLATION_REFINE_MAX_CHARS` | `12000` (fonte + tradução da página; acima disso a página não é revisada) |

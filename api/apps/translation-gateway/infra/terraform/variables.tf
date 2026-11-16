@@ -126,11 +126,11 @@ variable "translation_refine_mode" {
 variable "translation_refine_model" {
   description = "Vertex AI Gemini model used by the language layer."
   type        = string
-  default     = "gemini-2.5-flash"
+  default     = "gemini-3.8-flash"
   nullable    = false
   validation {
     condition     = can(regex("^[a-z0-9][a-z0-9.-]{1,62}[a-z0-9]$", var.translation_refine_model))
-    error_message = "translation_refine_model must be a Vertex AI model id such as gemini-2.5-flash."
+    error_message = "translation_refine_model must be a Vertex AI model id such as gemini-3.8-flash."
   }
 }
 

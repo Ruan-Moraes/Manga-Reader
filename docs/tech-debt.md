@@ -558,9 +558,8 @@ menores; letra à mão que encosta na borda do balão fica (「がま」, pág. 
 apagaria o contorno); retícula sem página real de validação nas amostras; fim de letreiro que nem OCR nem
 detector leem (「上手くいく」, pág. 03) fica no original. Pendente:
 
-- **Inpainting real** (feito: fringe de 4 px para glifos que vazam do polígono;
-  falta fundo texturizado/gradiente, onde o preenchimento por cor mediana ainda
-  deixa remendos).
+- **Inpainting real** (feito: fringe de 4 px para glifos que vazam do polígono; preenchimento que segue
+  degradê, 2026-11-15; falta fundo texturizado).
 - **Agrupamento por balão ONNX** avaliado (48 páginas en/ja), texto vertical CJK agrupado, classes
   e balões chegam ao render, modelo provisionado (Dockerfile com SHA fixado + Terraform `layout_mode`,
   worker 2 GiB), `grouping` padrão no Terraform (validate/fmt verdes).
@@ -570,7 +569,9 @@ detector leem (「上手くいく」, pág. 03) fica no original. Pendente:
 - **Camada de linguagem opcional** (2026-11-15): Gemini no Vertex AI (`us`) revisa leitura do OCR e
   tradução com o contexto da página, só texto; desligada por padrão (`translation_refine_mode`),
   fallback para o Google em qualquer erro, aceitação por região, `languageModelLocation` no disclosure.
-  Falta: validação real com o Vertex (custo a autorizar), nova `disclosure.version` antes de ligar e
-  ligar a tradução no Terraform — ver `api/apps/translation-gateway/docs/architecture/language-layer.md`.
+  **Validada no Vertex real em 2026-11-15** (12 páginas, `gemini-3.8-flash` em `us`; o `gemini-2.5-flash` não é
+  acessível para projetos novos e deixou de ser o padrão): corrige "IS"→"15" e erros de contexto; onomatopeia deixada
+  como desenho pelo Google não é mais trocada pelo modelo. Falta: nova `disclosure.version` antes de ligar e ligar a
+  tradução no Terraform — ver `api/apps/translation-gateway/docs/auditoria-rodada-2-2026-11-15.md`.
 
 Fonte: auditoria visual das 12 páginas pt-BR (relatório anexado na conversa de 2026-11-14).

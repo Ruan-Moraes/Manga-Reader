@@ -28,6 +28,19 @@ class TranslationRefinementTest {
     }
 
     @Test
+    void aSoundLeftAsDrawnStaysButAnUntranslatedPhraseMayBeFixed() {
+        var outcome = merge(List.of("Swish Swish", "No Youtube!"), List.of("Swish Swish", "No Youtube!"), List.of(
+            new TranslationRefinement.Proposal(first, null, "Balança balança"),
+            new TranslationRefinement.Proposal(second, null, "Nada de YouTube!")));
+
+        assertThat(texts(outcome)).containsExactly("Swish Swish", "Nada de YouTube!");
+        assertThat(outcome.rejected()).isOne();
+        assertThat(TranslationRefinement.sound("shuffle")).isTrue();
+        assertThat(TranslationRefinement.sound("Ha Haha!")).isTrue();
+        assertThat(TranslationRefinement.sound("No Youtube!")).isFalse();
+    }
+
+    @Test
     void rejectsARewrittenReadingButKeepsTheOtherRegionsReview() {
         var outcome = merge(List.of("I'M HUNGRY", "Hello"), List.of("ESTOU COM FOME", "Olá"), List.of(
             new TranslationRefinement.Proposal(first, "LET'S GO TO THE BEACH", "VAMOS À PRAIA"),

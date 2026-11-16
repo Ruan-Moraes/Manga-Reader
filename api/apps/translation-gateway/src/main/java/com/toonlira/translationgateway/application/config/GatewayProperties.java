@@ -123,7 +123,7 @@ public class GatewayProperties {
         public static class Refine {
             public enum Mode { DISABLED, GEMINI }
             private Mode mode = Mode.DISABLED;
-            private String model = "gemini-2.5-flash";
+            private String model = "gemini-3.8-flash";
             private String location = "us";
             private Duration timeout = Duration.ofSeconds(20);
             /** Source plus machine translation of one page, in UTF-16 units; larger pages skip the review. */

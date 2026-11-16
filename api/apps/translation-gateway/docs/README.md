@@ -13,6 +13,8 @@ Organizada por assunto. Documentos datados são registros históricos (ver [pol�
 
 **Auditoria em aberto:** [`auditoria-2026-11-15.md`](auditoria-2026-11-15.md) — roteiro para auditar a qualidade
 visual, OCR, inpainting, letreiros, camada Gemini, regressão visual e infraestrutura de dev (2026-11-14 → 15).
+Resultado da 2ª rodada de tradução (12 páginas): [`auditoria-rodada-2-2026-11-15.md`](auditoria-rodada-2-2026-11-15.md).
+Confronto com o original japonês (cap. 1): [`fidelidade-cap1-2026-11-15.md`](fidelidade-cap1-2026-11-15.md).
 
 ## Pendência
 

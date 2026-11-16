@@ -81,7 +81,7 @@ gateway:
     # with the whole page as context. Text only; the image never reaches the model. Off unless set to "gemini".
     refine:
       mode: ${GATEWAY_TRANSLATION_REFINE_MODE:disabled}
-      model: ${GATEWAY_TRANSLATION_REFINE_MODEL:gemini-2.5-flash}
+      model: ${GATEWAY_TRANSLATION_REFINE_MODEL:gemini-3.8-flash}
       location: ${GATEWAY_TRANSLATION_REFINE_LOCATION:us}
       timeout: ${GATEWAY_TRANSLATION_REFINE_TIMEOUT:PT20S}
       max-chars: ${GATEWAY_TRANSLATION_REFINE_MAX_CHARS:12000}

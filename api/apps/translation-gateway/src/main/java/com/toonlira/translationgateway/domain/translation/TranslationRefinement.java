@@ -87,6 +87,10 @@ public final class TranslationRefinement {
         String refined = proposal.translatedText();
         if (refined == null || refined.isBlank() || refined.length() > MAX_TRANSLATED_PER_REGION) return false;
         if (untouchable.test(source)) return false;
+        // A sound the machine translation left as drawn ("Swish Swish", "shuffle", "BEEP") stays: onomatopoeia keeps the
+        // original lettering, and a translated one would be retyped over the art. Phrases left untranslated
+        // ("No Youtube!") may still be fixed.
+        if (machine.strip().equalsIgnoreCase(source.strip()) && sound(source)) return false;
         if (correctedSource) {
             String reading = proposal.correctedSource().strip();
             if (reading.isEmpty() || reading.length() > MAX_SOURCE_PER_REGION
@@ -98,6 +102,17 @@ public final class TranslationRefinement {
         int longer = Math.max(refined.length(), machine.length());
         int shorter = Math.max(1, Math.min(refined.length(), machine.length()));
         return longer <= SHORT_TEXT || longer <= MAX_LENGTH_RATIO * shorter;
+    }
+
+    /** Fewer than two different words: one word, or one sound repeated or stretched ("Swish Swish", "Ha Haha"). */
+    static boolean sound(String source) {
+        var stems = new ArrayList<String>();
+        for (var token : source.split("\\s+")) {
+            var core = token.replaceAll("^[^\\p{L}\\p{N}]+|[^\\p{L}\\p{N}]+$", "").toLowerCase(java.util.Locale.ROOT);
+            if (core.isEmpty() || core.codePoints().noneMatch(Character::isLetter)) continue;
+            if (stems.stream().noneMatch(stem -> stem.startsWith(core) || core.startsWith(stem))) stems.add(core);
+        }
+        return stems.size() < 2;
     }
 
     /** Levenshtein distance over UTF-16 units; inputs are bounded by the per-region source limit. */

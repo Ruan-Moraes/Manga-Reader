@@ -91,7 +91,7 @@ class TranslationConfigurationTest {
         var refiner = new TranslationConfiguration().translationRefiner(refineProperties(), worker, factory);
 
         assertThat(refiner).isInstanceOf(GeminiTranslationRefiner.class);
-        verify(factory).create("test-project", "us", "gemini-2.5-flash", Duration.ofSeconds(20));
+        verify(factory).create("test-project", "us", "gemini-3.8-flash", Duration.ofSeconds(20));
     }
 
     @Test
