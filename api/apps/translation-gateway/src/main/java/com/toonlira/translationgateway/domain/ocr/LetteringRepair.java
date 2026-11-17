@@ -12,6 +12,11 @@ import java.util.regex.Pattern;
  */
 public final class LetteringRepair {
     private static final Pattern CROSSBAR_I = Pattern.compile("(^|[.!?…]\\s+|\\R\\s*)[/|](?=\\s+\\p{Lu})");
+    /** A dash drawn low between two words of capitals, read as an underscore: "RIO_I MUST", "BUSINESS_I SUPPOSE". */
+    /** Angle quotes read as two "less/greater than" signs (or one of each half) against a word: «Hechizos», <<Hechizos»>. */
+    private static final Pattern OPEN_QUOTE = Pattern.compile("(?:<<|«<|<«)(?=\\p{L})");
+    private static final Pattern CLOSE_QUOTE = Pattern.compile("(?<=[\\p{L}.!?…])(?:>>|»>|>»)");
+    private static final Pattern LOW_DASH = Pattern.compile("(?<=\\p{Lu}[!?.]?)_(?=\\s*\\p{Lu})");
     private LetteringRepair() { }
 
     public static List<OcrManifest.Region> repair(List<OcrManifest.Region> regions, String sourceLanguage) {
@@ -23,13 +28,29 @@ public final class LetteringRepair {
      * {@link Lexicon#ALTERNATIVES}); without them only a mark opening a sentence is repaired.
      */
     public static List<OcrManifest.Region> repair(List<OcrManifest.Region> regions, String sourceLanguage, Lexicon lexicon) {
-        if (!"en".equals(sourceLanguage)) return regions;
-        var clause = clausePattern(lexicon);
+        boolean english = "en".equals(sourceLanguage);
+        var clause = english ? clausePattern(lexicon) : null;
         return regions.stream().map(region -> {
-            var text = repairText(region.sourceText(), clause);
+            var text = quotes(dashes(region.sourceText()));
+            if (english) text = repairText(text, clause);
             return text.equals(region.sourceText()) ? region
                 : new OcrManifest.Region(region.id(), region.readingOrder(), text, region.polygon());
         }).toList();
+    }
+
+    /**
+     * Lettering in capitals has no underscores: one between two capitals is the dash of an interrupted sentence, drawn
+     * low. Text with lowercase letters (file names, addresses on a drawn screen: "case_ubuntu") keeps it.
+     */
+    static String dashes(String text) {
+        if (text.indexOf('_') < 0 || text.codePoints().anyMatch(Character::isLowerCase)) return text;
+        return LOW_DASH.matcher(text).replaceAll("—");
+    }
+
+    /** Lettered angle quotes misread as doubled comparison signs; signs not against a word (code, arrows) stay. */
+    static String quotes(String text) {
+        if (text.indexOf('<') < 0 && text.indexOf('>') < 0) return text;
+        return CLOSE_QUOTE.matcher(OPEN_QUOTE.matcher(text).replaceAll("«")).replaceAll("»");
     }
 
     static String repairText(String text, Pattern clause) {

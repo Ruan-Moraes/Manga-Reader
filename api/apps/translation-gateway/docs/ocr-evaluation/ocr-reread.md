@@ -88,3 +88,23 @@ recortes é descartada; numa caixa vertical, palavra de várias letras deitada n
 
 Resultado real: 「うん……でも」 → "É... mas...", 「あーでも」 → "Ah, mas...", 「いいや」 → "Não". Continuam sem
 leitura 「つ」 e balões só de reticências (corretamente sem tradução).
+
+## Montagem do OCR: leituras chutadas, onomatopeias e reparos (2026-11-17)
+
+Regras de classe, todas medidas no portão offline (`CorpusOcrReplayTest`, 50 páginas do corpus):
+
+- **Leitura chutada** (`OcrParagraph.isGuess`): um parágrafo com confiança média por palavra abaixo de 0,5, de
+  qualquer tamanho, fica como desenho. Caíram 4 leituras-lixo; fala real do corpus lê a 0,56 ou mais.
+- **Palavra repetida embaixo do balão** (`OcrRegionGrouper.continuesSpeech`): uma linha fora da caixa do balão só
+  continua a fala se tiver duas palavras diferentes. "Clap Clap" é onomatopeia.
+- **Travessão lido como `_`** (`LetteringRepair.dashes`): só em letreiramento todo em maiúsculas, entre letras
+  ("RIO_I MUST" → "RIO—I MUST"). Nomes de arquivo em minúsculas ficam como estão.
+- **Aspas angulares** (`LetteringRepair.quotes`): "<<" e "»>" colados a uma palavra viram « e ».
+  Comparações e setas ficam como estão.
+
+### Limites conhecidos
+
+- **Furigana:** no Ubunchu! a leitura em kana ao lado do kanji é a piada ("迷宮" lido "ディレクトリ"). Tirá-la do texto
+  perde o sentido, e uma coluna estreita de fala ("あんた") foi confundida com leitura. A leitura continua no texto.
+- **Letra capitular** ("T" decorado de "TABU", Jungle 117): o Vision não a lê, então a legenda sai como
+  "ABU..." e o "T" fica desenhado ao lado. Corrigir pede reler a mancha da capitular.

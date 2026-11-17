@@ -13,6 +13,8 @@ class LetteringRepairTest {
         Lexicon.CLAUSE_OPENERS, java.util.Set.of("then", "so", "and"), Lexicon.ALTERNATIVES, java.util.Set.of("and", "or", "not")));
 
     private static String repair(String text) { return LetteringRepair.repairText(text, LetteringRepair.clausePattern(EN)); }
+    private static final List<OcrManifest.Vertex> BOX = List.of(new OcrManifest.Vertex(.1, .1), new OcrManifest.Vertex(.2, .1),
+        new OcrManifest.Vertex(.2, .2), new OcrManifest.Vertex(.1, .2));
 
     @Test
     void withoutTheLanguageListsOnlyAMarkOpeningASentenceIsRepaired() {
@@ -28,6 +30,25 @@ class LetteringRepairTest {
         assertThat(repair("WAIT\n/ SEE")).isEqualTo("WAIT\nI SEE");
         assertThat(repair("..THEN / THINK YOU DOUBLE CLICK")).isEqualTo("..THEN I THINK YOU DOUBLE CLICK");
         assertThat(repair("SO | GUESS IT WORKS")).isEqualTo("SO I GUESS IT WORKS");
+    }
+
+    @Test
+    void anUnderscoreBetweenCapitalsIsTheDashOfAnInterruptedSentence() {
+        assertThat(LetteringRepair.dashes("SO SHE COMES! IT IS HER_I MUST NOT FAIL!")).isEqualTo("SO SHE COMES! IT IS HER—I MUST NOT FAIL!");
+        assertThat(LetteringRepair.dashes("SUCH A MESS_I\nSUPPOSE")).isEqualTo("SUCH A MESS—I\nSUPPOSE");
+        // Screens and file names keep theirs; so does an underscore not between capitals.
+        assertThat(LetteringRepair.dashes("case_ubuntu_v2.pdf")).isEqualTo("case_ubuntu_v2.pdf");
+        assertThat(LetteringRepair.dashes("FILE_42")).isEqualTo("FILE_42");
+        assertThat(LetteringRepair.repair(List.of(new OcrManifest.Region(java.util.UUID.randomUUID(), 0, "¡NO_YA!", BOX)), "es")
+            .getFirst().sourceText()).isEqualTo("¡NO—YA!");
+    }
+
+    @Test
+    void angleQuotesReadAsDoubledSignsAgainstAWordAreQuotes() {
+        assertThat(LetteringRepair.quotes("¡Estudia tus\n<<Hechizos de\nfuego»>!")).isEqualTo("¡Estudia tus\n«Hechizos de\nfuego»!");
+        assertThat(LetteringRepair.quotes("dijo <<no>>.")).isEqualTo("dijo «no».");
+        // Comparisons, shifts and arrows are not against a word.
+        assertThat(LetteringRepair.quotes("a << 2 >> 1, x -> y")).isEqualTo("a << 2 >> 1, x -> y");
     }
 
     @Test

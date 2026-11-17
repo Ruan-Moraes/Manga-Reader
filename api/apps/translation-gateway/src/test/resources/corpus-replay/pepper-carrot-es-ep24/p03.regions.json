@@ -5,7 +5,7 @@
   "text" : "Creo\nrecordar...\n",
   "box" : [ 0.0717, 0.0518, 0.16, 0.0771 ]
 }, {
-  "text" : "¡Sí! En el capítulo de los «Hechizos de Destrucción»> Tomillo recomienda intentarlos en una microdimensión. Pero mira todos estos avisos:",
+  "text" : "¡Sí! En el capítulo de los «Hechizos de Destrucción» Tomillo recomienda intentarlos en una microdimensión. Pero mira todos estos avisos:",
   "box" : [ 0.2933, 0.0175, 0.565, 0.094 ]
 }, {
   "text" : "Shrr\n",
@@ -32,7 +32,7 @@
   "text" : "Naturalmente.",
   "box" : [ 0.8392, 0.0693, 0.9525, 0.0825 ]
 }, {
-  "text" : "«NO volver con lo generado por motivos de seguridad»>",
+  "text" : "«NO volver con lo generado por motivos de seguridad»",
   "box" : [ 0.7733, 0.0982, 0.9592, 0.1458 ]
 }, {
   "text" : "Pff... ¡Obvio!\n",
@@ -65,6 +65,6 @@
   "text" : "¡Bien!\n",
   "box" : [ 0.6917, 0.6253, 0.7383, 0.6373 ]
 }, {
-  "text" : "Espero que haya comprendido bien todos los avisos que escribí en ese capítulo sobre los <<Hechizos de Destrucción».",
+  "text" : "Espero que haya comprendido bien todos los avisos que escribí en ese capítulo sobre los «Hechizos de Destrucción».",
   "box" : [ 0.6383, 0.6482, 0.9008, 0.7102 ]
 } ]
