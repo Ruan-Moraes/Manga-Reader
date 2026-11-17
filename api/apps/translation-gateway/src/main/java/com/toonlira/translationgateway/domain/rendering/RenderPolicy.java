@@ -19,6 +19,11 @@ public record RenderPolicy(String version, long maxOriginalBytes, int maxWidthPx
     /** Smallest size chosen for text whose source lettering is at least this big. */
     public static final int COMFORT_FONT_PX = 12;
     private static final int MAXIMUM_FONT_PX = 48;
+    /**
+     * Ceiling of hand-drawn lettering retyped at its own size (a page title, a big shout), above the speech ceiling
+     * {@link #maximumFontPx}: the size a title of a full-width page is drawn at.
+     */
+    public static final int MAXIMUM_LETTERING_FONT_PX = 256;
     private static final int PADDING_PX = 2;
     private static final String CURRENT_VERSION = "clean-box-1.2";
 
@@ -35,6 +40,9 @@ public record RenderPolicy(String version, long maxOriginalBytes, int maxWidthPx
             throw new RenderValidationException(INVALID_POLICY);
         }
     }
+
+    /** Largest font a render may report: speech stays under {@link #maximumFontPx}, retyped lettering under this. */
+    public int largestFontPx() { return Math.max(maximumFontPx, MAXIMUM_LETTERING_FONT_PX); }
 
     public static RenderPolicy initial() {
         return new RenderPolicy(CURRENT_VERSION, MAX_ORIGINAL_BYTES, MAX_DIMENSION_PX,

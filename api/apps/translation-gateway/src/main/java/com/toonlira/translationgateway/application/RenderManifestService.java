@@ -54,7 +54,7 @@ public final class RenderManifestService {
             for (var region : manifest.regions()) {
                 if (region.kept() && !region.overflow()) invalid();
                 if (!region.overflow() && (region.fontSizePx() < policy.minimumFontPx()
-                    || region.fontSizePx() > policy.maximumFontPx())) invalid();
+                    || region.fontSizePx() > policy.largestFontPx())) invalid();
             }
             var output = new BoundedOutput(policy.maxManifestBytes());
             mapper.writeValue(output, new Document(manifest.version(), manifest.policyVersion(), manifest.jobRef(),

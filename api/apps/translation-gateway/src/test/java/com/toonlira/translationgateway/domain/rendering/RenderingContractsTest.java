@@ -243,7 +243,10 @@ class RenderingContractsTest {
         invalidOutput(() -> RenderManifest.create(request, image(100), List.of(first, new RenderManifest.Placement(UUID.randomUUID(), true, 0))));
         invalidOutput(() -> RenderManifest.create(request, image(100), List.of(first, new RenderManifest.Placement(null, true, 0))));
         invalidOutput(() -> RenderManifest.create(request, image(100), List.of(first, new RenderManifest.Placement(second.regionId(), false, 7))));
-        invalidOutput(() -> RenderManifest.create(request, image(100), List.of(first, new RenderManifest.Placement(second.regionId(), false, 49))));
+        // Above the speech ceiling is retyped lettering (a title at its own size), up to its own ceiling.
+        RenderManifest.create(request, image(100), List.of(first, new RenderManifest.Placement(second.regionId(), false, 91)));
+        invalidOutput(() -> RenderManifest.create(request, image(100), List.of(first,
+            new RenderManifest.Placement(second.regionId(), false, RenderPolicy.MAXIMUM_LETTERING_FONT_PX + 1))));
         invalidOutput(() -> RenderManifest.create(request, image(100), List.of(first, new RenderManifest.Placement(second.regionId(), true, 12))));
         var withNull = new ArrayList<RenderManifest.Placement>();
         withNull.add(first);

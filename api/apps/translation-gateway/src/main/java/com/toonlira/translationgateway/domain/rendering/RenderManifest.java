@@ -43,7 +43,7 @@ public final class RenderManifest {
     private static boolean validFont(Placement placement, RenderPolicy policy) {
         if (placement.kept() && !placement.overflow()) return false;
         return placement.overflow() ? placement.fontSizePx() == 0
-            : placement.fontSizePx() >= policy.minimumFontPx() && placement.fontSizePx() <= policy.maximumFontPx();
+            : placement.fontSizePx() >= policy.minimumFontPx() && placement.fontSizePx() <= policy.largestFontPx();
     }
 
     private static void invalid() { throw new RenderValidationException(INVALID_OUTPUT); }

@@ -280,7 +280,7 @@ public final class PageRasterPainter {
         // A title or a big shout keeps its weight on the page: its size may go up to the source letters' own, past the
         // ceiling that keeps speech balloons even.
         var upright = compose(region.region().translatedText(), request.pair().target(), box, request.policy(),
-            Math.max(request.policy().maximumFontPx(), sourcePitch(region)), clip, false, true, minimumFor(region, request.policy()));
+            Math.clamp(sourcePitch(region), request.policy().maximumFontPx(), request.policy().largestFontPx()), clip, false, true, minimumFor(region, request.policy()));
         if (upright == null || tilt == 0) return upright;
         var rotate = AffineTransform.getRotateInstance(tilt, cx, cy);
         var lines = new ArrayList<GlyphLine>(upright.lines().size());

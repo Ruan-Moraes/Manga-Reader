@@ -84,6 +84,9 @@ class RealPageRegressionTest {
         };
         var before = RegionChecks.copy(original);
         var placements = new PageRasterPainter(FONTS, white).paint(image, request);
+        // The worker turns the placements into the render manifest: what it rejects fails the page in production.
+        com.toonlira.translationgateway.domain.rendering.RenderManifest.create(request,
+            new com.toonlira.translationgateway.domain.rendering.RenderedImage("image/webp", 1, w, h, "0".repeat(64)), placements);
         // DUMP_VISUAL=<dir>: save the render to look at it (diagnostics only).
         var dump = System.getenv("DUMP_VISUAL");
         if (dump != null) ImageIO.write(image, "png", Path.of(dump).resolve(fixture.getFileName().toString().replace(".json", ".png")).toFile());
