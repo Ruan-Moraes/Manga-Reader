@@ -33,3 +33,20 @@ continuam na ordem original, sem consumir layout experimental. Nenhum texto é
 desenhado neste incremento; wrapping, contraste e fallback são TASK-004.
 Arquivo WebP, commit/READY e retenção são tasks posteriores. Testes de pixels
 não substituem profiling nativo ou revisão visual de páginas reais.
+
+## Papel do balão e sobra do original (2026-11-17)
+
+Duas regras da revisão do corpus de validação (`docs/rendering/visual-regression.md`):
+
+- **Cor do papel quando a caixa abraça o balão.** A cor de referência é a mediana do anel em volta da caixa do OCR.
+  Num balão pequeno de gibi antigo, a caixa encosta na borda e metade do anel cai na arte escura, e a mediana virava
+  a cor da arte: o interior claro deixava de ser "fundo" e a fala ia para o inpainting. Agora, **só dentro de um balão
+  detectado**, quando o anel tem duas cores (quartis a mais de 180 de distância) e a cor clara cobre ao menos o dobro
+  da escura dentro da caixa, a clara é o papel. Fora de balão, ou com a cor escura dominando (texto preto grosso,
+  balão escuro), nada muda — texto preto colado em arte preta continua sendo arte.
+- **Nunca digitar sobre sobra.** Depois da limpeza lisa, se mais de 3% da caixa do texto novo ainda tem tinta original
+  intacta (letras que a máscara tomou por arte), a região volta a ser o original e fica marcada como não renderizada.
+
+Limite conhecido: no papel pontilhado de impressão antiga (Planet Comics 73), a máscara ainda junta letras e
+pontos num bloco "arte", e o inpainting dentro do balão pode reconstruir a borda como mancha sob o texto. Uma
+verificação de mancha pós-inpainting foi testada e descartada: com o LaMa real ela desfazia traduções aceitáveis.

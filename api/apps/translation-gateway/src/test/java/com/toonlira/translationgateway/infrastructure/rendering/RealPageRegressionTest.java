@@ -74,10 +74,12 @@ class RealPageRegressionTest {
         request = request.withCaptionHints(CaptionFilter.captions(request, lexicon, kinds))
             .withLetteringHints(CaptionFilter.letterings(request, lexicon, kinds))
             .withDrawnHints(CaptionFilter.drawn(request, lexicon, kinds));
-        // Deterministic stand-in for LaMa: white box (the real model is not part of the regression).
+        // Deterministic stand-in for LaMa (the real model is not part of the regression): the box is filled with the
+        // median colour of the ring just outside it, as the model rebuilds plain paper.
         Inpainter white = (raster, box, quad) -> {
+            int fill = RegionChecks.ringMedian(raster, box);
             for (int y = Math.max(0, box[1]); y < Math.min(h, box[3]); y++)
-                for (int x = Math.max(0, box[0]); x < Math.min(w, box[2]); x++) raster.setRGB(x, y, 0xffffffff);
+                for (int x = Math.max(0, box[0]); x < Math.min(w, box[2]); x++) raster.setRGB(x, y, fill);
             return true;
         };
         var before = RegionChecks.copy(original);

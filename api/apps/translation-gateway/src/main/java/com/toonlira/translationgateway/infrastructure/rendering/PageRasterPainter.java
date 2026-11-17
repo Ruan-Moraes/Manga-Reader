@@ -173,8 +173,16 @@ public final class PageRasterPainter {
                 draw(image, canvas, region.polygon(), plan.clipBox(), plan.lines(), BLACK, WHITE,
                     lettering[i] ? letteringOutline(plan.size()) : outline(plan.size()));
             } else {
+                var before = snapshot(image, region, plan);
                 boxes.fillMasked(image, region, halos.get(i));
                 if (plan.grown()) fillBox(image, plan.clipBox(), region.argb());
+                // Never type over the source lettering: when the flat clean left too much of it where the new text goes
+                // (letters the mask took for art), the region is put back as it was and keeps its original.
+                if (leftover(before, image, region, plan.clipBox()) > MAX_LEFTOVER_INK) {
+                    restore(image, before);
+                    placements.add(new RenderManifest.Placement(region.region().id(), true, 0, false));
+                    continue;
+                }
                 draw(image, canvas, region.polygon(), plan.clipBox(), plan.lines(), contrast(region.argb()), 0, 0);
             }
             placements.add(new RenderManifest.Placement(region.region().id(), false, plan.size()));
@@ -557,6 +565,49 @@ public final class PageRasterPainter {
     }
 
     /** The grown box was verified as flat background or near-text noise, so it is cleaned as a whole. */
+    /** Share of the new text's box still covered by source ink after the flat clean, above which nothing is drawn. */
+    static final double MAX_LEFTOVER_INK = .03;
+
+    /** Pixels a flat clean of the region may touch: its polygon, its halo band and its (possibly grown) text box. */
+    private record Snapshot(int left, int top, int width, int height, int[] pixels) { }
+
+    private static Snapshot snapshot(BufferedImage image, CleanBoxPainter.CleanRegion region, Plan plan) {
+        var bounds = region.polygon().bounds();
+        int reach = CleanBoxPainter.HALO_PX + 1;
+        int left = Math.max(0, Math.min(bounds.left() - reach, plan.clipBox().left()));
+        int top = Math.max(0, Math.min(bounds.top() - reach, plan.clipBox().top()));
+        int right = Math.min(image.getWidth(), Math.max(bounds.right() + reach, plan.clipBox().right()));
+        int bottom = Math.min(image.getHeight(), Math.max(bounds.bottom() + reach, plan.clipBox().bottom()));
+        int width = Math.max(0, right - left), height = Math.max(0, bottom - top);
+        var pixels = width == 0 || height == 0 ? new int[0] : image.getRGB(left, top, width, height, null, 0, width);
+        return new Snapshot(left, top, width, height, pixels);
+    }
+
+    private static void restore(BufferedImage image, Snapshot before) {
+        if (before.width() > 0 && before.height() > 0)
+            image.setRGB(before.left(), before.top(), before.width(), before.height(), before.pixels(), 0, before.width());
+    }
+
+    /**
+     * Share of the text box (inside the region's polygon) where source ink, far from the balloon colour, is still
+     * there unchanged after the clean. A clean region scores 0; letters the mask kept as art score their coverage.
+     */
+    static double leftover(Snapshot before, BufferedImage image, CleanBoxPainter.CleanRegion region, RasterPolygon.Bounds box) {
+        int area = 0, left = 0;
+        for (int y = Math.max(box.top(), before.top()); y < Math.min(box.bottom(), before.top() + before.height()); y++) {
+            var span = region.polygon().span(y);
+            if (span == null) continue;
+            for (int x = Math.max(Math.max(box.left(), span.start()), before.left());
+                 x < Math.min(Math.min(box.right(), span.end()), before.left() + before.width()); x++) {
+                area++;
+                int was = before.pixels()[(y - before.top()) * before.width() + x - before.left()];
+                if (CleanBoxPainter.distance(was, region.argb()) <= CleanBoxPainter.INK_DISTANCE) continue;
+                if (image.getRGB(x, y) == was) left++;
+            }
+        }
+        return area == 0 ? 0 : (double) left / area;
+    }
+
     private static void fillBox(BufferedImage image, RasterPolygon.Bounds box, int argb) {
         var row = new int[box.right() - box.left()];
         Arrays.fill(row, argb);

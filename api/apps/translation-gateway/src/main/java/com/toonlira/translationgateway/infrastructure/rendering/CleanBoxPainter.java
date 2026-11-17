@@ -42,12 +42,12 @@ final class CleanBoxPainter {
         for (int i = 0; i < polygons.size(); i++) {
             checkInterrupted();
             int padding = Math.max(1, request.policy().paddingPx());
-            int argb = surroundingColor(image, polygons.get(i), polygons, padding);
+            var limit = balloonLimit(request, request.regions().get(i), image.getWidth(), image.getHeight());
+            int argb = surroundingColor(image, polygons.get(i), polygons, padding, limit != null);
             var others = new ArrayList<>(polygons);
             others.remove(i);
             // Without any surrounding sample (region covered by others or by the page edge) there is no balloon
             // reference colour: the whole polygon is cleaned, as the plain clean-box policy does.
-            var limit = balloonLimit(request, request.regions().get(i), image.getWidth(), image.getHeight());
             var mask = hasSurroundings(image, polygons.get(i), polygons, padding)
                 ? BalloonMask.of(image, polygons.get(i), others, argb, limit, noisyScan) : BalloonMask.polygonOnly(polygons.get(i));
             prepared.add(new CleanRegion(request.regions().get(i), polygons.get(i), argb, mask, limit));
@@ -134,7 +134,9 @@ final class CleanBoxPainter {
             + Math.abs((a & 255) - (b & 255));
     }
 
-    private static int surroundingColor(BufferedImage image, RasterPolygon polygon, List<RasterPolygon> all, int padding) {
+    /** {@code inBalloon}: a detected balloon contains the region (only then can its paper differ from its ring). */
+    private static int surroundingColor(BufferedImage image, RasterPolygon polygon, List<RasterPolygon> all, int padding,
+                                        boolean inBalloon) {
         var bounds = polygon.bounds();
         int left = bounds.left() - padding, right = bounds.right() - 1 + padding;
         int top = bounds.top() - padding, bottom = bounds.bottom() - 1 + padding;
@@ -148,14 +150,62 @@ final class CleanBoxPainter {
             count = sample(image, right, y, all, samples, count);
         }
         if (count == 0) return NO_SURROUNDING_COLOR;
+        var ring = Arrays.copyOf(samples, count);
+        int median = median(ring, count);
+        // A tight OCR box in a small balloon has its ring on the border and the dark art around it as much as on the
+        // paper: the ring then holds two colours and its median may be the art's. Inside a detected balloon, a light
+        // colour that clearly dominates the polygon between the letters is the paper (lettering covers a small share
+        // of its own box). Elsewhere, or when the dark colour fills the box (bold black text, dark balloons), the ring
+        // median stays: black text glued to black art must keep looking like art.
+        if (!inBalloon) return median;
+        Integer[] byLuminance = new Integer[count];
+        for (int i = 0; i < count; i++) byLuminance[i] = ring[i];
+        Arrays.sort(byLuminance, java.util.Comparator.comparingInt(CleanBoxPainter::luminance));
+        int low = byLuminance[count / 4], high = byLuminance[(3 * count) / 4];
+        if (distance(low, high) <= RING_SPLIT_DISTANCE) return median;
+        int threshold = (luminance(low) + luminance(high)) / 2;
+        var dark = new int[count];
+        var light = new int[count];
+        int darkCount = 0, lightCount = 0;
+        for (int c : ring) {
+            if (luminance(c) <= threshold) dark[darkCount++] = c;
+            else light[lightCount++] = c;
+        }
+        int darkColour = median(dark, darkCount), lightColour = median(light, lightCount);
+        int darkVotes = 0, lightVotes = 0;
+
+        for (int y = bounds.top(); y < bounds.bottom(); y += 2) {
+            var span = polygon.span(y);
+            if (span == null) continue;
+            for (int x = Math.max(0, span.start()); x < Math.min(image.getWidth(), span.end()); x += 2) {
+                int c = image.getRGB(x, y);
+                int toDark = distance(c, darkColour), toLight = distance(c, lightColour);
+                if (Math.min(toDark, toLight) > 2 * BACKGROUND_DISTANCE) continue;
+                if (toDark < toLight) darkVotes++; else lightVotes++;
+            }
+        }
+        return lightVotes >= PAPER_DOMINANCE * darkVotes ? lightColour : median;
+    }
+
+    /** The light colour must cover this many times the dark one inside the polygon to be taken as the paper. */
+    static final double PAPER_DOMINANCE = 2;
+    /** Quartile colours of the ring farther apart than this are two backgrounds (paper and art), not paper noise. */
+    static final int RING_SPLIT_DISTANCE = 180;
+
+    private static int median(int[] colours, int count) {
+        if (count == 0) return NO_SURROUNDING_COLOR;
         int color = 0;
         var channel = new int[count];
         for (int shift : new int[]{24, 16, 8, 0}) {
-            for (int i = 0; i < count; i++) channel[i] = (samples[i] >>> shift) & 0xff;
+            for (int i = 0; i < count; i++) channel[i] = (colours[i] >>> shift) & 0xff;
             Arrays.sort(channel);
             color |= channel[(count - 1) / 2] << shift;
         }
         return color;
+    }
+
+    private static int luminance(int c) {
+        return (299 * ((c >>> 16) & 255) + 587 * ((c >>> 8) & 255) + 114 * (c & 255)) / 1000;
     }
 
     /** Detector boxes are loose: a region's balloon may extend this share of the box beyond each side. */

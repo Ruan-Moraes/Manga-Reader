@@ -121,4 +121,23 @@ final class RegionChecks {
         for (int x = left; x < right; x += 8) for (int y = top; y < bottom; y++) for (int dx = 0; dx < 3 && x + dx < right; dx++)
             image.setRGB(x + dx, y, 0xff000000);
     }
+
+    /** Per-channel median of the one-pixel ring just outside {@code box} ({left, top, right, bottom}), clipped to the image. */
+    static int ringMedian(java.awt.image.BufferedImage image, int[] box) {
+        var samples = new java.util.ArrayList<Integer>();
+        int l = box[0] - 1, t = box[1] - 1, r = box[2], b = box[3];
+        for (int x = l; x <= r; x++) { sample(image, x, t, samples); sample(image, x, b, samples); }
+        for (int y = t + 1; y < b; y++) { sample(image, l, y, samples); sample(image, r, y, samples); }
+        if (samples.isEmpty()) return 0xffffffff;
+        int colour = 0xff000000;
+        for (int shift : new int[]{16, 8, 0}) {
+            int[] channel = samples.stream().mapToInt(c -> (c >>> shift) & 255).sorted().toArray();
+            colour |= channel[channel.length / 2] << shift;
+        }
+        return colour;
+    }
+
+    private static void sample(java.awt.image.BufferedImage image, int x, int y, java.util.List<Integer> samples) {
+        if (x >= 0 && y >= 0 && x < image.getWidth() && y < image.getHeight()) samples.add(image.getRGB(x, y));
+    }
 }

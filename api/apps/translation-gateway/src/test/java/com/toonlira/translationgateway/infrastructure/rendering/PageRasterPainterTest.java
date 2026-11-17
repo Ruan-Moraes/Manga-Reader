@@ -734,6 +734,49 @@ class PageRasterPainterTest {
         assertThat(plainMask.clean(68, 110)).as("black stroke glued to black art").isFalse();
     }
 
+    /** Light paper balloon on dark art; the OCR box hugs it so its sample ring is half art (left/right), half paper. */
+    private static BufferedImage paperBalloonOnDarkArt() {
+        var image = new BufferedImage(360, 220, BufferedImage.TYPE_INT_ARGB);
+        for (int y = 0; y < 220; y++) for (int x = 0; x < 360; x++)
+            image.setRGB(x, y, x >= 60 && x < 300 && y >= 50 && y < 170 ? 0xffe8e4c0 : 0xff202020);
+        for (int x0 = 70; x0 < 280; x0 += 24) for (int y = 95; y < 125; y++)       // sparse letter strokes
+            for (int x = x0; x < x0 + 4; x++) image.setRGB(x, y, 0xff101010);
+        return image;
+    }
+
+    @Test
+    void aBoxHuggingItsBalloonTakesThePaperAsBackgroundNotTheArtAroundIt() {
+        var polygon = CleanBoxPainterTest.rectangle(58 / 360.0, 60 / 220.0, 302 / 360.0, 160 / 220.0);
+        var balloon = new com.toonlira.translationgateway.domain.layout.LayoutBox(50 / 360.0, 40 / 220.0, 310 / 360.0, 180 / 220.0);
+        var inBalloon = new CleanBoxPainter().prepare(paperBalloonOnDarkArt(),
+            request("pt-BR", "Olá", polygon).withBubbles(List.of(balloon))).getFirst();
+        assertThat(CleanBoxPainter.distance(inBalloon.argb(), 0xffe8e4c0)).as("paper inside a detected balloon").isLessThan(30);
+        assertThat(inBalloon.mask().enclosedInk()).as("its letters are erased (the 2 px of art the box takes stay)").isGreaterThan(.6);
+
+        // Without a detected balloon nothing tells the paper from the art: the ring median stays (here the art's).
+        var loose = new CleanBoxPainter().prepare(paperBalloonOnDarkArt(), request("pt-BR", "Olá", polygon)).getFirst();
+        assertThat(CleanBoxPainter.distance(loose.argb(), 0xff202020)).isLessThan(30);
+    }
+
+    @Test
+    void textIsNeverTypedOverSourceLetteringTheFlatCleanLeftBehind() {
+        // Letters joined into the art by a stroke that leaves the balloon: the mask keeps them as art, so the flat
+        // clean leaves them where the new text would go. The region keeps its original instead of overprinting.
+        var image = new BufferedImage(360, 220, BufferedImage.TYPE_INT_ARGB);
+        for (int y = 0; y < 220; y++) for (int x = 0; x < 360; x++) image.setRGB(x, y, 0xffffffff);
+        for (int x0 = 70; x0 < 290; x0 += 14) for (int y = 80; y < 140; y++)
+            for (int x = x0; x < x0 + 6; x++) image.setRGB(x, y, 0xff000000);
+        for (int x = 70; x < 290; x++) for (int y = 108; y < 112; y++) image.setRGB(x, y, 0xff000000);   // joins them
+        for (int y = 0; y < 110; y++) for (int x = 180; x < 184; x++) image.setRGB(x, y, 0xff000000);    // to the page edge
+        var original = new BufferedImage(360, 220, BufferedImage.TYPE_INT_ARGB);
+        original.getGraphics().drawImage(image, 0, 0, null);
+        var polygon = CleanBoxPainterTest.rectangle(60 / 360.0, 70 / 220.0, 300 / 360.0, 150 / 220.0);
+        var placements = painter.paint(image, request("pt-BR", "Oi", polygon));
+        assertThat(placements.getFirst().overflow()).isTrue();
+        for (int y = 0; y < 220; y++) for (int x = 0; x < 360; x++)
+            assertThat(image.getRGB(x, y)).as("pixel %d,%d", x, y).isEqualTo(original.getRGB(x, y));
+    }
+
     @Test
     void aSymbolMissingFromTheTextFaceComesFromAnotherBundledFaceButLettersNeverDo() {
         assertThat(FONTS.canDisplay("pt-BR", "Por Hiroshi ♥ ★ ♪ →")).isTrue();
