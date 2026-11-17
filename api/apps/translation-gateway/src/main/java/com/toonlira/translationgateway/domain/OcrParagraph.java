@@ -9,20 +9,24 @@ import java.util.List;
 public record OcrParagraph(OcrManifest.Region region, List<Word> words) {
     public OcrParagraph { words = List.copyOf(words); }
 
-    /** Below this every word of a paragraph is a guess, see {@link #isGuess()}. */
+    /** Mean word confidence below which a paragraph is a guess, see {@link #isGuess()}. */
     public static final double GUESS_CONFIDENCE = .5;
-    public static final int MAX_GUESS_LETTERS = 4;
 
     /**
-     * A short paragraph the provider read only by guessing (every word below {@link #GUESS_CONFIDENCE}): usually another
-     * script forced into the page language (瀬尾 浩史 read as "WE" on an English cover) or stray marks ("gg", "@@@@").
-     * Leaving it out keeps the drawing as it is, which is right for both; a real word read with this little confidence
-     * would be a wrong translation anyway.
+     * A paragraph the provider read only by guessing (mean word confidence below {@link #GUESS_CONFIDENCE}): another
+     * script forced into the page language (瀬尾 浩史 read as "WE" on an English cover), stray marks ("gg", "@@@@") or
+     * stylised lettering read as made-up words (a crowd of drawn sound effects read as a sentence). Leaving it out keeps
+     * the drawing as it is, which is right for all of them; real speech read with this little confidence would be a
+     * wrong translation anyway. On the validation corpus real speech reads at 0.56 or more.
      */
     public boolean isGuess() {
         if (words.isEmpty()) return false;
-        for (var word : words) if (Double.isNaN(word.confidence()) || word.confidence() >= GUESS_CONFIDENCE) return false;
-        return region.sourceText().codePoints().filter(Character::isLetter).count() <= MAX_GUESS_LETTERS;
+        double sum = 0;
+        for (var word : words) {
+            if (Double.isNaN(word.confidence())) return false;
+            sum += word.confidence();
+        }
+        return sum / words.size() < GUESS_CONFIDENCE;
     }
 
     public static List<OcrParagraph> withoutGuesses(List<OcrParagraph> paragraphs) {
