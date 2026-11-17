@@ -168,8 +168,10 @@ public class ProcessOcrTaskUseCase {
             // Doubtful speeches are re-read whole, after grouping: context is what lets the provider read "THIS OS"
             // where a lone "05..." fragment stays ambiguous.
             if (rereading) regions = reread.improveRegions(regions, read, media.path(), job.sourceLanguage(), media.widthPx(), media.heightPx());
-            regions = com.toonlira.translationgateway.domain.ocr.LetteringRepair.repair(regions, job.sourceLanguage(),
-                lexicons == null ? com.toonlira.translationgateway.domain.ocr.Lexicon.NONE : lexicons.forLanguage(job.sourceLanguage()));
+            var lexicon = lexicons == null ? com.toonlira.translationgateway.domain.ocr.Lexicon.NONE : lexicons.forLanguage(job.sourceLanguage());
+            regions = com.toonlira.translationgateway.domain.ocr.LetteringRepair.repair(regions, job.sourceLanguage(), lexicon);
+            // Words run together in tight lettering, cut where the page itself shows the name standing alone.
+            regions = com.toonlira.translationgateway.domain.ocr.GluedWords.split(regions, lexicon);
             requireOriginal(job);
             var manifest = new OcrManifest("1.0", job.jobRef(), job.sourceLanguage(), job.widthPx(), job.heightPx(), regions);
             var encoded = manifests.encode(manifest);
