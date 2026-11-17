@@ -1,0 +1,25 @@
+[ {
+  "text" : "HOPPER\n",
+  "box" : [ 0.0323, 0.9622, 0.0823, 0.9729 ]
+}, {
+  "text" : "MYSTA\n",
+  "box" : [ 0.0625, 0.0114, 0.7667, 0.1412 ]
+}, {
+  "text" : "OF THE\n",
+  "box" : [ 0.7698, 0.0378, 0.8542, 0.0578 ]
+}, {
+  "text" : "By ROSS GALLUN",
+  "box" : [ 0.775, 0.0906, 0.9094, 0.1248 ]
+}, {
+  "text" : "HMM WHAT'S ALL THE\nCOMMOTION ON THE\nPLANET ARES?\n",
+  "box" : [ 0.35, 0.684, 0.576, 0.714 ]
+}, {
+  "text" : "AG\n",
+  "box" : [ 0.8906, 0.6284, 0.9729, 0.6676 ]
+}, {
+  "text" : "THAT DOES IT! MY\nENLARGER LENS SHOWS\n-NO IT CAN'T BE!\nBUT IT IS!\n",
+  "box" : [ 0.7167, 0.6833, 0.95, 0.7247 ]
+}, {
+  "text" : "ONLY THE MADNESS OF A WARPED\nGENIUS COULD CONCEIVE SUCH A\nPLAN DIABOLICALLY CLEVER, IT\nWOULD DESTROY THE UNIVERSE!\nBUT THERE WAS MYSTA, WHOSE\nMIND WAS SCHOOLED TO PEACE\nAND CULTURE AND FREEDOM-\nWHOSE MIND WAS FILLED WITH ALL\nKNOWLEDGE, COULD SHE STOP\nTHE COMING DEBACLE?\n",
+  "box" : [ 0.1302, 0.8545, 0.4469, 0.9672 ]
+} ]

@@ -1,0 +1,121 @@
+{
+  "root" : "corpus",
+  "page" : "pepper-carrot-es-ep24/p04.jpg",
+  "sourceLanguage" : "es",
+  "width" : 1200,
+  "height" : 1660,
+  "regions" : [ {
+    "source" : "¡Genial!\n",
+    "translation" : "Legal!",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.1125, 0.046987951807228916 ], [ 0.195, 0.046987951807228916 ], [ 0.195, 0.06144578313253012 ], [ 0.1125, 0.06144578313253012 ] ]
+  }, {
+    "source" : "Es como estar en un\ncontenedor con la parte de\nla biblioteca que necesito.\nY está totalmente aislado\ndel resto del mundo.\n",
+    "translation" : " É como estar em um contêiner com a parte da biblioteca de que preciso. E está totalmente isolado do resto do mundo.",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.0625, 0.0746987951807229 ], [ 0.2866666666666667, 0.07530120481927711 ], [ 0.2866666666666667, 0.15060240963855423 ], [ 0.0625, 0.15 ] ]
+  }, {
+    "source" : "¡Ahora toca\ncentrarse en mi\nobra maestra!\n",
+    "translation" : " Agora é hora de focar na minha obra-prima!",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.0525, 0.5746987951807229 ], [ 0.18083333333333335, 0.5746987951807229 ], [ 0.18083333333333335, 0.6180722891566265 ], [ 0.0525, 0.6180722891566265 ] ]
+  }, {
+    "source" : "ShiING\n",
+    "translation" : "ShiING\n",
+    "kind" : "unknown",
+    "polygon" : [ [ 0.175, 0.8650602409638555 ], [ 0.24166666666666667, 0.8487951807228916 ], [ 0.24583333333333332, 0.858433734939759 ], [ 0.17916666666666667, 0.8746987951807229 ] ]
+  }, {
+    "source" : "PLOooom!!\n",
+    "translation" : " PLOooom!!",
+    "kind" : "unknown",
+    "polygon" : [ [ 0.33, 0.5975903614457831 ], [ 0.5041666666666667, 0.5734939759036145 ], [ 0.5108333333333334, 0.596987951807229 ], [ 0.33666666666666667, 0.6210843373493976 ] ]
+  }, {
+    "source" : "Es el sandbox\nperfecto para\nprobar hechizos.\n",
+    "translation" : " É o sandbox perfeito para testar feitiços.",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.7841666666666667, 0.45843373493975903 ], [ 0.9183333333333333, 0.45903614457831327 ], [ 0.9175, 0.5048192771084338 ], [ 0.7833333333333333, 0.5042168674698795 ] ]
+  }, {
+    "source" : "DUUUFF!!",
+    "translation" : " DUUUFF!!",
+    "kind" : "unknown",
+    "polygon" : [ [ 0.5458333333333333, 0.5957831325301205 ], [ 0.6883333333333334, 0.5759036144578313 ], [ 0.6933333333333334, 0.596987951807229 ], [ 0.5516666666666666, 0.6162650602409638 ] ]
+  }, {
+    "source" : "Ssting!!",
+    "translation" : " Ssting!!",
+    "kind" : "unknown",
+    "polygon" : [ [ 0.7808333333333334, 0.5885542168674699 ], [ 0.9225, 0.5692771084337349 ], [ 0.9291666666666667, 0.5933734939759037 ], [ 0.7875, 0.6126506024096385 ] ]
+  }, {
+    "source" : "¡Sí! Este se ve bien, pero es demasiado pequeño...",
+    "translation" : " Sim! Este parece bom, mas é pequeno demais...",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.7691666666666667, 0.6240963855421687 ], [ 0.9291666666666667, 0.6240963855421687 ], [ 0.9291666666666667, 0.672289156626506 ], [ 0.7691666666666667, 0.672289156626506 ] ]
+  }, {
+    "source" : "Jeje. Eh..., no.\n",
+    "translation" : " Hehe. Eh... não.",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.33166666666666667, 0.9373493975903614 ], [ 0.45, 0.9379518072289157 ], [ 0.45, 0.95 ], [ 0.33166666666666667, 0.9493975903614458 ] ]
+  }, {
+    "source" : "¡Puaf!\n",
+    "translation" : " Credo!",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.5983333333333334, 0.9409638554216867 ], [ 0.6475, 0.9397590361445783 ], [ 0.6475, 0.95 ], [ 0.5983333333333334, 0.9512048192771084 ] ]
+  }, {
+    "source" : "¡ZANAHORIA!\n¡NO LO TOQUES!\n",
+    "translation" : " CENOURA! NÃO TOQUE NISSO!",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.7725, 0.9271084337349398 ], [ 0.9125, 0.9259036144578313 ], [ 0.9125, 0.9548192771084337 ], [ 0.7725, 0.9560240963855422 ] ]
+  } ],
+  "bubbles" : [ [ 0.7610601806640624, 0.44230269466538025, 0.9367643229166667, 0.521589458419616 ], [ 0.7481874084472656, 0.6106814832572477, 0.9468306477864583, 0.6772317541650978 ], [ 0.04408393859863281, 0.5678546951477786, 0.2075348663330078, 0.6347340779132153 ], [ 0.31538719177246094, 0.9210836019860693, 0.46581512451171875, 0.9643128912132907 ], [ 0.7466998799641927, 0.9024807481880648, 0.9448863728841146, 0.9700076183640813 ], [ 0.046084969838460284, 0.06388105369475951, 0.3045982360839844, 0.1722290406744164 ], [ 0.5677958679199219, 0.9220277349632907, 0.6719595336914063, 0.9641764813158885 ], [ 0.08059407552083334, 0.025668964615787368, 0.23813985188802084, 0.06474788619811277 ] ],
+  "expect" : {
+    "maxChangedOutside" : 0,
+    "regions" : [ {
+      "overflow" : false,
+      "font" : 14,
+      "residualInk" : 0
+    }, {
+      "overflow" : false,
+      "font" : 16,
+      "residualInk" : 554
+    }, {
+      "overflow" : false,
+      "font" : 16,
+      "residualInk" : 1
+    }, {
+      "overflow" : true,
+      "font" : 0,
+      "residualInk" : 0
+    }, {
+      "overflow" : true,
+      "font" : 0,
+      "residualInk" : 0
+    }, {
+      "overflow" : false,
+      "font" : 16,
+      "residualInk" : 0
+    }, {
+      "overflow" : true,
+      "font" : 0,
+      "residualInk" : 0
+    }, {
+      "overflow" : true,
+      "font" : 0,
+      "residualInk" : 0
+    }, {
+      "overflow" : false,
+      "font" : 17,
+      "residualInk" : 133
+    }, {
+      "overflow" : false,
+      "font" : 12,
+      "residualInk" : 0
+    }, {
+      "overflow" : false,
+      "font" : 19,
+      "residualInk" : 0
+    }, {
+      "overflow" : false,
+      "font" : 16,
+      "residualInk" : 0
+    } ]
+  }
+}

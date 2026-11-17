@@ -1,0 +1,121 @@
+{
+  "root" : "corpus",
+  "page" : "pepper-carrot-es-ep24/p02.jpg",
+  "sourceLanguage" : "es",
+  "width" : 1200,
+  "height" : 1660,
+  "regions" : [ {
+    "source" : "Grrrrr...!!!\n",
+    "translation" : "Grrrrr...!!!",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.08916666666666667, 0.2644578313253012 ], [ 0.18416666666666667, 0.26385542168674697 ], [ 0.18416666666666667, 0.2746987951807229 ], [ 0.08916666666666667, 0.2753012048192771 ] ]
+  }, {
+    "source" : "tap\n",
+    "translation" : " torneira",
+    "kind" : "unknown",
+    "polygon" : [ [ 0.6, 0.15963855421686746 ], [ 0.6158333333333333, 0.15602409638554218 ], [ 0.6183333333333333, 0.16204819277108434 ], [ 0.6025, 0.16566265060240964 ] ]
+  }, {
+    "source" : "Blam!",
+    "translation" : " Bum!",
+    "kind" : "unknown",
+    "polygon" : [ [ 0.7483333333333333, 0.10602409638554217 ], [ 0.8433333333333334, 0.06927710843373494 ], [ 0.8566666666666667, 0.08795180722891566 ], [ 0.7616666666666667, 0.1246987951807229 ] ]
+  }, {
+    "source" : "i¿Un invierno sin árbol de Unidad?!",
+    "translation" : " Um inverno sem árvore da Unidade?!",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.36, 0.2753012048192771 ], [ 0.465, 0.2753012048192771 ], [ 0.465, 0.3180722891566265 ], [ 0.36, 0.3180722891566265 ] ]
+  }, {
+    "source" : "¡Nunca!\n",
+    "translation" : " Nunca!",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.38083333333333336, 0.3301204819277108 ], [ 0.4533333333333333, 0.32951807228915664 ], [ 0.4533333333333333, 0.34397590361445785 ], [ 0.38083333333333336, 0.344578313253012 ] ]
+  }, {
+    "source" : "¡¿Qué tal si\ncreo mi propio\nárbol desde cero\ncon magia?!\n",
+    "translation" : " Que tal se eu criar minha própria árvore do zero com magia?!",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.8133333333333334, 0.2855421686746988 ], [ 0.9508333333333333, 0.2855421686746988 ], [ 0.9508333333333333, 0.3481927710843373 ], [ 0.8133333333333334, 0.3481927710843373 ] ]
+  }, {
+    "source" : "¡Hey! Quizá podría\ncombinar las magias\nde Hippiah y Chaosah.\n¡Sería la primera\nvez que lo hago!\n",
+    "translation" : " Ei! Talvez eu pudesse combinar as magias de Hippiah e Chaosah. Seria a primeira vez que eu faria isso!",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.03833333333333333, 0.6265060240963856 ], [ 0.21666666666666667, 0.6271084337349397 ], [ 0.21583333333333332, 0.7054216867469879 ], [ 0.0375, 0.7048192771084337 ] ]
+  }, {
+    "source" : "¡Un gran árbol verde, iluminado por estrellas y minisistemas solares!",
+    "translation" : " Uma grande árvore verde, iluminada por estrelas e minissistemas solares!",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.2916666666666667, 0.6789156626506024 ], [ 0.4266666666666667, 0.6789156626506024 ], [ 0.4266666666666667, 0.7572289156626506 ], [ 0.2916666666666667, 0.7572289156626506 ] ]
+  }, {
+    "source" : "¡Oh!\n¡Sería\nperfecto!\n",
+    "translation" : " Ah! Seria perfeito!",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.3408333333333333, 0.7945783132530121 ], [ 0.41083333333333333, 0.7945783132530121 ], [ 0.41083333333333333, 0.8349397590361446 ], [ 0.3408333333333333, 0.8349397590361446 ] ]
+  }, {
+    "source" : "Pero no hay forma\nde hacer ese tipo de\nmagia aquí...\n",
+    "translation" : " Mas não há como fazer esse tipo de magia aqui...",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.7491666666666666, 0.6331325301204819 ], [ 0.9166666666666666, 0.6331325301204819 ], [ 0.9166666666666666, 0.6795180722891566 ], [ 0.7491666666666666, 0.6795180722891566 ] ]
+  }, {
+    "source" : "¡Y además sería\ncreativo!\n",
+    "translation" : " E, além disso, seria criativo!",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.5016666666666667, 0.9114457831325301 ], [ 0.6333333333333333, 0.9114457831325301 ], [ 0.6333333333333333, 0.9409638554216867 ], [ 0.5016666666666667, 0.9409638554216867 ] ]
+  }, {
+    "source" : "...mis madrinas se darían\ncuenta inmediatamente si\nno estoy estudiando mis\n«Hechizos de Destrucción».\n",
+    "translation" : " ...minhas madrinhas perceberiam imediatamente se eu não estivesse estudando meus «Feitiços de Destruição».",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.7158333333333333, 0.8957831325301204 ], [ 0.9458333333333333, 0.8951807228915662 ], [ 0.9458333333333333, 0.9548192771084337 ], [ 0.7158333333333333, 0.9554216867469879 ] ]
+  } ],
+  "bubbles" : [ [ 0.7233470153808593, 0.6173374405826431, 0.9435987345377604, 0.6890763248305722 ], [ 0.7996681213378907, 0.27210801825465925, 0.9607059733072917, 0.36177331395896084 ], [ 0.7048982238769531, 0.8811290327324924, 0.9599306233723959, 0.9701952095491341 ], [ 0.46884974161783854, 0.8888528479150979, 0.6808809407552083, 0.9624133006635919 ], [ 0.32299817403157555, 0.784804452183735, 0.4249196116129557, 0.8445705184017319 ], [ 0.3477168782552083, 0.26108736704631025, 0.47865931193033856, 0.3245403611516378 ], [ 0.05557467142740886, 0.24837607877800263, 0.2063434600830078, 0.28858017519295937 ], [ 0.03694836934407552, 0.6177674075207078, 0.22656005859375, 0.717607760142131 ], [ 0.27724741617838544, 0.6682945159544428, 0.4393525187174479, 0.7653701230704066 ], [ 0.35901509602864584, 0.32387448965785015, 0.4779222106933594, 0.357919532132436 ] ],
+  "expect" : {
+    "maxChangedOutside" : 0,
+    "regions" : [ {
+      "overflow" : true,
+      "font" : 0,
+      "residualInk" : 0
+    }, {
+      "overflow" : true,
+      "font" : 0,
+      "residualInk" : 0
+    }, {
+      "overflow" : true,
+      "font" : 0,
+      "residualInk" : 0
+    }, {
+      "overflow" : false,
+      "font" : 16,
+      "residualInk" : 0
+    }, {
+      "overflow" : false,
+      "font" : 15,
+      "residualInk" : 0
+    }, {
+      "overflow" : false,
+      "font" : 16,
+      "residualInk" : 105
+    }, {
+      "overflow" : false,
+      "font" : 16,
+      "residualInk" : 0
+    }, {
+      "overflow" : false,
+      "font" : 15,
+      "residualInk" : 0
+    }, {
+      "overflow" : false,
+      "font" : 17,
+      "residualInk" : 0
+    }, {
+      "overflow" : false,
+      "font" : 17,
+      "residualInk" : 32
+    }, {
+      "overflow" : false,
+      "font" : 16,
+      "residualInk" : 0
+    }, {
+      "overflow" : false,
+      "font" : 17,
+      "residualInk" : 252
+    } ]
+  }
+}

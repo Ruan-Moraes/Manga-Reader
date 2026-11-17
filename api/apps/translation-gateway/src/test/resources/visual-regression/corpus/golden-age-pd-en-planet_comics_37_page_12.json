@@ -1,0 +1,85 @@
+{
+  "root" : "corpus",
+  "page" : "golden-age-pd-en/planet_comics_37_page_12.jpg",
+  "sourceLanguage" : "en",
+  "width" : 960,
+  "height" : 1402,
+  "regions" : [ {
+    "source" : "HOPPER\n",
+    "translation" : "HOPPER",
+    "kind" : "unknown",
+    "polygon" : [ [ 0.03229166666666667, 0.9629101283880172 ], [ 0.08229166666666667, 0.9621968616262482 ], [ 0.08229166666666667, 0.9721825962910129 ], [ 0.03229166666666667, 0.9728958630527818 ] ]
+  }, {
+    "source" : "MYSTA\n",
+    "translation" : " MYSTA",
+    "kind" : "text_free",
+    "polygon" : [ [ 0.0625, 0.011412268188302425 ], [ 0.7666666666666667, 0.011412268188302425 ], [ 0.7666666666666667, 0.14122681883024252 ], [ 0.0625, 0.14122681883024252 ] ]
+  }, {
+    "source" : "OF THE\n",
+    "translation" : " DO",
+    "kind" : "text_free",
+    "polygon" : [ [ 0.7697916666666667, 0.037803138373751786 ], [ 0.8541666666666666, 0.037803138373751786 ], [ 0.8541666666666666, 0.05777460770328103 ], [ 0.7697916666666667, 0.05777460770328103 ] ]
+  }, {
+    "source" : "By ROSS GALLUN",
+    "translation" : " Por ROSS GALLUN",
+    "kind" : "text_free",
+    "polygon" : [ [ 0.775, 0.0905848787446505 ], [ 0.909375, 0.0905848787446505 ], [ 0.909375, 0.12482168330955777 ], [ 0.775, 0.12482168330955777 ] ]
+  }, {
+    "source" : "HMM WHAT'S ALL THE\nCOMMOTION ON THE\nPLANET ARES?\n",
+    "translation" : " Hmm, o que é toda essa agitação no planeta Ares?",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.35, 0.6840228245363766 ], [ 0.5760416666666667, 0.6840228245363766 ], [ 0.5760416666666667, 0.7139800285306704 ], [ 0.35, 0.7139800285306704 ] ]
+  }, {
+    "source" : "AG\n",
+    "translation" : " AG",
+    "kind" : "unknown",
+    "polygon" : [ [ 0.8916666666666667, 0.6283880171184023 ], [ 0.9739583333333334, 0.6298145506419401 ], [ 0.9729166666666667, 0.6676176890156919 ], [ 0.890625, 0.666191155492154 ] ]
+  }, {
+    "source" : "THAT DOES IT! MY\nENLARGER LENS SHOWS\n-NO IT CAN'T BE!\nBUT IT IS!\n",
+    "translation" : " Chega! A lente do meu ampliador mostra... não, não pode ser! Mas é!",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.7166666666666667, 0.6833095577746077 ], [ 0.95, 0.6833095577746077 ], [ 0.95, 0.724679029957204 ], [ 0.7166666666666667, 0.724679029957204 ] ]
+  }, {
+    "source" : "ONLY THE MADNESS OF A WARPED\nGENIUS COULD CONCEIVE SUCH A\nPLAN DIABOLICALLY CLEVER, IT\nWOULD DESTROY THE UNIVERSE!\nBUT THERE WAS MYSTA, WHOSE\nMIND WAS SCHOOLED TO PEACE\nAND CULTURE AND FREEDOM-\nWHOSE MIND WAS FILLED WITH ALL\nKNOWLEDGE, COULD SHE STOP\nTHE COMING DEBACLE?\n",
+    "translation" : " Somente a loucura de um gênio distorcido poderia conceber um plano tão diabolicamente engenhoso — capaz de destruir o universo! Mas havia Mysta, cuja mente fora moldada para a paz, a cultura e a liberdade — uma mente repleta de todo o conhecimento. Poderia ela deter a catástrofe iminente?",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.13020833333333334, 0.8559201141226819 ], [ 0.44583333333333336, 0.854493580599144 ], [ 0.446875, 0.9657631954350927 ], [ 0.13125, 0.9671897289586305 ] ]
+  } ],
+  "bubbles" : [ [ 0.6883919397989909, 0.6597914756959923, 0.9698201497395833, 0.7389104084009451 ], [ 0.3379335403442383, 0.6735251694705109, 0.603594970703125, 0.7303225181242199 ], [ 0.11796724796295166, 0.8453403968103602, 0.4598783175150553, 0.9792977631007044 ] ],
+  "expect" : {
+    "maxChangedOutside" : 0,
+    "regions" : [ {
+      "overflow" : true,
+      "font" : 0,
+      "residualInk" : 0
+    }, {
+      "overflow" : true,
+      "font" : 0,
+      "residualInk" : 0
+    }, {
+      "overflow" : false,
+      "font" : 17,
+      "residualInk" : 0
+    }, {
+      "overflow" : false,
+      "font" : 16,
+      "residualInk" : 11
+    }, {
+      "overflow" : false,
+      "font" : 13,
+      "residualInk" : 0
+    }, {
+      "overflow" : true,
+      "font" : 0,
+      "residualInk" : 0
+    }, {
+      "overflow" : false,
+      "font" : 13,
+      "residualInk" : 271
+    }, {
+      "overflow" : false,
+      "font" : 13,
+      "residualInk" : 0
+    } ]
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "root" : "corpus",
+  "page" : "pepper-carrot-ko-ep11/p00.jpg",
+  "sourceLanguage" : "ko",
+  "width" : 1200,
+  "height" : 287,
+  "regions" : [ {
+    "source" : "후추와 당근\n",
+    "translation" : "Pimenta e cenoura",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.15416666666666667, 0.13937282229965156 ], [ 0.8308333333333333, 0.1602787456445993 ], [ 0.83, 0.686411149825784 ], [ 0.15333333333333332, 0.6655052264808362 ] ]
+  }, {
+    "source" : "제11화: 카오사의 마녀들\n",
+    "translation" : " Episódio 11: As Bruxas de Kaos",
+    "kind" : "text_free",
+    "polygon" : [ [ 0.36083333333333334, 0.7700348432055749 ], [ 0.6333333333333333, 0.7804878048780488 ], [ 0.6333333333333333, 0.9094076655052264 ], [ 0.36083333333333334, 0.8989547038327527 ] ]
+  } ],
+  "bubbles" : [ ],
+  "expect" : {
+    "maxChangedOutside" : 1608,
+    "regions" : [ {
+      "overflow" : false,
+      "font" : 48,
+      "residualInk" : 6042
+    }, {
+      "overflow" : false,
+      "font" : 35,
+      "residualInk" : 0
+    } ]
+  }
+}

@@ -11,6 +11,7 @@ padrão. Cada grupo tem seu próprio README.
 | [`native-image/`](native-image/README.md) | Preparo do pacote libwebp e do contexto de build das imagens nativas do worker (`Dockerfile.native`), atualização da base Ubuntu. |
 | [`single-jre/`](single-jre/README.md) | Política, auditoria do rootfs e verificação de recibos do empacotamento single-JRE. |
 | [`visual-review/`](visual-review/README.md) | Galeria HTML de revisão visual da renderização. |
+| [`regression/`](../docs/rendering/visual-regression.md#portão-de-regressão-do-corpus) | Captura das entradas do portão de regressão do corpus (Vision congelado + detector + fixtures de render). |
 | [`isolation/`](isolation/README.md) | Probe de isolamento do worker (Java), preparo da imagem do probe e checagem do perfil de recursos Terraform. |
 | [`runtime/`](runtime/README.md) | Teste estrutural das versões Java/Boot do gateway versus o restante do reactor. |
 

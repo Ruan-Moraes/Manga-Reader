@@ -1,0 +1,112 @@
+{
+  "root" : "corpus",
+  "page" : "pepper-carrot-en-ep06/p06.jpg",
+  "sourceLanguage" : "en",
+  "width" : 1200,
+  "height" : 1660,
+  "regions" : [ {
+    "source" : "That last demonstration would now seem difficult to beat for Shichimi!",
+    "translation" : "Aquela última demonstração agora parece difícil de superar para Shichimi!",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.12833333333333333, 0.00963855421686747 ], [ 0.335, 0.00963855421686747 ], [ 0.335, 0.07349397590361446 ], [ 0.12833333333333333, 0.07349397590361446 ] ]
+  }, {
+    "source" : "...come on Shichimi, everyone's waiting for you.",
+    "translation" : " ...vamos lá, Shichimi, todo mundo está esperando por você.",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.4375, 0.025903614457831327 ], [ 0.5708333333333333, 0.025903614457831327 ], [ 0.5708333333333333, 0.0891566265060241 ], [ 0.4375, 0.0891566265060241 ] ]
+  }, {
+    "source" : "It seems, Ladies & Gentlemen that Shichimi forfeits...",
+    "translation" : " Parece, senhoras e senhores, que Shichimi desiste...",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.7358333333333333, 0.016867469879518072 ], [ 0.9316666666666666, 0.016867469879518072 ], [ 0.9316666666666666, 0.06325301204819277 ], [ 0.7358333333333333, 0.06325301204819277 ] ]
+  }, {
+    "source" : "I... I did not know we had to give a demonstration.",
+    "translation" : " Eu... eu não sabia que tínhamos que fazer uma demonstração.",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.056666666666666664, 0.2283132530120482 ], [ 0.17583333333333334, 0.2283132530120482 ], [ 0.17583333333333334, 0.2825301204819277 ], [ 0.056666666666666664, 0.2825301204819277 ] ]
+  }, {
+    "source" : "NO!\n",
+    "translation" : " NÃO!",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.44, 0.2325301204819277 ], [ 0.4741666666666667, 0.2325301204819277 ], [ 0.4741666666666667, 0.2427710843373494 ], [ 0.44, 0.2427710843373494 ] ]
+  }, {
+    "source" : "I cannot, it is too dangerous SORRY!",
+    "translation" : " Não posso, é perigoso demais. Desculpe!",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.4091666666666667, 0.25662650602409637 ], [ 0.5708333333333333, 0.25662650602409637 ], [ 0.5708333333333333, 0.3132530120481928 ], [ 0.4091666666666667, 0.3132530120481928 ] ]
+  }, {
+    "source" : "Give me\nthat!",
+    "translation" : " Me dê isso!",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.10833333333333334, 0.40120481927710844 ], [ 0.185, 0.4018072289156627 ], [ 0.18416666666666667, 0.4542168674698795 ], [ 0.1075, 0.4536144578313253 ] ]
+  }, {
+    "source" : "...and stop\npretending to be shy,\nyou're spoiling\nthe show.\n",
+    "translation" : " ...e pare de fingir timidez, você está estragando o show.",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.2966666666666667, 0.3825301204819277 ], [ 0.4791666666666667, 0.38373493975903616 ], [ 0.47833333333333333, 0.4475903614457831 ], [ 0.29583333333333334, 0.4463855421686747 ] ]
+  }, {
+    "source" : "Everyone already knows\nthat I've won the contest\nno matter what your\npotion does...\n",
+    "translation" : " Todo mundo já sabe que eu ganhei o concurso, não importa o que a sua poção faça...",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.2991666666666667, 0.5506024096385542 ], [ 0.5166666666666667, 0.5493975903614458 ], [ 0.5175, 0.6162650602409638 ], [ 0.3, 0.6174698795180723 ] ]
+  }, {
+    "source" : "!!!\n",
+    "translation" : "!!!\n",
+    "kind" : "unknown",
+    "polygon" : [ [ 0.8941666666666667, 0.3813253012048193 ], [ 0.9283333333333333, 0.3819277108433735 ], [ 0.9283333333333333, 0.39759036144578314 ], [ 0.8941666666666667, 0.3969879518072289 ] ]
+  }, {
+    "source" : "CAREFUL!!! It's a potion for GIANT MONSTERS!",
+    "translation" : " CUIDADO!!! É uma poção para monstros gigantes!",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.7558333333333334, 0.6813253012048193 ], [ 0.9466666666666667, 0.6813253012048193 ], [ 0.9466666666666667, 0.7367469879518073 ], [ 0.7558333333333334, 0.7367469879518073 ] ]
+  } ],
+  "bubbles" : [ [ 0.2797086842854818, 0.5336529467479292, 0.5369230143229167, 0.6290840608527861 ], [ 0.04207943280537923, 0.21247034647378576, 0.1964730707804362, 0.3011452548475151 ], [ 0.27982767740885417, 0.3675733819065324, 0.5055222574869792, 0.4621487904743976 ], [ 0.08528647104899088, 0.005921930290130248, 0.3682190958658854, 0.08416405183723175 ], [ 0.4138422139485677, 0.00863321143460561, 0.5927515157063802, 0.10401855836431664 ], [ 0.08348524729410807, 0.38219354468655875, 0.21279895782470704, 0.44562712520001885 ], [ 0.6994917297363281, 0.006151050544646849, 0.9608145141601563, 0.08152171674981175 ], [ 0.8692694091796875, 0.3657130597585655, 0.9522887166341146, 0.41737049516425073 ], [ 0.7233828226725261, 0.6695855933499624, 0.9528309122721355, 0.7598525449454067 ], [ 0.39064524332682293, 0.23847124949995294, 0.5924866231282552, 0.3293215096714985 ], [ 0.4059253438313802, 0.21213437735316265, 0.5065529378255208, 0.2472681803875659 ] ],
+  "expect" : {
+    "maxChangedOutside" : 0,
+    "regions" : [ {
+      "overflow" : false,
+      "font" : 18,
+      "residualInk" : 0
+    }, {
+      "overflow" : false,
+      "font" : 16,
+      "residualInk" : 0
+    }, {
+      "overflow" : false,
+      "font" : 17,
+      "residualInk" : 0
+    }, {
+      "overflow" : false,
+      "font" : 15,
+      "residualInk" : 0
+    }, {
+      "overflow" : false,
+      "font" : 23,
+      "residualInk" : 0
+    }, {
+      "overflow" : false,
+      "font" : 16,
+      "residualInk" : 185
+    }, {
+      "overflow" : false,
+      "font" : 21,
+      "residualInk" : 124
+    }, {
+      "overflow" : false,
+      "font" : 23,
+      "residualInk" : 0
+    }, {
+      "overflow" : false,
+      "font" : 17,
+      "residualInk" : 142
+    }, {
+      "overflow" : true,
+      "font" : 0,
+      "residualInk" : 0
+    }, {
+      "overflow" : false,
+      "font" : 21,
+      "residualInk" : 0
+    } ]
+  }
+}

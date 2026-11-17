@@ -27,17 +27,20 @@ import tools.jackson.databind.node.ObjectNode;
  * docs/rendering/visual-regression.md). Each fixture in {@code src/test/resources/visual-regression} freezes the inputs
  * of the render (texts, translations, polygons, balloons, detector classes) and the expectations per region:
  * overflow, a font floor, source ink left beside the new text, and pixels changed outside balloons and text boxes.
- * Runs only where the samples exist ({@code TOONLIRA_SAMPLES}, default {@code ~/Documentos/Projetos/toonlira-samples}).
+ * Ubunchu! fixtures run only where the samples exist ({@code TOONLIRA_SAMPLES}, default
+ * {@code ~/Documentos/Projetos/toonlira-samples}); fixtures under {@code visual-regression/corpus} use the versioned
+ * validation corpus and always run (captured by scripts/regression/capture-corpus.sh from a batch).
  * {@code UPDATE_VISUAL_FIXTURES=1} records the current render as the new expectations (review the diff).
  */
 class RealPageRegressionTest {
     private static final BundledRenderingFonts FONTS = new BundledRenderingFonts();
     private static final Path FIXTURES = Path.of("src/test/resources/visual-regression");
+    private static final Path CORPUS = Path.of("../../../web/apps/gateway-tester/corpus");
     private static final double FONT_TOLERANCE = .85, INK_TOLERANCE = 1.1;
     private static final int INK_SLACK = 20, OUTSIDE_SLACK = 50;
 
     static Stream<Path> fixtures() throws Exception {
-        try (var files = Files.list(FIXTURES)) { return files.filter(f -> f.toString().endsWith(".json")).sorted().toList().stream(); }
+        try (var files = Files.walk(FIXTURES)) { return files.filter(f -> f.toString().endsWith(".json")).sorted().toList().stream(); }
     }
 
     @ParameterizedTest(name = "{0}")
@@ -47,7 +50,8 @@ class RealPageRegressionTest {
             System.getProperty("user.home") + "/Documentos/Projetos/toonlira-samples"));
         var mapper = GatewayJsonMapper.create();
         var root = (ObjectNode) mapper.readTree(Files.readAllBytes(fixture));
-        var file = samples.resolve(root.path("page").asText());
+        // "root": "corpus" — page of the versioned validation corpus (web/apps/gateway-tester/corpus), always available.
+        var file = ("corpus".equals(root.path("root").asText()) ? CORPUS : samples).resolve(root.path("page").asText());
         assumeTrue(Files.isRegularFile(file), "sample page not available");
         var original = ImageIO.read(file.toFile());
         var image = RegionChecks.copy(original);

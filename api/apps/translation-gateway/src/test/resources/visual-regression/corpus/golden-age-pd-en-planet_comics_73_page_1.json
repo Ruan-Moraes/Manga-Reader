@@ -1,0 +1,103 @@
+{
+  "root" : "corpus",
+  "page" : "golden-age-pd-en/planet_comics_73_page_1.jpg",
+  "sourceLanguage" : "en",
+  "width" : 960,
+  "height" : 1468,
+  "regions" : [ {
+    "source" : "PLANET COMICS\n",
+    "translation" : "PLANET COMICS",
+    "kind" : "text_free",
+    "polygon" : [ [ 0.4083333333333333, 0.04700272479564033 ], [ 0.5385416666666667, 0.04564032697547684 ], [ 0.5385416666666667, 0.055858310626702996 ], [ 0.4083333333333333, 0.05722070844686648 ] ]
+  }, {
+    "source" : "CEREBEX",
+    "translation" : " CEREBEX",
+    "kind" : "text_free",
+    "polygon" : [ [ 0.14895833333333333, 0.05653950953678474 ], [ 0.8510416666666667, 0.0681198910081744 ], [ 0.8479166666666667, 0.14986376021798364 ], [ 0.14583333333333334, 0.138283378746594 ] ]
+  }, {
+    "source" : "SLAP\n",
+    "translation" : " Tapa",
+    "kind" : "text_free",
+    "polygon" : [ [ 0.35208333333333336, 0.3017711171662125 ], [ 0.48541666666666666, 0.30449591280653954 ], [ 0.48333333333333334, 0.3399182561307902 ], [ 0.35, 0.3371934604904632 ] ]
+  }, {
+    "source" : "BRAD CUMMINGS NATCHES AS HIS BOSS, THE GREAT\nPHYSICIST, WALTER JACKSON, MAKES AN ADJUSTMENT ON\nTHE NEAR-COMPLETE NEW ELECTRONIC CALCULATOR...\n",
+    "translation" : " Brad Cummings observa atentamente enquanto seu chefe, o grande físico Walter Jackson, faz um ajuste na nova calculadora eletrônica, que está quase pronta...",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.521875, 0.2452316076294278 ], [ 0.890625, 0.2452316076294278 ], [ 0.890625, 0.27452316076294275 ], [ 0.521875, 0.27452316076294275 ] ]
+  }, {
+    "source" : "EXCUSE ME, PROFESSOR\nJACKSON, BUT THAT\nADJUSTMENT IS\nNOT ACCORDING TO\nTHE BLUEPRINT...\n",
+    "translation" : " Com licença, Professor Jackson, mas esse ajuste não está de acordo com a planta...",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.5135416666666667, 0.28746594005449594 ], [ 0.6572916666666667, 0.28746594005449594 ], [ 0.6572916666666667, 0.3310626702997275 ], [ 0.5135416666666667, 0.3310626702997275 ] ]
+  }, {
+    "source" : "CUMMINGS, CEREBEX 15 GOING TO BE\nUNIQUE-THE MOST POWERFUL\nELECTRONIC BRAIN IN THE WORLD!\nYOU CAN'T BUILD GENIUS FROMA\nBLUEPRINT!\n",
+    "translation" : " Cummings, o Cerebex 15 será único — o cérebro eletrônico mais poderoso do mundo! Não se constrói um gênio a partir de uma planta!",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.6854166666666667, 0.2854223433242507 ], [ 0.9166666666666666, 0.2847411444141689 ], [ 0.9166666666666666, 0.3303814713896458 ], [ 0.6854166666666667, 0.3310626702997275 ] ]
+  }, {
+    "source" : "HAVE ANOTHER\nARGUMENT\nWITH OLD\nJACKSON,\nBRAD?\n",
+    "translation" : " Discutiu de novo com o velho Jackson, Brad?",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.5177083333333333, 0.5054495912806539 ], [ 0.6166666666666667, 0.5061307901907357 ], [ 0.6166666666666667, 0.5565395095367848 ], [ 0.5177083333333333, 0.555858310626703 ] ]
+  }, {
+    "source" : "YOU KNOW, DON, I'M WORRIED. JACKSON IS DOING THINGS TO THAT BRAIN I DON'T UNDERSTAND AT ALL.",
+    "translation" : " Sabe, Don, estou preocupado. O Jackson está fazendo coisas com aquele cérebro que eu não entendo de jeito nenhum.",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.6354166666666666, 0.5061307901907357 ], [ 0.8270833333333333, 0.5061307901907357 ], [ 0.8270833333333333, 0.5463215258855586 ], [ 0.6354166666666666, 0.5463215258855586 ] ]
+  }, {
+    "source" : "THE GIANT ELECTRONIC \"BRAIN\" WAS A MARVEL OF MODERN INGENUITY--UNTIL IT WAS TWISTED INTO THE DEVILISH\nPATTERNS OF A MADMAN'S MIND!\n",
+    "translation" : " O gigantesco \"cérebro\" eletrônico era uma maravilha da engenhosidade moderna — até ser distorcido pelos padrões diabólicos da mente de um louco!",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.041666666666666664, 0.8971389645776566 ], [ 0.8895833333333333, 0.8971389645776566 ], [ 0.8895833333333333, 0.9155313351498637 ], [ 0.041666666666666664, 0.9155313351498637 ] ]
+  }, {
+    "source" : "Bill Banis",
+    "translation" : " Bill Banis",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.7979166666666667, 0.9325613079019074 ], [ 0.8822916666666667, 0.9325613079019074 ], [ 0.8822916666666667, 0.9400544959128065 ], [ 0.7979166666666667, 0.9400544959128065 ] ]
+  } ],
+  "bubbles" : [ [ 0.6206696192423503, 0.4999226666276396, 0.8372643152872722, 0.5605443803750851 ], [ 0.5073518753051758, 0.2823507116665957, 0.6670061111450195, 0.34178716675137305 ], [ 0.6713085174560547, 0.2815935514278568, 0.9234793345133464, 0.33974408973465176 ], [ 0.5102455139160156, 0.5009149452646032, 0.6293034235636393, 0.5671948009355842 ], [ 0.5014057159423828, 0.2318324990753257, 0.9255645116170247, 0.2814506302087768 ], [ 0.7838020960489909, 0.9259552085107289, 0.8978957494099935, 0.9475422789030569 ] ],
+  "expect" : {
+    "maxChangedOutside" : 0,
+    "regions" : [ {
+      "overflow" : true,
+      "font" : 0,
+      "residualInk" : 0
+    }, {
+      "overflow" : true,
+      "font" : 0,
+      "residualInk" : 0
+    }, {
+      "overflow" : true,
+      "font" : 0,
+      "residualInk" : 0
+    }, {
+      "overflow" : true,
+      "font" : 0,
+      "residualInk" : 0
+    }, {
+      "overflow" : false,
+      "font" : 11,
+      "residualInk" : 0
+    }, {
+      "overflow" : false,
+      "font" : 12,
+      "residualInk" : 0
+    }, {
+      "overflow" : false,
+      "font" : 12,
+      "residualInk" : 1
+    }, {
+      "overflow" : false,
+      "font" : 9,
+      "residualInk" : 6
+    }, {
+      "overflow" : false,
+      "font" : 11,
+      "residualInk" : 0
+    }, {
+      "overflow" : true,
+      "font" : 0,
+      "residualInk" : 0
+    } ]
+  }
+}

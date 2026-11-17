@@ -1,0 +1,130 @@
+{
+  "root" : "corpus",
+  "page" : "golden-age-pd-en/jungle_comics_73_page_34.jpg",
+  "sourceLanguage" : "en",
+  "width" : 960,
+  "height" : 1467,
+  "regions" : [ {
+    "source" : "AS THE HERD\nCHARGES-\n",
+    "translation" : "Enquanto a manada avança em disparada...",
+    "kind" : "text_free",
+    "polygon" : [ [ 0.06458333333333334, 0.06680299931833675 ], [ 0.15416666666666667, 0.06612133605998637 ], [ 0.15416666666666667, 0.08588957055214724 ], [ 0.06458333333333334, 0.08657123381049761 ] ]
+  }, {
+    "source" : "IT'S\nTHAT DOG\nHE'S STARTED\nA STAMPEDE-\n",
+    "translation" : " É aquele cachorro! Ele provocou uma debandada...",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.215625, 0.06680299931833675 ], [ 0.32916666666666666, 0.06680299931833675 ], [ 0.32916666666666666, 0.10702113156100886 ], [ 0.215625, 0.10702113156100886 ] ]
+  }, {
+    "source" : "JUNGLE COMICS\n",
+    "translation" : " JUNGLE COMICS",
+    "kind" : "text_free",
+    "polygon" : [ [ 0.40208333333333335, 0.032719836400818 ], [ 0.5760416666666667, 0.03067484662576687 ], [ 0.5760416666666667, 0.04294478527607362 ], [ 0.40208333333333335, 0.044989775051124746 ] ]
+  }, {
+    "source" : "I'VE GOT TO GET OUT THEY'LL KILL ME-BUT HOW? THEY'RE POURING THROUGH THE PASS AND THERE'S NO OTHER WAY OUT-",
+    "translation" : " Preciso sair daqui, eles vão me matar — mas como? Eles estão passando em massa pela garganta e não há outra saída —",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.36354166666666665, 0.06475800954328562 ], [ 0.571875, 0.06475800954328562 ], [ 0.571875, 0.12610770279481937 ], [ 0.36354166666666665, 0.12610770279481937 ] ]
+  }, {
+    "source" : "BUT AS THE INFURIATED\nELEPHANTS DESTROY ALL IN\nTHEIR PATH, CAMILLA AND HER\nFRIENDS ESCAPE INTO THE\nPOOL\n",
+    "translation" : " Mas, enquanto os elefantes enfurecidos destroem tudo em seu caminho, Camilla e seus amigos escapam para a piscina.",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.6416666666666667, 0.06339468302658487 ], [ 0.9083333333333333, 0.06339468302658487 ], [ 0.9083333333333333, 0.11315610088616224 ], [ 0.6416666666666667, 0.11315610088616224 ] ]
+  }, {
+    "source" : "LEAVING THE DESECRATORS\nTO CERTAIN DEATH-\n",
+    "translation" : " Deixando os profanadores à morte certa —",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.06875, 0.35719154737559644 ], [ 0.3125, 0.35719154737559644 ], [ 0.3125, 0.3769597818677573 ], [ 0.06875, 0.3769597818677573 ] ]
+  }, {
+    "source" : "AS AT THE RIVER NEARBY-\n",
+    "translation" : " Como no rio próximo —",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.328125, 0.612815269256987 ], [ 0.5572916666666666, 0.6141785957736878 ], [ 0.5572916666666666, 0.6250852079072938 ], [ 0.328125, 0.623721881390593 ] ]
+  }, {
+    "source" : "I DIDN'T THINK WE'D MAKE\nIT THROUGH THE GROTTO-\nBUT WE DID AND THAT'S\nTHE END OF YOUR PARTNER\nAND HIS HENCHMEN\n",
+    "translation" : " Eu não achava que conseguiríamos atravessar a gruta — mas conseguimos, e esse é o fim do seu parceiro e dos capangas dele.",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.3375, 0.6366734832992502 ], [ 0.5802083333333333, 0.6366734832992502 ], [ 0.5802083333333333, 0.6871165644171779 ], [ 0.3375, 0.6871165644171779 ] ]
+  }, {
+    "source" : "I DON'T KNOW HOW I CAN REPAY YOU.",
+    "translation" : " Não sei como posso retribuir a você.",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.459375, 0.700068166325835 ], [ 0.5854166666666667, 0.700068166325835 ], [ 0.5854166666666667, 0.7273346966598501 ], [ 0.459375, 0.7273346966598501 ] ]
+  }, {
+    "source" : "REMEMBER ONE THING, TRADER.\nTHE LAW OF THE JUNGLE IS\nDEATH TO TRANSGRESSORS.\nNEVER PLOT TO ROB THE\nJUNGLE OF ITS OWN.",
+    "translation" : " Lembre-se de uma coisa, mercador: a lei da selva é a morte para os transgressores. Nunca planeje roubar da selva o que lhe pertence.",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.6447916666666667, 0.6155419222903885 ], [ 0.9114583333333334, 0.6155419222903885 ], [ 0.9114583333333334, 0.665303340149966 ], [ 0.6447916666666667, 0.665303340149966 ] ]
+  }, {
+    "source" : "YOU'RE RIGHT\nCAMILLA NO\nMORE GRAVE\nROBBING FOR ME\n",
+    "translation" : " Você tem razão, Camilla: chega de roubar túmulos para mim.",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.7833333333333333, 0.6768916155419223 ], [ 0.9208333333333333, 0.6768916155419223 ], [ 0.9208333333333333, 0.7184730743012951 ], [ 0.7833333333333333, 0.7184730743012951 ] ]
+  }, {
+    "source" : "Camilla APPEARS IN EVERY ISSUE OF\n",
+    "translation" : " Camilla aparece em todas as edições de",
+    "kind" : "text_free",
+    "polygon" : [ [ 0.06875, 0.8929788684389911 ], [ 0.5677083333333334, 0.8970688479890934 ], [ 0.5677083333333334, 0.9141104294478528 ], [ 0.06875, 0.9100204498977505 ] ]
+  }, {
+    "source" : "Jungle Comics!\n",
+    "translation" : " Jungle Comics!",
+    "kind" : "text_free",
+    "polygon" : [ [ 0.5916666666666667, 0.8943421949556919 ], [ 0.8947916666666667, 0.8882072256305386 ], [ 0.8958333333333334, 0.9086571233810498 ], [ 0.5927083333333333, 0.9147920927062031 ] ]
+  } ],
+  "bubbles" : [ [ 0.3465106010437012, 0.05873611335780398, 0.5883686701456706, 0.13258031053289557 ], [ 0.633491579691569, 0.056165725094327816, 0.9278743743896485, 0.12088022056532784 ], [ 0.6345316569010416, 0.6076653083328007, 0.9164903640747071, 0.6711342154348798 ], [ 0.3135634740193685, 0.6281180352521089, 0.599621327718099, 0.6928877775248168 ], [ 0.7714727401733399, 0.670741501842621, 0.9293622334798177, 0.7251584833791326 ], [ 0.20720427831013996, 0.058896944322956606, 0.3383708635965983, 0.1134229996778076 ], [ 0.43727906545003253, 0.6921761583615584, 0.5993408203125, 0.7342208935114178 ], [ 0.06136041879653931, 0.347033978483672, 0.3266461372375488, 0.38409606891988324 ], [ 0.316136900583903, 0.6082533593883137, 0.6023600896199545, 0.630728609153992 ], [ 0.05887471040089925, 0.06023028373068177, 0.15824217796325685, 0.08956875895348713 ] ],
+  "expect" : {
+    "maxChangedOutside" : 0,
+    "regions" : [ {
+      "overflow" : true,
+      "font" : 0,
+      "residualInk" : 0
+    }, {
+      "overflow" : false,
+      "font" : 12,
+      "residualInk" : 0
+    }, {
+      "overflow" : true,
+      "font" : 0,
+      "residualInk" : 0
+    }, {
+      "overflow" : false,
+      "font" : 12,
+      "residualInk" : 149
+    }, {
+      "overflow" : false,
+      "font" : 13,
+      "residualInk" : 0
+    }, {
+      "overflow" : false,
+      "font" : 11,
+      "residualInk" : 0
+    }, {
+      "overflow" : false,
+      "font" : 16,
+      "residualInk" : 0
+    }, {
+      "overflow" : false,
+      "font" : 13,
+      "residualInk" : 0
+    }, {
+      "overflow" : false,
+      "font" : 12,
+      "residualInk" : 0
+    }, {
+      "overflow" : false,
+      "font" : 12,
+      "residualInk" : 0
+    }, {
+      "overflow" : true,
+      "font" : 0,
+      "residualInk" : 0
+    }, {
+      "overflow" : false,
+      "font" : 15,
+      "residualInk" : 0
+    }, {
+      "overflow" : true,
+      "font" : 0,
+      "residualInk" : 0
+    } ]
+  }
+}

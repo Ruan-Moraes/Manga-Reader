@@ -161,17 +161,17 @@ public class ProcessOcrTaskUseCase {
                     read = reread.recover(read, detections.texts(), media.path(), job.sourceLanguage(), job.jobRef(),
                         media.widthPx(), media.heightPx());
                 read = com.toonlira.translationgateway.domain.OcrParagraph.withoutGuesses(read);
-                paragraphs = bubbles == null ? read.stream().map(com.toonlira.translationgateway.domain.OcrParagraph::region).toList()
-                    : OcrRegionGrouper.splitByBubbles(read, bubbles);
+                paragraphs = null;
             }
-            var regions = OcrRegionGrouper.group(paragraphs, job.sourceLanguage(), media.widthPx(), media.heightPx(), bubbles);
+            // Same assembly as the offline corpus replay (CorpusOcrReplayTest), so the regression gate sees what ships.
+            var regions = paragraphs == null
+                ? com.toonlira.translationgateway.domain.ocr.OcrAssembly.group(read, bubbles, job.sourceLanguage(), media.widthPx(), media.heightPx())
+                : OcrRegionGrouper.group(paragraphs, job.sourceLanguage(), media.widthPx(), media.heightPx(), bubbles);
             // Doubtful speeches are re-read whole, after grouping: context is what lets the provider read "THIS OS"
             // where a lone "05..." fragment stays ambiguous.
             if (rereading) regions = reread.improveRegions(regions, read, media.path(), job.sourceLanguage(), media.widthPx(), media.heightPx());
             var lexicon = lexicons == null ? com.toonlira.translationgateway.domain.ocr.Lexicon.NONE : lexicons.forLanguage(job.sourceLanguage());
-            regions = com.toonlira.translationgateway.domain.ocr.LetteringRepair.repair(regions, job.sourceLanguage(), lexicon);
-            // Words run together in tight lettering, cut where the page itself shows the name standing alone.
-            regions = com.toonlira.translationgateway.domain.ocr.GluedWords.split(regions, lexicon);
+            regions = com.toonlira.translationgateway.domain.ocr.OcrAssembly.finish(regions, job.sourceLanguage(), lexicon);
             requireOriginal(job);
             var manifest = new OcrManifest("1.0", job.jobRef(), job.sourceLanguage(), job.widthPx(), job.heightPx(), regions);
             var encoded = manifests.encode(manifest);

@@ -1,0 +1,37 @@
+[ {
+  "text" : "¡Genial!\n",
+  "box" : [ 0.1125, 0.047, 0.195, 0.0614 ]
+}, {
+  "text" : "Es como estar en un\ncontenedor con la parte de\nla biblioteca que necesito.\nY está totalmente aislado\ndel resto del mundo.\n",
+  "box" : [ 0.0625, 0.0747, 0.2867, 0.1506 ]
+}, {
+  "text" : "¡Ahora toca\ncentrarse en mi\nobra maestra!\n",
+  "box" : [ 0.0525, 0.5747, 0.1808, 0.6181 ]
+}, {
+  "text" : "ShiING\n",
+  "box" : [ 0.175, 0.8488, 0.2458, 0.8747 ]
+}, {
+  "text" : "PLOooom!!\n",
+  "box" : [ 0.33, 0.5735, 0.5108, 0.6211 ]
+}, {
+  "text" : "Es el sandbox\nperfecto para\nprobar hechizos.\n",
+  "box" : [ 0.7833, 0.4584, 0.9183, 0.5048 ]
+}, {
+  "text" : "¡¡Duuuff!!\n",
+  "box" : [ 0.5458, 0.5759, 0.6933, 0.6163 ]
+}, {
+  "text" : "iSsting!!\n",
+  "box" : [ 0.7808, 0.5693, 0.9292, 0.6127 ]
+}, {
+  "text" : "¡Sí! Este se ve bien, pero es demasiado pequeño...",
+  "box" : [ 0.7692, 0.6241, 0.9292, 0.6723 ]
+}, {
+  "text" : "Jeje. Eh..., no.\n",
+  "box" : [ 0.3317, 0.9373, 0.45, 0.95 ]
+}, {
+  "text" : "¡Puaf!\n",
+  "box" : [ 0.5983, 0.9398, 0.6475, 0.9512 ]
+}, {
+  "text" : "¡ZANAHORIA!\n¡NO LO TOQUES!\n",
+  "box" : [ 0.7725, 0.9259, 0.9125, 0.956 ]
+} ]

@@ -1,0 +1,184 @@
+{
+  "root" : "corpus",
+  "page" : "pepper-carrot-en-ep06/p05.jpg",
+  "sourceLanguage" : "en",
+  "width" : 1200,
+  "height" : 1660,
+  "regions" : [ {
+    "source" : "Clap Clap\n",
+    "translation" : "Aplausos",
+    "kind" : "unknown",
+    "polygon" : [ [ 0.03333333333333333, 0.0783132530120482 ], [ 0.1175, 0.07710843373493977 ], [ 0.11833333333333333, 0.11144578313253012 ], [ 0.034166666666666665, 0.11265060240963855 ] ]
+  }, {
+    "source" : "Clap\nClap\n",
+    "translation" : " Aplausos",
+    "kind" : "unknown",
+    "polygon" : [ [ 0.11083333333333334, 0.10783132530120482 ], [ 0.18, 0.08493975903614458 ], [ 0.2075, 0.12891566265060242 ], [ 0.13833333333333334, 0.15180722891566265 ] ]
+  }, {
+    "source" : "FANTASTIC!\n",
+    "translation" : " Fantástico!",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.08583333333333333, 0.01144578313253012 ], [ 0.19333333333333333, 0.012048192771084338 ], [ 0.19333333333333333, 0.028313253012048192 ], [ 0.08583333333333333, 0.027710843373493974 ] ]
+  }, {
+    "source" : "Coriander defies death itself with this mi-ra-cu-lous potion! Clap Clap",
+    "translation" : " Coriander desafia a própria morte com esta poção mi-ra-clo-sa! Palmas, palmas.",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.1625, 0.03072289156626506 ], [ 0.3616666666666667, 0.03072289156626506 ], [ 0.3616666666666667, 0.13072289156626507 ], [ 0.1625, 0.13072289156626507 ] ]
+  }, {
+    "source" : "Clap Clap Clap Clap Clap Clap Clap Clap",
+    "translation" : " Palmas Palmas Palmas Palmas Palmas Palmas Palmas Palmas",
+    "kind" : "unknown",
+    "polygon" : [ [ 0.30666666666666664, 0.10120481927710843 ], [ 0.65, 0.10120481927710843 ], [ 0.65, 0.13975903614457832 ], [ 0.30666666666666664, 0.13975903614457832 ] ]
+  }, {
+    "source" : "...but please, save your applause, people of Komona!",
+    "translation" : " ...mas, por favor, guardem os aplausos, povo de Komona!",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.10166666666666667, 0.172289156626506 ], [ 0.27416666666666667, 0.172289156626506 ], [ 0.27416666666666667, 0.22108433734939759 ], [ 0.10166666666666667, 0.22108433734939759 ] ]
+  }, {
+    "source" : "Because here is MY Potion!",
+    "translation" : " Porque aqui está a MINHA Poção!",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.25, 0.22650602409638554 ], [ 0.3933333333333333, 0.22650602409638554 ], [ 0.3933333333333333, 0.25421686746987954 ], [ 0.25, 0.25421686746987954 ] ]
+  }, {
+    "source" : "The real potion you've all been waiting for: the one which will amaze your neighbors...",
+    "translation" : " A verdadeira poção que todos vocês esperavam: aquela que vai surpreender seus vizinhos...",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.7058333333333333, 0.26024096385542167 ], [ 0.9225, 0.26024096385542167 ], [ 0.9225, 0.3289156626506024 ], [ 0.7058333333333333, 0.3289156626506024 ] ]
+  }, {
+    "source" : "...make them jealous!",
+    "translation" : " ...deixe-os com inveja!",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.8166666666666667, 0.3373493975903614 ], [ 0.9358333333333333, 0.3373493975903614 ], [ 0.9358333333333333, 0.3680722891566265 ], [ 0.8166666666666667, 0.3680722891566265 ] ]
+  }, {
+    "source" : "...all this is possible with the simple application of a single drop of my...",
+    "translation" : " ...tudo isso é possível com a simples aplicação de uma única gota do meu...",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.20416666666666666, 0.4090361445783133 ], [ 0.5016666666666667, 0.4090361445783133 ], [ 0.5016666666666667, 0.45843373493975903 ], [ 0.20416666666666666, 0.45843373493975903 ] ]
+  }, {
+    "source" : "Fantastic! Incredible!\n",
+    "translation" : " Fantástico! Incrível!",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.0675, 0.7933734939759036 ], [ 0.26666666666666666, 0.7933734939759036 ], [ 0.26666666666666666, 0.8042168674698795 ], [ 0.0675, 0.8042168674698795 ] ]
+  }, {
+    "source" : "This potion could make all of Komona rich!",
+    "translation" : " Esta poção poderia deixar toda Komona rica!",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.049166666666666664, 0.8180722891566266 ], [ 0.24583333333333332, 0.8180722891566266 ], [ 0.24583333333333332, 0.846987951807229 ], [ 0.049166666666666664, 0.846987951807229 ] ]
+  }, {
+    "source" : "m\n",
+    "translation" : " m",
+    "kind" : "unknown",
+    "polygon" : [ [ 0.4083333333333333, 0.8626506024096385 ], [ 0.42583333333333334, 0.8590361445783132 ], [ 0.42833333333333334, 0.8656626506024097 ], [ 0.41083333333333333, 0.869277108433735 ] ]
+  }, {
+    "source" : "Gidido top cap clara.\n",
+    "translation" : " Tampa superior Gidido transparente.",
+    "kind" : "text_free",
+    "polygon" : [ [ 0.034166666666666665, 0.9385542168674699 ], [ 0.32666666666666666, 0.9373493975903614 ], [ 0.32666666666666666, 0.9855421686746988 ], [ 0.034166666666666665, 0.9867469879518073 ] ]
+  }, {
+    "source" : "Your applause\nI can't be wrong.\nCoriander has already\nbeen eliminated.\n",
+    "translation" : " Com esses aplausos, não posso estar enganado. O Coentro já foi eliminado.",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.3258333333333333, 0.8987951807228916 ], [ 0.5216666666666666, 0.9012048192771084 ], [ 0.52, 0.9650602409638555 ], [ 0.32416666666666666, 0.9626506024096385 ] ]
+  }, {
+    "source" : "...Potion of\n",
+    "translation" : " ...Poção de",
+    "kind" : "text_free",
+    "polygon" : [ [ 0.6491666666666667, 0.4006024096385542 ], [ 0.7491666666666666, 0.3993975903614458 ], [ 0.7491666666666666, 0.4108433734939759 ], [ 0.6491666666666667, 0.41204819277108434 ] ]
+  }, {
+    "source" : "Clap Cla r clap Cla-Chap",
+    "translation" : " Clap Cla r clap Cla-Chap",
+    "kind" : "text_free",
+    "polygon" : [ [ 0.535, 0.6680722891566265 ], [ 0.7191666666666666, 0.6680722891566265 ], [ 0.7191666666666666, 0.7945783132530121 ], [ 0.535, 0.7945783132530121 ] ]
+  }, {
+    "source" : "POSHNESS!\n",
+    "translation" : " Sofisticação!",
+    "kind" : "text_free",
+    "polygon" : [ [ 0.695, 0.4198795180722892 ], [ 0.8125, 0.4186746987951807 ], [ 0.8125, 0.4367469879518072 ], [ 0.695, 0.43795180722891563 ] ]
+  }, {
+    "source" : "Glap\n",
+    "translation" : " Glap",
+    "kind" : "text_free",
+    "polygon" : [ [ 0.885, 0.6849397590361446 ], [ 0.9566666666666667, 0.6710843373493975 ], [ 0.9716666666666667, 0.7108433734939759 ], [ 0.9, 0.7253012048192771 ] ]
+  } ],
+  "bubbles" : [ [ 0.18349718729654949, 0.3918339740799134, 0.5225489298502605, 0.47168446736163405 ], [ 0.675785878499349, 0.24230120555464044, 0.9498866780598958, 0.3353396496140813 ], [ 0.07684041341145834, 0.16489270681358245, 0.30860061645507814, 0.23081729383353727 ], [ 0.1245102564493815, 0.022909208090908555, 0.387332280476888, 0.09777934982115964 ], [ 0.8012109883626302, 0.32584129241575677, 0.9592605590820312, 0.37185488781297066 ], [ 0.3061487070719401, 0.8875301498964608, 0.5501260375976562, 0.9686088102409639 ], [ 0.2269445292154948, 0.2102396218173475, 0.41626683553059896, 0.27344134227339045 ], [ 0.043894840876261394, 0.7871372452701431, 0.2755743153889974, 0.8622607863092997 ], [ 0.04225741386413574, 0.8120028943900602, 0.27121192932128907, 0.8624477156673569 ] ],
+  "expect" : {
+    "maxChangedOutside" : 7,
+    "regions" : [ {
+      "overflow" : true,
+      "font" : 0,
+      "residualInk" : 0
+    }, {
+      "overflow" : true,
+      "font" : 0,
+      "residualInk" : 0
+    }, {
+      "overflow" : false,
+      "font" : 17,
+      "residualInk" : 11
+    }, {
+      "overflow" : false,
+      "font" : 23,
+      "residualInk" : 33
+    }, {
+      "overflow" : true,
+      "font" : 0,
+      "residualInk" : 0
+    }, {
+      "overflow" : false,
+      "font" : 18,
+      "residualInk" : 0
+    }, {
+      "overflow" : false,
+      "font" : 15,
+      "residualInk" : 0
+    }, {
+      "overflow" : false,
+      "font" : 19,
+      "residualInk" : 0
+    }, {
+      "overflow" : false,
+      "font" : 16,
+      "residualInk" : 0
+    }, {
+      "overflow" : false,
+      "font" : 19,
+      "residualInk" : 26
+    }, {
+      "overflow" : false,
+      "font" : 24,
+      "residualInk" : 0
+    }, {
+      "overflow" : false,
+      "font" : 16,
+      "residualInk" : 0
+    }, {
+      "overflow" : true,
+      "font" : 0,
+      "residualInk" : 0
+    }, {
+      "overflow" : false,
+      "font" : 27,
+      "residualInk" : 0
+    }, {
+      "overflow" : false,
+      "font" : 18,
+      "residualInk" : 2
+    }, {
+      "overflow" : false,
+      "font" : 24,
+      "residualInk" : 0
+    }, {
+      "overflow" : true,
+      "font" : 0,
+      "residualInk" : 0
+    }, {
+      "overflow" : false,
+      "font" : 20,
+      "residualInk" : 0
+    }, {
+      "overflow" : true,
+      "font" : 0,
+      "residualInk" : 0
+    } ]
+  }
+}

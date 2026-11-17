@@ -1,0 +1,22 @@
+[ {
+  "text" : "LRonde\n",
+  "box" : [ 0.0667, 0.9235, 0.1146, 0.9325 ]
+}, {
+  "text" : "Señorita\n",
+  "box" : [ 0.0542, 0.0262, 0.6917, 0.2061 ]
+}, {
+  "text" : "by MORGAN HAWKINS",
+  "box" : [ 0.1042, 0.2116, 0.2354, 0.2336 ]
+}, {
+  "text" : "RIO\n",
+  "box" : [ 0.5313, 0.0641, 0.8948, 0.2557 ]
+}, {
+  "text" : "THE NAZI WAR IS\nOVER, BUT THE STRUGGLE\nFOR A FOURTH REICH BEGINS\nLONE MAN KNOWS THE WERE-\nWOLF SECRET AND HE BRINGS\nA VITAL MESSAGE TO SEÑORITA\nRIO YET THE WEREWOLF\nHAS MANY EYES AND EVEN\nNOW, AS RIO WANDERS DOWN\nA DARKENED STREET IN\nNATAL...\n",
+  "box" : [ 0.6823, 0.2116, 0.9552, 0.3274 ]
+}, {
+  "text" : "IT'S A DARK STREET, BUT\nI'VE GOT TO MAKE WITH\nTHE SHORT CUT... SAM\nWILL MURDER ME IF I'M\nLATE FOR THE ACT HE\nBILLED ME IN AT THE\nMETROPOLE!\n",
+  "box" : [ 0.6906, 0.3742, 0.9177, 0.439 ]
+}, {
+  "text" : "SO SHE COMES! ITS IS SEÑORITA RIO_I MUST NOT FAIL!",
+  "box" : [ 0.6917, 0.6451, 0.8865, 0.674 ]
+} ]
