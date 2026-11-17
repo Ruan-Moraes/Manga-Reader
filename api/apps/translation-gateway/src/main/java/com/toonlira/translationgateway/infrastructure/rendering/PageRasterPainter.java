@@ -176,6 +176,8 @@ public final class PageRasterPainter {
                 var before = snapshot(image, region, plan);
                 boxes.fillMasked(image, region, halos.get(i));
                 if (plan.grown()) fillBox(image, plan.clipBox(), region.argb());
+                // Letters of the source the mask kept as art (a stroke running out of the box) go with the others.
+                StrayLetters.erase(image, region, (x, y) -> before.pixel(image, x, y));
                 // Never type over the source lettering: when the flat clean left too much of it where the new text goes
                 // (letters the mask took for art), the region is put back as it was and keeps its original.
                 if (leftover(before, image, region, plan.clipBox()) > MAX_LEFTOVER_INK) {
@@ -569,11 +571,16 @@ public final class PageRasterPainter {
     static final double MAX_LEFTOVER_INK = .03;
 
     /** Pixels a flat clean of the region may touch: its polygon, its halo band and its (possibly grown) text box. */
-    private record Snapshot(int left, int top, int width, int height, int[] pixels) { }
+    private record Snapshot(int left, int top, int width, int height, int[] pixels) {
+        /** The pixel as it was when the snapshot was taken; outside it, as it is now (the clean never got there). */
+        int pixel(BufferedImage image, int x, int y) {
+            return x >= left && y >= top && x < left + width && y < top + height ? pixels[(y - top) * width + x - left] : image.getRGB(x, y);
+        }
+    }
 
     private static Snapshot snapshot(BufferedImage image, CleanBoxPainter.CleanRegion region, Plan plan) {
         var bounds = region.polygon().bounds();
-        int reach = CleanBoxPainter.HALO_PX + 1;
+        int reach = Math.max(CleanBoxPainter.HALO_PX + 1, StrayLetters.reach(region));
         int left = Math.max(0, Math.min(bounds.left() - reach, plan.clipBox().left()));
         int top = Math.max(0, Math.min(bounds.top() - reach, plan.clipBox().top()));
         int right = Math.min(image.getWidth(), Math.max(bounds.right() + reach, plan.clipBox().right()));

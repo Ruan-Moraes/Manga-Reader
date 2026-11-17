@@ -778,6 +778,38 @@ class PageRasterPainterTest {
     }
 
     @Test
+    void aLetterWhoseStrokeRunsOutOfTheBoxIsErasedWithTheOthers() {
+        // Brush lettering: the last letter's tail runs past the OCR box and the mask window, so the mask takes it for
+        // art. It is glyph-sized, almost all inside the box and of the erased ink's tone: it goes with the word.
+        var image = new BufferedImage(360, 220, BufferedImage.TYPE_INT_ARGB);
+        for (int y = 0; y < 220; y++) for (int x = 0; x < 360; x++) image.setRGB(x, y, 0xffffffff);
+        for (int x0 = 80; x0 < 260; x0 += 30) for (int y = 90; y < 130; y++)
+            for (int x = x0; x < x0 + 8; x++) image.setRGB(x, y, 0xff000000);
+        for (int y = 90; y < 130; y++) for (int x = 266; x < 286; x++) image.setRGB(x, y, 0xff000000);  // last letter
+        for (int y = 108; y < 112; y++) for (int x = 286; x < 318; x++) image.setRGB(x, y, 0xff000000); // its tail
+        var polygon = CleanBoxPainterTest.rectangle(60 / 360.0, 70 / 220.0, 300 / 360.0, 150 / 220.0);
+        var placements = painter.paint(image, request("pt-BR", "Oi", polygon, "letters"));
+        assertThat(placements.getFirst().overflow()).isFalse();
+        for (int y = 90; y < 130; y++) for (int x = 286; x < 330; x++)
+            assertThat(image.getRGB(x, y) & 255).as("pixel %d,%d", x, y).isGreaterThan(200);
+        for (int y = 90; y < 130; y++) assertThat(image.getRGB(276, y) & 255).as("letter at 276,%d", y).isGreaterThan(200);
+    }
+
+    @Test
+    void artCrossingTheBoxIsNotTakenForAStrayLetter() {
+        // A dark shape mostly outside the box (a hand, a prop) stays, even when its tone matches the erased ink.
+        var image = new BufferedImage(360, 220, BufferedImage.TYPE_INT_ARGB);
+        for (int y = 0; y < 220; y++) for (int x = 0; x < 360; x++) image.setRGB(x, y, 0xffffffff);
+        for (int x0 = 80; x0 < 260; x0 += 30) for (int y = 90; y < 130; y++)
+            for (int x = x0; x < x0 + 8; x++) image.setRGB(x, y, 0xff000000);
+        for (int y = 100; y < 120; y++) for (int x = 280; x < 340; x++) image.setRGB(x, y, 0xff000000);
+        var polygon = CleanBoxPainterTest.rectangle(60 / 360.0, 70 / 220.0, 300 / 360.0, 150 / 220.0);
+        painter.paint(image, request("pt-BR", "Oi", polygon, "letters"));
+        for (int y = 100; y < 120; y++) for (int x = 300; x < 340; x++)
+            assertThat(image.getRGB(x, y)).as("art at %d,%d", x, y).isEqualTo(0xff000000);
+    }
+
+    @Test
     void aSymbolMissingFromTheTextFaceComesFromAnotherBundledFaceButLettersNeverDo() {
         assertThat(FONTS.canDisplay("pt-BR", "Por Hiroshi ♥ ★ ♪ →")).isTrue();
         assertThat(FONTS.symbolFallback('♥', false)).isNotNull();

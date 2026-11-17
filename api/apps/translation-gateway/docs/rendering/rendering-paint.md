@@ -50,3 +50,21 @@ Duas regras da revisão do corpus de validação (`docs/rendering/visual-regress
 Limite conhecido: no papel pontilhado de impressão antiga (Planet Comics 73), a máscara ainda junta letras e
 pontos num bloco "arte", e o inpainting dentro do balão pode reconstruir a borda como mancha sob o texto. Uma
 verificação de mancha pós-inpainting foi testada e descartada: com o LaMa real ela desfazia traduções aceitáveis.
+
+## Letras que escapam da caixa (2026-11-17)
+
+A máscara do balão guarda como arte toda mancha de tinta que chega à borda da janela. Isso protege contornos e
+desenhos, mas também guarda a letra cujo traço sai da caixa do OCR: letreiramento a pincel (título coreano),
+uma cauda de letra, um "R" encostado. O resultado era meia palavra apagada ao lado da tradução.
+
+Depois do apagamento liso, `StrayLetters` procura as manchas que continuam lá e apaga as que parecem letra:
+
+- tamanho de glifo: cada lado com no máximo 1,5× o passo da letra de origem;
+- quase toda dentro do polígono: pelo menos 90%;
+- tom da tinta apagada: pelo menos 80% da distância média dela ao papel.
+
+A mancha é preenchida com a mediana de um anel de papel em volta dela, o que serve também para gradiente e papel
+envelhecido. Arte que cruza a caixa, maior que uma letra ou de outro tom (disco cinza, retícula) fica.
+
+No portão, o título coreano, o "ず" do Ubunchu! p04 e o "R" da Jungle 2 foram apagados por inteiro. Nenhuma outra
+página mudou.

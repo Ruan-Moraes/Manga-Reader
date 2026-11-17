@@ -21,7 +21,7 @@
     "regions" : [ {
       "overflow" : false,
       "font" : 48,
-      "residualInk" : 6042
+      "residualInk" : 0
     }, {
       "overflow" : false,
       "font" : 35,

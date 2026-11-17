@@ -83,7 +83,7 @@
       "residualInk" : 0
     }, {
       "overflow" : false,
-      "font" : 40,
+      "font" : 41,
       "residualInk" : 0
     }, {
       "overflow" : false,
@@ -131,8 +131,8 @@
       "residualInk" : 0
     }, {
       "overflow" : false,
-      "font" : 22,
-      "residualInk" : 2
+      "font" : 41,
+      "residualInk" : 0
     } ]
   }
 }

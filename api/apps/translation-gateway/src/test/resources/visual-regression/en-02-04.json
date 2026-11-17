@@ -183,7 +183,7 @@
     }, {
       "overflow" : false,
       "font" : 22,
-      "residualInk" : 5
+      "residualInk" : 0
     }, {
       "overflow" : true,
       "font" : 0,
