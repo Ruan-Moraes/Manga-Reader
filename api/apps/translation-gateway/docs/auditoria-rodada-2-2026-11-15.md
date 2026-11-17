@@ -286,3 +286,36 @@ Reproduzidos com uma página sintética neutra (es→pt-BR), sem material de ter
   - Resta: onde a letra saía do balão, a limpeza pinta com a cor do balão (ponto branco sobre a arte).
 - **Fragmentos soltos ("…bién?!")** — não reproduzido com texto limpo ("¿Eh?! ¿Yo también?!" → "Hã?! Eu também?!");
   depende de como o OCR parte o letreiro estilizado.
+
+### Arte perdida sob letreiro inclinado (cap. 1, p. 3) (2026-11-16, noite)
+
+O inpaint reconstruía uma área muito maior que o letreiro: "The Command Line Rocks!" (várias linhas diagonais) virava
+uma caixa alinhada aos eixos de 284×420 px — meio quadro de cabelo e linhas de velocidade reinventados como mancha
+cinza; "Inferior Product!" (polígono já inclinado) usava o retângulo envolvente e levava ombro e camisa.
+
+1. **Grupo inclinado** — linhas que compartilham a inclinação (±10°, ≥5°) viram o menor retângulo **rotacionado** que
+   as contém (ainda 4 vértices: contrato, manifesto e mobile iguais). O texto traduzido já segue a inclinação.
+2. **Inpaint pelo polígono** — a máscara nasce dos pixels dentro do polígono (+4 px), não do retângulo envolvente; o
+   preenchimento em retângulo do modo contorno também fica dentro do polígono crescido. A janela continua posicionada
+   pela caixa (modo isolado determinístico; a interface `Inpainter` ganhou o polígono).
+3. **Só os traços** — letreiro escuro **sem contorno claro** tem só os traços mascarados (+3 px): a arte entre as
+   letras fica. Experimento na bancada antes da regra (máscara do polígono inteiro × traços com raio 2 e 4): traços
+   claramente melhor. Letreiro contornado (título da capa) e letra clara sobre fundo escuro seguem no modo contorno.
+   A fração de escuro no polígono não serve de gatilho (0,22 no "Command Line" = 0,22 nos créditos da capa).
+- Bancada LaMa real (18 páginas): cap. 1 p. 3, "Será?" (p. 11), ja-01-03 e ja-01-07 sem borrões; demais iguais;
+  "MINHA MOTIVAÇÃO…" (cap. 2 p. 3) sai maior. Execução real: p. 3 sem a mancha, Masato intacto; capa do cap. 3 limpa.
+- Resta: linhas de velocidade finas e um pouco do cabelo no topo do "Command Line" ainda se perdem (traços da arte
+  tocados pelas letras entram na máscara).
+- **Correção: o rosto da Akane se perdia** — "The Command Line" (em cima) e "Rocks!" (embaixo) formam um arco em volta
+  do rosto; juntos, o retângulo inclinado do grupo era 37% texto e passava por cima do rosto, e o modo "só os traços"
+  mascarava olhos e boca (todo traço escuro dentro do polígono). Agora:
+  - linhas inclinadas só se juntam enquanto o retângulo do grupo for ≥ 55% texto (falas empilhadas ficam ~80%); a
+    linha que faria o grupo engolir arte abre região própria;
+  - no modo traços, só entram traços escuros que estão majoritariamente **dentro** do polígono (componentes seguidos
+    na janela inteira do modelo); traço da arte que passa por ele e continua fora (contorno do rosto, cabelo) fica;
+  - um pedaço curto de letreiro (não visto como texto pelo detector), vizinho na ordem de leitura de um letreiro e
+    com letras do mesmo tamanho (até 1,6×), também é letreiro ("Rocks!" depois de "The Command Line") e é traduzido,
+    em vez de ficar como efeito desenhado.
+  - Execução real: rosto intacto; "A linha de comando" (inclinado, 42 px) e "É demais!". Restam: "É demais!" sai
+    pequeno (16 px); fragmentos de "Line" encostados no cabelo ficam (a proteção da arte os exclui); a reticência
+    "…", que o OCR não leu, fica.

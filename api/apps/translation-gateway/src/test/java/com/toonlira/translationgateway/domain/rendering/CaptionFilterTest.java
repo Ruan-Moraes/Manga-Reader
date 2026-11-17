@@ -112,6 +112,41 @@ class CaptionFilterTest {
         assertThat(CaptionFilter.captions(request, EN, java.util.Map.of(id, "unknown"))).isEmpty();
     }
 
+    @Test
+    void aShortPieceOfALetteringDrawnInPartsIsLetteringWithIt() {
+        // "The Command Line" (a sentence) then "Rocks!" (one word), both unseen as text, lettered at one size.
+        var job = java.util.UUID.randomUUID();
+        var first = java.util.UUID.randomUUID();
+        var second = java.util.UUID.randomUUID();
+        var far = java.util.UUID.randomUUID();
+        var pair = new com.toonlira.translationgateway.domain.translation.LanguagePair("en", "pt-BR");
+        java.util.function.Function<double[], java.util.List<com.toonlira.translationgateway.domain.OcrManifest.Vertex>> box = b ->
+            java.util.List.of(new com.toonlira.translationgateway.domain.OcrManifest.Vertex(b[0], b[1]),
+                new com.toonlira.translationgateway.domain.OcrManifest.Vertex(b[2], b[1]),
+                new com.toonlira.translationgateway.domain.OcrManifest.Vertex(b[2], b[3]),
+                new com.toonlira.translationgateway.domain.OcrManifest.Vertex(b[0], b[3]));
+        var ocr = new com.toonlira.translationgateway.domain.OcrManifest("1.0", job, "en", 1000, 1000, java.util.List.of(
+            new com.toonlira.translationgateway.domain.OcrManifest.Region(first, 0, "The Command Line", box.apply(new double[]{.40, .05, .65, .15})),
+            new com.toonlira.translationgateway.domain.OcrManifest.Region(second, 1, "Rocks!", box.apply(new double[]{.37, .33, .48, .40})),
+            new com.toonlira.translationgateway.domain.OcrManifest.Region(far, 2, "BEEP", box.apply(new double[]{.80, .80, .81, .805}))));
+        var input = new com.toonlira.translationgateway.domain.translation.TranslationRequest(job, pair, java.util.List.of(
+            new com.toonlira.translationgateway.domain.translation.TranslationRequest.Region(first, 0, "The Command Line"),
+            new com.toonlira.translationgateway.domain.translation.TranslationRequest.Region(second, 1, "Rocks!"),
+            new com.toonlira.translationgateway.domain.translation.TranslationRequest.Region(far, 2, "BEEP")));
+        var translation = new com.toonlira.translationgateway.domain.translation.TranslationValidator(Set.of(pair)).validateResponse(input,
+            new com.toonlira.translationgateway.domain.translation.TranslationResponse(java.util.List.of(
+                new com.toonlira.translationgateway.domain.translation.TranslationResponse.Region(first, "A linha de comando"),
+                new com.toonlira.translationgateway.domain.translation.TranslationResponse.Region(second, "É demais!"),
+                new com.toonlira.translationgateway.domain.translation.TranslationResponse.Region(far, "BIP"))));
+        var request = RenderRequest.create(new RenderSource("image/png", 1000, 1000, 1000, "a".repeat(64)), ocr, translation,
+            "b".repeat(64), "c".repeat(64), RenderPolicy.initial());
+        var kinds = java.util.Map.of(first, "unknown", second, "unknown", far, "unknown");
+        var words = new Lexicon(Set.of("the", "command", "line", "rocks", "beep"));
+        // The piece joins its lettering; a tiny sound effect far smaller than it does not.
+        assertThat(CaptionFilter.letterings(request, words, kinds)).containsExactlyInAnyOrder(first, second);
+        assertThat(CaptionFilter.drawn(request, words, kinds)).containsExactly(far);
+    }
+
     private static RenderRequest request(String source, String translated) { return request("en", source, translated); }
 
     private static RenderRequest request(String language, String source, String translated) {

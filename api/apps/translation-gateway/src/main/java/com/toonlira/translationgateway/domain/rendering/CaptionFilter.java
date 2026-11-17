@@ -58,8 +58,34 @@ public final class CaptionFilter {
             boolean sourceScript = !UNSPACED_SOURCES.contains(request.pair().source()) || unspaced(region.sourceText());
             if (shout && sourceScript && isLettering(region.sourceText(), region.translatedText(), lexicon)) result.add(region.id());
         }
+        // A lettering drawn in pieces (an arc around a face, read as separate lines) is one sentence: a short piece next
+        // to a lettering in reading order, unseen as text and lettered at its size, belongs to it ("Rocks!" after "The
+        // Command Line") and is retyped with it rather than kept as a drawn effect.
+        var ordered = request.regions().stream().sorted(java.util.Comparator.comparingInt(RenderRequest.Region::readingOrder)).toList();
+        boolean grew = true;
+        while (grew) {
+            grew = false;
+            for (int i = 0; i < ordered.size(); i++) {
+                var region = ordered.get(i);
+                if (result.contains(region.id()) || !"unknown".equals(kinds.get(region.id()))
+                    || UnchangedText.unchanged(region.sourceText(), region.translatedText())) continue;
+                double size = glyph(region, width, height);
+                for (int j : new int[]{i - 1, i + 1}) {
+                    if (j < 0 || j >= ordered.size() || !result.contains(ordered.get(j).id())) continue;
+                    double other = glyph(ordered.get(j), width, height);
+                    if (size > 0 && other > 0 && Math.max(size, other) <= PIECE_SIZE_RATIO * Math.min(size, other)) {
+                        result.add(region.id());
+                        grew = true;
+                        break;
+                    }
+                }
+            }
+        }
         return Set.copyOf(result);
     }
+
+    /** Pieces of one lettering are drawn at about one size. */
+    static final double PIECE_SIZE_RATIO = 1.6;
 
     /**
      * Drawn text that stays as drawn: regions the detector does not see as text ({@code unknown}) whose centre lies
