@@ -68,3 +68,22 @@ envelhecido. Arte que cruza a caixa, maior que uma letra ou de outro tom (disco 
 
 No portão, o título coreano, o "ず" do Ubunchu! p04 e o "R" da Jungle 2 foram apagados por inteiro. Nenhuma outra
 página mudou.
+
+## Título no tamanho do original (2026-11-17)
+
+Letreiramento grande (título, grito desenhado) é redesenhado com a fonte pesada até o tamanho da letra de
+origem (`sourcePitch`: raiz de área ÷ letras), acima do teto de 48 px que mantém os balões parelhos. Falas
+continuam com o teto. No portão, "WING TIPS" passou de 48 para 91 px e "The Command Line Rocks!" de 47 para 55.
+
+### Limite conhecido: texto de tela que atravessa quadros
+
+No Ubunchu! p06 o Vision lê numa linha só "ffmpe" (fim de um quadro) e "gnome-panel" (quadro seguinte), e o
+agrupamento junta as legendas de três telas desenhadas num bloco que é redesenhado por cima da arte.
+Duas tentativas foram medidas e descartadas:
+
+- **Guarda de calha no render** (borda, faixa lisa, borda dentro da caixa): também barra gritos desenhados de propósito
+  sobre a calha ("The Command Line Rocks!") e casos sintéticos com linhas retas.
+- **Agrupar por quadro** (`RegularPanelDetector` no agrupamento): o detector corta pelos espaços em branco, então
+  parte títulos sem moldura ("Pepper / & Carrot", "후추와 / 당근"). Além disso, não separou o bloco.
+
+Para resolver é preciso um detector de quadros que exija moldura, e não só espaço em branco.

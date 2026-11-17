@@ -824,6 +824,16 @@ class PageRasterPainterTest {
     }
 
     @Test
+    void aBigDrawnTitleIsRetypedAtItsOwnSizeNotCappedLikeSpeech() {
+        // Five letters drawn across most of the page: the translation keeps the weight of a title.
+        var polygon = CleanBoxPainterTest.rectangle(.05, .1, .95, .6);
+        var painter = new PageRasterPainter(FONTS, (image, box, quad) -> true);
+        var result = painter.paint(artwork(), request("pt-BR", "Asas", polygon, "WINGS").withLetteringHints(Set.of(REGION)));
+        assertThat(result.getFirst().overflow()).isFalse();
+        assertThat(result.getFirst().fontSizePx()).isGreaterThan(RenderPolicy.initial().maximumFontPx());
+    }
+
+    @Test
     void failedInpaintingKeepsTheOriginalLettering() {
         var polygon = CleanBoxPainterTest.rectangle(.3, .3, .7, .7);
         var failing = new PageRasterPainter(FONTS, (image, box, quad) -> false);

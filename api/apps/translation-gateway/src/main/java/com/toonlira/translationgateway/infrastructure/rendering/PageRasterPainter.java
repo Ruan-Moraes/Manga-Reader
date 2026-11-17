@@ -269,8 +269,10 @@ public final class PageRasterPainter {
         var bounds = region.polygon().bounds();
         var clip = new RasterPolygon.Bounds(bounds.left() - INPAINT_MARGIN, bounds.top() - INPAINT_MARGIN,
             bounds.right() + INPAINT_MARGIN, bounds.bottom() + INPAINT_MARGIN);
+        // A title or a big shout keeps its weight on the page: its size may go up to the source letters' own, past the
+        // ceiling that keeps speech balloons even.
         var upright = compose(region.region().translatedText(), request.pair().target(), box, request.policy(),
-            request.policy().maximumFontPx(), clip, false, true, minimumFor(region, request.policy()));
+            Math.max(request.policy().maximumFontPx(), sourcePitch(region)), clip, false, true, minimumFor(region, request.policy()));
         if (upright == null || tilt == 0) return upright;
         var rotate = AffineTransform.getRotateInstance(tilt, cx, cy);
         var lines = new ArrayList<GlyphLine>(upright.lines().size());
@@ -396,6 +398,14 @@ public final class PageRasterPainter {
     }
 
     static final double SOURCE_SIZE_SHARE = .75;
+
+    /** sqrt(box area / letters) of the region's source lettering, in pixels (0 without letters). */
+    static int sourcePitch(CleanBoxPainter.CleanRegion region) {
+        long letters = region.region().sourceText().codePoints().filter(Character::isLetterOrDigit).count();
+        if (letters == 0) return 0;
+        var bounds = region.polygon().bounds();
+        return (int) Math.floor(Math.sqrt((double) (bounds.right() - bounds.left()) * (bounds.bottom() - bounds.top()) / letters));
+    }
 
     /** The vertically centred share {@code fraction} of a box, full width; null when too thin to grow from. */
     private static RasterPolygon.Bounds band(RasterPolygon.Bounds box, double fraction) {
