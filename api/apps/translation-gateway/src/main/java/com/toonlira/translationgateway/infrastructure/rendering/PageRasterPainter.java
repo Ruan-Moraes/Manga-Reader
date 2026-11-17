@@ -149,8 +149,15 @@ public final class PageRasterPainter {
             if (!inpaint[i] || plans[i] == null) continue;
             CleanBoxPainter.checkInterrupted();
             var bounds = regions.get(i).polygon().bounds();
+            // The text's own corners: a slanted lettering's axis-aligned box is mostly art that must stay.
+            var vertices = regions.get(i).region().polygon();
+            var quad = new double[8];
+            for (int v = 0; v < 4; v++) {
+                quad[2 * v] = vertices.get(v).x() * image.getWidth();
+                quad[2 * v + 1] = vertices.get(v).y() * image.getHeight();
+            }
             if (!inpainter.inpaint(image, new int[]{bounds.left() - INPAINT_MARGIN, bounds.top() - INPAINT_MARGIN,
-                bounds.right() + INPAINT_MARGIN, bounds.bottom() + INPAINT_MARGIN})) plans[i] = null;
+                bounds.right() + INPAINT_MARGIN, bounds.bottom() + INPAINT_MARGIN}, quad)) plans[i] = null;
         }
         for (int i = 0; i < plans.length; i++) {
             CleanBoxPainter.checkInterrupted();

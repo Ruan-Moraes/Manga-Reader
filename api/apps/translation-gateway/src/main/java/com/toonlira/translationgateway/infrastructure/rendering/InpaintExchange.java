@@ -47,12 +47,12 @@ final class InpaintExchange {
     static final class Recorder implements Inpainter {
         private final List<InpaintWindow> windows = new ArrayList<>();
 
-        @Override public boolean inpaint(BufferedImage image, int[] box) {
+        @Override public boolean inpaint(BufferedImage image, int[] box, double[] quad) {
             int pieces = InpaintWindow.pieces(image, box);
             if (windows.size() + pieces > MAX_WINDOWS) return false;
             var prepared = new ArrayList<InpaintWindow>(pieces);
             for (int piece = 0; piece < pieces; piece++) {
-                var window = InpaintWindow.prepare(image, box, piece);
+                var window = InpaintWindow.prepare(image, image, box, piece, quad);
                 if (window == null) return false;   // all pieces or none: the replay asks for the same ones
                 prepared.add(window);
             }
@@ -75,7 +75,7 @@ final class InpaintExchange {
             this.patches = patches;
         }
 
-        @Override public boolean inpaint(BufferedImage image, int[] box) {
+        @Override public boolean inpaint(BufferedImage image, int[] box, double[] quad) {
             int pieces = InpaintWindow.pieces(image, box);
             if (next + pieces > windows.size()) return false;
             int first = next;
@@ -84,7 +84,7 @@ final class InpaintExchange {
             // all are prepared on the page as it was, the source of the lettering's shape, as in the first pass.
             var prepared = new ArrayList<InpaintWindow>(pieces);
             for (int piece = 0; piece < pieces; piece++) {
-                var window = InpaintWindow.prepare(image, box, piece);
+                var window = InpaintWindow.prepare(image, image, box, piece, quad);
                 if (window == null || !window.sameGeometry(windows.get(first + piece)) || patches.get(first + piece) == null) return false;
                 prepared.add(window);
             }

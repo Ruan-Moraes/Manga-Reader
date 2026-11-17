@@ -433,7 +433,7 @@ class PageRasterPainterTest {
     void speechOverArtworkIsInpaintedAndRetypedWithAnOutlineOnlyWhenHinted() {
         var polygon = CleanBoxPainterTest.rectangle(.3, .3, .7, .7); // x 108..252, y 66..154
         var calls = new java.util.ArrayList<int[]>();
-        Inpainter white = (image, box) -> {
+        Inpainter white = (image, box, quad) -> {
             calls.add(box);
             for (int y = Math.max(0, box[1]); y < Math.min(HEIGHT, box[3]); y++)
                 for (int x = Math.max(0, box[0]); x < Math.min(WIDTH, box[2]); x++) image.setRGB(x, y, 0xffffffff);
@@ -468,7 +468,7 @@ class PageRasterPainterTest {
     void textInAScreentoneBalloonIsInpaintedInsteadOfLeavingAFlatPatch() {
         var polygon = CleanBoxPainterTest.rectangle(135 / 360.0, 75 / 220.0, 225 / 360.0, 145 / 220.0);
         var calls = new java.util.ArrayList<int[]>();
-        Inpainter recorder = (image, box) -> { calls.add(box); return true; };
+        Inpainter recorder = (image, box, quad) -> { calls.add(box); return true; };
         var tone = screentoneBalloon(true);
         var original = copy(tone);
         var result = new PageRasterPainter(FONTS, recorder).paint(tone, request("pt-BR", "Obrigado por tudo", polygon));
@@ -508,7 +508,7 @@ class PageRasterPainterTest {
             for (int y = 80; y < 140; y++) for (int x = 70 + bar * 22; x < 78 + bar * 22; x++) image.setRGB(x, y, 0xff000000);
         var polygon = CleanBoxPainterTest.rectangle(65 / 360.0, 75 / 220.0, 295 / 360.0, 145 / 220.0);
         var calls = new java.util.ArrayList<int[]>();
-        Inpainter recorder = (raster, box) -> { calls.add(box); return true; };
+        Inpainter recorder = (raster, box, quad) -> { calls.add(box); return true; };
         var result = new PageRasterPainter(FONTS, recorder).paint(image,
             request("pt-BR", "Esta HQ é apresentada no formato original", polygon).withLetteringHints(Set.of(REGION)));
         assertThat(result.getFirst().overflow()).isFalse();
@@ -751,7 +751,7 @@ class PageRasterPainterTest {
     @Test
     void failedInpaintingKeepsTheOriginalLettering() {
         var polygon = CleanBoxPainterTest.rectangle(.3, .3, .7, .7);
-        var failing = new PageRasterPainter(FONTS, (image, box) -> false);
+        var failing = new PageRasterPainter(FONTS, (image, box, quad) -> false);
         var art = artwork();
         var result = failing.paint(art, request("pt-BR", "Obrigado por tudo", polygon).withCaptionHints(Set.of(REGION)));
         assertThat(result.getFirst().overflow()).isTrue();

@@ -61,15 +61,20 @@ record InpaintWindow(int wx, int wy, int side, int left, int top, int right, int
      * Window {@code piece} of {@link #pieces}: centred on that part of the lettering, masking all of the lettering it
      * holds (a neighbour piece left visible is read as letters to complete), and writing back that part only.
      */
-    static InpaintWindow prepare(BufferedImage image, int[] box, int piece) { return prepare(image, image, box, piece); }
+    static InpaintWindow prepare(BufferedImage image, int[] box, int piece) { return prepare(image, image, box, piece, null); }
+
+    static InpaintWindow prepare(BufferedImage original, BufferedImage pixels, int[] box, int piece) {
+        return prepare(original, pixels, box, piece, null);
+    }
 
     /**
      * {@code original}: the page before any piece was written, the only source of the lettering's shape (once the
      * first pieces are clean, the outline colour of what is left differs and the rest of the outline would be
      * missed); {@code pixels}: the page the model sees, with the pieces already rebuilt.
      */
-    static InpaintWindow prepare(BufferedImage original, BufferedImage pixels, int[] box, int piece) {
+    static InpaintWindow prepare(BufferedImage original, BufferedImage pixels, int[] box, int piece, double[] quad) {
         var image = original;
+        if (quad != null && quad.length != 8) return null;
         int boxLeft = Math.max(0, box[0]), boxTop = Math.max(0, box[1]);
         int boxRight = Math.min(image.getWidth(), box[2]), boxBottom = Math.min(image.getHeight(), box[3]);
         if (boxRight <= boxLeft || boxBottom <= boxTop) return null;
@@ -89,9 +94,26 @@ record InpaintWindow(int wx, int wy, int side, int left, int top, int right, int
         if (paste[2] - paste[0] > side || paste[3] - paste[1] > side) return null;
         int wx = Math.clamp((paste[0] + paste[2]) / 2 - side / 2, 0, image.getWidth() - side);
         int wy = Math.clamp((paste[1] + paste[3]) / 2 - side / 2, 0, image.getHeight() - side);
-        var shape = shape(image, left, top, right, bottom, boxLeft, boxTop, boxRight, boxBottom);
+        var shape = shape(image, left, top, right, bottom, boxLeft, boxTop, boxRight, boxBottom, quad);
+        if (quad != null && strokesOnly(image, shape, left, top, right, bottom, boxLeft, boxTop, boxRight, boxBottom)) {
+            // Dark lettering without a light outline over art: only its strokes are rebuilt, and the art between the
+            // letters stays as drawn. A hole the size of the whole text area came back as grey smudge where hair
+            // and speed lines were.
+            int width = right - left, height = bottom - top;
+            var letters = letterStrokes(image, shape, left, top, width, height, wx, wy, side);
+            for (int i = 0; i < shape.length; i++) if (!letters[i]) shape[i] = 0;
+            dilate(shape, width, height, STROKE_MARGIN);
+            return finish(pixels, wx, wy, side, left, top, right, bottom, shape, paste);
+        }
         dilate(shape, right - left, bottom - top, Math.max(1, grow / EDGE_SHARE));
-        fillToRectangle(shape, right - left, bottom - top, boxLeft - left, boxTop - top, boxRight - left, boxBottom - top);
+        fillToRectangle(shape, right - left, bottom - top, boxLeft - left, boxTop - top, boxRight - left, boxBottom - top,
+            quad, left, top);
+        return finish(pixels, wx, wy, side, left, top, right, bottom, shape, paste);
+    }
+
+    /** The model's input: the window scaled to {@link #SIZE}, and the mask sampled from {@code shape}. */
+    private static InpaintWindow finish(BufferedImage pixels, int wx, int wy, int side, int left, int top, int right,
+                                        int bottom, byte[] shape, int[] paste) {
         var input = resize(pixels.getSubimage(wx, wy, side, side), SIZE);
         var rgb = new byte[RGB_BYTES];
         var mask = new byte[MASK_BYTES];
@@ -166,6 +188,78 @@ record InpaintWindow(int wx, int wy, int side, int left, int top, int right, int
         return bands.get(bands.size() / 2);
     }
 
+    /** Least share of a dark stroke inside the text area for it to be lettering rather than the art behind it. */
+    static final double MIN_LETTER_INSIDE = .5;
+
+    /**
+     * Dark strokes of the lettering: 8-connected dark components of the window that lie mostly inside the text area
+     * ({@code shape}). A stroke of the art that only passes through it — a face's outline, hair running off beyond the
+     * text — lies mostly outside and is never rebuilt: under a lettering drawn in an arc around a face, that face
+     * would otherwise be erased.
+     */
+    static boolean[] letterStrokes(BufferedImage image, byte[] shape, int left, int top, int width, int height,
+                                   int wx, int wy, int side) {
+        // Components are followed over the model's whole window: cut at the text area's edge, a long art stroke would
+        // look as if it lay mostly inside.
+        var dark = new boolean[side * side];
+        for (int i = 0; i < dark.length; i++) dark[i] = luma(image.getRGB(wx + i % side, wy + i / side)) < INK_LUMA;
+        var letters = new boolean[width * height];
+        var seen = new boolean[dark.length];
+        var queue = new int[dark.length];
+        for (int start = 0; start < dark.length; start++) {
+            if (!dark[start] || seen[start]) continue;
+            int head = 0, tail = 0, inside = 0;
+            seen[start] = true; queue[tail++] = start;
+            while (head < tail) {
+                int i = queue[head++], x = i % side, y = i / side;
+                int sx = wx + x - left, sy = wy + y - top;
+                if (sx >= 0 && sy >= 0 && sx < width && sy < height && shape[sy * width + sx] != 0) inside++;
+                for (int dy = -1; dy <= 1; dy++) for (int dx = -1; dx <= 1; dx++) {
+                    int nx = x + dx, ny = y + dy;
+                    if (nx < 0 || ny < 0 || nx >= side || ny >= side) continue;
+                    int n = ny * side + nx;
+                    if (dark[n] && !seen[n]) { seen[n] = true; queue[tail++] = n; }
+                }
+            }
+            if (inside > 0 && inside >= MIN_LETTER_INSIDE * tail) for (int k = 0; k < tail; k++) {
+                int i = queue[k], sx = wx + i % side - left, sy = wy + i / side - top;
+                if (sx >= 0 && sy >= 0 && sx < width && sy < height && shape[sy * width + sx] != 0) letters[sy * width + sx] = true;
+            }
+            if ((start & 0xffff) == 0) CleanBoxPainter.checkInterrupted();
+        }
+        return letters;
+    }
+
+    /** Room around each dark stroke rebuilt with it: its antialiasing and JPEG ringing. */
+    static final int STROKE_MARGIN = 3;
+    /** Least share of dark pixels in the text area for its lettering to be dark strokes. */
+    static final double MIN_STROKE_SHARE = .05;
+
+    /**
+     * Whether the lettering is dark strokes with no light outline: then only the strokes are masked. An outlined
+     * lettering (light rim, or light letters on dark art, both found as an outline colour) keeps the area mask: its
+     * rim left visible is redrawn as ghost letters.
+     */
+    private static boolean strokesOnly(BufferedImage image, byte[] shape, int left, int top, int right, int bottom,
+                                       int boxLeft, int boxTop, int boxRight, int boxBottom) {
+        if (outlineOf(image, left, top, right, bottom, boxLeft, boxTop, boxRight, boxBottom) != 0) return false;
+        int width = right - left, area = 0, dark = 0;
+        for (int i = 0; i < shape.length; i++) {
+            if (shape[i] == 0) continue;
+            area++;
+            if (luma(image.getRGB(left + i % width, top + i / width)) < INK_LUMA) dark++;
+        }
+        return area > 0 && dark >= MIN_STROKE_SHARE * area;
+    }
+
+    /** The lettering's outline colour, or 0 when it has none (see {@link #shape}). */
+    private static int outlineOf(BufferedImage image, int left, int top, int right, int bottom,
+                                 int boxLeft, int boxTop, int boxRight, int boxBottom) {
+        int outline = outlineColour(image, boxLeft, boxTop, boxRight, boxBottom);
+        int around = bandColour(image, left, top, right, bottom, boxLeft, boxTop, boxRight, boxBottom);
+        return outline != 0 && CleanBoxPainter.distance(around, outline) <= OUTLINE_CORE ? 0 : outline;
+    }
+
     /** The outline's antialiased edge (blending into dark art) as a share of the grow room: 1/4. */
     static final int EDGE_SHARE = 4;
 
@@ -201,14 +295,19 @@ record InpaintWindow(int wx, int wy, int side, int left, int top, int right, int
      * patch of the art the outline happens to touch at a few places does not stretch it over that art. The pixels
      * added are written back only where the model really changed them.
      */
-    private static void fillToRectangle(byte[] shape, int width, int height, int boxLeft, int boxTop, int boxRight, int boxBottom) {
+    private static void fillToRectangle(byte[] shape, int width, int height, int boxLeft, int boxTop, int boxRight, int boxBottom,
+                                        double[] quad, int originX, int originY) {
         int up = medianReach(shape, width, height, boxLeft, boxRight, boxTop - 1, -1, true);
         int down = medianReach(shape, width, height, boxLeft, boxRight, boxBottom, 1, true);
         int before = medianReach(shape, width, height, boxTop, boxBottom, boxLeft - 1, -1, false);
         int after = medianReach(shape, width, height, boxTop, boxBottom, boxRight, 1, false);
         int l = Math.max(0, boxLeft - before), r = Math.min(width, boxRight + after);
         int t = Math.max(0, boxTop - up), b = Math.min(height, boxBottom + down);
-        for (int y = t; y < b; y++) for (int x = l; x < r; x++) if (shape[y * width + x] == 0) shape[y * width + x] = IN_SHAPE;
+        // A slanted text fills its own quad grown by the same reach, not the axis-aligned rectangle around it.
+        int grow = Math.max(Math.max(up, down), Math.max(before, after));
+        for (int y = t; y < b; y++) for (int x = l; x < r; x++)
+            if (shape[y * width + x] == 0 && (quad == null || insideQuad(quad, originX + x + .5, originY + y + .5, grow + SEED_MARGIN)))
+                shape[y * width + x] = IN_SHAPE;
     }
 
     /**
@@ -241,23 +340,50 @@ record InpaintWindow(int wx, int wy, int side, int left, int top, int right, int
         return false;
     }
 
+    /** Room around the quad's edges taken with it: the lettering's antialiasing and stray ink at its border. */
+    static final int SEED_MARGIN = 4;
+
+    /** Whether (x, y) lies in the convex {@code quad} grown by {@code grow} px. */
+    static boolean insideQuad(double[] quad, double x, double y, double grow) {
+        double area = 0;
+        for (int i = 0; i < 4; i++) {
+            int j = (i + 1) % 4;
+            area += quad[2 * i] * quad[2 * j + 1] - quad[2 * j] * quad[2 * i + 1];
+        }
+        double sign = Math.signum(area);
+        if (sign == 0) return false;
+        for (int i = 0; i < 4; i++) {
+            int j = (i + 1) % 4;
+            double ex = quad[2 * j] - quad[2 * i], ey = quad[2 * j + 1] - quad[2 * i + 1], length = Math.hypot(ex, ey);
+            if (length == 0) continue;
+            double distance = sign * (ex * (y - quad[2 * i + 1]) - ey * (x - quad[2 * i])) / length;
+            if (distance < -grow) return false;
+        }
+        return true;
+    }
+
     /** The box, grown through pixels of the outline colour connected to it (see {@link #prepare}). */
     static byte[] shape(BufferedImage image, int left, int top, int right, int bottom,
                            int boxLeft, int boxTop, int boxRight, int boxBottom) {
+        return shape(image, left, top, right, bottom, boxLeft, boxTop, boxRight, boxBottom, null);
+    }
+
+    /** {@code quad}: only box pixels inside it (grown by {@link #SEED_MARGIN}) seed the shape; null for the whole box. */
+    static byte[] shape(BufferedImage image, int left, int top, int right, int bottom,
+                           int boxLeft, int boxTop, int boxRight, int boxBottom, double[] quad) {
         int width = right - left, height = bottom - top;
         var shape = new byte[width * height];
         var queue = new int[width * height];
         int tail = 0;
-        int outline = outlineColour(image, boxLeft, boxTop, boxRight, boxBottom);
         // An outline only stands out from a background of another colour (a white glow on a tinted cover). Where the
         // surroundings are that same colour (dark letters on white paper) there is no outline to follow: the light
         // pixels are the paper, and the mask stays the box.
-        int around = bandColour(image, left, top, right, bottom, boxLeft, boxTop, boxRight, boxBottom);
-        if (outline != 0 && CleanBoxPainter.distance(around, outline) <= OUTLINE_CORE) outline = 0;
+        int outline = outlineOf(image, left, top, right, bottom, boxLeft, boxTop, boxRight, boxBottom);
         for (int y = boxTop; y < boxBottom; y++) for (int x = boxLeft; x < boxRight; x++) {
+            if (quad != null && !insideQuad(quad, x + .5, y + .5, SEED_MARGIN)) continue;
             int i = (y - top) * width + x - left;
             shape[i] = core(image.getRGB(x, y), outline) ? OUTLINE : IN_SHAPE;
-            if (x == boxLeft || y == boxTop || x == boxRight - 1 || y == boxBottom - 1) queue[tail++] = i;
+            queue[tail++] = i;
         }
         if (outline == 0) return shape;
         int reach = outlineThickness(image, boxLeft, boxTop, boxRight, boxBottom, outline);

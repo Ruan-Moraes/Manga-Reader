@@ -93,4 +93,39 @@ class InpaintWindowTest {
         assertThat(InpaintWindow.prepare(image, painted, box, 1).sameGeometry(second)).isTrue();
         assertThat(InpaintWindow.prepare(image, painted, box, 1).mask()).isEqualTo(second.mask());
     }
+
+    @Test
+    void darkLetteringOverArtMasksOnlyItsStrokesSoTheArtBetweenTheLettersStays() {
+        // Grey hatched art; black letter strokes across it inside a slanted quad.
+        var image = new BufferedImage(800, 600, BufferedImage.TYPE_INT_RGB);
+        for (int y = 0; y < 600; y++) for (int x = 0; x < 800; x++) image.setRGB(x, y, (x + y) % 9 < 2 ? 0x8a8a8a : 0xf4f4f4);
+        for (int x0 = 300; x0 < 500; x0 += 30) for (int y = 280; y < 320; y++) for (int dx = 0; dx < 8; dx++) image.setRGB(x0 + dx, y, 0x101010);
+        double[] quad = {290, 270, 510, 270, 510, 330, 290, 330};
+        var window = InpaintWindow.prepare(image, image, new int[]{286, 266, 514, 334}, 0, quad);
+        int width = window.right() - window.left();
+        var shape = window.shape();
+        assertThat(shape[(300 - window.top()) * width + 303 - window.left()]).as("letter stroke").isNotZero();
+        assertThat(shape[(300 - window.top()) * width + 320 - window.left()]).as("art between letters").isZero();
+        // Without the quad (or with an outlined lettering) the whole area is rebuilt, as before.
+        var whole = InpaintWindow.prepare(image, image, new int[]{286, 266, 514, 334}, 0, null);
+        int wholeWidth = whole.right() - whole.left();
+        assertThat(whole.shape()[(300 - whole.top()) * wholeWidth + 320 - whole.left()]).isNotZero();
+    }
+
+    @Test
+    void aStrokeOfTheArtPassingThroughTheTextAreaIsNotRebuilt() {
+        // Pale paper; letters inside the quad; a long dark line (a face's outline) crossing the quad and running far out.
+        var image = new BufferedImage(800, 600, BufferedImage.TYPE_INT_RGB);
+        for (int y = 0; y < 600; y++) for (int x = 0; x < 800; x++) image.setRGB(x, y, 0xf4f4f4);
+        for (int x0 = 300; x0 < 500; x0 += 30) for (int y = 285; y < 315; y++) for (int dx = 0; dx < 8; dx++) image.setRGB(x0 + dx, y, 0x101010);
+        // The art line crosses the text area above the letters without touching them, and runs far beyond it.
+        for (int x = 150; x < 650; x++) for (int t = 0; t < 4; t++) image.setRGB(x, 273 + t + (x - 150) / 60, 0x101010);
+        double[] quad = {290, 270, 510, 270, 510, 330, 290, 330};
+        var window = InpaintWindow.prepare(image, image, new int[]{286, 266, 514, 334}, 0, quad);
+        int width = window.right() - window.left();
+        var shape = window.shape();
+        assertThat(shape[(300 - window.top()) * width + 303 - window.left()]).as("letter").isNotZero();
+        int lineY = 274 + (420 - 150) / 60;
+        assertThat(shape[(lineY - window.top()) * width + 420 - window.left()]).as("art line through the text").isZero();
+    }
 }

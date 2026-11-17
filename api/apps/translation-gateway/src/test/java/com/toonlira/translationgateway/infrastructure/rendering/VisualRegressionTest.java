@@ -118,7 +118,7 @@ class VisualRegressionTest {
         var image = art();
         var texts = List.of(new RegionChecks.Text("Thank you for everything", "Obrigado por tudo", polygon(180, 120, 420, 280)));
         var request = RegionChecks.request(image, "en", texts).withCaptionHints(Set.of(new UUID(0, 1)));
-        Inpainter white = (raster, area) -> {
+        Inpainter white = (raster, area, quad) -> {
             for (int y = Math.max(0, area[1]); y < Math.min(H, area[3]); y++)
                 for (int x = Math.max(0, area[0]); x < Math.min(W, area[2]); x++) raster.setRGB(x, y, 0xffffffff);
             return true;
@@ -131,7 +131,7 @@ class VisualRegressionTest {
     private static Scene soundEffectOverArtwork() {
         var image = art();
         var texts = List.of(new RegionChecks.Text("clatter clatter", "clac clac", polygon(180, 120, 420, 280)));
-        return new Scene("SFX sobre a arte", image, RegionChecks.request(image, "en", texts), (raster, area) -> true,
+        return new Scene("SFX sobre a arte", image, RegionChecks.request(image, "en", texts), (raster, area, quad) -> true,
             List.of(), List.of(new Expect(0, true, 0, true)));
     }
 
@@ -145,7 +145,7 @@ class VisualRegressionTest {
         }
         RegionChecks.bars(image, 225, 150, 375, 250);
         var texts = List.of(new RegionChecks.Text("Thank you for everything", "Obrigado por tudo", polygon(215, 135, 385, 265)));
-        Inpainter erase = (raster, area) -> {
+        Inpainter erase = (raster, area, quad) -> {
             for (int y = Math.max(0, area[1]); y < Math.min(H, area[3]); y++)
                 for (int x = Math.max(0, area[0]); x < Math.min(W, area[2]); x++) raster.setRGB(x, y, 0xffffffff);
             return true;
@@ -165,7 +165,7 @@ class VisualRegressionTest {
         }
         var texts = List.of(new RegionChecks.Text("ターミナルがあれば全てが上手くいく", "Com um terminal, tudo dá certo!", corners));
         var request = RegionChecks.request(image, "ja", texts).withLetteringHints(Set.of(new UUID(0, 1)));
-        Inpainter erase = (raster, area) -> {
+        Inpainter erase = (raster, area, quad) -> {
             for (int y = Math.max(0, area[1]); y < Math.min(H, area[3]); y++)
                 for (int x = Math.max(0, area[0]); x < Math.min(W, area[2]); x++) raster.setRGB(x, y, 0xffffffff);
             return true;

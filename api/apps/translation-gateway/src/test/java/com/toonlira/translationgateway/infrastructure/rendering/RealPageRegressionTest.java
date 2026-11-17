@@ -71,7 +71,7 @@ class RealPageRegressionTest {
             .withLetteringHints(CaptionFilter.letterings(request, lexicon, kinds))
             .withDrawnHints(CaptionFilter.drawn(request, lexicon, kinds));
         // Deterministic stand-in for LaMa: white box (the real model is not part of the regression).
-        Inpainter white = (raster, box) -> {
+        Inpainter white = (raster, box, quad) -> {
             for (int y = Math.max(0, box[1]); y < Math.min(h, box[3]); y++)
                 for (int x = Math.max(0, box[0]); x < Math.min(w, box[2]); x++) raster.setRGB(x, y, 0xffffffff);
             return true;

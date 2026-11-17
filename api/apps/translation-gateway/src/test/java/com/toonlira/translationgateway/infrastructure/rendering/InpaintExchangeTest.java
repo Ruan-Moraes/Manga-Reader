@@ -32,8 +32,8 @@ class InpaintExchangeTest {
             .withCaptionHints(Set.of(new UUID(0, 1)));
         // In process: window, model and write-back in one painter.
         var direct = art();
-        Inpainter local = (image, box) -> {
-            var window = InpaintWindow.prepare(image, box);
+        Inpainter local = (image, box, quad) -> {
+            var window = InpaintWindow.prepare(image, image, box, 0, quad);
             if (window == null) return false;
             window.apply(image, GREY.run(window.rgb(), window.mask()));
             return true;
