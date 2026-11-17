@@ -63,7 +63,7 @@ index.html                          galeria original × traduzido (abre pelo dev
 
 Tela **📖 Resultados** (botão no painel, ou `http://<host>:5175/#/resultados`): lista as obras/capítulos
 do lote mais recente (com seletor de lotes anteriores). Cada capítulo abre o leitor
-(`#/resultados/<lote>/<capítulo>`) com os botões **Original** e **Tradução**, que trocam todas as
+(`#/resultados/<lote>/<capítulo>`) com os botões **Original** e **Tradução** fixos no rodapé, que trocam todas as
 páginas no lugar — dá para alternar no mesmo ponto da página e procurar regressões. O dev server
 escuta em todas as interfaces (`vite --host`), então a tela abre no celular pela rede local ou Tailscale
 enquanto o tester estiver rodando nesta máquina.

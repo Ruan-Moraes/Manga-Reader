@@ -49,14 +49,11 @@ export default function ChapterViewer({ runId, chapterId }: Props) {
               </span>
             </p>
           )}
-          <div className="flex gap-2 mt-2">
-            {button('original', 'Original')}
-            {button('translated', 'Tradução')}
-          </div>
         </div>
       </div>
 
-      <div className="mx-auto max-w-3xl px-4 py-4">
+      {/* pb-28 keeps the last page clear of the fixed bottom bar. */}
+      <div className="mx-auto max-w-3xl px-4 pt-4 pb-28">
         {report.isLoading && <p className="text-slate-500">Carregando…</p>}
         {report.data && !chapter && <p className="text-red-600">Capítulo {chapterId} não está neste lote.</p>}
         {chapter && chapter.scenarios.length > 0 && (
@@ -106,6 +103,17 @@ export default function ChapterViewer({ runId, chapterId }: Props) {
           })}
         </div>
       </div>
+
+      {/* Fixed at the bottom so the view can be swapped anywhere in the chapter, under the thumb. */}
+      <nav
+        className="fixed inset-x-0 bottom-0 z-20 bg-slate-100/95 dark:bg-slate-900/95 backdrop-blur border-t border-slate-200 dark:border-slate-800"
+        style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
+      >
+        <div className="mx-auto max-w-3xl px-4 py-3 flex gap-2">
+          {button('original', 'Original')}
+          {button('translated', 'Tradução')}
+        </div>
+      </nav>
     </div>
   )
 }
