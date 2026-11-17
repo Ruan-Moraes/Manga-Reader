@@ -135,6 +135,12 @@ public final class PageRasterPainter {
             plans[i] = plan(regions.get(i), request, cap, inpaint[i], false, true);
             if (plans[i] == null) plans[i] = plan(regions.get(i), request, cap, inpaint[i], true, true);
         }
+        // Still nothing: tighter leading in the balloon grown as far as its flat paper goes, at the smaller minimum —
+        // a balloon the translation barely fits, which the face's own line height overflows by a few pixels.
+        for (int i = 0; i < plans.length; i++) {
+            if (plans[i] != null || preserved[i] || lettering[i] || inpaint[i]) continue;
+            plans[i] = compact(image, regions, i, plans, request, cap);
+        }
         for (int i = 0; i < plans.length; i++) if (lettering[i]) plans[i] = letteringPlans[i];
         // Halo sets are computed on the untouched raster, so no region erases text another one already drew.
         var halos = new ArrayList<List<Integer>>(plans.length);
@@ -318,6 +324,30 @@ public final class PageRasterPainter {
         return compose(text, target, whole, request.policy(), maximumFontPx, whole, false, false, minimum, syllables);
     }
 
+    /**
+     * Compact-leading plan in the region's detected balloon grown into flat paper, clear of the other regions' plans;
+     * outside any detected balloon, in its own box.
+     */
+    private Plan compact(BufferedImage image, List<CleanBoxPainter.CleanRegion> regions, int i, Plan[] plans,
+                         RenderRequest request, int cap) {
+        var region = regions.get(i);
+        var policy = request.policy();
+        var claimed = new ArrayList<RasterPolygon.Bounds>();
+        for (int j = 0; j < plans.length; j++) if (j != i && plans[j] != null) claimed.add(plans[j].clipBox());
+        var start = region.mask().fit(region.polygon().interiorBox(0));
+        var box = region.polygon().bounds();
+        int limit = Math.max(box.right() - box.left(), box.bottom() - box.top());
+        // Only a detected balloon bounds the room: free text on open paper keeps its own box.
+        var grown = region.limit() == null ? start : BalloonExpansion.expand(image, region, regions, claimed, start, limit);
+        var padded = new RasterPolygon.Bounds(grown.left() + policy.paddingPx(), grown.top() + policy.paddingPx(),
+            grown.right() - policy.paddingPx(), grown.bottom() - policy.paddingPx());
+        int minimum = minimumFor(region, policy, true);
+        var text = region.region().translatedText();
+        var target = request.pair().target();
+        var plan = compose(text, target, padded, policy, cap, grown, !grown.equals(start), false, minimum, false, true);
+        return plan != null ? plan : compose(text, target, padded, policy, cap, grown, !grown.equals(start), false, minimum, true, true);
+    }
+
     /** Median-relative ceiling so one balloon cannot be typeset several times larger than its neighbours. */
     private static int fontCap(Plan[] plans, RenderPolicy policy) {
         double median = median(plans);
@@ -398,6 +428,8 @@ public final class PageRasterPainter {
     }
 
     static final double SOURCE_SIZE_SHARE = .75;
+    /** Line spacing of the compact last resort: accents of one line clear the descenders of the line above. */
+    static final double COMPACT_LINE_SPACING = 1.18;
 
     /** sqrt(box area / letters) of the region's source lettering, in pixels (0 without letters). */
     static int sourcePitch(CleanBoxPainter.CleanRegion region) {
@@ -452,6 +484,16 @@ public final class PageRasterPainter {
      */
     private Plan compose(String text, String target, RasterPolygon.Bounds box, RenderPolicy policy, int maximumFontPx,
                          RasterPolygon.Bounds clipBox, boolean grown, boolean heavy, int minimumFontPx, boolean syllables) {
+        return compose(text, target, box, policy, maximumFontPx, clipBox, grown, heavy, minimumFontPx, syllables, false);
+    }
+
+    /**
+     * {@code compact}: lines set at {@link #COMPACT_LINE_SPACING} of the font size instead of the face's own line height
+     * (about 1.36), as a letterer tightens the leading of a balloon the text barely fits. Last resort only.
+     */
+    private Plan compose(String text, String target, RasterPolygon.Bounds box, RenderPolicy policy, int maximumFontPx,
+                         RasterPolygon.Bounds clipBox, boolean grown, boolean heavy, int minimumFontPx, boolean syllables,
+                         boolean compact) {
         if (!fonts.canDisplay(target, text) || unsupportedControl(text) || box.right() <= box.left() || box.bottom() <= box.top())
             return null;
         var hyphenator = Hyphenator.forLanguage(target);
@@ -461,7 +503,8 @@ public final class PageRasterPainter {
             CleanBoxPainter.checkInterrupted();
             var font = heavy ? fonts.letteringFontFor(target, size) : fonts.fontFor(target, size);
             var metrics = font.getLineMetrics("Ag", FONT_CONTEXT);
-            float lineHeight = (float) Math.ceil(metrics.getAscent() + metrics.getDescent() + metrics.getLeading());
+            float lineHeight = compact ? (float) Math.ceil(COMPACT_LINE_SPACING * size)
+                : (float) Math.ceil(metrics.getAscent() + metrics.getDescent() + metrics.getLeading());
             var lines = new ArrayList<TextLayout>();
             boolean fits = true;
             for (String paragraph : text.split("\\r\\n|\\r|\\n", -1)) {

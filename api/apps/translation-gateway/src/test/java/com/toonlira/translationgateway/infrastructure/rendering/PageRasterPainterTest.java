@@ -845,6 +845,26 @@ class PageRasterPainterTest {
     }
 
     @Test
+    void aTranslationThatOverflowsATightBalloonByItsLeadingIsSetWithTighterLines() {
+        // A boxed balloon 34 px tall inside: two lines at 12 px need 34 px with the face's own line height, plus the
+        // padding; with a letterer's tighter leading they fit.
+        var image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB);
+        for (int y = 0; y < HEIGHT; y++) for (int x = 0; x < WIDTH; x++) {
+            boolean border = x >= 96 && x < 264 && y >= 86 && y < 128 && (x < 100 || x >= 260 || y < 90 || y >= 124);
+            image.setRGB(x, y, border ? 0xff000000 : 0xffffffff);
+        }
+        for (int x0 = 108; x0 < 250; x0 += 10) for (int y = 100; y < 114; y++)
+            for (int x = x0; x < x0 + 3; x++) image.setRGB(x, y, 0xff000000);
+        var polygon = CleanBoxPainterTest.rectangle(104 / 360.0, 96 / 220.0, 256 / 360.0, 118 / 220.0);
+        var balloon = new com.toonlira.translationgateway.domain.layout.LayoutBox(90 / 360.0, 80 / 220.0, 270 / 360.0, 134 / 220.0);
+        var placement = new PageRasterPainter(FONTS).paint(image,
+            request("pt-BR", "Para trás, para trás! Afastem-se!", polygon, "BACK AWAY").withBubbles(List.of(balloon))).getFirst();
+        assertThat(placement.overflow()).isFalse();
+        assertThat(placement.fontSizePx()).isGreaterThanOrEqualTo(RenderPolicy.COMFORT_FONT_PX);
+        for (int x = 96; x < 264; x++) assertThat(image.getRGB(x, 87)).as("border at %d", x).isEqualTo(0xff000000);
+    }
+
+    @Test
     void aBigDrawnTitleIsRetypedAtItsOwnSizeNotCappedLikeSpeech() {
         // Five letters drawn across most of the page: the translation keeps the weight of a title.
         var polygon = CleanBoxPainterTest.rectangle(.05, .1, .95, .6);

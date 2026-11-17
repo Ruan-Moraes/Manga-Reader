@@ -113,3 +113,19 @@ onomatopeias. Os casos de encaixe restantes ficam para a etapa de tamanho de let
 
 - no balão oval minúsculo do zh p01, a tradução é longa demais;
 - nos balões justos da Fight 40, o entrelinha da fonte (≈1,36×) não deixa caber duas linhas a 12 px.
+
+## Entrelinha apertada como último recurso (2026-11-17)
+
+Quando nenhum caminho cabe (caixa própria, crescida, sílabas, letra menor), a fala dentro de um balão detectado
+é composta com entrelinha de 1,18× o tamanho da fonte, em vez da altura de linha da face (≈1,36×). A caixa
+cresce pelo papel liso do balão. É o que um letrista faz num balão justo. Texto fora de balão detectado fica na própria caixa.
+No portão passaram a caber:
+
+- "BACK-BACK! AWAY" (Fight 40);
+- "YOU'RE RIGHT CAMILLA" (Jungle 73);
+- "我回屋了。" (zh p01);
+- "SIGH" (Ubunchu! en p3);
+- o "The" de "The Beast".
+
+"DO AS I SAY!" (Fight 40) e "不如什么!" (zh p01) continuam com o original: a tradução é longa demais
+para o balão.
