@@ -705,6 +705,36 @@ class PageRasterPainterTest {
     }
 
     @Test
+    void aColouredLetterCrossingTheBalloonBorderIsLetteringButBlackTextTouchingBlackArtStaysArt() {
+        // A white balloon with a black border on dark art; gold letters stroked brown, the first one crossing the border.
+        var image = new BufferedImage(360, 220, BufferedImage.TYPE_INT_ARGB);
+        for (int y = 0; y < 220; y++) for (int x = 0; x < 360; x++) image.setRGB(x, y, 0xff28325a);
+        for (int y = 50; y < 170; y++) for (int x = 60; x < 300; x++) image.setRGB(x, y, 0xffffffff);
+        for (int y = 50; y < 170; y++) for (int t = 0; t < 3; t++) { image.setRGB(60 + t, y, 0xff101010); image.setRGB(297 + t, y, 0xff101010); }
+        for (int x = 60; x < 300; x++) for (int t = 0; t < 3; t++) { image.setRGB(x, 50 + t, 0xff101010); image.setRGB(x, 167 - t, 0xff101010); }
+        java.util.function.IntConsumer letter = x0 -> {
+            for (int y = 90; y < 130; y++) for (int x = x0; x < x0 + 20; x++) {
+                boolean stroke = y < 93 || y >= 127 || x < x0 + 3 || x >= x0 + 17;
+                image.setRGB(x, y, stroke ? 0xff462d0a : 0xffe8c446);
+            }
+        };
+        for (int x0 = 52; x0 < 280; x0 += 28) letter.accept(x0);   // the first one (52..72) overlaps the border at 60..63
+        // The OCR box covers every letter, so the black border runs through it where the first letter crosses it.
+        var polygon = CleanBoxPainterTest.rectangle(50 / 360.0, 85 / 220.0, 285 / 360.0, 135 / 220.0);
+        var mask = new CleanBoxPainter().prepare(image, request("pt-BR", "Bem-vindo", polygon, "Bienvenido")).getFirst().mask();
+        assertThat(mask.clean(68, 110)).as("letter crossing the border").isTrue();
+        assertThat(mask.clean(56, 110)).as("letter outside the balloon").isTrue();
+        assertThat(mask.clean(61, 88)).as("balloon border inside the box").isFalse();
+
+        // Black text touching black art: the colours are the art's, nothing is taken.
+        var plain = new BufferedImage(360, 220, BufferedImage.TYPE_INT_ARGB);
+        for (int y = 0; y < 220; y++) for (int x = 0; x < 360; x++) plain.setRGB(x, y, x < 60 || x >= 300 || y < 50 || y >= 170 ? 0xff101010 : 0xffffffff);
+        for (int x0 = 52; x0 < 280; x0 += 28) for (int y = 90; y < 130; y++) for (int x = x0; x < x0 + 20; x++) plain.setRGB(x, y, 0xff101010);
+        var plainMask = new CleanBoxPainter().prepare(plain, request("pt-BR", "Bem-vindo", polygon, "Bienvenido")).getFirst().mask();
+        assertThat(plainMask.clean(68, 110)).as("black stroke glued to black art").isFalse();
+    }
+
+    @Test
     void aSymbolMissingFromTheTextFaceComesFromAnotherBundledFaceButLettersNeverDo() {
         assertThat(FONTS.canDisplay("pt-BR", "Por Hiroshi ♥ ★ ♪ →")).isTrue();
         assertThat(FONTS.symbolFallback('♥', false)).isNotNull();

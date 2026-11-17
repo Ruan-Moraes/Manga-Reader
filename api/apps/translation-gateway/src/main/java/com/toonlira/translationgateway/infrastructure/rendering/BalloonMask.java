@@ -53,12 +53,14 @@ final class BalloonMask {
         var inside = new boolean[width * height];
         var ink = new boolean[width * height];
         var distances = new int[width * height];
+        var colours = new int[width * height];
         for (int y = 0; y < height; y++) {
             CleanBoxPainter.checkInterrupted();
             var span = polygon.span(top + y);
             for (int x = 0; x < width; x++) {
                 int i = y * width + x;
-                distances[i] = CleanBoxPainter.distance(image.getRGB(left + x, top + y), argb);
+                colours[i] = image.getRGB(left + x, top + y);
+                distances[i] = CleanBoxPainter.distance(colours[i], argb);
                 inside[i] = span != null && left + x >= span.start() && left + x < span.end();
                 ink[i] = distances[i] > CleanBoxPainter.INK_DISTANCE;
             }
@@ -76,6 +78,7 @@ final class BalloonMask {
         // Only text the mask already sees on a plain background (most of its ink enclosed) gets its outlined or glowing
         // edge letters completed; lettering drawn over the art (sound effects, labels) stays exactly as before.
         if (enclosedShare(state, inside, ink) >= MIN_ENCLOSED_FOR_DARK_GLYPHS) markDarkGlyphs(state, inside, ink, width, height);
+        markLetteringColours(state, inside, ink, colours, width, height);
         int inkInside = 0, enclosedInkInside = 0;
         for (int y = 0; y < height; y++) for (int x = 0; x < width; x++) {
             int i = y * width + x;
@@ -392,6 +395,72 @@ final class BalloonMask {
             CleanBoxPainter.checkInterrupted();
         }
         return dots;
+    }
+
+    /** Share of the recognised letters' ink a colour needs to be part of the lettering's palette. */
+    static final double LETTERING_COLOUR_SHARE = .03;
+    /** Share of the surrounding art's ink from which a colour belongs to the art (generous: art is what we keep). */
+    static final double ART_COLOUR_SHARE = .005;
+    /** Fewest recognised letter pixels to learn a palette from. */
+    static final int MIN_LETTERING_PIXELS = 200;
+    private static final int COLOUR_BIN = 16;
+
+    /**
+     * Letters tied to the art by contact (a word of the lettering crossing the balloon's border): ink inside the
+     * polygon that reaches the window edge, so the blob test sees it as art. When the region's recognised letters have
+     * colours of their own (a coloured fill, a stroke) that the art around never uses, such ink inside the polygon in
+     * those colours is lettering too. Black text touching black art shares the art's palette and stays as it is.
+     */
+    private static void markLetteringColours(byte[] state, boolean[] inside, boolean[] ink, int[] colours, int width, int height) {
+        var lettering = new java.util.HashMap<Integer, Integer>();
+        var art = new java.util.HashMap<Integer, Integer>();
+        int letters = 0, artPixels = 0;
+        for (int i = 0; i < state.length; i++) {
+            if (!ink[i]) continue;
+            if (inside[i] && (state[i] & GLYPH) != 0) { lettering.merge(bin(colours[i]), 1, Integer::sum); letters++; }
+            else if (!inside[i] && (state[i] & OUTSIDE) != 0) { art.merge(bin(colours[i]), 1, Integer::sum); artPixels++; }
+        }
+        // Both palettes must be known: without art around there is nothing the letters could be told apart from.
+        if (letters < MIN_LETTERING_PIXELS || artPixels < MIN_LETTERING_PIXELS) return;
+        var palette = new java.util.HashSet<Integer>();
+        for (var entry : lettering.entrySet()) if (entry.getValue() >= LETTERING_COLOUR_SHARE * letters) palette.add(entry.getKey());
+        var artPalette = new java.util.HashSet<Integer>();
+        for (var entry : art.entrySet()) if (entry.getValue() >= ART_COLOUR_SHARE * artPixels) artPalette.add(entry.getKey());
+        palette.removeIf(colour -> near(colour, artPalette));
+        if (palette.isEmpty()) return;
+        var found = new java.util.ArrayList<Integer>();
+        for (int i = 0; i < state.length; i++) {
+            if (!inside[i] || !ink[i] || (state[i] & GLYPH) != 0 || (state[i] & OUTSIDE) == 0) continue;
+            int colour = bin(colours[i]);
+            if (palette.contains(colour) && !near(colour, artPalette)) { state[i] |= GLYPH; found.add(i); }
+        }
+        // Their antialiased fringe (shades between fill, stroke and paper) goes with them; the art's colours never do.
+        for (int i : found) {
+            int x = i % width, y = i / width;
+            for (int dy = -LETTERING_FRINGE_PX; dy <= LETTERING_FRINGE_PX; dy++) for (int dx = -LETTERING_FRINGE_PX; dx <= LETTERING_FRINGE_PX; dx++) {
+                int nx = x + dx, ny = y + dy;
+                if (nx < 0 || ny < 0 || nx >= width || ny >= height) continue;
+                int n = ny * width + nx;
+                if (inside[n] && (state[n] & (GLYPH | BALLOON)) == 0 && (!ink[n] || !near(bin(colours[n]), artPalette)))
+                    state[n] |= GLYPH;
+            }
+        }
+    }
+
+    private static final int LETTERING_FRINGE_PX = 2;
+
+    private static int bin(int rgb) {
+        return ((rgb >>> 16) & 255) / COLOUR_BIN << 8 | ((rgb >>> 8) & 255) / COLOUR_BIN << 4 | (rgb & 255) / COLOUR_BIN;
+    }
+
+    /** Within one bin on every channel of a colour of {@code palette}. */
+    private static boolean near(int colour, java.util.Set<Integer> palette) {
+        int r = colour >> 8, g = (colour >> 4) & 15, b = colour & 15;
+        for (int dr = -1; dr <= 1; dr++) for (int dg = -1; dg <= 1; dg++) for (int db = -1; db <= 1; db++) {
+            int nr = r + dr, ng = g + dg, nb = b + db;
+            if (nr >= 0 && ng >= 0 && nb >= 0 && nr < 16 && ng < 16 && nb < 16 && palette.contains(nr << 8 | ng << 4 | nb)) return true;
+        }
+        return false;
     }
 
     /**

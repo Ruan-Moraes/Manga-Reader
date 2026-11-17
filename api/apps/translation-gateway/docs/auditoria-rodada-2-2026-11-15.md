@@ -266,3 +266,23 @@ fonte < 12). A execução real completa ficou para depois: a cota diária local 
   horizontal. Origem coreana segue sem dicionário para a releitura (só confiança do provedor).
 - **Restos no diálogo de erro (cap. 3, p. 3)** — continua: separar tinta da letra de tinta do "R" exige a geometria
   de cada palavra no render (hoje só o polígono da região chega lá), o que muda o manifesto do OCR.
+
+### Espanhol: palavras grudadas e letreiro contornado na borda (2026-11-16, noite)
+
+Reproduzidos com uma página sintética neutra (es→pt-BR), sem material de terceiros.
+
+- **Palavras grudadas pelo OCR ("Nomeyalos")** — em letreiro apertado o Vision lê "Nome y a los" como uma palavra
+  só (nas leituras em cache ele nunca devolve duas palavras de letras sem quebra entre elas: 0 de 1268 pares). A
+  palavra grudada, com maiúscula e fora do dicionário, passava por nome próprio e ia intacta para a página. Novo
+  passo do OCR (`GluedWords`): corta uma palavra fora do dicionário quando ela começa com um nome que aparece
+  **sozinho em outro ponto da mesma página** e o resto se decompõe em até 4 palavras do dicionário. Sem lista: um nome
+  como "Gabriela" nunca é partido (a menos que "Gabri" apareça sozinho na página). Escritas sem espaço não mudam.
+- **Letreiro contornado cruzando a borda do balão** — a palavra que encosta no contorno preto do balão ficava (a
+  máscara a tomava por arte, ligada à borda da janela). Agora, quando as letras já reconhecidas da região têm cores
+  próprias (preenchimento colorido, contorno) que a arte em volta não usa, a tinta dessas cores dentro do polígono é
+  letra, com a franja de suavização junto; a borda (cores da arte) fica. Exige paleta da arte conhecida (sem arte em
+  volta nada muda) — sem essa trava, texto sobre degradê ganhava remendo chapado. Texto preto encostado em arte preta
+  (paletas iguais) continua como estava: é o caso do "ERROR!" do cap. 3, que segue como limite.
+  - Resta: onde a letra saía do balão, a limpeza pinta com a cor do balão (ponto branco sobre a arte).
+- **Fragmentos soltos ("…bién?!")** — não reproduzido com texto limpo ("¿Eh?! ¿Yo también?!" → "Hã?! Eu também?!");
+  depende de como o OCR parte o letreiro estilizado.
