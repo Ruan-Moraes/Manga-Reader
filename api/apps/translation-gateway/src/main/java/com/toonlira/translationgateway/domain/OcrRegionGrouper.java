@@ -542,6 +542,24 @@ public final class OcrRegionGrouper {
     private static void flush(List<OcrManifest.Region> run, List<OcrManifest.Region> out, int w, int h) {
         if (run.isEmpty()) return;
         if (run.size() == 1) { out.add(run.getFirst()); run.clear(); return; }
+        // Slanted lines join only while their rectangle stays mostly text: lettering drawn in an arc around a face
+        // ("The Command Line" over it, "Rocks!" under it) would otherwise get one rectangle across the face, and the
+        // cleaning and the new text would land on it.
+        if (tiltedBounds(run, w, h) != null && textShare(run, tiltedBounds(run, w, h), w, h) < MIN_TILTED_TEXT_SHARE) {
+            var part = new ArrayList<OcrManifest.Region>();
+            for (var region : run) {
+                part.add(region);
+                if (part.size() < 2) continue;
+                var bounds = tiltedBounds(part, w, h);
+                if (bounds == null || textShare(part, bounds, w, h) >= MIN_TILTED_TEXT_SHARE) continue;
+                part.removeLast();
+                flush(part, out, w, h);
+                part.add(region);
+            }
+            flush(part, out, w, h);
+            run.clear();
+            return;
+        }
         double left = 1, top = 1, right = 0, bottom = 0;
         var text = new StringBuilder();
         OcrManifest.Region previous = null;
@@ -556,9 +574,74 @@ public final class OcrRegionGrouper {
         }
         var polygon = List.of(new OcrManifest.Vertex(left, top), new OcrManifest.Vertex(right, top),
             new OcrManifest.Vertex(right, bottom), new OcrManifest.Vertex(left, bottom));
+        var tilted = tiltedBounds(run, w, h);
+        if (tilted != null) polygon = tilted;
         if (OcrGeometry.valid(polygon)) out.add(new OcrManifest.Region(run.getFirst().id(), 0, text.toString(), polygon));
         else out.addAll(run);
         run.clear();
+    }
+
+    /** Least share of a slanted group's rectangle its lines must cover (stacked lines of one speech: ~0.8). */
+    static final double MIN_TILTED_TEXT_SHARE = .55;
+
+    /** Sum of the lines' own areas over the area of {@code bounds}, in pixels. */
+    private static double textShare(List<OcrManifest.Region> run, List<OcrManifest.Vertex> bounds, int w, int h) {
+        double lines = 0;
+        for (var region : run) lines += area(region.polygon(), w, h);
+        double all = area(bounds, w, h);
+        return all <= 0 ? 1 : lines / all;
+    }
+
+    private static double area(List<OcrManifest.Vertex> polygon, int w, int h) {
+        double sum = 0;
+        for (int i = 0; i < polygon.size(); i++) {
+            var a = polygon.get(i); var b = polygon.get((i + 1) % polygon.size());
+            sum += a.x() * w * b.y() * h - b.x() * w * a.y() * h;
+        }
+        return Math.abs(sum) / 2;
+    }
+
+    /** Lines tilted at least this much (radians, ~5°) are set slanted on the page. */
+    static final double MIN_GROUP_TILT = Math.toRadians(5);
+    /** Lines of one slanted lettering share their tilt within this (radians, ~10°). */
+    static final double GROUP_TILT_SPREAD = Math.toRadians(10);
+
+    /**
+     * The smallest rectangle along the lines' common tilt holding every line, or null when they are upright or do not
+     * share a tilt. A slanted hand lettering read as several lines used to get the axis-aligned box of them all — for
+     * a diagonal line of lettering most of a panel — and everything the renderer does in that box (cleaning,
+     * rebuilding the art behind it) then reached far beyond the letters. Still four vertices.
+     */
+    static List<OcrManifest.Vertex> tiltedBounds(List<OcrManifest.Region> run, int w, int h) {
+        if (w <= 0 || h <= 0) return null;
+        double sumSin = 0, sumCos = 0, first = Double.NaN;
+        for (var region : run) {
+            var p = region.polygon();
+            if (p.size() != 4) return null;
+            double dx = (p.get(1).x() - p.get(0).x()) * w, dy = (p.get(1).y() - p.get(0).y()) * h;
+            if (dx == 0 && dy == 0) return null;
+            double angle = Math.atan2(dy, dx);
+            angle -= Math.round(angle / (Math.PI / 2)) * (Math.PI / 2);   // a quarter turn says nothing about the slant
+            if (Double.isNaN(first)) first = angle;
+            else if (Math.abs(angle - first) > GROUP_TILT_SPREAD) return null;
+            sumSin += Math.sin(4 * angle); sumCos += Math.cos(4 * angle);
+        }
+        double tilt = Math.atan2(sumSin, sumCos) / 4;
+        if (Math.abs(tilt) < MIN_GROUP_TILT) return null;
+        double cos = Math.cos(tilt), sin = Math.sin(tilt);
+        double minU = Double.MAX_VALUE, maxU = -Double.MAX_VALUE, minV = Double.MAX_VALUE, maxV = -Double.MAX_VALUE;
+        for (var region : run) for (var vertex : region.polygon()) {
+            double x = vertex.x() * w, y = vertex.y() * h;
+            double u = x * cos + y * sin, v = -x * sin + y * cos;
+            minU = Math.min(minU, u); maxU = Math.max(maxU, u); minV = Math.min(minV, v); maxV = Math.max(maxV, v);
+        }
+        double[][] corners = {{minU, minV}, {maxU, minV}, {maxU, maxV}, {minU, maxV}};
+        var polygon = new java.util.ArrayList<OcrManifest.Vertex>(4);
+        for (var c : corners) {
+            double x = c[0] * cos - c[1] * sin, y = c[0] * sin + c[1] * cos;
+            polygon.add(new OcrManifest.Vertex(Math.clamp(x / w, 0, 1), Math.clamp(y / h, 0, 1)));
+        }
+        return OcrGeometry.valid(polygon) ? List.copyOf(polygon) : null;
     }
 
     private static double[] box(OcrManifest.Region region, int w, int h) {

@@ -192,6 +192,56 @@ class OcrRegionGrouperTest {
         return new OcrParagraph.Word(text, region(0, text, l, t, r, b).polygon());
     }
 
+    /** A line of {@code width} x {@code height} px centred at (cx, cy), turned by {@code degrees}. */
+    private static OcrManifest.Region slanted(int order, String text, double cx, double cy, double width, double height, double degrees) {
+        double a = Math.toRadians(degrees), cos = Math.cos(a), sin = Math.sin(a);
+        double[][] corners = {{-width / 2, -height / 2}, {width / 2, -height / 2}, {width / 2, height / 2}, {-width / 2, height / 2}};
+        var polygon = new java.util.ArrayList<OcrManifest.Vertex>();
+        for (var c : corners) polygon.add(new OcrManifest.Vertex((cx + c[0] * cos - c[1] * sin) / W, (cy + c[0] * sin + c[1] * cos) / H));
+        return new OcrManifest.Region(new UUID(0, order + 1), order, text, polygon);
+    }
+
+    private static double area(List<OcrManifest.Vertex> p) {
+        double sum = 0;
+        for (int i = 0; i < p.size(); i++) {
+            var a = p.get(i); var b = p.get((i + 1) % p.size());
+            sum += a.x() * W * b.y() * H - b.x() * W * a.y() * H;
+        }
+        return Math.abs(sum) / 2;
+    }
+
+    @Test
+    void slantedLinesOfOneLetteringGetARectangleAlongTheirSlantNotTheAxisAlignedBoxOfThemAll() {
+        // Three lines of hand lettering at 40 degrees, stacked along their normal: a diagonal band across the panel.
+        double a = Math.toRadians(40), nx = -Math.sin(a), ny = Math.cos(a);
+        var lines = List.of(slanted(0, "The Command\n", 500, 300, 300, 40, 40),
+            slanted(1, "Line\n", 500 + 48 * nx, 300 + 48 * ny, 300, 40, 40),
+            slanted(2, "Rocks!\n", 500 + 96 * nx, 300 + 96 * ny, 300, 40, 40));
+        var grouped = OcrRegionGrouper.group(lines, "en", W, H);
+        assertThat(grouped).hasSize(1);
+        var polygon = grouped.getFirst().polygon();
+        // Tight: about the lines' own area (3 x 300 x 40 plus the gaps), far below the axis-aligned box.
+        assertThat(area(polygon)).isLessThan(300 * 140 * 1.15);
+        double left = 1, top = 1, right = 0, bottom = 0;
+        for (var v : polygon) { left = Math.min(left, v.x()); right = Math.max(right, v.x()); top = Math.min(top, v.y()); bottom = Math.max(bottom, v.y()); }
+        assertThat(area(polygon)).isLessThan(.6 * (right - left) * W * (bottom - top) * H);
+        // Upright lines keep the axis-aligned box.
+        var upright = OcrRegionGrouper.group(List.of(region(0, "HELLO\n", 100, 100, 300, 130), region(1, "THERE\n", 100, 140, 300, 170)), "en", W, H);
+        assertThat(upright.getFirst().polygon()).containsExactly(new OcrManifest.Vertex(.1, .1), new OcrManifest.Vertex(.3, .1),
+            new OcrManifest.Vertex(.3, .17), new OcrManifest.Vertex(.1, .17));
+    }
+
+    @Test
+    void slantedLinesInAnArcAroundTheArtAreNotOneRectangleAcrossIt() {
+        // Two slanted lines far apart along their normal (an arc around a face): their rectangle would be mostly art.
+        double a = Math.toRadians(37), nx = -Math.sin(a), ny = Math.cos(a);
+        var arc = List.of(slanted(0, "Command Line\n", 520, 160, 240, 60, 37),
+            slanted(1, "Rocks!\n", 520 + 230 * nx, 160 + 230 * ny, 140, 55, 37));
+        assertThat(OcrRegionGrouper.tiltedBounds(arc, W, H)).isNotNull();
+        var grouped = OcrRegionGrouper.group(arc, "en", W, H);
+        assertThat(grouped).extracting(OcrManifest.Region::sourceText).containsExactly("Command Line\n", "Rocks!\n");
+    }
+
     @Test
     void aParagraphIsNeverSplitInsideAWordTheProviderReadWithoutABreak() {
         // A terminal line "pok:/usr$ ls" whose first fragment a loose balloon box covers: one token, not a speech word.
