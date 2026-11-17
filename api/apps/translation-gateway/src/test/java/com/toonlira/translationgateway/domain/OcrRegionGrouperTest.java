@@ -313,6 +313,20 @@ class OcrRegionGrouperTest {
     }
 
     @Test
+    void aRepeatedWordUnderABalloonIsASoundEffectNotTheSpeechsNextLine() {
+        // Lines stacked right under a balloon, out of its box even with the slack: different words continue the
+        // speech, one word repeated is a sound effect drawn under it (applause, laughter) and stays apart.
+        var speech = region(0, "THIS IS MY POTION!\n", 100, 100, 300, 130);
+        var balloon = List.of(box(90, 90, 310, 130));
+        assertThat(OcrRegionGrouper.group(List.of(speech, region(1, "Clap Clap\n", 130, 138, 270, 168)), "en", W, H, balloon))
+            .extracting(OcrManifest.Region::sourceText).containsExactly("THIS IS MY POTION!\n", "Clap Clap\n");
+        assertThat(OcrRegionGrouper.group(List.of(speech, region(1, "Ha Haha\n", 130, 138, 270, 168)), "en", W, H, balloon))
+            .hasSize(2);
+        assertThat(OcrRegionGrouper.group(List.of(speech, region(1, "FOR SALE!\n", 130, 138, 270, 168)), "en", W, H, balloon))
+            .extracting(OcrManifest.Region::sourceText).containsExactly("THIS IS MY POTION! FOR SALE!");
+    }
+
+    @Test
     void aBigSoundEffectAboveACaptionIsNotTheSameSpeech() {
         // Real boxes (ep.1 p.04, scaled): one-line effect 47 px high, two-line caption ~25 px per line right under it.
         var effect = region(0, "カタカタカタカタカタカタナ\n", 60, 552, 453, 588);

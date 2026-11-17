@@ -8,8 +8,11 @@
   "text" : "FANTASTIC!\n",
   "box" : [ 0.0858, 0.0114, 0.1933, 0.0283 ]
 }, {
-  "text" : "Coriander defies death itself with this mi-ra-cu-lous potion! Clap Clap",
-  "box" : [ 0.1625, 0.0307, 0.3617, 0.1307 ]
+  "text" : "Coriander defies death itself with this mi-ra-cu-lous potion!",
+  "box" : [ 0.1625, 0.0307, 0.3617, 0.0801 ]
+}, {
+  "text" : "Clap Clap\n",
+  "box" : [ 0.2067, 0.1024, 0.2908, 0.1307 ]
 }, {
   "text" : "Clap Clap Clap Clap Clap Clap Clap Clap",
   "box" : [ 0.3067, 0.1012, 0.65, 0.1398 ]

@@ -250,12 +250,21 @@ public final class OcrRegionGrouper {
         catch (RuntimeException invalid) { return false; }
     }
 
+    /**
+     * Several different words, or bare punctuation. One word repeated ("Clap Clap", "Ha Haha") is the profile of a sound
+     * effect drawn under the balloon, not of the speech's next line.
+     */
     private static boolean continuesSpeech(OcrManifest.Region region) {
         var text = region.sourceText().strip();
         if (text.codePoints().noneMatch(Character::isLetterOrDigit)) return true;
-        int words = 0;
-        for (var token : text.split("\\s+")) if (token.codePoints().anyMatch(Character::isLetter)) words++;
-        return words >= 2;
+        var stems = new ArrayList<String>();
+        for (var token : text.split("\\s+")) {
+            var word = token.codePoints().filter(Character::isLetter)
+                .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append).toString().toLowerCase(java.util.Locale.ROOT);
+            if (word.isEmpty()) continue;
+            if (stems.stream().noneMatch(stem -> stem.startsWith(word) || word.startsWith(stem))) stems.add(word);
+        }
+        return stems.size() >= 2;
     }
 
     private static int chars(List<OcrManifest.Region> members, OcrManifest.Region region) {
