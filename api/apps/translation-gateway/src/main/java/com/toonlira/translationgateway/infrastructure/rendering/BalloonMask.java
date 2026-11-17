@@ -26,11 +26,15 @@ final class BalloonMask {
     static final int MIN_TONE_DOTS = 15;
     private final double enclosedInk;
     private final boolean screentone;
+    private int flatDistance = CleanBoxPainter.BACKGROUND_DISTANCE;
 
     private BalloonMask(int left, int top, int width, int height, byte[] state, double enclosedInk, boolean screentone) {
         this.left = left; this.top = top; this.width = width; this.height = height;
         this.state = state; this.enclosedInk = enclosedInk; this.screentone = screentone;
     }
+
+    /** Distance to the balloon colour up to which a pixel counted as flat background for this mask. */
+    int flatDistance() { return flatDistance; }
 
     static BalloonMask of(BufferedImage image, RasterPolygon polygon, List<RasterPolygon> others, int argb) {
         return of(image, polygon, others, argb, null);
@@ -65,7 +69,9 @@ final class BalloonMask {
                 ink[i] = distances[i] > CleanBoxPainter.INK_DISTANCE;
             }
         }
-        int flat = noisyScan ? flatTolerance(distances, inside, ink) : CleanBoxPainter.BACKGROUND_DISTANCE;
+        // Inside a detected balloon the paper's own grain sets the bound too: a watercolour or aged balloon is far from
+        // one colour, while clean paper keeps the fixed bound (flatTolerance never goes below it).
+        int flat = noisyScan || limit != null ? flatTolerance(distances, inside, ink) : CleanBoxPainter.BACKGROUND_DISTANCE;
         for (int y = 0; y < height; y++) for (int x = 0; x < width; x++) {
             int i = y * width + x;
             boolean inLimit = limit == null || left + x >= limit.left() && left + x < limit.right()
@@ -94,8 +100,10 @@ final class BalloonMask {
             state[i] |= ALLOWED;
             if (inside[i] && balloon || enclosed) state[i] |= CLEAN;
         }
-        return new BalloonMask(left, top, width, height, state, inkInside == 0 ? 1 : (double) enclosedInkInside / inkInside,
+        var mask = new BalloonMask(left, top, width, height, state, inkInside == 0 ? 1 : (double) enclosedInkInside / inkInside,
             dots >= MIN_TONE_DOTS);
+        mask.flatDistance = flat;
+        return mask;
     }
 
     /** Median local deviation from which a page is a noisy scan: digital and clean scans 0-3, 1940s print 8-19. */

@@ -87,3 +87,29 @@ Duas tentativas foram medidas e descartadas:
   parte títulos sem moldura ("Pepper / & Carrot", "후추와 / 당근"). Além disso, não separou o bloco.
 
 Para resolver é preciso um detector de quadros que exija moldura, e não só espaço em branco.
+
+## Balão de aquarela (2026-11-17)
+
+O "fundo liso" de um balão era fixo: até 30 de distância da cor do balão. Num balão pintado em aquarela, ou em
+papel envelhecido, o papel varia bem mais que isso. As letras deixavam de parecer cercadas por papel (a região era
+tratada como texto sobre arte) e a caixa do texto não crescia pelo balão. Antes isso só se ajustava em página
+inteira de scan antigo (`noisyScan`).
+
+Agora, dentro de um balão detectado, a tolerância segue o grão do próprio papel entre as letras: a mediana
+de distância ×2, entre 30 e 75 (`flatTolerance`). O crescimento da caixa (`BalloonExpansion`) usa a mesma
+tolerância. Papel limpo continua em 30. No portão, só o zh p03 mudou: os balões azuis "传统…" e "远古建立的..."
+passaram a ser traduzidos.
+
+### O que a revisão chamou de "texto não lido"
+
+A medição contra o lote pago mostrou que quase todo texto "não lido" foi lido e traduzido, mas não coube:
+
+- "我回屋了。" e "不如什么!" (zh p01);
+- os balões azuis do zh p03 (corrigidos acima);
+- "BACK-BACK! AWAY" e "DO AS I SAY!" da Fight 40.
+
+A releitura paga já cobre as caixas do detector: só 5 de todo o corpus ficam sem leitura, e são
+onomatopeias. Os casos de encaixe restantes ficam para a etapa de tamanho de letra. Exemplos:
+
+- no balão oval minúsculo do zh p01, a tradução é longa demais;
+- nos balões justos da Fight 40, o entrelinha da fonte (≈1,36×) não deixa caber duas linhas a 12 px.

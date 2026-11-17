@@ -88,7 +88,7 @@ final class BalloonExpansion {
                 if (x >= b.left() - GUARD_PX && x < b.right() + GUARD_PX
                     && y >= b.top() - GUARD_PX && y < b.bottom() + GUARD_PX) return false;
             }
-            if (distance <= BACKGROUND_DISTANCE) return true;
+            if (distance <= Math.max(BACKGROUND_DISTANCE, region.mask().flatDistance())) return true;
             // Near the source text, non-ink compression noise is cleaned with the grown box, so it does not block.
             var own = region.polygon().bounds();
             return distance <= CleanBoxPainter.INK_DISTANCE && x >= own.left() - HALO_PX && x < own.right() + HALO_PX

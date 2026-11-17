@@ -824,6 +824,27 @@ class PageRasterPainterTest {
     }
 
     @Test
+    void aShortLineInAWatercolourBalloonGrowsThroughItsGrainedPaper() {
+        // A teal balloon painted in watercolour (each pixel up to ~50 away from the mean) on dark art, with a short
+        // white line: the translation needs the balloon's room, and the paper's grain must not stop the growth.
+        var random = new java.util.Random(7);
+        var image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB);
+        for (int y = 0; y < HEIGHT; y++) for (int x = 0; x < WIDTH; x++) {
+            double dx = (x - 180) / 120.0, dy = (y - 110) / 60.0;
+            if (dx * dx + dy * dy > 1) { image.setRGB(x, y, 0xff101820); continue; }
+            int r = 0x3a + random.nextInt(33) - 16, g = 0x8c + random.nextInt(33) - 16, b = 0x9c + random.nextInt(33) - 16;
+            image.setRGB(x, y, 0xff000000 | r << 16 | g << 8 | b);
+        }
+        for (int x0 = 160; x0 < 200; x0 += 8) for (int y = 103; y < 117; y++)
+            for (int x = x0; x < x0 + 3; x++) image.setRGB(x, y, 0xffffffff);
+        var polygon = CleanBoxPainterTest.rectangle(156 / 360.0, 100 / 220.0, 204 / 360.0, 120 / 220.0);
+        var balloon = new com.toonlira.translationgateway.domain.layout.LayoutBox(60 / 360.0, 50 / 220.0, 300 / 360.0, 170 / 220.0);
+        var placement = new PageRasterPainter(FONTS).paint(image,
+            request("pt-BR", "Estabelecido na antiguidade", polygon, "古建立的").withBubbles(List.of(balloon))).getFirst();
+        assertThat(placement.overflow()).isFalse();
+    }
+
+    @Test
     void aBigDrawnTitleIsRetypedAtItsOwnSizeNotCappedLikeSpeech() {
         // Five letters drawn across most of the page: the translation keeps the weight of a title.
         var polygon = CleanBoxPainterTest.rectangle(.05, .1, .95, .6);

@@ -39,8 +39,8 @@
   "expect" : {
     "maxChangedOutside" : 0,
     "regions" : [ {
-      "overflow" : true,
-      "font" : 0,
+      "overflow" : false,
+      "font" : 16,
       "residualInk" : 0
     }, {
       "overflow" : false,
@@ -59,8 +59,8 @@
       "font" : 14,
       "residualInk" : 0
     }, {
-      "overflow" : true,
-      "font" : 0,
+      "overflow" : false,
+      "font" : 12,
       "residualInk" : 0
     } ]
   }
