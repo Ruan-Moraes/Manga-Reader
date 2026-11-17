@@ -129,3 +129,20 @@ No portão passaram a caber:
 
 "DO AS I SAY!" (Fight 40) e "不如什么!" (zh p01) continuam com o original: a tradução é longa demais
 para o balão.
+
+## Piso pela letra de origem em todas as escritas (2026-11-17)
+
+Antes, só chinês, japonês e coreano tinham piso pelo tamanho da própria letra de origem. Inglês e espanhol
+dependiam só da mediana da página, então uma fala lida numa caixa justa saía bem menor que o letreiramento
+original ("Pff... ¡Obvio!" a 12 px num balão de letra grande).
+
+Agora todas as escritas têm esse piso: 0,7 × raiz de (área ÷ letras), que corresponde a cerca de 3/4 do
+tamanho da fonte de origem. A caixa cresce pelo balão até alcançá-lo, ainda limitada ao teto da página (mediana ×1,35).
+No portão, 31 falas cresceram (por exemplo, 12→21, 15→23, 27→37). Nenhuma piorou e a tinta que sobra não mudou.
+
+**Limite:**
+
+- O piso parte do texto lido. Se a caixa do OCR for bem maior que o texto, o piso sai alto, mas o crescimento
+  continua preso ao papel liso e ao balão detectado.
+- Dois balões vizinhos com a mesma letra podem sair em tamanhos diferentes quando só um deles alcança o piso
+  ("Sério!?" 21 ao lado de "Ninguém?" 13, es p03).

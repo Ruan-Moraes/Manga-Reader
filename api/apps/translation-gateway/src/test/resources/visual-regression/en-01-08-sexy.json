@@ -109,15 +109,15 @@
     "maxChangedOutside" : 0,
     "regions" : [ {
       "overflow" : false,
-      "font" : 15,
+      "font" : 21,
       "residualInk" : 0
     }, {
       "overflow" : false,
-      "font" : 16,
+      "font" : 19,
       "residualInk" : 0
     }, {
       "overflow" : false,
-      "font" : 15,
+      "font" : 17,
       "residualInk" : 1
     }, {
       "overflow" : false,
@@ -145,7 +145,7 @@
       "residualInk" : 0
     }, {
       "overflow" : false,
-      "font" : 13,
+      "font" : 18,
       "residualInk" : 0
     }, {
       "overflow" : true,
@@ -157,15 +157,15 @@
       "residualInk" : 0
     }, {
       "overflow" : false,
-      "font" : 15,
-      "residualInk" : 0
+      "font" : 21,
+      "residualInk" : 2
     }, {
       "overflow" : false,
       "font" : 15,
       "residualInk" : 0
     }, {
       "overflow" : false,
-      "font" : 15,
+      "font" : 18,
       "residualInk" : 0
     }, {
       "overflow" : true,

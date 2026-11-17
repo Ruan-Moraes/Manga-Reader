@@ -93,7 +93,7 @@
       "residualInk" : 0
     }, {
       "overflow" : false,
-      "font" : 15,
+      "font" : 18,
       "residualInk" : 6
     }, {
       "overflow" : false,
@@ -109,7 +109,7 @@
       "residualInk" : 0
     }, {
       "overflow" : false,
-      "font" : 19,
+      "font" : 23,
       "residualInk" : 0
     }, {
       "overflow" : true,
@@ -125,11 +125,11 @@
       "residualInk" : 0
     }, {
       "overflow" : false,
-      "font" : 15,
+      "font" : 23,
       "residualInk" : 0
     }, {
       "overflow" : false,
-      "font" : 17,
+      "font" : 18,
       "residualInk" : 846
     }, {
       "overflow" : false,

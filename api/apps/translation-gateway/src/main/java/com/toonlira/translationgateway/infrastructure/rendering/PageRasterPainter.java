@@ -38,6 +38,8 @@ public final class PageRasterPainter {
     private static final double MEDIAN_FLOOR_FACTOR = .75;
     /** Translation typeset at no less than this share of the source glyph size (CJK sources, see glyphFloor). */
     private static final double GLYPH_FLOOR_FACTOR = .75;
+    /** Spaced scripts: sqrt(area / letters) is about 0.9 of the source font size; aim at three quarters of it. */
+    private static final double LATIN_FLOOR_FACTOR = .7;
     /** Growth seeds for the floor: the whole start box, then its middle 60% and 35% (see raiseToFloor). */
     private static final double[] SEED_BANDS = {1, .6, .35};
     private static final java.util.Set<String> SQUARE_GLYPH_SOURCES = java.util.Set.of("ja", "zh-Hans", "zh-Hant", "ko");
@@ -375,7 +377,7 @@ public final class PageRasterPainter {
         for (int i = 0; i < plans.length; i++) {
             CleanBoxPainter.checkInterrupted();
             var region = regions.get(i);
-            int target = squareGlyphs ? Math.max(floor, Math.min(cap, glyphFloor(region))) : floor;
+            int target = Math.max(floor, Math.min(cap, squareGlyphs ? glyphFloor(region) : (int) Math.ceil(LATIN_FLOOR_FACTOR * sourcePitch(region))));
             if (preserved[i] || plans[i] != null && plans[i].size() >= target) continue;
             // Without the page's size (a cover, a credits page), only text that did not fit at all is rescued, to the
             // minimum size, and only from a box that holds at least one glyph; text that fits keeps its box.

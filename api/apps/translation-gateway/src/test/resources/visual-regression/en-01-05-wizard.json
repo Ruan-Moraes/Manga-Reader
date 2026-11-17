@@ -239,11 +239,11 @@
       "residualInk" : 0
     }, {
       "overflow" : false,
-      "font" : 22,
+      "font" : 24,
       "residualInk" : 12
     }, {
       "overflow" : false,
-      "font" : 19,
+      "font" : 24,
       "residualInk" : 0
     }, {
       "overflow" : false,
@@ -255,7 +255,7 @@
       "residualInk" : 0
     }, {
       "overflow" : false,
-      "font" : 23,
+      "font" : 24,
       "residualInk" : 3405
     }, {
       "overflow" : false,

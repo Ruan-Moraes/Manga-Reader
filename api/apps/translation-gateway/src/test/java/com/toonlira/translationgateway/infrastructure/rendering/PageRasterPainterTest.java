@@ -238,7 +238,8 @@ class PageRasterPainterTest {
         var result = painter.paint(image, page(image, List.of(
             CleanBoxPainterTest.rectangle(.02, .02, .3, .3), CleanBoxPainterTest.rectangle(.35, .02, .63, .3),
             CleanBoxPainterTest.rectangle(.68, .02, .96, .3), small),
-            List.of("Uma frase média aqui", "Outra frase média aqui", "Mais uma frase média", "Claro!")));
+            List.of("Uma frase média aqui", "Outra frase média aqui", "Mais uma frase média", "Claro!"), "en",
+            List.of("A medium sentence here", "Another medium sentence", "One more medium sentence", "Sure!")));
         var sizes = result.subList(0, 3).stream().mapToInt(RenderManifest.Placement::fontSizePx).sorted().toArray();
         var claro = result.get(3);
         assertThat(claro.overflow()).isFalse();
@@ -305,7 +306,8 @@ class PageRasterPainterTest {
         var result = painter.paint(image, page(image, List.of(
             CleanBoxPainterTest.rectangle(.02, .02, .3, .3), CleanBoxPainterTest.rectangle(.35, .02, .63, .3),
             CleanBoxPainterTest.rectangle(.68, .02, .96, .3), small),
-            List.of("Uma frase média aqui", "Outra frase média aqui", "Mais uma frase média", "Claro!")));
+            List.of("Uma frase média aqui", "Outra frase média aqui", "Mais uma frase média", "Claro!"), "en",
+            List.of("A medium sentence here", "Another medium sentence", "One more medium sentence", "Sure!")));
         var sizes = result.subList(0, 3).stream().mapToInt(RenderManifest.Placement::fontSizePx).sorted().toArray();
         assertThat(result.get(3).overflow()).isFalse();
         assertThat(result.get(3).fontSizePx()).isGreaterThanOrEqualTo((int) Math.ceil(sizes[1] * .75));
@@ -411,12 +413,13 @@ class PageRasterPainterTest {
         var boxes = List.of(CleanBoxPainterTest.rectangle(.02, .02, .3, .3), CleanBoxPainterTest.rectangle(.35, .02, .63, .3),
             CleanBoxPainterTest.rectangle(.68, .02, .96, .3), small);
         var texts = List.of("Uma frase média aqui", "Outra frase média aqui", "Mais uma frase média", "Claro!");
+        var sources = List.of("A medium sentence here", "Another medium sentence", "One more medium sentence", "Sure!");
         var free = CleanBoxPainterTest.fixture(WIDTH, HEIGHT, 0xffffffff);
-        var unbounded = painter.paint(free, page(free, boxes, texts)).get(3);
+        var unbounded = painter.paint(free, page(free, boxes, texts, "en", sources)).get(3);
         var bounded = CleanBoxPainterTest.fixture(WIDTH, HEIGHT, 0xffffffff);
         // A detected balloon hugging the line: growth stops at the balloon (+15% slack), so the text stays smaller.
         var balloon = new com.toonlira.translationgateway.domain.layout.LayoutBox(.44, .70, .56, .79);
-        var request = page(bounded, boxes, texts).withBubbles(List.of(balloon));
+        var request = page(bounded, boxes, texts, "en", sources).withBubbles(List.of(balloon));
         var inBalloon = painter.paint(bounded, request).get(3);
         assertThat(inBalloon.overflow()).isFalse();
         assertThat(inBalloon.fontSizePx()).isLessThan(unbounded.fontSizePx());
@@ -425,7 +428,7 @@ class PageRasterPainterTest {
             if (y > HEIGHT * .32 && (x < x0 || x >= x1)) assertThat(bounded.getRGB(x, y)).as("(%d,%d)", x, y).isEqualTo(0xffffffff);
         // A balloon that does not contain the region changes nothing.
         var elsewhere = CleanBoxPainterTest.fixture(WIDTH, HEIGHT, 0xffffffff);
-        var unrelated = page(elsewhere, boxes, texts).withBubbles(List.of(new com.toonlira.translationgateway.domain.layout.LayoutBox(.0, .0, .1, .1)));
+        var unrelated = page(elsewhere, boxes, texts, "en", sources).withBubbles(List.of(new com.toonlira.translationgateway.domain.layout.LayoutBox(.0, .0, .1, .1)));
         assertThat(painter.paint(elsewhere, unrelated).get(3).fontSizePx()).isEqualTo(unbounded.fontSizePx());
     }
 
@@ -862,6 +865,24 @@ class PageRasterPainterTest {
         assertThat(placement.overflow()).isFalse();
         assertThat(placement.fontSizePx()).isGreaterThanOrEqualTo(RenderPolicy.COMFORT_FONT_PX);
         for (int x = 96; x < 264; x++) assertThat(image.getRGB(x, 87)).as("border at %d", x).isEqualTo(0xff000000);
+    }
+
+    @Test
+    void bigSpeechLetteringInATightBoxIsRetypedNearItsOwnSizeInItsBalloon() {
+        // Three boxed balloons; the last one holds a short shout lettered much bigger than the others, read in a box
+        // that hugs it. Its translation grows into the balloon towards the source size instead of the tight box's.
+        var image = CleanBoxPainterTest.fixture(WIDTH, HEIGHT, 0xffffffff);
+        for (int b = 0; b < 3; b++) outline(image, 5 + 120 * b, 40, 115 + 120 * b, 180, 0xff000000);
+        var boxes = List.of(CleanBoxPainterTest.rectangle(30 / 360.0, 100 / 220.0, 90 / 360.0, 120 / 220.0),
+            CleanBoxPainterTest.rectangle(150 / 360.0, 100 / 220.0, 210 / 360.0, 120 / 220.0),
+            CleanBoxPainterTest.rectangle(270 / 360.0, 92 / 220.0, 330 / 360.0, 128 / 220.0));
+        var request = page(image, boxes, List.of("Olá, Ana", "Tudo bem", "Hã? O quê?"), "en",
+            List.of("Hi, Ana", "All good", "HUH?"));
+        var placements = new PageRasterPainter(FONTS).paint(image, request);
+        assertThat(placements).noneMatch(RenderManifest.Placement::overflow);
+        int pitch = (int) Math.sqrt(60.0 * 36 / 3);
+        assertThat(placements.get(2).fontSizePx()).isGreaterThanOrEqualTo((int) (.6 * pitch))
+            .isGreaterThan(placements.get(0).fontSizePx());
     }
 
     @Test
