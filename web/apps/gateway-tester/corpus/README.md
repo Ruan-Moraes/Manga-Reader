@@ -59,6 +59,15 @@ index.html                          galeria original × traduzido (abre pelo dev
 <capítulo>/<página>.manifest.json   manifesto do resultado (OCR, tradução, regiões)
 ```
 
+### Ver os resultados
+
+Tela **📖 Resultados** (botão no painel, ou `http://<host>:5175/#/resultados`): lista as obras/capítulos
+do lote mais recente (com seletor de lotes anteriores). Cada capítulo abre o leitor
+(`#/resultados/<lote>/<capítulo>`) com os botões **Original** e **Tradução**, que trocam todas as
+páginas no lugar — dá para alternar no mesmo ponto da página e procurar regressões. O dev server
+escuta em todas as interfaces (`vite --host`), então a tela abre no celular pela rede local ou Tailscale
+enquanto o tester estiver rodando nesta máquina.
+
 Uma página que falha é registrada e o lote continua; **Parar** encerra sem enviar novas páginas e ainda
 grava o relatório. Os endpoints `/__corpus/*` existem só no dev server do Vite (`vite/corpusPlugin.ts`).
 

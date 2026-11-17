@@ -2,9 +2,21 @@ import { useState } from 'react'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import gatewayClient from './services/gatewayClient'
 import BatchPanel from './BatchPanel'
+import ValidationPanel from './ValidationPanel'
+import ResultsPage from './results/ResultsPage'
+import ChapterViewer from './results/ChapterViewer'
+import { useHashRoute } from './results/useHashRoute'
 import type { Installation, Session, Job } from './services/gatewayClient'
 
 export default function App() {
+  const [screen, runId, chapterId] = useHashRoute()
+  if (screen === 'resultados') {
+    return runId && chapterId ? <ChapterViewer runId={runId} chapterId={chapterId} /> : <ResultsPage runId={runId} />
+  }
+  return <Tester />
+}
+
+function Tester() {
   const [installation, setInstallation] = useState<Installation | null>(null)
   const [session, setSession] = useState<Session | null>(null)
   const [currentJobRef, setCurrentJobRef] = useState<string | null>(null)
@@ -163,6 +175,13 @@ export default function App() {
 
           {/* Center Column - Job Submission */}
           <div className="lg:col-span-2 space-y-6">
+            {capabilities && (
+              <ValidationPanel
+                disclosureVersion={capabilities.disclosure?.version ?? ''}
+                pairs={capabilities.supportedPairs ?? []}
+              />
+            )}
+
             {session && (
               <BatchPanel
                 accessToken={session.accessToken}
