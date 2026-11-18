@@ -1,6 +1,6 @@
 [ {
   "text" : "¡Céntrate en\nestudiar tus\n«Hechizos de\ndestrucción»!\n",
-  "box" : [ 0.0483, 0.8223, 0.1633, 0.8819 ]
+  "box" : [ 0.0434, 0.8178, 0.1658, 0.886 ]
 }, {
   "text" : "¿Que quieres un\nárbol de Unidad?\n",
   "box" : [ 0.2225, 0.1205, 0.3592, 0.147 ]
@@ -9,7 +9,7 @@
   "box" : [ 0.2475, 0.1639, 0.35, 0.1807 ]
 }, {
   "text" : "¡NO!\n",
-  "box" : [ 0.5542, 0.4867, 0.6167, 0.5042 ]
+  "box" : [ 0.5503, 0.4814, 0.6205, 0.5073 ]
 }, {
   "text" : "Somos las\nBrujas del Caos;\nNO HACEMOS eso.\n",
   "box" : [ 0.555, 0.5205, 0.7125, 0.5657 ]
@@ -21,11 +21,11 @@
   "box" : [ 0.47, 0.6952, 0.585, 0.7078 ]
 }, {
   "text" : "El próximo Concilio de Las\nTres Lunas es pronto y\ntambién tus exámenes.\n¡Aprende! ¡Aprende!\n¡¡¡APRENDE!!! ¡¡¡Y DEJA DE\nDISTRAERTE CON ESAS\nIDEAS ESTÚPIDAS!!!\n",
-  "box" : [ 0.73, 0.6843, 0.9533, 0.7958 ]
+  "box" : [ 0.7233, 0.6804, 0.9588, 0.7995 ]
 }, {
   "text" : "¿En esta\népoca del año?\n",
   "box" : [ 0.4667, 0.8639, 0.5892, 0.8958 ]
 }, {
   "text" : "¿Por qué no aprendemos, para variar, hechizos de creación?",
-  "box" : [ 0.4375, 0.9066, 0.59, 0.9663 ]
+  "box" : [ 0.432, 0.9041, 0.5933, 0.9679 ]
 } ]

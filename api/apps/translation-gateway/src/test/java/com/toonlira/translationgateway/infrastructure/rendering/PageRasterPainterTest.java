@@ -455,6 +455,22 @@ class PageRasterPainterTest {
     }
 
     @Test
+    void aBalloonInsideAJoinedBoxStillGrowsIntoItsPaper() {
+        // The joined box is kept as drawn, so it does not block the growth of a narrow column read in a balloon inside it.
+        var image = artwork();
+        for (int y = 80; y < 150; y++) for (int x = 140; x < 230; x++) image.setRGB(x, y, 0xffffffff);
+        for (int y = 95; y < 135; y++) for (int x = 183; x < 187; x++) image.setRGB(x, y, 0xff000000);
+        var joined = CleanBoxPainterTest.rectangle(40 / 360.0, 30 / 220.0, 320 / 360.0, 190 / 220.0);
+        var column = CleanBoxPainterTest.rectangle(180 / 360.0, 92 / 220.0, 190 / 360.0, 138 / 220.0);
+        var balloon = new com.toonlira.translationgateway.domain.layout.LayoutBox(138 / 360.0, 78 / 220.0, 232 / 360.0, 152 / 220.0);
+        var request = page(image, List.of(joined, column), List.of("Atualizações recomendadas do sistema", "Uau!"), "ja",
+            List.of("推奨アップデートのシステム", "おおー")).withBubbles(List.of(balloon)).withCaptionHints(Set.of(new UUID(0, 1)));
+        var placements = new PageRasterPainter(FONTS, (raster, box, quad) -> true).paint(image, request);
+        assertThat(placements.get(0).overflow()).isTrue();
+        assertThat(placements.get(1).overflow()).isFalse();
+    }
+
+    @Test
     void speechOverArtworkIsInpaintedAndRetypedWithAnOutlineOnlyWhenHinted() {
         var polygon = CleanBoxPainterTest.rectangle(.3, .3, .7, .7); // x 108..252, y 66..154
         var calls = new java.util.ArrayList<int[]>();

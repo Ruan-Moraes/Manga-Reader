@@ -108,6 +108,21 @@ public final class PageRasterPainter {
             preserved[i] = !inpaint[i] && preserveOriginal(region);
             if (!preserved[i]) plans[i] = plan(region, request, policy.maximumFontPx(), inpaint[i]);
         }
+        // Text rebuilt over the art is one lettering: a box that holds most of other text regions is text the OCR joined
+        // from several places (labels of drawn screens side by side, across panels), and rebuilding it would erase those
+        // regions and the art between them. It keeps its original, decided before any growth: kept as drawn, it is no
+        // obstacle to the balloons inside it, which are drawn as usual.
+        var swallowed = new boolean[regions.size()];
+        for (int i = 0; i < plans.length; i++) {
+            boolean rebuilt = lettering[i] ? letteringPlans[i] != null : inpaint[i] && plans[i] != null;
+            if (!rebuilt || !swallows(regions, i)) continue;
+            swallowed[i] = preserved[i] = true;
+            lettering[i] = false;
+            letteringPlans[i] = null;
+            plans[i] = null;
+        }
+        var obstacles = new ArrayList<CleanBoxPainter.CleanRegion>(regions.size());
+        for (int i = 0; i < regions.size(); i++) if (!swallowed[i]) obstacles.add(regions.get(i));
         int cap = fontCap(plans, policy);
         if (cap < policy.maximumFontPx()) {
             for (int i = 0; i < plans.length; i++) {
@@ -116,7 +131,7 @@ public final class PageRasterPainter {
         }
         var fixedSize = new boolean[regions.size()];
         for (int i = 0; i < plans.length; i++) fixedSize[i] = preserved[i] || inpaint[i];
-        raiseToFloor(image, regions, plans, fixedSize, request, cap);
+        raiseToFloor(image, regions, obstacles, plans, fixedSize, request, cap);
         // Speech the flat path still cannot fit, even grown into its balloon (lettering on paper broken up by speed
         // lines, so no balloon interior holds it), is rebuilt by the inpainter and retyped in its own box.
         for (int i = 0; i < plans.length; i++) {
@@ -141,15 +156,9 @@ public final class PageRasterPainter {
         // a balloon the translation barely fits, which the face's own line height overflows by a few pixels.
         for (int i = 0; i < plans.length; i++) {
             if (plans[i] != null || preserved[i] || lettering[i] || inpaint[i]) continue;
-            plans[i] = compact(image, regions, i, plans, request, cap);
+            plans[i] = compact(image, regions, obstacles, i, plans, request, cap);
         }
         for (int i = 0; i < plans.length; i++) if (lettering[i]) plans[i] = letteringPlans[i];
-        // Text rebuilt over the art is one lettering: a box that holds most of other text regions is text the OCR joined
-        // from several places (labels of drawn screens side by side, across panels), and rebuilding it would erase those
-        // regions and the art between them. It keeps its original; the regions inside are drawn as usual.
-        for (int i = 0; i < plans.length; i++) {
-            if (inpaint[i] && plans[i] != null && swallows(regions, i)) plans[i] = null;
-        }
         // Halo sets are computed on the untouched raster, so no region erases text another one already drew.
         var halos = new ArrayList<List<Integer>>(plans.length);
         for (int i = 0; i < plans.length; i++) {
@@ -336,7 +345,8 @@ public final class PageRasterPainter {
      * Compact-leading plan in the region's detected balloon grown into flat paper, clear of the other regions' plans;
      * outside any detected balloon, in its own box.
      */
-    private Plan compact(BufferedImage image, List<CleanBoxPainter.CleanRegion> regions, int i, Plan[] plans,
+    private Plan compact(BufferedImage image, List<CleanBoxPainter.CleanRegion> regions,
+                         List<CleanBoxPainter.CleanRegion> obstacles, int i, Plan[] plans,
                          RenderRequest request, int cap) {
         var region = regions.get(i);
         var policy = request.policy();
@@ -346,7 +356,7 @@ public final class PageRasterPainter {
         var box = region.polygon().bounds();
         int limit = Math.max(box.right() - box.left(), box.bottom() - box.top());
         // Only a detected balloon bounds the room: free text on open paper keeps its own box.
-        var grown = region.limit() == null ? start : BalloonExpansion.expand(image, region, regions, claimed, start, limit);
+        var grown = region.limit() == null ? start : BalloonExpansion.expand(image, region, obstacles, claimed, start, limit);
         var padded = new RasterPolygon.Bounds(grown.left() + policy.paddingPx(), grown.top() + policy.paddingPx(),
             grown.right() - policy.paddingPx(), grown.bottom() - policy.paddingPx());
         int minimum = minimumFor(region, policy, true);
@@ -389,7 +399,8 @@ public final class PageRasterPainter {
      * translation confined to them comes out far smaller than the original glyphs, and the page median (made of
      * such columns) cannot notice it.
      */
-    private void raiseToFloor(BufferedImage image, List<CleanBoxPainter.CleanRegion> regions, Plan[] plans,
+    private void raiseToFloor(BufferedImage image, List<CleanBoxPainter.CleanRegion> regions,
+                              List<CleanBoxPainter.CleanRegion> obstacles, Plan[] plans,
                               boolean[] preserved, RenderRequest request, int cap) {
         double median = median(plans);
         boolean squareGlyphs = SQUARE_GLYPH_SOURCES.contains(request.pair().source());
@@ -418,9 +429,9 @@ public final class PageRasterPainter {
                 var seed = band(start, band);
                 if (seed == null) continue;
                 // Bands widen first (horizontal text needs width), then grow vertically into what is left.
-                var grown = band == 1 ? BalloonExpansion.expand(image, region, regions, claimed, seed, limit)
-                    : BalloonExpansion.expand(image, region, regions, claimed,
-                        BalloonExpansion.expand(image, region, regions, claimed, seed, limit, false), limit);
+                var grown = band == 1 ? BalloonExpansion.expand(image, region, obstacles, claimed, seed, limit)
+                    : BalloonExpansion.expand(image, region, obstacles, claimed,
+                        BalloonExpansion.expand(image, region, obstacles, claimed, seed, limit, false), limit);
                 if (grown.equals(seed) && band == 1) continue;
                 var padded = new RasterPolygon.Bounds(grown.left() + policy.paddingPx(), grown.top() + policy.paddingPx(),
                     grown.right() - policy.paddingPx(), grown.bottom() - policy.paddingPx());

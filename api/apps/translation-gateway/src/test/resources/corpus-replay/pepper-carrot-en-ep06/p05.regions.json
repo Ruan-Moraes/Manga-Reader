@@ -9,7 +9,7 @@
   "box" : [ 0.0858, 0.0114, 0.1933, 0.0283 ]
 }, {
   "text" : "Coriander defies death itself with this mi-ra-cu-lous potion!",
-  "box" : [ 0.1625, 0.0307, 0.3617, 0.0801 ]
+  "box" : [ 0.159, 0.0268, 0.3669, 0.0824 ]
 }, {
   "text" : "Clap Clap\n",
   "box" : [ 0.2067, 0.1024, 0.2908, 0.1307 ]
@@ -18,25 +18,25 @@
   "box" : [ 0.3067, 0.1012, 0.65, 0.1398 ]
 }, {
   "text" : "...but please, save your applause, people of Komona!",
-  "box" : [ 0.1017, 0.1723, 0.2742, 0.2211 ]
+  "box" : [ 0.0943, 0.1681, 0.2819, 0.2229 ]
 }, {
   "text" : "Because here is MY Potion!",
-  "box" : [ 0.25, 0.2265, 0.3933, 0.2542 ]
+  "box" : [ 0.2456, 0.2234, 0.3979, 0.2584 ]
 }, {
   "text" : "The real potion you've all been waiting for: the one which will amaze your neighbors...",
-  "box" : [ 0.7058, 0.2602, 0.9225, 0.3289 ]
+  "box" : [ 0.6989, 0.2574, 0.9284, 0.3302 ]
 }, {
   "text" : "...make them jealous!",
-  "box" : [ 0.8167, 0.3373, 0.9358, 0.3681 ]
+  "box" : [ 0.8116, 0.3339, 0.9438, 0.3701 ]
 }, {
   "text" : "...all this is possible with the simple application of a single drop of my...",
-  "box" : [ 0.2042, 0.409, 0.5017, 0.4584 ]
+  "box" : [ 0.1979, 0.4031, 0.5075, 0.4602 ]
 }, {
   "text" : "Fantastic! Incredible!\n",
-  "box" : [ 0.0675, 0.7934, 0.2667, 0.8042 ]
+  "box" : [ 0.0535, 0.7882, 0.2736, 0.8095 ]
 }, {
   "text" : "This potion could make all of Komona rich!",
-  "box" : [ 0.0492, 0.8181, 0.2458, 0.847 ]
+  "box" : [ 0.0458, 0.8142, 0.2552, 0.8521 ]
 }, {
   "text" : "m\n",
   "box" : [ 0.4083, 0.859, 0.4283, 0.8693 ]

@@ -54,6 +54,14 @@ class CorpusOcrReplayTest {
         var read = new VisionResponseMapper().mapParagraphs(response, new OcrPort.Command("replay", language, JOB, w, h));
         var detections = mapper.readTree(Files.readAllBytes(vision.resolveSibling(base + ".detections.json")));
         List<LayoutBox> bubbles = null;
+        var texts = new ArrayList<com.toonlira.translationgateway.domain.layout.TextBox>();
+        for (var t : detections.path("texts")) {
+            var box = t.path("box");
+            texts.add(new com.toonlira.translationgateway.domain.layout.TextBox(t.path("id").asText(),
+                com.toonlira.translationgateway.domain.layout.TextBox.Kind.valueOf(t.path("kind").asText()),
+                new LayoutBox(box.get(0).asDouble(), box.get(1).asDouble(), box.get(2).asDouble(), box.get(3).asDouble()),
+                t.path("confidence").asDouble()));
+        }
         if (!detections.has("failed")) {
             bubbles = new ArrayList<>();
             for (var b : detections.path("bubbles")) {
@@ -61,7 +69,7 @@ class CorpusOcrReplayTest {
                 bubbles.add(new LayoutBox(box.get(0).asDouble(), box.get(1).asDouble(), box.get(2).asDouble(), box.get(3).asDouble()));
             }
         }
-        var regions = OcrAssembly.finish(OcrAssembly.group(read, bubbles, language, w, h), language,
+        var regions = OcrAssembly.finish(OcrAssembly.fitTextBoxes(OcrAssembly.group(read, bubbles, language, w, h), texts), language,
             new ClasspathLexicons().forLanguage(language));
 
         var observed = mapper.createArrayNode();

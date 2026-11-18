@@ -1,36 +1,36 @@
 [ {
   "text" : "All the way from the great\nTechnologist's Union,\nit's an honor to welcome the\nravishing and ingenious\nCoriander!\n",
-  "box" : [ 0.0425, 0.0169, 0.2867, 0.1036 ]
+  "box" : [ 0.0385, 0.0118, 0.294, 0.1094 ]
 }, {
   "text" : "... not to forget our\nlocal girl, Komona's\nvery own witch\n",
   "box" : [ 0.3225, 0.0127, 0.4967, 0.0645 ]
 }, {
   "text" : "Saffron!\n",
-  "box" : [ 0.3692, 0.0892, 0.4558, 0.1036 ]
+  "box" : [ 0.3608, 0.0831, 0.4626, 0.1087 ]
 }, {
   "text" : "...Our third\nparticipant comes to\nus from the lands of\nthe setting moons,\nShichimi!\n",
-  "box" : [ 0.5092, 0.0145, 0.6925, 0.1036 ]
+  "box" : [ 0.5054, 0.0096, 0.6989, 0.1092 ]
 }, {
   "text" : "... and finally, our last participant, from the forest of Squirrel's End, Pepper!",
-  "box" : [ 0.7558, 0.0157, 0.9167, 0.1078 ]
+  "box" : [ 0.7478, 0.0107, 0.9228, 0.1104 ]
 }, {
   "text" : "Let the\ngames begin!\n",
   "box" : [ 0.0992, 0.456, 0.2158, 0.4873 ]
 }, {
   "text" : "The vote will be by\napplaud-o-meter\n",
-  "box" : [ 0.2708, 0.503, 0.4317, 0.5349 ]
+  "box" : [ 0.264, 0.4999, 0.4345, 0.5377 ]
 }, {
   "text" : "First up, Coriander's demonstration",
-  "box" : [ 0.1858, 0.5994, 0.3125, 0.647 ]
+  "box" : [ 0.1785, 0.597, 0.3204, 0.6512 ]
 }, {
   "text" : "...fear death no more,\nthanks to my...\n",
   "box" : [ 0.3825, 0.5916, 0.5792, 0.6301 ]
 }, {
   "text" : "Ladies & Gentlemen...",
-  "box" : [ 0.2725, 0.6861, 0.3817, 0.7313 ]
+  "box" : [ 0.2664, 0.6832, 0.3817, 0.7354 ]
 }, {
   "text" : "...Potion of ZOMBIFICATION!",
-  "box" : [ 0.6883, 0.6042, 0.8667, 0.6428 ]
+  "box" : [ 0.6769, 0.5998, 0.8737, 0.6491 ]
 }, {
   "text" : "Clap Clap Clap Clap Clap Clap",
   "box" : [ 0.59, 0.8837, 0.7917, 0.9681 ]

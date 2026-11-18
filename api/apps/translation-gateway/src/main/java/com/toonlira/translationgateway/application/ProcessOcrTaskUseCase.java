@@ -165,7 +165,9 @@ public class ProcessOcrTaskUseCase {
             }
             // Same assembly as the offline corpus replay (CorpusOcrReplayTest), so the regression gate sees what ships.
             var regions = paragraphs == null
-                ? com.toonlira.translationgateway.domain.ocr.OcrAssembly.group(read, bubbles, job.sourceLanguage(), media.widthPx(), media.heightPx())
+                ? com.toonlira.translationgateway.domain.ocr.OcrAssembly.fitTextBoxes(
+                    com.toonlira.translationgateway.domain.ocr.OcrAssembly.group(read, bubbles, job.sourceLanguage(), media.widthPx(), media.heightPx()),
+                    detections == null ? List.of() : detections.texts())
                 : OcrRegionGrouper.group(paragraphs, job.sourceLanguage(), media.widthPx(), media.heightPx(), bubbles);
             // Doubtful speeches are re-read whole, after grouping: context is what lets the provider read "THIS OS"
             // where a lone "05..." fragment stays ambiguous.

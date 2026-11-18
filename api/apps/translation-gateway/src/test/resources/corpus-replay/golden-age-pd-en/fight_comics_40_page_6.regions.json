@@ -12,7 +12,7 @@
   "box" : [ 0.0365, 0.3433, 0.1177, 0.3645 ]
 }, {
   "text" : "BACK-BACK! AWAY\nWARUMBI FOOLS!\n",
-  "box" : [ 0.0365, 0.3943, 0.2448, 0.4135 ]
+  "box" : [ 0.0325, 0.3898, 0.2506, 0.4165 ]
 }, {
   "text" : "BOTH TIGER GIRL AND\nMORGO'S MEN BEING TOO\nMUCH FOR THEM, THE\nWARUMBI GO.\n",
   "box" : [ 0.3031, 0.3447, 0.5594, 0.3865 ]
@@ -30,17 +30,17 @@
   "box" : [ 0.701, 0.266, 0.876, 0.2972 ]
 }, {
   "text" : "THE WAY IS\nDIFFICULT!\n",
-  "box" : [ 0.0865, 0.6652, 0.2198, 0.6858 ]
+  "box" : [ 0.081, 0.6614, 0.2264, 0.6888 ]
 }, {
   "text" : "IN MORGO'S GROTTO.\n",
   "box" : [ 0.3281, 0.661, 0.5688, 0.6738 ]
 }, {
   "text" : "WHAT DO YOU WANT?",
-  "box" : [ 0.6115, 0.6106, 0.7313, 0.6369 ]
+  "box" : [ 0.6059, 0.6071, 0.736, 0.6369 ]
 }, {
   "text" : "HH\n",
   "box" : [ 0.1427, 0.7255, 0.1958, 0.7532 ]
 }, {
   "text" : "I AM TIGER GIRL.. WHAT ARE YOU DOING? WHY DO THESE ONES BREATHE SMOKE?",
-  "box" : [ 0.4229, 0.7099, 0.6042, 0.7709 ]
+  "box" : [ 0.4166, 0.7066, 0.607, 0.7711 ]
 } ]
