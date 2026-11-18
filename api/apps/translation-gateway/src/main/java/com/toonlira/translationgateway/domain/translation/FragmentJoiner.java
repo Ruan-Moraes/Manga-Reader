@@ -48,7 +48,7 @@ public final class FragmentJoiner {
                     text.append(ordered.get(k).sourceText().strip());
                     if (k > i) rest.add(ordered.get(k).id());
                 }
-                regions.add(new TranslationRequest.Region(first.id(), first.readingOrder(), text.toString()));
+                regions.add(new TranslationRequest.Region(first.id(), first.readingOrder(), text.toString(), first.kind()));
                 followers.put(first.id(), List.copyOf(rest));
                 i = end;
             } else {

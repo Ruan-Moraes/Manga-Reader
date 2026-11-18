@@ -1051,6 +1051,30 @@ class RenderingPersistenceTest {
         assertThat(rendering.find(locked.jobRef()).status()).isEqualTo(JobStatus.FAILED);
     }
 
+    @Test
+    void theTranslationStageSeesTheLayoutArtifactOnlyWhenLayoutSucceeded() {
+        var withLayout = newJob();
+        assertThat(ocr.claim(withLayout.jobRef(), now)).isEqualTo(OcrJobRepository.Claim.STARTED);
+        assertThat(ocr.completeWithLayout(withLayout.id(), "private/ocr/" + withLayout.id(), "a".repeat(64), now,
+            new com.toonlira.translationgateway.domain.layout.LayoutOutcome(
+                com.toonlira.translationgateway.domain.layout.LayoutOutcome.Status.SUCCEEDED, "private/layout/" + withLayout.id(),
+                "c".repeat(64), null, now, now))).isTrue();
+        var failed = newJob();
+        assertThat(ocr.claim(failed.jobRef(), now)).isEqualTo(OcrJobRepository.Claim.STARTED);
+        assertThat(ocr.completeWithLayout(failed.id(), "private/ocr/" + failed.id(), "a".repeat(64), now,
+            new com.toonlira.translationgateway.domain.layout.LayoutOutcome(
+                com.toonlira.translationgateway.domain.layout.LayoutOutcome.Status.FAILED, null, null, "layout-unavailable",
+                now, now))).isTrue();
+
+        var seen = translation.find(withLayout.jobRef());
+        assertThat(seen.layoutObjectKey()).isEqualTo("private/layout/" + withLayout.id());
+        assertThat(seen.layoutSha256()).isEqualTo("c".repeat(64));
+        assertThat(seen.imageSha256()).isEqualTo(rendering.find(withLayout.jobRef()).source().sha256());
+        var none = translation.find(failed.jobRef());
+        assertThat(none.layoutObjectKey()).isNull();
+        assertThat(none.layoutSha256()).isNull();
+    }
+
     @ParameterizedTest
     @ValueSource(strings = {"OCR", "TRANSLATING", "RENDERING"})
     void staleScanCannotLockTheStageOfAJobItSkipped(String stage) throws Exception {

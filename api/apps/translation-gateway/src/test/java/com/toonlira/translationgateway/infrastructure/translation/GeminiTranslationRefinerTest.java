@@ -72,6 +72,27 @@ class GeminiTranslationRefinerTest {
     }
 
     @Test
+    void theLayoutKindOfARegionTravelsOnlyWhenTheDetectorSawIt() {
+        var page = new TranslationRequest(UUID.randomUUID(), new LanguagePair("en", "pt-BR"), List.of(
+            new TranslationRequest.Region(first, 0, "WHAT ARE YOU DOING", "unknown"),
+            new TranslationRequest.Region(second, 1, "I use Ubuntu")));
+        var calls = new ArrayList<String[]>();
+        var refiner = new GeminiTranslationRefiner((system, user) -> {
+            calls.add(new String[] {system, user});
+            return """
+                {"regions":[{"id":"1","translation":"O QUE VOCÊ ESTÁ FAZENDO"},{"id":"2","translation":"Eu uso Ubuntu"}]}""";
+        }, 12_000);
+
+        refiner.refine(page, machine);
+
+        assertThat(calls.getFirst()[0]).contains("\"text_bubble\"", "\"text_free\"", "\"unknown\"");
+        var user = calls.getFirst()[1];
+        assertThat(user).contains("\"kind\":\"unknown\"");
+        // The region without layout carries no kind at all, not a guessed one.
+        assertThat(user.indexOf("\"kind\"")).isEqualTo(user.lastIndexOf("\"kind\""));
+    }
+
+    @Test
     void theOriginalBalloonsLineBreaksAreNotForcedOnTheReviewedText() {
         assertThat(GeminiTranslationRefiner.runningText("ISSO É\nSÁBIO,\nTIGER\r\nGIRL?")).isEqualTo("ISSO É SÁBIO, TIGER GIRL?");
         assertThat(GeminiTranslationRefiner.runningText("Primeiro parágrafo\nainda.\n\nSegundo.")).isEqualTo("Primeiro parágrafo ainda.\n\nSegundo.");

@@ -141,8 +141,11 @@ public class ProcessTranslationTaskUseCase {
         if (!job.jobRef().equals(manifest.jobRef()) || !pair.source().equals(manifest.sourceLanguage())) {
             throw new GatewayException(GatewayErrorCode.TRANSLATION_INVALID_REQUEST, 422, false);
         }
+        // The detector's class of each region (balloon, free text, none), when the layout artifact describes this page.
+        var kinds = LayoutHints.read(storage, job.layoutObjectKey(), job.layoutSha256(), job.imageSha256(), job.ocrSha256()).kinds();
         return new TranslationRequest(job.jobRef(), pair, manifest.regions().stream()
-            .map(region -> new TranslationRequest.Region(region.id(), region.readingOrder(), region.sourceText())).toList());
+            .map(region -> new TranslationRequest.Region(region.id(), region.readingOrder(), region.sourceText(),
+                kinds.get(region.id()))).toList());
     }
 
     private void processClaimed(TranslationJobRepository.WorkItem job, TranslationRequest request,

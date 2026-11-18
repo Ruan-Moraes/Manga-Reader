@@ -17,7 +17,13 @@ public record TranslationRequest(UUID jobRef, LanguagePair pair, List<Region> re
     @Override
     public String toString() { return "TranslationRequest[redacted]"; }
 
-    public record Region(UUID id, int readingOrder, String sourceText) {
+    /**
+     * {@code kind} is the layout detector's class of the region ("text_bubble", "text_free" or "unknown"), or null
+     * when the page has no layout: context for the language review, never a reason to drop text.
+     */
+    public record Region(UUID id, int readingOrder, String sourceText, String kind) {
+        public Region(UUID id, int readingOrder, String sourceText) { this(id, readingOrder, sourceText, null); }
+
         @Override
         public String toString() { return "TranslationRequest.Region[redacted]"; }
     }

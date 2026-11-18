@@ -369,6 +369,47 @@ class ProcessTranslationTaskUseCaseTest {
         verify(provider, times(1)).translate(any());
     }
 
+    @ParameterizedTest
+    @ValueSource(strings = {"matching", "foreign", "tampered", "absent"})
+    void theReviewLearnsEachRegionsKindOnlyFromThisPagesLayout(String layout) throws Exception {
+        var balloon = region(0, "Hello");
+        var drawn = region(1, "WHAT");
+        var fixture = fixture(List.of(balloon, drawn));
+        var image = "c".repeat(64);
+        var json = """
+            {"imageSha256":"%s","ocrManifestSha256":"%s","bubbles":[],
+             "regionKinds":[{"regionId":"%s","kind":"text_bubble"},{"regionId":"%s","kind":"unknown"}]}"""
+            .formatted(image, layout.equals("foreign") ? "d".repeat(64) : fixture.job().ocrSha256(), balloon.id(), drawn.id());
+        var file = Files.createTempFile(temporary, "layout-", ".json");
+        Files.writeString(file, json);
+        var hash = java.util.HexFormat.of().formatHex(java.security.MessageDigest.getInstance("SHA-256").digest(Files.readAllBytes(file)));
+        var key = "private/layout/fixture.json";
+        new LocalObjectStorageAdapter(fixture.properties()).store(key, file, "application/json", hash, NOW);
+        if (layout.equals("tampered")) Files.writeString(temporary.resolve(key), json.replace("unknown", "text_free"));
+        var job = fixture.job();
+        var withLayout = new TranslationJobRepository.WorkItem(job.id(), job.jobRef(), job.status(), job.sourceLanguage(),
+            job.targetLanguage(), job.ocrObjectKey(), job.ocrSha256(), null, null, null, null, image,
+            layout.equals("absent") ? null : key, layout.equals("absent") ? null : hash);
+        when(fixture.persistence().find(job.jobRef())).thenReturn(withLayout);
+        when(fixture.persistence().claim(eq(job.jobRef()), any())).thenReturn(TranslationJobRepository.Claim.STARTED);
+        when(fixture.persistence().complete(eq(job.id()), any(), any(), any())).thenReturn(true);
+        var seen = new java.util.ArrayList<String>();
+        TranslationRefinerPort refiner = (request, translated) -> {
+            request.regions().forEach(region -> seen.add(region.kind()));
+            return translated;
+        };
+
+        var provider = mock(TranslationPort.class);
+        when(provider.translate(any())).thenAnswer(call -> new TranslationResponse(((TranslationRequest) call.getArgument(0))
+            .regions().stream().map(region -> new TranslationResponse.Region(region.id(), "alvo")).toList()));
+
+        worker(fixture.persistence(), provider, refiner, fixture.properties()).execute(job.jobRef());
+
+        if (layout.equals("matching")) assertThat(seen).containsExactly("text_bubble", "unknown");
+        else assertThat(seen).containsExactly(null, null);
+        verify(fixture.persistence()).complete(eq(job.id()), any(), any(), eq(NOW));
+    }
+
     private Fixture fixture(List<OcrManifest.Region> regions) throws Exception {
         return fixture(regions, "en");
     }

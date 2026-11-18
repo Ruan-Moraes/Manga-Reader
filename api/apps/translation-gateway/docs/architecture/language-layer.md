@@ -40,6 +40,16 @@ palavra e nunca reescreve as reticências sintéticas dos seguidores nem separa 
   literais (nomes de produto, URLs, `$VARIAVEIS`) como estão; o texto das regiões é dado, não instrução.
 - Entrada (turno do usuário, JSON): `{sourceLanguage, targetLanguage, regions:[{id, source, translation}]}`
   em ordem de leitura. Os `id` são ordinais curtos (`"1"`, `"2"`…): os UUIDs das regiões não vão ao modelo.
+- Cada região pode levar `kind`, a classe que o detector de layout deu a ela (`LayoutInterpreter`):
+  - `text_bubble`: dentro de balão;
+  - `text_free`: fora de balão, como narração, placa ou som;
+  - `unknown`: o detector não viu texto ali, como letreiramento desenhado na arte.
+
+  O prompt trata `kind` como pista da imagem, não como certeza; quem decide é o texto. Um grito letreirado de
+  `kind` `unknown` continua sendo fala.
+
+  A tradução lê o mesmo artefato de layout que o render (`LayoutHints`), só quando ele descreve esta imagem e
+  este manifesto de OCR. Sem layout (falhou ou está desligado), a região vai sem `kind`, como antes.
 - Saída exigida: `{regions:[{id, source|null, translation}]}`.
 
 ## Validação e fallback

@@ -28,7 +28,10 @@ public final class GeminiTranslationRefiner implements TranslationRefinerPort {
         You review the machine translation of one comic page (manga, manhwa or manhua) from %s to %s.
         The input is JSON: the page's text regions (speech balloons, captions, signs, sound effects) in reading
         order, each with an "id", the OCR reading of the original text ("source") and the machine translation
-        ("translation").
+        ("translation"). A region may also have a "kind", what a layout detector saw there: "text_bubble" (text inside
+        a speech balloon), "text_free" (text outside balloons: narration boxes, signs, labels, sound effects) or
+        "unknown" (the detector saw no text there: usually lettering drawn into the artwork, big hand-lettered words
+        or sound effects). The kind is a hint from the image, not a certainty; the text itself decides.
 
         For every region return:
         - "id": the same id.
@@ -50,8 +53,9 @@ public final class GeminiTranslationRefiner implements TranslationRefinerPort {
           from one region to another, even when a sentence continues in the next balloon.
         - Copy product names, URLs, $VARIABLES and other literals exactly as they are written in the source.
         - Sound effects and onomatopoeia keep the machine translation as it is. A line that reads as words is speech,
-          even when it is hand-lettered big or outside a balloon: a shout like "I'M SO SICK OF THIS!!" is translated
-          as what the character says, never kept or rendered as a sound.
+          even when it is hand-lettered big, outside a balloon or of kind "unknown": a shout like "I'M SO SICK OF
+          THIS!!" is translated as what the character says, never kept or rendered as a sound. A "text_bubble"
+          region is almost always speech or thought.
         - Grammatical gender and number agree with the word they belong to, never with the speaker's gender; words
           about a person take the gender the page shows for that person.
         - Never drop or soften part of the meaning: every element of the source line, including each word of a fixed
@@ -166,8 +170,9 @@ public final class GeminiTranslationRefiner implements TranslationRefinerPort {
         var regions = root.putArray("regions");
         for (int index = 0; index < request.regions().size(); index++) {
             var region = request.regions().get(index);
-            regions.addObject().put("id", Integer.toString(index + 1)).put("source", region.sourceText())
+            var entry = regions.addObject().put("id", Integer.toString(index + 1)).put("source", region.sourceText())
                 .put("translation", machine.get(region.id()));
+            if (region.kind() != null) entry.put("kind", region.kind());
         }
         // Only the chapter's names this page contains: the rest says nothing about it.
         var page = request.regions().stream().map(TranslationRequest.Region::sourceText).reduce("", (a, b) -> a + "\n" + b);

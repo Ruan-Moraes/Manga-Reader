@@ -51,7 +51,6 @@ public class ProcessRenderingTaskUseCase {
     private final ObjectProvider<RenderPort> renderer;
     private final GatewayProperties properties;
     private final Clock clock;
-    private static final tools.jackson.databind.ObjectMapper LAYOUT_JSON = new tools.jackson.databind.ObjectMapper();
     private final CleanupLifecycleObjectsUseCase lifecycle;
     private final com.toonlira.translationgateway.application.port.LexiconPort lexicons;
 
@@ -143,7 +142,8 @@ public class ProcessRenderingTaskUseCase {
         var translationBytes = readVerified(job.translationObjectKey(), job.translationSha256(), MAX_TRANSLATION_MANIFEST_BYTES);
         var translation = translationManifests.decode(translationBytes, job.translationSha256(), translationRequest, job.ocrSha256());
         var request = RenderRequest.create(job.source(), ocr, translation, job.ocrSha256(), job.translationSha256(), policy);
-        var hints = layoutHints(job);
+        // Hints only when the layout artifact describes this very image and OCR manifest.
+        var hints = LayoutHints.read(storage, job.layoutObjectKey(), job.layoutSha256(), job.source().sha256(), job.ocrSha256());
         request = request.withBubbles(hints.bubbles());
         // Which regions read as speech/captions (vs sound effects): a renderer that can inpaint may retype them
         // over reconstructed artwork; the others keep their lettering.
@@ -154,41 +154,6 @@ public class ProcessRenderingTaskUseCase {
             request, lexicon, hints.kinds())).withLetteringHints(com.toonlira.translationgateway.domain.rendering.CaptionFilter
             .letterings(request, lexicon, hints.kinds())).withDrawnHints(com.toonlira.translationgateway.domain.rendering.CaptionFilter
             .drawn(request, lexicon, hints.kinds()));
-    }
-
-    /** What the layout artifact tells the renderer: balloon boxes and the detector class of each OCR region. */
-    record LayoutHints(List<com.toonlira.translationgateway.domain.layout.LayoutBox> bubbles, java.util.Map<UUID, String> kinds) {
-        static final LayoutHints NONE = new LayoutHints(List.of(), java.util.Map.of());
-    }
-
-    /**
-     * Hints from the layout artifact, only when it describes this very image and OCR manifest. Best effort: a
-     * missing, unreadable or foreign artifact gives no hints and never fails rendering.
-     */
-    private LayoutHints layoutHints(RenderingJobRepository.WorkItem job) {
-        if (job.layoutObjectKey() == null || job.layoutSha256() == null) return LayoutHints.NONE;
-        try {
-            var bytes = readVerified(job.layoutObjectKey(), job.layoutSha256(), com.toonlira.translationgateway.domain.layout.LayoutParameters.MAX_BYTES);
-            var root = LAYOUT_JSON.readTree(bytes);
-            if (!job.source().sha256().equals(root.path("imageSha256").asText())
-                || !job.ocrSha256().equals(root.path("ocrManifestSha256").asText())) return LayoutHints.NONE;
-            var boxes = new java.util.ArrayList<com.toonlira.translationgateway.domain.layout.LayoutBox>();
-            for (var bubble : root.path("bubbles")) {
-                var b = bubble.path("bounds");
-                boxes.add(new com.toonlira.translationgateway.domain.layout.LayoutBox(b.path("left").asDouble(),
-                    b.path("top").asDouble(), b.path("right").asDouble(), b.path("bottom").asDouble()));
-                if (boxes.size() > 256) return LayoutHints.NONE;
-            }
-            var kinds = new java.util.HashMap<UUID, String>();
-            for (var kind : root.path("regionKinds")) {
-                var value = kind.path("kind").asText();
-                if (!java.util.Set.of("text_bubble", "text_free", "unknown").contains(value)) return LayoutHints.NONE;
-                kinds.put(UUID.fromString(kind.path("regionId").asText()), value);
-            }
-            return new LayoutHints(List.copyOf(boxes), java.util.Map.copyOf(kinds));
-        } catch (RuntimeException | IOException unusable) {
-            return LayoutHints.NONE;
-        }
     }
 
     private RenderPolicy policy() {
