@@ -146,11 +146,11 @@
     "regions" : [ {
       "overflow" : false,
       "font" : 21,
-      "residualInk" : 0
+      "residualInk" : 9
     }, {
       "overflow" : false,
       "font" : 14,
-      "residualInk" : 0
+      "residualInk" : 2
     }, {
       "overflow" : true,
       "font" : 0,
@@ -170,7 +170,7 @@
     }, {
       "overflow" : false,
       "font" : 25,
-      "residualInk" : 0
+      "residualInk" : 13
     }, {
       "overflow" : true,
       "font" : 0,
@@ -198,14 +198,14 @@
     }, {
       "overflow" : false,
       "font" : 16,
-      "residualInk" : 0
+      "residualInk" : 36
     }, {
       "overflow" : false,
       "font" : 27,
       "residualInk" : 0
     }, {
-      "overflow" : false,
-      "font" : 67,
+      "overflow" : true,
+      "font" : 0,
       "residualInk" : 0
     }, {
       "overflow" : true,

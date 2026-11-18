@@ -146,3 +146,24 @@ No portão, 31 falas cresceram (por exemplo, 12→21, 15→23, 27→37). Nenhuma
   continua preso ao papel liso e ao balão detectado.
 - Dois balões vizinhos com a mesma letra podem sair em tamanhos diferentes quando só um deles alcança o piso
   ("Sério!?" 21 ao lado de "Ninguém?" 13, es p03).
+
+## Caixa redesenhada não engole outros textos (2026-11-18)
+
+No Ubunchu! p06, o OCR juntou num bloco só os rótulos de três telas desenhadas ("72個…firefox…gnome-panel").
+O filtro tratou o bloco como grito, e ele foi apagado e redesenhado por cima da arte de três quadros, cortando os
+balões dentro dele ("Plugins ou co-").
+
+Um letreiramento de verdade não contém outros balões. Agora, uma região que seria reconstruída sobre a arte e cuja
+caixa contém metade ou mais da caixa de outra região de texto fica com o original (`swallows`). As regiões de
+dentro são desenhadas normalmente.
+
+No portão, o sinal separa sem ambiguidade:
+
+- o bloco do p06 contém 6 regiões inteiras;
+- entre todas as outras regiões reconstruídas, a maior sobreposição com um vizinho é de 32%, e nenhum vizinho fica
+  pela metade dentro.
+
+Só o p06 mudou.
+
+**Limite:** "[全般 DNS ホスト] 有線接続…" (texto de tela num quadro só) continua sendo tratado como grito. O tamanho de
+letra não o separa dos gritos reais: 1,48× a mediana da página, contra 1,52× de um grito do corpus.

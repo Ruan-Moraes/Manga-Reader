@@ -433,6 +433,28 @@ class PageRasterPainterTest {
     }
 
     @Test
+    void textRebuiltOverTheArtNeverSwallowsOtherTextRegions() {
+        // Labels of a drawn screen the OCR joined into one box over the art, with a balloon inside that box: rebuilding
+        // the box would erase the balloon and the art around it. The joined box keeps its original; the balloon is drawn.
+        var image = artwork();
+        var balloonLeft = 150; var balloonTop = 90;
+        for (int y = balloonTop; y < balloonTop + 40; y++) for (int x = balloonLeft; x < balloonLeft + 70; x++) image.setRGB(x, y, 0xffffffff);
+        for (int x0 = balloonLeft + 10; x0 < balloonLeft + 60; x0 += 8) for (int y = balloonTop + 12; y < balloonTop + 28; y++)
+            for (int x = x0; x < x0 + 3; x++) image.setRGB(x, y, 0xff000000);
+        var joined = CleanBoxPainterTest.rectangle(40 / 360.0, 30 / 220.0, 320 / 360.0, 190 / 220.0);
+        var balloon = CleanBoxPainterTest.rectangle((balloonLeft + 4) / 360.0, (balloonTop + 6) / 220.0,
+            (balloonLeft + 66) / 360.0, (balloonTop + 34) / 220.0);
+        var calls = new java.util.ArrayList<int[]>();
+        Inpainter recorder = (raster, box, quad) -> { calls.add(box); return true; };
+        var request = page(image, List.of(joined, balloon), List.of("Atualizações recomendadas do sistema", "Oi"), "en",
+            List.of("Recommended system updates", "Hi")).withCaptionHints(Set.of(new UUID(0, 1)));
+        var placements = new PageRasterPainter(FONTS, recorder).paint(image, request);
+        assertThat(placements.get(0).overflow()).isTrue();
+        assertThat(calls).isEmpty();
+        assertThat(placements.get(1).overflow()).isFalse();
+    }
+
+    @Test
     void speechOverArtworkIsInpaintedAndRetypedWithAnOutlineOnlyWhenHinted() {
         var polygon = CleanBoxPainterTest.rectangle(.3, .3, .7, .7); // x 108..252, y 66..154
         var calls = new java.util.ArrayList<int[]>();

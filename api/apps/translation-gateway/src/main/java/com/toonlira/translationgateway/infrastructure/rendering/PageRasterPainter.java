@@ -144,6 +144,12 @@ public final class PageRasterPainter {
             plans[i] = compact(image, regions, i, plans, request, cap);
         }
         for (int i = 0; i < plans.length; i++) if (lettering[i]) plans[i] = letteringPlans[i];
+        // Text rebuilt over the art is one lettering: a box that holds most of other text regions is text the OCR joined
+        // from several places (labels of drawn screens side by side, across panels), and rebuilding it would erase those
+        // regions and the art between them. It keeps its original; the regions inside are drawn as usual.
+        for (int i = 0; i < plans.length; i++) {
+            if (inpaint[i] && plans[i] != null && swallows(regions, i)) plans[i] = null;
+        }
         // Halo sets are computed on the untouched raster, so no region erases text another one already drew.
         var halos = new ArrayList<List<Integer>>(plans.length);
         for (int i = 0; i < plans.length; i++) {
@@ -348,6 +354,23 @@ public final class PageRasterPainter {
         var target = request.pair().target();
         var plan = compose(text, target, padded, policy, cap, grown, !grown.equals(start), false, minimum, false, true);
         return plan != null ? plan : compose(text, target, padded, policy, cap, grown, !grown.equals(start), false, minimum, true, true);
+    }
+
+    /** Share of another region's box inside a rebuilt box from which that region counts as swallowed. */
+    static final double SWALLOWED_SHARE = .5;
+
+    /** Whether region {@code i}'s box holds at least {@link #SWALLOWED_SHARE} of another region's box. */
+    static boolean swallows(List<CleanBoxPainter.CleanRegion> regions, int i) {
+        var outer = regions.get(i).polygon().bounds();
+        for (int j = 0; j < regions.size(); j++) {
+            if (j == i) continue;
+            var inner = regions.get(j).polygon().bounds();
+            long width = Math.max(0, Math.min(outer.right(), inner.right()) - Math.max(outer.left(), inner.left()));
+            long height = Math.max(0, Math.min(outer.bottom(), inner.bottom()) - Math.max(outer.top(), inner.top()));
+            long area = (long) (inner.right() - inner.left()) * (inner.bottom() - inner.top());
+            if (area > 0 && width * height >= SWALLOWED_SHARE * area) return true;
+        }
+        return false;
     }
 
     /** Median-relative ceiling so one balloon cannot be typeset several times larger than its neighbours. */
