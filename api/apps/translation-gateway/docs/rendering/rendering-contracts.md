@@ -102,6 +102,18 @@ JSON UTF-8, versão `1.1` (2026-11-15: campo `kept`), separado dos artefatos OCR
   A V11 acrescenta `rendered_text_small_count` (das regiões desenhadas, quantas ficaram pequenas demais), com
   CHECK entre 0 e as desenhadas, e só junto das contagens da V10. Linhas anteriores à V11 ficam nulas e não
   reportam letra pequena.
+- **Sem `LEFTOVER_TEXT` (calibrado em 2026-11-18, não entrou no contrato).** A ideia era marcar a página quando a
+  letra original continua visível depois do LaMa. A medida foi: dos pixels de tinta (luma abaixo de
+  min(110, papel − 60)) dentro da máscara que o LaMa reconstrói, a fração que voltou igual (distância de cor < 40).
+  Ela foi rodada com o LaMa real nas 66 páginas fixture por `LeftoverCalibrationProbe`
+  (`LEFTOVER_PROBE=<pasta>`). Nenhum limiar separa bom de ruim:
+  - Jungle 73 sai limpo e mede 0,70: o modelo refaz igual o cabelo e as linhas de desenho dentro da máscara.
+  - A faixa preta de Planet 73 mede 0,51, e nem é sobra de letra: é fundo escuro refeito sob o texto.
+  - A sobra que se vê de fato (letreiramento japonês grande ao lado da tradução, Ubunchu p03) fica fora do
+    polígono do OCR, portanto fora da máscara, e mede 0,001.
+
+  O defeito real é de cobertura do polígono, não de inpainting. Um código no contrato só faz sentido com uma
+  medida da letra fora do polígono, que hoje não existe.
 
 Política de composição (`clean-box-1.1`+, auditoria Ubunchu! 2026-11-14):
 região cujo texto não cabe (`overflow=true`) **não é limpa** — os pixels
