@@ -93,6 +93,16 @@ class ChapterMemoryServiceTest {
     }
 
     @Test
+    void namesAReviewUsedAreLearnedForTheNextPagesOfTheChapterOnly() {
+        var memory = new Memory();
+        var service = service(memory, new Terms());
+        service.learn(job(CHAPTER), PAIR, Map.of("ミント", "Menta", "x".repeat(65), "too long", "Rua", "dois\nlinhas"));
+        assertThat(memory.terms).isEqualTo(Map.of("ミント", "Menta"));
+        service.learn(job(null), PAIR, Map.of("セージ", "Sálvia"));
+        assertThat(memory.terms).doesNotContainKey("セージ");
+    }
+
+    @Test
     void aTermAnotherPageDecidedFirstKeepsItsTranslation() {
         var memory = new Memory();
         memory.terms.put("Basil", "Basil");

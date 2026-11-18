@@ -156,7 +156,7 @@ public class ProcessTranslationTaskUseCase {
             var fragments = FragmentJoiner.of(request);
             var response = request.regions().isEmpty()
                 ? new TranslationResponse(List.of())
-                : fragments.expand(refineOrKeep(fragments.request(), machine(job, fragments.request())));
+                : fragments.expand(translatePage(job, fragments.request()));
             requireOriginal(job);
             var result = validator.validateResponse(request, response);
             var encoded = translationManifests.encode(result, job.ocrSha256());
@@ -205,10 +205,27 @@ public class ProcessTranslationTaskUseCase {
      * can neither rewrite them nor split the joined word again. Any failure (timeout, quota, a reply that is not a
      * review of this page) keeps the machine translation: the layer can improve a page, never fail it.
      */
-    /** Machine translation of the page, keeping the terms its chapter already decided (none without a chapter). */
-    private TranslationResponse machine(TranslationJobRepository.WorkItem job, TranslationRequest request) {
+    /**
+     * Machine translation of the page keeping the terms its chapter already decided, then the optional review, which
+     * keeps them too and reports the page's names for the chapter's next pages. Without a chapter: as always.
+     */
+    private TranslationResponse translatePage(TranslationJobRepository.WorkItem job, TranslationRequest request) {
         var decided = chapters.decide(job, request);
-        return decided.isEmpty() ? translation.translate(request) : translation.translate(request, decided);
+        boolean onPage = decided.keySet().stream().anyMatch(term -> request.regions().stream()
+            .anyMatch(region -> region.sourceText().toUpperCase(java.util.Locale.ROOT).contains(term.toUpperCase(java.util.Locale.ROOT))));
+        var machine = onPage ? translation.translate(request, decided) : translation.translate(request);
+        if (job.contextRef() == null || refiner == TranslationRefinerPort.NONE) return refineOrKeep(request, machine);
+        try {
+            var review = refiner.refine(request, machine, decided);
+            if (review != null && review.response() != null && sameRegions(machine, review.response())) {
+                chapters.learn(job, request.pair(), review.names());
+                return review.response();
+            }
+            LOG.warn("translation refine discarded: regions={} reply did not match the page", request.regions().size());
+        } catch (RuntimeException error) {
+            LOG.warn("translation refine skipped: regions={} cause={}", request.regions().size(), error.getClass().getSimpleName());
+        }
+        return machine;
     }
 
     private TranslationResponse refineOrKeep(TranslationRequest request, TranslationResponse translated) {

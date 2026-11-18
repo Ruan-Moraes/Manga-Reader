@@ -14,7 +14,7 @@ import java.util.Map;
 
 /** Gemini on Vertex AI under the worker's own identity (ADC); one attempt, bounded by the configured timeout. */
 final class VertexGeminiClient implements GeminiClient, AutoCloseable {
-    /** {regions:[{id, source|null, translation}]}, the only shape the refiner parses. */
+    /** {regions:[{id, source|null, translation}], names?:[{source, translation}]}, the only shape the refiner parses. */
     static final Schema RESPONSE_SCHEMA = Schema.builder().type(Type.Known.OBJECT)
         .properties(Map.of("regions", Schema.builder().type(Type.Known.ARRAY).items(Schema.builder().type(Type.Known.OBJECT)
             .properties(Map.of(
@@ -22,7 +22,12 @@ final class VertexGeminiClient implements GeminiClient, AutoCloseable {
                 "source", Schema.builder().type(Type.Known.STRING).nullable(true).build(),
                 "translation", Schema.builder().type(Type.Known.STRING).build()))
             .propertyOrdering("id", "source", "translation")
-            .required("id", "translation").build()).build()))
+            .required("id", "translation").build()).build(),
+            "names", Schema.builder().type(Type.Known.ARRAY).items(Schema.builder().type(Type.Known.OBJECT)
+                .properties(Map.of(
+                    "source", Schema.builder().type(Type.Known.STRING).build(),
+                    "translation", Schema.builder().type(Type.Known.STRING).build()))
+                .required("source", "translation").build()).build()))
         .required("regions").build();
     static final int MAX_OUTPUT_TOKENS = 16_384;
 

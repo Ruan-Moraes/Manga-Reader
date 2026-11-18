@@ -41,6 +41,27 @@ public final class ChapterMemoryService {
         this.retention = retention;
     }
 
+    /**
+     * Stores the proper names a review used on a page (any script, see TranslationRefinerPort.Review); names another
+     * page decided first keep their translation. Never fails the page.
+     */
+    public void learn(TranslationJobRepository.WorkItem job, com.toonlira.translationgateway.domain.translation.LanguagePair pair,
+                      Map<String, String> names) {
+        if (memory == null || job.contextRef() == null || job.installationId() == null || names.isEmpty()) return;
+        try {
+            var now = clock.instant();
+            var kept = new HashMap<String, String>();
+            names.forEach((source, target) -> {
+                if (source != null && target != null && !source.isBlank() && !target.isBlank()
+                    && source.strip().length() <= ChapterTerms.MAX_TERM_LENGTH && target.strip().length() <= 2 * ChapterTerms.MAX_TERM_LENGTH
+                    && source.lines().count() == 1 && target.lines().count() == 1) kept.put(source.strip(), target.strip());
+            });
+            memory.remember(job.installationId(), job.contextRef(), pair, kept, kept.keySet(), now, now.plus(retention));
+        } catch (RuntimeException error) {
+            LOG.warn("chapter memory not updated: {}", FailureDiagnostics.describe(error));
+        }
+    }
+
     /** Decided terms (source -> translation) the page must keep; empty without a chapter. */
     public Map<String, String> decide(TranslationJobRepository.WorkItem job, TranslationRequest request) {
         if (memory == null || job.contextRef() == null || job.installationId() == null || request.regions().isEmpty())

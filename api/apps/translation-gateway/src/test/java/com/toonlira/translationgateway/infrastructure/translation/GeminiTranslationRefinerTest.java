@@ -44,6 +44,34 @@ class GeminiTranslationRefinerTest {
     }
 
     @Test
+    void aChapterReviewSendsTheGlossaryThePageUsesAndKeepsOnlyNamesThePageBearsOut() {
+        var page = new TranslationRequest(UUID.randomUUID(), new LanguagePair("ja", "pt-BR"), List.of(
+            new TranslationRequest.Region(first, 0, "バジルが来た"), new TranslationRequest.Region(second, 1, "ミントの町へ")));
+        var mt = new TranslationResponse(List.of(new TranslationResponse.Region(first, "Manjericão chegou"),
+            new TranslationResponse.Region(second, "Para a cidade de Hortelã")));
+        var calls = new ArrayList<String>();
+        var refiner = new GeminiTranslationRefiner((system, user) -> {
+            calls.add(system + "\n" + user);
+            return """
+                {"regions":[{"id":"1","translation":"Basílio chegou"},{"id":"2","translation":"Para a cidade de Menta"}],
+                 "names":[{"source":"ミント","translation":"Menta"},{"source":"バジル","translation":"Manjericão"},
+                          {"source":"セージ","translation":"Sálvia"}]}""";
+        }, 12_000);
+
+        var review = refiner.refine(page, mt, java.util.Map.of("バジル", "Basílio", "タイム", "Tomilho"));
+
+        // Only the chapter's names on this page go out.
+        assertThat(calls.getFirst()).contains("\"glossary\"", "バジル", "Basílio").doesNotContain("タイム");
+        assertThat(review.response().regions()).extracting(TranslationResponse.Region::translatedText)
+            .containsExactly("Basílio chegou", "Para a cidade de Menta");
+        // "ミント"→"Menta" is borne out; "バジル"→"Manjericão" is not in the final text; "セージ" is not on the page.
+        assertThat(review.names()).isEqualTo(java.util.Map.of("ミント", "Menta"));
+        // Without a chapter, the same reply is the same review and no names travel.
+        assertThat(refiner.refine(page, mt).regions()).extracting(TranslationResponse.Region::translatedText)
+            .containsExactly("Basílio chegou", "Para a cidade de Menta");
+    }
+
+    @Test
     void keepsAProtectedLiteralEvenWhenTheModelDropsIt() {
         var refiner = new GeminiTranslationRefiner((system, user) -> """
             {"regions":[{"id":"1","translation":"JANELAS 15 50 PATÉTICO"},{"id":"2","translation":"Eu uso Linux"}]}""", 12_000);

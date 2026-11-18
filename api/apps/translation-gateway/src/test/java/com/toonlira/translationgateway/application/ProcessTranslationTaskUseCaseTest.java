@@ -20,6 +20,7 @@ import com.toonlira.translationgateway.application.port.TranslationRefinerPort;
 import com.toonlira.translationgateway.domain.GatewayErrorCode;
 import com.toonlira.translationgateway.domain.JobStatus;
 import com.toonlira.translationgateway.domain.OcrManifest;
+import com.toonlira.translationgateway.domain.ocr.Lexicon;
 import com.toonlira.translationgateway.domain.translation.TranslationRequest;
 import com.toonlira.translationgateway.domain.translation.TranslationResponse;
 import com.toonlira.translationgateway.infrastructure.storage.LocalObjectStorageAdapter;
@@ -28,6 +29,7 @@ import java.nio.file.Path;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
@@ -126,6 +128,38 @@ class ProcessTranslationTaskUseCaseTest {
 
         assertThat(writtenManifest()).contains("O WINDOWS É TÃO PATÉTICO").doesNotContain("alvo");
         verify(fixture.persistence()).complete(eq(fixture.job().id()), any(), any(), eq(NOW));
+    }
+
+    @Test
+    void aChapterPageSendsItsGlossaryToTheReviewAndLearnsTheNamesTheReviewUsed() throws Exception {
+        var fixture = fixture(List.of(region(0, "source")));
+        var chapter = new TranslationJobRepository.WorkItem(fixture.job().id(), fixture.job().jobRef(), JobStatus.TRANSLATING,
+            "en", "pt-BR", fixture.job().ocrObjectKey(), fixture.job().ocrSha256(), null, null, UUID.randomUUID(), UUID.randomUUID());
+        when(fixture.persistence().find(chapter.jobRef())).thenReturn(chapter);
+        when(fixture.persistence().claim(eq(chapter.jobRef()), any())).thenReturn(TranslationJobRepository.Claim.STARTED);
+        when(fixture.persistence().complete(eq(chapter.id()), any(), any(), any())).thenReturn(true);
+        var memory = mock(com.toonlira.translationgateway.application.port.ChapterMemoryRepository.class);
+        when(memory.find(any(), any(), any(), any())).thenReturn(java.util.Map.of("Basil", "Manjericão"));
+        var glossaries = new ArrayList<java.util.Map<String, String>>();
+        var refiner = new TranslationRefinerPort() {
+            @Override public TranslationResponse refine(TranslationRequest request, TranslationResponse translated) { return translated; }
+            @Override public Review refine(TranslationRequest request, TranslationResponse translated, java.util.Map<String, String> glossary) {
+                glossaries.add(glossary);
+                return new Review(new TranslationResponse(List.of(
+                    new TranslationResponse.Region(translated.regions().getFirst().id(), "revisado"))), java.util.Map.of("Mint", "Menta"));
+            }
+        };
+        when(fixture.persistence().originalAvailable(any(), any())).thenReturn(true);
+        var mapper = GatewayJsonMapper.create();
+        new ProcessTranslationTaskUseCase(fixture.persistence(), new LocalObjectStorageAdapter(fixture.properties()),
+            new OcrManifestService(mapper), new TranslationManifestService(mapper), translatingProvider(), refiner,
+            fixture.properties(), Clock.fixed(NOW, ZoneOffset.UTC), lifecycle, memory, language -> Lexicon.NONE)
+            .execute(chapter.jobRef());
+
+        assertThat(writtenManifest()).contains("revisado");
+        assertThat(glossaries).containsExactly(java.util.Map.of("Basil", "Manjericão"));
+        verify(memory).remember(eq(chapter.installationId()), eq(chapter.contextRef()), any(), eq(java.util.Map.of("Mint", "Menta")),
+            any(), eq(NOW), eq(NOW.plusSeconds(fixture.properties().getDisclosure().getResultRetentionSeconds())));
     }
 
     @Test
