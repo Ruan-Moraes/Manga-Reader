@@ -5,40 +5,35 @@
   "width" : 960,
   "height" : 1451,
   "regions" : [ {
-    "source" : "LRonde\n",
-    "translation" : "LRonde",
-    "kind" : "unknown",
-    "polygon" : [ [ 0.06666666666666667, 0.9241902136457616 ], [ 0.11458333333333333, 0.923501033769814 ], [ 0.11458333333333333, 0.9317711922811854 ], [ 0.06666666666666667, 0.9324603721571331 ] ]
-  }, {
     "source" : "Señorita\n",
-    "translation" : " Señorita",
+    "translation" : "Señorita",
     "kind" : "text_free",
-    "polygon" : [ [ 0.05416666666666667, 0.0833907649896623 ], [ 0.665625, 0.026188835286009647 ], [ 0.6916666666666667, 0.14886285320468642 ], [ 0.08020833333333334, 0.20606478290833907 ] ]
+    "polygon" : [ [ 0.05416666666666667, 0.0833907649896623 ], [ 0.665625, 0.026188835286009647 ], [ 0.6927083333333334, 0.14955203308063406 ], [ 0.08020833333333334, 0.2067539627842867 ] ]
   }, {
     "source" : "by MORGAN HAWKINS",
-    "translation" : " por MORGAN HAWKINS",
+    "translation" : "por MORGAN HAWKINS",
     "kind" : "text_free",
     "polygon" : [ [ 0.10416666666666667, 0.21157822191592005 ], [ 0.23541666666666666, 0.21157822191592005 ], [ 0.23541666666666666, 0.23363197794624396 ], [ 0.10416666666666667, 0.23363197794624396 ] ]
   }, {
     "source" : "RIO\n",
     "translation" : " RIO",
     "kind" : "text_free",
-    "polygon" : [ [ 0.53125, 0.1667815299793246 ], [ 0.8239583333333333, 0.06409372846312887 ], [ 0.8947916666666667, 0.15230875258442453 ], [ 0.603125, 0.2556857339765679 ] ]
+    "polygon" : [ [ 0.53125, 0.1667815299793246 ], [ 0.8229166666666666, 0.06409372846312887 ], [ 0.89375, 0.15230875258442453 ], [ 0.6020833333333333, 0.2549965541006203 ] ]
   }, {
     "source" : "THE NAZI WAR IS\nOVER, BUT THE STRUGGLE\nFOR A FOURTH REICH BEGINS\nLONE MAN KNOWS THE WERE-\nWOLF SECRET AND HE BRINGS\nA VITAL MESSAGE TO SEÑORITA\nRIO YET THE WEREWOLF\nHAS MANY EYES AND EVEN\nNOW, AS RIO WANDERS DOWN\nA DARKENED STREET IN\nNATAL...\n",
-    "translation" : " A guerra nazista acabou, mas a luta por um Quarto Reich começa. Um homem solitário conhece o segredo do lobisomem e traz uma mensagem vital para Señorita Rio; no entanto, o lobisomem tem muitos olhos e, neste exato momento, enquanto Rio caminha por uma rua escura em Natal...",
+    "translation" : "A GUERRA NAZISTA ACABOU, MAS A LUTA POR UM QUARTO REICH COMEÇA! UM HOMEM CONHECE O SEGREDO DO WEREWOLF E TRAZ UMA MENSAGEM VITAL PARA A SEÑORITA RIO. CONTUDO, O WEREWOLF TEM MUITOS OLHOS E MESMO AGORA, ENQUANTO RIO CAMINHA POR UMA RUA ESCURA EM NATAL...",
     "kind" : "text_free",
     "polygon" : [ [ 0.6822916666666666, 0.2129565816678153 ], [ 0.9541666666666667, 0.21157822191592005 ], [ 0.9552083333333333, 0.32598208132322537 ], [ 0.6833333333333333, 0.32736044107512063 ] ]
   }, {
     "source" : "IT'S A DARK STREET, BUT\nI'VE GOT TO MAKE WITH\nTHE SHORT CUT... SAM\nWILL MURDER ME IF I'M\nLATE FOR THE ACT HE\nBILLED ME IN AT THE\nMETROPOLE!\n",
-    "translation" : " A rua é escura, mas tenho que pegar esse atalho... O Sam vai me matar se eu chegar atrasado para o número que ele agendou para mim no Metropole!",
+    "translation" : "É UMA RUA ESCURA, MAS TENHO QUE PEGAR UM ATALHO... O SAM VAI ME MATAR SE EU ME ATRASAR PARA O NÚMERO QUE ELE ME ESCALOU NO METROPOLE!",
     "kind" : "text_bubble",
     "polygon" : [ [ 0.690625, 0.3749138525155066 ], [ 0.9166666666666666, 0.37422467263955894 ], [ 0.9177083333333333, 0.4383184011026878 ], [ 0.6916666666666667, 0.4390075809786354 ] ]
   }, {
-    "source" : "SO SHE COMES! ITS IS SEÑORITA RIO_I MUST NOT FAIL!",
-    "translation" : " Então ela vem! É a Señorita RIO_I não posso falhar!",
+    "source" : "SO SHE COMES! ITS IS SEÑORITA RIO—I MUST NOT FAIL!",
+    "translation" : "LÁ VEM ELA! É A SEÑORITA RIO — NÃO POSSO FALHAR!",
     "kind" : "text_bubble",
-    "polygon" : [ [ 0.6916666666666667, 0.6450723638869745 ], [ 0.8864583333333333, 0.6450723638869745 ], [ 0.8864583333333333, 0.6740179186767746 ], [ 0.6916666666666667, 0.6740179186767746 ] ]
+    "polygon" : [ [ 0.6890792846679688, 0.6429433684608675 ], [ 0.8864583333333333, 0.6429433684608675 ], [ 0.8864583333333333, 0.6757743514709683 ], [ 0.6890792846679688, 0.6757743514709683 ] ]
   } ],
   "bubbles" : [ [ 0.6773335138956705, 0.36257734765355787, 0.9414668401082357, 0.4531892320355574 ], [ 0.6784825642903646, 0.6375340804159847, 0.8952604929606119, 0.6848902107517445 ] ],
   "expect" : {
@@ -48,10 +43,6 @@
       "font" : 0,
       "residualInk" : 0
     }, {
-      "overflow" : true,
-      "font" : 0,
-      "residualInk" : 0
-    }, {
       "overflow" : false,
       "font" : 13,
       "residualInk" : 0
@@ -61,7 +52,7 @@
       "residualInk" : 0
     }, {
       "overflow" : false,
-      "font" : 13,
+      "font" : 12,
       "residualInk" : 240
     }, {
       "overflow" : false,
@@ -69,7 +60,7 @@
       "residualInk" : 0
     }, {
       "overflow" : false,
-      "font" : 13,
+      "font" : 14,
       "residualInk" : 0
     } ]
   }

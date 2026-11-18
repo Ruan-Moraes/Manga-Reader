@@ -11,34 +11,34 @@
     "polygon" : [ [ 0.22416666666666665, 0.018674698795180723 ], [ 0.36833333333333335, 0.0 ], [ 0.37416666666666665, 0.021686746987951807 ], [ 0.22916666666666666, 0.03975903614457831 ] ]
   }, {
     "source" : "¡Eso es! Redimensionado.\n¡Ahora está perfecto!\n",
-    "translation" : " É isso aí! Redimensionado. Agora está perfeito!",
+    "translation" : "É isso aí! Redimensionado. Agora está perfeito!",
     "kind" : "text_bubble",
-    "polygon" : [ [ 0.3933333333333333, 0.02530120481927711 ], [ 0.5958333333333333, 0.02530120481927711 ], [ 0.5958333333333333, 0.05542168674698795 ], [ 0.3933333333333333, 0.05542168674698795 ] ]
+    "polygon" : [ [ 0.3902971649169922, 0.02264681436929358 ], [ 0.5980062357584636, 0.02264681436929358 ], [ 0.5980062357584636, 0.05795243504535721 ], [ 0.3902971649169922, 0.05795243504535721 ] ]
   }, {
     "source" : "No veo qué mal\npodría hacer si llevo\neste árbol fuera de la\nmicrodimensión.\n",
-    "translation" : " Não vejo que mal eu poderia causar se levasse esta árvore para fora da microdimensão.",
+    "translation" : "Não vejo que mal faria se eu levasse esta árvore para fora da microdimensão.",
     "kind" : "text_bubble",
-    "polygon" : [ [ 0.41083333333333333, 0.06927710843373494 ], [ 0.5841666666666666, 0.06927710843373494 ], [ 0.5841666666666666, 0.12771084337349398 ], [ 0.41083333333333333, 0.12771084337349398 ] ]
+    "polygon" : [ [ 0.40406168619791666, 0.06500797041927475 ], [ 0.5897185770670573, 0.06500797041927475 ], [ 0.5897185770670573, 0.13211352796439665 ], [ 0.40406168619791666, 0.13211352796439665 ] ]
   }, {
     "source" : "Solo es un árbol de\nUnidad; no es como un\n«Hechizo de Destrucción».\n",
-    "translation" : " É apenas uma árvore de Unidade; não é como um \"Feitiço de Destruição\".",
+    "translation" : "É apenas uma árvore de Unidade; não é como um \"Feitiço de Destruição\".",
     "kind" : "text_bubble",
     "polygon" : [ [ 0.7066666666666667, 0.0608433734939759 ], [ 0.9275, 0.06144578313253012 ], [ 0.9275, 0.10542168674698796 ], [ 0.7066666666666667, 0.10481927710843374 ] ]
   }, {
     "source" : "Bueno,\n",
-    "translation" : " Bom,",
+    "translation" : "Bom,",
     "kind" : "text_bubble",
     "polygon" : [ [ 0.0775, 0.6469879518072289 ], [ 0.13166666666666665, 0.6475903614457831 ], [ 0.13166666666666665, 0.658433734939759 ], [ 0.0775, 0.6578313253012048 ] ]
   }, {
     "source" : "es hora de desplegar esta microdimensión sobre la realidad y mostrarles cómo de creativo puede ser el Caos.",
-    "translation" : " É hora de desdobrar esta microdimensão sobre a realidade e mostrar a vocês o quão criativo o Caos pode ser.",
+    "translation" : "é hora de desdobrar esta microdimensão sobre a realidade e mostrar a elas o quão criativo o Caos pode ser.",
     "kind" : "text_bubble",
-    "polygon" : [ [ 0.041666666666666664, 0.6746987951807228 ], [ 0.19583333333333333, 0.6746987951807228 ], [ 0.19583333333333333, 0.786144578313253 ], [ 0.041666666666666664, 0.786144578313253 ] ]
+    "polygon" : [ [ 0.0408820374806722, 0.6712111139871988 ], [ 0.1995775858561198, 0.6712111139871988 ], [ 0.1995775858561198, 0.7898952989693148 ], [ 0.0408820374806722, 0.7898952989693148 ] ]
   }, {
-    "source" : "Estoy impaciente por ver qué cara ponen mis madrinas!",
-    "translation" : " Estou ansiosa para ver a cara que as minhas madrinhas vão fazer!",
+    "source" : "¡Estoy impaciente\npor ver qué\ncara ponen mis\nmadrinas!",
+    "translation" : "Mal posso esperar para ver a cara que as minhas madrinhas vão fazer!",
     "kind" : "text_bubble",
-    "polygon" : [ [ 0.050833333333333335, 0.8042168674698795 ], [ 0.19, 0.8042168674698795 ], [ 0.19, 0.863855421686747 ], [ 0.050833333333333335, 0.863855421686747 ] ]
+    "polygon" : [ [ 0.042852624257405596, 0.8017401637801205 ], [ 0.19243927001953126, 0.8017401637801205 ], [ 0.19243927001953126, 0.8677730698183358 ], [ 0.042852624257405596, 0.8677730698183358 ] ]
   }, {
     "source" : "DOooong!!\n",
     "translation" : " DOooong!!",
@@ -46,24 +46,24 @@
     "polygon" : [ [ 0.5641666666666667, 0.6150602409638555 ], [ 0.7316666666666667, 0.6072289156626506 ], [ 0.7341666666666666, 0.6349397590361445 ], [ 0.5666666666666667, 0.6427710843373494 ] ]
   }, {
     "source" : "Mmm... Pimienta ha vuelto.",
-    "translation" : " Mmm... Pimienta está de volta.",
+    "translation" : "Mmm... Pimenta voltou.",
     "kind" : "text_bubble",
-    "polygon" : [ [ 0.5883333333333334, 0.6692771084337349 ], [ 0.7291666666666666, 0.6692771084337349 ], [ 0.7291666666666666, 0.6951807228915663 ], [ 0.5883333333333334, 0.6951807228915663 ] ]
+    "polygon" : [ [ 0.5851710510253906, 0.6658043551157756 ], [ 0.7317379252115885, 0.6658043551157756 ], [ 0.7317379252115885, 0.699240590290851 ], [ 0.5851710510253906, 0.699240590290851 ] ]
   }, {
     "source" : "¡Bravo, Cayena! Tus\nmétodos educativos están\npor fin dando resultados.\n",
-    "translation" : " Parabéns, Cayena! Seus métodos educativos estão finalmente dando resultados.",
+    "translation" : "Bravo, Cayena! Seus métodos educativos finalmente estão dando resultados.",
     "kind" : "text_bubble",
     "polygon" : [ [ 0.6108333333333333, 0.7126506024096385 ], [ 0.8191666666666667, 0.7114457831325302 ], [ 0.82, 0.7560240963855421 ], [ 0.6116666666666667, 0.7572289156626506 ] ]
   }, {
     "source" : "EL KOMONERO\n",
-    "translation" : " EL KOMONERO",
+    "translation" : "EL KOMONERO",
     "kind" : "text_free",
     "polygon" : [ [ 0.4425, 0.869277108433735 ], [ 0.5325, 0.858433734939759 ], [ 0.5341666666666667, 0.8668674698795181 ], [ 0.44416666666666665, 0.8777108433734939 ] ]
   }, {
     "source" : "Gracias, maestra.\n",
-    "translation" : " Obrigada, professora.",
+    "translation" : "Obrigada, mestra.",
     "kind" : "text_bubble",
-    "polygon" : [ [ 0.5583333333333333, 0.8939759036144578 ], [ 0.7041666666666667, 0.8939759036144578 ], [ 0.7041666666666667, 0.9042168674698795 ], [ 0.5583333333333333, 0.9042168674698795 ] ]
+    "polygon" : [ [ 0.5559989420572916, 0.8912370428981551 ], [ 0.7065938822428386, 0.8912370428981551 ], [ 0.7065938822428386, 0.9072322983339608 ], [ 0.5559989420572916, 0.9072322983339608 ] ]
   } ],
   "bubbles" : [ [ 0.6927007548014323, 0.04581981796816171, 0.9387978108723959, 0.12659734702972045 ], [ 0.3906084696451823, 0.06351472326071865, 0.6055832926432292, 0.14396492831678276 ], [ 0.5473432922363282, 0.875384080266378, 0.7123467508951823, 0.9211964802569653 ], [ 0.5822286478678386, 0.700117290450866, 0.8397743733723958, 0.7771543939429594 ], [ 0.039632320404052734, 0.6665117746376129, 0.2086297861735026, 0.7929994881871235 ], [ 0.37959828694661457, 0.009510204016444194, 0.6088537089029948, 0.06331946131694748 ], [ 0.5756162516276042, 0.651426457784262, 0.7404793294270834, 0.7030223432793675 ], [ 0.04021091779073079, 0.7965913703642695, 0.20163129170735677, 0.8761526084807982 ], [ 0.04379025141398112, 0.6324747476233057, 0.16482105255126953, 0.6669609345585467 ] ],
   "expect" : {
@@ -74,36 +74,36 @@
       "residualInk" : 0
     }, {
       "overflow" : false,
-      "font" : 16,
-      "residualInk" : 16
+      "font" : 18,
+      "residualInk" : 222
     }, {
       "overflow" : false,
       "font" : 16,
-      "residualInk" : 46
+      "residualInk" : 580
     }, {
       "overflow" : false,
       "font" : 14,
       "residualInk" : 380
     }, {
       "overflow" : false,
-      "font" : 22,
+      "font" : 23,
       "residualInk" : 0
     }, {
       "overflow" : false,
-      "font" : 16,
-      "residualInk" : 564
+      "font" : 18,
+      "residualInk" : 1023
     }, {
       "overflow" : false,
-      "font" : 16,
-      "residualInk" : 25
+      "font" : 14,
+      "residualInk" : 424
     }, {
       "overflow" : true,
       "font" : 0,
       "residualInk" : 0
     }, {
       "overflow" : false,
-      "font" : 13,
-      "residualInk" : 0
+      "font" : 17,
+      "residualInk" : 117
     }, {
       "overflow" : false,
       "font" : 17,
@@ -114,8 +114,8 @@
       "residualInk" : 0
     }, {
       "overflow" : false,
-      "font" : 12,
-      "residualInk" : 0
+      "font" : 16,
+      "residualInk" : 24
     } ]
   }
 }

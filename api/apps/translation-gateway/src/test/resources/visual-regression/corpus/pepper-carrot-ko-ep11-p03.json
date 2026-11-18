@@ -6,19 +6,19 @@
   "height" : 1660,
   "regions" : [ {
     "source" : "아크렌의 새 왕은 너무 신하들을 착하고 부드럽게 대하고 있어. 사람들은 왕을 무서워해야 하는 법이야.",
-    "translation" : "O novo rei de Akren trata seus súditos com bondade e gentileza excessivas. As pessoas deveriam temer o rei.",
+    "translation" : "O novo rei de Akren trata seus vassalos com bondade e gentileza demais. O povo deveria temer o rei.",
     "kind" : "text_bubble",
-    "polygon" : [ [ 0.05, 0.018072289156626505 ], [ 0.2733333333333333, 0.018072289156626505 ], [ 0.2733333333333333, 0.08734939759036145 ], [ 0.05, 0.08734939759036145 ] ]
+    "polygon" : [ [ 0.04470842997233073, 0.013247474992131612 ], [ 0.28143524169921874, 0.013247474992131612 ], [ 0.28143524169921874, 0.09034748307193619 ], [ 0.04470842997233073, 0.09034748307193619 ] ]
   }, {
     "source" : "네 첫 임무는 그 군주를 찾 아서 그를 더 부리기 쉽도록 위협하는 거야.",
-    "translation" : " Sua primeira missão é encontrar aquele governante e ameaçá-lo para torná-lo mais fácil de controlar.",
+    "translation" : "Sua primeira missão é encontrar aquele monarca e ameaçá-lo para que fique mais fácil de manipular.",
     "kind" : "text_bubble",
-    "polygon" : [ [ 0.19666666666666666, 0.4680722891566265 ], [ 0.35583333333333333, 0.4680722891566265 ], [ 0.35583333333333333, 0.5150602409638554 ], [ 0.19666666666666666, 0.5150602409638554 ] ]
+    "polygon" : [ [ 0.1909613800048828, 0.4652914759624435 ], [ 0.36045740763346357, 0.4652914759624435 ], [ 0.36045740763346357, 0.5170261980539345 ], [ 0.1909613800048828, 0.5170261980539345 ] ]
   }, {
     "source" : "진정한 카오사의 마녀는 권력 위에 군림할 수 있을 만큼 강력해",
-    "translation" : " Uma verdadeira bruxa de Kaosa é poderosa o suficiente para reinar acima do poder.",
+    "translation" : "Uma verdadeira bruxa de Chaosah é poderosa o bastante para reinar acima do poder.",
     "kind" : "text_bubble",
-    "polygon" : [ [ 0.2125, 0.9024096385542169 ], [ 0.38416666666666666, 0.9024096385542169 ], [ 0.38416666666666666, 0.9518072289156626 ], [ 0.2125, 0.9518072289156626 ] ]
+    "polygon" : [ [ 0.20849810282389322, 0.898955857610128 ], [ 0.38545763651529946, 0.898955857610128 ], [ 0.38545763651529946, 0.9534287785909262 ], [ 0.20849810282389322, 0.9534287785909262 ] ]
   } ],
   "bubbles" : [ [ 0.19451541900634767, 0.8865317471056099, 0.3994026184082031, 0.9612564270754894 ], [ 0.17460258483886718, 0.45049225221197287, 0.3755826314290365, 0.527905457278332 ], [ 0.04286442756652832, 0.007094174695302205, 0.296478271484375, 0.10059395296027862 ] ],
   "expect" : {
@@ -26,15 +26,15 @@
     "regions" : [ {
       "overflow" : false,
       "font" : 19,
-      "residualInk" : 21
+      "residualInk" : 247
     }, {
       "overflow" : false,
       "font" : 13,
-      "residualInk" : 1
+      "residualInk" : 166
     }, {
       "overflow" : false,
       "font" : 14,
-      "residualInk" : 59
+      "residualInk" : 254
     } ]
   }
 }

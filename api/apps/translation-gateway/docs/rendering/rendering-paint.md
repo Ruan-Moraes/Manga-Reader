@@ -163,7 +163,8 @@ No portão, o sinal separa sem ambiguidade:
 - entre todas as outras regiões reconstruídas, a maior sobreposição com um vizinho é de 32%, e nenhum vizinho fica
   pela metade dentro.
 
-Só o p06 mudou.
+Só o p06 mudou. A decisão vem antes de qualquer crescimento de caixa: mantido como desenho, o bloco deixa de ser
+obstáculo para os balões dentro dele. Antes disso, "おおー" não crescia nem 1 px e ficava sem tradução.
 
 **Limite:** "[全般 DNS ホスト] 有線接続…" (texto de tela num quadro só) continua sendo tratado como grito. O tamanho de
 letra não o separa dos gritos reais: 1,48× a mediana da página, contra 1,52× de um grito do corpus.

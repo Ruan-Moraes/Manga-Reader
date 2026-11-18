@@ -11,14 +11,14 @@
     "polygon" : [ [ 0.25833333333333336, 0.23132530120481928 ], [ 0.42916666666666664, 0.23072289156626505 ], [ 0.42916666666666664, 0.2572289156626506 ], [ 0.25833333333333336, 0.25783132530120484 ] ]
   }, {
     "source" : "As Mayor of Komona, I declare the potion contest... Open!",
-    "translation" : " Como prefeito de Komona, declaro aberto o concurso de poções!",
+    "translation" : "Como Prefeito de Komona, declaro o concurso de poções... Aberto!",
     "kind" : "text_bubble",
-    "polygon" : [ [ 0.1725, 0.5457831325301205 ], [ 0.3616666666666667, 0.5457831325301205 ], [ 0.3616666666666667, 0.6114457831325302 ], [ 0.1725, 0.6114457831325302 ] ]
+    "polygon" : [ [ 0.1649031448364258, 0.5417302143142884 ], [ 0.36863922119140624, 0.5417302143142884 ], [ 0.36863922119140624, 0.6144414694912462 ], [ 0.1649031448364258, 0.6144414694912462 ] ]
   }, {
     "source" : "Our town is delighted to welcome no fewer than four witches for this first edition.",
-    "translation" : " Nossa cidade tem o prazer de receber nada menos que quatro bruxas para esta primeira edição.",
+    "translation" : "Nossa cidade tem o prazer de receber nada menos que quatro bruxas para esta primeira edição.",
     "kind" : "text_bubble",
-    "polygon" : [ [ 0.1125, 0.6608433734939759 ], [ 0.3333333333333333, 0.6608433734939759 ], [ 0.3333333333333333, 0.7265060240963855 ], [ 0.1125, 0.7265060240963855 ] ]
+    "polygon" : [ [ 0.09962893803914388, 0.6576301298945784 ], [ 0.34666603088378906, 0.6576301298945784 ], [ 0.34666603088378906, 0.7315539991999247 ], [ 0.09962893803914388, 0.7315539991999247 ] ]
   }, {
     "source" : "1333\n",
     "translation" : "1333\n",
@@ -26,12 +26,12 @@
     "polygon" : [ [ 0.1, 0.8740963855421687 ], [ 0.11666666666666667, 0.8777108433734939 ], [ 0.09083333333333334, 0.936144578313253 ], [ 0.07416666666666667, 0.9319277108433734 ] ]
   }, {
     "source" : "Please give a huge round of applause:",
-    "translation" : " Por favor, uma salva de palmas calorosa:",
+    "translation" : "Por favor, uma grande salva de palmas para:",
     "kind" : "text_bubble",
-    "polygon" : [ [ 0.22, 0.7680722891566265 ], [ 0.4091666666666667, 0.7680722891566265 ], [ 0.4091666666666667, 0.8240963855421687 ], [ 0.22, 0.8240963855421687 ] ]
+    "polygon" : [ [ 0.2119394810994466, 0.7653718879423945 ], [ 0.41402064005533856, 0.7653718879423945 ], [ 0.41402064005533856, 0.8260194341820407 ], [ 0.2119394810994466, 0.8260194341820407 ] ]
   }, {
     "source" : "Komona Potion Contest\n",
-    "translation" : " Concurso de Poções de Komona",
+    "translation" : "Concurso de Poções de Komona",
     "kind" : "text_free",
     "polygon" : [ [ 0.5816666666666667, 0.7018072289156626 ], [ 0.8866666666666667, 0.6867469879518072 ], [ 0.8883333333333333, 0.7072289156626506 ], [ 0.5833333333333334, 0.7222891566265061 ] ]
   } ],
@@ -48,7 +48,7 @@
       "residualInk" : 0
     }, {
       "overflow" : false,
-      "font" : 19,
+      "font" : 21,
       "residualInk" : 0
     }, {
       "overflow" : true,

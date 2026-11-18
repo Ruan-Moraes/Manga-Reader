@@ -6,29 +6,29 @@
   "height" : 1660,
   "regions" : [ {
     "source" : "후추야, 네가 재능이 있는 건 알지만, 넌 우리의 유일한 후계자이기도 해.",
-    "translation" : "Huchu, sei que você tem talento, mas você também é o nosso único sucessor.",
+    "translation" : "Pepper, sei que você tem talento, mas você também é a nossa única sucessora.",
     "kind" : "text_bubble",
-    "polygon" : [ [ 0.1025, 0.01746987951807229 ], [ 0.24583333333333332, 0.01746987951807229 ], [ 0.24583333333333332, 0.08373493975903615 ], [ 0.1025, 0.08373493975903615 ] ]
+    "polygon" : [ [ 0.09720434188842773, 0.01569750912218209 ], [ 0.25328409830729165, 0.01569750912218209 ], [ 0.25328409830729165, 0.08558133596397308 ], [ 0.09720434188842773, 0.08558133596397308 ] ]
   }, {
     "source" : "너를 비열한 카오사의 진정한 마녀로 만들어주는 게 우리의 임무야.",
-    "translation" : " Nossa missão é transformar você em uma verdadeira bruxa da vil Kaosa.",
+    "translation" : "Nossa missão é transformar você em uma verdadeira bruxa da vil Chaosah.",
     "kind" : "text_bubble",
-    "polygon" : [ [ 0.1425, 0.09578313253012048 ], [ 0.3233333333333333, 0.09578313253012048 ], [ 0.3233333333333333, 0.14337349397590363 ], [ 0.1425, 0.14337349397590363 ] ]
+    "polygon" : [ [ 0.13646991729736327, 0.09133695119834807 ], [ 0.33028162638346353, 0.09133695119834807 ], [ 0.33028162638346353, 0.14602591273296311 ], [ 0.13646991729736327, 0.14602591273296311 ] ]
   }, {
     "source" : "안 그러면 네 모든 힘을 빼앗을 테다!",
-    "translation" : " Caso contrário, vou tirar todo o seu poder!",
+    "translation" : "Caso contrário, tiraremos todo o seu poder!",
     "kind" : "text_bubble",
-    "polygon" : [ [ 0.06333333333333334, 0.4234939759036145 ], [ 0.22666666666666666, 0.4234939759036145 ], [ 0.22666666666666666, 0.4566265060240964 ], [ 0.06333333333333334, 0.4566265060240964 ] ]
+    "polygon" : [ [ 0.0558664067586263, 0.41994919374764683 ], [ 0.2351355743408203, 0.41994919374764683 ], [ 0.2351355743408203, 0.46125800810664536 ], [ 0.0558664067586263, 0.46125800810664536 ] ]
   }, {
     "source" : "그럼 넌 다시 다람쥐 꼬리 숲에 사는 꼬맹이 바보 고아가 될 테지.",
-    "translation" : " Então, você voltará a ser aquele órfão bobo e pirralho que vive na Floresta do Rabo de Esquilo.",
+    "translation" : "Então você voltará a ser aquela órfã boba e pirralha que vive na Floresta Rabo de Esquilo.",
     "kind" : "text_bubble",
-    "polygon" : [ [ 0.08833333333333333, 0.491566265060241 ], [ 0.2841666666666667, 0.491566265060241 ], [ 0.2841666666666667, 0.541566265060241 ], [ 0.08833333333333333, 0.541566265060241 ] ]
+    "polygon" : [ [ 0.08255594889322916, 0.48774487598832833 ], [ 0.28903676350911456, 0.48774487598832833 ], [ 0.28903676350911456, 0.5440003176769578 ], [ 0.08255594889322916, 0.5440003176769578 ] ]
   }, {
     "source" : "이제부턴 케민이 널 따라다니면서 네 수련을 도와주고 우리에게 상황 보고를 할 거다.",
-    "translation" : " De agora em diante, o Kemin vai te acompanhar, ajudar no seu treinamento e nos relatar a situação.",
+    "translation" : "De agora em diante, o Cayenne vai te acompanhar, ajudar no seu treinamento e nos relatar a situação.",
     "kind" : "text_bubble",
-    "polygon" : [ [ 0.05416666666666667, 0.7644578313253012 ], [ 0.25833333333333336, 0.7644578313253012 ], [ 0.25833333333333336, 0.841566265060241 ], [ 0.05416666666666667, 0.841566265060241 ] ]
+    "polygon" : [ [ 0.047932519912719726, 0.7614304875753012 ], [ 0.2661628214518229, 0.7614304875753012 ], [ 0.2661628214518229, 0.8442084990352033 ], [ 0.047932519912719726, 0.8442084990352033 ] ]
   }, {
     "source" : "M\n",
     "translation" : " M",
@@ -36,17 +36,17 @@
     "polygon" : [ [ 0.46166666666666667, 0.769277108433735 ], [ 0.4841666666666667, 0.7728915662650603 ], [ 0.4816666666666667, 0.7831325301204819 ], [ 0.4583333333333333, 0.7801204819277109 ] ]
   }, {
     "source" : "짜자아아!\n",
-    "translation" : " Tcharam!",
+    "translation" : "Tcharam!",
     "kind" : "text_bubble",
     "polygon" : [ [ 0.5666666666666667, 0.9108433734939759 ], [ 0.6391666666666667, 0.9090361445783133 ], [ 0.64, 0.9210843373493975 ], [ 0.5675, 0.9228915662650602 ] ]
   }, {
-    "source" : "하지만... 전 비열해지기 싫어요! 그건...그건 모두에게 나쁜...",
-    "translation" : " Mas... eu não quero ser desprezível! Isso... isso é ruim para todo mundo...",
+    "source" : "하지만... 전 비열해지기\n싫어요! 그건...그건\n모두에게 나쁜...\n",
+    "translation" : "Mas... eu não quero ser desprezível! Isso... isso é ruim para todo mundo...",
     "kind" : "text_bubble",
-    "polygon" : [ [ 0.6516666666666666, 0.20481927710843373 ], [ 0.8408333333333333, 0.20481927710843373 ], [ 0.8408333333333333, 0.2620481927710843 ], [ 0.6516666666666666, 0.2620481927710843 ] ]
+    "polygon" : [ [ 0.6516666666666666, 0.2036144578313253 ], [ 0.8408333333333333, 0.20481927710843373 ], [ 0.84, 0.26265060240963856 ], [ 0.6508333333333334, 0.26144578313253014 ] ]
   }, {
     "source" : "조용!\n",
-    "translation" : " Silêncio!",
+    "translation" : "Silêncio!",
     "kind" : "text_bubble",
     "polygon" : [ [ 0.8266666666666667, 0.30120481927710846 ], [ 0.8841666666666667, 0.3006024096385542 ], [ 0.8841666666666667, 0.3265060240963855 ], [ 0.8266666666666667, 0.32710843373493975 ] ]
   } ],
@@ -55,15 +55,7 @@
     "maxChangedOutside" : 0,
     "regions" : [ {
       "overflow" : false,
-      "font" : 16,
-      "residualInk" : 0
-    }, {
-      "overflow" : false,
-      "font" : 16,
-      "residualInk" : 0
-    }, {
-      "overflow" : false,
-      "font" : 21,
+      "font" : 17,
       "residualInk" : 0
     }, {
       "overflow" : false,
@@ -71,15 +63,19 @@
       "residualInk" : 0
     }, {
       "overflow" : false,
-      "font" : 18,
-      "residualInk" : 293
-    }, {
-      "overflow" : true,
-      "font" : 0,
+      "font" : 23,
       "residualInk" : 0
     }, {
       "overflow" : false,
+      "font" : 16,
+      "residualInk" : 6
+    }, {
+      "overflow" : false,
       "font" : 18,
+      "residualInk" : 930
+    }, {
+      "overflow" : true,
+      "font" : 0,
       "residualInk" : 0
     }, {
       "overflow" : false,
@@ -87,7 +83,11 @@
       "residualInk" : 0
     }, {
       "overflow" : false,
-      "font" : 21,
+      "font" : 20,
+      "residualInk" : 0
+    }, {
+      "overflow" : false,
+      "font" : 23,
       "residualInk" : 0
     } ]
   }

@@ -11,44 +11,44 @@
     "polygon" : [ [ 0.40625, 0.053064275037369206 ], [ 0.59375, 0.05455904334828102 ], [ 0.59375, 0.06950672645739911 ], [ 0.40625, 0.06801195814648729 ] ]
   }, {
     "source" : "WOUNDED, JIM MAKES AN ATTEMPT TO CRAWL BACK TO CAMP -",
-    "translation" : " Ferido, Jim tenta rastejar de volta ao acampamento -",
+    "translation" : "FERIDO, JIM TENTA RASTEJAR DE VOLTA AO ACAMPAMENTO -",
     "kind" : "text_bubble",
-    "polygon" : [ [ 0.07604166666666666, 0.08295964125560538 ], [ 0.47291666666666665, 0.08295964125560538 ], [ 0.47291666666666665, 0.11883408071748879 ], [ 0.07604166666666666, 0.11883408071748879 ] ]
+    "polygon" : [ [ 0.06996706326802572, 0.07836827390753456 ], [ 0.4834665934244792, 0.07836827390753456 ], [ 0.4834665934244792, 0.11998704303005886 ], [ 0.06996706326802572, 0.11998704303005886 ] ]
   }, {
     "source" : "WH--WHAT'S THAT!\n",
-    "translation" : " O-O QUE É AQUILO!",
+    "translation" : "O--O QUE É AQUILO?!",
     "kind" : "text_bubble",
-    "polygon" : [ [ 0.11145833333333334, 0.13153961136023917 ], [ 0.31979166666666664, 0.13303437967115098 ], [ 0.31979166666666664, 0.14723467862481315 ], [ 0.11145833333333334, 0.14573991031390135 ] ]
+    "polygon" : [ [ 0.11041666666666666, 0.13153961136023917 ], [ 0.31979166666666664, 0.13303437967115098 ], [ 0.31979166666666664, 0.14723467862481315 ], [ 0.11041666666666666, 0.14573991031390135 ] ]
   }, {
     "source" : "PAGE 19\n",
-    "translation" : " PÁGINA 19",
+    "translation" : "PÁGINA 19",
     "kind" : "text_free",
     "polygon" : [ [ 0.8166666666666667, 0.05605381165919283 ], [ 0.909375, 0.05530642750373692 ], [ 0.909375, 0.06726457399103139 ], [ 0.8166666666666667, 0.06801195814648729 ] ]
   }, {
     "source" : "SUDDENLY, HE UTTERS A CRY OF\nABJECT TERROR, AS HE FINDS HIS PATH\nOBSTRUCTED BY TWO BULL LIONS!\n",
-    "translation" : " De repente, ele solta um grito de terror absoluto ao encontrar seu caminho bloqueado por dois leões machos!",
+    "translation" : "DE REPENTE, ELE SOLTA UM GRITO DE TERROR ABSOLUTO AO SE DEPARAR COM SEU CAMINHO BLOQUEADO POR DOIS LEÕES ENORMES!",
     "kind" : "text_bubble",
     "polygon" : [ [ 0.5208333333333334, 0.08071748878923767 ], [ 0.9239583333333333, 0.07997010463378176 ], [ 0.9239583333333333, 0.1412556053811659 ], [ 0.5208333333333334, 0.14200298953662183 ] ]
   }, {
     "source" : "I'LL BE EATEN ALIVE!!\n",
-    "translation" : " Vou ser devorado vivo!!",
+    "translation" : "VOU SER DEVORADO VIVO!!",
     "kind" : "text_bubble",
     "polygon" : [ [ 0.5302083333333333, 0.15695067264573992 ], [ 0.74375, 0.1576980568011958 ], [ 0.74375, 0.1726457399103139 ], [ 0.5302083333333333, 0.17189835575485798 ] ]
   }, {
     "source" : "AT THIS MOMENT, A PIERCING, UN-\nEARTHLY CRY ECHOES AND RE-ECHOES\nFOR MILES AROUND AS A HUMAN FORM\nHURTLES DOWN FROM THE DIZZY HEIGHTS\nOF THE TOPMOST BRANCHES OF THE TALL-\nEST TREES, WHIRLING FROM BRANCH TO\nBRANCH, FORTY AND FIFTY FEET APART!",
-    "translation" : " Nesse momento, um grito agudo e sobrenatural ecoa e reecoa por quilômetros ao redor, enquanto uma forma humana despenca das alturas vertiginosas dos galhos mais altos das árvores mais imponentes, lançando-se de galho em galho — distantes uns dos outros por doze ou quinze metros!",
+    "translation" : "NESSE MOMENTO, UM GRITO AGUDO E SOBRENATURAL ECOA E REECOA POR QUILÔMETROS AO REDOR ENQUANTO UMA FORMA HUMANA DESPENCA DAS ALTURAS VERTIGINOSAS DOS GALHOS MAIS ALTOS DAS MAIORES ÁRVORES, BALANÇANDO DE GALHO EM GALHO, A UMA DISTÂNCIA DE DOZE A QUINZE METROS!",
     "kind" : "text_bubble",
     "polygon" : [ [ 0.07604166666666666, 0.30493273542600896 ], [ 0.4864583333333333, 0.3041853512705531 ], [ 0.4864583333333333, 0.45440956651718983 ], [ 0.07604166666666666, 0.4551569506726457 ] ]
   }, {
     "source" : "AS THE FIRST\nBEAST IS ABOUT\nTO LEAP FOR THE\nKILL--!\n",
-    "translation" : " Quando a primeira fera está prestes a saltar para o bote mortal...!",
+    "translation" : "QUANDO A PRIMEIRA FERA ESTÁ PRESTES A SALTAR PARA MATAR--!",
     "kind" : "text_bubble",
-    "polygon" : [ [ 0.51875, 0.3041853512705531 ], [ 0.69375, 0.3041853512705531 ], [ 0.69375, 0.39162929745889385 ], [ 0.51875, 0.39162929745889385 ] ]
+    "polygon" : [ [ 0.5130420366923014, 0.29984220724291155 ], [ 0.6974117279052734, 0.29984220724291155 ], [ 0.6974117279052734, 0.3938300755704643 ], [ 0.5130420366923014, 0.3938300755704643 ] ]
   }, {
     "source" : "GREAT HEAVENS! WHAT ON EARTH-!",
-    "translation" : " Meu Deus do céu! O que é isso?!",
+    "translation" : "MEUS DEUSES! MAS O QUE DIABOS--!",
     "kind" : "text_bubble",
-    "polygon" : [ [ 0.8135416666666667, 0.7391629297458894 ], [ 0.925, 0.7391629297458894 ], [ 0.925, 0.8355754857997011 ], [ 0.8135416666666667, 0.8355754857997011 ] ]
+    "polygon" : [ [ 0.8095500310262044, 0.7342594984935538 ], [ 0.9252138137817383, 0.7342594984935538 ], [ 0.9252138137817383, 0.8407355566552224 ], [ 0.8095500310262044, 0.8407355566552224 ] ]
   } ],
   "bubbles" : [ [ 0.06806790828704834, 0.2950207035994138, 0.49476801554361977, 0.46149297466192546 ], [ 0.7991069793701172, 0.7281551161510884, 0.9292482376098633, 0.8517150422739163 ], [ 0.512344773610433, 0.0741814070218347, 0.9319498062133789, 0.14843330326279897 ], [ 0.09628183046976725, 0.12349292658191448, 0.33290462493896483, 0.15577575729210458 ], [ 0.5118272145589192, 0.14910596724939276, 0.7658883412679036, 0.19158255857915266 ], [ 0.06599478324254354, 0.07400354747458603, 0.4935411771138509, 0.12141838130751355 ], [ 0.5088800112406413, 0.2945964910167928, 0.7039040247599284, 0.3972883694909613 ] ],
   "expect" : {
@@ -59,8 +59,8 @@
       "residualInk" : 0
     }, {
       "overflow" : false,
-      "font" : 15,
-      "residualInk" : 1040
+      "font" : 19,
+      "residualInk" : 0
     }, {
       "overflow" : false,
       "font" : 17,
@@ -71,7 +71,7 @@
       "residualInk" : 0
     }, {
       "overflow" : false,
-      "font" : 19,
+      "font" : 16,
       "residualInk" : 0
     }, {
       "overflow" : false,
@@ -79,16 +79,16 @@
       "residualInk" : 2
     }, {
       "overflow" : false,
-      "font" : 18,
+      "font" : 16,
       "residualInk" : 0
     }, {
       "overflow" : false,
-      "font" : 16,
-      "residualInk" : 525
+      "font" : 17,
+      "residualInk" : 0
     }, {
       "overflow" : false,
-      "font" : 17,
-      "residualInk" : 70
+      "font" : 19,
+      "residualInk" : 236
     } ]
   }
 }

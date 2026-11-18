@@ -11,77 +11,77 @@
     "polygon" : [ [ 0.39895833333333336, 0.005653710247349823 ], [ 0.6104166666666667, 0.005653710247349823 ], [ 0.6104166666666667, 0.019787985865724382 ], [ 0.39895833333333336, 0.019787985865724382 ] ]
   }, {
     "source" : "LATER, AT CAPTAIN WINGS SECRET BASE.",
-    "translation" : " Mais tarde, na base secreta do Capitão Wings.",
+    "translation" : "Mais tarde, na base secreta do Capitão Wings.",
     "kind" : "text_bubble",
-    "polygon" : [ [ 0.042708333333333334, 0.03816254416961131 ], [ 0.41458333333333336, 0.03816254416961131 ], [ 0.41458333333333336, 0.051590106007067135 ], [ 0.042708333333333334, 0.051590106007067135 ] ]
+    "polygon" : [ [ 0.04064536094665527, 0.03723630332272802 ], [ 0.4177810033162435, 0.03723630332272802 ], [ 0.4177810033162435, 0.05340125956720682 ], [ 0.04064536094665527, 0.05340125956720682 ] ]
   }, {
     "source" : "A CLOSE CALL,\nLIEUTENANT-OUR\nORDERS WERE TO\nMEET YOU AT /630\n-YOU WERE EARLY.\n",
-    "translation" : " Por pouco, Tenente — nossas ordens eram encontrá-lo às 06h30; o senhor chegou mais cedo.",
+    "translation" : "Por pouco, Tenente — nossas ordens eram encontrá-lo às 16h30; o senhor chegou adiantado.",
     "kind" : "text_bubble",
-    "polygon" : [ [ 0.04479166666666667, 0.0607773851590106 ], [ 0.20416666666666666, 0.0607773851590106 ], [ 0.20416666666666666, 0.1137809187279152 ], [ 0.04479166666666667, 0.1137809187279152 ] ]
+    "polygon" : [ [ 0.040474192301432295, 0.05826963283147913 ], [ 0.20720218022664388, 0.05826963283147913 ], [ 0.20720218022664388, 0.11588029086379197 ], [ 0.040474192301432295, 0.11588029086379197 ] ]
   }, {
-    "source" : "YES, CAPTAIN,\nMY MISTAKE.\nI'M HERE TO\nBRIEF YOU ON\nOPERATION\nV78. JUMP\nDOWN, EVE!",
-    "translation" : " Sim, Capitão, falha minha. Estou aqui para passar as informações sobre a Operação V78. Pule, Eve!",
+    "source" : "YES, CAPTAIN,\nMY MISTAKE.\nI'M HERE TO\nBRIEF YOU ON\nOPERATION\nV7B. JUMP\nDOWN, EVE\n",
+    "translation" : "Sim, Capitão, falha minha. Estou aqui para passar as instruções sobre a Operação V7B. Desça, Eve.",
     "kind" : "text_bubble",
-    "polygon" : [ [ 0.21875, 0.06007067137809187 ], [ 0.33958333333333335, 0.06007067137809187 ], [ 0.33958333333333335, 0.13498233215547703 ], [ 0.21875, 0.13498233215547703 ] ]
+    "polygon" : [ [ 0.2141225020090739, 0.057882728172275286 ], [ 0.34274056752522786, 0.057882728172275286 ], [ 0.34274056752522786, 0.136689246079947 ], [ 0.2141225020090739, 0.136689246079947 ] ]
   }, {
     "source" : "CAPTAIN WINGS,\nMEET MISS EVE\nMARLOW A NEWS\nREEL HOUND. SHE\nKEPT CRANKING\nWHILE I KEPT\nPRAYING!\n",
-    "translation" : " Capitão Wings, conheça a Srta. Eve Marlow, uma fera das cinejornais. Ela não parava de girar a manivela enquanto eu não parava de rezar!",
+    "translation" : "Capitão Wings, conheça a Srta. Eve Marlow, uma repórter de cinejornal. Ela continuou filmando enquanto eu rezava!",
     "kind" : "text_bubble",
     "polygon" : [ [ 0.5010416666666667, 0.039575971731448764 ], [ 0.6614583333333334, 0.040282685512367494 ], [ 0.6604166666666667, 0.11590106007067137 ], [ 0.5, 0.11519434628975266 ] ]
   }, {
     "source" : "AND CAPTAIN, YOU\nSHOULD SEE THE\nSHOTS I GOT\nTHEY'RE WONDER\nFUL!\n",
-    "translation" : " E, Capitão, você deveria ver as fotos que eu tirei — elas estão maravilhosas!",
+    "translation" : "E, Capitão, você deveria ver as filmagens que fiz, estão maravilhosas!",
     "kind" : "text_bubble",
     "polygon" : [ [ 0.675, 0.04169611307420495 ], [ 0.8416666666666667, 0.0431095406360424 ], [ 0.840625, 0.09540636042402827 ], [ 0.6739583333333333, 0.0939929328621908 ] ]
   }, {
     "source" : "WONDERFUL\nEH PERHAPS\nTHAT KID\nOVER THERE\nWOULD EN-\nJOY A SPECIAL\nPREVIEW.\n",
-    "translation" : " Maravilhoso, não? Talvez aquele garoto ali gostasse de uma prévia especial.",
+    "translation" : "Maravilhosas, é? Talvez aquele garoto ali gostasse de uma prévia especial.",
     "kind" : "text_bubble",
     "polygon" : [ [ 0.8354166666666667, 0.04240282685512368 ], [ 0.9677083333333333, 0.0431095406360424 ], [ 0.9666666666666667, 0.1166077738515901 ], [ 0.834375, 0.11590106007067137 ] ]
   }, {
     "source" : "WHY HE'S WOUNDED.",
-    "translation" : " Por que ele está ferido.",
+    "translation" : "Nossa, ele está ferido.",
     "kind" : "text_bubble",
-    "polygon" : [ [ 0.053125, 0.3484098939929329 ], [ 0.15833333333333333, 0.3484098939929329 ], [ 0.15833333333333333, 0.37031802120141344 ], [ 0.053125, 0.37031802120141344 ] ]
+    "polygon" : [ [ 0.047034351030985515, 0.3461003926954505 ], [ 0.15833333333333333, 0.3461003926954505 ], [ 0.15833333333333333, 0.3724031374227032 ], [ 0.047034351030985515, 0.3724031374227032 ] ]
   }, {
     "source" : "YEA-THINK IT OVER, MISS MARLOW. NOW LIEUTENANT, LET'S GET ON WITH THE BUS- INESS.",
-    "translation" : " É... pense bem nisso, Srta. Marlow. Agora, Tenente, vamos ao que interessa.",
+    "translation" : "É... pense bem nisso, Srta. Marlow. Agora, Tenente, vamos aos negócios.",
     "kind" : "text_bubble",
-    "polygon" : [ [ 0.16666666666666666, 0.3498233215547703 ], [ 0.30520833333333336, 0.3498233215547703 ], [ 0.30520833333333336, 0.42402826855123676 ], [ 0.16666666666666666, 0.42402826855123676 ] ]
+    "polygon" : [ [ 0.1609912077585856, 0.34741653064956934 ], [ 0.3100521723429362, 0.34741653064956934 ], [ 0.3100521723429362, 0.4255436226672924 ], [ 0.1609912077585856, 0.4255436226672924 ] ]
   }, {
     "source" : "IT'S AN EXPERI-\nMENTAL RAID\nCAPTAIN. OUR\nCARRIER WILL\nBE READY AT\n0635.\n",
-    "translation" : " É uma incursão experimental, Capitão. Nosso porta-aviões estará pronto às 06h35.",
+    "translation" : "É uma incursão experimental, Capitão. Nosso porta-aviões estará pronto às 06h35.",
     "kind" : "text_bubble",
-    "polygon" : [ [ 0.3489583333333333, 0.3512367491166078 ], [ 0.478125, 0.3512367491166078 ], [ 0.478125, 0.4127208480565371 ], [ 0.3489583333333333, 0.4127208480565371 ] ]
+    "polygon" : [ [ 0.3447154680887858, 0.34805757232773854 ], [ 0.4793672561645508, 0.34805757232773854 ], [ 0.4793672561645508, 0.41612164932089224 ], [ 0.3447154680887858, 0.41612164932089224 ] ]
   }, {
     "source" : "A RAID-I\nCAN'T MISS\nTHAT! AH-\nTHERE'S SOME\nATMOSPHERE\nMATERIAL",
-    "translation" : " Uma incursão — não posso perder isso! Ah, aí tem material para criar atmosfera.",
+    "translation" : "Uma incursão... eu não posso perder isso! Ah, ali tem um bom material de ambientação.",
     "kind" : "text_bubble",
     "polygon" : [ [ 0.5072916666666667, 0.3187279151943463 ], [ 0.6291666666666667, 0.31943462897526503 ], [ 0.6291666666666667, 0.3823321554770318 ], [ 0.5072916666666667, 0.38162544169611307 ] ]
   }, {
     "source" : "SMILE NOW BOYS MAYBE YOUR GIRLS WILL SEE YOU IN THE PAPERS.",
-    "translation" : " Sorriam agora, rapazes; talvez as garotas de vocês os vejam nos jornais.",
+    "translation" : "Sorriam agora, rapazes, talvez suas namoradas vejam vocês nos jornais.",
     "kind" : "text_bubble",
-    "polygon" : [ [ 0.671875, 0.3187279151943463 ], [ 0.8041666666666667, 0.3187279151943463 ], [ 0.8041666666666667, 0.37314487632508836 ], [ 0.671875, 0.37314487632508836 ] ]
+    "polygon" : [ [ 0.667092768351237, 0.3146442103301678 ], [ 0.804580561319987, 0.3146442103301678 ], [ 0.804580561319987, 0.3743999144213781 ], [ 0.667092768351237, 0.3743999144213781 ] ]
   }, {
     "source" : "YEAH I'LL\nMAKE A GOOD\nPIN-UP BOY.\n",
-    "translation" : " É, eu daria um bom garoto-propaganda.",
+    "translation" : "É, eu daria um bom galã de pôster.",
     "kind" : "text_bubble",
     "polygon" : [ [ 0.8197916666666667, 0.3187279151943463 ], [ 0.953125, 0.31943462897526503 ], [ 0.953125, 0.3498233215547703 ], [ 0.8197916666666667, 0.3491166077738516 ] ]
   }, {
     "source" : "THANKS, BOYS, THAT'S\nENOUGH. WHICH PLANE\nBELONGS TO THAT\nSOUR PUSS CAPTAIN?\nI WANT A PIC OF IT.\n",
-    "translation" : " Valeu, rapazes, já chega. Qual avião é daquele capitão rabugento? Quero uma foto dele.",
+    "translation" : "Obrigada, rapazes, já chega. Qual avião pertence àquele capitão rabugento? Quero uma foto dele.",
     "kind" : "text_bubble",
     "polygon" : [ [ 0.042708333333333334, 0.6989399293286219 ], [ 0.259375, 0.6996466431095406 ], [ 0.259375, 0.7526501766784452 ], [ 0.042708333333333334, 0.7519434628975264 ] ]
   }, {
     "source" : "SORRY, MISS\nMARLOW BUT\nTHAT'S AGAINST\nORDERS. ANYWAY\nIT WAS DAMAGED IN\nTHE FIGHT AND IT'S\nBEING PREPAIRED.\n",
-    "translation" : " Sinto muito, Srta. Marlow, mas isso vai contra as ordens. De qualquer forma, foi danificado na luta e está sendo consertado.",
+    "translation" : "Desculpe, Srta. Marlow, mas isso vai contra as ordens. De qualquer forma, ele foi danificado no combate e está sendo consertado.",
     "kind" : "text_bubble",
     "polygon" : [ [ 0.3177083333333333, 0.657243816254417 ], [ 0.50625, 0.6579505300353357 ], [ 0.50625, 0.7314487632508834 ], [ 0.3177083333333333, 0.7307420494699647 ] ]
   }, {
-    "source" : "SUCH A BUSINESS_I\nSUPPOSE THE OLD SOUR\nPUSS GAVE ORDERS NOT\nTO LET ME TAKE THE\nPICTURE ANYWAY, I'LL\nFOOL HIM.\n",
-    "translation" : " Que BUSINESS_I Imagino que aquele velho rabugento tenha dado ordens para não me deixarem tirar a foto. Mas vou enganá-lo.",
+    "source" : "SUCH A BUSINESS—I\nSUPPOSE THE OLD SOUR\nPUSS GAVE ORDERS NOT\nTO LET ME TAKE THE\nPICTURE ANYWAY, I'LL\nFOOL HIM.\n",
+    "translation" : "Que coisa... Imagino que o velho rabugento tenha dado ordens para não me deixarem tirar a foto. De qualquer jeito, vou enganá-lo.",
     "kind" : "text_bubble",
     "polygon" : [ [ 0.55625, 0.6565371024734983 ], [ 0.7864583333333334, 0.657243816254417 ], [ 0.7864583333333334, 0.7215547703180212 ], [ 0.55625, 0.7208480565371025 ] ]
   }, {
@@ -100,23 +100,23 @@
     }, {
       "overflow" : false,
       "font" : 13,
-      "residualInk" : 85
+      "residualInk" : 102
     }, {
       "overflow" : false,
       "font" : 12,
-      "residualInk" : 7
+      "residualInk" : 46
     }, {
       "overflow" : false,
       "font" : 12,
       "residualInk" : 0
     }, {
       "overflow" : false,
-      "font" : 13,
-      "residualInk" : 0
+      "font" : 12,
+      "residualInk" : 536
     }, {
       "overflow" : false,
-      "font" : 13,
-      "residualInk" : 0
+      "font" : 12,
+      "residualInk" : 26
     }, {
       "overflow" : false,
       "font" : 14,
@@ -124,26 +124,26 @@
     }, {
       "overflow" : false,
       "font" : 12,
-      "residualInk" : 0
+      "residualInk" : 21
+    }, {
+      "overflow" : false,
+      "font" : 14,
+      "residualInk" : 362
     }, {
       "overflow" : false,
       "font" : 13,
-      "residualInk" : 138
+      "residualInk" : 0
+    }, {
+      "overflow" : false,
+      "font" : 12,
+      "residualInk" : 0
+    }, {
+      "overflow" : false,
+      "font" : 12,
+      "residualInk" : 35
     }, {
       "overflow" : false,
       "font" : 13,
-      "residualInk" : 0
-    }, {
-      "overflow" : false,
-      "font" : 12,
-      "residualInk" : 0
-    }, {
-      "overflow" : false,
-      "font" : 12,
-      "residualInk" : 36
-    }, {
-      "overflow" : false,
-      "font" : 12,
       "residualInk" : 6
     }, {
       "overflow" : false,
@@ -151,7 +151,7 @@
       "residualInk" : 11
     }, {
       "overflow" : false,
-      "font" : 13,
+      "font" : 12,
       "residualInk" : 0
     }, {
       "overflow" : false,

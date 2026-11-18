@@ -8,25 +8,25 @@
     "source" : "!!!\n",
     "translation" : "!!!\n",
     "kind" : "text_free",
-    "polygon" : [ [ 0.2683333333333333, 0.1753012048192771 ], [ 0.31, 0.17590361445783131 ], [ 0.31, 0.19457831325301206 ], [ 0.2683333333333333, 0.19397590361445782 ] ]
+    "polygon" : [ [ 0.2675, 0.1753012048192771 ], [ 0.31, 0.17590361445783131 ], [ 0.31, 0.19457831325301206 ], [ 0.2675, 0.19397590361445782 ] ]
   }, {
     "source" : "Carrot! You're so cute to have thought of bringing me to the Contest!",
-    "translation" : "Carrot! Que fofo da sua parte ter pensado em me trazer para o concurso!",
+    "translation" : "Cenoura! Que fofo da sua parte ter pensado em me trazer para o Concurso!",
     "kind" : "text_bubble",
-    "polygon" : [ [ 0.2758333333333333, 0.5042168674698795 ], [ 0.4866666666666667, 0.5042168674698795 ], [ 0.4866666666666667, 0.5644578313253013 ], [ 0.2758333333333333, 0.5644578313253013 ] ]
+    "polygon" : [ [ 0.2701495869954427, 0.49890099950583583 ], [ 0.4958178202311198, 0.49890099950583583 ], [ 0.4958178202311198, 0.5685919704207455 ], [ 0.2701495869954427, 0.5685919704207455 ] ]
   }, {
     "source" : "Fan-tas-tic!\n",
-    "translation" : " Fan-tás-tico!",
+    "translation" : "Fan-tás-ti-co!",
     "kind" : "text_bubble",
-    "polygon" : [ [ 0.6516666666666666, 0.7102409638554217 ], [ 0.7675, 0.7102409638554217 ], [ 0.7675, 0.7210843373493976 ], [ 0.6516666666666666, 0.7210843373493976 ] ]
+    "polygon" : [ [ 0.6422288004557292, 0.7046737487057605 ], [ 0.7731521606445313, 0.7046737487057605 ], [ 0.7731521606445313, 0.72636329007436 ], [ 0.6422288004557292, 0.72636329007436 ] ]
   }, {
     "source" : "You even thought of\nbringing a potion, my\nclothes, and my hat...\n",
-    "translation" : " Você até pensou em trazer uma poção, minhas roupas e meu chapéu...",
+    "translation" : "Você até pensou em trazer uma poção, minhas roupas e meu chapéu...",
     "kind" : "text_bubble",
     "polygon" : [ [ 0.7208333333333333, 0.7710843373493976 ], [ 0.91, 0.772289156626506 ], [ 0.9091666666666667, 0.8210843373493976 ], [ 0.72, 0.8198795180722892 ] ]
   }, {
     "source" : "...let's see which\npotion you brought...\n",
-    "translation" : " ...vamos ver qual poção você trouxe...",
+    "translation" : "...vamos ver qual poção você trouxe...",
     "kind" : "text_bubble",
     "polygon" : [ [ 0.7375, 0.8813253012048192 ], [ 0.9175, 0.880722891566265 ], [ 0.9175, 0.9132530120481928 ], [ 0.7375, 0.9138554216867469 ] ]
   } ],
@@ -40,15 +40,15 @@
     }, {
       "overflow" : false,
       "font" : 19,
-      "residualInk" : 79
+      "residualInk" : 460
     }, {
       "overflow" : false,
-      "font" : 13,
+      "font" : 23,
       "residualInk" : 0
     }, {
       "overflow" : false,
-      "font" : 16,
-      "residualInk" : 0
+      "font" : 17,
+      "residualInk" : 1
     }, {
       "overflow" : false,
       "font" : 18,

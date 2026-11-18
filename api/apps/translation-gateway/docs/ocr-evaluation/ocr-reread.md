@@ -108,3 +108,25 @@ Regras de classe, todas medidas no portão offline (`CorpusOcrReplayTest`, 50 p�
   perde o sentido, e uma coluna estreita de fala ("あんた") foi confundida com leitura. A leitura continua no texto.
 - **Letra capitular** ("T" decorado de "TABU", Jungle 117): o Vision não a lê, então a legenda sai como
   "ABU..." e o "T" fica desenhado ao lado. Corrigir pede reler a mancha da capitular.
+
+## Caixa de texto do balão inteira para a região (2026-11-18)
+
+O OCR às vezes lê só parte de um balão. No Ubunchu! p06, leu uma coluna de três ("ネットワー自動でつないで",
+sem "くれて") e "おおお" sem o "!" vertical. O que ficou de fora nunca era apagado, sobrava ao lado da
+tradução, e a tradução ficava presa às colunas lidas (12 px).
+
+Agora, quando uma caixa de texto de balão do detector (`text_bubble`) contém exatamente uma região, e nenhum pedaço
+de outra (20% da área ou mais), essa região passa a ter a caixa inteira (`OcrAssembly.fitTextBoxes`). Regiões
+inclinadas mantêm a própria forma. O passo vem antes da releitura paga, que então lê a caixa toda.
+
+No replay do corpus, 228 regiões ganham caixa maior: mediana de 1,31× a área anterior, e nenhum texto muda. No lote
+real:
+
+- fonte mediana: 17 → 18 px;
+- regiões abaixo de 12 px: 7 → 1;
+- "Conectar à rede automaticamente": 12 → 17 px;
+- "おおお!" sai sem as sobras.
+
+As quatro regiões a mais sem tradução nesse lote têm a mesma caixa do lote anterior. Duas são títulos que o Gemini
+manteve em inglês ("JUNGLE COMICS", "WINGS COMICS"); as outras duas são onomatopeias lidas de outro jeito ("Glap",
+"うずうず").

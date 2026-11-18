@@ -13,47 +13,47 @@
     "source" : "CEREBEX",
     "translation" : " CEREBEX",
     "kind" : "text_free",
-    "polygon" : [ [ 0.14895833333333333, 0.05653950953678474 ], [ 0.8510416666666667, 0.0681198910081744 ], [ 0.8479166666666667, 0.14986376021798364 ], [ 0.14583333333333334, 0.138283378746594 ] ]
+    "polygon" : [ [ 0.14895833333333333, 0.05653950953678474 ], [ 0.8520833333333333, 0.0681198910081744 ], [ 0.8489583333333334, 0.1505449591280654 ], [ 0.14583333333333334, 0.13896457765667575 ] ]
   }, {
     "source" : "SLAP\n",
-    "translation" : " Tapa",
+    "translation" : "Tapa",
     "kind" : "text_free",
     "polygon" : [ [ 0.35208333333333336, 0.3017711171662125 ], [ 0.48541666666666666, 0.30449591280653954 ], [ 0.48333333333333334, 0.3399182561307902 ], [ 0.35, 0.3371934604904632 ] ]
   }, {
     "source" : "BRAD CUMMINGS NATCHES AS HIS BOSS, THE GREAT\nPHYSICIST, WALTER JACKSON, MAKES AN ADJUSTMENT ON\nTHE NEAR-COMPLETE NEW ELECTRONIC CALCULATOR...\n",
-    "translation" : " Brad Cummings observa atentamente enquanto seu chefe, o grande físico Walter Jackson, faz um ajuste na nova calculadora eletrônica, que está quase pronta...",
+    "translation" : "Brad Cummings observa enquanto seu chefe, o grande físico Walter Jackson, faz um ajuste na quase concluída nova calculadora eletrônica...",
     "kind" : "text_bubble",
-    "polygon" : [ [ 0.521875, 0.2452316076294278 ], [ 0.890625, 0.2452316076294278 ], [ 0.890625, 0.27452316076294275 ], [ 0.521875, 0.27452316076294275 ] ]
+    "polygon" : [ [ 0.5114805857340495, 0.24100538040701636 ], [ 0.9000539779663086, 0.24100538040701636 ], [ 0.9000539779663086, 0.27694350822095326 ], [ 0.5114805857340495, 0.27694350822095326 ] ]
   }, {
     "source" : "EXCUSE ME, PROFESSOR\nJACKSON, BUT THAT\nADJUSTMENT IS\nNOT ACCORDING TO\nTHE BLUEPRINT...\n",
-    "translation" : " Com licença, Professor Jackson, mas esse ajuste não está de acordo com a planta...",
+    "translation" : "Com licença, Professor Jackson, mas esse ajuste não está de acordo com a planta...",
     "kind" : "text_bubble",
-    "polygon" : [ [ 0.5135416666666667, 0.28746594005449594 ], [ 0.6572916666666667, 0.28746594005449594 ], [ 0.6572916666666667, 0.3310626702997275 ], [ 0.5135416666666667, 0.3310626702997275 ] ]
+    "polygon" : [ [ 0.5111872990926106, 0.2848246104061116 ], [ 0.6596393585205078, 0.2848246104061116 ], [ 0.6596393585205078, 0.33286572282255833 ], [ 0.5111872990926106, 0.33286572282255833 ] ]
   }, {
     "source" : "CUMMINGS, CEREBEX 15 GOING TO BE\nUNIQUE-THE MOST POWERFUL\nELECTRONIC BRAIN IN THE WORLD!\nYOU CAN'T BUILD GENIUS FROMA\nBLUEPRINT!\n",
-    "translation" : " Cummings, o Cerebex 15 será único — o cérebro eletrônico mais poderoso do mundo! Não se constrói um gênio a partir de uma planta!",
+    "translation" : "Cummings, o Cerebex vai ser único — o cérebro eletrônico mais poderoso do mundo! Você não pode construir um gênio a partir de uma planta!",
     "kind" : "text_bubble",
     "polygon" : [ [ 0.6854166666666667, 0.2854223433242507 ], [ 0.9166666666666666, 0.2847411444141689 ], [ 0.9166666666666666, 0.3303814713896458 ], [ 0.6854166666666667, 0.3310626702997275 ] ]
   }, {
     "source" : "HAVE ANOTHER\nARGUMENT\nWITH OLD\nJACKSON,\nBRAD?\n",
-    "translation" : " Discutiu de novo com o velho Jackson, Brad?",
+    "translation" : "Teve outra discussão com o velho Jackson, Brad?",
     "kind" : "text_bubble",
     "polygon" : [ [ 0.5177083333333333, 0.5054495912806539 ], [ 0.6166666666666667, 0.5061307901907357 ], [ 0.6166666666666667, 0.5565395095367848 ], [ 0.5177083333333333, 0.555858310626703 ] ]
   }, {
     "source" : "YOU KNOW, DON, I'M WORRIED. JACKSON IS DOING THINGS TO THAT BRAIN I DON'T UNDERSTAND AT ALL.",
-    "translation" : " Sabe, Don, estou preocupado. O Jackson está fazendo coisas com aquele cérebro que eu não entendo de jeito nenhum.",
+    "translation" : "Sabe, Don, estou preocupado. O Jackson está fazendo coisas naquele cérebro que eu não entendo de jeito nenhum.",
     "kind" : "text_bubble",
-    "polygon" : [ [ 0.6354166666666666, 0.5061307901907357 ], [ 0.8270833333333333, 0.5061307901907357 ], [ 0.8270833333333333, 0.5463215258855586 ], [ 0.6354166666666666, 0.5463215258855586 ] ]
+    "polygon" : [ [ 0.6302287419637044, 0.5041660651848816 ], [ 0.8316365559895833, 0.5041660651848816 ], [ 0.8316365559895833, 0.5488267529562968 ], [ 0.6302287419637044, 0.5488267529562968 ] ]
   }, {
     "source" : "THE GIANT ELECTRONIC \"BRAIN\" WAS A MARVEL OF MODERN INGENUITY--UNTIL IT WAS TWISTED INTO THE DEVILISH\nPATTERNS OF A MADMAN'S MIND!\n",
-    "translation" : " O gigantesco \"cérebro\" eletrônico era uma maravilha da engenhosidade moderna — até ser distorcido pelos padrões diabólicos da mente de um louco!",
+    "translation" : "O gigantesco \"cérebro\" eletrônico era uma maravilha da engenhosidade moderna — até ser distorcido nos padrões diabólicos da mente de um louco!",
     "kind" : "text_bubble",
-    "polygon" : [ [ 0.041666666666666664, 0.8971389645776566 ], [ 0.8895833333333333, 0.8971389645776566 ], [ 0.8895833333333333, 0.9155313351498637 ], [ 0.041666666666666664, 0.9155313351498637 ] ]
+    "polygon" : [ [ 0.03021061420440674, 0.893288261559094 ], [ 0.9056974411010742, 0.893288261559094 ], [ 0.9056974411010742, 0.9190641398001107 ], [ 0.03021061420440674, 0.9190641398001107 ] ]
   }, {
-    "source" : "Bill Banis",
-    "translation" : " Bill Banis",
+    "source" : "Bill Benulis\n",
+    "translation" : "Bill Benulis",
     "kind" : "text_bubble",
-    "polygon" : [ [ 0.7979166666666667, 0.9325613079019074 ], [ 0.8822916666666667, 0.9325613079019074 ], [ 0.8822916666666667, 0.9400544959128065 ], [ 0.7979166666666667, 0.9400544959128065 ] ]
+    "polygon" : [ [ 0.789808972676595, 0.9286908973465173 ], [ 0.8919627507527669, 0.9286908973465173 ], [ 0.8919627507527669, 0.9435463055602861 ], [ 0.789808972676595, 0.9435463055602861 ] ]
   } ],
   "bubbles" : [ [ 0.6206696192423503, 0.4999226666276396, 0.8372643152872722, 0.5605443803750851 ], [ 0.5073518753051758, 0.2823507116665957, 0.6670061111450195, 0.34178716675137305 ], [ 0.6713085174560547, 0.2815935514278568, 0.9234793345133464, 0.33974408973465176 ], [ 0.5102455139160156, 0.5009149452646032, 0.6293034235636393, 0.5671948009355842 ], [ 0.5014057159423828, 0.2318324990753257, 0.9255645116170247, 0.2814506302087768 ], [ 0.7838020960489909, 0.9259552085107289, 0.8978957494099935, 0.9475422789030569 ] ],
   "expect" : {
@@ -71,12 +71,16 @@
       "font" : 0,
       "residualInk" : 0
     }, {
-      "overflow" : true,
-      "font" : 0,
+      "overflow" : false,
+      "font" : 13,
       "residualInk" : 0
     }, {
       "overflow" : false,
-      "font" : 11,
+      "font" : 13,
+      "residualInk" : 0
+    }, {
+      "overflow" : false,
+      "font" : 12,
       "residualInk" : 0
     }, {
       "overflow" : false,
@@ -85,14 +89,10 @@
     }, {
       "overflow" : false,
       "font" : 12,
-      "residualInk" : 1
+      "residualInk" : 0
     }, {
       "overflow" : false,
-      "font" : 9,
-      "residualInk" : 6
-    }, {
-      "overflow" : false,
-      "font" : 11,
+      "font" : 12,
       "residualInk" : 0
     }, {
       "overflow" : true,

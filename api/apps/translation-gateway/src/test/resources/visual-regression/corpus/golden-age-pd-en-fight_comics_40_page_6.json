@@ -11,64 +11,64 @@
     "polygon" : [ [ 0.036458333333333336, 0.02198581560283688 ], [ 0.18541666666666667, 0.02269503546099291 ], [ 0.18541666666666667, 0.05177304964539007 ], [ 0.036458333333333336, 0.05106382978723404 ] ]
   }, {
     "source" : "BUT THE BATTLE IS ALREADY JOINED.\nAND THE GOLD-STARRED ONES PROVE\nMORE THAN EQUAL.\n",
-    "translation" : " Mas a batalha já começou. E aqueles das estrelas douradas mostram-se mais do que à altura.",
+    "translation" : "Mas a batalha já começou. E aqueles das estrelas douradas mostram-se mais do que à altura.",
     "kind" : "text_bubble",
     "polygon" : [ [ 0.31979166666666664, 0.02198581560283688 ], [ 0.7427083333333333, 0.023404255319148935 ], [ 0.7427083333333333, 0.05460992907801419 ], [ 0.31979166666666664, 0.05319148936170213 ] ]
   }, {
     "source" : "FOR\nMORGO!\n",
-    "translation" : " POR MORGO!",
+    "translation" : "POR MORGO!",
     "kind" : "text_bubble",
     "polygon" : [ [ 0.46875, 0.06524822695035461 ], [ 0.5541666666666667, 0.06595744680851064 ], [ 0.5541666666666667, 0.08368794326241134 ], [ 0.46875, 0.08297872340425531 ] ]
   }, {
     "source" : "AND\nTHEN...\n",
-    "translation" : " E então...",
+    "translation" : "E então...",
     "kind" : "text_bubble",
     "polygon" : [ [ 0.0375, 0.3432624113475177 ], [ 0.11770833333333333, 0.3453900709219858 ], [ 0.11666666666666667, 0.3645390070921986 ], [ 0.036458333333333336, 0.3624113475177305 ] ]
   }, {
     "source" : "BACK-BACK! AWAY\nWARUMBI FOOLS!\n",
-    "translation" : " Atrás, atrás! Afastem-se, tolos Warumbi!",
+    "translation" : "Para trás, para trás! Afastem-se, tolos Warumbi!",
     "kind" : "text_bubble",
-    "polygon" : [ [ 0.036458333333333336, 0.3943262411347518 ], [ 0.24479166666666666, 0.3943262411347518 ], [ 0.24479166666666666, 0.4134751773049645 ], [ 0.036458333333333336, 0.4134751773049645 ] ]
+    "polygon" : [ [ 0.03252564271291097, 0.3898115009280807 ], [ 0.25057757695515953, 0.3898115009280807 ], [ 0.25057757695515953, 0.41652524691101506 ], [ 0.03252564271291097, 0.41652524691101506 ] ]
   }, {
     "source" : "BOTH TIGER GIRL AND\nMORGO'S MEN BEING TOO\nMUCH FOR THEM, THE\nWARUMBI GO.\n",
-    "translation" : " Como tanto Tiger Girl quanto os homens de Morgo eram adversários poderosos demais para eles, os Warumbi vão embora.",
+    "translation" : "Sendo tanto Tiger Girl quanto os homens de Morgo fortes demais para eles, os Warumbi batem em retirada.",
     "kind" : "text_bubble",
     "polygon" : [ [ 0.303125, 0.3446808510638298 ], [ 0.559375, 0.34609929078014184 ], [ 0.559375, 0.38652482269503546 ], [ 0.303125, 0.3851063829787234 ] ]
   }, {
     "source" : "AND YOU, ABDOLA.\nWITH BENZALI. .\nFOLLOW AND SEE\nTHAT THEY RETURN!\nI SHALL SPEAK\nWITH MORGO!",
-    "translation" : " E você, Abdola. Com Benzali... vá atrás e certifique-se de que eles retornem! Eu falarei com Morgo!",
+    "translation" : "E você, Abdola. Com Benzali... vá atrás e certifique-se de que eles retornem! Eu falarei com Morgo!",
     "kind" : "text_bubble",
     "polygon" : [ [ 0.3104166666666667, 0.3943262411347518 ], [ 0.5229166666666667, 0.39574468085106385 ], [ 0.521875, 0.4553191489361702 ], [ 0.309375, 0.45390070921985815 ] ]
   }, {
     "source" : "IS THIS\nWISE\nTIGER\nGIRL?\n",
-    "translation" : " Esta é a sábia garota-tigre?",
+    "translation" : "Isso é sensato, Tiger Girl?",
     "kind" : "text_bubble",
     "polygon" : [ [ 0.39166666666666666, 0.48723404255319147 ], [ 0.46979166666666666, 0.4879432624113475 ], [ 0.46979166666666666, 0.5276595744680851 ], [ 0.39166666666666666, 0.5269503546099291 ] ]
   }, {
     "source" : "FOR\nN'DASU!\nAAAH.",
-    "translation" : " POR N'DASU! AAAH.",
+    "translation" : "POR N'DASU! AAAH.",
     "kind" : "text_bubble",
     "polygon" : [ [ 0.7145833333333333, 0.07588652482269503 ], [ 0.8010416666666667, 0.07446808510638298 ], [ 0.8020833333333334, 0.10283687943262411 ], [ 0.715625, 0.10425531914893617 ] ]
   }, {
     "source" : "DO AS I SAY!\nSTAND ASIDE,\nSTARRED ONES!\n",
-    "translation" : " Façam o que eu digo! Abram caminho, vocês, os marcados pela estrela!",
+    "translation" : "Façam o que eu digo! Abram caminho, homens das estrelas!",
     "kind" : "text_bubble",
     "polygon" : [ [ 0.7010416666666667, 0.26595744680851063 ], [ 0.8760416666666667, 0.26666666666666666 ], [ 0.8760416666666667, 0.29716312056737587 ], [ 0.7010416666666667, 0.29645390070921984 ] ]
   }, {
     "source" : "THE WAY IS\nDIFFICULT!\n",
-    "translation" : " O caminho é difícil!",
+    "translation" : "O caminho é difícil!",
     "kind" : "text_bubble",
-    "polygon" : [ [ 0.08645833333333333, 0.6652482269503546 ], [ 0.21979166666666666, 0.6652482269503546 ], [ 0.21979166666666666, 0.6858156028368795 ], [ 0.08645833333333333, 0.6858156028368795 ] ]
+    "polygon" : [ [ 0.08098676999409994, 0.6614401526484929 ], [ 0.22641661961873372, 0.6614401526484929 ], [ 0.22641661961873372, 0.6888153725482048 ], [ 0.08098676999409994, 0.6888153725482048 ] ]
   }, {
     "source" : "IN MORGO'S GROTTO.\n",
-    "translation" : " Na Gruta de Morgo.",
+    "translation" : "NA GRUTA DE MORGO.",
     "kind" : "text_bubble",
     "polygon" : [ [ 0.328125, 0.6609929078014184 ], [ 0.56875, 0.6624113475177305 ], [ 0.56875, 0.6737588652482269 ], [ 0.328125, 0.6723404255319149 ] ]
   }, {
     "source" : "WHAT DO YOU WANT?",
-    "translation" : " O que você quer?",
+    "translation" : "O QUE VOCÊ QUER?",
     "kind" : "text_bubble",
-    "polygon" : [ [ 0.6114583333333333, 0.6106382978723405 ], [ 0.73125, 0.6106382978723405 ], [ 0.73125, 0.6368794326241135 ], [ 0.6114583333333333, 0.6368794326241135 ] ]
+    "polygon" : [ [ 0.6059392929077149, 0.6070512920406693 ], [ 0.7360240300496419, 0.6070512920406693 ], [ 0.7360240300496419, 0.6368794326241135 ], [ 0.6059392929077149, 0.6368794326241135 ] ]
   }, {
     "source" : "HH\n",
     "translation" : " HH",
@@ -76,9 +76,9 @@
     "polygon" : [ [ 0.14270833333333333, 0.7262411347517731 ], [ 0.19479166666666667, 0.725531914893617 ], [ 0.19583333333333333, 0.7524822695035461 ], [ 0.14375, 0.7531914893617021 ] ]
   }, {
     "source" : "I AM TIGER GIRL.. WHAT ARE YOU DOING? WHY DO THESE ONES BREATHE SMOKE?",
-    "translation" : " Eu sou a Garota-Tigre... O que você está fazendo? Por que estes aqui respiram fumaça?",
+    "translation" : "EU SOU TIGER GIRL... O QUE ESTÁ FAZENDO? POR QUE ESTES HOMENS RESPIRAM FUMAÇA?",
     "kind" : "text_bubble",
-    "polygon" : [ [ 0.42291666666666666, 0.7099290780141844 ], [ 0.6041666666666666, 0.7099290780141844 ], [ 0.6041666666666666, 0.7709219858156028 ], [ 0.42291666666666666, 0.7709219858156028 ] ]
+    "polygon" : [ [ 0.4166196505228678, 0.7066382874833776 ], [ 0.6070180257161458, 0.7066382874833776 ], [ 0.6070180257161458, 0.7711417123781028 ], [ 0.4166196505228678, 0.7711417123781028 ] ]
   } ],
   "bubbles" : [ [ 0.4052461306254069, 0.6966459666583555, 0.6172747294108073, 0.7802840861868351 ], [ 0.292465877532959, 0.3865782825659353, 0.5347553888956705, 0.4690425791638963 ], [ 0.6820749282836914, 0.2500284397855718, 0.8884303410847981, 0.30960816728307844 ], [ 0.023815959692001343, 0.013272896895171903, 0.19480814933776855, 0.06400702726756427 ], [ 0.3729400952657064, 0.47286818484042553, 0.4924145698547363, 0.5428620466949247 ], [ 0.06872326532999674, 0.6545282458582669, 0.23656403223673503, 0.6995793768700133 ], [ 0.023440198103586832, 0.3824826504321808, 0.2604275385538737, 0.42459206006205674 ], [ 0.6967919031778972, 0.06163792170531361, 0.812535285949707, 0.11633498820852727 ], [ 0.45059900283813475, 0.054994315289436504, 0.569206174214681, 0.0964111977435173 ], [ 0.5959373474121094, 0.5978865819619903, 0.74802672068278, 0.644035350177305 ], [ 0.29761791229248047, 0.33828159629875887, 0.5660655339558919, 0.38749519510472075 ], [ 0.3144375801086426, 0.015134365000623339, 0.750318972269694, 0.05703082794838763 ], [ 0.022221819559733073, 0.33681601666389627, 0.12700049877166747, 0.3686205708388741 ], [ 0.31704918543497723, 0.6546742973598183, 0.597886339823405, 0.6779196448359929 ] ],
   "expect" : {
@@ -101,11 +101,11 @@
       "residualInk" : 19
     }, {
       "overflow" : false,
-      "font" : 11,
+      "font" : 14,
       "residualInk" : 0
     }, {
       "overflow" : false,
-      "font" : 12,
+      "font" : 13,
       "residualInk" : 44
     }, {
       "overflow" : false,
@@ -117,16 +117,16 @@
       "residualInk" : 0
     }, {
       "overflow" : false,
-      "font" : 13,
-      "residualInk" : 0
-    }, {
-      "overflow" : true,
-      "font" : 0,
-      "residualInk" : 0
+      "font" : 12,
+      "residualInk" : 11
     }, {
       "overflow" : false,
-      "font" : 13,
-      "residualInk" : 0
+      "font" : 11,
+      "residualInk" : 6
+    }, {
+      "overflow" : false,
+      "font" : 15,
+      "residualInk" : 22
     }, {
       "overflow" : false,
       "font" : 16,
@@ -134,15 +134,15 @@
     }, {
       "overflow" : false,
       "font" : 13,
-      "residualInk" : 0
+      "residualInk" : 57
     }, {
       "overflow" : true,
       "font" : 0,
       "residualInk" : 0
     }, {
       "overflow" : false,
-      "font" : 12,
-      "residualInk" : 146
+      "font" : 13,
+      "residualInk" : 332
     } ]
   }
 }

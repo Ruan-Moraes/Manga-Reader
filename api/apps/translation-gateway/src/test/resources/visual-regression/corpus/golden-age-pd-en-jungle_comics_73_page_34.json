@@ -11,62 +11,62 @@
     "polygon" : [ [ 0.06458333333333334, 0.06680299931833675 ], [ 0.15416666666666667, 0.06612133605998637 ], [ 0.15416666666666667, 0.08588957055214724 ], [ 0.06458333333333334, 0.08657123381049761 ] ]
   }, {
     "source" : "IT'S\nTHAT DOG\nHE'S STARTED\nA STAMPEDE-\n",
-    "translation" : " É aquele cachorro! Ele provocou uma debandada...",
+    "translation" : "É aquele cachorro! Ele provocou uma debandada...",
     "kind" : "text_bubble",
-    "polygon" : [ [ 0.215625, 0.06680299931833675 ], [ 0.32916666666666666, 0.06680299931833675 ], [ 0.32916666666666666, 0.10702113156100886 ], [ 0.215625, 0.10702113156100886 ] ]
+    "polygon" : [ [ 0.2139129638671875, 0.06313947015826038 ], [ 0.3329172134399414, 0.06313947015826038 ], [ 0.3329172134399414, 0.10734966878754473 ], [ 0.2139129638671875, 0.10734966878754473 ] ]
   }, {
     "source" : "JUNGLE COMICS\n",
-    "translation" : " JUNGLE COMICS",
+    "translation" : "JUNGLE COMICS",
     "kind" : "text_free",
     "polygon" : [ [ 0.40208333333333335, 0.032719836400818 ], [ 0.5760416666666667, 0.03067484662576687 ], [ 0.5760416666666667, 0.04294478527607362 ], [ 0.40208333333333335, 0.044989775051124746 ] ]
   }, {
     "source" : "I'VE GOT TO GET OUT THEY'LL KILL ME-BUT HOW? THEY'RE POURING THROUGH THE PASS AND THERE'S NO OTHER WAY OUT-",
-    "translation" : " Preciso sair daqui, eles vão me matar — mas como? Eles estão passando em massa pela garganta e não há outra saída —",
+    "translation" : "Preciso sair daqui, eles vão me matar — mas como? Eles estão passando aos montes pela passagem e não há outra saída —",
     "kind" : "text_bubble",
-    "polygon" : [ [ 0.36354166666666665, 0.06475800954328562 ], [ 0.571875, 0.06475800954328562 ], [ 0.571875, 0.12610770279481937 ], [ 0.36354166666666665, 0.12610770279481937 ] ]
+    "polygon" : [ [ 0.3590366045633952, 0.06256181005726237 ], [ 0.57902037302653, 0.06256181005726237 ], [ 0.57902037302653, 0.12683564168543904 ], [ 0.3590366045633952, 0.12683564168543904 ] ]
   }, {
     "source" : "BUT AS THE INFURIATED\nELEPHANTS DESTROY ALL IN\nTHEIR PATH, CAMILLA AND HER\nFRIENDS ESCAPE INTO THE\nPOOL\n",
-    "translation" : " Mas, enquanto os elefantes enfurecidos destroem tudo em seu caminho, Camilla e seus amigos escapam para a piscina.",
+    "translation" : "Mas, enquanto os elefantes enfurecidos destroem tudo em seu caminho, Camilla e seus amigos escapam para o lago...",
     "kind" : "text_bubble",
-    "polygon" : [ [ 0.6416666666666667, 0.06339468302658487 ], [ 0.9083333333333333, 0.06339468302658487 ], [ 0.9083333333333333, 0.11315610088616224 ], [ 0.6416666666666667, 0.11315610088616224 ] ]
+    "polygon" : [ [ 0.639726193745931, 0.06137822417068742 ], [ 0.916357676188151, 0.06137822417068742 ], [ 0.916357676188151, 0.11368866070810434 ], [ 0.639726193745931, 0.11368866070810434 ] ]
   }, {
     "source" : "LEAVING THE DESECRATORS\nTO CERTAIN DEATH-\n",
-    "translation" : " Deixando os profanadores à morte certa —",
+    "translation" : "Deixando os profanadores à morte certa —",
     "kind" : "text_bubble",
-    "polygon" : [ [ 0.06875, 0.35719154737559644 ], [ 0.3125, 0.35719154737559644 ], [ 0.3125, 0.3769597818677573 ], [ 0.06875, 0.3769597818677573 ] ]
+    "polygon" : [ [ 0.06427925825119019, 0.35237746703519085 ], [ 0.31842918395996095, 0.35237746703519085 ], [ 0.31842918395996095, 0.3792645143016147 ], [ 0.06427925825119019, 0.3792645143016147 ] ]
   }, {
     "source" : "AS AT THE RIVER NEARBY-\n",
-    "translation" : " Como no rio próximo —",
+    "translation" : "Enquanto isso, no rio ali perto...",
     "kind" : "text_bubble",
     "polygon" : [ [ 0.328125, 0.612815269256987 ], [ 0.5572916666666666, 0.6141785957736878 ], [ 0.5572916666666666, 0.6250852079072938 ], [ 0.328125, 0.623721881390593 ] ]
   }, {
     "source" : "I DIDN'T THINK WE'D MAKE\nIT THROUGH THE GROTTO-\nBUT WE DID AND THAT'S\nTHE END OF YOUR PARTNER\nAND HIS HENCHMEN\n",
-    "translation" : " Eu não achava que conseguiríamos atravessar a gruta — mas conseguimos, e esse é o fim do seu parceiro e dos capangas dele.",
+    "translation" : "Eu não achava que conseguiríamos atravessar a gruta — mas conseguimos, e esse é o fim do seu parceiro e dos capangas dele.",
     "kind" : "text_bubble",
-    "polygon" : [ [ 0.3375, 0.6366734832992502 ], [ 0.5802083333333333, 0.6366734832992502 ], [ 0.5802083333333333, 0.6871165644171779 ], [ 0.3375, 0.6871165644171779 ] ]
+    "polygon" : [ [ 0.32891661326090493, 0.6327145608331203 ], [ 0.5898052851359049, 0.6327145608331203 ], [ 0.5898052851359049, 0.6885809505075196 ], [ 0.32891661326090493, 0.6885809505075196 ] ]
   }, {
     "source" : "I DON'T KNOW HOW I CAN REPAY YOU.",
-    "translation" : " Não sei como posso retribuir a você.",
+    "translation" : "Não sei como posso retribuir a você.",
     "kind" : "text_bubble",
-    "polygon" : [ [ 0.459375, 0.700068166325835 ], [ 0.5854166666666667, 0.700068166325835 ], [ 0.5854166666666667, 0.7273346966598501 ], [ 0.459375, 0.7273346966598501 ] ]
+    "polygon" : [ [ 0.451461124420166, 0.6964558170373211 ], [ 0.5891473770141602, 0.6964558170373211 ], [ 0.5891473770141602, 0.7293632938980488 ], [ 0.451461124420166, 0.7293632938980488 ] ]
   }, {
-    "source" : "REMEMBER ONE THING, TRADER.\nTHE LAW OF THE JUNGLE IS\nDEATH TO TRANSGRESSORS.\nNEVER PLOT TO ROB THE\nJUNGLE OF ITS OWN.",
-    "translation" : " Lembre-se de uma coisa, mercador: a lei da selva é a morte para os transgressores. Nunca planeje roubar da selva o que lhe pertence.",
+    "source" : "REMEMBER ONE THING, TRADER.\nTHE LAW OF THE JUNGLE IS\nDEATH TO TRANSGRESSORS\nNEVER PLOT TO ROB THE\nJUNGLE OF ITS OWN.\n",
+    "translation" : "Lembre-se de uma coisa, comerciante: a lei da selva é a morte para os transgressores. Nunca planeje roubar da selva o que lhe pertence.",
     "kind" : "text_bubble",
-    "polygon" : [ [ 0.6447916666666667, 0.6155419222903885 ], [ 0.9114583333333334, 0.6155419222903885 ], [ 0.9114583333333334, 0.665303340149966 ], [ 0.6447916666666667, 0.665303340149966 ] ]
+    "polygon" : [ [ 0.6407279968261719, 0.611857554013825 ], [ 0.9118063608805339, 0.611857554013825 ], [ 0.9118063608805339, 0.6675000232990371 ], [ 0.6407279968261719, 0.6675000232990371 ] ]
   }, {
     "source" : "YOU'RE RIGHT\nCAMILLA NO\nMORE GRAVE\nROBBING FOR ME\n",
-    "translation" : " Você tem razão, Camilla: chega de roubar túmulos para mim.",
+    "translation" : "Você tem razão, Camilla. Chega de saquear túmulos para mim.",
     "kind" : "text_bubble",
-    "polygon" : [ [ 0.7833333333333333, 0.6768916155419223 ], [ 0.9208333333333333, 0.6768916155419223 ], [ 0.9208333333333333, 0.7184730743012951 ], [ 0.7833333333333333, 0.7184730743012951 ] ]
+    "polygon" : [ [ 0.7800400416056316, 0.6750529470619249 ], [ 0.9246449788411458, 0.6750529470619249 ], [ 0.9246449788411458, 0.7193411298568507 ], [ 0.7800400416056316, 0.7193411298568507 ] ]
   }, {
     "source" : "Camilla APPEARS IN EVERY ISSUE OF\n",
-    "translation" : " Camilla aparece em todas as edições de",
+    "translation" : "Camilla aparece em todas as edições de",
     "kind" : "text_free",
     "polygon" : [ [ 0.06875, 0.8929788684389911 ], [ 0.5677083333333334, 0.8970688479890934 ], [ 0.5677083333333334, 0.9141104294478528 ], [ 0.06875, 0.9100204498977505 ] ]
   }, {
     "source" : "Jungle Comics!\n",
-    "translation" : " Jungle Comics!",
+    "translation" : "Jungle Comics!",
     "kind" : "text_free",
     "polygon" : [ [ 0.5916666666666667, 0.8943421949556919 ], [ 0.8947916666666667, 0.8882072256305386 ], [ 0.8958333333333334, 0.9086571233810498 ], [ 0.5927083333333333, 0.9147920927062031 ] ]
   } ],
@@ -88,18 +88,26 @@
     }, {
       "overflow" : false,
       "font" : 12,
-      "residualInk" : 149
+      "residualInk" : 317
     }, {
       "overflow" : false,
       "font" : 13,
+      "residualInk" : 2
+    }, {
+      "overflow" : false,
+      "font" : 12,
       "residualInk" : 0
     }, {
       "overflow" : false,
-      "font" : 11,
+      "font" : 15,
       "residualInk" : 0
     }, {
       "overflow" : false,
-      "font" : 16,
+      "font" : 12,
+      "residualInk" : 0
+    }, {
+      "overflow" : false,
+      "font" : 13,
       "residualInk" : 0
     }, {
       "overflow" : false,
@@ -109,14 +117,6 @@
       "overflow" : false,
       "font" : 12,
       "residualInk" : 0
-    }, {
-      "overflow" : false,
-      "font" : 12,
-      "residualInk" : 0
-    }, {
-      "overflow" : false,
-      "font" : 11,
-      "residualInk" : 305
     }, {
       "overflow" : false,
       "font" : 18,

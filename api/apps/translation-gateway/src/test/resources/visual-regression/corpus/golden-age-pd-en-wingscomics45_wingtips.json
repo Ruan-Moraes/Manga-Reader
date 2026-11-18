@@ -6,12 +6,12 @@
   "height" : 1428,
   "regions" : [ {
     "source" : "WING TIPS\n",
-    "translation" : "Pontas de asa",
+    "translation" : "DICAS DE VOO",
     "kind" : "text_free",
     "polygon" : [ [ 0.034375, 0.02030812324929972 ], [ 0.9572916666666667, 0.01680672268907563 ], [ 0.9583333333333334, 0.1057422969187675 ], [ 0.035416666666666666, 0.1092436974789916 ] ]
   }, {
     "source" : "The\nHELLCAT\n",
-    "translation" : " O Hellcat",
+    "translation" : "O HELLCAT",
     "kind" : "text_free",
     "polygon" : [ [ 0.34791666666666665, 0.1169467787114846 ], [ 0.6864583333333333, 0.12254901960784313 ], [ 0.6833333333333333, 0.20658263305322128 ], [ 0.34479166666666666, 0.20098039215686275 ] ]
   }, {
@@ -21,7 +21,7 @@
     "polygon" : [ [ 0.06041666666666667, 0.6841736694677871 ], [ 0.3302083333333333, 0.6862745098039216 ], [ 0.32708333333333334, 0.90406162464986 ], [ 0.057291666666666664, 0.9019607843137255 ] ]
   }, {
     "source" : "DEATH ON ZEROS IS THE GRUMMAN F6F HELLCAT SUCCESSOR TO THE WILDCAT BIGGER, FASTER, NIMBLER, WITH AMAZING CLIMB POWERED BY A NEW HIGH ALTITUDE PRATT AND WHITNEY ENGINE..THIS ZERO-KILLER IS THE MOST POWERFUL THING NAVY COMBAT FLYING HAS KNOWN..\"",
-    "translation" : " O Grumman F6F Hellcat — sucessor do Wildcat — é a morte para os Zeros: maior, mais rápido, mais ágil e com uma capacidade de ascensão impressionante, impulsionado por um novo motor Pratt & Whitney para grandes altitudes. Este caçador de Zeros é a máquina mais poderosa que a aviação de combate da Marinha já conheceu.",
+    "translation" : "A MORTE DOS ZEROS É O GRUMMAN F6F HELLCAT, SUCESSOR DO WILDCAT. MAIOR, MAIS RÁPIDO, MAIS ÁGIL, COM UMA SUBIDA INCRÍVEL MOVIDO POR UM NOVO MOTOR PRATT & WHITNEY DE GRANDE ALTITUDE... ESTE EXTERMINADOR DE ZEROS É A COISA MAIS PODEROSA QUE A AVIAÇÃO DE COMBATE DA MARINHA JÁ CONHECEU...\"",
     "kind" : "text_free",
     "polygon" : [ [ 0.51875, 0.6365546218487395 ], [ 0.9645833333333333, 0.6365546218487395 ], [ 0.9645833333333333, 0.7654061624649859 ], [ 0.51875, 0.7654061624649859 ] ]
   }, {
@@ -47,7 +47,7 @@
       "residualInk" : 0
     }, {
       "overflow" : false,
-      "font" : 16,
+      "font" : 17,
       "residualInk" : 0
     }, {
       "overflow" : true,

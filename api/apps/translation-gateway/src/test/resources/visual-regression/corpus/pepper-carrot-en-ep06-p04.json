@@ -6,9 +6,9 @@
   "height" : 1660,
   "regions" : [ {
     "source" : "All the way from the great\nTechnologist's Union,\nit's an honor to welcome the\nravishing and ingenious\nCoriander!\n",
-    "translation" : "Vinda diretamente da grande União Technologist's, é uma honra dar as boas-vindas à deslumbrante e genial Coriander!",
+    "translation" : "Vinda diretamente da grande União Technologist's, é uma honra dar as boas-vindas à deslumbrante e genial Coentro!",
     "kind" : "text_bubble",
-    "polygon" : [ [ 0.0425, 0.016867469879518072 ], [ 0.2866666666666667, 0.016867469879518072 ], [ 0.2866666666666667, 0.10361445783132531 ], [ 0.0425, 0.10361445783132531 ] ]
+    "polygon" : [ [ 0.038508936564127606, 0.011792839004332761 ], [ 0.2939947255452474, 0.011792839004332761 ], [ 0.2939947255452474, 0.1093717184411474 ], [ 0.038508936564127606, 0.1093717184411474 ] ]
   }, {
     "source" : "... not to forget our\nlocal girl, Komona's\nvery own witch\n",
     "translation" : " ... sem esquecer a nossa garota da terra, a própria bruxa Komona's",
@@ -16,57 +16,57 @@
     "polygon" : [ [ 0.3225, 0.014457831325301205 ], [ 0.49583333333333335, 0.012650602409638554 ], [ 0.49666666666666665, 0.06265060240963856 ], [ 0.3233333333333333, 0.06445783132530121 ] ]
   }, {
     "source" : "Saffron!\n",
-    "translation" : " Açafrão!",
+    "translation" : "Açafrão!",
     "kind" : "text_bubble",
-    "polygon" : [ [ 0.36916666666666664, 0.0891566265060241 ], [ 0.4558333333333333, 0.0891566265060241 ], [ 0.4558333333333333, 0.10361445783132531 ], [ 0.36916666666666664, 0.10361445783132531 ] ]
+    "polygon" : [ [ 0.36078720092773436, 0.08314776133341961 ], [ 0.46260101318359376, 0.08314776133341961 ], [ 0.46260101318359376, 0.10867887749729387 ], [ 0.36078720092773436, 0.10867887749729387 ] ]
   }, {
     "source" : "...Our third\nparticipant comes to\nus from the lands of\nthe setting moons,\nShichimi!\n",
-    "translation" : " ...Nosso terceiro participante vem das terras das luas poentes: Shichimi!",
+    "translation" : "...Nossa terceira participante vem até nós das terras das luas poentes, Shichimi!",
     "kind" : "text_bubble",
-    "polygon" : [ [ 0.5091666666666667, 0.014457831325301205 ], [ 0.6925, 0.014457831325301205 ], [ 0.6925, 0.10361445783132531 ], [ 0.5091666666666667, 0.10361445783132531 ] ]
+    "polygon" : [ [ 0.5054497273763021, 0.009627967857452761 ], [ 0.6989312744140626, 0.009627967857452761 ], [ 0.6989312744140626, 0.10918262895331325 ], [ 0.5054497273763021, 0.10918262895331325 ] ]
   }, {
     "source" : "... and finally, our last participant, from the forest of Squirrel's End, Pepper!",
-    "translation" : " ... e, finalmente, nossa última participante, da floresta de Squirrel's End: Pepper!",
+    "translation" : "... e, finalmente, nossa última participante, da floresta de Squirrel's End, Pepper!",
     "kind" : "text_bubble",
-    "polygon" : [ [ 0.7558333333333334, 0.01566265060240964 ], [ 0.9166666666666666, 0.01566265060240964 ], [ 0.9166666666666666, 0.10783132530120482 ], [ 0.7558333333333334, 0.10783132530120482 ] ]
+    "polygon" : [ [ 0.7477896118164062, 0.01068861743053758 ], [ 0.9228019205729167, 0.01068861743053758 ], [ 0.9228019205729167, 0.11044786751988422 ], [ 0.7477896118164062, 0.11044786751988422 ] ]
   }, {
     "source" : "Let the\ngames begin!\n",
-    "translation" : " Que comecem os jogos!",
+    "translation" : "Que comecem os jogos!",
     "kind" : "text_bubble",
     "polygon" : [ [ 0.09916666666666667, 0.4572289156626506 ], [ 0.215, 0.45602409638554214 ], [ 0.21583333333333332, 0.48614457831325303 ], [ 0.1, 0.48734939759036144 ] ]
   }, {
     "source" : "The vote will be by\napplaud-o-meter\n",
-    "translation" : " A votação será feita por meio de um medidor de aplausos.",
+    "translation" : "A votação será por aplausômetro!",
     "kind" : "text_bubble",
-    "polygon" : [ [ 0.2708333333333333, 0.5030120481927711 ], [ 0.43166666666666664, 0.5030120481927711 ], [ 0.43166666666666664, 0.5349397590361445 ], [ 0.2708333333333333, 0.5349397590361445 ] ]
+    "polygon" : [ [ 0.26399543762207034, 0.49985903084996236 ], [ 0.4345396423339844, 0.49985903084996236 ], [ 0.4345396423339844, 0.5377471923828125 ], [ 0.26399543762207034, 0.5377471923828125 ] ]
   }, {
     "source" : "First up, Coriander's demonstration",
-    "translation" : " Para começar, a demonstração de Coriander.",
+    "translation" : "Para começar, a demonstração da Coentro!",
     "kind" : "text_bubble",
-    "polygon" : [ [ 0.18583333333333332, 0.5993975903614458 ], [ 0.3125, 0.5993975903614458 ], [ 0.3125, 0.6469879518072289 ], [ 0.18583333333333332, 0.6469879518072289 ] ]
+    "polygon" : [ [ 0.1784967041015625, 0.5969902314335467 ], [ 0.3204224650065104, 0.5969902314335467 ], [ 0.3204224650065104, 0.6512030544051205 ], [ 0.1784967041015625, 0.6512030544051205 ] ]
   }, {
     "source" : "...fear death no more,\nthanks to my...\n",
-    "translation" : " ...não temo mais a morte, graças ao meu...",
+    "translation" : "...não temam mais a morte, graças à minha...",
     "kind" : "text_bubble",
     "polygon" : [ [ 0.38416666666666666, 0.591566265060241 ], [ 0.5791666666666667, 0.5975903614457831 ], [ 0.5766666666666667, 0.6301204819277109 ], [ 0.3825, 0.6240963855421687 ] ]
   }, {
     "source" : "Ladies & Gentlemen...",
-    "translation" : " Senhoras e senhores...",
+    "translation" : "Senhoras e Senhores...",
     "kind" : "text_bubble",
-    "polygon" : [ [ 0.2725, 0.686144578313253 ], [ 0.38166666666666665, 0.686144578313253 ], [ 0.38166666666666665, 0.7313253012048193 ], [ 0.2725, 0.7313253012048193 ] ]
+    "polygon" : [ [ 0.2663949076334635, 0.683153855657003 ], [ 0.38166666666666665, 0.683153855657003 ], [ 0.38166666666666665, 0.7354479686323419 ], [ 0.2663949076334635, 0.7354479686323419 ] ]
   }, {
     "source" : "...Potion of ZOMBIFICATION!",
-    "translation" : " ...Poção de ZOMBIFICAÇÃO!",
+    "translation" : "...Poção de ZUMBIFICAÇÃO!",
     "kind" : "text_bubble",
-    "polygon" : [ [ 0.6883333333333334, 0.6042168674698796 ], [ 0.8666666666666667, 0.6042168674698796 ], [ 0.8666666666666667, 0.6427710843373494 ], [ 0.6883333333333334, 0.6427710843373494 ] ]
+    "polygon" : [ [ 0.6768591817220052, 0.5997986207525414 ], [ 0.8736958821614583, 0.5997986207525414 ], [ 0.8736958821614583, 0.6491103574454066 ], [ 0.6768591817220052, 0.6491103574454066 ] ]
   }, {
-    "source" : "Clap Clap\nClap\nClap Clap Clap\nClap e",
-    "translation" : " Palmas Palmas Palmas Palmas Palmas Palmas Palmas e",
+    "source" : "Clap Clap Clap Clap Clap Clap",
+    "translation" : "Clap Clap Clap Clap Clap Clap",
     "kind" : "text_free",
     "polygon" : [ [ 0.59, 0.8837349397590362 ], [ 0.7916666666666666, 0.8837349397590362 ], [ 0.7916666666666666, 0.9680722891566265 ], [ 0.59, 0.9680722891566265 ] ]
   }, {
     "source" : "Clap Clap\n",
-    "translation" : " Aplausos",
+    "translation" : "Clap Clap",
     "kind" : "text_free",
     "polygon" : [ [ 0.7791666666666667, 0.9204819277108434 ], [ 0.86, 0.9066265060240963 ], [ 0.8675, 0.927710843373494 ], [ 0.7858333333333334, 0.941566265060241 ] ]
   } ],
@@ -75,15 +75,15 @@
     "maxChangedOutside" : 0,
     "regions" : [ {
       "overflow" : false,
-      "font" : 18,
-      "residualInk" : 109
+      "font" : 20,
+      "residualInk" : 138
     }, {
       "overflow" : false,
-      "font" : 14,
+      "font" : 20,
       "residualInk" : 0
     }, {
       "overflow" : false,
-      "font" : 14,
+      "font" : 27,
       "residualInk" : 0
     }, {
       "overflow" : false,
@@ -91,19 +91,19 @@
       "residualInk" : 0
     }, {
       "overflow" : false,
-      "font" : 18,
-      "residualInk" : 0
+      "font" : 19,
+      "residualInk" : 5
     }, {
       "overflow" : false,
       "font" : 17,
       "residualInk" : 0
     }, {
       "overflow" : false,
-      "font" : 14,
+      "font" : 21,
       "residualInk" : 0
     }, {
       "overflow" : false,
-      "font" : 18,
+      "font" : 19,
       "residualInk" : 0
     }, {
       "overflow" : false,
@@ -111,15 +111,15 @@
       "residualInk" : 0
     }, {
       "overflow" : false,
-      "font" : 22,
-      "residualInk" : 0
-    }, {
-      "overflow" : false,
-      "font" : 22,
+      "font" : 24,
       "residualInk" : 0
     }, {
       "overflow" : false,
       "font" : 24,
+      "residualInk" : 0
+    }, {
+      "overflow" : true,
+      "font" : 0,
       "residualInk" : 0
     }, {
       "overflow" : true,

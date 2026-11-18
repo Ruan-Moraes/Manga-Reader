@@ -5,25 +5,25 @@
   "width" : 1200,
   "height" : 1660,
   "regions" : [ {
-    "source" : "¡Céntrate en\nestudiar tus\n<<Hechizos de\ndestrucción»>!\n",
-    "translation" : "Concentre-se em estudar seus <<Feitiços de destruição>>!",
+    "source" : "¡Céntrate en\nestudiar tus\n«Hechizos de\ndestrucción»!\n",
+    "translation" : "Concentre-se em estudar seus «Feitiços de destruição»!",
     "kind" : "text_bubble",
-    "polygon" : [ [ 0.04833333333333333, 0.822289156626506 ], [ 0.16333333333333333, 0.822289156626506 ], [ 0.16333333333333333, 0.8819277108433735 ], [ 0.04833333333333333, 0.8819277108433735 ] ]
+    "polygon" : [ [ 0.04338730812072754, 0.817827486704631 ], [ 0.165773557027181, 0.817827486704631 ], [ 0.165773557027181, 0.8859827248446913 ], [ 0.04338730812072754, 0.8859827248446913 ] ]
   }, {
     "source" : "¿Que quieres un\nárbol de Unidad?\n",
-    "translation" : " Quer uma árvore da Unidade?",
+    "translation" : " Você quer uma árvore de Unidade?",
     "kind" : "text_bubble",
     "polygon" : [ [ 0.2225, 0.12048192771084337 ], [ 0.3591666666666667, 0.1216867469879518 ], [ 0.3591666666666667, 0.14698795180722893 ], [ 0.2225, 0.14578313253012049 ] ]
   }, {
-    "source" : "¿¿Aquí?!?",
-    "translation" : " Aqui?!?",
+    "source" : "di¿Aquí?!?\n",
+    "translation" : " Diga... Aqui?!?",
     "kind" : "text_bubble",
     "polygon" : [ [ 0.2475, 0.16566265060240964 ], [ 0.34833333333333333, 0.163855421686747 ], [ 0.3491666666666667, 0.1789156626506024 ], [ 0.24833333333333332, 0.18072289156626506 ] ]
   }, {
     "source" : "¡NO!\n",
     "translation" : " Não!",
     "kind" : "text_bubble",
-    "polygon" : [ [ 0.5541666666666667, 0.4867469879518072 ], [ 0.6166666666666667, 0.4867469879518072 ], [ 0.6166666666666667, 0.5042168674698795 ], [ 0.5541666666666667, 0.5042168674698795 ] ]
+    "polygon" : [ [ 0.5502921549479166, 0.48142244270048945 ], [ 0.6204611206054688, 0.48142244270048945 ], [ 0.6204611206054688, 0.5072500205901732 ], [ 0.5502921549479166, 0.5072500205901732 ] ]
   }, {
     "source" : "Somos las\nBrujas del Caos;\nNO HACEMOS eso.\n",
     "translation" : " Somos as Bruxas do Caos; NÃO fazemos isso.",
@@ -41,9 +41,9 @@
     "polygon" : [ [ 0.47, 0.6963855421686747 ], [ 0.585, 0.6951807228915663 ], [ 0.585, 0.7066265060240964 ], [ 0.47, 0.7078313253012049 ] ]
   }, {
     "source" : "El próximo Concilio de Las\nTres Lunas es pronto y\ntambién tus exámenes.\n¡Aprende! ¡Aprende!\n¡¡¡APRENDE!!! ¡¡¡Y DEJA DE\nDISTRAERTE CON ESAS\nIDEAS ESTÚPIDAS!!!\n",
-    "translation" : " O próximo Concílio das Três Luas está chegando, e seus exames também. Aprenda! Aprenda! APRENDA!!! E PARE DE SE DISTRAIR COM ESSAS IDEIAS ESTÚPIDAS!!!",
+    "translation" : " O próximo Concílio das Três Luas é em breve, e os seus exames também. Aprenda! Aprenda! APRENDA!!! E PARE DE SE DISTRAIR COM ESSAS IDEIAS ESTÚPIDAS!!!",
     "kind" : "text_bubble",
-    "polygon" : [ [ 0.73, 0.6843373493975904 ], [ 0.9533333333333334, 0.6843373493975904 ], [ 0.9533333333333334, 0.7957831325301205 ], [ 0.73, 0.7957831325301205 ] ]
+    "polygon" : [ [ 0.7233080037434896, 0.6803917574595256 ], [ 0.9588376871744791, 0.6803917574595256 ], [ 0.9588376871744791, 0.7995044386530497 ], [ 0.7233080037434896, 0.7995044386530497 ] ]
   }, {
     "source" : "¿En esta\népoca del año?\n",
     "translation" : " Nesta época do ano?",
@@ -53,27 +53,27 @@
     "source" : "¿Por qué no aprendemos, para variar, hechizos de creación?",
     "translation" : " Por que não aprendemos, para variar, feitiços de criação?",
     "kind" : "text_bubble",
-    "polygon" : [ [ 0.4375, 0.9066265060240963 ], [ 0.59, 0.9066265060240963 ], [ 0.59, 0.9662650602409638 ], [ 0.4375, 0.9662650602409638 ] ]
+    "polygon" : [ [ 0.43200159708658853, 0.9040975915380272 ], [ 0.5933307393391927, 0.9040975915380272 ], [ 0.5933307393391927, 0.9678647696253765 ], [ 0.43200159708658853, 0.9678647696253765 ] ]
   } ],
   "bubbles" : [ [ 0.5344534301757813, 0.5113115425569466, 0.7327844746907552, 0.5825301572500942 ], [ 0.4229699452718099, 0.9015356592385165, 0.601191660563151, 0.9689895078360317 ], [ 0.04067663828531901, 0.7898313958960843, 0.19768257141113282, 0.9070713273013931 ], [ 0.45792149861653647, 0.6799660556287651, 0.5967257181803386, 0.7220700918910015 ], [ 0.4560498555501302, 0.8564879635730421, 0.6020328267415365, 0.901842820500753 ], [ 0.6852680969238282, 0.6731704160391566, 0.958988037109375, 0.8207839414297816 ], [ 0.20117029825846355, 0.09845138917486351, 0.38205721537272136, 0.15618817432817206 ], [ 0.5315746053059895, 0.4614940965032003, 0.6454480997721355, 0.512806940653238 ], [ 0.2240466054280599, 0.1568225538874247, 0.3801557413736979, 0.197578319871282 ] ],
   "expect" : {
     "maxChangedOutside" : 0,
     "regions" : [ {
       "overflow" : false,
-      "font" : 16,
-      "residualInk" : 47
+      "font" : 17,
+      "residualInk" : 272
     }, {
       "overflow" : false,
       "font" : 14,
       "residualInk" : 0
     }, {
       "overflow" : false,
-      "font" : 19,
-      "residualInk" : 6
+      "font" : 17,
+      "residualInk" : 5
     }, {
       "overflow" : false,
       "font" : 19,
-      "residualInk" : 0
+      "residualInk" : 12
     }, {
       "overflow" : false,
       "font" : 16,
@@ -89,7 +89,7 @@
     }, {
       "overflow" : false,
       "font" : 19,
-      "residualInk" : 182
+      "residualInk" : 403
     }, {
       "overflow" : false,
       "font" : 16,
@@ -97,7 +97,7 @@
     }, {
       "overflow" : false,
       "font" : 14,
-      "residualInk" : 230
+      "residualInk" : 610
     } ]
   }
 }

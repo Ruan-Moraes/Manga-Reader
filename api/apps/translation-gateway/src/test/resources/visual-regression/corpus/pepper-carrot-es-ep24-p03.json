@@ -13,12 +13,12 @@
     "source" : "Creo\nrecordar...\n",
     "translation" : " Acho que me lembro...",
     "kind" : "text_bubble",
-    "polygon" : [ [ 0.07166666666666667, 0.051807228915662654 ], [ 0.16, 0.051807228915662654 ], [ 0.16, 0.07710843373493977 ], [ 0.07166666666666667, 0.07710843373493977 ] ]
+    "polygon" : [ [ 0.06524878819783529, 0.047933252173733995 ], [ 0.16546899159749348, 0.047933252173733995 ], [ 0.16546899159749348, 0.08085999086678747 ], [ 0.06524878819783529, 0.08085999086678747 ] ]
   }, {
-    "source" : "¡Sí! En el capítulo de los «Hechizos de Destrucción»> Tomillo recomienda intentarlos en una microdimensión. Pero mira todos estos avisos:",
-    "translation" : " Sim! No capítulo sobre \"Feitiços de Destruição\", Tomilho recomenda experimentá-los em uma microdimensão. Mas veja todos estes avisos:",
+    "source" : "¡Sí! En el capítulo de\nlos «Hechizos de Destrucción»>\nTomillo recomienda intentarlos en\nuna microdimensión. Pero mira\ntodos estos avisos:",
+    "translation" : " Sim! No capítulo sobre \" Feitiços de Destruição \", Tomilho recomenda experimentá-los em uma microdimensão. Mas veja todos estes avisos:",
     "kind" : "text_bubble",
-    "polygon" : [ [ 0.29333333333333333, 0.01746987951807229 ], [ 0.565, 0.01746987951807229 ], [ 0.565, 0.09397590361445783 ], [ 0.29333333333333333, 0.09397590361445783 ] ]
+    "polygon" : [ [ 0.2908850351969401, 0.01184840489582843 ], [ 0.5706346130371094, 0.01184840489582843 ], [ 0.5706346130371094, 0.0968151506171169 ], [ 0.2908850351969401, 0.0968151506171169 ] ]
   }, {
     "source" : "Shrr\n",
     "translation" : " Shrr",
@@ -38,12 +38,12 @@
     "source" : "¡Es perfecto!\n",
     "translation" : " É perfeito!",
     "kind" : "text_bubble",
-    "polygon" : [ [ 0.15083333333333335, 0.4042168674698795 ], [ 0.25833333333333336, 0.4042168674698795 ], [ 0.25833333333333336, 0.41566265060240964 ], [ 0.15083333333333335, 0.41566265060240964 ] ]
+    "polygon" : [ [ 0.14669034322102864, 0.39942432081843 ], [ 0.26292803446451823, 0.39942432081843 ], [ 0.26292803446451823, 0.41754282756024097 ], [ 0.14669034322102864, 0.41754282756024097 ] ]
   }, {
     "source" : "¡Vamos a\ntrabajar!\n",
     "translation" : " Vamos trabalhar!",
     "kind" : "text_bubble",
-    "polygon" : [ [ 0.18666666666666668, 0.42891566265060244 ], [ 0.26416666666666666, 0.42891566265060244 ], [ 0.26416666666666666, 0.4566265060240964 ], [ 0.18666666666666668, 0.4566265060240964 ] ]
+    "polygon" : [ [ 0.18036965688069662, 0.42476181581795935 ], [ 0.2684270222981771, 0.42476181581795935 ], [ 0.2684270222981771, 0.4582314732563065 ], [ 0.18036965688069662, 0.4582314732563065 ] ]
   }, {
     "source" : "EXT\n",
     "translation" : " EXT",
@@ -53,17 +53,17 @@
     "source" : "Mm... «Procura NO gastar todo tu Rea en la creación de la microdimensión.»",
     "translation" : " Mm... «Tente NÃO gastar todo o seu Rea na criação da microdimensão.»",
     "kind" : "text_bubble",
-    "polygon" : [ [ 0.625, 0.022289156626506025 ], [ 0.8516666666666667, 0.022289156626506025 ], [ 0.8516666666666667, 0.08433734939759036 ], [ 0.625, 0.08433734939759036 ] ]
+    "polygon" : [ [ 0.625, 0.01974810634750918 ], [ 0.8518485514322917, 0.01974810634750918 ], [ 0.8518485514322917, 0.08627597854798098 ], [ 0.625, 0.08627597854798098 ] ]
   }, {
     "source" : "Naturalmente.",
     "translation" : " Naturalmente.",
     "kind" : "text_bubble",
-    "polygon" : [ [ 0.8391666666666666, 0.06927710843373494 ], [ 0.9525, 0.06927710843373494 ], [ 0.9525, 0.0825301204819277 ], [ 0.8391666666666666, 0.0825301204819277 ] ]
+    "polygon" : [ [ 0.8336104838053385, 0.06826953658138413 ], [ 0.9564982096354167, 0.06826953658138413 ], [ 0.9564982096354167, 0.0854785597467997 ], [ 0.8336104838053385, 0.0854785597467997 ] ]
   }, {
-    "source" : "«NO volver con lo generado por motivos de seguridad»>",
+    "source" : "«NO volver con lo generado por motivos de seguridad»",
     "translation" : " «NÃO retornar com o que foi gerado, por motivos de segurança»",
     "kind" : "text_bubble",
-    "polygon" : [ [ 0.7733333333333333, 0.09819277108433735 ], [ 0.9591666666666666, 0.09819277108433735 ], [ 0.9591666666666666, 0.14578313253012049 ], [ 0.7733333333333333, 0.14578313253012049 ] ]
+    "polygon" : [ [ 0.7684526062011718, 0.09461776549557606 ], [ 0.9616569010416667, 0.09461776549557606 ], [ 0.9616569010416667, 0.14723337931805347 ], [ 0.7684526062011718, 0.14723337931805347 ] ]
   }, {
     "source" : "Pff... ¡Obvio!\n",
     "translation" : " Pff... Óbvio!",
@@ -83,10 +83,10 @@
     "source" : "tipo de ayuda del exterior de «NO esperar ningún la microdimensión...",
     "translation" : " tipo de ajuda externa de «NÃO esperar nada da microdimensão...",
     "kind" : "text_bubble",
-    "polygon" : [ [ 0.7058333333333333, 0.21927710843373494 ], [ 0.9433333333333334, 0.21927710843373494 ], [ 0.9433333333333334, 0.26265060240963856 ], [ 0.7058333333333333, 0.26265060240963856 ] ]
+    "polygon" : [ [ 0.7007525126139323, 0.21541874897049135 ], [ 0.9478304036458334, 0.21541874897049135 ], [ 0.9478304036458334, 0.2659859714737858 ], [ 0.7007525126139323, 0.2659859714737858 ] ]
   }, {
-    "source" : "...jnadie puede ver\nqué estás haciendo!»\n",
-    "translation" : " ...ninguém pode ver o que você está fazendo!",
+    "source" : "...¡nadie puede ver\nqué estás haciendo!»",
+    "translation" : " ...ninguém pode ver o que você está fazendo!»",
     "kind" : "text_bubble",
     "polygon" : [ [ 0.7341666666666666, 0.2740963855421687 ], [ 0.9058333333333334, 0.27349397590361446 ], [ 0.9058333333333334, 0.3030120481927711 ], [ 0.7341666666666666, 0.3036144578313253 ] ]
   }, {
@@ -96,9 +96,9 @@
     "polygon" : [ [ 0.5891666666666666, 0.35602409638554217 ], [ 0.665, 0.36325301204819277 ], [ 0.6625, 0.37650602409638556 ], [ 0.5866666666666667, 0.36927710843373496 ] ]
   }, {
     "source" : "¿Acaba de crear Pimienta una microdimensión?",
-    "translation" : " Pimienta acabou de criar uma microdimensão?",
+    "translation" : " Pimenta acabou de criar uma microdimensão?",
     "kind" : "text_bubble",
-    "polygon" : [ [ 0.275, 0.6246987951807229 ], [ 0.41333333333333333, 0.6246987951807229 ], [ 0.41333333333333333, 0.6698795180722892 ], [ 0.275, 0.6698795180722892 ] ]
+    "polygon" : [ [ 0.2699841054280599, 0.6218216126223645 ], [ 0.4162414296468099, 0.6218216126223645 ], [ 0.4162414296468099, 0.6714951113045934 ], [ 0.2699841054280599, 0.6714951113045934 ] ]
   }, {
     "source" : "SCHUump!!\n",
     "translation" : " SCHUump!!",
@@ -115,10 +115,10 @@
     "kind" : "text_bubble",
     "polygon" : [ [ 0.6916666666666667, 0.6265060240963856 ], [ 0.7375, 0.6253012048192771 ], [ 0.7383333333333333, 0.636144578313253 ], [ 0.6925, 0.6373493975903615 ] ]
   }, {
-    "source" : "Espero que haya comprendido bien todos los avisos que escribí en ese capítulo sobre los <<Hechizos de Destrucción».",
+    "source" : "Espero que haya comprendido bien todos los avisos que escribí en ese capítulo sobre los «Hechizos de Destrucción».",
     "translation" : " Espero que tenha compreendido bem todos os avisos que escrevi naquele capítulo sobre os «Feitiços de Destruição».",
     "kind" : "text_bubble",
-    "polygon" : [ [ 0.6383333333333333, 0.6481927710843374 ], [ 0.9008333333333334, 0.6481927710843374 ], [ 0.9008333333333334, 0.7102409638554217 ], [ 0.6383333333333333, 0.7102409638554217 ] ]
+    "polygon" : [ [ 0.6331325785319011, 0.6448448089231927 ], [ 0.9055777994791666, 0.6448448089231927 ], [ 0.9055777994791666, 0.7130379182746611 ], [ 0.6331325785319011, 0.7130379182746611 ] ]
   } ],
   "bubbles" : [ [ 0.25593536376953124, 0.6099204925169428, 0.4281866963704427, 0.6813051522496235 ], [ 0.2841675821940104, 0.006538569783589926, 0.5820203653971354, 0.10692745346620859 ], [ 0.05415913263956706, 0.04518325529902814, 0.185642573038737, 0.08997671288180065 ], [ 0.6228072102864584, 0.6338917192206325, 0.9224422200520833, 0.7253318694700678 ], [ 0.03851060549418132, 0.011042639720870788, 0.18018741607666017, 0.04544450231345303 ], [ 0.7571879577636719, 0.09208424579666322, 0.9631241861979166, 0.15131543630576996 ], [ 0.14896251678466796, 0.4205198356904179, 0.3033764394124349, 0.4720116305064006 ], [ 0.6912078857421875, 0.20997746479080384, 0.9576439412434896, 0.2676211069865399 ], [ 0.6146185302734375, 0.009320378590779133, 0.8663134765625, 0.09313875680946442 ], [ 0.13114158630371095, 0.3917762480586408, 0.2824836985270182, 0.42209366028567397 ], [ 0.7132720438639323, 0.2685772263860128, 0.9352293904622396, 0.3109781655920557 ], [ 0.8087854512532552, 0.15333000091185053, 0.960392354329427, 0.18841846879706325 ], [ 0.6644749450683594, 0.6108414983174887, 0.7617973327636719, 0.6390242611069277 ], [ 0.10413612365722656, 0.3451671554381589, 0.20608668009440104, 0.37375635353915665 ], [ 0.7971499633789062, 0.1876321631741811, 0.9222568766276041, 0.2125624323465738 ], [ 0.11754878997802734, 0.37071522172675075, 0.24064608256022135, 0.3923271087278803 ], [ 0.10320529301961263, 0.34619217838149474, 0.23452379862467448, 0.3831503994493599 ], [ 0.8284713236490885, 0.061791716426251884, 0.959865214029948, 0.08883256107927805 ] ],
   "expect" : {
@@ -130,11 +130,11 @@
     }, {
       "overflow" : false,
       "font" : 16,
-      "residualInk" : 0
+      "residualInk" : 80
     }, {
       "overflow" : false,
       "font" : 16,
-      "residualInk" : 529
+      "residualInk" : 1727
     }, {
       "overflow" : true,
       "font" : 0,
@@ -149,31 +149,31 @@
       "residualInk" : 6
     }, {
       "overflow" : false,
-      "font" : 13,
+      "font" : 19,
+      "residualInk" : 0
+    }, {
+      "overflow" : false,
+      "font" : 19,
+      "residualInk" : 0
+    }, {
+      "overflow" : true,
+      "font" : 0,
+      "residualInk" : 0
+    }, {
+      "overflow" : false,
+      "font" : 19,
+      "residualInk" : 134
+    }, {
+      "overflow" : true,
+      "font" : 0,
       "residualInk" : 0
     }, {
       "overflow" : false,
       "font" : 15,
-      "residualInk" : 0
-    }, {
-      "overflow" : true,
-      "font" : 0,
-      "residualInk" : 0
+      "residualInk" : 16
     }, {
       "overflow" : false,
-      "font" : 20,
-      "residualInk" : 116
-    }, {
-      "overflow" : true,
-      "font" : 0,
-      "residualInk" : 0
-    }, {
-      "overflow" : false,
-      "font" : 16,
-      "residualInk" : 7
-    }, {
-      "overflow" : false,
-      "font" : 21,
+      "font" : 22,
       "residualInk" : 0
     }, {
       "overflow" : false,
@@ -186,7 +186,7 @@
     }, {
       "overflow" : false,
       "font" : 17,
-      "residualInk" : 61
+      "residualInk" : 304
     }, {
       "overflow" : false,
       "font" : 16,
@@ -197,8 +197,8 @@
       "residualInk" : 0
     }, {
       "overflow" : false,
-      "font" : 16,
-      "residualInk" : 4
+      "font" : 17,
+      "residualInk" : 210
     }, {
       "overflow" : true,
       "font" : 0,
@@ -209,12 +209,12 @@
       "residualInk" : 0
     }, {
       "overflow" : false,
-      "font" : 15,
+      "font" : 13,
       "residualInk" : 0
     }, {
       "overflow" : false,
       "font" : 16,
-      "residualInk" : 111
+      "residualInk" : 758
     } ]
   }
 }

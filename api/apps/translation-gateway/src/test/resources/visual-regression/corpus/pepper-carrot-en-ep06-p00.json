@@ -6,12 +6,12 @@
   "height" : 287,
   "regions" : [ {
     "source" : "Pepper & Carrot\n",
-    "translation" : "Pepper & Carrot",
+    "translation" : "Pepper & Cenoura",
     "kind" : "text_free",
-    "polygon" : [ [ 0.18333333333333332, 0.21951219512195122 ], [ 0.8108333333333333, 0.18815331010452963 ], [ 0.8125, 0.6898954703832753 ], [ 0.185, 0.7212543554006968 ] ]
+    "polygon" : [ [ 0.18333333333333332, 0.21951219512195122 ], [ 0.81, 0.18815331010452963 ], [ 0.8116666666666666, 0.6898954703832753 ], [ 0.185, 0.7212543554006968 ] ]
   }, {
     "source" : "Episode 6: The Potion Contest\n",
-    "translation" : " Episódio 6: O Concurso de Poções",
+    "translation" : "Episódio 6: O Concurso de Poções",
     "kind" : "text_free",
     "polygon" : [ [ 0.2841666666666667, 0.7839721254355401 ], [ 0.6791666666666667, 0.7700348432055749 ], [ 0.6791666666666667, 0.8815331010452961 ], [ 0.2841666666666667, 0.8954703832752613 ] ]
   } ],
@@ -19,8 +19,8 @@
   "expect" : {
     "maxChangedOutside" : 0,
     "regions" : [ {
-      "overflow" : true,
-      "font" : 0,
+      "overflow" : false,
+      "font" : 48,
       "residualInk" : 0
     }, {
       "overflow" : false,

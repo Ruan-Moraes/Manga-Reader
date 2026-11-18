@@ -16,19 +16,19 @@
     "polygon" : [ [ 0.0625, 0.011412268188302425 ], [ 0.7666666666666667, 0.011412268188302425 ], [ 0.7666666666666667, 0.14122681883024252 ], [ 0.0625, 0.14122681883024252 ] ]
   }, {
     "source" : "OF THE\n",
-    "translation" : " DO",
+    "translation" : "DO",
     "kind" : "text_free",
     "polygon" : [ [ 0.7697916666666667, 0.037803138373751786 ], [ 0.8541666666666666, 0.037803138373751786 ], [ 0.8541666666666666, 0.05777460770328103 ], [ 0.7697916666666667, 0.05777460770328103 ] ]
   }, {
     "source" : "By ROSS GALLUN",
-    "translation" : " Por ROSS GALLUN",
+    "translation" : "Por ROSS GALLUN",
     "kind" : "text_free",
     "polygon" : [ [ 0.775, 0.0905848787446505 ], [ 0.909375, 0.0905848787446505 ], [ 0.909375, 0.12482168330955777 ], [ 0.775, 0.12482168330955777 ] ]
   }, {
     "source" : "HMM WHAT'S ALL THE\nCOMMOTION ON THE\nPLANET ARES?\n",
-    "translation" : " Hmm, o que é toda essa agitação no planeta Ares?",
+    "translation" : "Hmm, o que é toda essa agitação no planeta Ares?",
     "kind" : "text_bubble",
-    "polygon" : [ [ 0.35, 0.6840228245363766 ], [ 0.5760416666666667, 0.6840228245363766 ], [ 0.5760416666666667, 0.7139800285306704 ], [ 0.35, 0.7139800285306704 ] ]
+    "polygon" : [ [ 0.3460895856221517, 0.6790939962302737 ], [ 0.5839693705240886, 0.6790939962302737 ], [ 0.5839693705240886, 0.7172212042924171 ], [ 0.3460895856221517, 0.7172212042924171 ] ]
   }, {
     "source" : "AG\n",
     "translation" : " AG",
@@ -36,12 +36,12 @@
     "polygon" : [ [ 0.8916666666666667, 0.6283880171184023 ], [ 0.9739583333333334, 0.6298145506419401 ], [ 0.9729166666666667, 0.6676176890156919 ], [ 0.890625, 0.666191155492154 ] ]
   }, {
     "source" : "THAT DOES IT! MY\nENLARGER LENS SHOWS\n-NO IT CAN'T BE!\nBUT IT IS!\n",
-    "translation" : " Chega! A lente do meu ampliador mostra... não, não pode ser! Mas é!",
+    "translation" : "É isso! A lente do meu ampliador mostra... não, não pode ser! Mas é!",
     "kind" : "text_bubble",
-    "polygon" : [ [ 0.7166666666666667, 0.6833095577746077 ], [ 0.95, 0.6833095577746077 ], [ 0.95, 0.724679029957204 ], [ 0.7166666666666667, 0.724679029957204 ] ]
+    "polygon" : [ [ 0.7081165949503581, 0.6772103520500847 ], [ 0.9601367314656576, 0.6772103520500847 ], [ 0.9601367314656576, 0.7285475792116173 ], [ 0.7081165949503581, 0.7285475792116173 ] ]
   }, {
     "source" : "ONLY THE MADNESS OF A WARPED\nGENIUS COULD CONCEIVE SUCH A\nPLAN DIABOLICALLY CLEVER, IT\nWOULD DESTROY THE UNIVERSE!\nBUT THERE WAS MYSTA, WHOSE\nMIND WAS SCHOOLED TO PEACE\nAND CULTURE AND FREEDOM-\nWHOSE MIND WAS FILLED WITH ALL\nKNOWLEDGE, COULD SHE STOP\nTHE COMING DEBACLE?\n",
-    "translation" : " Somente a loucura de um gênio distorcido poderia conceber um plano tão diabolicamente engenhoso — capaz de destruir o universo! Mas havia Mysta, cuja mente fora moldada para a paz, a cultura e a liberdade — uma mente repleta de todo o conhecimento. Poderia ela deter a catástrofe iminente?",
+    "translation" : "Somente a loucura de um gênio distorcido poderia conceber tal plano! Diabolicamente engenhoso, destruiria o universo! Mas havia Mysta, cuja mente fora educada para a paz, a cultura e a liberdade — cuja mente estava repleta de todo o conhecimento. Poderia ela impedir a catástrofe iminente?",
     "kind" : "text_bubble",
     "polygon" : [ [ 0.13020833333333334, 0.8559201141226819 ], [ 0.44583333333333336, 0.854493580599144 ], [ 0.446875, 0.9657631954350927 ], [ 0.13125, 0.9671897289586305 ] ]
   } ],
@@ -63,10 +63,10 @@
     }, {
       "overflow" : false,
       "font" : 16,
-      "residualInk" : 11
+      "residualInk" : 17
     }, {
       "overflow" : false,
-      "font" : 13,
+      "font" : 18,
       "residualInk" : 0
     }, {
       "overflow" : true,
@@ -74,8 +74,8 @@
       "residualInk" : 0
     }, {
       "overflow" : false,
-      "font" : 13,
-      "residualInk" : 271
+      "font" : 16,
+      "residualInk" : 0
     }, {
       "overflow" : false,
       "font" : 13,

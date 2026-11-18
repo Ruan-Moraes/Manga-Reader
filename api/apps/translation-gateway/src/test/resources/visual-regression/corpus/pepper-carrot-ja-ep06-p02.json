@@ -6,22 +6,22 @@
   "height" : 1660,
   "regions" : [ {
     "source" : "キャロット!コンテストに運べばいいそう思ったのね!ホントに素敵!",
-    "translation" : "Carrot! Você pensou em levar para o concurso, não foi? É simplesmente maravilhoso!",
+    "translation" : "Carrot! Você pensou em levar para o concurso, não foi? É maravilhoso demais!",
     "kind" : "text_bubble",
-    "polygon" : [ [ 0.2725, 0.505421686746988 ], [ 0.48333333333333334, 0.505421686746988 ], [ 0.48333333333333334, 0.5704819277108434 ], [ 0.2725, 0.5704819277108434 ] ]
+    "polygon" : [ [ 0.2682732899983724, 0.5016168433499624 ], [ 0.49337671915690107, 0.5016168433499624 ], [ 0.49337671915690107, 0.575471294357116 ], [ 0.2682732899983724, 0.575471294357116 ] ]
   }, {
     "source" : "もう最高!\n",
-    "translation" : " Simplesmente demais!",
+    "translation" : "Você é o melhor!",
     "kind" : "text_bubble",
-    "polygon" : [ [ 0.6591666666666667, 0.7066265060240964 ], [ 0.7616666666666667, 0.7066265060240964 ], [ 0.7616666666666667, 0.7204819277108434 ], [ 0.6591666666666667, 0.7204819277108434 ] ]
+    "polygon" : [ [ 0.6494247945149739, 0.7015156573559864 ], [ 0.7682362874348958, 0.7015156573559864 ], [ 0.7682362874348958, 0.7242333837302334 ], [ 0.6494247945149739, 0.7242333837302334 ] ]
   }, {
     "source" : "私の魔法薬に、服に、帽子まで全部持ってきてくれて...",
-    "translation" : " Você trouxe tudo: minhas poções, minhas roupas e até o meu chapéu...",
+    "translation" : "Trouxe até as minhas poções mágicas, minhas roupas e meu chapéu, tudo...",
     "kind" : "text_bubble",
-    "polygon" : [ [ 0.7191666666666666, 0.7710843373493976 ], [ 0.9016666666666666, 0.7710843373493976 ], [ 0.9016666666666666, 0.8180722891566266 ], [ 0.7191666666666666, 0.8180722891566266 ] ]
+    "polygon" : [ [ 0.712688242594401, 0.7661303416792169 ], [ 0.9086536661783854, 0.7661303416792169 ], [ 0.9086536661783854, 0.8238402584949172 ], [ 0.712688242594401, 0.8238402584949172 ] ]
   }, {
     "source" : "... 持ってきた薬を\n見てみましょう...\n",
-    "translation" : " ... Vamos dar uma olhada nos medicamentos que você trouxe...",
+    "translation" : "... Vamos dar uma olhada nas poções que você trouxe...",
     "kind" : "text_bubble",
     "polygon" : [ [ 0.75, 0.8789156626506024 ], [ 0.9083333333333333, 0.8795180722891566 ], [ 0.9083333333333333, 0.9096385542168675 ], [ 0.75, 0.9090361445783133 ] ]
   } ],
@@ -30,11 +30,11 @@
     "maxChangedOutside" : 0,
     "regions" : [ {
       "overflow" : false,
-      "font" : 20,
-      "residualInk" : 274
+      "font" : 23,
+      "residualInk" : 751
     }, {
       "overflow" : false,
-      "font" : 19,
+      "font" : 23,
       "residualInk" : 0
     }, {
       "overflow" : false,
@@ -42,7 +42,7 @@
       "residualInk" : 0
     }, {
       "overflow" : false,
-      "font" : 14,
+      "font" : 16,
       "residualInk" : 0
     } ]
   }
