@@ -8,6 +8,7 @@ import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
+import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.Yaml;
 
 class TranslationGatewayOpenApiTest {
@@ -47,6 +48,7 @@ class TranslationGatewayOpenApiTest {
         // The chapter reference is optional and opaque: a random UUID the client draws per chapter, never a library id.
         assertThat(list(pageSubmission.get("required"))).doesNotContain("contextRef");
         assertThat(map(properties.get("contextRef"))).containsEntry("type", "string").containsEntry("format", "uuid");
+        assertThat((String) map(properties.get("attemptRef")).get("description")).contains("não é ID local");
 
         var idempotencyHeader = parameter(contract, "IdempotencyKey");
         assertThat(idempotencyHeader).containsEntry("in", "header").containsEntry("required", true);
@@ -149,7 +151,10 @@ class TranslationGatewayOpenApiTest {
 
     private Map<String, Object> loadContract() throws IOException {
         try (var reader = Files.newBufferedReader(CONTRACT_PATH)) {
-            return map(new Yaml().load(reader));
+            // Strict: a repeated key (two "description:" on one field) would otherwise keep only the last one silently.
+            var options = new LoaderOptions();
+            options.setAllowDuplicateKeys(false);
+            return map(new Yaml(options).load(reader));
         }
     }
 
