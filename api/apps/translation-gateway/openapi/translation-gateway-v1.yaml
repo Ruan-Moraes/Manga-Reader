@@ -754,7 +754,8 @@ components:
       required: [status, issues]
       description: >-
         Qualidade da página renderizada, derivada das regiões cuja tradução difere do original. NEEDS_REVIEW
-        quando alguma delas manteve o texto original (não coube, ou texto sobre arte); nunca bloqueia READY.
+        quando alguma delas manteve o texto original (não coube, ou texto sobre arte: TEXT_NOT_RENDERED) ou foi
+        desenhada muito menor que a letra de origem (TEXT_TOO_SMALL); nunca bloqueia READY.
         Ausente em resultados renderizados antes de a qualidade ser persistida.
       properties:
         status:
@@ -763,10 +764,10 @@ components:
         issues:
           type: array
           uniqueItems: true
-          maxItems: 2
+          maxItems: 3
           items:
             type: string
-            enum: [TEXT_NOT_RENDERED, ALL_TEXT_NOT_RENDERED]
+            enum: [TEXT_NOT_RENDERED, ALL_TEXT_NOT_RENDERED, TEXT_TOO_SMALL]
 
     PrivateResultDownload:
       type: object

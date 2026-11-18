@@ -130,7 +130,8 @@ class TranslationGatewayOpenApiTest {
             com.toonlira.translationgateway.domain.rendering.PageQuality.NEEDS_REVIEW);
         assertThat(list(map(map(properties.get("issues")).get("items")).get("enum"))).containsExactly(
             com.toonlira.translationgateway.domain.rendering.PageQuality.TEXT_NOT_RENDERED,
-            com.toonlira.translationgateway.domain.rendering.PageQuality.ALL_TEXT_NOT_RENDERED);
+            com.toonlira.translationgateway.domain.rendering.PageQuality.ALL_TEXT_NOT_RENDERED,
+            com.toonlira.translationgateway.domain.rendering.PageQuality.TEXT_TOO_SMALL);
     }
 
     @Test

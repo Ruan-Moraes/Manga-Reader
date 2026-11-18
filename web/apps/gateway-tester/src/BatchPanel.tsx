@@ -188,7 +188,9 @@ export default function BatchPanel({ accessToken, disclosureVersion, languages, 
                         className="text-xs font-semibold text-amber-700 dark:text-amber-300"
                         title={item.quality.issues.join(', ')}
                       >
-                        ⚠ Revisar: {item.quality.issues.includes('ALL_TEXT_NOT_RENDERED') ? 'nenhum texto traduzido foi desenhado' : 'parte do texto ficou no original'}
+                        ⚠ Revisar: {item.quality.issues.includes('ALL_TEXT_NOT_RENDERED') ? 'nenhum texto traduzido foi desenhado'
+                          : item.quality.issues.includes('TEXT_NOT_RENDERED') ? 'parte do texto ficou no original'
+                          : 'texto desenhado bem menor que o original'}
                       </p>
                     )}
                     {item.error && <p className="text-xs text-red-600 break-all">{item.error}</p>}

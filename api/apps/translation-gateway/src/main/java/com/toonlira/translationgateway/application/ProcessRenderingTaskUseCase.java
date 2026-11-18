@@ -230,7 +230,7 @@ public class ProcessRenderingTaskUseCase {
             imageKey = ResultObjectKey.create(resultDeadline, "webp");
             manifestKey = ResultObjectKey.create(resultDeadline, "json");
             artifacts = new RenderingJobRepository.Artifacts(imageKey, image, manifestKey, encoded.sha256(),
-                RenderTextCounts.of(output.manifest().regions()));
+                RenderTextCounts.of(output.manifest().regions(), output.manifest().image().widthPx(), output.manifest().image().heightPx()));
             // Upload the checked compressed snapshot, not a path that a renderer could modify after verification.
             storage.store(imageKey, inspectedOutput, image.mimeType(), image.sha256(), now());
             storage.store(manifestKey, manifestFile, "application/json", encoded.sha256(), now());

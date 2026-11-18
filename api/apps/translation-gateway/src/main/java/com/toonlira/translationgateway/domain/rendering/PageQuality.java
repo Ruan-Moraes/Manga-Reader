@@ -12,11 +12,13 @@ public record PageQuality(String status, List<String> issues) {
     public static final String NEEDS_REVIEW = "NEEDS_REVIEW";
     public static final String TEXT_NOT_RENDERED = "TEXT_NOT_RENDERED";
     public static final String ALL_TEXT_NOT_RENDERED = "ALL_TEXT_NOT_RENDERED";
+    /** Some translation was drawn far smaller than its source lettering ({@link RenderTextCounts#TOO_SMALL_SHARE}). */
+    public static final String TEXT_TOO_SMALL = "TEXT_TOO_SMALL";
 
     public PageQuality { issues = List.copyOf(issues); }
 
-    public static PageQuality evaluate(List<RenderManifest.Region> regions) {
-        return of(RenderTextCounts.of(regions));
+    public static PageQuality evaluate(List<RenderManifest.Region> regions, int widthPx, int heightPx) {
+        return of(RenderTextCounts.of(regions, widthPx, heightPx));
     }
 
     /** Derived from persisted counts too, so manifest and ReadyResult can never disagree. */
@@ -24,6 +26,7 @@ public record PageQuality(String status, List<String> issues) {
         var issues = new ArrayList<String>();
         if (counts.missing() > 0) issues.add(TEXT_NOT_RENDERED);
         if (counts.missing() > 0 && counts.missing() == counts.textRegions()) issues.add(ALL_TEXT_NOT_RENDERED);
+        if (counts.small() > 0) issues.add(TEXT_TOO_SMALL);
         return new PageQuality(issues.isEmpty() ? OK : NEEDS_REVIEW, issues);
     }
 }

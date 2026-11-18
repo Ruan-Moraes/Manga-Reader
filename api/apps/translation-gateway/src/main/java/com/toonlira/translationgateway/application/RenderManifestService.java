@@ -100,7 +100,7 @@ public final class RenderManifestService {
             || !request.translationSha256().equals(document.translationSha256())
             || !image.equals(document.image()) || document.regions() == null
             || document.regions().size() != request.regions().size()
-            || !PageQuality.evaluate(document.regions()).equals(document.quality())) invalid();
+            || !PageQuality.evaluate(document.regions(), document.image().widthPx(), document.image().heightPx()).equals(document.quality())) invalid();
         for (int order = 0; order < request.regions().size(); order++) {
             var source = request.regions().get(order);
             var region = document.regions().get(order);

@@ -81,7 +81,7 @@ const MAX_DOWNLOAD_LIFETIME_MS = 300000;
 const pageQualitySchema = z
     .object({
         status: z.enum(['OK', 'NEEDS_REVIEW']),
-        issues: z.array(z.enum(['TEXT_NOT_RENDERED', 'ALL_TEXT_NOT_RENDERED'])).max(2),
+        issues: z.array(z.enum(['TEXT_NOT_RENDERED', 'ALL_TEXT_NOT_RENDERED', 'TEXT_TOO_SMALL'])).max(3),
     })
     .strict()
     .refine(quality => new Set(quality.issues).size === quality.issues.length)

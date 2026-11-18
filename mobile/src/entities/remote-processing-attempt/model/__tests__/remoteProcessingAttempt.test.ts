@@ -90,6 +90,7 @@ describe('private ready result contract', () => {
         { ...result, quality: { status: 'NEEDS_REVIEW', issues: [] } },
         { ...result, quality: { status: 'NEEDS_REVIEW', issues: ['TEXT_NOT_RENDERED', 'TEXT_NOT_RENDERED'] } },
         { ...result, quality: { status: 'BAD', issues: [] } },
+        { ...result, quality: { status: 'NEEDS_REVIEW', issues: ['TEXT_TOO_LARGE'] } },
         { ...result, quality: { status: 'OK', issues: [], regions: 3 } },
     ])('rejects inconsistent or unbounded metadata %#', invalid => {
         expect(pageJobEnvelopeSchema.safeParse({ ...ready, result: invalid }).success).toBe(false);
@@ -100,6 +101,8 @@ describe('private ready result contract', () => {
         { status: 'OK', issues: [] },
         { status: 'NEEDS_REVIEW', issues: ['TEXT_NOT_RENDERED'] },
         { status: 'NEEDS_REVIEW', issues: ['TEXT_NOT_RENDERED', 'ALL_TEXT_NOT_RENDERED'] },
+        { status: 'NEEDS_REVIEW', issues: ['TEXT_TOO_SMALL'] },
+        { status: 'NEEDS_REVIEW', issues: ['TEXT_NOT_RENDERED', 'ALL_TEXT_NOT_RENDERED', 'TEXT_TOO_SMALL'] },
     ])('accepts optional page quality %#', quality => {
         const withQuality = quality === undefined ? result : { ...result, quality };
         expect(pageJobEnvelopeSchema.safeParse({ ...ready, result: withQuality }).success).toBe(true);

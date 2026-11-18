@@ -88,7 +88,10 @@ JSON UTF-8, versão `1.1` (2026-11-15: campo `kept`), separado dos artefatos OCR
   (quatro vértices normalizados `x`/`y`), `overflow`, `fontSizePx`, `kept` (original mantido **de propósito**:
   texto desenhado que não é fala — onomatopeia, tela, placa —; só com `overflow=true`);
 - `quality`: `status` (`OK` | `NEEDS_REVIEW`) e `issues` (`TEXT_NOT_RENDERED`,
-  `ALL_TEXT_NOT_RENDERED`), derivados de `overflow` e revalidados no decode. Região `kept` (como região com
+  `ALL_TEXT_NOT_RENDERED`, `TEXT_TOO_SMALL`), derivados de `overflow`, `fontSizePx` e do polígono e revalidados
+  no decode. `TEXT_TOO_SMALL` (2026-11-18): alguma tradução desenhada abaixo de 0,4 × o tamanho da letra de
+  origem (√(área da caixa ÷ letras)). No corpus de validação isso marca 5 de 50 páginas: um título refeito a 1/3
+  do tamanho, legendas a 13 px ao lado de kana de 40 px. Fala comum nunca é marcada. Região `kept` (como região com
   tradução igual ao original) não conta como texto não renderizado.
   Não bloqueia a entrega: o job continua `READY`.
 - Exposto também em `ReadyResult.quality` (OpenAPI `PageQuality`, opcional). A V10 persiste na
@@ -96,6 +99,9 @@ JSON UTF-8, versão `1.1` (2026-11-15: campo `kept`), separado dos artefatos OCR
   `rendered_text_missing_count` (dessas, quantas mantiveram o original); status e issues são
   derivados por `PageQuality.of(RenderTextCounts)`, a mesma regra do manifesto. Resultados
   renderizados antes da V10 não têm contagens e a API omite `quality`.
+  A V11 acrescenta `rendered_text_small_count` (das regiões desenhadas, quantas ficaram pequenas demais), com
+  CHECK entre 0 e as desenhadas, e só junto das contagens da V10. Linhas anteriores à V11 ficam nulas e não
+  reportam letra pequena.
 
 Política de composição (`clean-box-1.1`+, auditoria Ubunchu! 2026-11-14):
 região cujo texto não cabe (`overflow=true`) **não é limpa** — os pixels
