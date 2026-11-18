@@ -42,7 +42,8 @@ public final class GeminiTranslationRefiner implements TranslationRefinerPort {
           makes no sense in its line while the page states the intended word, a speaker repeating or correcting it),
           translate the intended word, as the reader understands it; a deliberate pun or a name stays as it is.
           Keep it about as long as the machine translation: it must fit the
-          same balloon.
+          same balloon. Write it as running text: the source's line breaks only follow the shape of the original
+          balloon, and the new text is laid out again.
 
         Rules:
         - Answer every region exactly once. Never merge, split, reorder, add or drop regions, and never move text
@@ -147,6 +148,17 @@ public final class GeminiTranslationRefiner implements TranslationRefinerPort {
         return encode(request, machine, java.util.Map.of());
     }
 
+    private static final java.util.regex.Pattern LINE_BREAK = java.util.regex.Pattern.compile("[ \\t]*(?<!\\n)\\R(?!\\R)[ \\t]*");
+
+    /**
+     * A proposal's single line breaks become spaces: they copy the shape of the original balloon ("IS THIS / WISE /
+     * TIGER / GIRL?") and would force that layout on the new text, which the renderer lays out itself. A blank line
+     * between paragraphs stays, as in the machine translation.
+     */
+    static String runningText(String translation) {
+        return LINE_BREAK.matcher(translation.strip()).replaceAll(" ");
+    }
+
     String encode(TranslationRequest request, java.util.Map<UUID, String> machine, java.util.Map<String, String> glossary) {
         var root = json.createObjectNode();
         root.put("sourceLanguage", request.pair().source());
@@ -194,7 +206,7 @@ public final class GeminiTranslationRefiner implements TranslationRefinerPort {
             }
             if (ordinal < 1 || ordinal > ids.size()) throw invalid();
             proposals.add(new TranslationRefinement.Proposal(ids.get(ordinal - 1),
-                source == null || source.isNull() ? null : source.asString(), translation.asString()));
+                source == null || source.isNull() ? null : source.asString(), runningText(translation.asString())));
         }
         return proposals;
     }

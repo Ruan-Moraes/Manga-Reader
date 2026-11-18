@@ -72,6 +72,12 @@ class GeminiTranslationRefinerTest {
     }
 
     @Test
+    void theOriginalBalloonsLineBreaksAreNotForcedOnTheReviewedText() {
+        assertThat(GeminiTranslationRefiner.runningText("ISSO É\nSÁBIO,\nTIGER\r\nGIRL?")).isEqualTo("ISSO É SÁBIO, TIGER GIRL?");
+        assertThat(GeminiTranslationRefiner.runningText("Primeiro parágrafo\nainda.\n\nSegundo.")).isEqualTo("Primeiro parágrafo ainda.\n\nSegundo.");
+    }
+
+    @Test
     void keepsAProtectedLiteralEvenWhenTheModelDropsIt() {
         var refiner = new GeminiTranslationRefiner((system, user) -> """
             {"regions":[{"id":"1","translation":"JANELAS 15 50 PATÉTICO"},{"id":"2","translation":"Eu uso Linux"}]}""", 12_000);
