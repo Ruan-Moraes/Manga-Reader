@@ -44,6 +44,9 @@ class TranslationGatewayOpenApiTest {
             "attemptRef"
         );
         assertThat(properties).doesNotContainKeys("filename", "uri", "path", "projectId", "pageId", "accountId", "provider");
+        // The chapter reference is optional and opaque: a random UUID the client draws per chapter, never a library id.
+        assertThat(list(pageSubmission.get("required"))).doesNotContain("contextRef");
+        assertThat(map(properties.get("contextRef"))).containsEntry("type", "string").containsEntry("format", "uuid");
 
         var idempotencyHeader = parameter(contract, "IdempotencyKey");
         assertThat(idempotencyHeader).containsEntry("in", "header").containsEntry("required", true);

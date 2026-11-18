@@ -123,6 +123,9 @@ esses contratos dependem do renderer e da 021. Ver
 
 ## Contrato
 
+Páginas de um mesmo capítulo podem enviar `contextRef` (opcional) para traduzir um nome do mesmo jeito em todas;
+ver [memória do capítulo](docs/architecture/chapter-memory.md).
+
 O worker oferece [layout automático experimental](docs/ocr-evaluation/layout-experimental.md),
 desabilitado por padrão (`gateway.layout.mode=disabled`). Em `shadow`, quadros e
 balões produzem artefato separado, sem modificar OCR `1.0` ou estados públicos.

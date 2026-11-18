@@ -132,13 +132,14 @@ public class GatewayController {
                                        @RequestParam String sourceLanguage,
                                        @RequestParam String targetLanguage,
                                        @RequestParam String disclosureVersion,
-                                       @RequestParam UUID attemptRef) throws IOException {
+                                       @RequestParam UUID attemptRef,
+                                       @RequestParam(required = false) UUID contextRef) throws IOException {
         if (page.getContentType() != null && !page.getContentType().equals(mimeType)) {
             throw new GatewayException(
                 com.toonlira.translationgateway.domain.GatewayErrorCode.UNSUPPORTED_MEDIA_TYPE, 415, false);
         }
         var command = new SubmitPageUseCase.Command(mimeType, byteSize, widthPx, heightPx, sourceLanguage,
-            targetLanguage, disclosureVersion, attemptRef);
+            targetLanguage, disclosureVersion, attemptRef, contextRef);
         try (var input = page.getInputStream()) {
             var result = submitPage.execute(installationId(authentication), idempotencyKey, command, input);
             return ResponseEntity.accepted().body(envelope(result.job()));

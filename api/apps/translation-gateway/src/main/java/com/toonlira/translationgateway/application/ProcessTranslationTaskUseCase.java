@@ -47,11 +47,26 @@ public class ProcessTranslationTaskUseCase {
     private final GatewayProperties properties;
     private final Clock clock;
     private final CleanupLifecycleObjectsUseCase lifecycle;
+    private final ChapterMemoryService chapters;
 
     public ProcessTranslationTaskUseCase(TranslationPersistenceUseCase persistence, ObjectStoragePort storage,
                                          OcrManifestService ocrManifests, TranslationManifestService translationManifests,
                                          TranslationPort translation, TranslationRefinerPort refiner,
                                          GatewayProperties properties, Clock clock, CleanupLifecycleObjectsUseCase lifecycle) {
+        this(persistence, storage, ocrManifests, translationManifests, translation, refiner, properties, clock, lifecycle,
+            null, null);
+    }
+
+    /** {@code memory} and {@code lexicons} enable the chapter memory (pages sent with a context reference). */
+    @org.springframework.beans.factory.annotation.Autowired
+    public ProcessTranslationTaskUseCase(TranslationPersistenceUseCase persistence, ObjectStoragePort storage,
+                                         OcrManifestService ocrManifests, TranslationManifestService translationManifests,
+                                         TranslationPort translation, TranslationRefinerPort refiner,
+                                         GatewayProperties properties, Clock clock, CleanupLifecycleObjectsUseCase lifecycle,
+                                         com.toonlira.translationgateway.application.port.ChapterMemoryRepository memory,
+                                         com.toonlira.translationgateway.application.port.LexiconPort lexicons) {
+        this.chapters = new ChapterMemoryService(memory, lexicons, translation, clock,
+            java.time.Duration.ofSeconds(properties.getDisclosure().getResultRetentionSeconds()));
         this.persistence = persistence;
         this.storage = storage;
         this.ocrManifests = ocrManifests;
@@ -141,7 +156,7 @@ public class ProcessTranslationTaskUseCase {
             var fragments = FragmentJoiner.of(request);
             var response = request.regions().isEmpty()
                 ? new TranslationResponse(List.of())
-                : fragments.expand(refineOrKeep(fragments.request(), translation.translate(fragments.request())));
+                : fragments.expand(refineOrKeep(fragments.request(), machine(job, fragments.request())));
             requireOriginal(job);
             var result = validator.validateResponse(request, response);
             var encoded = translationManifests.encode(result, job.ocrSha256());
@@ -190,6 +205,12 @@ public class ProcessTranslationTaskUseCase {
      * can neither rewrite them nor split the joined word again. Any failure (timeout, quota, a reply that is not a
      * review of this page) keeps the machine translation: the layer can improve a page, never fail it.
      */
+    /** Machine translation of the page, keeping the terms its chapter already decided (none without a chapter). */
+    private TranslationResponse machine(TranslationJobRepository.WorkItem job, TranslationRequest request) {
+        var decided = chapters.decide(job, request);
+        return decided.isEmpty() ? translation.translate(request) : translation.translate(request, decided);
+    }
+
     private TranslationResponse refineOrKeep(TranslationRequest request, TranslationResponse translated) {
         if (refiner == TranslationRefinerPort.NONE) return translated;
         try {

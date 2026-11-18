@@ -67,11 +67,23 @@ public interface GatewayRepository {
         Instant now,
         Instant metadataExpiresAt,
         int originalRetentionSeconds,
-        int resultRetentionSeconds
+        int resultRetentionSeconds,
+        UUID contextRef
     ) {
         public NewJob {
             OriginalObjectKey.requireSeconds(originalRetentionSeconds);
             OriginalObjectKey.requireSeconds(resultRetentionSeconds);
+        }
+
+        /** A page without a chapter context. */
+        public NewJob(UUID id, UUID jobRef, UUID installationId, UUID idempotencyKey, UUID attemptRef,
+                      String disclosureVersion, String sourceLanguage, String targetLanguage, String mimeType,
+                      long byteSize, int widthPx, int heightPx, String objectKey, String originalSha256,
+                      String requestFingerprint, Instant now, Instant metadataExpiresAt, int originalRetentionSeconds,
+                      int resultRetentionSeconds) {
+            this(id, jobRef, installationId, idempotencyKey, attemptRef, disclosureVersion, sourceLanguage, targetLanguage,
+                mimeType, byteSize, widthPx, heightPx, objectKey, originalSha256, requestFingerprint, now, metadataExpiresAt,
+                originalRetentionSeconds, resultRetentionSeconds, null);
         }
 
         public NewJob(UUID id, UUID jobRef, UUID installationId, UUID idempotencyKey, UUID attemptRef,

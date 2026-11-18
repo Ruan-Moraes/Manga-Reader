@@ -147,12 +147,12 @@ public class JdbcGatewayRepository implements GatewayRepository {
                     (id, job_ref, installation_id, idempotency_key, attempt_ref, gateway_contract_version,
                      disclosure_version, source_language, target_language, original_mime_type,
                      original_byte_size, width_px, height_px, status, original_object_key,
-                     original_sha256, request_fingerprint, created_at, updated_at, accepted_at, metadata_expires_at, original_retention_seconds, result_retention_seconds)
+                     original_sha256, request_fingerprint, created_at, updated_at, accepted_at, metadata_expires_at, original_retention_seconds, result_retention_seconds, context_ref)
                 VALUES
                     (:id, :jobRef, :installationId, :idempotencyKey, :attemptRef, '1.0',
                      :disclosureVersion, :sourceLanguage, :targetLanguage, :mimeType,
                      :byteSize, :widthPx, :heightPx, 'QUEUED', :objectKey,
-                     :originalSha256, :requestFingerprint, :now, :now, :now, :metadataExpiresAt, :originalRetentionSeconds, :resultRetentionSeconds)
+                     :originalSha256, :requestFingerprint, :now, :now, :now, :metadataExpiresAt, :originalRetentionSeconds, :resultRetentionSeconds, :contextRef)
                 """)
             .param("id", job.id()).param("jobRef", job.jobRef()).param("installationId", job.installationId())
             .param("idempotencyKey", job.idempotencyKey()).param("attemptRef", job.attemptRef())
@@ -163,7 +163,8 @@ public class JdbcGatewayRepository implements GatewayRepository {
             .param("requestFingerprint", job.requestFingerprint()).param("now", timestamp(job.now()))
             .param("metadataExpiresAt", timestamp(job.metadataExpiresAt()))
             .param("originalRetentionSeconds", job.originalRetentionSeconds())
-            .param("resultRetentionSeconds", job.resultRetentionSeconds()).update();
+            .param("resultRetentionSeconds", job.resultRetentionSeconds())
+            .param("contextRef", job.contextRef(), java.sql.Types.OTHER).update();
         jdbc.sql("""
                 INSERT INTO processing_job_dispatches (job_id, status, next_attempt_at, created_at, updated_at)
                 VALUES (:jobId, 'PENDING', :now, :now, :now)

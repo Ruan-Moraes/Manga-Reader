@@ -815,7 +815,7 @@ class RenderingPersistenceTest {
     @Test
     void cleanFlywayChainAndExistingPrimaryKeyCoverRenderingMetadata() {
         assertThat(jdbc.sql("SELECT version FROM flyway_schema_history WHERE success ORDER BY installed_rank")
-            .query(String.class).list()).containsExactly("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11");
+            .query(String.class).list()).containsExactly("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12");
         assertThat(jdbc.sql("SELECT indexdef FROM pg_indexes WHERE schemaname = 'public' AND tablename = 'processing_job_stages'")
             .query(String.class).list()).hasSize(1).first().asString().contains("UNIQUE", "job_id, stage");
         var job = prepareRendering();
@@ -860,7 +860,7 @@ class RenderingPersistenceTest {
         assertThat(upgraded).isEqualTo(rendering.find(job.jobRef()));
         assertThat(upgraded.artifacts()).isNull();
         assertThat(legacy.sql("SELECT version FROM flyway_schema_history WHERE success AND version IS NOT NULL ORDER BY installed_rank")
-            .query(String.class).list()).containsExactly("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11");
+            .query(String.class).list()).containsExactly("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12");
     }
 
     @Test
@@ -1370,7 +1370,7 @@ class RenderingPersistenceTest {
         assertThat(plan).anyMatch(line -> line.contains("Limit")).anyMatch(line -> line.contains("LockRows"));
         System.out.println("Result expiration EXPLAIN (synthetic local fixture):\n" + String.join("\n", plan));
         assertThat(jdbc.sql("SELECT version FROM flyway_schema_history WHERE success ORDER BY installed_rank")
-            .query(String.class).list()).containsExactly("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11");
+            .query(String.class).list()).containsExactly("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12");
     }
 
     @Test

@@ -17,9 +17,15 @@ public interface TranslationJobRepository {
     void fail(UUID jobId, GatewayErrorCode code, Instant now);
     int failStale(Instant cutoff, Instant now, int limit);
 
+    /** {@code installationId} and {@code contextRef} (null without a chapter) select the chapter memory. */
     record WorkItem(UUID id, UUID jobRef, JobStatus status, String sourceLanguage,
                     String targetLanguage, String ocrObjectKey, String ocrSha256,
-                    String translationObjectKey, String translationSha256) {
+                    String translationObjectKey, String translationSha256, UUID installationId, UUID contextRef) {
+        public WorkItem(UUID id, UUID jobRef, JobStatus status, String sourceLanguage, String targetLanguage,
+                        String ocrObjectKey, String ocrSha256, String translationObjectKey, String translationSha256) {
+            this(id, jobRef, status, sourceLanguage, targetLanguage, ocrObjectKey, ocrSha256, translationObjectKey,
+                translationSha256, null, null);
+        }
         @Override public String toString() { return "TranslationWorkItem[redacted]"; }
     }
     enum Claim { STARTED, CANCELLED, ALREADY_HANDLED }

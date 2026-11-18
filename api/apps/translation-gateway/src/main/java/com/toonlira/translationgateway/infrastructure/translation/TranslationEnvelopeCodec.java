@@ -30,7 +30,10 @@ final class TranslationEnvelopeCodec {
     private final ProtectedTerms terms = new ProtectedTerms();
     private static final TranslationValidator CONTRACT = new TranslationValidator(Set.copyOf(LanguagePair.all()));
 
-    String encode(TranslationRequest request) {
+    String encode(TranslationRequest request) { return encode(request, java.util.Map.of()); }
+
+    /** {@code decided}: the chapter's decided terms (source -> translation), sent as literals. */
+    String encode(TranslationRequest request, java.util.Map<String, String> decided) {
         try {
             CONTRACT.validateRequest(request);
         } catch (TranslationValidationException error) {
@@ -39,7 +42,7 @@ final class TranslationEnvelopeCodec {
         var html = new StringBuilder("<div>");
         for (var region : request.regions()) {
             html.append("<p data-region=\"").append(region.id()).append("\">")
-                .append(terms.wrap(region.sourceText(), request.pair().source(), StringEscapeUtils::escapeHtml4)).append("</p>");
+                .append(terms.wrap(region.sourceText(), request.pair().source(), StringEscapeUtils::escapeHtml4, decided)).append("</p>");
         }
         html.append("</div>");
         String content = html.toString();

@@ -193,7 +193,7 @@ class ResultRetentionPersistenceTest {
         assertThat(rendering.find(job.jobRef()).artifacts()).isNull();
     }
 
-    @Test void v8UpgradeAddsV9ToV11AndNeverRenewsLegacyCompletionDeadline() {
+    @Test void v8UpgradeAddsV9ToV12AndNeverRenewsLegacyCompletionDeadline() {
         var job = prepare(3600);
         var legacyArtifacts = new RenderingJobRepository.Artifacts("private/rendering/legacy/image", new RenderedImage("image/webp", 32, 1, 1, "c".repeat(64)),
             "private/rendering/legacy/manifest", "d".repeat(64));
@@ -209,7 +209,7 @@ class ResultRetentionPersistenceTest {
         copyLegacy(legacy, schema, "processing_job_dispatches", "job_id", job.id());
         var migration = Flyway.configure().dataSource(POSTGRES.getJdbcUrl(), POSTGRES.getUsername(), POSTGRES.getPassword())
             .schemas(schema).defaultSchema(schema).load().migrate();
-        assertThat(migration.migrationsExecuted).isEqualTo(3); // V9 retention + V10 text quality + V11 small text
+        assertThat(migration.migrationsExecuted).isEqualTo(4); // V9 retention, V10 text quality, V11 small text, V12 chapter memory
         assertThat(legacy.sql("SELECT result_retention_seconds FROM processing_jobs WHERE id=:id").param("id", job.id()).query(Integer.class).single()).isEqualTo(3600);
         var boundary = new JdbcResultDownloadRepository(legacy);
         var legacyTx = new TransactionTemplate(new DataSourceTransactionManager(dataSource));

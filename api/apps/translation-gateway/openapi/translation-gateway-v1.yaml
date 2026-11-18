@@ -656,6 +656,13 @@ components:
         attemptRef:
           type: string
           format: uuid
+        contextRef:
+          type: string
+          format: uuid
+          description: >-
+            Opcional. Referência opaca, gerada pelo cliente, do capítulo da página: páginas com o mesmo valor
+            (da mesma instalação e par de idiomas) traduzem um nome do mesmo jeito. Os termos decididos são conteúdo
+            da página e seguem a retenção de resultado. Sem ela, a página é traduzida sozinha.
           description: Identificador opaco; não é ID local de projeto ou página.
 
     PageJobEnvelope:

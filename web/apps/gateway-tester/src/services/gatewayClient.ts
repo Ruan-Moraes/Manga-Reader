@@ -92,7 +92,7 @@ export const gatewayClient = {
     file: File,
     sourceLanguage: string,
     targetLanguage: string,
-    options: { widthPx: number; heightPx: number; disclosureVersion: string },
+    options: { widthPx: number; heightPx: number; disclosureVersion: string; contextRef?: string },
   ): Promise<Job & { idempotencyKey: string }> {
     const idempotencyKey = crypto.randomUUID()
     const formData = new FormData()
@@ -105,6 +105,8 @@ export const gatewayClient = {
     formData.append('targetLanguage', targetLanguage)
     formData.append('disclosureVersion', options.disclosureVersion)
     formData.append('attemptRef', crypto.randomUUID())
+    // Pages of one chapter share it, so a name is translated the same way on all of them.
+    if (options.contextRef) formData.append('contextRef', options.contextRef)
 
     const response = await client.post('/page-jobs', formData, {
       headers: {

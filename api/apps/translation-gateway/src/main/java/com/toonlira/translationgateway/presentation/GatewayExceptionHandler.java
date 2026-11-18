@@ -40,6 +40,7 @@ public class GatewayExceptionHandler {
     }
 
     @ExceptionHandler({MethodArgumentNotValidException.class, MissingRequestValueException.class,
+        org.springframework.beans.TypeMismatchException.class,
         HttpMessageNotReadableException.class, ConstraintViolationException.class, IllegalArgumentException.class})
     ResponseEntity<GatewayProblem> invalidRequest() {
         return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_PROBLEM_JSON)

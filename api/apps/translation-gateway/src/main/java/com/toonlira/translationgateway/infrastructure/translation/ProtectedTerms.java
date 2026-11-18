@@ -54,11 +54,27 @@ final class ProtectedTerms {
 
     /** Escapes plain text and wraps every protected literal in a translate="no" span. */
     String wrap(String text, String language, java.util.function.UnaryOperator<String> escape) {
+        return wrap(text, language, escape, java.util.Map.of());
+    }
+
+    /**
+     * Same, and every occurrence of a term the chapter already decided ({@code decided}: source term -> translation,
+     * see ChapterTerms) goes out as its decided translation inside a translate="no" span, so the page keeps it.
+     */
+    String wrap(String text, String language, java.util.function.UnaryOperator<String> escape, java.util.Map<String, String> decided) {
         var out = new StringBuilder();
         int offset = 0;
-        for (var span : spans(text, language)) {
-            out.append(escape.apply(text.substring(offset, span[0])))
-                .append(OPEN).append(escape.apply(text.substring(span[0], span[1]))).append(CLOSE);
+        var spans = spans(text, language);
+        var replacements = new java.util.HashMap<Integer, String>();
+        for (var occurrence : com.toonlira.translationgateway.domain.translation.ChapterTerms.occurrences(text, decided)) {
+            if (spans.stream().anyMatch(span -> occurrence.start() < span[1] && occurrence.end() > span[0])) continue;
+            spans.add(new int[]{occurrence.start(), occurrence.end()});
+            replacements.put(occurrence.start(), occurrence.target());
+        }
+        spans.sort(java.util.Comparator.comparingInt(span -> span[0]));
+        for (var span : spans) {
+            var literal = replacements.getOrDefault(span[0], text.substring(span[0], span[1]));
+            out.append(escape.apply(text.substring(offset, span[0]))).append(OPEN).append(escape.apply(literal)).append(CLOSE);
             offset = span[1];
         }
         return out.append(escape.apply(text.substring(offset))).toString();

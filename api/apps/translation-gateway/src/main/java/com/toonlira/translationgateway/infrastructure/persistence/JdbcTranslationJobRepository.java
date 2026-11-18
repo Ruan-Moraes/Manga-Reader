@@ -23,7 +23,7 @@ public class JdbcTranslationJobRepository implements TranslationJobRepository {
     @Override
     public Optional<WorkItem> find(UUID jobRef) {
         return jdbc.sql("""
-                SELECT j.id, j.job_ref, j.status, j.source_language, j.target_language,
+                SELECT j.id, j.job_ref, j.status, j.source_language, j.target_language, j.installation_id, j.context_ref,
                        o.output_object_key AS ocr_key, o.output_sha256 AS ocr_hash,
                        t.output_object_key AS translation_key, t.output_sha256 AS translation_hash
                 FROM processing_jobs j
@@ -34,7 +34,8 @@ public class JdbcTranslationJobRepository implements TranslationJobRepository {
                     row.getObject("id", UUID.class), row.getObject("job_ref", UUID.class),
                     JobStatus.valueOf(row.getString("status")), row.getString("source_language"),
                     row.getString("target_language"), row.getString("ocr_key"), row.getString("ocr_hash"),
-                    row.getString("translation_key"), row.getString("translation_hash"))).optional();
+                    row.getString("translation_key"), row.getString("translation_hash"),
+                    row.getObject("installation_id", UUID.class), row.getObject("context_ref", UUID.class))).optional();
     }
 
     @Override

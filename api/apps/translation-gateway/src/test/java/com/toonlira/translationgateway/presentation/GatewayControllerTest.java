@@ -1,5 +1,6 @@
 package com.toonlira.translationgateway.presentation;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
@@ -237,6 +238,19 @@ class GatewayControllerTest {
     }
 
     @Test
+    void anOptionalChapterReferenceReachesTheSubmissionCommand() throws Exception {
+        var authentication = new UsernamePasswordAuthenticationToken(installationId, null, List.of());
+        when(submitPage.execute(any(), any(), any(), any())).thenReturn(new SubmitPageUseCase.Result(job, true));
+        var chapter = UUID.randomUUID();
+        mockMvc.perform(validSubmission(authentication).param("contextRef", chapter.toString())).andExpect(status().isAccepted());
+        mockMvc.perform(validSubmission(authentication)).andExpect(status().isAccepted());
+        var commands = org.mockito.ArgumentCaptor.forClass(SubmitPageUseCase.Command.class);
+        org.mockito.Mockito.verify(submitPage, org.mockito.Mockito.times(2)).execute(any(), any(), commands.capture(), any());
+        assertThat(commands.getAllValues()).extracting(SubmitPageUseCase.Command::contextRef).containsExactly(chapter, null);
+        mockMvc.perform(validSubmission(authentication).param("contextRef", "not-a-uuid")).andExpect(status().isBadRequest());
+    }
+
+    @Test
     void shouldRejectDivergentMultipartAndDeclaredMimeTypes() throws Exception {
         var authentication = new UsernamePasswordAuthenticationToken(installationId, null, List.of());
         var page = new MockMultipartFile("page", "ignored.png", "image/jpeg", new byte[32]);
@@ -281,7 +295,7 @@ class GatewayControllerTest {
             .andExpect(status().isPayloadTooLarge()).andExpect(jsonPath("$.code").value("payload-too-large"));
     }
 
-    private RequestBuilder validSubmission(Authentication authentication) {
+    private org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder validSubmission(Authentication authentication) {
         var page = new MockMultipartFile("page", "ignored.png", "image/png", new byte[32]);
         return multipart("/v1/page-jobs").file(page).principal(authentication)
             .header("Idempotency-Key", job.idempotencyKey())

@@ -10,7 +10,7 @@ export interface PipelineGateway {
     file: File,
     sourceLanguage: string,
     targetLanguage: string,
-    options: { widthPx: number; heightPx: number; disclosureVersion: string },
+    options: { widthPx: number; heightPx: number; disclosureVersion: string; contextRef?: string },
   ): Promise<{ jobRef: string; status: string }>
   getJobByRef(accessToken: string, jobRef: string): Promise<Job>
   acknowledgeResult(accessToken: string, jobRef: string): Promise<void>
@@ -155,6 +155,8 @@ export async function runPipeline(
   }
 
   const chapterOf = new Map(options.chapters.map((chapter) => [chapter.id, chapter]))
+  // One chapter memory per chapter and run: its pages translate a name the same way.
+  const contextOf = new Map(options.chapters.map((chapter) => [chapter.id, crypto.randomUUID()]))
   const translatePage = async (record: PageRecord) => {
     const chapter = chapterOf.get(record.chapterId)!
     const started = now()
@@ -168,6 +170,7 @@ export async function runPipeline(
         deps.gateway.submitPage(token, file, chapter.sourceLanguage, chapter.targetLanguage, {
           ...size,
           disclosureVersion: options.disclosureVersion,
+          contextRef: contextOf.get(chapter.id),
         }),
       )
       patch(record, { jobRef: submitted.jobRef, gatewayStatus: submitted.status })

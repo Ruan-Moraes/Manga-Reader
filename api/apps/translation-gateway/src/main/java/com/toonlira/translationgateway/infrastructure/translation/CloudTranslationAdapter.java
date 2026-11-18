@@ -42,7 +42,10 @@ public final class CloudTranslationAdapter implements TranslationPort, AutoClose
     private static final Pattern PARAGRAPH_BREAK = Pattern.compile("\\s*\\R\\s*\\R\\s*");
 
     @Override
-    public TranslationResponse translate(TranslationRequest request) {
+    public TranslationResponse translate(TranslationRequest request) { return translate(request, java.util.Map.of()); }
+
+    @Override
+    public TranslationResponse translate(TranslationRequest request, java.util.Map<String, String> decided) {
         // Literal-only regions (numbers, URLs, product names) never go to the provider; they keep their text. Regions
         // with several paragraphs go as one piece per paragraph and are joined back with the blank line: the HTML the
         // provider translates would collapse the break.
@@ -66,10 +69,10 @@ public final class CloudTranslationAdapter implements TranslationPort, AutoClose
             }
             piecesOf.put(region.id(), ids);
         }
-        if (!reshaped) return translateAll(request);
+        if (!reshaped) return translateAll(request, decided);
         var translated = new java.util.HashMap<java.util.UUID, String>();
         if (!pieces.isEmpty()) {
-            for (var region : translateAll(new TranslationRequest(request.jobRef(), request.pair(), pieces)).regions()) {
+            for (var region : translateAll(new TranslationRequest(request.jobRef(), request.pair(), pieces), decided).regions()) {
                 translated.put(region.id(), region.translatedText());
             }
         }
@@ -82,8 +85,8 @@ public final class CloudTranslationAdapter implements TranslationPort, AutoClose
         return new TranslationResponse(merged);
     }
 
-    private TranslationResponse translateAll(TranslationRequest request) {
-        var content = codec.encode(request);
+    private TranslationResponse translateAll(TranslationRequest request, java.util.Map<String, String> decided) {
+        var content = codec.encode(request, decided);
         if (request.regions().isEmpty()) return new TranslationResponse(List.of());
         var rpc = TranslateTextRequest.newBuilder().setParent(parent).setModel(model)
             .setMimeType("text/html").setSourceLanguageCode(request.pair().source())

@@ -95,6 +95,26 @@ describe('runPipeline', () => {
     expect(gateway.createInstallation).toHaveBeenCalledTimes(1)
   })
 
+  it('sends one chapter reference per chapter, shared by its pages', async () => {
+    const { deps, gateway } = setup({
+      'job-p01.jpg': [readyJob('job-p01.jpg')],
+      'job-p02.jpg': [readyJob('job-p02.jpg')],
+      'job-p03.jpg': [readyJob('job-p03.jpg')],
+    })
+
+    await runPipeline(
+      deps,
+      { chapters: [chapter('ch-a', [['p01.jpg'], ['p02.jpg']]), chapter('ch-b', [['p03.jpg']])], disclosureVersion: 'd1' },
+      () => undefined,
+    )
+
+    const contextOf = (name: string) =>
+      vi.mocked(gateway.submitPage).mock.calls.find(([, file]) => file.name === name)?.[4].contextRef
+    expect(contextOf('p01.jpg')).toMatch(/^[0-9a-f-]{36}$/)
+    expect(contextOf('p02.jpg')).toBe(contextOf('p01.jpg'))
+    expect(contextOf('p03.jpg')).not.toBe(contextOf('p01.jpg'))
+  })
+
   it('records a failed job and keeps going; pages not on disk are skipped without being sent', async () => {
     const { deps, submitted } = setup({
       'job-p01.jpg': [{ ...readyJob('job-p01.jpg'), status: 'FAILED', result: undefined, error: { code: 'ocr-failed', retryable: false } }],

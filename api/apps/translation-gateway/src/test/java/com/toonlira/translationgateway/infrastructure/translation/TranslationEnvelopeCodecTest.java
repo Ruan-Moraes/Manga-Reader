@@ -26,6 +26,18 @@ class TranslationEnvelopeCodecTest {
     }
 
     @Test
+    void aChaptersDecidedTermGoesOutAsItsDecidedTranslation() {
+        var decided = java.util.Map.of("Basil", "Manjericão");
+        String html = codec.encode(request("Basil wins. Thanks, Basil! The basil is fresh. BASIL!!"), decided);
+        assertThat(html).contains("<span translate=\"no\">Manjeric&atilde;o</span> wins",
+            "Thanks, <span translate=\"no\">Manjeric&atilde;o</span>!", "<span translate=\"no\">MANJERIC&Atilde;O</span>!!");
+        // The common noun in lower case is the translator's.
+        assertThat(html).contains("The basil is fresh");
+        // Without a chapter nothing changes.
+        assertThat(codec.encode(request("Basil wins."))).doesNotContain("translate=\"no\"");
+    }
+
+    @Test
     void ordinaryWordsAndAllCapsLetteringAreLeftToTheTranslator() {
         assertThat(codec.encode(request("Windows are open and the door is shut."))).doesNotContain("translate=\"no\"");
         assertThat(codec.encode(request("THE COMMAND LINE ROCKS!"))).doesNotContain("translate=\"no\"");
