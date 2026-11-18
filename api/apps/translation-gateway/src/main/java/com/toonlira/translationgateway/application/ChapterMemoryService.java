@@ -50,6 +50,8 @@ public final class ChapterMemoryService {
             var texts = request.regions().stream().map(TranslationRequest.Region::sourceText).toList();
             var lexicon = lexicons == null ? com.toonlira.translationgateway.domain.ocr.Lexicon.NONE
                 : lexicons.forLanguage(request.pair().source());
+            // A word this page writes in lower case is no name: a capitalised decision for it was emphasis or a title.
+            memory.forget(job.installationId(), job.contextRef(), request.pair(), ChapterTerms.ordinaryWords(texts));
             var names = ChapterTerms.candidates(texts, request.pair().source(), lexicon);
             if (names.isEmpty()) return memory.find(job.installationId(), job.contextRef(), request.pair(), now);
             var known = memory.find(job.installationId(), job.contextRef(), request.pair(), now);

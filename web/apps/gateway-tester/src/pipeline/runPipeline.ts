@@ -29,6 +29,10 @@ export interface PipelineDeps {
 export interface PipelineOptions {
   chapters: CorpusChapter[]
   disclosureVersion: string
+  /**
+   * Chapters translated at the same time. The pages of one chapter go one after another, in reading order: a name
+   * the first page decides is then kept by the next ones (chapter memory, contextRef).
+   */
   concurrency?: number
   pollMs?: number
   timeoutMs?: number
@@ -205,13 +209,17 @@ export async function runPipeline(
     }
   }
 
-  const queue = allPages().filter((page) => page.outcome === 'pending')
+  const pending = allPages().filter((page) => page.outcome === 'pending')
+  const queue = [...new Set(pending.map((page) => page.chapterId))].map((id) => pending.filter((page) => page.chapterId === id))
   let cursor = 0
   const worker = async () => {
     while (!signal?.aborted) {
-      const next = queue[cursor++]
-      if (!next) return
-      await translatePage(next)
+      const chapterPages = queue[cursor++]
+      if (!chapterPages) return
+      for (const page of chapterPages) {
+        if (signal?.aborted) return
+        await translatePage(page)
+      }
     }
   }
   await Promise.all(Array.from({ length: Math.max(1, Math.min(concurrency, queue.length)) }, worker))

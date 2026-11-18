@@ -16,7 +16,8 @@ import java.util.regex.Pattern;
  * A capitalised word that is ordinary on the page ("MY Potion!" beside "this potion") is left alone.
  */
 public final class ChapterTerms {
-    private static final Pattern WORD = Pattern.compile("[\\p{L}](?:[\\p{L}'’-]*[\\p{L}])?");
+    /** A word stops at an apostrophe: "Coriander's" is the name "Coriander", "I've" holds no name. */
+    private static final Pattern WORD = Pattern.compile("[\\p{L}](?:[\\p{L}-]*[\\p{L}])?");
     /** Share of upper-case letters from which a text is all-caps lettering (no capital carries a signal there). */
     static final double CAPS_LETTERING = .6;
     /** Longest term remembered (the column bound), in characters. */
@@ -51,6 +52,24 @@ public final class ChapterTerms {
                 var key = word.toLowerCase(Locale.ROOT);
                 if (lower.contains(key) || !lexicon.knows(Lexicon.core(word))) continue;
                 found.add(word);
+            }
+        }
+        return found;
+    }
+
+    /**
+     * Words a page writes in lower case, in the capitalised form a name would have ("potion" -> "Potion"): evidence
+     * that the chapter's capitalised one was emphasis or a title, not a name.
+     */
+    public static Set<String> ordinaryWords(Iterable<String> texts) {
+        var found = new LinkedHashSet<String>();
+        for (var text : texts) {
+            var words = WORD.matcher(text);
+            while (words.find()) {
+                var word = words.group();
+                if (word.length() < 2 || word.length() > MAX_TERM_LENGTH) continue;
+                if (word.codePoints().allMatch(c -> !Character.isLetter(c) || Character.isLowerCase(c)))
+                    found.add(word.substring(0, 1).toUpperCase(Locale.ROOT) + word.substring(1));
             }
         }
         return found;

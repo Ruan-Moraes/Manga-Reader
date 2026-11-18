@@ -61,6 +61,17 @@ public class JdbcChapterMemoryRepository implements ChapterMemoryRepository {
     }
 
     @Override
+    public void forget(UUID installationId, UUID contextRef, LanguagePair pair, java.util.Collection<String> terms) {
+        if (terms.isEmpty()) return;
+        jdbc.sql("""
+                DELETE FROM translation_context_terms
+                WHERE installation_id = :installation AND context_ref = :context AND source_language = :source
+                  AND target_language = :target AND source_term IN (:terms)
+                """).param("installation", installationId).param("context", contextRef)
+            .param("source", pair.source()).param("target", pair.target()).param("terms", terms).update();
+    }
+
+    @Override
     public int deleteExpired(Instant now, int limit) {
         return jdbc.sql("""
                 DELETE FROM translation_context_terms WHERE ctid IN (

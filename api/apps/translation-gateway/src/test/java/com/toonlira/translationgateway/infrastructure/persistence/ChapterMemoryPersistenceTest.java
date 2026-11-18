@@ -65,6 +65,11 @@ class ChapterMemoryPersistenceTest {
         assertThat(memory.find(owner, UUID.randomUUID(), PAIR, NOW)).isEmpty();
         assertThat(memory.find(other, chapter, PAIR, NOW)).isEmpty();
         assertThat(memory.find(owner, chapter, new LanguagePair("en", "es"), NOW)).isEmpty();
+        // A page of the chapter writing the word in lower case forgets it, only in that chapter.
+        memory.remember(other, chapter, PAIR, Map.of("Basil", "Basil"), List.of(), NOW, NOW.plusSeconds(3600));
+        memory.forget(owner, chapter, PAIR, List.of("Basil", "Thyme"));
+        assertThat(memory.find(owner, chapter, PAIR, NOW.plusSeconds(10))).isEmpty();
+        assertThat(memory.find(other, chapter, PAIR, NOW.plusSeconds(10))).isEqualTo(Map.of("Basil", "Basil"));
     }
 
     @Test

@@ -48,6 +48,9 @@ class ChapterMemoryServiceTest {
             decided.forEach(terms::putIfAbsent);
             expires = expiresAt;
         }
+        @Override public void forget(UUID installation, UUID context, LanguagePair pair, java.util.Collection<String> words) {
+            words.forEach(terms::remove);
+        }
         @Override public int deleteExpired(Instant now, int limit) { return 0; }
     }
 
@@ -77,6 +80,16 @@ class ChapterMemoryServiceTest {
         // Next page: decided already, no provider call; even where the page itself gives no signal (sentence start).
         assertThat(service.decide(job(CHAPTER), page("Basil is here."))).isEqualTo(Map.of("Basil", "Manjericão"));
         assertThat(terms.calls).hasSize(1);
+    }
+
+    @Test
+    void aCapitalisedWordALaterPageWritesInLowerCaseIsForgotten() {
+        var memory = new Memory();
+        var service = service(memory, new Terms());
+        // "Here is MY Potion!" alone looks like a name; a later page writes "the potion": it was emphasis.
+        memory.terms.put("Potion", "Poção");
+        assertThat(service.decide(job(CHAPTER), page("Thanks, the potion is here."))).doesNotContainKey("Potion");
+        assertThat(memory.terms).doesNotContainKey("Potion");
     }
 
     @Test

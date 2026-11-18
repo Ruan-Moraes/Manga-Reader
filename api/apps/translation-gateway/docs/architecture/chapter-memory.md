@@ -52,6 +52,13 @@ Exemplos:
 - "Coriander defies death" → entra.
 - "MY Potion!" ao lado de "this potion" → não entra.
 
+A palavra termina no apóstrofo: "Coriander's" conta como o nome "Coriander".
+
+Quando uma página escreve a palavra em minúscula ("the potion"), a decisão dela é apagada do capítulo, porque
+isso mostra que a maiúscula em outra página era ênfase ou título ("MY Potion!", «Hechizos de Destrucción»). A
+regra não usa só a página atual porque, no primeiro lote real, "Potion", "Clap" ("Aplaudir") e "Hechizos"
+tinham sido gravados por páginas que nunca os escreviam em minúscula.
+
 Nomes que o dicionário não conhece ("Komona", "Shichimi") já são mantidos como escritos por `ProtectedTerms` e
 já saem iguais em todas as páginas. A memória cobre a falha que sobra: nome que é palavra comum.
 
@@ -70,9 +77,19 @@ de linguagem (Gemini), que reconhece nomes e pode ler e gravar o mesmo glossári
 Qualquer erro na memória deixa a página sem termos decididos, como se não tivesse capítulo. A memória pode deixar
 a página mais consistente, nunca fazê-la falhar.
 
+## Ordem das páginas
+
+A primeira decisão vale, então uma página traduzida ao mesmo tempo que a que decide um nome não o vê. No primeiro
+lote real, o testador mandava 3 páginas do mesmo capítulo em paralelo. O p05, onde "Coriander" só abre frases (e
+portanto não é candidato ali), saiu "Coentro". O p04 saiu "Coriander's", por causa do possessivo, já corrigido.
+
+O servidor não ordena páginas. Os clientes devem traduzir as páginas de um capítulo em ordem de leitura, uma
+depois da outra. Capítulos diferentes podem ir em paralelo.
+
 ## Clientes
 
-- **gateway-tester:** um `contextRef` por capítulo e por lote.
+- **gateway-tester:** um `contextRef` por capítulo e por lote. As páginas de um capítulo vão em ordem; a opção
+  `concurrency` conta capítulos em paralelo.
 - **Mobile:** na v1 ainda submete uma única página por projeto, então não há outra página para compartilhar
   memória. Quando o app enviar várias páginas, cada projeto precisa de um UUID sorteado e guardado com ele, e não
   de um identificador derivado do projeto.

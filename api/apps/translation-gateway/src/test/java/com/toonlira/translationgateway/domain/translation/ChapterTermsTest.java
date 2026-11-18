@@ -34,6 +34,12 @@ class ChapterTermsTest {
     }
 
     @Test
+    void aPossessiveIsItsNameAndLowerCaseWordsAreEvidenceAgainstNames() {
+        assertThat(ChapterTerms.candidates(List.of("Here is Basil's potion."), "en", EN)).containsExactly("Basil");
+        assertThat(ChapterTerms.ordinaryWords(List.of("the potion is fresh, I've"))).contains("Potion", "Fresh").doesNotContain("I");
+    }
+
+    @Test
     void decidedTermsAreFoundAsWholeWordsInTheirCaseOrInCapitals() {
         var found = ChapterTerms.occurrences("Basil! BASIL? basil, Basils", Map.of("Basil", "Manjericão"));
         assertThat(found).containsExactly(new ChapterTerms.Occurrence(0, 5, "Manjericão"),

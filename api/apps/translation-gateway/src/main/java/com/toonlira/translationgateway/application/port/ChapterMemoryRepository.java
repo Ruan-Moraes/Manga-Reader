@@ -20,6 +20,9 @@ public interface ChapterMemoryRepository {
     void remember(UUID installationId, UUID contextRef, LanguagePair pair, Map<String, String> decided,
                   Iterable<String> used, Instant now, Instant expiresAt);
 
+    /** Forgets decided terms the chapter turned out to write as ordinary words (see ChapterTerms#ordinaryWords). */
+    void forget(UUID installationId, UUID contextRef, LanguagePair pair, java.util.Collection<String> terms);
+
     /** Deletes up to {@code limit} expired terms; returns how many. */
     int deleteExpired(Instant now, int limit);
 }

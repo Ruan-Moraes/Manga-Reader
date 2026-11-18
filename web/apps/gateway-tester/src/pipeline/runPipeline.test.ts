@@ -115,6 +115,26 @@ describe('runPipeline', () => {
     expect(contextOf('p03.jpg')).not.toBe(contextOf('p01.jpg'))
   })
 
+  it('translates the pages of one chapter in reading order, one after another', async () => {
+    const events: string[] = []
+    const { deps } = setup(
+      { 'job-p01.jpg': [readyJob('job-p01.jpg')], 'job-p02.jpg': [readyJob('job-p02.jpg')] },
+      {
+        submitPage: vi.fn(async (_token: string, file: File) => {
+          events.push(`submit ${file.name}`)
+          return { jobRef: `job-${file.name}`, status: 'QUEUED' }
+        }),
+        acknowledgeResult: vi.fn(async (_token: string, jobRef: string) => {
+          events.push(`done ${jobRef}`)
+        }),
+      },
+    )
+
+    await runPipeline(deps, { chapters: [chapter('ch-a', [['p01.jpg'], ['p02.jpg']])], disclosureVersion: 'd1', concurrency: 3 }, () => undefined)
+
+    expect(events).toEqual(['submit p01.jpg', 'done job-p01.jpg', 'submit p02.jpg', 'done job-p02.jpg'])
+  })
+
   it('records a failed job and keeps going; pages not on disk are skipped without being sent', async () => {
     const { deps, submitted } = setup({
       'job-p01.jpg': [{ ...readyJob('job-p01.jpg'), status: 'FAILED', result: undefined, error: { code: 'ocr-failed', retryable: false } }],
