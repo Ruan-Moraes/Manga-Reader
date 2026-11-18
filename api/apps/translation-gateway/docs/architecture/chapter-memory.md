@@ -52,7 +52,10 @@ Exemplos:
 - "Coriander defies death" → entra.
 - "MY Potion!" ao lado de "this potion" → não entra.
 
-A palavra termina no apóstrofo: "Coriander's" conta como o nome "Coriander".
+A palavra termina no apóstrofo: "Coriander's" conta como o nome "Coriander". Na hora de aplicar, uma palavra que
+faz parte de um nome de várias palavras com maiúscula, separadas só por espaço ou possessivo ("Squirrel's End",
+"Technologist's Union"), não é fixada. A tradução automática trata o nome inteiro, como antes. Fixar só uma das
+palavras deixava o resto solto: "Esquilo 's Fim", no segundo lote real.
 
 Quando uma página escreve a palavra em minúscula ("the potion"), a decisão dela é apagada do capítulo, porque
 isso mostra que a maiúscula em outra página era ênfase ou título ("MY Potion!", «Hechizos de Destrucción»). A

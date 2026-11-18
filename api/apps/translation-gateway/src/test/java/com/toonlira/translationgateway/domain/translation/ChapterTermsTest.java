@@ -45,4 +45,15 @@ class ChapterTermsTest {
         assertThat(found).containsExactly(new ChapterTerms.Occurrence(0, 5, "Manjericão"),
             new ChapterTerms.Occurrence(7, 12, "MANJERICÃO"));
     }
+
+    @Test
+    void aWordOfANameOfSeveralCapitalisedWordsIsLeftToTheTranslator() {
+        var terms = Map.of("Basil", "Manjericão", "End", "Fim");
+        // "Basil's End" is one place name; "Basil's potion" is the name Basil.
+        assertThat(ChapterTerms.occurrences("from Basil's End we came", terms)).isEmpty();
+        assertThat(ChapterTerms.occurrences("try Basil's potion", terms)).containsExactly(new ChapterTerms.Occurrence(4, 9, "Manjericão"));
+        // Separated by punctuation they are two names; in all-caps lettering every word is capitalised anyway.
+        assertThat(ChapterTerms.occurrences("Basil, End!", terms)).hasSize(2);
+        assertThat(ChapterTerms.occurrences("BASIL WINS", terms)).containsExactly(new ChapterTerms.Occurrence(0, 5, "MANJERICÃO"));
+    }
 }

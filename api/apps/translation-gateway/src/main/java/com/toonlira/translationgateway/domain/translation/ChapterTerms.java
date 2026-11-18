@@ -83,9 +83,17 @@ public final class ChapterTerms {
     public static java.util.List<Occurrence> occurrences(String text, Map<String, String> terms) {
         var found = new java.util.ArrayList<Occurrence>();
         if (terms.isEmpty()) return found;
+        var spans = new java.util.ArrayList<int[]>();
         var words = WORD.matcher(text);
         while (words.find()) {
-            var word = words.group();
+            // The "s" of a possessive belongs to the word before it.
+            boolean possessive = words.end() - words.start() == 1 && "sS".indexOf(text.charAt(words.start())) >= 0
+                && words.start() > 0 && "'’".indexOf(text.charAt(words.start() - 1)) >= 0;
+            if (!possessive) spans.add(new int[]{words.start(), words.end()});
+        }
+        boolean caps = capsLettering(text);
+        for (int i = 0; i < spans.size(); i++) {
+            var word = text.substring(spans.get(i)[0], spans.get(i)[1]);
             var target = terms.get(word);
             if (target == null) {
                 var upper = word.toUpperCase(Locale.ROOT);
@@ -94,9 +102,22 @@ public final class ChapterTerms {
                     if (entry.getKey().toUpperCase(Locale.ROOT).equals(upper)) { target = entry.getValue().toUpperCase(Locale.ROOT); break; }
                 }
             }
-            if (target != null) found.add(new Occurrence(words.start(), words.end(), target));
+            if (target == null) continue;
+            // Part of a name of several capitalised words ("Squirrel's End", "Technologist's Union"): the translator
+            // renders the whole name; fixing one word of it would leave the rest stranded ("Esquilo 's Fim").
+            if (!caps && (joinedCapital(text, spans, i, i - 1) || joinedCapital(text, spans, i, i + 1))) continue;
+            found.add(new Occurrence(spans.get(i)[0], spans.get(i)[1], target));
         }
         return found;
+    }
+
+    /** Whether word {@code other} starts with a capital and only spaces or a possessive separate it from {@code at}. */
+    private static boolean joinedCapital(String text, java.util.List<int[]> spans, int at, int other) {
+        if (other < 0 || other >= spans.size()) return false;
+        int from = Math.min(spans.get(at)[1], spans.get(other)[1]), to = Math.max(spans.get(at)[0], spans.get(other)[0]);
+        var gap = text.substring(Math.min(from, to), Math.max(from, to));
+        if (!gap.matches("(?:['’]s)?[ \\u00A0]+")) return false;
+        return Character.isUpperCase(text.codePointAt(spans.get(other)[0]));
     }
 
     public record Occurrence(int start, int end, String target) { }
