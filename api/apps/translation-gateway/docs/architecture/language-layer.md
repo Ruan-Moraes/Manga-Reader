@@ -105,10 +105,54 @@ gateway recusa qualquer outra versão (`GetCapabilitiesUseCase.LANGUAGE_MODEL_DI
 precisa de revisão jurídica e aprovação do operador antes do deploy da página. Para retenção zero, o
 cache do Vertex pode ser desligado no projeto.
 
+## Memória do capítulo (2026-11-18)
+
+Com `contextRef` ([memória do capítulo](chapter-memory.md)), a revisão:
+
+- **recebe** `glossary`: só os nomes já decididos do capítulo que aparecem nesta página;
+- **devolve** `names`: os nomes próprios da página, com a tradução usada.
+
+Um nome devolvido só vai para a memória se a página o confirma: a origem está escrita numa região e a tradução
+está no texto final dessa região. A primeira decisão vale. É assim que a memória chega ao japonês, ao chinês e ao
+coreano, que não têm o sinal de maiúscula da regra da tradução automática. Sem `contextRef`, a chamada é a de antes
+(`refine(request, translated)`).
+
+Outras regras desta etapa:
+
+- **Grito letreirado:** uma linha que se lê como palavras é fala, mesmo letreirada grande ou fora de balão. O
+  exemplo do prompt é inventado e não vem do corpus.
+- **Texto corrido:** uma quebra de linha simples da proposta vira espaço (`runningText`); só a quebra de parágrafo
+  continua. O modelo copiava as quebras do balão original ("ISSO É / SÁBIO, / TIGER / GIRL?"), e a Fight 40 ficou
+  com 8 falas sem caber.
+
+O tipo de região (balão, texto livre, desconhecido) **não** é enviado ao modelo. O artefato de layout não está
+disponível na etapa de tradução, e a classe "desconhecido" do detector é ruidosa (todas as falas da ja p05). A
+regra do grito letreirado cobre o caso medido.
+
 ## Custo e validação real
 
-Uma chamada por página traduzida (entrada ≈ fonte + tradução + prompt; saída ≈ tradução). Nada foi
-executado contra o Vertex AI real: a validação real depende de autorização de custo. Testes offline:
+Uma chamada por página traduzida (entrada ≈ fonte + tradução + prompt; saída ≈ tradução).
+
+**Primeira validação real (2026-11-18):** Gemini Flash no Vertex `us`, no corpus de 50 páginas (48 páginas com
+texto, 48 chamadas, nenhuma descartada ou pulada). Comparação com o lote sem a camada:
+
+- **Regiões sem tradução:** caíram de 59 para 56, e a Fight 40 saiu inteira. As páginas "ok" ficaram iguais (38).
+- **Nomes consistentes no capítulo:**
+  - "Komona" em todas as páginas do ja (antes também "Comona");
+  - "Pepper" em todas as do ko (antes também "Huchu");
+  - "Chaosah" e "Cayenne" com o nome da série.
+- **Sentido corrigido:**
+  - "マジいてぇんだぞ!" passou de "É um item incrível" para "Isso dói pra valer!";
+  - "IS THIS WISE, TIGER GIRL?" passou de "Esta é a sábia garota-tigre?" para "ISSO É SÁBIO, TIGER GIRL?".
+
+**Limites observados:**
+
+- O modelo às vezes mantém em inglês títulos e placas ("WING TIPS", "Komona Potion Contest", "Version 1.03"), que
+  então ficam sem tradução.
+- A concordância com o nome traduzido pode sair estranha: "a demonstração da Coentro".
+- Um nome decidido na capa antes de aparecer como nome pode divergir do resto: "후추와 당근" virou "Pimenta e
+  Cenoura" no título e "Pepper" no corpo.
+- Um erro de OCR que tira o verbo da frase continua (zh p01, 埋 "enterrar" não lido). Testes offline:
 `TranslationRefinementTest`, `GeminiTranslationRefinerTest`, `TranslationConfigurationTest`,
 `ProcessTranslationTaskUseCaseTest` (refino aplicado, falha → Google, resposta de outra página
 descartada, fragmentos revisados juntos).
