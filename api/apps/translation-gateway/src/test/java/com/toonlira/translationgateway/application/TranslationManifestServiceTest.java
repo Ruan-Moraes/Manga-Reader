@@ -116,7 +116,7 @@ class TranslationManifestServiceTest {
     @Test
     void rejectsDuplicateKeysTrailingDocumentsInvalidUtf8AndNonUtf8Json() throws Exception {
         String json = new String(encoded(), StandardCharsets.UTF_8);
-        byte[] duplicate = json.replace("\"version\":\"1.0\"", "\"version\":\"1.0\",\"version\":\"1.0\"").getBytes(StandardCharsets.UTF_8);
+        byte[] duplicate = json.replace("\"version\":\"1.1\"", "\"version\":\"1.1\",\"version\":\"1.1\"").getBytes(StandardCharsets.UTF_8);
         assertInvalid(duplicate, hash(duplicate), request(), OCR_HASH);
         byte[] trailing = (json + "{}").getBytes(StandardCharsets.UTF_8);
         assertInvalid(trailing, hash(trailing), request(), OCR_HASH);

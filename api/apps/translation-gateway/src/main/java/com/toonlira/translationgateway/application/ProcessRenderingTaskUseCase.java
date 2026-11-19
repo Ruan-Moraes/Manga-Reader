@@ -16,6 +16,7 @@ import com.toonlira.translationgateway.domain.rendering.RenderSource;
 import com.toonlira.translationgateway.domain.rendering.RenderTextCounts;
 import com.toonlira.translationgateway.domain.rendering.RenderedImage;
 import com.toonlira.translationgateway.domain.rendering.ResultObjectKey;
+import com.toonlira.translationgateway.domain.translation.ChapterTerm;
 import com.toonlira.translationgateway.domain.translation.LanguagePair;
 import com.toonlira.translationgateway.domain.translation.TranslationRequest;
 import java.io.IOException;
@@ -108,10 +109,13 @@ public class ProcessRenderingTaskUseCase {
         MediaInspectionService.InspectedMedia original = null;
         try {
             RenderRequest request;
+            List<ChapterTerm> terms;
             try {
                 if (!jobRef.equals(job.jobRef())) invalid();
                 checkRetention(job);
-                request = readRequest(job);
+                var prepared = readRequest(job);
+                request = prepared.request();
+                terms = prepared.terms();
                 try (var input = storage.open(job.originalObjectKey())) {
                     original = inspector.inspect(input, request.policy().maxOriginalBytes());
                 }
@@ -125,13 +129,16 @@ public class ProcessRenderingTaskUseCase {
             var claim = persistence.claim(jobRef, now());
             if (claim == RenderingJobRepository.Claim.CANCELLED) deleteBestEffort(job.originalObjectKey());
             if (claim != RenderingJobRepository.Claim.STARTED) return;
-            processClaimed(job, original.path(), request);
+            processClaimed(job, original.path(), request, terms);
         } finally {
             if (original != null) inspector.deleteQuietly(original.path());
         }
     }
 
-    private RenderRequest readRequest(RenderingJobRepository.WorkItem job) throws IOException {
+    /** What the renderer draws, and the chapter names the page used, which the result reports to the client. */
+    private record Prepared(RenderRequest request, List<ChapterTerm> terms) { }
+
+    private Prepared readRequest(RenderingJobRepository.WorkItem job) throws IOException {
         var policy = policy();
         var ocrBytes = readVerified(job.ocrObjectKey(), job.ocrSha256(), OcrLimits.MAX_MANIFEST_BYTES);
         var ocr = ocrManifests.decode(ocrBytes);
@@ -140,20 +147,20 @@ public class ProcessRenderingTaskUseCase {
         var translationRequest = new TranslationRequest(job.jobRef(), pair, ocr.regions().stream()
             .map(region -> new TranslationRequest.Region(region.id(), region.readingOrder(), region.sourceText())).toList());
         var translationBytes = readVerified(job.translationObjectKey(), job.translationSha256(), MAX_TRANSLATION_MANIFEST_BYTES);
-        var translation = translationManifests.decode(translationBytes, job.translationSha256(), translationRequest, job.ocrSha256());
-        var request = RenderRequest.create(job.source(), ocr, translation, job.ocrSha256(), job.translationSha256(), policy);
+        var decoded = translationManifests.decodeWithTerms(translationBytes, job.translationSha256(), translationRequest, job.ocrSha256());
+        var request = RenderRequest.create(job.source(), ocr, decoded.result(), job.ocrSha256(), job.translationSha256(), policy);
         // Hints only when the layout artifact describes this very image and OCR manifest.
         var hints = LayoutHints.read(storage, job.layoutObjectKey(), job.layoutSha256(), job.source().sha256(), job.ocrSha256());
         request = request.withBubbles(hints.bubbles());
         // Which regions read as speech/captions (vs sound effects): a renderer that can inpaint may retype them
         // over reconstructed artwork; the others keep their lettering.
-        if (lexicons == null) return request;
+        if (lexicons == null) return new Prepared(request, decoded.terms());
         var lexicon = lexicons.forLanguage(job.sourceLanguage());
         // Hand-drawn shouts the detector does not see as text, but that read as a sentence, may be retyped too.
-        return request.withCaptionHints(com.toonlira.translationgateway.domain.rendering.CaptionFilter.captions(
+        return new Prepared(request.withCaptionHints(com.toonlira.translationgateway.domain.rendering.CaptionFilter.captions(
             request, lexicon, hints.kinds())).withLetteringHints(com.toonlira.translationgateway.domain.rendering.CaptionFilter
             .letterings(request, lexicon, hints.kinds())).withDrawnHints(com.toonlira.translationgateway.domain.rendering.CaptionFilter
-            .drawn(request, lexicon, hints.kinds()));
+            .drawn(request, lexicon, hints.kinds())), decoded.terms());
     }
 
     private RenderPolicy policy() {
@@ -173,7 +180,7 @@ public class ProcessRenderingTaskUseCase {
         return bytes;
     }
 
-    private void processClaimed(RenderingJobRepository.WorkItem job, Path original, RenderRequest request) {
+    private void processClaimed(RenderingJobRepository.WorkItem job, Path original, RenderRequest request, List<ChapterTerm> terms) {
         Path outputFile = null, manifestFile = null, inspectedOutput = null;
         String imageKey = null, manifestKey = null;
         RenderingJobRepository.Artifacts artifacts = null;
@@ -186,8 +193,8 @@ public class ProcessRenderingTaskUseCase {
             }
             inspectedOutput = checked.path();
             var image = new RenderedImage(checked.mimeType(), checked.byteSize(), checked.widthPx(), checked.heightPx(), checked.sha256());
-            var encoded = renderManifests.encode(output.manifest(), request.policy());
-            renderManifests.decode(encoded.bytes(), encoded.sha256(), request, image);
+            var encoded = renderManifests.encode(output.manifest(), request.policy(), terms);
+            renderManifests.decode(encoded.bytes(), encoded.sha256(), request, image, terms);
             checkRetention(job);
             manifestFile = Files.createTempFile("translation-render-manifest-", ".json");
             Files.write(manifestFile, encoded.bytes());

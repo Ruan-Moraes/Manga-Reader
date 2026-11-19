@@ -1,6 +1,7 @@
 package com.toonlira.translationgateway.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import tools.jackson.databind.ObjectMapper;
 import com.toonlira.translationgateway.infrastructure.json.GatewayJsonMapper;
@@ -10,6 +11,7 @@ import com.toonlira.translationgateway.domain.rendering.RenderPolicy;
 import com.toonlira.translationgateway.domain.rendering.RenderRequest;
 import com.toonlira.translationgateway.domain.rendering.RenderSource;
 import com.toonlira.translationgateway.domain.rendering.RenderedImage;
+import com.toonlira.translationgateway.domain.translation.ChapterTerm;
 import com.toonlira.translationgateway.domain.translation.LanguagePair;
 import com.toonlira.translationgateway.domain.translation.TranslationRequest;
 import com.toonlira.translationgateway.domain.translation.TranslationResponse;
@@ -50,14 +52,27 @@ class ManifestSerializationCompatibilityTest {
     @Test void preservesTranslationBytesHashAndSourceBinding() throws Exception {
         var service = new TranslationManifestService(MAPPER);
         var result = translation();
-        var encoded = service.encode(result, "b".repeat(64));
-        String expected = "{\"version\":\"1.0\",\"jobRef\":\"" + JOB
+        var terms = List.of(new ChapterTerm("Coriander", "Coriander"));
+        var encoded = service.encode(result, "b".repeat(64), terms);
+        String expected = "{\"version\":\"1.1\",\"jobRef\":\"" + JOB
+            + "\",\"sourceLanguage\":\"ja\",\"targetLanguage\":\"pt-BR\",\"ocrManifestSha256\":\""
+            + "b".repeat(64) + "\",\"model\":\"general/translation-llm\",\"regions\":[{\"id\":\""
+            + REGION + "\",\"readingOrder\":0,\"translatedText\":\"" + TARGET_JSON
+            + "\"}],\"terms\":[{\"source\":\"Coriander\",\"target\":\"Coriander\"}]}";
+        bytesAndHash(encoded.bytes(), encoded.sha256(), expected);
+        var decoded = service.decodeWithTerms(expected.getBytes(StandardCharsets.UTF_8), encoded.sha256(), request(), "b".repeat(64));
+        assertThat(decoded.result().regions()).isEqualTo(result.regions());
+        assertThat(decoded.terms()).isEqualTo(terms);
+        // A 1.0 manifest written before the terms still decodes (a page in flight across a deploy), with none.
+        String legacy = "{\"version\":\"1.0\",\"jobRef\":\"" + JOB
             + "\",\"sourceLanguage\":\"ja\",\"targetLanguage\":\"pt-BR\",\"ocrManifestSha256\":\""
             + "b".repeat(64) + "\",\"model\":\"general/translation-llm\",\"regions\":[{\"id\":\""
             + REGION + "\",\"readingOrder\":0,\"translatedText\":\"" + TARGET_JSON + "\"}]}";
-        bytesAndHash(encoded.bytes(), encoded.sha256(), expected);
-        assertThat(service.decode(expected.getBytes(StandardCharsets.UTF_8), encoded.sha256(),
-            request(), "b".repeat(64)).regions()).isEqualTo(result.regions());
+        byte[] legacyBytes = legacy.getBytes(StandardCharsets.UTF_8);
+        var old = service.decodeWithTerms(legacyBytes, HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(legacyBytes)),
+            request(), "b".repeat(64));
+        assertThat(old.result().regions()).isEqualTo(result.regions());
+        assertThat(old.terms()).isEmpty();
     }
 
     @Test void preservesRenderBytesHashGeometryAndFallback() throws Exception {
@@ -67,17 +82,22 @@ class ManifestSerializationCompatibilityTest {
             ocr(), translation(), "b".repeat(64), "c".repeat(64), policy);
         var image = new RenderedImage("image/webp", 100, 100, 80, "d".repeat(64));
         var manifest = RenderManifest.create(request, image, List.of(new RenderManifest.Placement(REGION, true, 0)));
-        var encoded = service.encode(manifest, policy);
-        String expected = "{\"version\":\"1.1\",\"policyVersion\":\"clean-box-1.2\",\"jobRef\":\"" + JOB
+        var terms = List.of(new ChapterTerm("Coriander", "Coriander"));
+        var encoded = service.encode(manifest, policy, terms);
+        String expected = "{\"version\":\"1.2\",\"policyVersion\":\"clean-box-1.2\",\"jobRef\":\"" + JOB
             + "\",\"sourceLanguage\":\"ja\",\"targetLanguage\":\"pt-BR\",\"originalSha256\":\"" + "a".repeat(64)
             + "\",\"ocrSha256\":\"" + "b".repeat(64) + "\",\"translationSha256\":\"" + "c".repeat(64)
             + "\",\"image\":{\"mimeType\":\"image/webp\",\"byteSize\":100,\"widthPx\":100,\"heightPx\":80,\"sha256\":\""
             + "d".repeat(64) + "\"},\"regions\":[{\"id\":\"" + REGION
             + "\",\"readingOrder\":0,\"sourceText\":\"" + SOURCE_JSON + "\",\"translatedText\":\"" + TARGET_JSON
-            + "\",\"polygon\":" + POLYGON_JSON + ",\"overflow\":true,\"fontSizePx\":0,\"kept\":false}],\"quality\":{\"status\":\"NEEDS_REVIEW\",\"issues\":[\"TEXT_NOT_RENDERED\",\"ALL_TEXT_NOT_RENDERED\"]}}";
+            + "\",\"polygon\":" + POLYGON_JSON + ",\"overflow\":true,\"fontSizePx\":0,\"kept\":false}],\"quality\":{\"status\":\"NEEDS_REVIEW\",\"issues\":[\"TEXT_NOT_RENDERED\",\"ALL_TEXT_NOT_RENDERED\"]},"
+            + "\"terms\":[{\"source\":\"Coriander\",\"target\":\"Coriander\"}]}";
         bytesAndHash(encoded.bytes(), encoded.sha256(), expected);
-        assertThat(service.decode(expected.getBytes(StandardCharsets.UTF_8), encoded.sha256(), request, image)
+        assertThat(service.decode(expected.getBytes(StandardCharsets.UTF_8), encoded.sha256(), request, image, terms)
             .regions()).isEqualTo(manifest.regions());
+        // Terms other than the page's are not this result.
+        assertThatThrownBy(() -> service.decode(expected.getBytes(StandardCharsets.UTF_8), encoded.sha256(), request, image))
+            .isInstanceOf(com.toonlira.translationgateway.domain.rendering.RenderValidationException.class);
     }
 
     private static OcrManifest ocr() {

@@ -157,6 +157,9 @@ class ProcessTranslationTaskUseCaseTest {
             .execute(chapter.jobRef());
 
         assertThat(writtenManifest()).contains("revisado");
+        // The result hands back only the names this page used: the review's "Mint", not the chapter's "Basil",
+        // which the page does not contain.
+        assertThat(writtenManifest()).contains("\"terms\":[{\"source\":\"Mint\",\"target\":\"Menta\"}]").doesNotContain("Basil");
         assertThat(glossaries).containsExactly(java.util.Map.of("Basil", "Manjericão"));
         verify(memory).remember(eq(chapter.installationId()), eq(chapter.contextRef()), any(), eq(java.util.Map.of("Mint", "Menta")),
             any(), eq(NOW), eq(NOW.plusSeconds(fixture.properties().getDisclosure().getResultRetentionSeconds())));

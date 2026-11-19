@@ -10,6 +10,8 @@ import com.toonlira.translationgateway.domain.GatewayErrorCode;
 import com.toonlira.translationgateway.domain.GatewayException;
 import com.toonlira.translationgateway.domain.JobStatus;
 import com.toonlira.translationgateway.domain.OcrLimits;
+import com.toonlira.translationgateway.domain.translation.ChapterTerm;
+import com.toonlira.translationgateway.domain.translation.ChapterTerms;
 import com.toonlira.translationgateway.domain.translation.FragmentJoiner;
 import com.toonlira.translationgateway.domain.translation.LanguagePair;
 import com.toonlira.translationgateway.domain.translation.TranslationLimits;
@@ -27,6 +29,7 @@ import java.time.Clock;
 import java.time.Instant;
 import java.util.HexFormat;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import org.slf4j.Logger;
@@ -157,12 +160,13 @@ public class ProcessTranslationTaskUseCase {
             requireOriginal(job);
             // A word split one character per balloon (「あ」「ら」) is translated, and reviewed, as one segment.
             var fragments = FragmentJoiner.of(request);
-            var response = request.regions().isEmpty()
-                ? new TranslationResponse(List.of())
-                : fragments.expand(translatePage(job, fragments.request()));
+            var page = request.regions().isEmpty()
+                ? new PageTranslation(new TranslationResponse(List.of()), List.of())
+                : translatePage(job, fragments.request());
+            var response = request.regions().isEmpty() ? page.response() : fragments.expand(page.response());
             requireOriginal(job);
             var result = validator.validateResponse(request, response);
-            var encoded = translationManifests.encode(result, job.ocrSha256());
+            var encoded = translationManifests.encode(result, job.ocrSha256(), page.terms());
             outputHash = encoded.sha256();
             manifestFile = Files.createTempFile("translation-manifest-", ".json");
             Files.write(manifestFile, encoded.bytes());
@@ -212,23 +216,36 @@ public class ProcessTranslationTaskUseCase {
      * Machine translation of the page keeping the terms its chapter already decided, then the optional review, which
      * keeps them too and reports the page's names for the chapter's next pages. Without a chapter: as always.
      */
-    private TranslationResponse translatePage(TranslationJobRepository.WorkItem job, TranslationRequest request) {
+    /** The page's translation and the chapter names it used, which its result hands back to the client. */
+    private record PageTranslation(TranslationResponse response, List<ChapterTerm> terms) { }
+
+    private PageTranslation translatePage(TranslationJobRepository.WorkItem job, TranslationRequest request) {
         var decided = chapters.decide(job, request);
         boolean onPage = decided.keySet().stream().anyMatch(term -> request.regions().stream()
             .anyMatch(region -> region.sourceText().toUpperCase(java.util.Locale.ROOT).contains(term.toUpperCase(java.util.Locale.ROOT))));
         var machine = onPage ? translation.translate(request, decided) : translation.translate(request);
-        if (job.contextRef() == null || refiner == TranslationRefinerPort.NONE) return refineOrKeep(request, machine);
+        // Only the chapter's names this page actually holds: the rest says nothing about it.
+        var used = new java.util.TreeMap<String, String>();
+        decided.forEach((source, target) -> {
+            if (request.regions().stream().anyMatch(region -> !ChapterTerms.occurrences(region.sourceText(), Map.of(source, target)).isEmpty())) {
+                used.put(source, target);
+            }
+        });
+        if (job.contextRef() == null) return new PageTranslation(refineOrKeep(request, machine), List.of());
+        if (refiner == TranslationRefinerPort.NONE) return new PageTranslation(machine, ChapterTerm.of(used, ChapterTerm.MAX_PER_PAGE));
         try {
             var review = refiner.refine(request, machine, decided);
             if (review != null && review.response() != null && sameRegions(machine, review.response())) {
                 chapters.learn(job, request.pair(), review.names());
-                return review.response();
+                // A name the chapter decided first keeps that translation; the review's own names follow.
+                review.names().forEach(used::putIfAbsent);
+                return new PageTranslation(review.response(), ChapterTerm.of(used, ChapterTerm.MAX_PER_PAGE));
             }
             LOG.warn("translation refine discarded: regions={} reply did not match the page", request.regions().size());
         } catch (RuntimeException error) {
             LOG.warn("translation refine skipped: regions={} cause={}", request.regions().size(), error.getClass().getSimpleName());
         }
-        return machine;
+        return new PageTranslation(machine, ChapterTerm.of(used, ChapterTerm.MAX_PER_PAGE));
     }
 
     private TranslationResponse refineOrKeep(TranslationRequest request, TranslationResponse translated) {

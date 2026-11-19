@@ -8,6 +8,7 @@ import tools.jackson.databind.MapperFeature;
 import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.ObjectReader;
 import com.toonlira.translationgateway.domain.rendering.PageQuality;
+import com.toonlira.translationgateway.domain.translation.ChapterTerm;
 import com.toonlira.translationgateway.domain.rendering.RenderManifest;
 import com.toonlira.translationgateway.domain.rendering.RenderPolicy;
 import com.toonlira.translationgateway.domain.rendering.RenderRequest;
@@ -45,7 +46,13 @@ public final class RenderManifestService {
     }
 
     public Encoded encode(RenderManifest manifest, RenderPolicy policy) {
+        return encode(manifest, policy, List.of());
+    }
+
+    /** {@code terms}: the chapter names the page used, handed back to the client (manifest 1.2). */
+    public Encoded encode(RenderManifest manifest, RenderPolicy policy, List<ChapterTerm> terms) {
         try {
+            if (terms == null || terms.size() > ChapterTerm.MAX_PER_PAGE) invalid();
             if (manifest == null || policy == null || !policy.version().equals(manifest.policyVersion())
                 || manifest.image().byteSize() > policy.maxOutputBytes()
                 || manifest.image().widthPx() > policy.maxWidthPx()
@@ -59,7 +66,7 @@ public final class RenderManifestService {
             var output = new BoundedOutput(policy.maxManifestBytes());
             mapper.writeValue(output, new Document(manifest.version(), manifest.policyVersion(), manifest.jobRef(),
                 manifest.sourceLanguage(), manifest.targetLanguage(), manifest.originalSha256(), manifest.ocrSha256(),
-                manifest.translationSha256(), manifest.image(), manifest.regions(), manifest.quality()));
+                manifest.translationSha256(), manifest.image(), manifest.regions(), manifest.quality(), terms));
             var bytes = output.bytes();
             return new Encoded(bytes, hash(bytes));
         } catch (NoSuchAlgorithmException | RuntimeException error) {
@@ -68,6 +75,10 @@ public final class RenderManifestService {
     }
 
     public RenderManifest decode(byte[] bytes, String sha256, RenderRequest request, RenderedImage expectedImage) {
+        return decode(bytes, sha256, request, expectedImage, List.of());
+    }
+
+    public RenderManifest decode(byte[] bytes, String sha256, RenderRequest request, RenderedImage expectedImage, List<ChapterTerm> terms) {
         try {
             if (request == null || expectedImage == null || bytes == null || bytes.length == 0
                 || bytes.length > request.policy().maxManifestBytes()
@@ -80,6 +91,7 @@ public final class RenderManifestService {
             if (json.startsWith("\uFEFF")) json = json.substring(1);
             Document document = reader.readValue(json);
             validateBinding(document, request, expectedImage);
+            if (!List.copyOf(terms).equals(document.terms())) invalid();
             var placements = document.regions().stream()
                 .map(region -> new RenderManifest.Placement(region.id(), region.overflow(), region.fontSizePx(), region.kept())).toList();
             return RenderManifest.create(request, expectedImage, placements);
@@ -120,7 +132,7 @@ public final class RenderManifestService {
     private record Document(String version, String policyVersion, UUID jobRef, String sourceLanguage,
                             String targetLanguage, String originalSha256, String ocrSha256,
                             String translationSha256, RenderedImage image, List<RenderManifest.Region> regions,
-                            PageQuality quality) {
+                            PageQuality quality, List<ChapterTerm> terms) {
         @Override public String toString() { return "RenderManifest.Document[redacted]"; }
     }
 
