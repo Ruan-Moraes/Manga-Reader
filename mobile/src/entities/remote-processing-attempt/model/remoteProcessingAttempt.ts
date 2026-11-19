@@ -18,6 +18,8 @@ export const REMOTE_PROCESSING_ERROR_CODES = [
     'cancellation-pending',
     'cancellation-unavailable',
     'storage-unavailable',
+    // Shown only (never stored): the daily quota ran out and the queue waits for it to renew.
+    'quota-exceeded',
 ] as const;
 
 export type RemoteProcessingErrorCode = (typeof REMOTE_PROCESSING_ERROR_CODES)[number];

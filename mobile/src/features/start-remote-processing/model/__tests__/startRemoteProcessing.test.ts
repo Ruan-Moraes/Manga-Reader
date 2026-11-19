@@ -93,6 +93,9 @@ function setup(options: { consent?: boolean; enabled?: boolean; capabilityBody?:
         initialize: jest.fn(async () => undefined),
         getById: jest.fn(async () => project),
         getLatest: jest.fn(async () => project),
+        ensureContextRef: jest.fn(async (_projectId: string, candidate: string) => candidate),
+        getRemoteQueuePause: jest.fn(async () => null),
+        setRemoteQueuePause: jest.fn(async () => undefined),
     } as unknown as jest.Mocked<TranslationProjectRepository>;
     const attempts = {
         initialize: jest.fn(async () => undefined),
@@ -107,6 +110,8 @@ function setup(options: { consent?: boolean; enabled?: boolean; capabilityBody?:
         markRejected: jest.fn(async () => ({ ...created, status: 'REJECTED', errorCode: 'gateway-rejected' })),
         acceptAndQueue: jest.fn(async () => ({ ...created, status: 'ACCEPTED', remoteStatus: 'QUEUED', remoteJobRef: '550e8400-e29b-41d4-a716-446655440003' })),
         listRecoverable: jest.fn(async () => []),
+        listLatestByProject: jest.fn(async () => []),
+        reopenFailedPage: jest.fn(async () => undefined),
         getProjectIdForPage: jest.fn(async () => project.id),
         confirmCancelled: jest.fn(),
         observe: jest.fn(),
@@ -303,7 +308,7 @@ describe('MOB-FEAT-017 start remote processing', () => {
         expect(fixture.attempts.acceptAndQueue).toHaveBeenCalledWith(created.id, project.id, project.pages[0]!.id, expect.any(String), 'QUEUED', NOW);
     });
 
-    it('submits only the first ordered page even when the project array is reversed', async () => {
+    it('MOB-FEAT-022: submits pages in reading order even when the project array is reversed, one page per call', async () => {
         const fixture = setup();
         const firstPage = project.pages[0]!;
         const secondPage = { ...firstPage, id: 'page-2', position: 1, originalFilename: 'second-private.jpg' };
@@ -316,8 +321,6 @@ describe('MOB-FEAT-017 start remote processing', () => {
 
         expect(fixture.attempts.createOrGetActive).toHaveBeenCalledTimes(1);
         expect(fixture.attempts.createOrGetActive).toHaveBeenCalledWith(expect.objectContaining({ pageId: firstPage.id }));
-        expect(fixture.files.fileExists).toHaveBeenCalledTimes(1);
-        expect(fixture.files.fileExists).toHaveBeenCalledWith(expect.any(String), project.id, firstPage.originalFilename);
         expect(fixture.upload).toHaveBeenCalledTimes(1);
         expect(fixture.upload).toHaveBeenCalledWith(
             '/v1/page-jobs',
@@ -326,26 +329,65 @@ describe('MOB-FEAT-017 start remote processing', () => {
             expect.anything(),
         );
         expect(fixture.attempts.acceptAndQueue).toHaveBeenCalledWith(created.id, project.id, firstPage.id, expect.any(String), 'QUEUED', NOW);
-        expect(fixture.attempts.getLatestByPage).toHaveBeenCalledWith(firstPage.id);
-        expect(fixture.attempts.getLatestByPage).not.toHaveBeenCalledWith(secondPage.id);
         expect(multiPageProject.pages).toEqual([secondPage, firstPage]);
     });
 
-    it('does not fall back to the next page when the first ordered page is invalid', async () => {
+    it('MOB-FEAT-022: a failed page does not stop the queue; the next waiting page goes', async () => {
         const fixture = setup();
         const firstPage = { ...project.pages[0]!, status: 'FAILED' as const };
         const secondPage = { ...project.pages[0]!, id: 'page-2', position: 1, originalFilename: 'second-private.jpg' };
-        const multiPageProject = { ...project, pages: [secondPage, firstPage] };
+        const multiPageProject = { ...project, status: 'PROCESSING' as const, pages: [secondPage, firstPage] };
         fixture.projects.getById.mockResolvedValue(multiPageProject);
         fixture.projects.getLatest.mockResolvedValue(multiPageProject);
 
-        await expect(fixture.controller.submit(project.id)).resolves.toMatchObject({ error: 'capabilities-unavailable' });
+        await expect(fixture.controller.submit(project.id)).resolves.toMatchObject({ error: null });
 
-        expect(fixture.attempts.getConsent).not.toHaveBeenCalled();
-        expect(fixture.attempts.createOrGetActive).not.toHaveBeenCalled();
-        expect(fixture.files.fileExists).not.toHaveBeenCalled();
-        expect(fixture.identity.getSession).not.toHaveBeenCalled();
+        expect(fixture.attempts.createOrGetActive).toHaveBeenCalledWith(expect.objectContaining({ pageId: 'page-2' }));
+    });
+
+    it('MOB-FEAT-022: every page carries the project chapter reference, drawn once and stored', async () => {
+        const fixture = setup();
+
+        await fixture.controller.submit(project.id);
+
+        const contextRef = fixture.projects.ensureContextRef.mock.results[0]!.value;
+        expect(fixture.projects.ensureContextRef).toHaveBeenCalledWith(project.id, expect.stringMatching(/^550e8400-/));
+        expect(fixture.upload).toHaveBeenCalledWith(
+            '/v1/page-jobs',
+            expect.objectContaining({ contextRef: await contextRef }),
+            expect.anything(),
+            expect.anything(),
+        );
+    });
+
+    it('MOB-FEAT-022: the daily quota pauses the queue until midnight UTC without losing the page', async () => {
+        const fixture = setup({
+            upload: async () => ({ status: 429, headers: {}, body: { code: 'quota-exceeded', retryable: true } }),
+        });
+
+        await expect(fixture.controller.submit(project.id)).resolves.toMatchObject({ error: 'quota-exceeded' });
+
+        expect(fixture.attempts.markRejected).toHaveBeenCalledWith(created.id, NOW, 'gateway-rejected');
+        expect(fixture.projects.setRemoteQueuePause).toHaveBeenCalledWith(project.id, Date.UTC(2026, 8, 3));
+        expect(fixture.attempts.acceptAndQueue).not.toHaveBeenCalled();
+    });
+
+    it('MOB-FEAT-022: a paused queue sends nothing before the quota renews', async () => {
+        const fixture = setup();
+        fixture.projects.getRemoteQueuePause.mockResolvedValue(NOW + 60_000);
+
+        await expect(fixture.controller.submit(project.id)).resolves.toMatchObject({ error: null, pausedUntil: NOW + 60_000 });
+
         expect(fixture.upload).not.toHaveBeenCalled();
+    });
+
+    it('MOB-FEAT-022: retrying one failed page reopens only that page and sends it', async () => {
+        const fixture = setup();
+
+        await fixture.controller.retryPage(project.id, 'page-1');
+
+        expect(fixture.attempts.reopenFailedPage).toHaveBeenCalledWith('page-1', NOW);
+        expect(fixture.upload).toHaveBeenCalledTimes(1);
     });
 
     it('preserves the same durable attempt as UNKNOWN after an ambiguous upload failure', async () => {

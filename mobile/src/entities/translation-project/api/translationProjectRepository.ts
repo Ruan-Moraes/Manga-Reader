@@ -19,7 +19,7 @@ import {
 import type { NewTranslationProject, TranslationProject } from '../model/translationProject';
 
 export const TRANSLATION_PROJECT_NAMESPACE = 'translation-projects';
-const CURRENT_SCHEMA_VERSION = 6;
+const CURRENT_SCHEMA_VERSION = 11;
 const LANGUAGE_CHECK = "'ja', 'en', 'es', 'ko', 'zh-Hans', 'zh-Hant', 'pt-BR'";
 const STATE_CHECK = "'DRAFT', 'QUEUED', 'PROCESSING', 'READY', 'FAILED', 'CANCELLED'";
 
@@ -113,6 +113,14 @@ export interface TranslationProjectRepository {
         updatedAt: number,
     ): Promise<TranslationProject>;
     getReferencedProjectIds(): Promise<Set<string>>;
+    /**
+     * The project's chapter reference for the gateway: drawn once ({@code candidate}, a random UUID never derived
+     * from a local id) and returned unchanged afterwards, so every page of the project shares it.
+     */
+    ensureContextRef(projectId: string, candidate: string): Promise<string>;
+    /** When the remote queue may send again after the daily quota ran out, or null when it is not paused. */
+    getRemoteQueuePause(projectId: string): Promise<number | null>;
+    setRemoteQueuePause(projectId: string, until: number | null): Promise<void>;
     measureBytes(): Promise<number>;
     clear(): Promise<void>;
 }
@@ -286,6 +294,24 @@ CREATE INDEX idx_translation_projects_latest ON translation_projects(updated_at 
     }
 }
 
+const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
+
+/** v11 (MOB-FEAT-022): additive columns for the remote queue; every project and page is kept. */
+async function migrateRemoteQueue(database: AppDatabase): Promise<void> {
+    const columns = new Set((await database.getAllAsync<TableColumnRow>('PRAGMA table_info(translation_projects)', [])).map(column => column.name));
+    if (!columns.has('context_ref')) {
+        await database.execAsync(`ALTER TABLE translation_projects ADD COLUMN context_ref TEXT
+            CHECK (context_ref IS NULL OR length(context_ref) = 36);`);
+    }
+    if (!columns.has('remote_queue_paused_until')) {
+        await database.execAsync(`ALTER TABLE translation_projects ADD COLUMN remote_queue_paused_until INTEGER
+            CHECK (remote_queue_paused_until IS NULL OR remote_queue_paused_until > 0);`);
+    }
+    await database.execAsync(
+        'CREATE UNIQUE INDEX IF NOT EXISTS uk_translation_projects_context_ref ON translation_projects(context_ref) WHERE context_ref IS NOT NULL;',
+    );
+}
+
 export function createSqliteTranslationProjectRepository(openDatabase: () => Promise<AppDatabase> = openAppDatabase): TranslationProjectRepository {
     let initialized: Promise<void> | null = null;
     const database = async (): Promise<AppDatabase> => {
@@ -293,6 +319,7 @@ export function createSqliteTranslationProjectRepository(openDatabase: () => Pro
         initialized ??= runAppDatabaseMigration(async () => {
             await db.execAsync(CREATE_SCHEMA);
             await migrateLanguageSchema(db);
+            await migrateRemoteQueue(db);
             await advanceAppSchemaVersion(db, CURRENT_SCHEMA_VERSION);
         }).catch(error => {
             initialized = null;
@@ -456,6 +483,25 @@ export function createSqliteTranslationProjectRepository(openDatabase: () => Pro
         async getReferencedProjectIds() {
             const rows = await (await database()).getAllAsync<{ id: string }>('SELECT id FROM translation_projects', []);
             return new Set(rows.map(row => row.id));
+        },
+        async ensureContextRef(projectId, candidate) {
+            if (!UUID_PATTERN.test(candidate)) throw new Error('translationProject.invalidContextRef');
+            const db = await database();
+            await db.runAsync('UPDATE translation_projects SET context_ref = ? WHERE id = ? AND context_ref IS NULL', [candidate, projectId]);
+            const row = await db.getFirstAsync<{ context_ref: string | null }>('SELECT context_ref FROM translation_projects WHERE id = ?', [projectId]);
+            if (!row?.context_ref) throw new Error('translationProject.notFound');
+            return row.context_ref;
+        },
+        async getRemoteQueuePause(projectId) {
+            const row = await (
+                await database()
+            ).getFirstAsync<{ remote_queue_paused_until: number | null }>('SELECT remote_queue_paused_until FROM translation_projects WHERE id = ?', [
+                projectId,
+            ]);
+            return row?.remote_queue_paused_until ?? null;
+        },
+        async setRemoteQueuePause(projectId, until) {
+            await (await database()).runAsync('UPDATE translation_projects SET remote_queue_paused_until = ? WHERE id = ?', [until, projectId]);
         },
         async measureBytes() {
             const row = await (

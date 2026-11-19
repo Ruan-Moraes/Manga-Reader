@@ -106,6 +106,10 @@ export interface RemoteProcessingAttemptRepository {
     listRecoverable(): Promise<RemoteProcessingAttempt[]>;
     /** Accepted attempts still followed: not cancelled and whose result ACK is still owed. */
     listActive(): Promise<RemoteProcessingAttempt[]>;
+    /** The latest attempt of each page of a project that has one. */
+    listLatestByProject(projectId: string): Promise<RemoteProcessingAttempt[]>;
+    /** Puts a failed page back in the queue (retry of one page); a failed project resumes processing. */
+    reopenFailedPage(pageId: string, now: number): Promise<void>;
     markSubmitting(id: string, now: number): Promise<RemoteProcessingAttempt>;
     markUnknown(id: string, now: number, errorCode?: RemoteProcessingErrorCode): Promise<RemoteProcessingAttempt>;
     markRejected(id: string, now: number, errorCode: RemoteProcessingErrorCode): Promise<RemoteProcessingAttempt>;
@@ -337,6 +341,43 @@ export function createSqliteRemoteProcessingAttemptRepository(
 
             return rows.map(row => mapAttempt(row)!);
         },
+        async listLatestByProject(projectId) {
+            const rows = await (
+                await database()
+            ).getAllAsync<AttemptRow>(
+                `SELECT ${ATTEMPT_COLUMNS.replace(/(^|,\s*)(\w+)/g, '$1a.$2')} FROM remote_processing_attempts a
+                 JOIN translation_pages p ON p.id = a.page_id
+                 WHERE p.project_id = ?
+                   AND a.attempt_number = (SELECT MAX(b.attempt_number) FROM remote_processing_attempts b WHERE b.page_id = a.page_id)
+                 ORDER BY p.position ASC`,
+                [projectId],
+            );
+
+            return rows.map(row => mapAttempt(row)!);
+        },
+        async reopenFailedPage(pageId, now) {
+            const db = await database();
+
+            await db.withExclusiveTransactionAsync(async transaction => {
+                const page = await transaction.getFirstAsync<{ project_id: string }>(
+                    `SELECT project_id FROM translation_pages WHERE id = ? AND status = 'FAILED'`,
+                    [pageId],
+                );
+
+                if (!page) return;
+
+                await transaction.runAsync(`UPDATE translation_pages SET status = 'DRAFT', updated_at = ?, status_updated_at = ? WHERE id = ?`, [
+                    now,
+                    now,
+                    pageId,
+                ]);
+
+                await transaction.runAsync(
+                    `UPDATE translation_projects SET status = 'PROCESSING', updated_at = ?, status_updated_at = ? WHERE id = ? AND status = 'FAILED'`,
+                    [now, now, page.project_id],
+                );
+            });
+        },
         async advance(id, remoteStatus, now) {
             const db = await database();
 
@@ -470,7 +511,13 @@ export function createSqliteRemoteProcessingAttemptRepository(
                     [pageId, projectId],
                 );
 
-                if (!page || page.page_status !== 'DRAFT' || page.project_status !== 'DRAFT' || page.language_review_required !== 0) {
+                // Page 2 onwards finds its project already queued or processing (MOB-FEAT-022).
+                if (
+                    !page ||
+                    page.page_status !== 'DRAFT' ||
+                    !['DRAFT', 'QUEUED', 'PROCESSING'].includes(page.project_status) ||
+                    page.language_review_required !== 0
+                ) {
                     throw new Error('remoteProcessing.staleProject');
                 }
 

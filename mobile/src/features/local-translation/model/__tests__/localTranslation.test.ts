@@ -66,6 +66,9 @@ function projects(): jest.Mocked<TranslationProjectRepository> {
         transitionPage: jest.fn(),
         transitionProject: jest.fn(),
         getReferencedProjectIds: jest.fn(),
+        ensureContextRef: jest.fn(),
+        getRemoteQueuePause: jest.fn(),
+        setRemoteQueuePause: jest.fn(),
         measureBytes: jest.fn(),
         clear: jest.fn(),
     };

@@ -93,6 +93,7 @@ depois da outra. Capítulos diferentes podem ir em paralelo.
 
 - **gateway-tester:** um `contextRef` por capítulo e por lote. As páginas de um capítulo vão em ordem; a opção
   `concurrency` conta capítulos em paralelo.
-- **Mobile:** na v1 ainda submete uma única página por projeto, então não há outra página para compartilhar
-  memória. Quando o app enviar várias páginas, cada projeto precisa de um UUID sorteado e guardado com ele, e não
-  de um identificador derivado do projeto.
+- **Mobile (MOB-FEAT-022):**
+  - cada projeto guarda um UUID sorteado (`translation_projects.context_ref`), nunca derivado do id;
+  - as páginas vão em ordem de leitura, e a próxima só sai depois de a anterior passar da tradução
+    (`RENDERING`), quando os nomes dela já estão na memória.

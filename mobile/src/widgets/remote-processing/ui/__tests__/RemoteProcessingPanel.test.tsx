@@ -2,7 +2,7 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react-nativ
 
 import type { RemoteProcessingCapabilities } from '@/entities/remote-processing-capability';
 import type { TranslationProject } from '@/entities/translation-project';
-import type { StartRemoteProcessingController } from '@/features/start-remote-processing';
+import type { RemoteProcessingSnapshot, StartRemoteProcessingController } from '@/features/start-remote-processing';
 import i18n from '@/shared/i18n';
 
 import { RemoteProcessingPanel } from '../RemoteProcessingPanel';
@@ -64,13 +64,27 @@ const capabilities: RemoteProcessingCapabilities = {
     },
 };
 
+function snap(overrides: Partial<RemoteProcessingSnapshot> = {}): RemoteProcessingSnapshot {
+    const current = overrides.project ?? project;
+    return {
+        project: current,
+        capabilities,
+        attempt: null,
+        error: null,
+        pages: current.pages.map(page => ({ page, attempt: overrides.attempt && overrides.attempt.pageId === page.id ? overrides.attempt : null })),
+        pausedUntil: null,
+        ...overrides,
+    };
+}
+
 function controller(): jest.Mocked<StartRemoteProcessingController> {
     const value: StartRemoteProcessingController = {
-        initialize: jest.fn(async (_signal?: AbortSignal) => ({ project, capabilities, attempt: null, error: null })),
+        initialize: jest.fn(async (_signal?: AbortSignal) => snap()),
         acceptConsent: jest.fn(async (_projectId, _capabilities, _locale) => undefined),
-        submit: jest.fn(async (_projectId, _signal?: AbortSignal) => ({ project, capabilities, attempt: null, error: 'submission-unknown' as const })),
-        reconcile: jest.fn(async (_signal?: AbortSignal) => ({ project, capabilities, attempt: null, error: null })),
-        refresh: jest.fn(async () => ({ project, capabilities, attempt: null, error: null })),
+        submit: jest.fn(async (_projectId, _signal?: AbortSignal) => snap({ error: 'submission-unknown' })),
+        reconcile: jest.fn(async (_signal?: AbortSignal) => snap()),
+        refresh: jest.fn(async () => snap()),
+        retryPage: jest.fn(async () => snap()),
     };
     return value as jest.Mocked<StartRemoteProcessingController>;
 }
@@ -115,7 +129,7 @@ describe('MOB-FEAT-017 disclosure UI', () => {
         await i18n.changeLanguage(locale);
         const start = controller();
         const withModel = { ...capabilities, disclosure: { ...capabilities.disclosure, languageModelLocation: 'us' } };
-        start.initialize.mockResolvedValue({ project, capabilities: withModel, attempt: null, error: null });
+        start.initialize.mockResolvedValue(snap({ capabilities: withModel }));
         render(<RemoteProcessingPanel startController={start} />);
         fireEvent.press(await screen.findByRole('button', { name: label }));
         expect(screen.getByText(disclosure)).toBeOnTheScreen();
@@ -165,9 +179,10 @@ describe('MOB-FEAT-021 result follow-up in the panel', () => {
     ])('shows the confirmed stage as a five-step bar in %s', async (locale, label) => {
         await i18n.changeLanguage(locale);
         const start = controller();
-        const following = { project: { ...project, status: 'PROCESSING' as const }, capabilities, attempt: accepted, error: null };
+        const following = snap({ project: { ...project, status: 'PROCESSING' }, attempt: accepted });
         start.initialize.mockResolvedValue(following);
         start.refresh.mockResolvedValue(following);
+        start.submit.mockResolvedValue(following);
         render(<RemoteProcessingPanel startController={start} acquireController={acquire()} />);
         expect(await screen.findByRole('progressbar', { name: label })).toBeOnTheScreen();
     });
@@ -176,8 +191,10 @@ describe('MOB-FEAT-021 result follow-up in the panel', () => {
         await i18n.changeLanguage('pt-BR');
         const start = controller();
         const ready = { ...project, status: 'READY' as const, pages: [{ ...project.pages[0]!, status: 'READY' as const }] };
-        start.initialize.mockResolvedValue({ project: { ...project, status: 'PROCESSING' }, capabilities, attempt: accepted, error: null });
-        start.refresh.mockResolvedValue({ project: ready, capabilities, attempt: { ...accepted, remoteStatus: 'READY' }, error: null });
+        start.initialize.mockResolvedValue(snap({ project: { ...project, status: 'PROCESSING' }, attempt: accepted }));
+        const done = snap({ project: ready, attempt: { ...accepted, remoteStatus: 'READY', resultAcknowledgedAt: 9 } });
+        start.refresh.mockResolvedValue(done);
+        start.submit.mockResolvedValue(done);
         const open = jest.fn();
         render(<RemoteProcessingPanel startController={start} acquireController={acquire('project-1')} onOpenResult={open} />);
         await waitFor(() => expect(open).toHaveBeenCalledWith('project-1'));
@@ -186,5 +203,34 @@ describe('MOB-FEAT-021 result follow-up in the panel', () => {
         fireEvent.press(screen.getByRole('button', { name: 'Ler tradução' }));
         expect(open).toHaveBeenCalledTimes(2);
         expect(screen.queryByRole('button', { name: 'Cancelar processamento' })).toBeNull();
+    });
+});
+
+describe('MOB-FEAT-022 several pages in the panel', () => {
+    const pages = [0, 1, 2].map(position => ({ ...project.pages[0]!, id: `page-${position}`, position, originalFilename: `p${position}.jpg` }));
+
+    it.each([
+        ['pt-BR', '1 de 3 páginas prontas (2 enviadas).', 'A cota diária de páginas acabou', 'Tentar de novo a página 2'],
+        ['en-US', '1 of 3 pages ready (2 sent).', 'The daily page quota ran out', 'Try page 2 again'],
+        ['es-ES', '1 de 3 páginas listas (2 enviadas).', 'Se agotó la cuota diaria de páginas', 'Intentar de nuevo la página 2'],
+    ])('shows overall progress, the quota pause and a retry of the failed page only in %s', async (locale, summary, quota, retryLabel) => {
+        await i18n.changeLanguage(locale);
+        const multi = {
+            ...project,
+            status: 'PROCESSING' as const,
+            pages: [{ ...pages[0]!, status: 'READY' as const }, { ...pages[1]!, status: 'FAILED' as const }, pages[2]!],
+        };
+        const start = controller();
+        const state = snap({ project: multi, pausedUntil: Date.now() + 60_000, error: 'quota-exceeded' });
+        start.initialize.mockResolvedValue(state);
+        start.submit.mockResolvedValue(state);
+        render(<RemoteProcessingPanel startController={start} onOpenResult={jest.fn()} />);
+
+        expect(await screen.findByText(summary)).toBeOnTheScreen();
+        expect(screen.getByText(quota)).toBeOnTheScreen();
+        fireEvent.press(screen.getByRole('button', { name: retryLabel }));
+        await waitFor(() => expect(start.retryPage).toHaveBeenCalledWith(multi.id, 'page-1'));
+        // Only the failed page offers a retry.
+        expect(screen.queryByRole('button', { name: retryLabel.replace('2', '1') })).toBeNull();
     });
 });

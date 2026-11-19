@@ -1,12 +1,13 @@
 {
     "title": "Processamento remoto",
-    "description": "Envie somente a primeira página para iniciar a prova de processamento.",
+    "description": "Envie as páginas do projeto, em ordem de leitura e em pequenos lotes, para reconhecer, traduzir e montar as imagens traduzidas.",
     "actions": {
         "start": "Iniciar processamento",
         "check": "Verificar envio",
         "cancel": "Cancelar processamento",
         "retry": "Tentar novamente",
-        "read": "Ler tradução"
+        "read": "Ler tradução",
+        "retryPage": "Tentar de novo a página {{number}}"
     },
     "status": {
         "CREATED": "Preparando envio",
@@ -39,11 +40,13 @@
         "cancellation-pending": "O pedido foi enviado, mas o cancelamento ainda não foi confirmado.",
         "cancellation-unavailable": "O processamento já começou, terminou ou não pode mais ser cancelado.",
         "storage-unavailable": "Não foi possível salvar o estado seguro neste aparelho.",
-        "result-unavailable": "Ainda não foi possível baixar e conferir o resultado. Uma nova tentativa acontece sozinha."
+        "result-unavailable": "Ainda não foi possível baixar e conferir o resultado. Uma nova tentativa acontece sozinha.",
+        "quota-exceeded": "A cota diária de páginas acabou"
     },
     "disclosure": {
-        "title": "Autorizar envio da primeira página?",
-        "description": "A página {{page}} será enviada para reconhecer texto, traduzir e preparar uma imagem traduzida.",
+        "title": "Autorizar o envio das páginas?",
+        "description_one": "A página do projeto será enviada para reconhecer texto, traduzir e preparar uma imagem traduzida.",
+        "description_other": "As {{count}} páginas do projeto serão enviadas, uma de cada vez, em ordem de leitura, para reconhecer texto, traduzir e preparar imagens traduzidas.",
         "network": "Internet é obrigatória. O processamento não acontece integralmente neste aparelho.",
         "data": "São enviados os bytes da imagem, MIME, dimensões, idiomas e identificadores opacos da tentativa. Nome, caminho, conta e diálogo não são enviados.",
         "operator": "Operação: {{operator}} ({{contact}}), usando serviços do Google Cloud.",
@@ -65,5 +68,19 @@
         "rendering": "Imagem",
         "download": "Download"
     },
-    "saved": "Resultado salvo neste aparelho; já pode ser lido sem internet."
+    "saved": "Resultado salvo neste aparelho; já pode ser lido sem internet.",
+    "progress": {
+        "summary": "{{ready}} de {{total}} páginas prontas ({{sent}} enviadas).",
+        "paused": "{{sent}} de {{total}} páginas enviadas. O envio continua sozinho depois da meia-noite UTC.",
+        "page": "Página {{number}}: {{status}}",
+        "pagesLabel": "Páginas do projeto"
+    },
+    "pageStatus": {
+        "DRAFT": "aguardando",
+        "QUEUED": "na fila",
+        "PROCESSING": "em processamento",
+        "READY": "pronta",
+        "FAILED": "falhou",
+        "CANCELLED": "cancelada"
+    }
 }

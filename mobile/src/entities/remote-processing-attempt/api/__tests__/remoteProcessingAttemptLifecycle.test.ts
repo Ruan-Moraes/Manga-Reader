@@ -127,3 +127,44 @@ describe('MOB-FEAT-021 SQLite v10 remote attempt lifecycle', () => {
         }
     });
 });
+
+describe('MOB-FEAT-022 several pages of one project', () => {
+    it('accepts page 2 while the project is already processing and lists the latest attempt of each page in order', async () => {
+        const f = fixture(2);
+        try {
+            const first = await accepted(f.repository, 'page-0', JOB);
+            await f.repository.advance(first.id, 'RENDERING', 20);
+            expect(f.status('translation_projects', 'project')).toBe('PROCESSING');
+            const second = await accepted(f.repository, 'page-1', '30000000-0000-4000-8000-000000000002');
+            expect(second.status).toBe('ACCEPTED');
+            expect(f.status('translation_pages', 'page-1')).toBe('QUEUED');
+            expect(f.status('translation_projects', 'project')).toBe('PROCESSING');
+            expect((await f.repository.listLatestByProject('project')).map(item => item.pageId)).toEqual(['page-0', 'page-1']);
+        } finally {
+            f.sqlite.close();
+        }
+    });
+
+    it('reopens only a failed page, and a failed project resumes', async () => {
+        const f = fixture();
+        try {
+            const first = await accepted(f.repository, 'page-0', JOB);
+            await f.repository.markRemoteFailed(first.id, 'FAILED', 20);
+            expect(f.status('translation_projects', 'project')).toBe('FAILED');
+            await f.repository.reopenFailedPage('page-0', 30);
+            expect(f.status('translation_pages', 'page-0')).toBe('DRAFT');
+            expect(f.status('translation_projects', 'project')).toBe('PROCESSING');
+            const retry = await f.repository.createOrGetActive({
+                id: 'retry',
+                pageId: 'page-0',
+                idempotencyKey: 'retry-key',
+                gatewayKey: 'local',
+                gatewayContractVersion: '1.0',
+                createdAt: 31,
+            });
+            expect(retry.attemptNumber).toBe(2);
+        } finally {
+            f.sqlite.close();
+        }
+    });
+});

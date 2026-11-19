@@ -18,8 +18,14 @@ leitura`, sem login obrigatório e sem colocar credenciais de provider no APK.
 O gateway será um serviço Spring Boot separado da Core existente; não reutiliza
 sessão da plataforma, não publica conteúdo e não altera o catálogo.
 
-O slice processa somente a primeira página ordenada do projeto. Scheduler,
-concorrência e retry de lotes continuam em `MOB-FEAT-022..024`.
+O slice inicial processava só a primeira página ordenada do projeto. Desde a `MOB-FEAT-022` (2026-11-18), o app
+envia todas as páginas:
+
+- em ordem de leitura e com o mesmo `contextRef`;
+- no máximo 2 jobs ativos por projeto e lotes de 5 páginas;
+- a fila pausa quando a cota diária acaba.
+
+Prioridade pela posição do leitor e execução em background continuam fora.
 
 ## Decisões aprovadas
 
@@ -222,7 +228,7 @@ continuam legíveis, sem reescrita de evidências históricas.
 | `GET`  | `/v1/capabilities`                              | Versões, idiomas/pares, MIME/limites, regiões, retenção, etapas, URLs legais e kill switch. |
 | `POST` | `/v1/anonymous/installations`                   | Cria instalação opaca e devolve uma credencial longa uma única vez.                         |
 | `POST` | `/v1/anonymous/sessions`                        | Troca credencial do SecureStore por bearer curto.                                           |
-| `POST` | `/v1/page-jobs`                                 | Multipart da primeira página, metadados mínimos e `Idempotency-Key`; retorna `202`.         |
+| `POST` | `/v1/page-jobs`                                 | Multipart de uma página, metadados mínimos, `contextRef` opcional e `Idempotency-Key`; `202`. |
 | `GET`  | `/v1/page-jobs/by-idempotency/{idempotencyKey}` | Reconcilia timeout anterior ao receipt sem criar nova chave ou cobrança.                    |
 | `GET`  | `/v1/page-jobs/{jobRef}`                        | Estado/etapa, erro sanitizado e manifesto terminal.                                         |
 | `POST` | `/v1/page-jobs/{jobRef}/cancel`                 | Pedido idempotente de cancelamento.                                                         |

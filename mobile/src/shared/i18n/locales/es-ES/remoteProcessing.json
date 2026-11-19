@@ -1,12 +1,13 @@
 {
     "title": "Procesamiento remoto",
-    "description": "Envía solo la primera página para iniciar la prueba de procesamiento.",
+    "description": "Envía las páginas del proyecto, en orden de lectura y en lotes pequeños, para reconocer, traducir y montar las imágenes traducidas.",
     "actions": {
         "start": "Iniciar procesamiento",
         "check": "Comprobar envío",
         "cancel": "Cancelar procesamiento",
         "retry": "Intentar de nuevo",
-        "read": "Leer traducción"
+        "read": "Leer traducción",
+        "retryPage": "Intentar de nuevo la página {{number}}"
     },
     "status": {
         "CREATED": "Preparando el envío",
@@ -39,11 +40,13 @@
         "cancellation-pending": "La solicitud se envió, pero la cancelación aún no está confirmada.",
         "cancellation-unavailable": "El procesamiento comenzó, terminó o ya no se puede cancelar.",
         "storage-unavailable": "No se pudo guardar el estado seguro en este dispositivo.",
-        "result-unavailable": "Todavía no se pudo descargar y verificar el resultado. Se intentará de nuevo automáticamente."
+        "result-unavailable": "Todavía no se pudo descargar y verificar el resultado. Se intentará de nuevo automáticamente.",
+        "quota-exceeded": "Se agotó la cuota diaria de páginas"
     },
     "disclosure": {
-        "title": "¿Autorizar el envío de la primera página?",
-        "description": "La página {{page}} se enviará para reconocer texto, traducirlo y preparar una imagen traducida.",
+        "title": "¿Autorizar el envío de las páginas?",
+        "description_one": "La página del proyecto se enviará para reconocer el texto, traducirlo y preparar una imagen traducida.",
+        "description_other": "Las {{count}} páginas del proyecto se enviarán una a una, en orden de lectura, para reconocer el texto, traducirlo y preparar imágenes traducidas.",
         "network": "Se requiere internet. El procesamiento no ocurre completamente en este dispositivo.",
         "data": "Se envían los bytes de la imagen, MIME, dimensiones, idiomas e identificadores opacos del intento. No se envían nombre, ruta, cuenta ni diálogo.",
         "operator": "Operación: {{operator}} ({{contact}}), usando servicios de Google Cloud.",
@@ -65,5 +68,19 @@
         "rendering": "Imagen",
         "download": "Descarga"
     },
-    "saved": "Resultado guardado en este dispositivo; ya se puede leer sin internet."
+    "saved": "Resultado guardado en este dispositivo; ya se puede leer sin internet.",
+    "progress": {
+        "summary": "{{ready}} de {{total}} páginas listas ({{sent}} enviadas).",
+        "paused": "{{sent}} de {{total}} páginas enviadas. El envío sigue solo después de la medianoche UTC.",
+        "page": "Página {{number}}: {{status}}",
+        "pagesLabel": "Páginas del proyecto"
+    },
+    "pageStatus": {
+        "DRAFT": "esperando",
+        "QUEUED": "en cola",
+        "PROCESSING": "en proceso",
+        "READY": "lista",
+        "FAILED": "falló",
+        "CANCELLED": "cancelada"
+    }
 }

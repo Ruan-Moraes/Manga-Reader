@@ -201,14 +201,14 @@ function snapshot(overrides: Partial<NewTranslationProject> = {}): NewTranslatio
 }
 
 describe('MOB-FEAT-016 SQLite translation project repository', () => {
-    it('creates v6 with relational constraints, language review marker and a deterministic latest index', async () => {
+    it('creates the current v11 with relational constraints, language review marker and a deterministic latest index', async () => {
         const fixture = databaseFixture();
 
         const repository = createSqliteTranslationProjectRepository(async () => fixture.database);
 
         await repository.initialize();
 
-        expect(fixture.userVersion()).toBe(6);
+        expect(fixture.userVersion()).toBe(11);
         expect(fixture.statements.some(statement => statement.includes('FOREIGN KEY (project_id) REFERENCES translation_projects(id) ON DELETE CASCADE'))).toBe(
             true,
         );

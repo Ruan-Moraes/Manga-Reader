@@ -27,9 +27,10 @@ Implementado:
 - preparação local de projeto privado com páginas ordenadas, snapshot validado,
   SQLite v6, estados canônicos e restauração determinística validada em Android
   físico;
-- fundação do processamento remoto com SQLite v7, capabilities validadas,
+- processamento remoto com SQLite v7 (v10 do ACK, v11 da fila), capabilities validadas,
   consentimento contextual trilíngue, identidade anônima no SecureStore,
-  submissão idempotente da primeira página, retomada e cancelamento; o upload
+  submissão idempotente de todas as páginas em ordem de leitura (no máximo 2 por vez, lotes de 5, mesmo
+  `contextRef`, pausa na cota diária), acompanhamento, download verificado, ACK, retomada e cancelamento; o upload
   permanece fail-closed enquanto o gateway estiver desabilitado;
 - simulador de tradução estritamente de desenvolvimento, com resultados e
   regiões marcados permanentemente como demonstração e sem chamadas remotas;

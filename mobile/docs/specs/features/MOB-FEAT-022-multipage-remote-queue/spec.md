@@ -2,8 +2,8 @@
 id: MOB-FEAT-022
 type: feature
 title: Fila de várias páginas por projeto
-status: draft
-implementation_gate: blocked
+status: in-progress
+implementation_gate: open
 blocked_by: [MOB-FEAT-021]
 created: 2026-11-18
 updated: 2026-11-18
@@ -35,7 +35,7 @@ capítulo do gateway). As páginas prontas podem ser lidas enquanto as outras co
 
 ## Requisitos e regras
 
-- **Referência do capítulo:** cada projeto guarda um `context_ref` (SQLite v10).
+- **Referência do capítulo:** cada projeto guarda um `context_ref` (SQLite v11; a v10 é da 021).
     - É um UUID sorteado com `randomUuid()`, nunca derivado de id local.
     - Projetos anteriores recebem o UUID no primeiro envio.
     - Toda página do projeto é enviada com o mesmo valor.
@@ -120,7 +120,7 @@ tokens e acessibilidade.
 
 ## Gate de implementação
 
-- Estado: `blocked`
+- Estado: `open` em 2026-11-18, depois de a `MOB-FEAT-021` chegar a `verification-pending`.
 - Dependência: `MOB-FEAT-021`, que precisa estar implementada ou em verificação.
 - Motivo: a fila repete o ciclo de acompanhamento, download e ACK por página.
 
@@ -133,8 +133,7 @@ tokens e acessibilidade.
 
 ## Aprovação humana
 
-- Aprovador: pendente
-- Data: pendente
+- Aprovador: Ruan Moraes
+- Data: 2026-11-18
 
-Escopo pedido pelo proprietário em 2026-11-18 (021 e 022 juntos, em lotes, sem tráfego alto, cota apenas
-documentada). O texto desta spec ainda aguarda aprovação formal.
+Aprovada no chat ("Pode implementar"), depois de Ruan ler o resumo desta spec.

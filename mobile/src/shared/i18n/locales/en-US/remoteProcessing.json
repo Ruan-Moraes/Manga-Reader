@@ -1,12 +1,13 @@
 {
     "title": "Remote processing",
-    "description": "Send only the first page to start the processing proof.",
+    "description": "Send the project pages, in reading order and in small batches, to recognize, translate and build the translated images.",
     "actions": {
         "start": "Start processing",
         "check": "Check submission",
         "cancel": "Cancel processing",
         "retry": "Try again",
-        "read": "Read translation"
+        "read": "Read translation",
+        "retryPage": "Try page {{number}} again"
     },
     "status": {
         "CREATED": "Preparing submission",
@@ -39,11 +40,13 @@
         "cancellation-pending": "The request was sent, but cancellation is not confirmed yet.",
         "cancellation-unavailable": "Processing has started, finished, or can no longer be cancelled.",
         "storage-unavailable": "The safe state could not be saved on this device.",
-        "result-unavailable": "The result could not be downloaded and checked yet. It will be tried again automatically."
+        "result-unavailable": "The result could not be downloaded and checked yet. It will be tried again automatically.",
+        "quota-exceeded": "The daily page quota ran out"
     },
     "disclosure": {
-        "title": "Allow sending the first page?",
-        "description": "Page {{page}} will be sent to recognize text, translate it, and prepare a translated image.",
+        "title": "Allow sending the pages?",
+        "description_one": "The project page will be sent to recognize text, translate it and prepare a translated image.",
+        "description_other": "The {{count}} project pages will be sent one at a time, in reading order, to recognize text, translate it and prepare translated images.",
         "network": "Internet is required. Processing does not happen entirely on this device.",
         "data": "Image bytes, MIME type, dimensions, languages, and opaque attempt identifiers are sent. Filename, path, account, and dialogue are not sent.",
         "operator": "Operated by {{operator}} ({{contact}}), using Google Cloud services.",
@@ -65,5 +68,19 @@
         "rendering": "Image",
         "download": "Download"
     },
-    "saved": "Result saved on this device; it can be read without internet."
+    "saved": "Result saved on this device; it can be read without internet.",
+    "progress": {
+        "summary": "{{ready}} of {{total}} pages ready ({{sent}} sent).",
+        "paused": "{{sent}} of {{total}} pages sent. Sending resumes by itself after midnight UTC.",
+        "page": "Page {{number}}: {{status}}",
+        "pagesLabel": "Project pages"
+    },
+    "pageStatus": {
+        "DRAFT": "waiting",
+        "QUEUED": "queued",
+        "PROCESSING": "processing",
+        "READY": "ready",
+        "FAILED": "failed",
+        "CANCELLED": "cancelled"
+    }
 }
