@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.net.URI;
+import com.toonlira.translationgateway.application.SeedChapterGlossaryUseCase;
 import com.toonlira.translationgateway.application.SubmitPageUseCase;
 import com.toonlira.translationgateway.domain.GatewayException;
 import com.toonlira.translationgateway.domain.JobStatus;
@@ -53,11 +54,12 @@ public class GatewayController {
     private final GetJobResultUseCase getJob;
     private final CancelJobUseCase cancelJob;
     private final AcknowledgeResultUseCase acknowledgeResult;
+    private final SeedChapterGlossaryUseCase glossaries;
 
     public GatewayController(GetCapabilitiesUseCase getCapabilities, CreateInstallationUseCase createInstallation,
                              CreateSessionUseCase createSession, SubmitPageUseCase submitPage,
                              GetJobResultUseCase getJob, CancelJobUseCase cancelJob,
-                             AcknowledgeResultUseCase acknowledgeResult) {
+                             AcknowledgeResultUseCase acknowledgeResult, SeedChapterGlossaryUseCase glossaries) {
         this.getCapabilities = getCapabilities;
         this.createInstallation = createInstallation;
         this.createSession = createSession;
@@ -65,6 +67,7 @@ public class GatewayController {
         this.getJob = getJob;
         this.cancelJob = cancelJob;
         this.acknowledgeResult = acknowledgeResult;
+        this.glossaries = glossaries;
     }
 
     @GetMapping("/capabilities")
@@ -133,13 +136,18 @@ public class GatewayController {
                                        @RequestParam String targetLanguage,
                                        @RequestParam String disclosureVersion,
                                        @RequestParam UUID attemptRef,
-                                       @RequestParam(required = false) UUID contextRef) throws IOException {
+                                       @RequestParam(required = false) UUID contextRef,
+                                       @RequestParam(required = false) String glossary) throws IOException {
         if (page.getContentType() != null && !page.getContentType().equals(mimeType)) {
             throw new GatewayException(
                 com.toonlira.translationgateway.domain.GatewayErrorCode.UNSUPPORTED_MEDIA_TYPE, 415, false);
         }
         var command = new SubmitPageUseCase.Command(mimeType, byteSize, widthPx, heightPx, sourceLanguage,
             targetLanguage, disclosureVersion, attemptRef, contextRef);
+        // The client's chapter glossary refills the chapter memory before the page can reach translation. It is a
+        // hint, not the page's identity: it stays out of the idempotency fingerprint, so a replay may carry more.
+        var terms = glossaries.parse(glossary);
+        if (contextRef != null) glossaries.seed(installationId(authentication), contextRef, sourceLanguage, targetLanguage, terms);
         try (var input = page.getInputStream()) {
             var result = submitPage.execute(installationId(authentication), idempotencyKey, command, input);
             return ResponseEntity.accepted().body(envelope(result.job()));

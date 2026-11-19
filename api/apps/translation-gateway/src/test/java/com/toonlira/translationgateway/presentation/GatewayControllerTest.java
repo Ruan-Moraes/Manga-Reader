@@ -57,6 +57,7 @@ class GatewayControllerTest {
     @MockitoBean private CancelJobUseCase cancelJob;
     @MockitoBean private AcknowledgeResultUseCase acknowledgeResult;
     @MockitoBean private AuthenticateSessionUseCase authenticateSession;
+    @MockitoBean private com.toonlira.translationgateway.application.SeedChapterGlossaryUseCase glossaries;
 
     private UUID installationId;
     private ProcessingJob job;
@@ -248,6 +249,26 @@ class GatewayControllerTest {
         org.mockito.Mockito.verify(submitPage, org.mockito.Mockito.times(2)).execute(any(), any(), commands.capture(), any());
         assertThat(commands.getAllValues()).extracting(SubmitPageUseCase.Command::contextRef).containsExactly(chapter, null);
         mockMvc.perform(validSubmission(authentication).param("contextRef", "not-a-uuid")).andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void aChapterGlossaryRefillsTheChapterMemoryBeforeSubmittingAndAMalformedOneIsABadRequest() throws Exception {
+        var authentication = new UsernamePasswordAuthenticationToken(installationId, null, List.of());
+        when(submitPage.execute(any(), any(), any(), any())).thenReturn(new SubmitPageUseCase.Result(job, true));
+        var chapter = UUID.randomUUID();
+        var glossary = "[{\"source\":\"Coriander\",\"target\":\"Coriander\"}]";
+        when(glossaries.parse(glossary)).thenReturn(java.util.Map.of("Coriander", "Coriander"));
+        mockMvc.perform(validSubmission(authentication).param("contextRef", chapter.toString()).param("glossary", glossary))
+            .andExpect(status().isAccepted());
+        var order = org.mockito.Mockito.inOrder(glossaries, submitPage);
+        order.verify(glossaries).seed(installationId, chapter, "ja", "pt-BR", java.util.Map.of("Coriander", "Coriander"));
+        order.verify(submitPage).execute(any(), any(), any(), any());
+
+        when(glossaries.parse("[not json")).thenThrow(new com.toonlira.translationgateway.domain.GatewayException(
+            com.toonlira.translationgateway.domain.GatewayErrorCode.INVALID_REQUEST, 400, false));
+        mockMvc.perform(validSubmission(authentication).param("contextRef", chapter.toString()).param("glossary", "[not json"))
+            .andExpect(status().isBadRequest());
+        org.mockito.Mockito.verify(submitPage, org.mockito.Mockito.times(1)).execute(any(), any(), any(), any());
     }
 
     @Test

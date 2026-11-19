@@ -80,6 +80,33 @@ de linguagem (Gemini), que reconhece nomes e pode ler e gravar o mesmo glossári
 Qualquer erro na memória deixa a página sem termos decididos, como se não tivesse capítulo. A memória pode deixar
 a página mais consistente, nunca fazê-la falhar.
 
+## Glossário do cliente (2026-11-19)
+
+A memória do servidor dura no máximo 1 hora, renovada pelo uso e nunca além de 1 dia. Um capítulo que pausa mais que
+isso, por exemplo pela cota diária até a meia-noite UTC, chegava às páginas seguintes sem os nomes.
+
+**Ida e volta:**
+- **Resultado:** o manifesto do resultado (render `1.2`, campo `terms`) devolve os nomes que valeram para a página.
+  São os decididos pelo capítulo que aparecem nela (`ChapterTerms.occurrences`) e os nomes da revisão, no máximo 64.
+  Eles vêm do manifesto de tradução `1.1`; o `1.0`, sem termos, continua sendo lido.
+- **Cliente:** guarda esses nomes no projeto (vale a primeira decisão) e os reenvia em `PageSubmission.glossary`,
+  com no máximo 256 termos e 32 KiB.
+- **Submissão:** `SeedChapterGlossaryUseCase` recompõe a memória antes de a página chegar à tradução, com as regras
+  de `remember`:
+  - um termo vivo nunca é sobrescrito, e um vencido volta;
+  - a retenção é a mesma da memória, então não há categoria nova de dado no servidor.
+
+**Garantias:**
+- **Idempotência:** o glossário não entra na impressão digital. Um reenvio pode levar mais nomes sem dar 409.
+- **Falhas:**
+  - um glossário malformado responde 400;
+  - uma falha ao gravá-lo nunca derruba a submissão.
+- **Principio:** não é lista estática (`principios-de-correcao.md`). São decisões do próprio gateway para esse
+  capítulo, devolvidas a ele.
+
+A memória do servidor continua sendo a ponte entre páginas seguidas: a página N+1 sai quando a N chega em
+`RENDERING`, antes de o cliente receber os nomes dela.
+
 ## Ordem das páginas
 
 A primeira decisão vale, então uma página traduzida ao mesmo tempo que a que decide um nome não o vê. No primeiro

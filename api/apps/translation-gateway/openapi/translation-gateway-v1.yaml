@@ -665,6 +665,14 @@ components:
             Opcional. Referência opaca, gerada pelo cliente, do capítulo da página: páginas com o mesmo valor
             (da mesma instalação e par de idiomas) traduzem um nome do mesmo jeito. Os termos decididos são conteúdo
             da página e seguem a retenção de resultado. Sem ela, a página é traduzida sozinha.
+        glossary:
+          type: string
+          maxLength: 32768
+          description: >-
+            Opcional, só com contextRef. JSON [{"source","target"}] (no máximo 256 termos; source até 64 e target
+            até 128 caracteres, linha única) com os nomes que o gateway já decidiu para o capítulo e devolveu no
+            manifesto dos resultados anteriores (campo terms). Recompõe a memória do capítulo onde ela expirou,
+            nunca sobrescreve um termo que ela ainda guarda e não entra na idempotência. Malformado: 400.
 
     PageJobEnvelope:
       type: object

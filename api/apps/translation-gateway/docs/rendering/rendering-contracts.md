@@ -79,7 +79,8 @@ reler mídia/manifests limitados e comprovar seus hashes antes da reserva.
 
 ## Manifesto final — contrato de bytes
 
-JSON UTF-8, versão `1.1` (2026-11-15: campo `kept`), separado dos artefatos OCR/tradução existentes:
+JSON UTF-8, versão `1.2` (2026-11-15: campo `kept`; 2026-11-19: campo `terms`), separado dos artefatos OCR/tradução
+existentes:
 
 - `version`, `policyVersion`, `jobRef`, `sourceLanguage`, `targetLanguage`;
 - `originalSha256`, `ocrSha256`, `translationSha256`;
@@ -87,6 +88,8 @@ JSON UTF-8, versão `1.1` (2026-11-15: campo `kept`), separado dos artefatos OCR
 - `regions`: `id`, `readingOrder`, `sourceText`, `translatedText`, `polygon`
   (quatro vértices normalizados `x`/`y`), `overflow`, `fontSizePx`, `kept` (original mantido **de propósito**:
   texto desenhado que não é fala — onomatopeia, tela, placa —; só com `overflow=true`);
+- `terms` (1.2): nomes do capítulo que valeram para a página, `{source, target}`, no máximo 64, vindos do manifesto
+  de tradução 1.1; vazio sem `contextRef`. Ver `docs/architecture/chapter-memory.md` (glossário do cliente);
 - `quality`: `status` (`OK` | `NEEDS_REVIEW`) e `issues` (`TEXT_NOT_RENDERED`,
   `ALL_TEXT_NOT_RENDERED`, `TEXT_TOO_SMALL`), derivados de `overflow`, `fontSizePx` e do polígono e revalidados
   no decode. `TEXT_TOO_SMALL` (2026-11-18): alguma tradução desenhada abaixo de 0,4 × o tamanho da letra de

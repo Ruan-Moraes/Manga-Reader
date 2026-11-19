@@ -46,6 +46,7 @@ class GatewaySecurityTest {
     @MockitoBean private GetJobResultUseCase getJob;
     @MockitoBean private CancelJobUseCase cancelJob;
     @MockitoBean private AcknowledgeResultUseCase acknowledgeResult;
+    @MockitoBean private com.toonlira.translationgateway.application.SeedChapterGlossaryUseCase glossaries;
 
     @Test
     void shouldRejectAcknowledgementWithoutSessionBeforeDelegating() throws Exception {

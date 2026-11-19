@@ -48,6 +48,9 @@ class TranslationGatewayOpenApiTest {
         // The chapter reference is optional and opaque: a random UUID the client draws per chapter, never a library id.
         assertThat(list(pageSubmission.get("required"))).doesNotContain("contextRef");
         assertThat(map(properties.get("contextRef"))).containsEntry("type", "string").containsEntry("format", "uuid");
+        // The client's chapter glossary: optional, bounded text.
+        assertThat(list(pageSubmission.get("required"))).doesNotContain("glossary");
+        assertThat(map(properties.get("glossary"))).containsEntry("type", "string").containsEntry("maxLength", 32768);
         assertThat((String) map(properties.get("attemptRef")).get("description")).contains("não é ID local");
 
         var idempotencyHeader = parameter(contract, "IdempotencyKey");
