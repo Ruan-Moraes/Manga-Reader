@@ -2,7 +2,7 @@
 id: MOB-FEAT-022
 type: feature
 title: Fila de várias páginas por projeto
-status: in-progress
+status: verification-pending
 implementation_gate: open
 blocked_by: [MOB-FEAT-021]
 created: 2026-11-18
