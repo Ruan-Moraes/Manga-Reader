@@ -47,6 +47,10 @@ export function OfflineTranslationPage({ importController, reviewController, lan
         setRequestedStep(requested => (availableStep === 'review' && requested === 'validate' ? requested : null));
     }, [availableStep]);
 
+    const openReader = useCallback((projectId: string) => {
+        router.push({ pathname: ROUTES.TRANSLATION_READER, params: { projectId } } as never);
+    }, []);
+
     const goBack = () => {
         if (currentIndex > 0) {
             setRequestedStep(TRANSLATION_FLOW_STEPS[currentIndex - 1]);
@@ -91,7 +95,7 @@ export function OfflineTranslationPage({ importController, reviewController, lan
                             onGenerated={project => router.push({ pathname: ROUTES.TRANSLATION_READER, params: { projectId: project.id } } as never)}
                         />
                     ) : null}
-                    <RemoteProcessingPanel />
+                    <RemoteProcessingPanel onOpenResult={openReader} />
                 </View>
             );
         }
@@ -114,7 +118,7 @@ export function OfflineTranslationPage({ importController, reviewController, lan
                                     onGenerated={project => router.push({ pathname: ROUTES.TRANSLATION_READER, params: { projectId: project.id } } as never)}
                                 />
                             ) : null}
-                            {preparedProject ? <RemoteProcessingPanel /> : null}
+                            {preparedProject ? <RemoteProcessingPanel onOpenResult={openReader} /> : null}
                         </>
                     ) : null}
                     <ImportLocalMediaPanel

@@ -177,6 +177,8 @@ export interface RemoteProcessingAttempt {
     lastQueriedAt: number | null;
     cancellationRequestedAt: number | null;
     cancelledAt: number | null;
+    /** When the gateway accepted the ACK of the locally persisted result; null while it is still owed. */
+    resultAcknowledgedAt: number | null;
 }
 
 export function isRemoteAttemptStatus(value: unknown): value is RemoteAttemptStatus {
@@ -190,6 +192,9 @@ export function isRemoteJobStatus(value: unknown): value is RemoteJobStatus {
 export function isRemoteProcessingErrorCode(value: unknown): value is RemoteProcessingErrorCode {
     return value === null || (typeof value === 'string' && REMOTE_PROCESSING_ERROR_CODES.some(code => code === value));
 }
+
+/** Remote stages that mean the page is being worked on (not queued, not terminal). */
+export const REMOTE_PROCESSING_STAGES: readonly RemoteJobStatus[] = ['OCR', 'TRANSLATING', 'RENDERING'];
 
 export function isAmbiguousRemoteAttempt(attempt: RemoteProcessingAttempt): boolean {
     return attempt.status === 'SUBMITTING' || attempt.status === 'UNKNOWN' || attempt.status === 'CANCEL_PENDING';

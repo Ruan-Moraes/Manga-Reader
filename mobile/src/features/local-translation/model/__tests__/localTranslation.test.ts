@@ -75,6 +75,7 @@ function results(): jest.Mocked<LocalTranslationResultRepository> {
     return {
         initialize: jest.fn(),
         saveDemoResults: jest.fn().mockResolvedValue(undefined),
+        saveRemoteResult: jest.fn(),
         getByPage: jest.fn(),
         listByProject: jest.fn(),
         listLibrary: jest.fn(),

@@ -2,7 +2,7 @@ import type { AppDatabase, SqlExecutor } from '@/shared/storage';
 
 import { CREATE_REMOTE_PROCESSING_SCHEMA, createSqliteRemoteProcessingAttemptRepository } from '../remoteProcessingAttemptRepository';
 
-describe('MOB-FEAT-017 SQLite v7', () => {
+describe('MOB-FEAT-017 SQLite v7 (v10 since MOB-FEAT-021)', () => {
     it('defines the normalized consent and attempt schema with relational integrity', () => {
         expect(CREATE_REMOTE_PROCESSING_SCHEMA).toContain('PRIMARY KEY (project_id, disclosure_version)');
         expect(CREATE_REMOTE_PROCESSING_SCHEMA).toContain('REFERENCES translation_projects(id) ON DELETE CASCADE');
@@ -13,7 +13,7 @@ describe('MOB-FEAT-017 SQLite v7', () => {
         expect(CREATE_REMOTE_PROCESSING_SCHEMA).toContain("WHERE status IN ('CREATED', 'SUBMITTING', 'ACCEPTED', 'UNKNOWN', 'CANCEL_PENDING')");
     });
 
-    it('runs after the project schema and advances a v6 database to v7', async () => {
+    it('runs after the project schema and advances a v6 database to the current v10', async () => {
         const statements: string[] = [];
 
         let version = 6;
@@ -44,6 +44,6 @@ describe('MOB-FEAT-017 SQLite v7', () => {
         expect(projects.initialize).toHaveBeenCalledTimes(1);
         expect(withExclusiveTransactionAsync).toHaveBeenCalledTimes(1);
         expect(statements.some(statement => statement.includes('CREATE TABLE IF NOT EXISTS remote_processing_consents'))).toBe(true);
-        expect(version).toBe(7);
+        expect(version).toBe(10);
     });
 });

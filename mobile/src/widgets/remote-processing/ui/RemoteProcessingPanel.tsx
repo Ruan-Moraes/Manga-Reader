@@ -2,21 +2,34 @@ import { useState } from 'react';
 import { View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
+import { type AcquireRemoteResultController, REMOTE_STAGES, remoteStageIndex, useRemoteResultPolling } from '@/features/acquire-remote-result';
 import { type CancelRemoteProcessingController, cancelRemoteProcessingController } from '@/features/cancel-remote-processing';
 import { type StartRemoteProcessingController, useStartRemoteProcessing } from '@/features/start-remote-processing';
 import { externalLinks } from '@/shared/config';
 import { useTheme } from '@/shared/theme';
-import { AppDialog, AppText, Button, Card, StatusMessage } from '@/shared/ui';
+import { AppDialog, AppText, Button, Card, ProgressSteps, StatusMessage } from '@/shared/ui';
 
 interface Props {
     startController?: StartRemoteProcessingController;
     cancelController?: CancelRemoteProcessingController;
+    acquireController?: AcquireRemoteResultController;
+    /** Opens the local reader; called once per project when its first result is persisted, or from "Read". */
+    onOpenResult?(projectId: string): void;
 }
 
-export function RemoteProcessingPanel({ startController, cancelController = cancelRemoteProcessingController }: Props) {
+export function RemoteProcessingPanel({ startController, cancelController = cancelRemoteProcessingController, acquireController, onOpenResult }: Props) {
     const { t } = useTranslation('remoteProcessing');
     const { spacing } = useTheme();
     const remote = useStartRemoteProcessing(startController);
+    const following = remote.attempt?.status === 'ACCEPTED' && remote.attempt.resultAcknowledgedAt === null;
+    const polling = useRemoteResultPolling(
+        {
+            enabled: following,
+            onRound: () => void remote.refresh(),
+            onOpen: projectId => onOpenResult?.(projectId),
+        },
+        acquireController,
+    );
     const [disclosureOpen, setDisclosureOpen] = useState(false);
     const [cancelling, setCancelling] = useState(false);
     const [cancelError, setCancelError] = useState<string | null>(null);
@@ -27,6 +40,10 @@ export function RemoteProcessingPanel({ startController, cancelController = canc
     const attempt = remote.attempt;
     const canStart = remote.project.status === 'DRAFT' && capability?.enabled === true && !remote.error;
     const statusKey = attempt ? `status.${attempt.status}` : remote.error ? `errors.${remote.error}` : null;
+    const page = remote.project.pages.find(candidate => candidate.id === attempt?.pageId);
+    const saved = page?.status === 'READY';
+    const stage = attempt?.status === 'ACCEPTED' ? remoteStageIndex(attempt.remoteStatus, saved) : null;
+    const stageSteps = REMOTE_STAGES.map(id => ({ id, label: t(`stages.${id}`) }));
 
     const cancel = async () => {
         if (!attempt) return;
@@ -54,8 +71,14 @@ export function RemoteProcessingPanel({ startController, cancelController = canc
                     <StatusMessage
                         tone={attempt?.status === 'ACCEPTED' ? 'success' : attempt?.status === 'CANCELLED' ? 'info' : 'warning'}
                         title={t(statusKey)}
-                        description={attempt?.remoteStatus ? t(`remoteStatus.${attempt.remoteStatus}`) : undefined}
+                        description={saved ? t('saved') : attempt?.remoteStatus ? t(`remoteStatus.${attempt.remoteStatus}`) : undefined}
                     />
+                ) : null}
+                {stage !== null ? <ProgressSteps steps={stageSteps} currentIndex={stage} accessibilityLabel={t('stagesLabel')} /> : null}
+                {polling?.error && following ? (
+                    <AppText accessibilityRole="alert" tone="muted">
+                        {t(`errors.${polling.error}`)}
+                    </AppText>
                 ) : null}
                 {cancelError ? (
                     <AppText accessibilityRole="alert" tone="danger">
@@ -63,13 +86,14 @@ export function RemoteProcessingPanel({ startController, cancelController = canc
                     </AppText>
                 ) : null}
 
+                {saved && onOpenResult ? <Button onPress={() => onOpenResult(remote.project!.id)}>{t('actions.read')}</Button> : null}
                 {!attempt && canStart ? <Button onPress={() => setDisclosureOpen(true)}>{t('actions.start')}</Button> : null}
                 {(attempt?.status === 'UNKNOWN' || attempt?.status === 'CANCEL_PENDING') && (
                     <Button loading={remote.busy} onPress={() => void remote.reconcile()} variant="outline">
                         {t('actions.check')}
                     </Button>
                 )}
-                {(attempt?.status === 'ACCEPTED' || attempt?.status === 'CANCEL_PENDING') && (
+                {((attempt?.status === 'ACCEPTED' && !saved) || attempt?.status === 'CANCEL_PENDING') && (
                     <Button disabled={cancelling} loading={cancelling} onPress={() => void cancel()} tone="danger" variant="outline">
                         {t('actions.cancel')}
                     </Button>

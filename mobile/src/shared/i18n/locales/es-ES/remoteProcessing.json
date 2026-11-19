@@ -5,7 +5,8 @@
         "start": "Iniciar procesamiento",
         "check": "Comprobar envío",
         "cancel": "Cancelar procesamiento",
-        "retry": "Intentar de nuevo"
+        "retry": "Intentar de nuevo",
+        "read": "Leer traducción"
     },
     "status": {
         "CREATED": "Preparando el envío",
@@ -22,11 +23,11 @@
         "OCR": "El procesamiento remoto ya comenzó.",
         "TRANSLATING": "El procesamiento remoto ya comenzó.",
         "RENDERING": "El procesamiento remoto ya comenzó.",
-        "READY": "El gateway informa que el resultado está listo; la lectura se implementará más adelante.",
+        "READY": "Resultado listo en el gateway; descargando y verificando.",
         "FAILED": "El procesamiento remoto falló.",
         "CANCEL_PENDING": "El gateway todavía está confirmando la cancelación.",
         "CANCELLED": "El gateway confirmó la cancelación.",
-        "RESULT_EXPIRED": "El resultado remoto caducó."
+        "RESULT_EXPIRED": "El resultado remoto caducó antes de la descarga. La página debe procesarse de nuevo."
     },
     "errors": {
         "consent-required": "Revisa y acepta la información antes del envío.",
@@ -37,7 +38,8 @@
         "gateway-rejected": "El gateway rechazó la página sin cambiar el proyecto local.",
         "cancellation-pending": "La solicitud se envió, pero la cancelación aún no está confirmada.",
         "cancellation-unavailable": "El procesamiento comenzó, terminó o ya no se puede cancelar.",
-        "storage-unavailable": "No se pudo guardar el estado seguro en este dispositivo."
+        "storage-unavailable": "No se pudo guardar el estado seguro en este dispositivo.",
+        "result-unavailable": "Todavía no se pudo descargar y verificar el resultado. Se intentará de nuevo automáticamente."
     },
     "disclosure": {
         "title": "¿Autorizar el envío de la primera página?",
@@ -54,5 +56,14 @@
         "terms": "Abrir términos",
         "accept": "Aceptar y enviar",
         "decline": "Ahora no"
-    }
+    },
+    "stagesLabel": "Etapas del procesamiento",
+    "stages": {
+        "queue": "Cola",
+        "ocr": "Lectura",
+        "translation": "Traducción",
+        "rendering": "Imagen",
+        "download": "Descarga"
+    },
+    "saved": "Resultado guardado en este dispositivo; ya se puede leer sin internet."
 }

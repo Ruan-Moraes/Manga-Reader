@@ -26,9 +26,9 @@ capítulo do gateway). As páginas prontas podem ser lidas enquanto as outras co
 - Substitui a regra "somente a primeira página" da `MOB-FEAT-017`: `validateProject`, `snapshot` e o reenvio de
   `reconcile` escolhem a página da tentativa, não `[0]`.
 - Gateway:
-  - `PageSubmission.contextRef` (UUID opcional), documentado em
-    `api/apps/translation-gateway/docs/architecture/chapter-memory.md`;
-  - o servidor não ordena páginas, então o cliente envia as de um capítulo uma depois da outra.
+    - `PageSubmission.contextRef` (UUID opcional), documentado em
+      `api/apps/translation-gateway/docs/architecture/chapter-memory.md`;
+    - o servidor não ordena páginas, então o cliente envia as de um capítulo uma depois da outra.
 - Cota: 20 páginas por dia por instalação, respondida com `429 quota-exceeded`. Ver
   `api/apps/translation-gateway/docs/architecture/quotas-and-plans.md`. Cotas por plano estão fora deste escopo.
 - Atende o marco M4, "Incremental Multi-page Reader", de `docs/plans/product-implementation.md`.
@@ -36,27 +36,27 @@ capítulo do gateway). As páginas prontas podem ser lidas enquanto as outras co
 ## Requisitos e regras
 
 - **Referência do capítulo:** cada projeto guarda um `context_ref` (SQLite v10).
-  - É um UUID sorteado com `randomUuid()`, nunca derivado de id local.
-  - Projetos anteriores recebem o UUID no primeiro envio.
-  - Toda página do projeto é enviada com o mesmo valor.
+    - É um UUID sorteado com `randomUuid()`, nunca derivado de id local.
+    - Projetos anteriores recebem o UUID no primeiro envio.
+    - Toda página do projeto é enviada com o mesmo valor.
 - **Ordem e janela:**
-  - As páginas `DRAFT` são enviadas em ordem de `position`.
-  - A próxima só é enviada quando a anterior foi aceita e confirmou o estágio `RENDERING` ou um posterior, ou
-    seja, a tradução dela terminou.
-  - Há no máximo dois jobs ativos por projeto e um único projeto enviando por vez na instalação.
+    - As páginas `DRAFT` são enviadas em ordem de `position`.
+    - A próxima só é enviada quando a anterior foi aceita e confirmou o estágio `RENDERING` ou um posterior, ou
+      seja, a tradução dela terminou.
+    - Há no máximo dois jobs ativos por projeto e um único projeto enviando por vez na instalação.
 - **Lote:**
-  - Um lote tem no máximo cinco páginas.
-  - O próximo lote começa quando todas as páginas do anterior estão `READY` ou `FAILED` e o app está em foreground.
-  - O polling consulta só os jobs ativos.
+    - Um lote tem no máximo cinco páginas.
+    - O próximo lote começa quando todas as páginas do anterior estão `READY` ou `FAILED` e o app está em foreground.
+    - O polling consulta só os jobs ativos.
 - **Idempotência:** cada página mantém a própria tentativa e a própria `Idempotency-Key`. A unicidade de tentativa
   ativa por página é preservada.
 - **Projeto:** página 2 em diante não exige o projeto em `DRAFT`. `acceptAndQueue` aceita o projeto em `QUEUED` ou
   `PROCESSING`.
 - **Cota:**
-  - Um `429` com `code=quota-exceeded` pausa a fila e grava o estado, em vez de rejeitar a página.
-  - A interface mostra quantas páginas foram enviadas e que a cota do dia acabou.
-  - A fila retoma sozinha depois da meia-noite UTC.
-  - O reenvio com a mesma chave continua permitido, porque não consome cota.
+    - Um `429` com `code=quota-exceeded` pausa a fila e grava o estado, em vez de rejeitar a página.
+    - A interface mostra quantas páginas foram enviadas e que a cota do dia acabou.
+    - A fila retoma sozinha depois da meia-noite UTC.
+    - O reenvio com a mesma chave continua permitido, porque não consome cota.
 - **Cancelar:** cancela o projeto. As tentativas ativas são canceladas uma a uma, e as páginas não enviadas
   continuam `DRAFT`. `confirmCancelled` age por página.
 - **Tentar de novo:** vale por página com falha, sem refazer as prontas.
@@ -108,15 +108,15 @@ tokens e acessibilidade.
 
 ## Estratégia de evidência
 
-| Critério | Teste/evidência esperada                                       |
-| -------- | -------------------------------------------------------------- |
-| AC-001   | Jest do controller da fila com transporte falso                |
-| AC-002   | Jest de repositório v10 e das submissões                       |
-| AC-003   | Jest com relógio falso contando chamadas                       |
-| AC-004   | Jest com 429 `quota-exceeded`, restart e virada UTC            |
-| AC-005   | Jest de cancelamento e retry por página                        |
-| AC-006   | Jest de repositório e RNTL do leitor com projeto parcial       |
-| AC-007   | RNTL do painel nos três locales                                |
+| Critério | Teste/evidência esperada                                 |
+| -------- | -------------------------------------------------------- |
+| AC-001   | Jest do controller da fila com transporte falso          |
+| AC-002   | Jest de repositório v10 e das submissões                 |
+| AC-003   | Jest com relógio falso contando chamadas                 |
+| AC-004   | Jest com 429 `quota-exceeded`, restart e virada UTC      |
+| AC-005   | Jest de cancelamento e retry por página                  |
+| AC-006   | Jest de repositório e RNTL do leitor com projeto parcial |
+| AC-007   | RNTL do painel nos três locales                          |
 
 ## Gate de implementação
 

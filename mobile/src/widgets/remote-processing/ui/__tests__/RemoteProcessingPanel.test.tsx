@@ -70,6 +70,7 @@ function controller(): jest.Mocked<StartRemoteProcessingController> {
         acceptConsent: jest.fn(async (_projectId, _capabilities, _locale) => undefined),
         submit: jest.fn(async (_projectId, _signal?: AbortSignal) => ({ project, capabilities, attempt: null, error: 'submission-unknown' as const })),
         reconcile: jest.fn(async (_signal?: AbortSignal) => ({ project, capabilities, attempt: null, error: null })),
+        refresh: jest.fn(async () => ({ project, capabilities, attempt: null, error: null })),
     };
     return value as jest.Mocked<StartRemoteProcessingController>;
 }
@@ -128,5 +129,62 @@ describe('MOB-FEAT-017 disclosure UI', () => {
         render(<RemoteProcessingPanel startController={controller()} />);
         fireEvent.press(await screen.findByRole('button', { name: label }));
         expect(screen.getByText(location)).toBeOnTheScreen();
+    });
+});
+
+describe('MOB-FEAT-021 result follow-up in the panel', () => {
+    const accepted = {
+        id: 'attempt-1',
+        pageId: 'page-1',
+        attemptNumber: 1,
+        idempotencyKey: 'key',
+        gatewayKey: 'gateway-alpha',
+        gatewayContractVersion: '1.0',
+        status: 'ACCEPTED' as const,
+        remoteStatus: 'TRANSLATING' as const,
+        remoteJobRef: '30000000-0000-4000-8000-000000000001',
+        errorCode: null,
+        createdAt: 1,
+        updatedAt: 1,
+        submittedAt: 1,
+        acceptedAt: 1,
+        lastQueriedAt: null,
+        cancellationRequestedAt: null,
+        cancelledAt: null,
+        resultAcknowledgedAt: null,
+    };
+
+    function acquire(openProjectId: string | null = null) {
+        return { sync: jest.fn(async () => ({ active: openProjectId ? 0 : 1, stages: [], openProjectId, error: null })) };
+    }
+
+    it.each([
+        ['pt-BR', /Tradução\. 3\/5/],
+        ['en-US', /Translation\. 3\/5/],
+        ['es-ES', /Traducción\. 3\/5/],
+    ])('shows the confirmed stage as a five-step bar in %s', async (locale, label) => {
+        await i18n.changeLanguage(locale);
+        const start = controller();
+        const following = { project: { ...project, status: 'PROCESSING' as const }, capabilities, attempt: accepted, error: null };
+        start.initialize.mockResolvedValue(following);
+        start.refresh.mockResolvedValue(following);
+        render(<RemoteProcessingPanel startController={start} acquireController={acquire()} />);
+        expect(await screen.findByRole('progressbar', { name: label })).toBeOnTheScreen();
+    });
+
+    it('opens the reader once when the follow-up persisted the first result, and offers Read afterwards', async () => {
+        await i18n.changeLanguage('pt-BR');
+        const start = controller();
+        const ready = { ...project, status: 'READY' as const, pages: [{ ...project.pages[0]!, status: 'READY' as const }] };
+        start.initialize.mockResolvedValue({ project: { ...project, status: 'PROCESSING' }, capabilities, attempt: accepted, error: null });
+        start.refresh.mockResolvedValue({ project: ready, capabilities, attempt: { ...accepted, remoteStatus: 'READY' }, error: null });
+        const open = jest.fn();
+        render(<RemoteProcessingPanel startController={start} acquireController={acquire('project-1')} onOpenResult={open} />);
+        await waitFor(() => expect(open).toHaveBeenCalledWith('project-1'));
+        expect(await screen.findByText('Resultado salvo neste aparelho; já pode ser lido sem internet.')).toBeOnTheScreen();
+        expect(open).toHaveBeenCalledTimes(1);
+        fireEvent.press(screen.getByRole('button', { name: 'Ler tradução' }));
+        expect(open).toHaveBeenCalledTimes(2);
+        expect(screen.queryByRole('button', { name: 'Cancelar processamento' })).toBeNull();
     });
 });

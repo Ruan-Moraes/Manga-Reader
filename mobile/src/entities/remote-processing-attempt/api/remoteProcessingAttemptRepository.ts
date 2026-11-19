@@ -5,13 +5,14 @@ import {
     isRemoteAttemptStatus,
     isRemoteJobStatus,
     isRemoteProcessingErrorCode,
+    REMOTE_PROCESSING_STAGES,
     type RemoteJobStatus,
     type RemoteProcessingAttempt,
     type RemoteProcessingConsent,
     type RemoteProcessingErrorCode,
 } from '../model/remoteProcessingAttempt';
 
-const CURRENT_SCHEMA_VERSION = 7;
+const CURRENT_SCHEMA_VERSION = 10;
 const ATTEMPT_STATUS_CHECK = "'CREATED', 'SUBMITTING', 'ACCEPTED', 'REJECTED', 'UNKNOWN', 'FAILED', 'CANCEL_PENDING', 'CANCELLED'";
 const REMOTE_STATUS_CHECK = "'QUEUED', 'OCR', 'TRANSLATING', 'RENDERING', 'READY', 'FAILED', 'CANCEL_PENDING', 'CANCELLED', 'RESULT_EXPIRED'";
 const ERROR_CODE_CHECK =
@@ -81,6 +82,7 @@ interface AttemptRow {
     last_queried_at: number | null;
     cancellation_requested_at: number | null;
     cancelled_at: number | null;
+    result_acknowledged_at: number | null;
 }
 
 export interface NewRemoteProcessingAttempt {
@@ -102,18 +104,25 @@ export interface RemoteProcessingAttemptRepository {
     getLatestByPage(pageId: string): Promise<RemoteProcessingAttempt | null>;
     getProjectIdForPage(pageId: string): Promise<string | null>;
     listRecoverable(): Promise<RemoteProcessingAttempt[]>;
+    /** Accepted attempts still followed: not cancelled and whose result ACK is still owed. */
+    listActive(): Promise<RemoteProcessingAttempt[]>;
     markSubmitting(id: string, now: number): Promise<RemoteProcessingAttempt>;
     markUnknown(id: string, now: number, errorCode?: RemoteProcessingErrorCode): Promise<RemoteProcessingAttempt>;
     markRejected(id: string, now: number, errorCode: RemoteProcessingErrorCode): Promise<RemoteProcessingAttempt>;
     acceptAndQueue(id: string, projectId: string, pageId: string, jobRef: string, remoteStatus: RemoteJobStatus, now: number): Promise<RemoteProcessingAttempt>;
     observe(id: string, remoteStatus: RemoteJobStatus, now: number, errorCode?: RemoteProcessingErrorCode | null): Promise<RemoteProcessingAttempt>;
+    /** Records a confirmed remote stage; a page past the queue becomes PROCESSING with its project. */
+    advance(id: string, remoteStatus: RemoteJobStatus, now: number): Promise<RemoteProcessingAttempt>;
+    /** Remote failure or expiry: the attempt and its page fail; the project fails once no page is left to run. */
+    markRemoteFailed(id: string, remoteStatus: 'FAILED' | 'RESULT_EXPIRED', now: number): Promise<RemoteProcessingAttempt>;
+    markAcknowledged(id: string, now: number): Promise<RemoteProcessingAttempt>;
     markCancelPending(id: string, now: number): Promise<RemoteProcessingAttempt>;
     confirmCancelled(id: string, projectId: string, pageId: string, now: number): Promise<RemoteProcessingAttempt>;
 }
 
 const ATTEMPT_COLUMNS = `id, page_id, attempt_number, idempotency_key, gateway_key, gateway_contract_version,
     status, remote_status, remote_job_ref, error_code, created_at, updated_at, submitted_at, accepted_at,
-    last_queried_at, cancellation_requested_at, cancelled_at`;
+    last_queried_at, cancellation_requested_at, cancelled_at, result_acknowledged_at`;
 
 function mapAttempt(row: AttemptRow | null): RemoteProcessingAttempt | null {
     if (!row) return null;
@@ -144,6 +153,7 @@ function mapAttempt(row: AttemptRow | null): RemoteProcessingAttempt | null {
         lastQueriedAt: row.last_queried_at,
         cancellationRequestedAt: row.cancellation_requested_at,
         cancelledAt: row.cancelled_at,
+        resultAcknowledgedAt: row.result_acknowledged_at ?? null,
     };
 }
 
@@ -175,6 +185,14 @@ export function createSqliteRemoteProcessingAttemptRepository(
 
             await db.withExclusiveTransactionAsync(async transaction => {
                 await transaction.execAsync(CREATE_REMOTE_PROCESSING_SCHEMA);
+                // v10: additive column, so a v7 table keeps every attempt and receipt.
+                const columns = new Set(
+                    (await transaction.getAllAsync<{ name: string }>('PRAGMA table_info(remote_processing_attempts)', [])).map(column => column.name),
+                );
+                if (!columns.has('result_acknowledged_at')) {
+                    await transaction.execAsync(`ALTER TABLE remote_processing_attempts ADD COLUMN result_acknowledged_at INTEGER
+                        CHECK (result_acknowledged_at IS NULL OR result_acknowledged_at > 0);`);
+                }
                 await advanceAppSchemaVersion(transaction, CURRENT_SCHEMA_VERSION);
             });
         }).catch(error => {
@@ -306,6 +324,99 @@ export function createSqliteRemoteProcessingAttemptRepository(
             );
 
             return rows.map(row => mapAttempt(row)!);
+        },
+        async listActive() {
+            const rows = await (
+                await database()
+            ).getAllAsync<AttemptRow>(
+                `SELECT ${ATTEMPT_COLUMNS} FROM remote_processing_attempts
+                 WHERE status = 'ACCEPTED' AND remote_job_ref IS NOT NULL AND result_acknowledged_at IS NULL
+                 ORDER BY accepted_at ASC, id ASC`,
+                [],
+            );
+
+            return rows.map(row => mapAttempt(row)!);
+        },
+        async advance(id, remoteStatus, now) {
+            const db = await database();
+
+            await db.withExclusiveTransactionAsync(async transaction => {
+                const attempt = await requireAttempt(transaction, id);
+
+                if (attempt.status !== 'ACCEPTED') return;
+
+                await transaction.runAsync(
+                    `UPDATE remote_processing_attempts SET remote_status = ?, last_queried_at = ?, updated_at = ?, error_code = NULL WHERE id = ?`,
+                    [remoteStatus, now, Math.max(now, attempt.updatedAt), id],
+                );
+
+                if (!REMOTE_PROCESSING_STAGES.includes(remoteStatus)) return;
+
+                const page = await transaction.getFirstAsync<{ project_id: string }>(
+                    `SELECT project_id FROM translation_pages WHERE id = ? AND status = 'QUEUED'`,
+                    [attempt.pageId],
+                );
+
+                if (!page) return;
+
+                await transaction.runAsync(`UPDATE translation_pages SET status = 'PROCESSING', updated_at = ?, status_updated_at = ? WHERE id = ?`, [
+                    now,
+                    now,
+                    attempt.pageId,
+                ]);
+
+                await transaction.runAsync(
+                    `UPDATE translation_projects SET status = 'PROCESSING', updated_at = ?, status_updated_at = ? WHERE id = ? AND status = 'QUEUED'`,
+                    [now, now, page.project_id],
+                );
+            });
+
+            return requireAttempt(db, id);
+        },
+        async markRemoteFailed(id, remoteStatus, now) {
+            const db = await database();
+
+            await db.withExclusiveTransactionAsync(async transaction => {
+                const attempt = await requireAttempt(transaction, id);
+
+                if (attempt.status !== 'ACCEPTED') return;
+
+                await transaction.runAsync(
+                    `UPDATE remote_processing_attempts SET status = 'FAILED', remote_status = ?, last_queried_at = ?, updated_at = ? WHERE id = ?`,
+                    [remoteStatus, now, Math.max(now, attempt.updatedAt), id],
+                );
+
+                const page = await transaction.getFirstAsync<{ project_id: string }>('SELECT project_id FROM translation_pages WHERE id = ?', [attempt.pageId]);
+
+                if (!page) return;
+
+                await transaction.runAsync(
+                    `UPDATE translation_pages SET status = 'FAILED', updated_at = ?, status_updated_at = ?
+                     WHERE id = ? AND status IN ('QUEUED', 'PROCESSING')`,
+                    [now, now, attempt.pageId],
+                );
+
+                // Other pages of the project may still be running or waiting: only the last one decides.
+                await transaction.runAsync(
+                    `UPDATE translation_projects SET status = 'FAILED', updated_at = ?, status_updated_at = ?
+                     WHERE id = ? AND status IN ('QUEUED', 'PROCESSING')
+                       AND NOT EXISTS (SELECT 1 FROM translation_pages WHERE project_id = ? AND status IN ('DRAFT', 'QUEUED', 'PROCESSING'))`,
+                    [now, now, page.project_id, page.project_id],
+                );
+            });
+
+            return requireAttempt(db, id);
+        },
+        async markAcknowledged(id, now) {
+            const db = await database();
+
+            await db.runAsync(
+                `UPDATE remote_processing_attempts SET result_acknowledged_at = ?, updated_at = MAX(updated_at, ?)
+                 WHERE id = ? AND status = 'ACCEPTED' AND result_acknowledged_at IS NULL`,
+                [now, now, id],
+            );
+
+            return requireAttempt(db, id);
         },
         async markSubmitting(id, now) {
             const db = await database();

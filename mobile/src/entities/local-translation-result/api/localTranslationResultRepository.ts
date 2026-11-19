@@ -17,6 +17,24 @@ import {
 } from '@/shared/storage';
 
 import { isLocalResultSource, type LocalTranslationResult, type NewLocalTranslationResult, type TextRegion } from '../model/localTranslationResult';
+import type { RemoteRenderManifest } from '../model/remoteRenderManifest';
+
+/** Model recorded on regions acquired from the translation gateway. */
+export const REMOTE_TRANSLATION_MODEL = 'translation-gateway';
+
+/** A verified READY page: the image already in its final private file, the manifest already validated. */
+export interface RemoteResultCommit {
+    projectId: string;
+    pageId: string;
+    attemptId: string;
+    renderedFilename: string;
+    byteSize: number;
+    widthPx: number;
+    heightPx: number;
+    sha256: string;
+    readyAt: number;
+    manifest: RemoteRenderManifest;
+}
 
 export const TRANSLATION_RESULT_NAMESPACE = 'translation-results';
 const CURRENT_SCHEMA_VERSION = 9;
@@ -122,6 +140,11 @@ export interface LocalTranslationLibraryItem {
 export interface LocalTranslationResultRepository {
     initialize(): Promise<void>;
     saveDemoResults(projectId: string, results: readonly NewLocalTranslationResult[], updatedAt: number): Promise<void>;
+    /**
+     * Commits one remote page in a single transaction: result, regions and vertices, then the page becomes READY and
+     * the project READY once every page is. Repeating the same attempt is a no-op.
+     */
+    saveRemoteResult(commit: RemoteResultCommit): Promise<void>;
     getByPage(pageId: string): Promise<LocalTranslationResult | null>;
     listByProject(projectId: string): Promise<LocalTranslationResult[]>;
     listLibrary(): Promise<LocalTranslationLibraryItem[]>;
@@ -428,6 +451,91 @@ export function createSqliteLocalTranslationResultRepository(
                     updatedAt,
                     projectId,
                 ]);
+            });
+        },
+        async saveRemoteResult(commit) {
+            const db = await database();
+
+            await db.withExclusiveTransactionAsync(async transaction => {
+                const owner = await transaction.getFirstAsync<{ remote_job_ref: string; project_id: string }>(
+                    `SELECT a.remote_job_ref, p.project_id FROM remote_processing_attempts a
+                     JOIN translation_pages p ON p.id = a.page_id
+                     WHERE a.id = ? AND a.page_id = ? AND a.status = 'ACCEPTED' AND a.remote_status = 'READY'`,
+                    [commit.attemptId, commit.pageId],
+                );
+
+                if (!owner || owner.project_id !== commit.projectId || owner.remote_job_ref !== commit.manifest.jobRef) {
+                    throw new Error('localTranslation.invalidRemoteManifest');
+                }
+
+                const existing = await transaction.getFirstAsync<{ attempt_id: string | null }>(
+                    'SELECT attempt_id FROM translation_page_results WHERE page_id = ? LIMIT 1',
+                    [commit.pageId],
+                );
+
+                if (existing?.attempt_id === commit.attemptId) return;
+
+                if (existing) throw new Error('localTranslation.resultExists');
+
+                await transaction.runAsync(`INSERT INTO translation_page_results (${RESULT_COLUMNS}) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, [
+                    commit.pageId,
+                    commit.attemptId,
+                    'REMOTE',
+                    commit.renderedFilename,
+                    'image/webp',
+                    commit.byteSize,
+                    commit.widthPx,
+                    commit.heightPx,
+                    commit.sha256,
+                    commit.readyAt,
+                    null,
+                ]);
+
+                for (const region of commit.manifest.regions) {
+                    await transaction.runAsync(
+                        `INSERT INTO text_regions (id, page_id, reading_order, source_text, translated_text,
+                            translation_contract_version, translation_model, translated_at, overflow, created_at)
+                         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                        [
+                            region.id,
+                            commit.pageId,
+                            region.readingOrder,
+                            region.sourceText,
+                            region.translatedText,
+                            commit.manifest.version,
+                            REMOTE_TRANSLATION_MODEL,
+                            commit.readyAt,
+                            region.overflow ? 1 : 0,
+                            commit.readyAt,
+                        ],
+                    );
+
+                    for (const [index, point] of region.polygon.entries()) {
+                        await transaction.runAsync('INSERT INTO text_region_vertices (region_id, vertex_index, x, y) VALUES (?, ?, ?, ?)', [
+                            region.id,
+                            index,
+                            point.x,
+                            point.y,
+                        ]);
+                    }
+                }
+
+                await transaction.runAsync(
+                    `UPDATE translation_pages SET status = 'READY', updated_at = ?, status_updated_at = ?
+                     WHERE id = ? AND project_id = ? AND status IN ('QUEUED', 'PROCESSING')`,
+                    [commit.readyAt, commit.readyAt, commit.pageId, commit.projectId],
+                );
+
+                const pending = await transaction.getFirstAsync<{ total: number }>(
+                    `SELECT COUNT(*) AS total FROM translation_pages WHERE project_id = ? AND status <> 'READY'`,
+                    [commit.projectId],
+                );
+
+                await transaction.runAsync(
+                    `UPDATE translation_projects SET status = ?, updated_at = ?, status_updated_at = ?
+                     WHERE id = ? AND status IN ('QUEUED', 'PROCESSING')`,
+                    [(pending?.total ?? 0) === 0 ? 'READY' : 'PROCESSING', commit.readyAt, commit.readyAt, commit.projectId],
+                );
             });
         },
         async getByPage(pageId) {

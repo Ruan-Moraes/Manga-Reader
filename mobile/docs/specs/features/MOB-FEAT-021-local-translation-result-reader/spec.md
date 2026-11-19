@@ -2,11 +2,11 @@
 id: MOB-FEAT-021
 type: feature
 title: Leitor local do resultado traduzido
-status: approved
-implementation_gate: blocked
+status: in-progress
+implementation_gate: open
 blocked_by: [MOB-FEAT-020]
 created: 2026-08-15
-updated: 2026-08-15
+updated: 2026-11-18
 supersedes: []
 superseded_by: []
 ---
@@ -71,6 +71,28 @@ translated_text, overflow, created_at)` com `UNIQUE(page_id, reading_order)`;
 FKs usam `ON DELETE CASCADE`; checks validam MIME, hashes, dimensões, índices de
 vértice, coordenadas e timestamps. Projeto/idiomas não são duplicados. O registry
 de storage mede e limpa metadados/arquivos coordenadamente.
+
+## Reconciliação com o código atual — 2026-11-18
+
+Esta seção não muda requisitos nem critérios. Ela só ajusta onde cada um é atendido, porque outras specs
+entregaram partes da 021 antes dela.
+
+- **Persistência:**
+    - `translation_page_results`, `text_regions` e `text_region_vertices` (com `auto_opened_at`) já existem no
+      SQLite v9 da `MOB-FEAT-025`;
+    - a 021 só acrescenta `result_acknowledged_at` em `remote_processing_attempts` (SQLite v10), para retomar o ACK.
+- **Manifesto:**
+    - o resultado `READY` entrega o manifesto do render (`version` `1.1`): regiões com texto, polígono, `overflow`,
+      `kept` e `quality`;
+    - não entrega o manifesto de tradução 1.0 que `parseLocalTranslationManifest` lê;
+    - a 021 valida esse documento com um parser próprio em `entities/local-translation-result`.
+- **Leitor:**
+    - o leitor local unificado da `MOB-FEAT-051` (`pages/offline-translation/ui/LocalTranslationReaderPage.tsx`,
+      rota `translation-reader`) já mostra resultado, original e fallback;
+    - a 021 grava o resultado `REMOTE` e navega para esse leitor, em vez de criar um leitor novo.
+- **Acompanhamento:**
+    - fica em `features/acquire-remote-result`, compondo com start e cancel no widget `remote-processing`;
+    - a barra de cinco etapas usa `ProgressSteps` de `shared/ui`.
 
 ## Arquitetura FSD planejada
 
@@ -149,7 +171,8 @@ tokens, foco, labels e touch targets adequados.
 
 ## Gate de implementação
 
-- Estado: `blocked`
+- Estado: `open` em 2026-11-18, por decisão de Ruan, depois da 020 atingir `verification-pending`.
+- Histórico: `blocked` desde 2026-08-15.
 - Dependência: `MOB-FEAT-020` implementada ou em verificação.
 - Abertura exige contrato terminal com hash/manifesto e renderer real no
   ambiente de teste.
@@ -165,5 +188,5 @@ tokens, foco, labels e touch targets adequados.
 - Aprovador: Ruan Moraes
 - Data: 2026-08-15
 
-Aprovação registrada junto ao plano do vertical slice. O gate permanece
-bloqueado pela execução de `MOB-FEAT-020`.
+Aprovação registrada junto ao plano do vertical slice. Em 2026-11-18, Ruan pediu a 021 junto com a 022 (várias
+páginas) e autorizou mover a 020 para verificação, o que abriu este gate.

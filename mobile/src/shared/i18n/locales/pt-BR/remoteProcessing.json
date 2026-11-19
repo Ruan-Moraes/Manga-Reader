@@ -5,7 +5,8 @@
         "start": "Iniciar processamento",
         "check": "Verificar envio",
         "cancel": "Cancelar processamento",
-        "retry": "Tentar novamente"
+        "retry": "Tentar novamente",
+        "read": "Ler tradução"
     },
     "status": {
         "CREATED": "Preparando envio",
@@ -22,11 +23,11 @@
         "OCR": "O processamento remoto já começou.",
         "TRANSLATING": "O processamento remoto já começou.",
         "RENDERING": "O processamento remoto já começou.",
-        "READY": "O gateway informou que o resultado está pronto; a leitura será implementada depois.",
+        "READY": "Resultado pronto no gateway; baixando e conferindo.",
         "FAILED": "O processamento remoto falhou.",
         "CANCEL_PENDING": "O gateway ainda está confirmando o cancelamento.",
         "CANCELLED": "O gateway confirmou o cancelamento.",
-        "RESULT_EXPIRED": "O resultado remoto expirou."
+        "RESULT_EXPIRED": "O resultado remoto expirou antes do download. A página precisa ser processada de novo."
     },
     "errors": {
         "consent-required": "Revise e aceite as informações antes do envio.",
@@ -37,7 +38,8 @@
         "gateway-rejected": "O gateway recusou a página sem alterar o projeto local.",
         "cancellation-pending": "O pedido foi enviado, mas o cancelamento ainda não foi confirmado.",
         "cancellation-unavailable": "O processamento já começou, terminou ou não pode mais ser cancelado.",
-        "storage-unavailable": "Não foi possível salvar o estado seguro neste aparelho."
+        "storage-unavailable": "Não foi possível salvar o estado seguro neste aparelho.",
+        "result-unavailable": "Ainda não foi possível baixar e conferir o resultado. Uma nova tentativa acontece sozinha."
     },
     "disclosure": {
         "title": "Autorizar envio da primeira página?",
@@ -54,5 +56,14 @@
         "terms": "Abrir termos",
         "accept": "Aceitar e enviar",
         "decline": "Agora não"
-    }
+    },
+    "stagesLabel": "Etapas do processamento",
+    "stages": {
+        "queue": "Fila",
+        "ocr": "Leitura",
+        "translation": "Tradução",
+        "rendering": "Imagem",
+        "download": "Download"
+    },
+    "saved": "Resultado salvo neste aparelho; já pode ser lido sem internet."
 }

@@ -2,11 +2,11 @@
 id: MOB-FEAT-020
 type: feature
 title: Renderização visual da tradução
-status: in-progress
+status: verification-pending
 implementation_gate: open
 blocked_by: [MOB-FEAT-019]
 created: 2026-08-15
-updated: 2026-10-05
+updated: 2026-11-18
 supersedes: []
 superseded_by: []
 ---
@@ -156,6 +156,23 @@ transição verificada para `verification-pending` satisfez a dependência técn
 a autorização de Ruan para avançar autonomamente até a 020 permite abrir o
 gate e derivar tasks. Não autoriza custo de provider, deploy, alteração legal
 ou habilitação de uploads. A 021 continua bloqueada.
+
+## Transição para verificação — 2026-11-18
+
+Por decisão de Ruan em 2026-11-18, a 020 passa a `verification-pending`. O renderer do gateway já roda no
+pipeline real e foi validado em lotes pagos do corpus de 50 páginas. Isso inclui fontes Noto empacotadas, WebP,
+manifesto com `quality`, URLs assinadas, ACK e limpeza: ver
+`api/apps/translation-gateway/docs/rendering/rendering-contracts.md`.
+
+Continuam abertos:
+
+- TASK-002, TASK-006, TASK-007 e TASK-008;
+- a segurança residual, o orçamento e a operação cloud;
+- o profiling Android;
+- a revisão visual humana dos sete destinos.
+
+Esta transição só satisfaz a dependência técnica da 021. Ela não aprova a qualidade nem libera a operação em
+produção.
 
 ## Decisão de manutenção — 2026-10-02
 

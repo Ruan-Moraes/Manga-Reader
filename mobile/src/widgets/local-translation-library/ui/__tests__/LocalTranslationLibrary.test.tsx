@@ -50,6 +50,7 @@ function repository(items: LocalTranslationLibraryItem[]): jest.Mocked<LocalTran
     return {
         initialize: jest.fn().mockResolvedValue(undefined),
         saveDemoResults: jest.fn(),
+        saveRemoteResult: jest.fn(),
         getByPage: jest.fn(),
         listByProject: jest.fn(),
         listLibrary: jest.fn().mockResolvedValue(items),

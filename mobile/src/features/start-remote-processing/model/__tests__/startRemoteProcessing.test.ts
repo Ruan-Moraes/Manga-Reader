@@ -85,6 +85,7 @@ const created: RemoteProcessingAttempt = {
     lastQueriedAt: null,
     cancellationRequestedAt: null,
     cancelledAt: null,
+    resultAcknowledgedAt: null,
 };
 
 function setup(options: { consent?: boolean; enabled?: boolean; capabilityBody?: unknown; upload?: () => Promise<unknown> } = {}) {

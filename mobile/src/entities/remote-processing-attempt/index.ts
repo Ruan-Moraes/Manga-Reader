@@ -14,6 +14,7 @@ export {
     REMOTE_ATTEMPT_STATUSES,
     REMOTE_JOB_STATUSES,
     REMOTE_PROCESSING_ERROR_CODES,
+    REMOTE_PROCESSING_STAGES,
     type RemoteAttemptStatus,
     type RemoteJobStatus,
     type RemoteProcessingAttempt,

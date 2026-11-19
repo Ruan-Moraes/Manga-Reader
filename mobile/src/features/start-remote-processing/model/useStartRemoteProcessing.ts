@@ -56,6 +56,10 @@ export function useStartRemoteProcessing(controller: StartRemoteProcessingContro
         }
     }, [busy, controller]);
 
+    const refresh = useCallback(async () => {
+        setState(await controller.refresh());
+    }, [controller]);
+
     useEffect(() => {
         const subscription = AppState.addEventListener('change', next => {
             if (next === 'active' && state.attempt && isAmbiguousRemoteAttempt(state.attempt)) void reconcile();
@@ -63,5 +67,5 @@ export function useStartRemoteProcessing(controller: StartRemoteProcessingContro
         return () => subscription.remove();
     }, [reconcile, state.attempt]);
 
-    return { ...state, loading, busy, acceptAndSubmit, retry, reconcile };
+    return { ...state, loading, busy, acceptAndSubmit, retry, reconcile, refresh };
 }

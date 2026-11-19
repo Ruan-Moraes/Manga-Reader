@@ -5,6 +5,8 @@ export {
     type LocalTranslationResultRepository,
     localTranslationResultRepository,
     registerLocalTranslationResultDataParticipant,
+    REMOTE_TRANSLATION_MODEL,
+    type RemoteResultCommit,
     TRANSLATION_RESULT_NAMESPACE,
 } from './api/localTranslationResultRepository';
 export { insertRemoteTranslationRegions, type RemoteTranslationRegionsInsert } from './api/remoteTranslationRegionsStorage';
@@ -27,3 +29,9 @@ export {
     type TextRegionVertex,
     type TranslationMetadata,
 } from './model/localTranslationResult';
+export {
+    parseRemoteRenderManifest,
+    parseRemoteRenderManifestBytes,
+    type RemoteRenderManifest,
+    type RemoteRenderManifestExpectation,
+} from './model/remoteRenderManifest';

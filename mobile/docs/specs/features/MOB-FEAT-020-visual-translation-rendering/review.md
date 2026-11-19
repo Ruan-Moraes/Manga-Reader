@@ -1,10 +1,23 @@
 # Review parcial — MOB-FEAT-020
 
 - Spec revisada: `spec.md`
-- Implementação/revisão: working-tree sha256:0197e775ac2875fd2619dc4a8a1a68162b97aa1591d460593588c2932c2d51b2
+- Implementação/revisão: commit d13250a49b4c0a74057f5bd2d6e5adaba44b2af8
 - Gate na entrada do planejamento: `open`
 - Dependências verificadas: 019 e 018 em `verification-pending`; validação externa aberta.
-- Verdict: `changes-requested`
+- Verdict: `verification-pending`
+
+## Transição — 2026-11-18
+
+O verdict muda de `changes-requested` para `verification-pending` por decisão do proprietário. Isso não resolve os
+findings abaixo, que continuam como pendências de verificação:
+
+- segurança residual;
+- orçamento e operação cloud;
+- profiling;
+- revisão visual humana.
+
+O código do renderer está executado e validado em lotes reais do corpus do gateway-tester (relatórios em
+`web/apps/gateway-tester/corpus/runs`, fora do git). Continuam abertas TASK-002, TASK-006, TASK-007 e TASK-008.
 
 ## Findings atuais — 2026-10-12
 

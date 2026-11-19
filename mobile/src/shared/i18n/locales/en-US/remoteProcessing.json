@@ -5,7 +5,8 @@
         "start": "Start processing",
         "check": "Check submission",
         "cancel": "Cancel processing",
-        "retry": "Try again"
+        "retry": "Try again",
+        "read": "Read translation"
     },
     "status": {
         "CREATED": "Preparing submission",
@@ -22,11 +23,11 @@
         "OCR": "Remote processing has started.",
         "TRANSLATING": "Remote processing has started.",
         "RENDERING": "Remote processing has started.",
-        "READY": "The gateway reports that the result is ready; reading will be implemented later.",
+        "READY": "Result ready on the gateway; downloading and checking.",
         "FAILED": "Remote processing failed.",
         "CANCEL_PENDING": "The gateway is still confirming cancellation.",
         "CANCELLED": "The gateway confirmed cancellation.",
-        "RESULT_EXPIRED": "The remote result expired."
+        "RESULT_EXPIRED": "The remote result expired before the download. The page needs to be processed again."
     },
     "errors": {
         "consent-required": "Review and accept the information before submission.",
@@ -37,7 +38,8 @@
         "gateway-rejected": "The gateway rejected the page without changing the local project.",
         "cancellation-pending": "The request was sent, but cancellation is not confirmed yet.",
         "cancellation-unavailable": "Processing has started, finished, or can no longer be cancelled.",
-        "storage-unavailable": "The safe state could not be saved on this device."
+        "storage-unavailable": "The safe state could not be saved on this device.",
+        "result-unavailable": "The result could not be downloaded and checked yet. It will be tried again automatically."
     },
     "disclosure": {
         "title": "Allow sending the first page?",
@@ -54,5 +56,14 @@
         "terms": "Open terms",
         "accept": "Accept and send",
         "decline": "Not now"
-    }
+    },
+    "stagesLabel": "Processing steps",
+    "stages": {
+        "queue": "Queue",
+        "ocr": "Reading",
+        "translation": "Translation",
+        "rendering": "Image",
+        "download": "Download"
+    },
+    "saved": "Result saved on this device; it can be read without internet."
 }

@@ -36,6 +36,8 @@ export interface StartRemoteProcessingController {
     acceptConsent(projectId: string, capabilities: RemoteProcessingCapabilities, locale: SupportedLanguage): Promise<void>;
     submit(projectId: string, signal?: AbortSignal): Promise<RemoteProcessingSnapshot>;
     reconcile(signal?: AbortSignal): Promise<RemoteProcessingSnapshot>;
+    /** Local state again, with the last capabilities and no network: after a follow-up round changed it. */
+    refresh(): Promise<RemoteProcessingSnapshot>;
 }
 
 interface Dependencies {
@@ -109,13 +111,20 @@ async function applyEnvelope(
 
 export function createStartRemoteProcessingController(dependencies: Dependencies): StartRemoteProcessingController {
     let submission: Promise<RemoteProcessingSnapshot> | null = null;
+    let known: RemoteProcessingCapabilities | null = null;
+    const remember = (result: RemoteProcessingSnapshot) => {
+        if (result.capabilities) known = result.capabilities;
+        return result;
+    };
     const reconciliations = new Map<AbortSignal | undefined, Promise<RemoteProcessingSnapshot>>();
 
     const initialize = async (signal?: AbortSignal): Promise<RemoteProcessingSnapshot> => {
         try {
             await Promise.all([dependencies.projects.initialize(), dependencies.attempts.initialize()]);
             const { capabilities } = await loadCapabilities(dependencies, signal);
-            return snapshot(dependencies, capabilities, capabilitiesAreUsable(capabilities, dependencies.now()) ? null : 'capabilities-unavailable');
+            return remember(
+                await snapshot(dependencies, capabilities, capabilitiesAreUsable(capabilities, dependencies.now()) ? null : 'capabilities-unavailable'),
+            );
         } catch (error) {
             return snapshot(dependencies, null, localError(error));
         }
@@ -123,6 +132,9 @@ export function createStartRemoteProcessingController(dependencies: Dependencies
 
     return {
         initialize,
+        refresh() {
+            return snapshot(dependencies, known, null);
+        },
         async acceptConsent(projectId, capabilities, locale) {
             const project = await dependencies.projects.getById(projectId);
             validateProject(project, capabilities, dependencies.now());

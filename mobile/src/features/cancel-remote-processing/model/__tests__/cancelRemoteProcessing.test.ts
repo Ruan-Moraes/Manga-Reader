@@ -22,6 +22,7 @@ const attempt: RemoteProcessingAttempt = {
     lastQueriedAt: null,
     cancellationRequestedAt: null,
     cancelledAt: null,
+    resultAcknowledgedAt: null,
 };
 
 const capabilities = {
