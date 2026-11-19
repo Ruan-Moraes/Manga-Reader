@@ -2,7 +2,7 @@
 id: MOB-FEAT-021
 type: feature
 title: Leitor local do resultado traduzido
-status: in-progress
+status: verification-pending
 implementation_gate: open
 blocked_by: [MOB-FEAT-020]
 created: 2026-08-15
