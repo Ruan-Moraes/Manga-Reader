@@ -1,4 +1,4 @@
-import type { Job, PageQuality } from '../services/gatewayClient'
+import type { ChapterTerm, Job, PageQuality } from '../services/gatewayClient'
 import type { CorpusApi, CorpusChapter } from './corpusApi'
 
 /** Gateway calls the pipeline needs; the real ones come from services/gatewayClient. */
@@ -10,7 +10,7 @@ export interface PipelineGateway {
     file: File,
     sourceLanguage: string,
     targetLanguage: string,
-    options: { widthPx: number; heightPx: number; disclosureVersion: string; contextRef?: string },
+    options: { widthPx: number; heightPx: number; disclosureVersion: string; contextRef?: string; glossary?: ChapterTerm[] },
   ): Promise<{ jobRef: string; status: string }>
   getJobByRef(accessToken: string, jobRef: string): Promise<Job>
   acknowledgeResult(accessToken: string, jobRef: string): Promise<void>
@@ -34,6 +34,8 @@ export interface PipelineOptions {
    * the first page decides is then kept by the next ones (chapter memory, contextRef).
    */
   concurrency?: number
+  /** Send each chapter's glossary (the names its results reported) with its next pages. Default true. */
+  sendGlossary?: boolean
   pollMs?: number
   timeoutMs?: number
   signal?: AbortSignal
@@ -161,6 +163,8 @@ export async function runPipeline(
   const chapterOf = new Map(options.chapters.map((chapter) => [chapter.id, chapter]))
   // One chapter memory per chapter and run: its pages translate a name the same way.
   const contextOf = new Map(options.chapters.map((chapter) => [chapter.id, crypto.randomUUID()]))
+  // The client's copy of each chapter's names, as the app keeps it: the first decision stays.
+  const glossaryOf = new Map(options.chapters.map((chapter) => [chapter.id, new Map<string, string>()]))
   const translatePage = async (record: PageRecord) => {
     const chapter = chapterOf.get(record.chapterId)!
     const started = now()
@@ -175,6 +179,10 @@ export async function runPipeline(
           ...size,
           disclosureVersion: options.disclosureVersion,
           contextRef: contextOf.get(chapter.id),
+          glossary:
+            options.sendGlossary === false
+              ? undefined
+              : [...glossaryOf.get(chapter.id)!].slice(0, 256).map(([source, target]) => ({ source, target })),
         }),
       )
       patch(record, { jobRef: submitted.jobRef, gatewayStatus: submitted.status })
@@ -191,7 +199,9 @@ export async function runPipeline(
           const translated = `${base}.translated.${extensionOf(job.result.image.mimeType)}`
           const manifest = `${base}.manifest.json`
           await deps.corpus.save(runId, translated, await deps.download(job.result.image.url))
-          await deps.corpus.save(runId, manifest, await deps.download(job.result.manifest.url))
+          const manifestBlob = await deps.download(job.result.manifest.url)
+          await deps.corpus.save(runId, manifest, manifestBlob)
+          rememberTerms(glossaryOf.get(chapter.id)!, await manifestBlob.text())
           await withSession((token) => deps.gateway.acknowledgeResult(token, submitted.jobRef))
           patch(record, {
             outcome: job.result.quality?.status === 'NEEDS_REVIEW' ? 'needs-review' : 'ok',
@@ -233,6 +243,16 @@ export async function runPipeline(
   await deps.corpus.save(runId, 'report.json', JSON.stringify(report, null, 2))
   await deps.corpus.save(runId, 'index.html', renderGallery(report))
   return report
+}
+
+/** Adds the names a result manifest (1.2, `terms`) reports; a name already kept is not changed. */
+export function rememberTerms(glossary: Map<string, string>, manifestJson: string) {
+  try {
+    const terms = (JSON.parse(manifestJson) as { terms?: ChapterTerm[] }).terms ?? []
+    for (const term of terms) if (!glossary.has(term.source)) glossary.set(term.source, term.target)
+  } catch {
+    // A manifest that is not JSON reports no names.
+  }
 }
 
 const escapeHtml = (text: string) =>

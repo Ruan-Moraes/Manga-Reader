@@ -32,6 +32,7 @@ export default function ValidationPanel({ disclosureVersion, pairs }: Props) {
   const [report, setReport] = useState<PipelineReport | null>(null)
   const [running, setRunning] = useState(false)
   const [failure, setFailure] = useState<string | null>(null)
+  const [sendGlossary, setSendGlossary] = useState(true)
   const abortRef = useRef<AbortController | null>(null)
 
   const supported = useMemo(
@@ -73,7 +74,7 @@ export default function ValidationPanel({ disclosureVersion, pairs }: Props) {
           download: downloadResultImage,
           imageSize: readImageSize,
         },
-        { chapters: chosen, disclosureVersion, signal: controller.signal },
+        { chapters: chosen, disclosureVersion, sendGlossary, signal: controller.signal },
         setReport,
       )
     } catch (error) {
@@ -172,6 +173,11 @@ export default function ValidationPanel({ disclosureVersion, pairs }: Props) {
           )
         })}
       </ul>
+
+      <label className="flex items-center gap-2 text-sm text-gray-300">
+        <input type="checkbox" checked={sendGlossary} onChange={(event) => setSendGlossary(event.target.checked)} disabled={running} />
+        Enviar o glossário do capítulo (nomes já decididos) com cada página
+      </label>
 
       <div className="flex gap-2">
         <button

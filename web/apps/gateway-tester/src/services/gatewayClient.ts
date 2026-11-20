@@ -7,6 +7,12 @@ const client = axios.create({
   timeout: 30000,
 })
 
+/** A chapter name the gateway decided, as the result manifest (1.2) reports it. */
+export interface ChapterTerm {
+  source: string
+  target: string
+}
+
 export interface Installation {
   contractVersion: string
   installationRef: string
@@ -92,7 +98,13 @@ export const gatewayClient = {
     file: File,
     sourceLanguage: string,
     targetLanguage: string,
-    options: { widthPx: number; heightPx: number; disclosureVersion: string; contextRef?: string },
+    options: {
+      widthPx: number
+      heightPx: number
+      disclosureVersion: string
+      contextRef?: string
+      glossary?: ChapterTerm[]
+    },
   ): Promise<Job & { idempotencyKey: string }> {
     const idempotencyKey = crypto.randomUUID()
     const formData = new FormData()
@@ -107,6 +119,8 @@ export const gatewayClient = {
     formData.append('attemptRef', crypto.randomUUID())
     // Pages of one chapter share it, so a name is translated the same way on all of them.
     if (options.contextRef) formData.append('contextRef', options.contextRef)
+    // Names the gateway already decided for the chapter: refills its memory after a long pause.
+    if (options.contextRef && options.glossary?.length) formData.append('glossary', JSON.stringify(options.glossary))
 
     const response = await client.post('/page-jobs', formData, {
       headers: {

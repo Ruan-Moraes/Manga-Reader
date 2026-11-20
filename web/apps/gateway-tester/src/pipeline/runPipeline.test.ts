@@ -115,6 +115,45 @@ describe('runPipeline', () => {
     expect(contextOf('p03.jpg')).not.toBe(contextOf('p01.jpg'))
   })
 
+  it("sends each chapter's glossary, the names its earlier results reported, with its next pages", async () => {
+    const { deps, gateway } = setup({
+      'job-p01.jpg': [readyJob('job-p01.jpg')],
+      'job-p02.jpg': [readyJob('job-p02.jpg')],
+      'job-p03.jpg': [readyJob('job-p03.jpg')],
+    })
+    deps.download = async (url) =>
+      new Blob([
+        url.endsWith('p01.jpg.json')
+          ? JSON.stringify({ terms: [{ source: 'Coriander', target: 'Coriander' }] })
+          : url.endsWith('p02.jpg.json')
+            ? JSON.stringify({ terms: [{ source: 'Coriander', target: 'Coentro' }, { source: 'Saffron', target: 'Saffron' }] })
+            : 'img',
+      ])
+
+    await runPipeline(deps, { chapters: [chapter('ch-a', [['p01.jpg'], ['p02.jpg'], ['p03.jpg']])], disclosureVersion: 'd1' }, () => undefined)
+
+    const glossaryOf = (name: string) =>
+      vi.mocked(gateway.submitPage).mock.calls.find(([, file]) => file.name === name)?.[4].glossary
+    expect(glossaryOf('p01.jpg')).toEqual([])
+    expect(glossaryOf('p02.jpg')).toEqual([{ source: 'Coriander', target: 'Coriander' }])
+    // The first decision stays.
+    expect(glossaryOf('p03.jpg')).toEqual([
+      { source: 'Coriander', target: 'Coriander' },
+      { source: 'Saffron', target: 'Saffron' },
+    ])
+  })
+
+  it('sends no glossary when asked not to (to measure the difference)', async () => {
+    const { deps, gateway } = setup({ 'job-p01.jpg': [readyJob('job-p01.jpg')], 'job-p02.jpg': [readyJob('job-p02.jpg')] })
+    deps.download = async () => new Blob([JSON.stringify({ terms: [{ source: 'Coriander', target: 'Coriander' }] })])
+    await runPipeline(
+      deps,
+      { chapters: [chapter('ch-a', [['p01.jpg'], ['p02.jpg']])], disclosureVersion: 'd1', sendGlossary: false },
+      () => undefined,
+    )
+    expect(vi.mocked(gateway.submitPage).mock.calls.map(([, , , , options]) => options.glossary)).toEqual([undefined, undefined])
+  })
+
   it('translates the pages of one chapter in reading order, one after another', async () => {
     const events: string[] = []
     const { deps } = setup(
