@@ -105,6 +105,13 @@ export function capabilityAcceptsMedia(
     );
 }
 
+/**
+ * How far the server's clock may run ahead of the device's. Capabilities are stamped with the server time; a device
+ * a few milliseconds behind saw a response fetched that very moment as "generated in the future" and refused it
+ * (found on the iOS simulator, 1 ms behind). Expiry stays strict.
+ */
+export const CLOCK_SKEW_TOLERANCE_MS = 120_000;
+
 export function capabilitiesAreUsable(capabilities: RemoteProcessingCapabilities, now = Date.now()): boolean {
-    return capabilities.enabled && Date.parse(capabilities.generatedAt) <= now && Date.parse(capabilities.validUntil) > now;
+    return capabilities.enabled && Date.parse(capabilities.generatedAt) <= now + CLOCK_SKEW_TOLERANCE_MS && Date.parse(capabilities.validUntil) > now;
 }

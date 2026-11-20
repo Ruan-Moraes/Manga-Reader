@@ -36,6 +36,9 @@ describe('MOB-FEAT-017 remote processing capabilities', () => {
 
         expect(capabilitiesAreUsable(parsed, Date.parse('2026-09-02T12:01:00.000Z'))).toBe(true);
         expect(capabilitiesAreUsable(parsed, Date.parse('2026-09-02T12:06:00.000Z'))).toBe(false);
+        // A device clock slightly behind the server still accepts what it just fetched; expiry stays strict.
+        expect(capabilitiesAreUsable(parsed, Date.parse('2026-09-02T11:59:59.999Z'))).toBe(true);
+        expect(capabilitiesAreUsable(parsed, Date.parse('2026-09-02T11:57:00.000Z'))).toBe(false);
         expect(capabilitySupportsPair(parsed, 'ja', 'pt-BR')).toBe(true);
         expect(capabilitySupportsPair(parsed, 'pt-BR', 'ja')).toBe(false);
         expect(capabilityAcceptsMedia(parsed, { mimeType: 'image/jpeg', byteSize: 100, widthPx: 100, heightPx: 200 })).toBe(true);
