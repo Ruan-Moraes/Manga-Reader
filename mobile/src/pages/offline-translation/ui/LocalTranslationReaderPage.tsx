@@ -12,7 +12,7 @@ import {
 } from '@/features/local-translation';
 import { useSettingsStore } from '@/features/manage-settings';
 import { navigateBackOrReplace, ROUTES } from '@/shared/navigation';
-import { Button, EmptyState, PageContainer, StatusMessage } from '@/shared/ui';
+import { Button, EmptyState, PageContainer, StatusMessage, Toast } from '@/shared/ui';
 import { ContentReader, type ImageSequenceDocument, type ReaderLocation } from '@/widgets/content-reader';
 
 /** How often a partially translated project looks for newly saved pages. */
@@ -245,6 +245,45 @@ export function LocalTranslationReaderPage({
                     },
                 ]}
             />
+            <TranslationProgressToast ready={snapshot.results.size} total={snapshot.project.pages.length} />
         </View>
+    );
+}
+
+/**
+ * While a project is still being translated, the app's toast says so with the count of ready pages; it may be
+ * dismissed, and when the last page arrives it turns into "translation ready" and leaves by itself (MOB-FEAT-024).
+ */
+function TranslationProgressToast({ ready, total }: { ready: number; total: number }) {
+    const { t } = useTranslation('reader');
+    const [dismissed, setDismissed] = useState(false);
+    const [done, setDone] = useState<'hidden' | 'shown' | 'gone'>('hidden');
+    const wasPartial = useRef(false);
+    if (ready < total) wasPartial.current = true;
+    useEffect(() => {
+        if (ready >= total && wasPartial.current && done === 'hidden') setDone('shown');
+    }, [done, ready, total]);
+
+    if (ready < total && !dismissed) {
+        return (
+            <Toast
+                testID="translation-progress-toast"
+                icon="progress"
+                title={t('translationProgress.title')}
+                description={t('translationProgress.description', { ready, total })}
+                duration={0}
+                onDismiss={() => setDismissed(true)}
+            />
+        );
+    }
+    if (done !== 'shown') return null;
+    return (
+        <Toast
+            testID="translation-done-toast"
+            tone="success"
+            title={t('translationProgress.doneTitle')}
+            description={t('translationProgress.doneDescription', { total })}
+            onDismiss={() => setDone('gone')}
+        />
     );
 }

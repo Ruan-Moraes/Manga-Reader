@@ -4263,7 +4263,7 @@
         {
             "path": "src/shared/ui/index.ts",
             "category": "behavior",
-            "specs": ["MOB-FEAT-003", "MOB-FEAT-011", "MOB-FEAT-031", "MOB-FEAT-033", "MOB-FEAT-043", "MOB-FEAT-045"],
+            "specs": ["MOB-FEAT-003", "MOB-FEAT-011", "MOB-FEAT-031", "MOB-FEAT-033", "MOB-FEAT-043", "MOB-FEAT-045", "MOB-FEAT-024"],
             "observations": [
                 "MOB-FEAT-003/AC-006",
                 "MOB-FEAT-003/AC-010",
@@ -4271,7 +4271,8 @@
                 "MOB-FEAT-031/AC-001",
                 "MOB-FEAT-033/AC-003",
                 "MOB-FEAT-043/AC-007",
-                "MOB-FEAT-045/AC-005"
+                "MOB-FEAT-045/AC-005",
+                "MOB-FEAT-024/AC-001"
             ]
         },
         {
@@ -5744,7 +5745,7 @@
         {
             "path": "src/pages/offline-translation/ui/__tests__/LocalTranslationReaderPage.test.tsx",
             "category": "evidence",
-            "specs": ["MOB-FEAT-026", "MOB-FEAT-050", "MOB-FEAT-051", "MOB-FEAT-052", "MOB-FEAT-022"],
+            "specs": ["MOB-FEAT-026", "MOB-FEAT-050", "MOB-FEAT-051", "MOB-FEAT-052", "MOB-FEAT-022", "MOB-FEAT-024"],
             "observations": [
                 "MOB-FEAT-026/AC-001",
                 "MOB-FEAT-026/AC-002",
@@ -5753,7 +5754,8 @@
                 "MOB-FEAT-051/AC-003",
                 "MOB-FEAT-051/AC-005",
                 "MOB-FEAT-052/AC-004",
-                "MOB-FEAT-022/AC-006"
+                "MOB-FEAT-022/AC-006",
+                "MOB-FEAT-024/AC-001"
             ]
         },
         {
@@ -6091,6 +6093,18 @@
             "category": "evidence",
             "specs": ["MOB-FEAT-024"],
             "observations": ["MOB-FEAT-024/AC-001", "MOB-FEAT-024/AC-002"]
+        },
+        {
+            "path": "src/shared/ui/Toast.tsx",
+            "category": "behavior",
+            "specs": ["MOB-FEAT-024"],
+            "observations": ["MOB-FEAT-024/AC-001"]
+        },
+        {
+            "path": "src/shared/ui/__tests__/Toast.test.tsx",
+            "category": "evidence",
+            "specs": ["MOB-FEAT-024"],
+            "observations": ["MOB-FEAT-024/AC-001"]
         }
     ]
 }

@@ -50,21 +50,9 @@ describe('MOB-FEAT-024 translation progress on a page', () => {
         jest.mocked(useReducedMotion).mockReturnValue(false);
     });
 
-    it.each([
-        ['pt-BR', 'Traduzindo…'],
-        ['en-US', 'Translating…'],
-        ['es-ES', 'Traduciendo…'],
-    ])('AC-001: a page still being translated shows its original with a badge in %s, gone once translated', async (locale, label) => {
-        await i18n.changeLanguage(locale);
-        const view = render(surface(pending));
-        expect(screen.getByTestId('reader-translating-badge')).toBeOnTheScreen();
-        expect(screen.getByLabelText(label)).toBeOnTheScreen();
-        view.rerender(surface(translated));
-        expect(screen.queryByTestId('reader-translating-badge')).toBeNull();
-    });
-
-    it('AC-001: "see original" never shows the badge', () => {
-        render(surface(pending, true));
+    it('AC-001: a page still being translated shows its original with no badge over the image', () => {
+        render(surface(pending));
+        expect(imageOf('file:///original.jpg')).toBeTruthy();
         expect(screen.queryByTestId('reader-translating-badge')).toBeNull();
     });
 

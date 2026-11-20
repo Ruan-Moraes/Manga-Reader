@@ -145,6 +145,9 @@ describe('MOB-FEAT-022/AC-006 a project still being translated', () => {
                 </SafeAreaProvider>,
             );
             expect(await screen.findAllByText('Tradução simulada')).toHaveLength(1);
+            // MOB-FEAT-024/AC-001: the app's toast says the project is still being translated.
+            expect(screen.getByTestId('translation-progress-toast')).toBeOnTheScreen();
+            expect(screen.getByText('1 de 2 páginas prontas')).toBeOnTheScreen();
             const list = screen.getByTestId('reader-vertical');
             await act(async () => {
                 list.props.onViewableItemsChanged({ viewableItems: [{ item: list.props.data[1], index: 1, isViewable: true }] });
@@ -154,7 +157,64 @@ describe('MOB-FEAT-022/AC-006 a project still being translated', () => {
 
             // The reader refreshes a partial project every 4 s.
             await waitFor(() => expect(screen.getAllByText('Tradução simulada')).toHaveLength(2), { timeout: 7000 });
+            // The last page arrived: the toast turns into "translation ready".
+            expect(screen.queryByTestId('translation-progress-toast')).toBeNull();
+            expect(screen.getByTestId('translation-done-toast')).toBeOnTheScreen();
+            expect(screen.getByText('Tradução pronta')).toBeOnTheScreen();
             rendered.unmount();
         }
     }, 15000);
+
+    it.each([
+        ['pt-BR', 'Traduzindo…', '1 de 2 páginas prontas', 'Dispensar'],
+        ['en-US', 'Translating…', '1 of 2 pages ready', 'Dismiss'],
+        ['es-ES', 'Traduciendo…', '1 de 2 páginas listas', 'Descartar'],
+    ])('MOB-FEAT-024/AC-001: the translating toast reads in %s and can be dismissed', async (locale, title, description, dismiss) => {
+        await i18n.changeLanguage(locale);
+        const partial: LocalTranslationReaderSnapshot = {
+            ...snapshot,
+            project: { ...snapshot.project, status: 'PROCESSING' },
+            results: new Map([['page-0', snapshot.results.get('page-0')!]]),
+        };
+        const open: OpenLocalTranslationResultController = {
+            load: jest.fn().mockResolvedValue(partial),
+            validate: jest.fn().mockResolvedValue(true),
+            resultUri: jest.fn((_, result) => `file:///${result.renderedFilename}`),
+            originalUri: jest.fn((_, position) => `file:///original-${position}.jpg`),
+        };
+        const progress: TrackLocalReadingProgressController = { load: jest.fn(), save: jest.fn().mockResolvedValue(undefined) };
+        const rendered = render(
+            <SafeAreaProvider initialMetrics={{ frame: { x: 0, y: 0, width: 390, height: 844 }, insets: { top: 0, left: 0, right: 0, bottom: 0 } }}>
+                <ThemeProvider waitForPlatform={false}>
+                    <LocalTranslationReaderPage projectId="project-1" openController={open} progressController={progress} />
+                </ThemeProvider>
+            </SafeAreaProvider>,
+        );
+        expect(await screen.findByText(title)).toBeOnTheScreen();
+        expect(screen.getByText(description)).toBeOnTheScreen();
+        fireEvent.press(screen.getByLabelText(dismiss));
+        expect(screen.queryByTestId('translation-progress-toast')).toBeNull();
+        rendered.unmount();
+    });
+
+    it('MOB-FEAT-024/AC-001: a project opened already complete shows no toast', async () => {
+        const open: OpenLocalTranslationResultController = {
+            load: jest.fn().mockResolvedValue(snapshot),
+            validate: jest.fn().mockResolvedValue(true),
+            resultUri: jest.fn((_, result) => `file:///${result.renderedFilename}`),
+            originalUri: jest.fn((_, position) => `file:///original-${position}.jpg`),
+        };
+        const progress: TrackLocalReadingProgressController = { load: jest.fn(), save: jest.fn().mockResolvedValue(undefined) };
+        const rendered = render(
+            <SafeAreaProvider initialMetrics={{ frame: { x: 0, y: 0, width: 390, height: 844 }, insets: { top: 0, left: 0, right: 0, bottom: 0 } }}>
+                <ThemeProvider waitForPlatform={false}>
+                    <LocalTranslationReaderPage projectId="project-1" openController={open} progressController={progress} />
+                </ThemeProvider>
+            </SafeAreaProvider>,
+        );
+        expect(await screen.findAllByText('Tradução simulada')).not.toHaveLength(0);
+        expect(screen.queryByTestId('translation-progress-toast')).toBeNull();
+        expect(screen.queryByTestId('translation-done-toast')).toBeNull();
+        rendered.unmount();
+    });
 });

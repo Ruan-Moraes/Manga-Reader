@@ -288,5 +288,6 @@
             "error": "No se pudo sincronizar. Tu elección sigue activa en este dispositivo.",
             "retry": "Intentar de nuevo"
         }
-    }
+    },
+    "toast": { "dismiss": "Descartar" }
 }

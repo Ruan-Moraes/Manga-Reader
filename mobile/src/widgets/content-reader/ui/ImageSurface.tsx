@@ -47,38 +47,6 @@ function DemoOverlays({ item }: { item: ImageReaderItem }) {
     });
 }
 
-/** A page still being translated: its original shows with this badge until the translation arrives. */
-function TranslatingBadge() {
-    const { t } = useTranslation('reader');
-    const { tokens, spacing, radii, typography } = useTheme();
-    return (
-        <View
-            testID="reader-translating-badge"
-            accessible
-            accessibilityRole="text"
-            accessibilityLabel={t('viewport.translating')}
-            pointerEvents="none"
-            style={{
-                position: 'absolute',
-                top: spacing.sm,
-                alignSelf: 'center',
-                flexDirection: 'row',
-                alignItems: 'center',
-                gap: spacing.xs,
-                paddingHorizontal: spacing.sm,
-                paddingVertical: spacing.xs,
-                borderRadius: radii.pill,
-                backgroundColor: tokens.surface,
-                borderColor: tokens.separator,
-                borderWidth: 1,
-            }}
-        >
-            <ActivityIndicator size="small" color={tokens.accentText} />
-            <Text style={{ color: tokens.text, fontSize: typography.small }}>{t('viewport.translating')}</Text>
-        </View>
-    );
-}
-
 interface ImageSurfaceProps {
     item: ImageReaderItem;
     height: number;
@@ -209,7 +177,6 @@ function ImageVariant({
                         </View>
                     ) : null}
                     {!showOriginal && showDemoOverlay ? <DemoOverlays item={item} /> : null}
-                    {item.pending && !showOriginal ? <TranslatingBadge /> : null}
                 </Animated.View>
             )}
         </View>

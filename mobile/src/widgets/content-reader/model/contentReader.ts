@@ -29,7 +29,7 @@ export interface ImageReaderItem {
     width: number;
     height: number;
     demoOverlays?: readonly ReaderDemoOverlay[];
-    /** Still being translated: the original shows with a "translating" badge until the translation arrives. */
+    /** Still being translated: the original shows until the translation arrives and fades in over it. */
     pending?: boolean;
 }
 

@@ -30,12 +30,14 @@ projeto está.
 
 ## Requisitos e regras
 
-- **Selo "Traduzindo":**
-    - num projeto que ainda tem páginas sem resultado, cada uma delas mostra o original com um selo discreto
-      "Traduzindo…" sobre a imagem;
-    - o selo usa tokens de tema e tem rótulo acessível;
-    - o selo some quando a tradução chega;
-    - em "Ver original", o selo não aparece.
+- **Toast "Traduzindo":**
+    - num projeto que ainda tem páginas sem resultado, o leitor mostra um toast no padrão do app (o mesmo do web,
+      `web/apps/toonlira/src/shared/ui/toast`: colado no canto inferior direito da tela, até 360 de largura,
+      superfície com borda, filete colorido à esquerda conforme o tom, ícone num quadrado tonal, título em negrito,
+      descrição e botão de dispensar) com "Traduzindo…" e "X de N páginas prontas";
+    - o toast fica enquanto faltarem páginas, a não ser que a pessoa o dispense;
+    - quando todas as páginas ficam prontas, ele vira "Tradução pronta" e some sozinho em cerca de 4 s;
+    - as páginas ainda em tradução mostram o original, sem selo sobre a imagem.
 - **Fade:**
     - quando a tradução de uma página chega e substitui o original, a imagem traduzida entra por cima do original
       com um fade de opacidade de 0 a 1 em cerca de 300 ms, começando só depois que ela carregou;
@@ -56,10 +58,10 @@ projeto está.
 
 ## Critérios de aceite
 
-### AC-001 — Selo na página ainda em tradução
+### AC-001 — Toast de tradução em andamento
 
-Num projeto parcial, a página sem resultado mostra o original e o selo "Traduzindo…", e o selo some quando o
-resultado chega.
+Num projeto parcial, o leitor mostra o toast "Traduzindo…" com a contagem de páginas prontas; ele pode ser
+dispensado e vira "Tradução pronta" quando a última página chega.
 
 ### AC-002 — Fade ao substituir o original
 
@@ -75,7 +77,7 @@ idiomas.
 
 | Critério | Teste/evidência esperada                               |
 | -------- | ------------------------------------------------------ |
-| AC-001   | RNTL do leitor com projeto parcial                     |
+| AC-001   | RNTL do toast e do leitor com projeto parcial          |
 | AC-002   | RNTL do `ImageSurface` (animação e movimento reduzido) |
 | AC-003   | RNTL da página nos três locales e estados              |
 
@@ -94,4 +96,7 @@ idiomas.
 - Aprovador: Ruan Moraes
 - Data: 2026-11-20
 
-Aprovada no chat ("Aprovo a 024"), depois do resumo dos três itens.
+Aprovada no chat ("Aprovo a 024"), depois do resumo dos três itens. Em 2026-11-20, Ruan pediu que o "Traduzindo"
+fosse um toast igual aos do app ("Gostaria que o traduzindo fosse um toast, igual aos toast da aplicação"), o que
+substituiu o selo sobre a página. Ele esclareceu que é a barra de notificação colada no lado direito da tela, a do
+web; o mobile não tinha toast, então o componente foi portado para `shared/ui/Toast`.

@@ -123,8 +123,7 @@
         "originalPage": "Página original",
         "resultPage": "Página traducida",
         "chapter": "Capítulo {{chapter}}",
-        "progress": "Progreso de lectura",
-        "translating": "Traduciendo…"
+        "progress": "Progreso de lectura"
     },
     "gestures": {
         "title": "Gestos del lector",
@@ -193,5 +192,11 @@
             "appearance": "Apariencia",
             "gestures": "Gestos"
         }
+    },
+    "translationProgress": {
+        "title": "Traduciendo…",
+        "description": "{{ready}} de {{total}} páginas listas",
+        "doneTitle": "Traducción lista",
+        "doneDescription": "Las {{total}} páginas se tradujeron."
     }
 }
