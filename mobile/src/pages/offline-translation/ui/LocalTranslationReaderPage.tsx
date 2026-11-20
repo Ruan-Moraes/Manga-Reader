@@ -15,6 +15,9 @@ import { navigateBackOrReplace, ROUTES } from '@/shared/navigation';
 import { Button, EmptyState, PageContainer, StatusMessage } from '@/shared/ui';
 import { ContentReader, type ImageSequenceDocument, type ReaderLocation } from '@/widgets/content-reader';
 
+/** How often a partially translated project looks for newly saved pages. */
+const PARTIAL_REFRESH_MS = 4000;
+
 interface Props {
     projectId: string;
     openController?: OpenLocalTranslationResultController;
@@ -54,6 +57,31 @@ export function LocalTranslationReaderPage({
             active = false;
         };
     }, [openController, projectId]);
+
+    // A project still being translated (MOB-FEAT-022) opens with its ready pages; the others show their original and
+    // switch to the translation as soon as it is saved. Only the results are refreshed: the reading position stays.
+    const translating = snapshot ? snapshot.project.pages.some(page => !snapshot.results.has(page.id)) : false;
+    useEffect(() => {
+        if (!translating) return undefined;
+        let active = true;
+        const timer = setInterval(() => {
+            void openController
+                .load(projectId)
+                .then(result => {
+                    if (active && result)
+                        setSnapshot(current =>
+                            current && result.results.size !== current.results.size
+                                ? { ...current, project: result.project, results: result.results }
+                                : current,
+                        );
+                })
+                .catch(() => undefined);
+        }, PARTIAL_REFRESH_MS);
+        return () => {
+            active = false;
+            clearInterval(timer);
+        };
+    }, [openController, projectId, translating]);
 
     const flush = useCallback(() => {
         if (!snapshot) return;
@@ -137,7 +165,8 @@ export function LocalTranslationReaderPage({
 
             const result = snapshot.results.get(itemId);
 
-            return result ? openController.validate(snapshot.project.id, result) : false;
+            // A page not translated yet shows its original, validated when it was imported: nothing to check here.
+            return result ? openController.validate(snapshot.project.id, result) : true;
         },
         [openController, snapshot],
     );

@@ -117,3 +117,44 @@ describe('MOB-FEAT-051/AC-003/005 local reader page integration', () => {
         rendered.unmount();
     });
 });
+
+describe('MOB-FEAT-022/AC-006 a project still being translated', () => {
+    beforeEach(() => i18n.changeLanguage('pt-BR'));
+
+    it('shows a page not translated yet as its original, never as an error, and switches to the translation once saved', async () => {
+        {
+            const first = snapshot.results.get('page-0')!;
+            const partial: LocalTranslationReaderSnapshot = {
+                ...snapshot,
+                project: { ...snapshot.project, status: 'PROCESSING' },
+                results: new Map([['page-0', first]]),
+            };
+            const load = jest.fn().mockResolvedValueOnce(partial).mockResolvedValue(snapshot);
+            const open: OpenLocalTranslationResultController = {
+                load,
+                validate: jest.fn().mockResolvedValue(true),
+                resultUri: jest.fn((_, result) => `file:///${result.renderedFilename}`),
+                originalUri: jest.fn((_, position) => `file:///original-${position}.jpg`),
+            };
+            const progress: TrackLocalReadingProgressController = { load: jest.fn(), save: jest.fn().mockResolvedValue(undefined) };
+            const rendered = render(
+                <SafeAreaProvider initialMetrics={{ frame: { x: 0, y: 0, width: 390, height: 844 }, insets: { top: 0, left: 0, right: 0, bottom: 0 } }}>
+                    <ThemeProvider waitForPlatform={false}>
+                        <LocalTranslationReaderPage projectId="project-1" openController={open} progressController={progress} />
+                    </ThemeProvider>
+                </SafeAreaProvider>,
+            );
+            expect(await screen.findAllByText('Tradução simulada')).toHaveLength(1);
+            const list = screen.getByTestId('reader-vertical');
+            await act(async () => {
+                list.props.onViewableItemsChanged({ viewableItems: [{ item: list.props.data[1], index: 1, isViewable: true }] });
+            });
+            expect(screen.queryByTestId('reader-page-error-page-1')).toBeNull();
+            expect(open.validate).not.toHaveBeenCalledWith('project-1', expect.objectContaining({ pageId: 'page-1' }));
+
+            // The reader refreshes a partial project every 4 s.
+            await waitFor(() => expect(screen.getAllByText('Tradução simulada')).toHaveLength(2), { timeout: 7000 });
+            rendered.unmount();
+        }
+    }, 15000);
+});
