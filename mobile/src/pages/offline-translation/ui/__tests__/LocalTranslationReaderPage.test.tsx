@@ -148,6 +148,8 @@ describe('MOB-FEAT-022/AC-006 a project still being translated', () => {
             // MOB-FEAT-024/AC-001: the app's toast says the project is still being translated.
             expect(screen.getByTestId('translation-progress-toast')).toBeOnTheScreen();
             expect(screen.getByText('1 de 2 páginas prontas')).toBeOnTheScreen();
+            const dock = screen.getByTestId('translation-progress-toast-dock');
+            expect(Object.assign({}, ...[dock.props.style].flat())).toMatchObject({ top: expect.any(Number), right: expect.any(Number) });
             const list = screen.getByTestId('reader-vertical');
             await act(async () => {
                 list.props.onViewableItemsChanged({ viewableItems: [{ item: list.props.data[1], index: 1, isViewable: true }] });

@@ -34,4 +34,4 @@ export { StepperControl } from './StepperControl';
 export { StickyActionBar } from './StickyActionBar';
 export { SwatchPicker } from './SwatchPicker';
 export { SwitchRow } from './SwitchRow';
-export { Toast, type ToastTone } from './Toast';
+export { Toast, type ToastPosition, type ToastTone } from './Toast';

@@ -34,13 +34,15 @@ O que falta:
 
 ### Toast no simulador iOS (2026-11-20, commit f981c0c8)
 
-Mesmo ambiente, projeto novo de 4 páginas, enviado pelo app:
+Mesmo ambiente, projeto novo de 4 páginas, enviado pelo app (primeiro no canto inferior):
 
 - Com 3 de 4 páginas prontas, o leitor mostrou o toast no canto inferior direito, acima da área segura:
   spinner, "Traduzindo…", "3 de 4 páginas prontas" e o botão "Dispensar". A página sem tradução mostrava o original,
   sem selo.
 - Quando a última página chegou, o toast virou "Tradução pronta" / "Todas as 4 páginas foram traduzidas." e saiu da
   árvore de acessibilidade segundos depois.
+- A pedido do Ruan, o toast passou para o canto superior direito (`position="top"`). No simulador, com 3 de 4 páginas
+  prontas, ele apareceu colado à direita, logo abaixo da barra de status.
 - Observação: o Metro precisou de `--clear`; sem isso o simulador rodou um bundle antigo, ainda com o selo.
 
 ## Critérios e evidências

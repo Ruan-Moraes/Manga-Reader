@@ -31,10 +31,11 @@ projeto está.
 ## Requisitos e regras
 
 - **Toast "Traduzindo":**
-    - num projeto que ainda tem páginas sem resultado, o leitor mostra um toast no padrão do app (o mesmo do web,
-      `web/apps/toonlira/src/shared/ui/toast`: colado no canto inferior direito da tela, até 360 de largura,
-      superfície com borda, filete colorido à esquerda conforme o tom, ícone num quadrado tonal, título em negrito,
-      descrição e botão de dispensar) com "Traduzindo…" e "X de N páginas prontas";
+    - num projeto que ainda tem páginas sem resultado, o leitor mostra o toast do app, o mesmo do web
+      (`web/apps/toonlira/src/shared/ui/toast`), com "Traduzindo…" e "X de N páginas prontas";
+    - o toast fica colado no canto superior direito da tela, abaixo da área segura (`position: top` do web), com até
+      360 de largura: superfície com borda, filete colorido à esquerda conforme o tom, ícone num quadrado tonal,
+      título em negrito, descrição e botão de dispensar;
     - o toast fica enquanto faltarem páginas, a não ser que a pessoa o dispense;
     - quando todas as páginas ficam prontas, ele vira "Tradução pronta" e some sozinho em cerca de 4 s;
     - as páginas ainda em tradução mostram o original, sem selo sobre a imagem.
@@ -99,4 +100,5 @@ idiomas.
 Aprovada no chat ("Aprovo a 024"), depois do resumo dos três itens. Em 2026-11-20, Ruan pediu que o "Traduzindo"
 fosse um toast igual aos do app ("Gostaria que o traduzindo fosse um toast, igual aos toast da aplicação"), o que
 substituiu o selo sobre a página. Ele esclareceu que é a barra de notificação colada no lado direito da tela, a do
-web; o mobile não tinha toast, então o componente foi portado para `shared/ui/Toast`.
+web; o mobile não tinha toast, então o componente foi portado para `shared/ui/Toast`. Depois de vê-lo no simulador,
+pediu o canto superior direito ("Coloque na parte do topo direito. Colado do lado direito.").

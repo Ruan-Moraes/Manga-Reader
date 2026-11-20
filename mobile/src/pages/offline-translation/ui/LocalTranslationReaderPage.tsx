@@ -268,6 +268,7 @@ function TranslationProgressToast({ ready, total }: { ready: number; total: numb
         return (
             <Toast
                 testID="translation-progress-toast"
+                position="top"
                 icon="progress"
                 title={t('translationProgress.title')}
                 description={t('translationProgress.description', { ready, total })}
@@ -280,6 +281,7 @@ function TranslationProgressToast({ ready, total }: { ready: number; total: numb
     return (
         <Toast
             testID="translation-done-toast"
+            position="top"
             tone="success"
             title={t('translationProgress.doneTitle')}
             description={t('translationProgress.doneDescription', { total })}

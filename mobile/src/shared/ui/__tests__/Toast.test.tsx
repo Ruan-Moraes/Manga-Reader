@@ -33,6 +33,14 @@ describe('MOB-FEAT-024 app toast (port of the web toast)', () => {
         expect(screen.getByText('Descrição')).toBeOnTheScreen();
     });
 
+    it('with position top docks to the top right, below the safe area', () => {
+        render(toast({ position: 'top' }));
+        const dock = screen.getByTestId('toast-dock');
+        const style = Array.isArray(dock.props.style) ? Object.assign({}, ...dock.props.style) : dock.props.style;
+        expect(style).toMatchObject({ position: 'absolute', right: 16, top: 16 });
+        expect(style.bottom).toBeUndefined();
+    });
+
     it('dismisses itself after its duration, and through the dismiss button', () => {
         jest.useFakeTimers();
         try {

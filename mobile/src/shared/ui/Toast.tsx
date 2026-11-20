@@ -10,6 +10,8 @@ import { AppText } from './AppText';
 import { Icon, type IconName } from './Icon';
 
 export type ToastTone = 'accent' | 'success' | 'danger' | 'neutral';
+/** Corner of the screen, as the web toast's `position`: always on the right. */
+export type ToastPosition = 'top' | 'bottom';
 
 interface ToastProps {
     tone?: ToastTone;
@@ -19,6 +21,8 @@ interface ToastProps {
     icon?: IconName | 'progress';
     /** Auto-dismiss after this many ms; 0 keeps it until dismissed. */
     duration?: number;
+    /** Top right or bottom right of the screen (default bottom, as on the web). */
+    position?: ToastPosition;
     onDismiss?(): void;
     testID?: string;
 }
@@ -28,11 +32,11 @@ const TOAST_WIDTH = 360;
 const DEFAULT_ICON: Record<ToastTone, IconName> = { accent: 'checkmark', success: 'checkmark', danger: 'warning', neutral: 'information' };
 
 /**
- * The web app's toast (`shared/ui/toast` in web/apps/toonlira) on mobile: docked to the bottom right of the screen,
+ * The web app's toast (`shared/ui/toast` in web/apps/toonlira) on mobile: docked to the top or bottom right of the screen,
  * a surface card with a tone-coloured left edge, an icon in a tonal square, a bold title, an optional description and
  * a dismiss button. It slides in (immediately with Reduce Motion) and, with a duration, dismisses itself.
  */
-export function Toast({ tone = 'neutral', title, description, icon, duration = 4000, onDismiss, testID = 'toast' }: ToastProps) {
+export function Toast({ tone = 'neutral', title, description, icon, duration = 4000, position = 'bottom', onDismiss, testID = 'toast' }: ToastProps) {
     const { t } = useTranslation('common');
     const { tokens, spacing, radii, typography } = useTheme();
     const insets = useSafeAreaInsets();
@@ -69,7 +73,7 @@ export function Toast({ tone = 'neutral', title, description, icon, duration = 4
             style={{
                 position: 'absolute',
                 right: insets.right + spacing.md,
-                bottom: insets.bottom + spacing.md,
+                ...(position === 'top' ? { top: insets.top + spacing.md } : { bottom: insets.bottom + spacing.md }),
                 width: Math.min(TOAST_WIDTH, width - insets.left - insets.right - spacing.md * 2),
             }}
         >
