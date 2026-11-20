@@ -286,7 +286,20 @@ export function createStartRemoteProcessingController(dependencies: Dependencies
         refresh() {
             return snapshot(dependencies, known, null);
         },
-        async acceptConsent(projectId, capabilities, locale) {
+        async acceptConsent(projectId, shown, locale) {
+            // The disclosure may have been on screen longer than the capabilities stay valid (5 min): validate against
+            // fresh ones, and record the consent only for the disclosure the user actually read.
+            const capabilities = capabilitiesAreUsable(shown, dependencies.now())
+                ? shown
+                : remember({
+                      project: null,
+                      capabilities: (await loadCapabilities(dependencies)).capabilities,
+                      attempt: null,
+                      error: null,
+                      pages: [],
+                      pausedUntil: null,
+                  }).capabilities!;
+            if (capabilities.disclosure.version !== shown.disclosure.version) throw new Error('consent-required');
             const project = await dependencies.projects.getById(projectId);
             const first = project ? [...project.pages].sort((left, right) => left.position - right.position).find(page => page.status === 'DRAFT') : undefined;
             validatePage(project, first, capabilities, dependencies.now());

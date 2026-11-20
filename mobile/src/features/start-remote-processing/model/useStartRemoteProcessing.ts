@@ -34,6 +34,11 @@ export function useStartRemoteProcessing(controller: StartRemoteProcessingContro
         try {
             await controller.acceptConsent(state.project.id, state.capabilities, getCurrentLanguage());
             setState(await controller.submit(state.project.id));
+        } catch (error) {
+            // Never a silent failure: reload the state with fresh capabilities and show why nothing was sent.
+            const code = error instanceof Error && error.message === 'consent-required' ? 'consent-required' : null;
+            const reloaded = await controller.initialize();
+            setState(code ? { ...reloaded, error: code } : reloaded);
         } finally {
             setBusy(false);
         }

@@ -433,6 +433,21 @@ describe('MOB-FEAT-017 start remote processing', () => {
         expect(fixture.upload).not.toHaveBeenCalled();
     });
 
+    it('accepts a disclosure left on screen past the capabilities validity, against fresh capabilities of the same version', async () => {
+        const fixture = setup();
+        const shown = { ...capabilities(), validUntil: '2026-09-02T11:00:00.000Z' };
+        await fixture.controller.acceptConsent(project.id, shown as never, 'pt-BR');
+        expect(fixture.transport.request).toHaveBeenCalledWith('/v1/capabilities', expect.anything());
+        expect(fixture.attempts.saveConsent).toHaveBeenCalledWith(expect.objectContaining({ disclosureVersion: 'legal-v1' }));
+    });
+
+    it('never records consent for a disclosure that changed while it was on screen', async () => {
+        const fixture = setup();
+        const shown = { ...capabilities(), validUntil: '2026-09-02T11:00:00.000Z', disclosure: { ...capabilities().disclosure, version: 'legal-v0' } };
+        await expect(fixture.controller.acceptConsent(project.id, shown as never, 'pt-BR')).rejects.toThrow('consent-required');
+        expect(fixture.attempts.saveConsent).not.toHaveBeenCalled();
+    });
+
     it('coalesces overlapping recovery polls, replays once, and allows a later fresh poll', async () => {
         const fixture = setup();
         const unknown = { ...created, status: 'UNKNOWN' as const };
