@@ -2,7 +2,7 @@
 id: MOB-FEAT-023
 type: feature
 title: Glossário do capítulo guardado no aparelho
-status: in-progress
+status: verification-pending
 implementation_gate: open
 blocked_by: [MOB-FEAT-022]
 created: 2026-11-20

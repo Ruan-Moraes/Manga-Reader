@@ -21,7 +21,7 @@
       transação, valendo a primeira decisão.
 - [x] TASK-003 — Submissão e reenvio levam `glossary` quando o projeto tem termos.
 - [x] TASK-004 — Texto de dados enviados no consentimento cita os nomes já traduzidos, nos três idiomas.
-- [ ] TASK-005 — Gates focados, `coverage.json`, review e drift.
+- [x] TASK-005 — Gates focados, `coverage.json`, review e drift.
 - [ ] TASK-006 — Verificação física Android e ponta a ponta com URLs assinadas reais (mesma pendência da 021/022).
 
 ## Riscos e bloqueios
