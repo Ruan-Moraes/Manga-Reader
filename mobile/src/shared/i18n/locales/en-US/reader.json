@@ -123,7 +123,8 @@
         "originalPage": "Original page",
         "resultPage": "Translated page",
         "chapter": "Chapter {{chapter}}",
-        "progress": "Reading progress"
+        "progress": "Reading progress",
+        "translating": "Translating…"
     },
     "gestures": {
         "title": "Reader gestures",

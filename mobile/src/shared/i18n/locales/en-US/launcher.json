@@ -57,7 +57,11 @@
                     "title": "Each image is a page.",
                     "description": "Choose every page in the chapter. You can adjust their order next."
                 },
-                "organize": { "eyebrow": "ORGANIZE PAGES", "title": "Set the reading order.", "description": "The sequence below will be the chapter order." },
+                "organize": {
+                    "eyebrow": "ORGANIZE PAGES",
+                    "title": "Set the reading order.",
+                    "description": "The sequence below will be the chapter order."
+                },
                 "languages": {
                     "eyebrow": "TRANSLATION LANGUAGES",
                     "title": "How do you want to read?",
@@ -173,8 +177,16 @@
             "validCount": "{{valid}} of {{total}} valid",
             "invalidCount": "{{count}} with an issue",
             "pageStatus": "Page {{page}}: {{status}}",
-            "status": { "PENDING": "pending", "VALID": "valid", "INVALID": "invalid" },
-            "badges": { "PENDING": "Validating", "VALID": "Ready", "INVALID": "Action needed" },
+            "status": {
+                "PENDING": "pending",
+                "VALID": "valid",
+                "INVALID": "invalid"
+            },
+            "badges": {
+                "PENDING": "Validating",
+                "VALID": "Ready",
+                "INVALID": "Action needed"
+            },
             "summaryReady": "{{valid}} of {{total}} ready",
             "summaryIssues": "{{valid}} ready · {{invalid}} with an issue",
             "pendingCount_one": "1 page is waiting for validation",
@@ -200,7 +212,10 @@
             "close": "Close",
             "previewUnavailable": "Preview unavailable",
             "previewLabel": "Preview of page {{page}}",
-            "issueOrigin": { "local": "Source: uploaded file · checked on this device", "processing": "Source: processing result" },
+            "issueOrigin": {
+                "local": "Source: uploaded file · checked on this device",
+                "processing": "Source: processing result"
+            },
             "issueMessages": {
                 "MISSING_FILE": "This page's file is no longer available.",
                 "EMPTY_FILE": "The file is empty and cannot be processed.",
@@ -240,8 +255,6 @@
         "project": {
             "loading": "Loading the local project…",
             "action": "Prepare project",
-            "preparedTitle": "Project prepared on this device",
-            "preparedDescription": "The pages are protected locally. Processing has not started yet.",
             "summary_one": "{{count}} page · {{source}} → {{target}} · {{status}}",
             "summary_other": "{{count}} pages · {{source}} → {{target}} · {{status}}",
             "status": {
@@ -258,6 +271,28 @@
                 "file-copy-failed": "The app could not protect every project file.",
                 "storage-unavailable": "The project could not be saved on this device.",
                 "project-conflict": "A different project already uses this identity. Your data was preserved."
+            },
+            "card": {
+                "DRAFT": {
+                    "title": "Project prepared on this device",
+                    "description": "The pages are stored privately on this device. Processing has not started yet."
+                },
+                "inProgress": {
+                    "title": "Translation in progress",
+                    "description": "The pages are stored privately on this device. Pages that are ready can already be read."
+                },
+                "READY": {
+                    "title": "Translation ready",
+                    "description": "Every page has been translated and can be read without internet."
+                },
+                "FAILED": {
+                    "title": "Translation failed on some page",
+                    "description": "Ready pages remain available. Try the failed ones again."
+                },
+                "CANCELLED": {
+                    "title": "Translation cancelled",
+                    "description": "Ready pages remain available on this device."
+                }
             }
         }
     },

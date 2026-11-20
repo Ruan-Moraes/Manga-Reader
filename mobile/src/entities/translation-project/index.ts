@@ -8,4 +8,4 @@ export {
     type TranslationProjectRepository,
     translationProjectRepository,
 } from './api/translationProjectRepository';
-export { type NewTranslationProject, type TranslationProject } from './model/translationProject';
+export { type NewTranslationProject, type TranslationProject, type TranslationProjectStage, translationProjectStage } from './model/translationProject';

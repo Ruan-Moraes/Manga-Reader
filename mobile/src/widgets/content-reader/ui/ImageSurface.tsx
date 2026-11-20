@@ -1,7 +1,8 @@
-import { useState } from 'react';
-import { ActivityIndicator, Text, View } from 'react-native';
+import { useEffect, useRef, useState } from 'react';
+import { ActivityIndicator, Animated, Text, View } from 'react-native';
 import { Image } from 'expo-image';
 import { useTranslation } from 'react-i18next';
+import { useReducedMotion } from 'react-native-reanimated';
 
 import { lightTokens, useTheme } from '@/shared/theme';
 import { StatusMessage } from '@/shared/ui';
@@ -46,6 +47,38 @@ function DemoOverlays({ item }: { item: ImageReaderItem }) {
     });
 }
 
+/** A page still being translated: its original shows with this badge until the translation arrives. */
+function TranslatingBadge() {
+    const { t } = useTranslation('reader');
+    const { tokens, spacing, radii, typography } = useTheme();
+    return (
+        <View
+            testID="reader-translating-badge"
+            accessible
+            accessibilityRole="text"
+            accessibilityLabel={t('viewport.translating')}
+            pointerEvents="none"
+            style={{
+                position: 'absolute',
+                top: spacing.sm,
+                alignSelf: 'center',
+                flexDirection: 'row',
+                alignItems: 'center',
+                gap: spacing.xs,
+                paddingHorizontal: spacing.sm,
+                paddingVertical: spacing.xs,
+                borderRadius: radii.pill,
+                backgroundColor: tokens.surface,
+                borderColor: tokens.separator,
+                borderWidth: 1,
+            }}
+        >
+            <ActivityIndicator size="small" color={tokens.accentText} />
+            <Text style={{ color: tokens.text, fontSize: typography.small }}>{t('viewport.translating')}</Text>
+        </View>
+    );
+}
+
 interface ImageSurfaceProps {
     item: ImageReaderItem;
     height: number;
@@ -57,13 +90,74 @@ interface ImageSurfaceProps {
     onRetry(): void;
 }
 
+/** Duration of the fade that brings a page's translation in over its original (MOB-FEAT-024). */
+export const TRANSLATION_FADE_MS = 300;
+
 export function ImageSurface({ item, height, width, showOriginal, showDemoOverlay, integrity, saturation, onRetry }: ImageSurfaceProps) {
     const uri = showOriginal && item.originalUri ? item.originalUri : item.primaryUri;
+    // When the translation replaces the original being read, the original stays underneath while the translation
+    // fades in over it. Decided while rendering, so the first frame of the translation never shows an empty page.
+    const previous = useRef({ uri, pending: !!item.pending });
+    const [underlay, setUnderlay] = useState<string | null>(null);
+    if (previous.current.uri !== uri) {
+        const replacing = previous.current.pending && !item.pending && !showOriginal;
+        previous.current = { uri, pending: !!item.pending };
+        if (replacing !== (underlay !== null)) setUnderlay(replacing ? previousUri(item) : null);
+    } else if (previous.current.pending !== !!item.pending) {
+        previous.current = { uri, pending: !!item.pending };
+    }
     // Variant identity owns decode failures; switching variants cannot poison the other image.
-    return <ImageVariant key={uri} {...{ item, height, width, showOriginal, showDemoOverlay, integrity, saturation, onRetry, uri }} />;
+    return (
+        <View style={{ height, width }}>
+            {underlay ? (
+                <View
+                    testID={`reader-underlay-${item.id}`}
+                    pointerEvents="none"
+                    style={{ position: 'absolute', height, width, alignItems: 'center', justifyContent: 'center' }}
+                >
+                    <Image source={{ uri: underlay }} contentFit="contain" style={{ height, width }} />
+                </View>
+            ) : null}
+            <ImageVariant
+                key={uri}
+                {...{ item, height, width, showOriginal, showDemoOverlay, integrity, saturation, onRetry, uri }}
+                fadeIn={underlay !== null}
+                onFaded={() => setUnderlay(null)}
+            />
+        </View>
+    );
 }
 
-function ImageVariant({ item, height, width, showOriginal, showDemoOverlay, integrity, saturation, onRetry, uri }: ImageSurfaceProps & { uri: string }) {
+/** The original a page showed while it was being translated. */
+function previousUri(item: ImageReaderItem): string | null {
+    return item.originalUri ?? null;
+}
+
+function ImageVariant({
+    item,
+    height,
+    width,
+    showOriginal,
+    showDemoOverlay,
+    integrity,
+    saturation,
+    onRetry,
+    uri,
+    fadeIn,
+    onFaded,
+}: ImageSurfaceProps & { uri: string; fadeIn: boolean; onFaded(): void }) {
+    const reducedMotion = useReducedMotion();
+    const opacity = useRef(new Animated.Value(fadeIn ? 0 : 1)).current;
+    const reveal = () => {
+        if (!fadeIn) return;
+        if (reducedMotion) {
+            opacity.setValue(1);
+            onFaded();
+            return;
+        }
+        Animated.timing(opacity, { toValue: 1, duration: TRANSLATION_FADE_MS, useNativeDriver: true }).start(() => onFaded());
+    };
+    useEffect(() => () => opacity.stopAnimation(), [opacity]);
     const { t } = useTranslation('reader');
     const { tokens, spacing } = useTheme();
     const [state, setState] = useState<'loading' | 'ready' | 'error'>('loading');
@@ -94,14 +188,17 @@ function ImageVariant({ item, height, width, showOriginal, showDemoOverlay, inte
                     />
                 </View>
             ) : (
-                <View style={{ height: imageHeight, width: imageWidth }}>
+                <Animated.View testID={`reader-image-${item.id}`} style={{ height: imageHeight, width: imageWidth, opacity }}>
                     <View style={{ filter: [{ saturate: saturation / 100 }] }}>
                         <Image
                             key={attempt}
                             source={{ uri }}
                             contentFit="contain"
                             accessibilityLabel={t(showOriginal ? 'viewport.originalPage' : 'viewport.resultPage')}
-                            onLoad={() => setState('ready')}
+                            onLoad={() => {
+                                setState('ready');
+                                reveal();
+                            }}
                             onError={() => setState('error')}
                             style={{ height: imageHeight, width: imageWidth }}
                         />
@@ -112,7 +209,8 @@ function ImageVariant({ item, height, width, showOriginal, showDemoOverlay, inte
                         </View>
                     ) : null}
                     {!showOriginal && showDemoOverlay ? <DemoOverlays item={item} /> : null}
-                </View>
+                    {item.pending && !showOriginal ? <TranslatingBadge /> : null}
+                </Animated.View>
             )}
         </View>
     );

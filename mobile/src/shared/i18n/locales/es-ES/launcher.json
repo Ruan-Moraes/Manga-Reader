@@ -177,8 +177,16 @@
             "validCount": "{{valid}} de {{total}} válidas",
             "invalidCount": "{{count}} con un problema",
             "pageStatus": "Página {{page}}: {{status}}",
-            "status": { "PENDING": "pendiente", "VALID": "válida", "INVALID": "inválida" },
-            "badges": { "PENDING": "Validando", "VALID": "Lista", "INVALID": "Acción necesaria" },
+            "status": {
+                "PENDING": "pendiente",
+                "VALID": "válida",
+                "INVALID": "inválida"
+            },
+            "badges": {
+                "PENDING": "Validando",
+                "VALID": "Lista",
+                "INVALID": "Acción necesaria"
+            },
             "summaryReady": "{{valid}} de {{total}} listas",
             "summaryIssues": "{{valid}} listas · {{invalid}} con problema",
             "pendingCount_one": "1 página espera validación",
@@ -204,7 +212,10 @@
             "close": "Cerrar",
             "previewUnavailable": "Vista previa no disponible",
             "previewLabel": "Vista previa de la página {{page}}",
-            "issueOrigin": { "local": "Origen: archivo enviado · comprobado en este dispositivo", "processing": "Origen: resultado del procesamiento" },
+            "issueOrigin": {
+                "local": "Origen: archivo enviado · comprobado en este dispositivo",
+                "processing": "Origen: resultado del procesamiento"
+            },
             "issueMessages": {
                 "MISSING_FILE": "El archivo de esta página ya no está disponible.",
                 "EMPTY_FILE": "El archivo está vacío y no se puede procesar.",
@@ -244,8 +255,6 @@
         "project": {
             "loading": "Cargando el proyecto local…",
             "action": "Preparar proyecto",
-            "preparedTitle": "Proyecto preparado en el dispositivo",
-            "preparedDescription": "Las páginas están protegidas localmente. El procesamiento aún no comenzó.",
             "summary_one": "{{count}} página · {{source}} → {{target}} · {{status}}",
             "summary_other": "{{count}} páginas · {{source}} → {{target}} · {{status}}",
             "status": {
@@ -262,6 +271,28 @@
                 "file-copy-failed": "No fue posible proteger todos los archivos del proyecto.",
                 "storage-unavailable": "No fue posible guardar el proyecto en este dispositivo.",
                 "project-conflict": "Ya existe un proyecto diferente con esta identidad. Tus datos fueron preservados."
+            },
+            "card": {
+                "DRAFT": {
+                    "title": "Proyecto preparado en el dispositivo",
+                    "description": "Las páginas están protegidas localmente. El procesamiento aún no ha comenzado."
+                },
+                "inProgress": {
+                    "title": "Traducción en curso",
+                    "description": "Las páginas están protegidas localmente. Las listas ya se pueden leer."
+                },
+                "READY": {
+                    "title": "Traducción lista",
+                    "description": "Todas las páginas se tradujeron y se pueden leer sin internet."
+                },
+                "FAILED": {
+                    "title": "La traducción falló en alguna página",
+                    "description": "Las páginas listas siguen disponibles. Intenta de nuevo las que fallaron."
+                },
+                "CANCELLED": {
+                    "title": "Traducción cancelada",
+                    "description": "Las páginas listas siguen disponibles en el dispositivo."
+                }
             }
         }
     },

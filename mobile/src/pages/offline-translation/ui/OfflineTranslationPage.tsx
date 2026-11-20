@@ -4,7 +4,7 @@ import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 
 import { isMediaValidationReady, type LocalMediaImportDraft } from '@/entities/local-media-import';
-import type { TranslationProject } from '@/entities/translation-project';
+import { type TranslationProject, translationProjectStage } from '@/entities/translation-project';
 import { type CreateTranslationProjectController, CreateTranslationProjectPanel } from '@/features/create-translation-project';
 import { ImportLocalMediaPanel, type LocalMediaImportController } from '@/features/import-local-media';
 import { GenerateDemoTranslationPanel } from '@/features/local-translation';
@@ -77,9 +77,9 @@ export function OfflineTranslationPage({ importController, reviewController, lan
                     {intro('review')}
                     <Card variant="elevated" style={{ gap: spacing.xs }}>
                         <AppText accessibilityRole="header" variant="section">
-                            {t('offline.project.preparedTitle')}
+                            {t(`offline.project.card.${translationProjectStage(preparedProject.status)}.title`)}
                         </AppText>
-                        <AppText tone="success">{t('offline.project.preparedDescription')}</AppText>
+                        <AppText tone="success">{t(`offline.project.card.${translationProjectStage(preparedProject.status)}.description`)}</AppText>
                         <AppText variant="caption" tone="muted">
                             {t('offline.project.summary', {
                                 count: preparedProject.pages.length,

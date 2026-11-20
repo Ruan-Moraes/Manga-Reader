@@ -142,6 +142,7 @@ export function LocalTranslationReaderPage({
                 return {
                     id: page.id,
                     primaryUri: result ? openController.resultUri(snapshot.project.id, result) : (originalUri ?? ''),
+                    pending: !result,
                     originalUri,
                     width: result?.widthPx ?? page.widthPx,
                     height: result?.heightPx ?? page.heightPx,

@@ -96,3 +96,26 @@ describe('MOB-FEAT-016 project UI', () => {
         expect(await screen.findByRole('button')).toBeEnabled();
     });
 });
+
+describe('MOB-FEAT-024/AC-003 the project card follows the project state', () => {
+    it.each([
+        ['pt-BR', 'PROCESSING', 'Tradução em andamento'],
+        ['pt-BR', 'QUEUED', 'Tradução em andamento'],
+        ['pt-BR', 'READY', 'Tradução pronta'],
+        ['pt-BR', 'FAILED', 'A tradução falhou em alguma página'],
+        ['pt-BR', 'CANCELLED', 'Tradução cancelada'],
+        ['en-US', 'READY', 'Translation ready'],
+        ['es-ES', 'PROCESSING', 'Traducción en curso'],
+    ] as const)('%s, %s: "%s", never "processing has not started"', async (locale, status, title) => {
+        await i18n.changeLanguage(locale);
+        render(
+            <CreateTranslationProjectPanel
+                draft={null}
+                onDraftConsumed={jest.fn()}
+                controller={{ initialize: jest.fn(async () => ({ ...project, status })), prepare: jest.fn(async () => project) }}
+            />,
+        );
+        expect(await screen.findByText(title)).toBeOnTheScreen();
+        expect(screen.queryByText(/ainda não começou|has not started yet|aún no ha comenzado/)).toBeNull();
+    });
+});

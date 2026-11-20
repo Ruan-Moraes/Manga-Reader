@@ -2,7 +2,7 @@
 id: MOB-FEAT-024
 type: feature
 title: Progresso da tradução no leitor e no projeto
-status: draft
+status: in-progress
 implementation_gate: open
 blocked_by: [MOB-FEAT-022]
 created: 2026-11-20
@@ -91,5 +91,7 @@ idiomas.
 
 ## Aprovação humana
 
-- Aprovador: pendente
-- Data: pendente
+- Aprovador: Ruan Moraes
+- Data: 2026-11-20
+
+Aprovada no chat ("Aprovo a 024"), depois do resumo dos três itens.
