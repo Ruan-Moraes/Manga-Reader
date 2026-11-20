@@ -48,7 +48,7 @@
         "description_one": "The project page will be sent to recognize text, translate it and prepare a translated image.",
         "description_other": "The {{count}} project pages will be sent one at a time, in reading order, to recognize text, translate it and prepare translated images.",
         "network": "Internet is required. Processing does not happen entirely on this device.",
-        "data": "Image bytes, MIME type, dimensions, languages, and opaque attempt identifiers are sent. Filename, path, account, and dialogue are not sent.",
+        "data": "Image bytes, MIME type, dimensions, languages, opaque attempt identifiers, and the names the service already translated in this project (such as character names) are sent, to keep them the same across pages. Filename, path, and account are not sent.",
         "operator": "Operated by {{operator}} ({{contact}}), using Google Cloud services.",
         "regions": "The gateway and temporary data stay in {{gateway}}. OCR uses the US {{ocr}} region. Translation uses the {{translation}} endpoint, with no guarantee of processing in the US or any other specific region.",
         "languageModel": "A language layer (Gemini, Google Vertex AI) reviews the recognized text and the translation in the {{location}} region. It receives only the page text, never the image.",

@@ -234,3 +234,16 @@ describe('MOB-FEAT-022 several pages in the panel', () => {
         expect(screen.queryByRole('button', { name: retryLabel.replace('2', '1') })).toBeNull();
     });
 });
+
+describe('MOB-FEAT-023 consent names the glossary', () => {
+    it.each([
+        ['pt-BR', 'Iniciar processamento', /nomes que o serviço já traduziu neste projeto/],
+        ['en-US', 'Start processing', /names the service already translated in this project/],
+        ['es-ES', 'Iniciar procesamiento', /nombres que el servicio ya tradujo en este proyecto/],
+    ])('says in %s that the names already translated are sent', async (locale, label, sentence) => {
+        await i18n.changeLanguage(locale);
+        render(<RemoteProcessingPanel startController={controller()} />);
+        fireEvent.press(await screen.findByRole('button', { name: label }));
+        expect(screen.getByText(sentence)).toBeOnTheScreen();
+    });
+});

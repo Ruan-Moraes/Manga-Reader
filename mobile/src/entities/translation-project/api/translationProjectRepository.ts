@@ -19,7 +19,7 @@ import {
 import type { NewTranslationProject, TranslationProject } from '../model/translationProject';
 
 export const TRANSLATION_PROJECT_NAMESPACE = 'translation-projects';
-const CURRENT_SCHEMA_VERSION = 11;
+const CURRENT_SCHEMA_VERSION = 12;
 const LANGUAGE_CHECK = "'ja', 'en', 'es', 'ko', 'zh-Hans', 'zh-Hant', 'pt-BR'";
 const STATE_CHECK = "'DRAFT', 'QUEUED', 'PROCESSING', 'READY', 'FAILED', 'CANCELLED'";
 
@@ -121,6 +121,8 @@ export interface TranslationProjectRepository {
     /** When the remote queue may send again after the daily quota ran out, or null when it is not paused. */
     getRemoteQueuePause(projectId: string): Promise<number | null>;
     setRemoteQueuePause(projectId: string, until: number | null): Promise<void>;
+    /** The chapter names the gateway decided for this project (MOB-FEAT-023), oldest first, at most 256. */
+    listTerms(projectId: string): Promise<ProjectTerm[]>;
     measureBytes(): Promise<number>;
     clear(): Promise<void>;
 }
@@ -294,6 +296,30 @@ CREATE INDEX idx_translation_projects_latest ON translation_projects(updated_at 
     }
 }
 
+/** One chapter name the gateway decided for a project, as its results report it. */
+export interface ProjectTerm {
+    source: string;
+    target: string;
+}
+
+/** Most names sent back with one page (the gateway's limit). */
+export const MAX_PROJECT_TERMS = 256;
+
+/**
+ * v12 (MOB-FEAT-023): the project's chapter glossary. One row per decided name (the first decision stays), owned by
+ * the project and deleted with it.
+ */
+export const CREATE_PROJECT_TERMS_SCHEMA = `
+CREATE TABLE IF NOT EXISTS translation_project_terms (
+    project_id TEXT NOT NULL,
+    source_term TEXT NOT NULL CHECK (length(source_term) BETWEEN 1 AND 64 AND source_term = trim(source_term) AND instr(source_term, char(10)) = 0),
+    target_term TEXT NOT NULL CHECK (length(target_term) BETWEEN 1 AND 128 AND target_term = trim(target_term) AND instr(target_term, char(10)) = 0),
+    created_at INTEGER NOT NULL CHECK (created_at > 0),
+    CONSTRAINT pk_translation_project_terms PRIMARY KEY (project_id, source_term),
+    CONSTRAINT fk_translation_project_terms_project FOREIGN KEY (project_id) REFERENCES translation_projects(id) ON DELETE CASCADE
+);
+`;
+
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
 
 /** v11 (MOB-FEAT-022): additive columns for the remote queue; every project and page is kept. */
@@ -320,6 +346,7 @@ export function createSqliteTranslationProjectRepository(openDatabase: () => Pro
             await db.execAsync(CREATE_SCHEMA);
             await migrateLanguageSchema(db);
             await migrateRemoteQueue(db);
+            await db.execAsync(CREATE_PROJECT_TERMS_SCHEMA);
             await advanceAppSchemaVersion(db, CURRENT_SCHEMA_VERSION);
         }).catch(error => {
             initialized = null;
@@ -499,6 +526,16 @@ export function createSqliteTranslationProjectRepository(openDatabase: () => Pro
                 projectId,
             ]);
             return row?.remote_queue_paused_until ?? null;
+        },
+        async listTerms(projectId) {
+            const rows = await (
+                await database()
+            ).getAllAsync<{ source_term: string; target_term: string }>(
+                `SELECT source_term, target_term FROM translation_project_terms WHERE project_id = ?
+                 ORDER BY created_at ASC, source_term ASC LIMIT ${MAX_PROJECT_TERMS}`,
+                [projectId],
+            );
+            return rows.map(row => ({ source: row.source_term, target: row.target_term }));
         },
         async setRemoteQueuePause(projectId, until) {
             await (await database()).runAsync('UPDATE translation_projects SET remote_queue_paused_until = ? WHERE id = ?', [until, projectId]);

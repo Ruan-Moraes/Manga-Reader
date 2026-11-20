@@ -1,6 +1,7 @@
 import { createHash } from 'node:crypto';
 import { DatabaseSync, type SQLInputValue } from 'node:sqlite';
 
+import { CREATE_PROJECT_TERMS_SCHEMA } from '@/entities/translation-project/@x/local-translation-result';
 import type { SqlExecutor } from '@/shared/storage';
 
 import { parseRemoteRenderManifest, parseRemoteRenderManifestBytes, type RemoteRenderManifest } from '../../model/remoteRenderManifest';
@@ -104,6 +105,7 @@ function fixture(pages = 1) {
             FOREIGN KEY(page_id) REFERENCES translation_pages(id) ON DELETE CASCADE);
         INSERT INTO translation_projects VALUES ('project', 'PROCESSING', 1, 1);
     `);
+    sqlite.exec(CREATE_PROJECT_TERMS_SCHEMA);
     for (let index = 0; index < pages; index++) {
         sqlite.prepare('INSERT INTO translation_pages VALUES (?, ?, ?, ?, ?, ?)').run(`page-${index}`, 'project', index, 'PROCESSING', 1, 1);
     }
@@ -192,6 +194,60 @@ describe('MOB-FEAT-021/AC-002/004 remote result commit', () => {
             await expect(f.repository.saveRemoteResult(commit())).rejects.toThrow();
             expect(f.sqlite.prepare('SELECT COUNT(*) AS total FROM translation_page_results').get()).toEqual({ total: 0 });
             expect(f.status('translation_pages', 'page-0')).toBe('PROCESSING');
+        } finally {
+            f.sqlite.close();
+        }
+    });
+});
+
+describe('MOB-FEAT-023/AC-001 chapter glossary saved with the result', () => {
+    const withTerms = (terms: RemoteRenderManifest['terms']) => manifest({ version: '1.2', terms });
+
+    it('accepts 1.2 with terms and 1.1 without, and nothing in between', () => {
+        expect(parseRemoteRenderManifest(withTerms([{ source: 'Coriander', target: 'Coriander' }]), expected).terms).toHaveLength(1);
+        expect(() => parseRemoteRenderManifest(manifest({ version: '1.2' }), expected)).toThrow();
+        expect(() => parseRemoteRenderManifest(manifest({ terms: [] }), expected)).toThrow();
+        expect(() => parseRemoteRenderManifest(withTerms([{ source: 'two\nlines', target: 'x' }]), expected)).toThrow();
+        expect(() =>
+            parseRemoteRenderManifest(
+                withTerms([
+                    { source: 'Coriander', target: 'Coriander' },
+                    { source: 'Coriander', target: 'Coentro' },
+                ]),
+                expected,
+            ),
+        ).toThrow();
+    });
+
+    it('stores the page terms in the same commit; the first decision of the project stays', async () => {
+        const f = fixture();
+        try {
+            f.sqlite.prepare('INSERT INTO translation_project_terms VALUES (?, ?, ?, ?)').run('project', 'Pepper', 'Pepper', 10);
+            await f.repository.saveRemoteResult(
+                commit(
+                    withTerms([
+                        { source: 'Pepper', target: 'Pimenta' },
+                        { source: 'Coriander', target: 'Coentro' },
+                    ]),
+                ),
+            );
+            expect(f.sqlite.prepare('SELECT source_term, target_term FROM translation_project_terms ORDER BY source_term').all()).toEqual([
+                { source_term: 'Coriander', target_term: 'Coentro' },
+                { source_term: 'Pepper', target_term: 'Pepper' },
+            ]);
+            await f.repository.removeProject('project');
+            expect(f.sqlite.prepare('SELECT COUNT(*) AS total FROM translation_project_terms').get()).toEqual({ total: 0 });
+        } finally {
+            f.sqlite.close();
+        }
+    });
+
+    it('a result that cannot be committed leaves no terms behind', async () => {
+        const f = fixture();
+        try {
+            f.sqlite.prepare("UPDATE remote_processing_attempts SET remote_status = 'RENDERING'").run();
+            await expect(f.repository.saveRemoteResult(commit(withTerms([{ source: 'Pepper', target: 'Pepper' }])))).rejects.toThrow();
+            expect(f.sqlite.prepare('SELECT COUNT(*) AS total FROM translation_project_terms').get()).toEqual({ total: 0 });
         } finally {
             f.sqlite.close();
         }

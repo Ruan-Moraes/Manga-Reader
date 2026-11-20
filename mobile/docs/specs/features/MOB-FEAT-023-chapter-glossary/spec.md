@@ -2,7 +2,7 @@
 id: MOB-FEAT-023
 type: feature
 title: Glossário do capítulo guardado no aparelho
-status: draft
+status: in-progress
 implementation_gate: open
 blocked_by: [MOB-FEAT-022]
 created: 2026-11-20
@@ -97,7 +97,8 @@ O texto de dados enviados cita os nomes já traduzidos nos três idiomas.
 
 ## Aprovação humana
 
-- Aprovador: pendente
-- Data: pendente
+- Aprovador: Ruan Moraes
+- Data: 2026-11-20
 
-Não criar `tasks.md` antes de status `approved` e aprovação preenchida.
+Aprovada no chat ("Approve the 023"), depois de Ruan ler o resumo desta spec e o resultado da validação real do
+glossário no gateway.

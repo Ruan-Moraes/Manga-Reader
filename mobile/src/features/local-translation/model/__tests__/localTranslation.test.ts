@@ -69,6 +69,7 @@ function projects(): jest.Mocked<TranslationProjectRepository> {
         ensureContextRef: jest.fn(),
         getRemoteQueuePause: jest.fn(),
         setRemoteQueuePause: jest.fn(),
+        listTerms: jest.fn(),
         measureBytes: jest.fn(),
         clear: jest.fn(),
     };

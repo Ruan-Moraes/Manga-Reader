@@ -16,11 +16,20 @@ export interface RemoteRenderManifestExpectation {
 }
 
 const sha256Schema = z.string().regex(/^[a-f0-9]{64}$/);
+/** Trimmed, single line, within the gateway's bounds. */
+const termText = (max: number) =>
+    z
+        .string()
+        .min(1)
+        .max(max)
+        .refine(value => value === value.trim() && !/[\r\n]/.test(value));
+const termSchema = z.object({ source: termText(64), target: termText(128) }).strict();
 const pointSchema = z.object({ x: z.number().min(0).max(1), y: z.number().min(0).max(1) }).strict();
 
 const manifestSchema = z
     .object({
-        version: z.literal('1.1'),
+        // 1.1: no terms; 1.2 (2026-11-19): the chapter names the page used (MOB-FEAT-023).
+        version: z.enum(['1.1', '1.2']),
         policyVersion: z.string().min(1).max(64),
         jobRef: z.uuid(),
         sourceLanguage: remoteLanguageSchema,
@@ -60,8 +69,11 @@ const manifestSchema = z
             })
             .strict()
             .optional(),
+        terms: z.array(termSchema).max(64).optional(),
     })
-    .strict();
+    .strict()
+    .refine(manifest => (manifest.version === '1.2') === (manifest.terms !== undefined))
+    .refine(manifest => new Set((manifest.terms ?? []).map(term => term.source)).size === (manifest.terms ?? []).length);
 
 export type RemoteRenderManifest = z.infer<typeof manifestSchema>;
 

@@ -520,6 +520,16 @@ export function createSqliteLocalTranslationResultRepository(
                     }
                 }
 
+                // The chapter names this page used join the project's glossary; a name already there keeps its first
+                // decision (MOB-FEAT-023).
+                for (const term of commit.manifest.terms ?? []) {
+                    await transaction.runAsync(
+                        `INSERT INTO translation_project_terms (project_id, source_term, target_term, created_at) VALUES (?, ?, ?, ?)
+                         ON CONFLICT(project_id, source_term) DO NOTHING`,
+                        [commit.projectId, term.source, term.target, commit.readyAt],
+                    );
+                }
+
                 await transaction.runAsync(
                     `UPDATE translation_pages SET status = 'READY', updated_at = ?, status_updated_at = ?
                      WHERE id = ? AND project_id = ? AND status IN ('QUEUED', 'PROCESSING')`,

@@ -1470,7 +1470,7 @@
         {
             "path": "src/entities/translation-project/api/__tests__/translationProjectRepository.test.ts",
             "category": "evidence",
-            "specs": ["MOB-FEAT-014", "MOB-FEAT-016"],
+            "specs": ["MOB-FEAT-014", "MOB-FEAT-016", "MOB-FEAT-023"],
             "observations": [
                 "MOB-FEAT-014/AC-010",
                 "MOB-FEAT-016/AC-002",
@@ -1478,13 +1478,14 @@
                 "MOB-FEAT-016/AC-006",
                 "MOB-FEAT-016/AC-007",
                 "MOB-FEAT-016/AC-008",
-                "MOB-FEAT-016/AC-009"
+                "MOB-FEAT-016/AC-009",
+                "MOB-FEAT-023/AC-003"
             ]
         },
         {
             "path": "src/entities/translation-project/api/translationProjectRepository.ts",
             "category": "behavior",
-            "specs": ["MOB-FEAT-014", "MOB-FEAT-016", "MOB-FEAT-022"],
+            "specs": ["MOB-FEAT-014", "MOB-FEAT-016", "MOB-FEAT-022", "MOB-FEAT-023"],
             "observations": [
                 "MOB-FEAT-014/AC-010",
                 "MOB-FEAT-016/AC-002",
@@ -1497,14 +1498,16 @@
                 "MOB-FEAT-016/AC-011",
                 "MOB-FEAT-016/AC-012",
                 "MOB-FEAT-022/AC-002",
-                "MOB-FEAT-022/AC-004"
+                "MOB-FEAT-022/AC-004",
+                "MOB-FEAT-023/AC-002",
+                "MOB-FEAT-023/AC-003"
             ]
         },
         {
             "path": "src/entities/translation-project/index.ts",
             "category": "behavior",
-            "specs": ["MOB-FEAT-016"],
-            "observations": ["MOB-FEAT-016/AC-002", "MOB-FEAT-016/AC-005", "MOB-FEAT-016/AC-009"]
+            "specs": ["MOB-FEAT-016", "MOB-FEAT-023"],
+            "observations": ["MOB-FEAT-016/AC-002", "MOB-FEAT-016/AC-005", "MOB-FEAT-016/AC-009", "MOB-FEAT-023/AC-002", "MOB-FEAT-023/AC-003"]
         },
         {
             "path": "src/entities/translation-project/model/translationProject.ts",
@@ -5276,7 +5279,7 @@
         {
             "path": "src/features/start-remote-processing/model/__tests__/startRemoteProcessing.test.ts",
             "category": "evidence",
-            "specs": ["MOB-FEAT-017", "MOB-FEAT-019", "MOB-FEAT-022"],
+            "specs": ["MOB-FEAT-017", "MOB-FEAT-019", "MOB-FEAT-022", "MOB-FEAT-023"],
             "observations": [
                 "MOB-FEAT-017/AC-002",
                 "MOB-FEAT-017/AC-003",
@@ -5293,13 +5296,14 @@
                 "MOB-FEAT-022/AC-001",
                 "MOB-FEAT-022/AC-002",
                 "MOB-FEAT-022/AC-004",
-                "MOB-FEAT-022/AC-005"
+                "MOB-FEAT-022/AC-005",
+                "MOB-FEAT-023/AC-002"
             ]
         },
         {
             "path": "src/features/start-remote-processing/model/startRemoteProcessing.ts",
             "category": "behavior",
-            "specs": ["MOB-FEAT-017", "MOB-FEAT-019", "MOB-FEAT-021", "MOB-FEAT-022"],
+            "specs": ["MOB-FEAT-017", "MOB-FEAT-019", "MOB-FEAT-021", "MOB-FEAT-022", "MOB-FEAT-023"],
             "observations": [
                 "MOB-FEAT-017/AC-002",
                 "MOB-FEAT-017/AC-003",
@@ -5318,7 +5322,8 @@
                 "MOB-FEAT-022/AC-001",
                 "MOB-FEAT-022/AC-002",
                 "MOB-FEAT-022/AC-004",
-                "MOB-FEAT-022/AC-005"
+                "MOB-FEAT-022/AC-005",
+                "MOB-FEAT-023/AC-002"
             ]
         },
         {
@@ -5391,7 +5396,7 @@
         {
             "path": "src/widgets/remote-processing/ui/__tests__/RemoteProcessingPanel.test.tsx",
             "category": "evidence",
-            "specs": ["MOB-FEAT-017", "MOB-FEAT-021", "MOB-FEAT-022"],
+            "specs": ["MOB-FEAT-017", "MOB-FEAT-021", "MOB-FEAT-022", "MOB-FEAT-023"],
             "observations": [
                 "MOB-FEAT-017/AC-001",
                 "MOB-FEAT-017/AC-002",
@@ -5403,7 +5408,8 @@
                 "MOB-FEAT-022/AC-004",
                 "MOB-FEAT-022/AC-005",
                 "MOB-FEAT-022/AC-006",
-                "MOB-FEAT-022/AC-007"
+                "MOB-FEAT-022/AC-007",
+                "MOB-FEAT-023/AC-004"
             ]
         },
         {
@@ -5516,7 +5522,7 @@
         {
             "path": "src/entities/local-translation-result/api/localTranslationResultRepository.ts",
             "category": "behavior",
-            "specs": ["MOB-FEAT-019", "MOB-FEAT-025", "MOB-FEAT-026", "MOB-FEAT-027", "MOB-FEAT-050", "MOB-FEAT-021"],
+            "specs": ["MOB-FEAT-019", "MOB-FEAT-025", "MOB-FEAT-026", "MOB-FEAT-027", "MOB-FEAT-050", "MOB-FEAT-021", "MOB-FEAT-023"],
             "observations": [
                 "MOB-FEAT-019/AC-003",
                 "MOB-FEAT-019/AC-004",
@@ -5530,7 +5536,8 @@
                 "MOB-FEAT-050/AC-003",
                 "MOB-FEAT-021/AC-002",
                 "MOB-FEAT-021/AC-004",
-                "MOB-FEAT-021/AC-005"
+                "MOB-FEAT-021/AC-005",
+                "MOB-FEAT-023/AC-001"
             ]
         },
         {
@@ -5562,8 +5569,8 @@
         {
             "path": "src/entities/translation-project/@x/local-translation-result.ts",
             "category": "behavior",
-            "specs": ["MOB-FEAT-025", "MOB-FEAT-027"],
-            "observations": ["MOB-FEAT-025/AC-001", "MOB-FEAT-027/AC-001"]
+            "specs": ["MOB-FEAT-025", "MOB-FEAT-027", "MOB-FEAT-023"],
+            "observations": ["MOB-FEAT-025/AC-001", "MOB-FEAT-027/AC-001", "MOB-FEAT-023/AC-001"]
         },
         {
             "path": "src/features/local-translation/index.ts",
@@ -5970,14 +5977,22 @@
         {
             "path": "src/entities/local-translation-result/model/remoteRenderManifest.ts",
             "category": "behavior",
-            "specs": ["MOB-FEAT-021"],
-            "observations": ["MOB-FEAT-021/AC-002", "MOB-FEAT-021/AC-006", "MOB-FEAT-021/AC-007"]
+            "specs": ["MOB-FEAT-021", "MOB-FEAT-023"],
+            "observations": ["MOB-FEAT-021/AC-002", "MOB-FEAT-021/AC-006", "MOB-FEAT-021/AC-007", "MOB-FEAT-023/AC-001"]
         },
         {
             "path": "src/entities/local-translation-result/api/__tests__/remoteResultCommit.test.ts",
             "category": "evidence",
-            "specs": ["MOB-FEAT-021", "MOB-FEAT-022"],
-            "observations": ["MOB-FEAT-021/AC-002", "MOB-FEAT-021/AC-004", "MOB-FEAT-021/AC-006", "MOB-FEAT-021/AC-007", "MOB-FEAT-022/AC-006"]
+            "specs": ["MOB-FEAT-021", "MOB-FEAT-022", "MOB-FEAT-023"],
+            "observations": [
+                "MOB-FEAT-021/AC-002",
+                "MOB-FEAT-021/AC-004",
+                "MOB-FEAT-021/AC-006",
+                "MOB-FEAT-021/AC-007",
+                "MOB-FEAT-022/AC-006",
+                "MOB-FEAT-023/AC-001",
+                "MOB-FEAT-023/AC-003"
+            ]
         },
         {
             "path": "src/entities/remote-processing-attempt/api/__tests__/remoteProcessingAttemptLifecycle.test.ts",
@@ -6039,6 +6054,12 @@
             "category": "evidence",
             "specs": ["MOB-FEAT-022"],
             "observations": ["MOB-FEAT-022/AC-001", "MOB-FEAT-022/AC-003", "MOB-FEAT-022/AC-004"]
+        },
+        {
+            "path": "src/entities/translation-project/api/__tests__/projectTerms.test.ts",
+            "category": "evidence",
+            "specs": ["MOB-FEAT-023"],
+            "observations": ["MOB-FEAT-023/AC-003"]
         }
     ]
 }

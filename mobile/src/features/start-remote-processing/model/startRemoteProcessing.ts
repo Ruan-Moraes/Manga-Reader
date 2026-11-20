@@ -14,6 +14,7 @@ import {
 } from '@/entities/remote-processing-capability';
 import { type RemoteProcessingIdentity, remoteProcessingIdentity } from '@/entities/remote-processing-identity';
 import {
+    type ProjectTerm,
     TRANSLATION_PROJECT_NAMESPACE,
     type TranslationProject,
     type TranslationProjectRepository,
@@ -155,9 +156,20 @@ async function applyEnvelope(
     return dependencies.attempts.acceptAndQueue(attempt.id, projectId, attempt.pageId, envelope.data.jobRef, envelope.data.status, now);
 }
 
-/** The multipart fields of one page; the chapter reference is the project's, the same on every page. */
-function fields(project: TranslationProject, page: TranslationPage, capabilities: RemoteProcessingCapabilities, attemptRef: string, contextRef: string) {
+/**
+ * The multipart fields of one page; the chapter reference is the project's, the same on every page. The project's
+ * glossary (names the gateway decided for its earlier pages) goes along when there is one (MOB-FEAT-023).
+ */
+function fields(
+    project: TranslationProject,
+    page: TranslationPage,
+    capabilities: RemoteProcessingCapabilities,
+    attemptRef: string,
+    contextRef: string,
+    terms: readonly ProjectTerm[],
+): Record<string, string> {
     return {
+        ...(terms.length > 0 ? { glossary: JSON.stringify(terms.map(term => ({ source: term.source, target: term.target }))) } : {}),
         mimeType: page.originalMimeType,
         byteSize: String(page.originalByteSize),
         widthPx: String(page.widthPx),
@@ -236,7 +248,7 @@ export function createStartRemoteProcessingController(dependencies: Dependencies
                 attempt = await dependencies.attempts.markSubmitting(attempt.id, dependencies.now());
                 const response = await loaded.transport.upload(
                     '/v1/page-jobs',
-                    fields(validated.project, validated.page, capabilities, attempt.id, contextRef),
+                    fields(validated.project, validated.page, capabilities, attempt.id, contextRef, await dependencies.projects.listTerms(projectId)),
                     {
                         uri: dependencies.files.fileUri(TRANSLATION_PROJECT_NAMESPACE, projectId, validated.page.originalFilename),
                         mimeType: validated.page.originalMimeType,
@@ -326,7 +338,14 @@ export function createStartRemoteProcessingController(dependencies: Dependencies
                             const submitting = await dependencies.attempts.markSubmitting(attempt.id, dependencies.now());
                             const replay = await loaded.transport.upload(
                                 '/v1/page-jobs',
-                                fields(validated.project, validated.page, capabilities, submitting.id, contextRef),
+                                fields(
+                                    validated.project,
+                                    validated.page,
+                                    capabilities,
+                                    submitting.id,
+                                    contextRef,
+                                    await dependencies.projects.listTerms(projectId!),
+                                ),
                                 {
                                     uri: dependencies.files.fileUri(TRANSLATION_PROJECT_NAMESPACE, projectId!, validated.page.originalFilename),
                                     mimeType: validated.page.originalMimeType,

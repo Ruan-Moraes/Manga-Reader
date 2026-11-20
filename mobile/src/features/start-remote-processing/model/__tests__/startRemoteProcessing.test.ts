@@ -96,6 +96,7 @@ function setup(options: { consent?: boolean; enabled?: boolean; capabilityBody?:
         ensureContextRef: jest.fn(async (_projectId: string, candidate: string) => candidate),
         getRemoteQueuePause: jest.fn(async () => null),
         setRemoteQueuePause: jest.fn(async () => undefined),
+        listTerms: jest.fn(async () => []),
     } as unknown as jest.Mocked<TranslationProjectRepository>;
     const attempts = {
         initialize: jest.fn(async () => undefined),
@@ -358,6 +359,23 @@ describe('MOB-FEAT-017 start remote processing', () => {
             expect.anything(),
             expect.anything(),
         );
+    });
+
+    it('MOB-FEAT-023: a project with a glossary sends it with each page; without one, no field', async () => {
+        const fixture = setup();
+        await fixture.controller.submit(project.id);
+        expect((fixture.upload.mock.calls as unknown as [string, Record<string, string>][])[0]![1]).not.toHaveProperty('glossary');
+
+        const again = setup();
+        again.projects.listTerms.mockResolvedValue([
+            { source: 'Coriander', target: 'Coriander' },
+            { source: 'Komona', target: 'Komona' },
+        ]);
+        await again.controller.submit(project.id);
+        expect(JSON.parse((again.upload.mock.calls as unknown as [string, Record<string, string>][])[0]![1].glossary!)).toEqual([
+            { source: 'Coriander', target: 'Coriander' },
+            { source: 'Komona', target: 'Komona' },
+        ]);
     });
 
     it('MOB-FEAT-022: the daily quota pauses the queue until midnight UTC without losing the page', async () => {
