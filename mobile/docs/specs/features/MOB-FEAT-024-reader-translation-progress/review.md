@@ -11,7 +11,7 @@
 
 - **Média:** o fade não foi visto no simulador nem no aparelho. Nos testes, a animação usa o driver nativo; o teste
   confere a chamada (de 0 a 1 em 300 ms) e a remoção do original ao final, não o efeito visual.
-- **Média:** o toast não foi visto no simulador nem no aparelho. A largura vem de `useWindowDimensions`, que no Jest
+- **Baixa:** o toast foi visto no simulador, não no aparelho. A largura vem de `useWindowDimensions`, que no Jest
   não segue o `SafeAreaProvider`; o teste só confere o canto (direita e acima da área segura) e o limite de 360.
 - **Informativo:** o toast é um porte do web (`shared/ui/toast`), não um componente compartilhado: o mobile não usa
   código do web. Mudanças de estilo no web precisam ser repetidas aqui.
@@ -31,7 +31,17 @@ O que falta:
 
 - A duração do fade não foi medida. As capturas são quadros parados, tirados a cada ~5 s.
 - O aparelho físico não foi testado.
-- O toast, que substituiu o selo, ainda não foi visto no simulador.
+
+### Toast no simulador iOS (2026-11-20, commit f981c0c8)
+
+Mesmo ambiente, projeto novo de 4 páginas, enviado pelo app:
+
+- Com 3 de 4 páginas prontas, o leitor mostrou o toast no canto inferior direito, acima da área segura:
+  spinner, "Traduzindo…", "3 de 4 páginas prontas" e o botão "Dispensar". A página sem tradução mostrava o original,
+  sem selo.
+- Quando a última página chegou, o toast virou "Tradução pronta" / "Todas as 4 páginas foram traduzidas." e saiu da
+  árvore de acessibilidade segundos depois.
+- Observação: o Metro precisou de `--clear`; sem isso o simulador rodou um bundle antigo, ainda com o selo.
 
 ## Critérios e evidências
 
