@@ -2,7 +2,7 @@
 id: MOB-FEAT-024
 type: feature
 title: Progresso da tradução no leitor e no projeto
-status: in-progress
+status: verification-pending
 implementation_gate: open
 blocked_by: [MOB-FEAT-022]
 created: 2026-11-20

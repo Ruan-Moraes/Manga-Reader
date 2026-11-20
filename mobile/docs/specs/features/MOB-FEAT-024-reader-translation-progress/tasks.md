@@ -19,7 +19,7 @@
 - [x] TASK-002 — Fade de opacidade (~300 ms) quando a tradução substitui o original durante a leitura; troca
       imediata com "Reduzir movimento".
 - [x] TASK-003 — Cartão do projeto com título e descrição por estado, nos três idiomas.
-- [ ] TASK-004 — Gates, `coverage.json`, review e drift.
+- [x] TASK-004 — Gates, `coverage.json`, review e drift.
 - [ ] TASK-005 — Verificação no simulador iOS e no aparelho.
 
 ## Riscos e bloqueios
