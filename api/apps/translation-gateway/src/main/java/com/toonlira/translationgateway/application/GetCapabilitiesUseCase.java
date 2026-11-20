@@ -39,7 +39,8 @@ public class GetCapabilitiesUseCase {
      * cache and training policy). With the layer on, any other version is refused: the app would show a disclosure that
      * does not mention where the text goes.
      */
-    static final Set<String> LANGUAGE_MODEL_DISCLOSURE_VERSIONS = Set.of("2026-11-15.v1");
+    // 2026-11-20.v1: also names the chapter glossary the app sends back (MOB-FEAT-023).
+    static final Set<String> LANGUAGE_MODEL_DISCLOSURE_VERSIONS = Set.of("2026-11-15.v1", "2026-11-20.v1");
 
     private final GatewayProperties properties;
     private final Clock clock;
@@ -56,8 +57,11 @@ public class GetCapabilitiesUseCase {
         var pairs = operationalPairs();
         var media = properties.getMedia();
         var languageModelLocation = languageModelLocation();
+        var validUntil = now.plus(properties.getCapabilitiesTtl());
+        // The validity window is part of the representation: a 304 keeps the client's cached body, so an ETag without
+        // it let an iOS client reuse a body whose validUntil had long passed (found on the simulator, 2026-11-20).
         var canonical = Stream.of(
-            "1.0", properties.getKey(), Boolean.toString(properties.isEnabled()),
+            "1.0", now.toString(), validUntil.toString(), properties.getKey(), Boolean.toString(properties.isEnabled()),
             String.join(",", LANGUAGES), String.join(",", MIME_TYPES),
             pairs.stream().map(pair -> pair.source() + ":" + pair.target()).collect(Collectors.joining(",")),
             properties.getCapabilitiesTtl().toString(),
@@ -73,7 +77,7 @@ public class GetCapabilitiesUseCase {
             .map(value -> value.length() + ":" + value)
             .collect(Collectors.joining());
         return new CapabilitiesView(
-            "1.0", properties.getKey(), now, now.plus(properties.getCapabilitiesTtl()), properties.isEnabled(), LANGUAGES, pairs,
+            "1.0", properties.getKey(), now, validUntil, properties.isEnabled(), LANGUAGES, pairs,
             new CapabilitiesView.MediaLimits(MIME_TYPES, properties.getMedia().getMaxBytes(), properties.getMedia().getMaxWidthPx(),
                 properties.getMedia().getMaxHeightPx(), properties.getMedia().getMaxPixels()),
             properties.getInstallationDailyQuota(), properties.getGlobalDailyQuota(),

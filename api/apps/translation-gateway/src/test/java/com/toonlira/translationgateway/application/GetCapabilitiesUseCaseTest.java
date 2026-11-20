@@ -65,6 +65,15 @@ class GetCapabilitiesUseCaseTest {
     }
 
     @Test
+    void theEntityTagChangesWithTheValidityWindowSoA304NeverRevivesAnExpiredBody() {
+        var properties = validProperties();
+        var first = new GetCapabilitiesUseCase(properties, Clock.fixed(NOW, ZoneOffset.UTC)).execute();
+        var later = new GetCapabilitiesUseCase(properties, Clock.fixed(NOW.plusSeconds(3600), ZoneOffset.UTC)).execute();
+        assertThat(later.etag()).isNotEqualTo(first.etag());
+        assertThat(later.validUntil()).isAfter(first.validUntil());
+    }
+
+    @Test
     void shouldPublishOnlyConfiguredPairsInCanonicalOrder() {
         var properties = validProperties();
         properties.getTranslation().setEnabledPairs(List.of("zh-Hant:zh-Hans", "ja:pt-BR"));
