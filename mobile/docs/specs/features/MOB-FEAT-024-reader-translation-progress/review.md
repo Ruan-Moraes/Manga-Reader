@@ -43,6 +43,8 @@ Mesmo ambiente, projeto novo de 4 páginas, enviado pelo app (primeiro no canto 
   árvore de acessibilidade segundos depois.
 - A pedido do Ruan, o toast passou para o canto superior direito (`position="top"`). No simulador, com 3 de 4 páginas
   prontas, ele apareceu colado à direita, logo abaixo da barra de status.
+- Depois, também a pedido, ele passou a encostar na borda direita, sem margem e arredondado só à esquerda, como uma
+  notificação. No simulador, com 1 de 4 páginas prontas, apareceu assim no topo, abaixo da barra de status.
 - Observação: o Metro precisou de `--clear`; sem isso o simulador rodou um bundle antigo, ainda com o selo.
 
 ## Critérios e evidências

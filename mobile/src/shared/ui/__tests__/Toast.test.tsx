@@ -23,21 +23,21 @@ function toast(props: Partial<Parameters<typeof Toast>[0]> = {}) {
 describe('MOB-FEAT-024 app toast (port of the web toast)', () => {
     beforeEach(() => i18n.changeLanguage('pt-BR'));
 
-    it('docks to the bottom right, above the safe area, no wider than the web toast', () => {
+    it('sits flush with the right edge at the bottom, above the safe area, no wider than 320', () => {
         render(toast());
         const dock = screen.getByTestId('toast-dock');
         const style = Array.isArray(dock.props.style) ? Object.assign({}, ...dock.props.style) : dock.props.style;
-        expect(style).toMatchObject({ position: 'absolute', right: 16, bottom: 34 + 16 });
-        expect(style.width).toBeLessThanOrEqual(360);
+        expect(style).toMatchObject({ position: 'absolute', right: 0, bottom: 34 + 16 });
+        expect(style.width).toBeLessThanOrEqual(320);
         expect(screen.getByText('Título')).toBeOnTheScreen();
         expect(screen.getByText('Descrição')).toBeOnTheScreen();
     });
 
-    it('with position top docks to the top right, below the safe area', () => {
+    it('with position top sits flush with the right edge at the top, below the safe area', () => {
         render(toast({ position: 'top' }));
         const dock = screen.getByTestId('toast-dock');
         const style = Array.isArray(dock.props.style) ? Object.assign({}, ...dock.props.style) : dock.props.style;
-        expect(style).toMatchObject({ position: 'absolute', right: 16, top: 16 });
+        expect(style).toMatchObject({ position: 'absolute', right: 0, top: 8 });
         expect(style.bottom).toBeUndefined();
     });
 

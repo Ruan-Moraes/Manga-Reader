@@ -27,14 +27,16 @@ interface ToastProps {
     testID?: string;
 }
 
-/** Same width as the web toast viewport (`w-[360px]`), never wider than the screen minus the gutters. */
-const TOAST_WIDTH = 360;
+/** At most the web toast's width (`w-[360px]`); on a phone it leaves a strip of the page visible on the left. */
+const TOAST_WIDTH = 320;
+const LEFT_GAP = 48;
 const DEFAULT_ICON: Record<ToastTone, IconName> = { accent: 'checkmark', success: 'checkmark', danger: 'warning', neutral: 'information' };
 
 /**
- * The web app's toast (`shared/ui/toast` in web/apps/toonlira) on mobile: docked to the top or bottom right of the screen,
- * a surface card with a tone-coloured left edge, an icon in a tonal square, a bold title, an optional description and
- * a dismiss button. It slides in (immediately with Reduce Motion) and, with a duration, dismisses itself.
+ * The web app's toast (`shared/ui/toast` in web/apps/toonlira) on mobile, shaped like a system notification: flush with
+ * the right edge of the screen, at the top or the bottom, rounded only on the left. A surface card with a tone-coloured
+ * left edge, an icon in a tonal square, a bold title, an optional description and a dismiss button. It slides in from
+ * the right edge (immediately with Reduce Motion) and, with a duration, dismisses itself.
  */
 export function Toast({ tone = 'neutral', title, description, icon, duration = 4000, position = 'bottom', onDismiss, testID = 'toast' }: ToastProps) {
     const { t } = useTranslation('common');
@@ -72,9 +74,9 @@ export function Toast({ tone = 'neutral', title, description, icon, duration = 4
             pointerEvents="box-none"
             style={{
                 position: 'absolute',
-                right: insets.right + spacing.md,
-                ...(position === 'top' ? { top: insets.top + spacing.md } : { bottom: insets.bottom + spacing.md }),
-                width: Math.min(TOAST_WIDTH, width - insets.left - insets.right - spacing.md * 2),
+                right: 0,
+                ...(position === 'top' ? { top: insets.top + spacing.sm } : { bottom: insets.bottom + spacing.md }),
+                width: Math.min(TOAST_WIDTH + insets.right, width - insets.left - LEFT_GAP),
             }}
         >
             <Animated.View
@@ -83,15 +85,17 @@ export function Toast({ tone = 'neutral', title, description, icon, duration = 4
                 accessibilityLiveRegion="polite"
                 style={{
                     opacity: enter,
-                    transform: [{ translateX: enter.interpolate({ inputRange: [0, 1], outputRange: [24, 0] }) }],
+                    transform: [{ translateX: enter.interpolate({ inputRange: [0, 1], outputRange: [TOAST_WIDTH, 0] }) }],
                     flexDirection: 'row',
                     alignItems: description ? 'flex-start' : 'center',
                     gap: spacing.sm,
                     paddingVertical: spacing.sm,
                     paddingLeft: spacing.sm,
-                    paddingRight: spacing.xs,
-                    borderRadius: radii.sm,
+                    paddingRight: insets.right + spacing.xs,
+                    borderTopLeftRadius: radii.control,
+                    borderBottomLeftRadius: radii.control,
                     borderWidth: 1,
+                    borderRightWidth: 0,
                     borderLeftWidth: 3,
                     borderColor: tokens.separator,
                     borderLeftColor: edge,
