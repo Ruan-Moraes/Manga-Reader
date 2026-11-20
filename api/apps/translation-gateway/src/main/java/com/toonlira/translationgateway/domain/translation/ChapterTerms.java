@@ -58,6 +58,24 @@ public final class ChapterTerms {
     }
 
     /**
+     * The review's names a chapter should keep. Where the language capitalises names and a dictionary is available,
+     * a name that is one dictionary word must look like a name on the page, as {@link #candidates} decides:
+     * capitalised in the middle of a sentence and never written in lower case. "Aquí" or "Un", capitalised only
+     * because they open a sentence, are dropped. Names the dictionary does not know ("Komona"), names of several
+     * words, and names in scripts without capitals are kept.
+     */
+    public static Map<String, String> reviewNames(Map<String, String> names, Iterable<String> texts, String language, Lexicon lexicon) {
+        if (!SPACED_SOURCES.contains(language) || !lexicon.available()) return names;
+        var candidates = candidates(texts, language, lexicon);
+        var kept = new java.util.LinkedHashMap<String, String>();
+        names.forEach((source, target) -> {
+            boolean oneWord = WORD.matcher(source).matches();
+            if (!oneWord || !lexicon.knows(Lexicon.core(source)) || candidates.contains(source)) kept.put(source, target);
+        });
+        return kept;
+    }
+
+    /**
      * Words a page writes in lower case, in the capitalised form a name would have ("potion" -> "Potion"): evidence
      * that the chapter's capitalised one was emphasis or a title, not a name.
      */

@@ -62,8 +62,26 @@ public final class ChapterMemoryService {
         }
     }
 
+    /** The review's names this page bears out as names (see ChapterTerms#reviewNames). */
+    public Map<String, String> reviewNames(TranslationRequest request, Map<String, String> names) {
+        if (names.isEmpty()) return names;
+        var lexicon = lexicons == null ? com.toonlira.translationgateway.domain.ocr.Lexicon.NONE : lexicons.forLanguage(request.pair().source());
+        return ChapterTerms.reviewNames(names, request.regions().stream().map(TranslationRequest.Region::sourceText).toList(),
+            request.pair().source(), lexicon);
+    }
+
     /** Decided terms (source -> translation) the page must keep; empty without a chapter. */
     public Map<String, String> decide(TranslationJobRepository.WorkItem job, TranslationRequest request) {
+        return decide(job, request, true);
+    }
+
+    /**
+     * {@code translateNew}: whether new candidate names are translated alone, by machine translation, before the page.
+     * With the language review on they are not: translated alone, out of the sentence, a character name was translated
+     * as the common word ("Coriander" -> "Coentro"); the review decides them with the page as context, and the chapter
+     * keeps its decision.
+     */
+    public Map<String, String> decide(TranslationJobRepository.WorkItem job, TranslationRequest request, boolean translateNew) {
         if (memory == null || job.contextRef() == null || job.installationId() == null || request.regions().isEmpty())
             return Map.of();
         try {
@@ -74,7 +92,7 @@ public final class ChapterMemoryService {
             // A word this page writes in lower case is no name: a capitalised decision for it was emphasis or a title.
             memory.forget(job.installationId(), job.contextRef(), request.pair(), ChapterTerms.ordinaryWords(texts));
             var names = ChapterTerms.candidates(texts, request.pair().source(), lexicon);
-            if (names.isEmpty()) return memory.find(job.installationId(), job.contextRef(), request.pair(), now);
+            if (names.isEmpty() || !translateNew) return memory.find(job.installationId(), job.contextRef(), request.pair(), now);
             var known = memory.find(job.installationId(), job.contextRef(), request.pair(), now);
             var fresh = new ArrayList<String>();
             for (var name : names) if (!known.containsKey(name) && fresh.size() < MAX_NEW_TERMS) fresh.add(name);

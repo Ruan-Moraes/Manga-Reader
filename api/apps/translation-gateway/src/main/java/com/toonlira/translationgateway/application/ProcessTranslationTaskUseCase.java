@@ -220,7 +220,8 @@ public class ProcessTranslationTaskUseCase {
     private record PageTranslation(TranslationResponse response, List<ChapterTerm> terms) { }
 
     private PageTranslation translatePage(TranslationJobRepository.WorkItem job, TranslationRequest request) {
-        var decided = chapters.decide(job, request);
+        boolean reviewed = job.contextRef() != null && refiner != TranslationRefinerPort.NONE;
+        var decided = chapters.decide(job, request, !reviewed);
         boolean onPage = decided.keySet().stream().anyMatch(term -> request.regions().stream()
             .anyMatch(region -> region.sourceText().toUpperCase(java.util.Locale.ROOT).contains(term.toUpperCase(java.util.Locale.ROOT))));
         var machine = onPage ? translation.translate(request, decided) : translation.translate(request);
@@ -236,9 +237,10 @@ public class ProcessTranslationTaskUseCase {
         try {
             var review = refiner.refine(request, machine, decided);
             if (review != null && review.response() != null && sameRegions(machine, review.response())) {
-                chapters.learn(job, request.pair(), review.names());
+                var names = chapters.reviewNames(request, review.names());
+                chapters.learn(job, request.pair(), names);
                 // A name the chapter decided first keeps that translation; the review's own names follow.
-                review.names().forEach(used::putIfAbsent);
+                names.forEach(used::putIfAbsent);
                 return new PageTranslation(review.response(), ChapterTerm.of(used, ChapterTerm.MAX_PER_PAGE));
             }
             LOG.warn("translation refine discarded: regions={} reply did not match the page", request.regions().size());

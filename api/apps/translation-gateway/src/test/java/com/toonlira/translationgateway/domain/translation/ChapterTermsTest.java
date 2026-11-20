@@ -56,4 +56,18 @@ class ChapterTermsTest {
         assertThat(ChapterTerms.occurrences("Basil, End!", terms)).hasSize(2);
         assertThat(ChapterTerms.occurrences("BASIL WINS", terms)).containsExactly(new ChapterTerms.Occurrence(0, 5, "MANJERICÃO"));
     }
+
+    @Test
+    void aReviewNameThatIsOneDictionaryWordMustLookLikeANameOnThePage() {
+        var page = List.of("Here is Basil with the potion.", "Here we go.");
+        var names = new java.util.LinkedHashMap<String, String>();
+        names.put("Basil", "Basil");          // mid-sentence, never lower case: a name
+        names.put("Here", "Aqui");            // capitalised only because it opens a sentence: dropped
+        names.put("Komona", "Komona");        // not in the dictionary: kept
+        names.put("Squirrel's End", "Fim");   // several words: kept
+        assertThat(ChapterTerms.reviewNames(names, page, "en", EN)).containsOnlyKeys("Basil", "Komona", "Squirrel's End");
+        // Without capitals or a dictionary there is no such signal: the review is trusted.
+        assertThat(ChapterTerms.reviewNames(Map.of("ここ", "Aqui"), List.of("ここ"), "ja", EN)).containsOnlyKeys("ここ");
+        assertThat(ChapterTerms.reviewNames(Map.of("Here", "Aqui"), page, "en", Lexicon.NONE)).containsOnlyKeys("Here");
+    }
 }

@@ -121,4 +121,26 @@ class ChapterMemoryServiceTest {
         };
         assertThat(service(broken, terms).decide(job(CHAPTER), page("Here is Basil."))).isEmpty();
     }
+
+    @Test
+    void withTheLanguageReviewOnNewNamesAreNotTranslatedAloneTheReviewDecidesThem() {
+        var memory = new Memory();
+        var terms = new Terms();
+        var service = service(memory, terms);
+        // Translated alone, out of its sentence, a character name became the common word; the review decides instead.
+        assertThat(service.decide(job(CHAPTER), page("Here is Basil with the potion."), false)).isEmpty();
+        assertThat(terms.calls).isEmpty();
+        // What the chapter already decided still holds.
+        memory.terms.put("Basil", "Basil");
+        assertThat(service.decide(job(CHAPTER), page("Thanks, Basil!"), false)).isEqualTo(Map.of("Basil", "Basil"));
+    }
+
+    @Test
+    void reviewNamesAreFilteredByThePageBeforeTheChapterKeepsThem() {
+        var service = service(new Memory(), new Terms());
+        var names = new java.util.LinkedHashMap<String, String>();
+        names.put("Basil", "Basil");
+        names.put("Here", "Aqui");
+        assertThat(service.reviewNames(page("Here is Basil with the potion."), names)).containsOnlyKeys("Basil");
+    }
 }
