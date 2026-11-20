@@ -1,7 +1,7 @@
 # Drift audit — MOB-FEAT-024
 
 - Data: 2026-11-20
-- Implementação auditada: commit 1ed803c5e76f2c3d76c3f06ad3d5c3f46170f1c0
+- Implementação auditada: commit f981c0c8cdc3851b896568b41f504fe670bfe117
 - Status da feature: `verification-pending`
 
 ## Escopo auditado
@@ -24,4 +24,4 @@
 
 ## Pendências de verificação
 
-- TASK-005: ver o selo e o fade no simulador iOS e no aparelho.
+- TASK-005: ver o toast e o fade no simulador iOS e no aparelho.
