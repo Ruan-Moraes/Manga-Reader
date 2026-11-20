@@ -107,6 +107,28 @@ isso, por exemplo pela cota diária até a meia-noite UTC, chegava às páginas 
 A memória do servidor continua sendo a ponte entre páginas seguidas: a página N+1 sai quando a N chega em
 `RENDERING`, antes de o cliente receber os nomes dela.
 
+### Validação real (2026-11-20)
+
+Lotes `2026-11-20T14-41-25Z-b8q6` (com glossário) e `2026-11-20T14-44-39Z-i8wn` (sem): Pepper&Carrot en ep06 e es
+ep24, 13 páginas cada. Um script apagava a memória antes de cada página, simulando uma pausa maior que a retenção:
+a cada nova submissão do capítulo, sumiam os termos que ninguém tinha tocado desde ela. O glossário enviado renova
+os seus termos naquele instante, então só eles sobrevivem.
+
+| Nome     | Sem glossário                                   | Com glossário                    |
+|----------|-------------------------------------------------|----------------------------------|
+| Carrot   | "Cenoura" no p00, "Carrot!" no p02              | "Cenoura" nas duas               |
+| Coriander| "Coentro" no p04, "Coriander" no p05            | "Coentro" no p04 e no p05        |
+| Pimienta | "Pimenta" no p00/p03, "Pepper voltou" no p05    | "Pimenta" em todas               |
+
+As três inconsistências caem para zero. A qualidade é igual nos dois lotes (12 OK, 1 para revisão).
+
+O glossário fixa a **primeira** decisão, mesmo quando ela traduz o nome ("Coentro"). O que ele garante é consistência,
+não a escolha.
+
+Os nomes que a revisão lista também entram, e alguns são palavras comuns com maiúscula ("Gentlemen", "Aquí", "Un").
+Eles já entravam na memória do servidor; com o glossário, passam a durar o capítulo inteiro. Por enquanto, o filtro
+continua sendo o da memória.
+
 ## Ordem das páginas
 
 A primeira decisão vale, então uma página traduzida ao mesmo tempo que a que decide um nome não o vê. No primeiro
