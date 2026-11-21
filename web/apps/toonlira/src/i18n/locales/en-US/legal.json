@@ -132,7 +132,7 @@
     "privacy": {
         "title": "Privacy Policy",
         "sub": "What we collect, why, and how you stay in control of what's yours.",
-        "updated": "November 1, 2026",
+        "updated": "11/15/2026",
         "version": "Version 1.1",
         "toc": {
             "tldr": "01. Quick summary",
@@ -213,10 +213,10 @@
                 "lead": "We share data only with:",
                 "items": [
                     "<strong>Firebase Hosting</strong> — delivery of public web pages;",
-                    "<strong>Google Cloud</strong> — gateway infrastructure and processing through Cloud Vision and Cloud Translation;",
+                    "<strong>Google Cloud</strong> — gateway infrastructure and processing by Cloud Vision, Cloud Translation and, when language-model review is enabled, Gemini on Vertex AI (only the extracted text and the machine translation, never the image);",
                     "<strong>Public authorities</strong> — when required by law or a valid order."
                 ],
-                "outro": "According to official Google Cloud documentation, Google Cloud Vision and Cloud Translation do not use submitted customer content to train or improve their models. Providers process data to deliver and protect the contracted services."
+                "outro": "According to Google Cloud's official documentation, Google Cloud Vision and Cloud Translation do not use submitted content to train or improve their models. With Gemini on Vertex AI, inputs and responses may be kept in a project-isolated cache for up to 24 hours, only to serve requests, and that cache is not used to train models. The providers process data to deliver and protect the contracted services."
             },
             "cookies": {
                 "title": "Cookies",
@@ -252,7 +252,7 @@
             },
             "internacional": {
                 "title": "International transfers",
-                "p1": "The gateway is planned for São Paulo, Brazil. Synchronous OCR uses Cloud Vision’s regional us endpoint. Translation uses Cloud Translation’s global endpoint without a guarantee of remaining in a specific region. Consent identifies these subprocessors and locations before sending."
+                "p1": "The gateway is planned for São Paulo, Brazil. Synchronous OCR uses Cloud Vision’s regional us endpoint. Translation uses Cloud Translation’s global endpoint without a guarantee of remaining in a specific region. When enabled, language-model review (Gemini on Vertex AI) receives only the extracted text, never the image. Consent identifies these subprocessors and locations before sending."
             },
             "dpo": {
                 "title": "Privacy contact",

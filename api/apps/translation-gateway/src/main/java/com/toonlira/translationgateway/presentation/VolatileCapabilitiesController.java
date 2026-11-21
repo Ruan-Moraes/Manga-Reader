@@ -43,11 +43,14 @@ public class VolatileCapabilitiesController {
             installationQuota, globalQuota,
             new Disclosure(disclosure.getVersion(), disclosure.getOperatorName(), disclosure.getOperatorContact(),
                 disclosure.getTermsUrl(), disclosure.getPrivacyPolicyUrl(), "southamerica-east1", "us", "global",
+                VolatileGatewayPolicy.languageModelLocation(properties),
                 "in-memory-only", "user-device", true, "uuid-v7", 604800, disclosure.getProviderTrainingPolicy())));
     }
     public record Limits(List<String> mimeTypes, long maxBytes, int maxWidthPx, int maxHeightPx, long maxPixels, long maxResultBytes, int maxManifestBytes) { }
     public record Disclosure(String version, String operatorName, String operatorContact, String termsUrl, String privacyPolicyUrl,
-                             String gatewayRegion, String ocrRegion, String translationLocation, String contentProcessing,
+                             String gatewayRegion, String ocrRegion, String translationLocation,
+                             /** Vertex AI location of the optional language review (text only); null while it is off. */
+                             String languageModelLocation, String contentProcessing,
                              String resultStorage, boolean sanitizedOperationalLogs, String idempotencyKeyFormat,
                              int receiptValiditySeconds, String providerTrainingPolicy) { }
     public record Capabilities(String contractVersion, String gatewayKey, Instant generatedAt, Instant validUntil, boolean enabled, String transport,

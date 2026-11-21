@@ -67,3 +67,13 @@ registra escopo, hash e limitação visual. Este resultado substitui a afirmaç�
 anterior de ausência de qualquer ciclo Android nesta rodada, mas não comprova
 interrupção, todos os idiomas, aparelho físico ou acessibilidade. TASK-007 e o
 verdict `verification-pending` permanecem abertos.
+
+## Integração da pilha do gateway — 2026-11-21
+
+A pilha `feat/glossary-names-and-reader-fade` (commit `f0a6eb01`) implementou a 021 sobre o contrato armazenado (v1):
+acompanhar o job até READY, baixar resultado e manifesto por URL assinada, gravar e confirmar (ACK), na feature
+`acquire-remote-result`. Na integração com a branch do PR, essa implementação foi substituída pela do PR sobre o
+contrato volátil (v2), `acquire-remote-translation-result`, que recebe página e manifesto na mesma resposta. O que
+a v1 da pilha acrescentava e continua valendo foi levado à v2: o leitor parcial (página sem resultado mostra o
+original, atualização a cada 4 s), o manifesto 1.2 e os termos do capítulo (MOB-FEAT-023). O registro anterior
+continua no histórico (`git show f0a6eb01:mobile/docs/specs/features/MOB-FEAT-021-local-translation-result-reader/<arquivo>`).

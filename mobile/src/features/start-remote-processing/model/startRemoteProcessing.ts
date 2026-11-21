@@ -57,7 +57,9 @@ interface Dependencies {
     identity: RemoteProcessingIdentity;
     files: PrivateBatchFiles;
     createTransport(): RemoteGatewayTransport;
-    createVolatileTransport?(): ReturnType<typeof createVolatileTranslationTransport>;
+    /** The glossary call is optional for test doubles; production transports always have it. */
+    createVolatileTransport?(): Pick<ReturnType<typeof createVolatileTranslationTransport>, 'process'> &
+        Partial<Pick<ReturnType<typeof createVolatileTranslationTransport>, 'seedGlossary'>>;
     readBytes?(uri: string): Promise<Uint8Array<ArrayBuffer>>;
     hashBytes?: typeof sha256Bytes;
     now(): number;
@@ -213,6 +215,27 @@ export function createStartRemoteProcessingController(d: Dependencies): StartRem
                     if (attempt.status !== 'SUBMITTING' || abort.signal.aborted) throw new Error('cancellation-unavailable');
                     const transport =
                         d.createVolatileTransport?.() ?? createVolatileTranslationTransport(process.env.EXPO_PUBLIC_TRANSLATION_GATEWAY_URL ?? '');
+                    // MOB-FEAT-022/023: every page of the project carries its chapter reference; the names already
+                    // decided for it go first, so a pause past the gateway's memory never changes them. Best effort.
+                    const contextRef = await d.projects.ensureContextRef(project.id, d.uuid());
+                    const terms = await d.projects.listTerms(project.id);
+                    if (terms.length && transport.seedGlossary) {
+                        try {
+                            await transport.seedGlossary(
+                                {
+                                    token: session.accessToken,
+                                    contextRef,
+                                    sourceLanguage: project.sourceLanguage,
+                                    targetLanguage: project.targetLanguage,
+                                    disclosureVersion: capabilities.disclosure.version,
+                                    terms,
+                                },
+                                abort.signal,
+                            );
+                        } catch {
+                            if (abort.signal.aborted) throw new Error('cancellation-unavailable');
+                        }
+                    }
                     const bytes = await transport.process(
                         {
                             token: session.accessToken,
@@ -224,6 +247,7 @@ export function createStartRemoteProcessingController(d: Dependencies): StartRem
                             sourceLanguage: project.sourceLanguage,
                             targetLanguage: project.targetLanguage,
                             disclosureVersion: capabilities.disclosure.version,
+                            contextRef,
                         },
                         abort.signal,
                     );

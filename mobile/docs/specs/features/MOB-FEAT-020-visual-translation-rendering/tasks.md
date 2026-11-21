@@ -63,3 +63,11 @@ A tradução sintética real e a operação temporária estão registradas em
 [registro operacional](../../../../../api/apps/translation-gateway/docs/private-android-test-2026-11-04.md).
 TASK-005, TASK-006 e TASK-007 permanecem abertas; a prova não substitui
 cancelamento explícito, qualidade visual e evidência física.
+
+## Integração da pilha do gateway — 2026-11-21
+
+A pilha `feat/glossary-names-and-reader-fade` (commit `f0a6eb01`) registrou nestes arquivos a validação do renderer
+no pipeline armazenado (v1): lotes pagos do corpus de 50 páginas, fontes Noto, WebP, manifesto com `quality`. Esse
+registro continua no histórico do git (`git show f0a6eb01:mobile/docs/specs/features/MOB-FEAT-020-visual-translation-rendering/<arquivo>`).
+Na integração com a branch do PR, o renderer passou a rodar na pipeline volátil (v2); ver
+`api/apps/translation-gateway/docs/architecture/volatile-pipeline-port.md`.

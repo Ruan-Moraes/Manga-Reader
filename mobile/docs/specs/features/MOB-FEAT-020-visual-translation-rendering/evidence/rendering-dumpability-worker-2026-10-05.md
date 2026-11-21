@@ -40,7 +40,7 @@ independente da plataforma; bootstrap do pai/operação continuam sem admissão.
 
 ## Harness preparado, sem resultado aprovado
 
-[Plano anterior ao código](../../../../../../api/apps/translation-gateway/docs/rendering-worker-linux.md),
+[Plano anterior ao código](../../../../../../api/apps/translation-gateway/docs/rendering/rendering-worker-linux.md),
 [teste](../../../../../../api/apps/translation-gateway/src/test/java/com/toonlira/translationgateway/infrastructure/rendering/NativeRenderingWorkerLinuxTest.java)
 e [main](../../../../../../api/apps/translation-gateway/src/test/java/com/toonlira/translationgateway/infrastructure/rendering/NativeRenderingWorkerProbe.java)
 preparam Spring/Flyway V1–V7/PostgreSQL 17, MockMvc/filtros, storage/renderer reais.

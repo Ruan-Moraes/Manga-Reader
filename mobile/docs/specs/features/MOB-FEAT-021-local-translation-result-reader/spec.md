@@ -89,6 +89,28 @@ viram resultado pronto. Preservar original, drafts e resultados anteriores.
 Alteração de schema exige plano e migration próprios antes do código; não
 inventar um novo banco ou documento paralelo para armazenar o manifesto.
 
+## Reconciliação com o código atual — 2026-11-18
+
+Esta seção não muda requisitos nem critérios. Ela só ajusta onde cada um é atendido, porque outras specs
+entregaram partes da 021 antes dela.
+
+- **Persistência:**
+    - `translation_page_results`, `text_regions` e `text_region_vertices` (com `auto_opened_at`) já existem no
+      SQLite v9 da `MOB-FEAT-025`;
+    - a 021 só acrescenta `result_acknowledged_at` em `remote_processing_attempts` (SQLite v10), para retomar o ACK.
+- **Manifesto:**
+    - o resultado `READY` entrega o manifesto do render (`version` `1.1`): regiões com texto, polígono, `overflow`,
+      `kept` e `quality`;
+    - não entrega o manifesto de tradução 1.0 que `parseLocalTranslationManifest` lê;
+    - a 021 valida esse documento com um parser próprio em `entities/local-translation-result`.
+- **Leitor:**
+    - o leitor local unificado da `MOB-FEAT-051` (`pages/offline-translation/ui/LocalTranslationReaderPage.tsx`,
+      rota `translation-reader`) já mostra resultado, original e fallback;
+    - a 021 grava o resultado `REMOTE` e navega para esse leitor, em vez de criar um leitor novo.
+- **Acompanhamento:**
+    - fica em `features/acquire-remote-result`, compondo com start e cancel no widget `remote-processing`;
+    - a barra de cinco etapas usa `ProgressSteps` de `shared/ui`.
+
 ## Arquitetura FSD planejada
 
 ```text
@@ -203,3 +225,13 @@ retorno ao cliente e logs operacionais padrão sanitizados; depois pediu substit
 as especificações antigas por esse requisito. Aprovação inicial do slice em
 2026-08-15 permanece no histórico. Esta revisão não autoriza deploy, chamadas
 pagas, nova infraestrutura ou publicação de textos legais sem o fluxo pertinente.
+
+## Integração da pilha do gateway — 2026-11-21
+
+A pilha `feat/glossary-names-and-reader-fade` (commit `f0a6eb01`) implementou a 021 sobre o contrato armazenado (v1):
+acompanhar o job até READY, baixar resultado e manifesto por URL assinada, gravar e confirmar (ACK), na feature
+`acquire-remote-result`. Na integração com a branch do PR, essa implementação foi substituída pela do PR sobre o
+contrato volátil (v2), `acquire-remote-translation-result`, que recebe página e manifesto na mesma resposta. O que
+a v1 da pilha acrescentava e continua valendo foi levado à v2: o leitor parcial (página sem resultado mostra o
+original, atualização a cada 4 s), o manifesto 1.2 e os termos do capítulo (MOB-FEAT-023). O registro anterior
+continua no histórico (`git show f0a6eb01:mobile/docs/specs/features/MOB-FEAT-021-local-translation-result-reader/<arquivo>`).

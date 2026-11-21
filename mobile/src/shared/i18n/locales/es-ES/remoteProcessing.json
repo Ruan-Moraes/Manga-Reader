@@ -1,6 +1,6 @@
 {
     "title": "Procesamiento remoto",
-    "description": "Envía solo la primera página para iniciar la prueba de procesamiento.",
+    "description": "Envía las páginas del proyecto, en orden de lectura y en lotes pequeños, para reconocer, traducir y montar las imágenes traducidas.",
     "actions": {
         "start": "Iniciar procesamiento",
         "check": "Comprobar envío",
@@ -29,7 +29,7 @@
         "FAILED": "El procesamiento remoto falló.",
         "CANCEL_PENDING": "El gateway todavía está confirmando la cancelación.",
         "CANCELLED": "El gateway confirmó la cancelación.",
-        "RESULT_EXPIRED": "El resultado remoto caducó."
+        "RESULT_EXPIRED": "El resultado remoto caducó antes de la descarga. La página debe procesarse de nuevo."
     },
     "errors": {
         "consent-required": "Revisa y acepta la información antes del envío.",
@@ -49,9 +49,10 @@
         "title": "¿Autorizar el envío de la primera página?",
         "description": "La página {{page}} se enviará para reconocer texto, traducirlo y preparar una imagen traducida.",
         "network": "Se requiere internet. El procesamiento no ocurre completamente en este dispositivo.",
-        "data": "Enviamos los bytes de la imagen, incluido el texto visible, MIME, dimensiones, idiomas e identificadores del intento. El texto reconocido se usa para traducir. La aplicación no añade el nombre del archivo, la ruta local ni la cuenta a la solicitud; la propia imagen puede contener datos personales.",
+        "data": "Enviamos los bytes de la imagen, incluido el texto visible, MIME, dimensiones, idiomas e identificadores del intento. El texto reconocido se usa para traducir. También enviamos los nombres que el servicio ya tradujo en este proyecto (como nombres de personajes), para mantenerlos iguales entre las páginas; el servicio guarda esos nombres, sin la imagen, hasta 1 hora después de la última página del capítulo. La aplicación no añade el nombre del archivo, la ruta local ni la cuenta a la solicitud; la propia imagen puede contener datos personales.",
         "operator": "Operación: {{operator}} ({{contact}}), usando servicios de Google Cloud.",
         "regions": "El gateway opera en {{gateway}}. El OCR usa la región estadounidense {{ocr}}. La traducción usa el endpoint {{translation}}, sin garantía de permanecer en una región específica.",
+        "languageModel": "Una capa de lenguaje (Gemini, Google Vertex AI) revisa el texto reconocido y la traducción en la región {{location}}. Solo recibe el texto de la página, nunca la imagen.",
         "retention": "La imagen, el OCR, la traducción y el resultado pasan solo por la memoria del servidor durante la sesión. La aplicación guarda el original y el resultado en este dispositivo. Mantenemos logs operativos saneados y recibos mínimos de seguridad e idempotencia, sin imágenes ni textos. La clave del recibo tiene una validez absoluta de siete días. La limpieza física depende del vencimiento de la clave, la antigüedad del recibo y la disponibilidad de la base de datos; los registros siguen una política propia.",
         "training": "Política de entrenamiento del proveedor: {{policy}}",
         "cancellation": "Desconectar no confirma la cancelación de una llamada externa en curso. Si falla la entrega, no hay contenido recuperable en el servidor; un nuevo procesamiento requiere tu decisión y puede volver a consumir los servicios.",

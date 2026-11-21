@@ -78,7 +78,7 @@ durante testes comuns, provider ou instalação/reinstalação de dependências.
 
 ## Gates e limites
 
-Node `node --test scripts/*.test.mjs`: 85 pass, um opt-in de fontes não
+Node `node --test scripts/*/*.test.mjs`: 85 pass, um opt-in de fontes não
 selecionado, zero failures, exit 0. Web `pnpm exec tsc -b`: exit 0.
 Maven global `./mvnw -o -q test` com Docker e opt-ins native/archive/Linux/
 resources/shared/shared.resources: exit 0. **1.027 testes gateway/90 classes**,

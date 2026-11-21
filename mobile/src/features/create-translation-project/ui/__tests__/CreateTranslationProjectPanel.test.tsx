@@ -97,20 +97,25 @@ describe('MOB-FEAT-016 project UI', () => {
     });
 });
 
-it.each([
-    ['pt-BR', 'As páginas e os idiomas estão salvos neste aparelho.'],
-    ['en-US', 'The pages and language pair are saved on this device.'],
-    ['es-ES', 'Las páginas y los idiomas están guardados en este dispositivo.'],
-])('does not claim processing has not started for an already READY project in %s', async (locale, description) => {
-    await i18n.changeLanguage(locale);
-    const ready: TranslationProject = { ...project, status: 'READY', pages: project.pages.map(page => ({ ...page, status: 'READY' })) };
-    render(
-        <CreateTranslationProjectPanel
-            draft={null}
-            onDraftConsumed={jest.fn()}
-            controller={{ initialize: jest.fn(async () => ready), prepare: jest.fn(async () => ready) }}
-        />,
-    );
-    expect(await screen.findByText(description)).toBeOnTheScreen();
-    expect(screen.queryByText(i18n.t('launcher:offline.project.preparedDescription'))).toBeNull();
+describe('MOB-FEAT-024/AC-003 the project card follows the project state', () => {
+    it.each([
+        ['pt-BR', 'PROCESSING', 'Tradução em andamento'],
+        ['pt-BR', 'QUEUED', 'Tradução em andamento'],
+        ['pt-BR', 'READY', 'Tradução pronta'],
+        ['pt-BR', 'FAILED', 'A tradução falhou em alguma página'],
+        ['pt-BR', 'CANCELLED', 'Tradução cancelada'],
+        ['en-US', 'READY', 'Translation ready'],
+        ['es-ES', 'PROCESSING', 'Traducción en curso'],
+    ] as const)('%s, %s: "%s", never "processing has not started"', async (locale, status, title) => {
+        await i18n.changeLanguage(locale);
+        render(
+            <CreateTranslationProjectPanel
+                draft={null}
+                onDraftConsumed={jest.fn()}
+                controller={{ initialize: jest.fn(async () => ({ ...project, status })), prepare: jest.fn(async () => project) }}
+            />,
+        );
+        expect(await screen.findByText(title)).toBeOnTheScreen();
+        expect(screen.queryByText(/ainda não começou|has not started yet|aún no ha comenzado/)).toBeNull();
+    });
 });

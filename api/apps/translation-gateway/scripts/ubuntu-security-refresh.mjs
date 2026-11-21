@@ -1,4 +1,4 @@
-import { prepareBase } from "./ubuntu-base-update.mjs";
+import { prepareBase } from "./native-image/ubuntu-base-update.mjs";
 
 // Separate opt-in route: the original two-package default is unchanged.
 try {

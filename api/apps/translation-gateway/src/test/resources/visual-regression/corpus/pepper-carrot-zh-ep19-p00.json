@@ -1,0 +1,31 @@
+{
+  "root" : "corpus",
+  "page" : "pepper-carrot-zh-ep19/p00.jpg",
+  "sourceLanguage" : "zh-Hans",
+  "width" : 1200,
+  "height" : 287,
+  "regions" : [ {
+    "source" : "Pepper & Carrot\n",
+    "translation" : "Pepper & Carrot",
+    "kind" : "text_free",
+    "polygon" : [ [ 0.18, 0.20209059233449478 ], [ 0.8058333333333333, 0.1916376306620209 ], [ 0.8066666666666666, 0.7003484320557491 ], [ 0.18083333333333335, 0.710801393728223 ] ]
+  }, {
+    "source" : "第19集:环境污染\n",
+    "translation" : "Episódio 19: Poluição Ambiental",
+    "kind" : "text_free",
+    "polygon" : [ [ 0.3625, 0.7630662020905923 ], [ 0.5991666666666666, 0.7630662020905923 ], [ 0.5991666666666666, 0.8780487804878049 ], [ 0.3625, 0.8780487804878049 ] ]
+  } ],
+  "bubbles" : [ ],
+  "expect" : {
+    "maxChangedOutside" : 1533,
+    "regions" : [ {
+      "overflow" : true,
+      "font" : 0,
+      "residualInk" : 0
+    }, {
+      "overflow" : false,
+      "font" : 31,
+      "residualInk" : 0
+    } ]
+  }
+}

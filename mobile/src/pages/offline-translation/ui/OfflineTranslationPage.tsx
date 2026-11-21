@@ -4,7 +4,7 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 
 import { isMediaValidationReady, type LocalMediaImportDraft } from '@/entities/local-media-import';
-import type { TranslationProject } from '@/entities/translation-project';
+import { type TranslationProject } from '@/entities/translation-project';
 import { type CreateTranslationProjectController, CreateTranslationProjectPanel } from '@/features/create-translation-project';
 import { ImportLocalMediaPanel, type LocalMediaImportController, localMediaImportController } from '@/features/import-local-media';
 import { GenerateDemoTranslationPanel, openLocalTranslationResultController } from '@/features/local-translation';

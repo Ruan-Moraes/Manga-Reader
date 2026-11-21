@@ -19,8 +19,22 @@ export interface VolatileTranslationRequest {
     sourceLanguage: string;
     targetLanguage: string;
     disclosureVersion: string;
+    /** Opaque chapter reference drawn per project (never a library id): the gateway keeps the chapter's names. */
+    contextRef?: string;
     body: Uint8Array<ArrayBuffer>;
 }
+/** The project's chapter glossary, sent before its pages so the gateway's chapter memory is refilled (MOB-FEAT-023). */
+export interface ChapterGlossaryRequest {
+    token: string;
+    contextRef: string;
+    sourceLanguage: string;
+    targetLanguage: string;
+    disclosureVersion: string;
+    terms: readonly { source: string; target: string }[];
+}
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+const MAX_GLOSSARY_TERMS = 256;
+const GLOSSARY_TIMEOUT_MS = 30_000;
 /** Framing is verified here; image/manifest hashes and semantic binding still require the domain parser. */
 export interface UnverifiedVolatileResponse {
     manifest: Uint8Array<ArrayBuffer>;
@@ -142,7 +156,8 @@ export function createVolatileTranslationTransport(origin: string, fetcher: type
                 request.widthPx * request.heightPx > 80_000_000 ||
                 !/^[A-Za-z-]{2,16}$/.test(request.sourceLanguage) ||
                 !/^[A-Za-z-]{2,16}$/.test(request.targetLanguage) ||
-                !/^volatile-[A-Za-z0-9._-]{1,55}$/.test(request.disclosureVersion)
+                !/^volatile-[A-Za-z0-9._-]{1,55}$/.test(request.disclosureVersion) ||
+                (request.contextRef !== undefined && !UUID.test(request.contextRef))
             )
                 throw new VolatileTranslationTransportError('invalid-request');
             const controller = new AbortController();
@@ -172,6 +187,7 @@ export function createVolatileTranslationTransport(origin: string, fetcher: type
                         'X-Source-Language': request.sourceLanguage,
                         'X-Target-Language': request.targetLanguage,
                         'X-Disclosure-Version': request.disclosureVersion,
+                        ...(request.contextRef ? { 'X-Context-Ref': request.contextRef } : {}),
                     },
                 });
                 reader = response.body?.getReader();
@@ -232,6 +248,48 @@ export function createVolatileTranslationTransport(origin: string, fetcher: type
                 }
                 if (reader && !transferred) void reader.cancel().catch(() => undefined);
                 reader?.releaseLock();
+            }
+        },
+        /** Best effort for the caller: a refusal only means the next page starts without the chapter's names. */
+        async seedGlossary(request: ChapterGlossaryRequest, external?: AbortSignal): Promise<void> {
+            if (
+                !request.token ||
+                request.token.length > 512 ||
+                !UUID.test(request.contextRef) ||
+                !/^[A-Za-z-]{2,16}$/.test(request.sourceLanguage) ||
+                !/^[A-Za-z-]{2,16}$/.test(request.targetLanguage) ||
+                !/^volatile-[A-Za-z0-9._-]{1,55}$/.test(request.disclosureVersion) ||
+                request.terms.length === 0 ||
+                request.terms.length > MAX_GLOSSARY_TERMS
+            )
+                throw new VolatileTranslationTransportError('invalid-request');
+            const target = new URL(`/v2/page-translations/chapter-contexts/${request.contextRef}/glossary`, base);
+            target.searchParams.set('sourceLanguage', request.sourceLanguage);
+            target.searchParams.set('targetLanguage', request.targetLanguage);
+            const controller = new AbortController();
+            const abort = () => controller.abort();
+            external?.addEventListener('abort', abort, { once: true });
+            const timer = setTimeout(abort, GLOSSARY_TIMEOUT_MS);
+            try {
+                const response = await fetcher(target.toString(), {
+                    method: 'PUT',
+                    redirect: 'error',
+                    signal: controller.signal,
+                    body: JSON.stringify(request.terms.map(term => ({ source: term.source, target: term.target }))),
+                    headers: {
+                        Authorization: `Bearer ${request.token}`,
+                        'Content-Type': 'application/json',
+                        'X-Disclosure-Version': request.disclosureVersion,
+                    },
+                });
+                void response.body?.cancel().catch(() => undefined);
+                if (response.status !== 204) throw new VolatileTranslationTransportError(response.status === 401 ? 'unauthorized' : 'ambiguous');
+            } catch (error) {
+                if (error instanceof VolatileTranslationTransportError) throw error;
+                throw new VolatileTranslationTransportError(controller.signal.aborted ? 'aborted' : 'ambiguous');
+            } finally {
+                clearTimeout(timer);
+                external?.removeEventListener('abort', abort);
             }
         },
     };

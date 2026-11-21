@@ -2,6 +2,7 @@ package com.toonlira.translationgateway.infrastructure.persistence;
 
 import com.toonlira.translationgateway.application.port.ResultDownloadRepository;
 import com.toonlira.translationgateway.domain.rendering.ReadyResultReference;
+import com.toonlira.translationgateway.domain.rendering.RenderTextCounts;
 import java.time.OffsetDateTime;
 import java.util.Optional;
 import java.util.UUID;
@@ -12,7 +13,9 @@ import org.springframework.stereotype.Repository;
 public class JdbcResultDownloadRepository implements ResultDownloadRepository {
     static final String READY_PROJECTION = """
         SELECT j.width_px, j.height_px, s.rendered_image_object_key, s.rendered_image_sha256,
-               s.rendered_image_byte_size, s.output_object_key, s.output_sha256, s.completed_at, s.result_expires_at
+               s.rendered_image_byte_size, s.output_object_key, s.output_sha256, s.completed_at, s.result_expires_at,
+               s.rendered_text_region_count AS text_regions, s.rendered_text_missing_count AS text_missing,
+               s.rendered_text_small_count AS text_small
         FROM processing_jobs j JOIN processing_job_stages s ON s.job_id = j.id AND s.stage = 'RENDERING'
         WHERE j.installation_id = :owner AND j.job_ref = :ref AND j.status = 'READY' AND s.status = 'SUCCEEDED'
         FOR UPDATE OF j
@@ -26,7 +29,18 @@ public class JdbcResultDownloadRepository implements ResultDownloadRepository {
                 row.getString("rendered_image_object_key"), row.getString("rendered_image_sha256"),
                 row.getLong("rendered_image_byte_size"), row.getString("output_object_key"),
                 row.getString("output_sha256"), row.getObject("completed_at", OffsetDateTime.class).toInstant(),
-                row.getObject("result_expires_at", OffsetDateTime.class).toInstant()))
+                row.getObject("result_expires_at", OffsetDateTime.class).toInstant(), textCounts(row)))
             .optional();
+    }
+
+    /**
+     * Both counts are null together (results rendered before V10) or hold the render's text counts; the small-text
+     * count is null for results rendered before V11, which then report no small text.
+     */
+    static RenderTextCounts textCounts(java.sql.ResultSet row) throws java.sql.SQLException {
+        var regions = row.getObject("text_regions", Integer.class);
+        var missing = row.getObject("text_missing", Integer.class);
+        var small = row.getObject("text_small", Integer.class);
+        return regions == null || missing == null ? null : new RenderTextCounts(regions, missing, small == null ? 0 : small);
     }
 }

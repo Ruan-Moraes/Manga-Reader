@@ -34,15 +34,15 @@ sem Python, Pillow, Maven ou instalação automática. Substituir os caminhos ab
 pelos existentes na máquina; os comandos não fazem reconhecimento.
 
 ```bash
-node api/apps/translation-gateway/scripts/ocr-calibration.mjs prepare \
+node api/apps/translation-gateway/scripts/ocr/ocr-calibration.mjs prepare \
   --id ja-kanji-java-20260927-a \
   --font '/caminho/local/fonte.ttc' --font-index 0
 
-node api/apps/translation-gateway/scripts/ocr-calibration.mjs report \
+node api/apps/translation-gateway/scripts/ocr/ocr-calibration.mjs report \
   --id ja-kanji-java-20260927-a
 
 OCR_CALIBRATION_FONT='/caminho/local/fonte.ttc' node --test \
-  api/apps/translation-gateway/scripts/ocr-calibration.test.mjs
+  api/apps/translation-gateway/scripts/ocr/ocr-calibration.test.mjs
 ```
 
 O teste de renderização exige a variável de fonte; sem ela, esse teste fica
@@ -58,7 +58,7 @@ conjunto em x=600. Nenhuma mudança de sequência, fonte, tamanho, coordenadas
 verticais ou ordem. O controle horizontal permanece idêntico.
 
 ```bash
-node api/apps/translation-gateway/scripts/ocr-calibration.mjs prepare \
+node api/apps/translation-gateway/scripts/ocr/ocr-calibration.mjs prepare \
   --id ja-kanji-wide-01 --recipe kanji-grid-wide-1 \
   --font '/caminho/local/fonte.ttc' --font-index 0
 ```

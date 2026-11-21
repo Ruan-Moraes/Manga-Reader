@@ -126,7 +126,7 @@ class ProcessVolatilePageUseCaseTest {
 
     @Test void bindsNonemptyOcrTranslationAndRenderInMemoryWithoutLoggingContent() throws Exception {
         accepted();
-        var region = new OcrManifest.Region(UUID.randomUUID(), 0, "PRIVATE_SOURCE_TEXT", List.of(
+        var region = new OcrManifest.Region(UUID.randomUUID(), 0, "PRIVATE SOURCE TEXT", List.of(
             new OcrManifest.Vertex(.1, .1), new OcrManifest.Vertex(.9, .1), new OcrManifest.Vertex(.9, .9), new OcrManifest.Vertex(.1, .9)));
         when(ocr.recognize(any(), anyString(), any(), anyInt(), anyInt())).thenReturn(List.of(region));
         when(translation.translate(any())).thenAnswer(call -> {
@@ -155,7 +155,7 @@ class ProcessVolatilePageUseCaseTest {
             assertThat(json.path("regions").get(0).path("translatedText").asText()).isEqualTo("PRIVATE_TRANSLATED_TEXT");
         });
             var logs = appender.list.stream().map(ch.qos.logback.classic.spi.ILoggingEvent::getFormattedMessage).collect(java.util.stream.Collectors.joining("\n"));
-            assertThat(logs).doesNotContain("PRIVATE_SOURCE_TEXT", "PRIVATE_TRANSLATED_TEXT", key.toString());
+            assertThat(logs).doesNotContain("PRIVATE SOURCE TEXT", "PRIVATE_TRANSLATED_TEXT", key.toString());
             assertThat(logs).contains("event=reserved", "event=produced", "outcome=response-written");
         } finally {
             logger.detachAppender(appender); appender.stop(); logger.setLevel(previous);
@@ -205,7 +205,7 @@ class ProcessVolatilePageUseCaseTest {
     @Test void abandonmentDuringTranslationEncodingCannotStartNativeRender() {
         accepted(); validNonemptyProviders();
         doAnswer(call -> { var encoded = call.callRealMethod(); abandoned.set(true); return encoded; })
-            .when(translationManifests).encode(any(), anyString());
+            .when(translationManifests).encode(any(), anyString(), any());
         expectAbandoned();
         verify(translation).translate(any());
         verify(renderer, never()).render(any(), any());

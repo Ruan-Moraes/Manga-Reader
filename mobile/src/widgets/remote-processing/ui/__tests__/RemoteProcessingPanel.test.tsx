@@ -72,6 +72,7 @@ const capabilities: RemoteProcessingCapabilities = {
         gatewayRegion: 'southamerica-east1',
         ocrRegion: 'us',
         translationLocation: 'global',
+        languageModelLocation: null,
         contentProcessing: 'in-memory-only',
         resultStorage: 'user-device',
         sanitizedOperationalLogs: true,

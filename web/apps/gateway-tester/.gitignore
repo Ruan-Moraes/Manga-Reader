@@ -32,3 +32,6 @@ coverage
 .idea
 *.swp
 *.swo
+
+# Validation corpus: pages are versioned; batch outputs are generated per machine (see corpus/README.md)
+corpus/runs/

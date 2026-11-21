@@ -172,6 +172,9 @@ export function RemoteProcessingPanel({
                                     translation: capability.disclosure.translationLocation,
                                 })}
                             </AppText>
+                            {capability.disclosure.languageModelLocation ? (
+                                <AppText>{t('disclosure.languageModel', { location: capability.disclosure.languageModelLocation })}</AppText>
+                            ) : null}
                             <AppText>{t('disclosure.retention')}</AppText>
                             <AppText>{t('disclosure.training', { policy: capability.disclosure.providerTrainingPolicy })}</AppText>
                             <AppText>{t('disclosure.cancellation')}</AppText>

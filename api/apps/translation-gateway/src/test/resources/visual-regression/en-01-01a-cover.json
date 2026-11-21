@@ -1,0 +1,120 @@
+{
+  "page" : "ubunchu-en/ch01/rtl-01a-title.png",
+  "sourceLanguage" : "en",
+  "width" : 1246,
+  "height" : 1635,
+  "regions" : [ {
+    "source" : "The World's First? Ubuntu Romantic School Comedy:",
+    "translation" : "A primeira comédia romântica escolar Ubuntu do mundo?",
+    "kind" : "text_free",
+    "polygon" : [ [ 0.21669341894060995, 0.012844036697247707 ], [ 0.6308186195826645, 0.012844036697247707 ], [ 0.6308186195826645, 0.04709480122324159 ], [ 0.21669341894060995, 0.04709480122324159 ] ]
+  }, {
+    "source" : "Ubunchu!\n",
+    "translation" : " Ubunchu!",
+    "kind" : "text_free",
+    "polygon" : [ [ 0.03210272873194221, 0.03730886850152905 ], [ 0.7744783306581059, 0.03730886850152905 ], [ 0.7744783306581059, 0.15412844036697249 ], [ 0.03210272873194221, 0.15412844036697249 ] ]
+  }, {
+    "source" : "WE BY HIROSHI SEO http://www.aerialline.com/",
+    "translation" : " WE, de Hiroshi Seo http://www.aerialline.com/",
+    "kind" : "text_free",
+    "polygon" : [ [ 0.7536115569823435, 0.11070336391437309 ], [ 0.9767255216693419, 0.11070336391437309 ], [ 0.9767255216693419, 0.17553516819571865 ], [ 0.7536115569823435, 0.17553516819571865 ] ]
+  }, {
+    "source" : "RtL Edition\n",
+    "translation" : " Edição RtL",
+    "kind" : "text_free",
+    "polygon" : [ [ 0.045746388443017656, 0.9302752293577982 ], [ 0.11637239165329052, 0.9308868501529052 ], [ 0.11637239165329052, 0.9376146788990826 ], [ 0.045746388443017656, 0.9370030581039756 ] ]
+  }, {
+    "source" : "ubuntu\n",
+    "translation" : " ubuntu",
+    "kind" : "text_free",
+    "polygon" : [ [ 0.10032102728731943, 0.6648318042813456 ], [ 0.08587479935794542, 0.6012232415902141 ], [ 0.10513643659711075, 0.5981651376146789 ], [ 0.12038523274478331, 0.6623853211009174 ] ]
+  }, {
+    "source" : "Rev 03 2009-04-15\n",
+    "translation" : " Rev. 03 15/04/2009",
+    "kind" : "text_free",
+    "polygon" : [ [ 0.020064205457463884, 0.9425076452599388 ], [ 0.1420545746388443, 0.9425076452599388 ], [ 0.1420545746388443, 0.9492354740061162 ], [ 0.020064205457463884, 0.9492354740061162 ] ]
+  }, {
+    "source" : "CC\n",
+    "translation" : " CC",
+    "kind" : "unknown",
+    "polygon" : [ [ 0.02969502407704655, 0.9706422018348624 ], [ 0.048956661316211875, 0.9706422018348624 ], [ 0.048956661316211875, 0.9779816513761468 ], [ 0.02969502407704655, 0.9779816513761468 ] ]
+  }, {
+    "source" : "BY\n",
+    "translation" : " POR",
+    "kind" : "unknown",
+    "polygon" : [ [ 0.07704654895666131, 0.9840978593272172 ], [ 0.0898876404494382, 0.9840978593272172 ], [ 0.0898876404494382, 0.9896024464831804 ], [ 0.07704654895666131, 0.9896024464831804 ] ]
+  }, {
+    "source" : "NC\n",
+    "translation" : " NC",
+    "kind" : "unknown",
+    "polygon" : [ [ 0.10914927768860354, 0.9847094801223242 ], [ 0.12520064205457465, 0.9847094801223242 ], [ 0.12520064205457465, 0.9902140672782874 ], [ 0.10914927768860354, 0.9902140672782874 ] ]
+  }, {
+    "source" : "ubuntu\n",
+    "translation" : " ubuntu",
+    "kind" : "unknown",
+    "polygon" : [ [ 0.6621187800963082, 0.44831804281345566 ], [ 0.7102728731942215, 0.43669724770642204 ], [ 0.7134831460674157, 0.44464831804281346 ], [ 0.6653290529695024, 0.4562691131498471 ] ]
+  }, {
+    "source" : "Ubunty\n",
+    "translation" : " Ubuntu",
+    "kind" : "unknown",
+    "polygon" : [ [ 0.8017656500802568, 0.8422018348623853 ], [ 0.8491171749598716, 0.8819571865443425 ], [ 0.8306581059390048, 0.8948012232415902 ], [ 0.78330658105939, 0.8550458715596331 ] ]
+  }, {
+    "source" : "First Printed In: ASCII Magazine \"Kantan Ubuntu!\"\nPublished by: ASCII MEDIA WORKS Inc.\nhttp://ascii.asciimw.jp\nTranslated By: Fumihito Yoshida & Hajime Mizuno\nTranslation Editing By: Martin Owens & Arturo Silva",
+    "translation" : " Publicado originalmente na revista ASCII \"Kantan Ubuntu!\" Publicado por: ASCII MEDIA WORKS Inc. http://ascii.asciimw.jp Tradução: Fumihito Yoshida e Hajime Mizuno Edição da tradução: Martin Owens e Arturo Silva",
+    "kind" : "text_free",
+    "polygon" : [ [ 0.5304975922953451, 0.8874617737003058 ], [ 0.985553772070626, 0.8874617737003058 ], [ 0.985553772070626, 0.9785932721712538 ], [ 0.5304975922953451, 0.9785932721712538 ] ]
+  } ],
+  "bubbles" : [ ],
+  "expect" : {
+    "maxChangedOutside" : 410,
+    "regions" : [ {
+      "overflow" : false,
+      "font" : 19,
+      "residualInk" : 7
+    }, {
+      "overflow" : true,
+      "font" : 0,
+      "residualInk" : 0
+    }, {
+      "overflow" : false,
+      "font" : 22,
+      "residualInk" : 0
+    }, {
+      "overflow" : false,
+      "font" : 27,
+      "residualInk" : 0
+    }, {
+      "overflow" : true,
+      "font" : 0,
+      "residualInk" : 0
+    }, {
+      "overflow" : false,
+      "font" : 15,
+      "residualInk" : 0
+    }, {
+      "overflow" : true,
+      "font" : 0,
+      "residualInk" : 0
+    }, {
+      "overflow" : true,
+      "font" : 0,
+      "residualInk" : 0
+    }, {
+      "overflow" : true,
+      "font" : 0,
+      "residualInk" : 0
+    }, {
+      "overflow" : true,
+      "font" : 0,
+      "residualInk" : 0
+    }, {
+      "overflow" : true,
+      "font" : 0,
+      "residualInk" : 0
+    }, {
+      "overflow" : false,
+      "font" : 21,
+      "residualInk" : 0
+    } ]
+  }
+}

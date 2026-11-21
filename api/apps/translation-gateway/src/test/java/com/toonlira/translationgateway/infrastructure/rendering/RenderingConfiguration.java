@@ -24,7 +24,10 @@ public class RenderingConfiguration {
                 || !Files.isWritable(directory)) throw new IllegalStateException();
             var codec = new WebpProcessCodec(configuration.getEncoderPath(), configuration.getEncoderSha256(),
                 configuration.getDecoderPath(), configuration.getDecoderSha256(), configuration.getNativeTimeout());
-            return new LocalFileRenderAdapter(codec, new PageRasterPainter(new BundledRenderingFonts()), directory.toRealPath());
+            var model = configuration.getInpaintingModelPath();
+            var inpainter = model == null || model.toString().isBlank() ? null
+                : new LamaInpainter(model, configuration.getInpaintingThreads());
+            return new LocalFileRenderAdapter(codec, new PageRasterPainter(new BundledRenderingFonts(), inpainter), directory.toRealPath());
         } catch (Exception error) {
             // No cause: paths, parser details and native output must not escape initialization.
             throw new IllegalStateException("Renderer preparation unavailable");

@@ -25,13 +25,33 @@ const region = z
         translatedText: z.string().min(1).max(8192),
         polygon: z.array(vertex).min(4).max(8),
         overflow: z.boolean(),
-        fontSizePx: z.number().int().min(0).max(48),
+        // 1.2: retyped lettering (a title, a big shout) may be drawn up to 256 px; speech stays under 48.
+        fontSizePx: z.number().int().min(0).max(256),
+        // 1.2: the original stays on purpose (sound effects, signs), so it is not text left to review.
+        kept: z.boolean().optional(),
     })
     .strict();
+/** Trimmed, single line, within the gateway's bounds. */
+const termText = (max: number) =>
+    z
+        .string()
+        .min(1)
+        .max(max)
+        .refine(value => value === value.trim() && !/[\r\n]/.test(value));
+const termSchema = z.object({ source: termText(64), target: termText(128) }).strict();
+const qualitySchema = z
+    .object({
+        status: z.enum(['OK', 'NEEDS_REVIEW']),
+        issues: z.array(z.enum(['TEXT_NOT_RENDERED', 'ALL_TEXT_NOT_RENDERED', 'TEXT_TOO_SMALL'])).max(3),
+    })
+    .strict()
+    .refine(quality => new Set(quality.issues).size === quality.issues.length)
+    .refine(quality => (quality.status === 'OK') === (quality.issues.length === 0));
 const schema = z
     .object({
-        version: z.literal('1.0'),
-        policyVersion: z.enum(['clean-box-1.0', 'clean-box-1.1']),
+        // 1.2 (2026-11-21, MOB-FEAT-023/024): kept regions, page quality and the chapter names the page used.
+        version: z.enum(['1.0', '1.2']),
+        policyVersion: z.enum(['clean-box-1.0', 'clean-box-1.1', 'clean-box-1.2']),
         jobRef: z.uuid(),
         sourceLanguage: remoteLanguageSchema,
         targetLanguage: remoteLanguageSchema,
@@ -40,8 +60,18 @@ const schema = z
         translationSha256: hash,
         image: imageSchema,
         regions: z.array(region).max(1024),
+        quality: qualitySchema.optional(),
+        terms: z.array(termSchema).max(64).optional(),
     })
-    .strict();
+    .strict()
+    .refine(manifest =>
+        manifest.version === '1.2'
+            ? manifest.terms !== undefined && manifest.quality !== undefined
+            : manifest.terms === undefined && manifest.quality === undefined,
+    )
+    .refine(manifest => manifest.version === '1.2' || manifest.regions.every(region => region.kept === undefined))
+    .refine(manifest => manifest.version === '1.0' || manifest.regions.every(region => region.kept !== undefined))
+    .refine(manifest => new Set((manifest.terms ?? []).map(term => term.source)).size === (manifest.terms ?? []).length);
 export type RenderedTranslationManifest = z.infer<typeof schema>;
 export interface RenderedManifestExpectation {
     jobRef: string;
@@ -111,7 +141,7 @@ export function parseRenderedTranslationManifest(bytes: Uint8Array, expected: Re
                     !r.sourceText.trim() ||
                     !r.translatedText.trim() ||
                     !validPolygon(r.polygon) ||
-                    (r.overflow ? r.fontSizePx !== 0 : r.fontSizePx < 12),
+                    (r.overflow ? r.fontSizePx !== 0 : r.fontSizePx < (result.version === '1.0' ? 12 : 8)),
             ) ||
             result.regions.reduce((n, r) => n + r.sourceText.length, 0) > 262144 ||
             result.regions.reduce((n, r) => n + r.translatedText.length, 0) > 524288

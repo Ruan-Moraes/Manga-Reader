@@ -5,11 +5,16 @@ import com.toonlira.translationgateway.application.config.GatewayProperties;
 import com.toonlira.translationgateway.application.port.ObjectStoragePort;
 import com.toonlira.translationgateway.application.port.TranslationJobRepository;
 import com.toonlira.translationgateway.application.port.TranslationPort;
+import com.toonlira.translationgateway.application.port.TranslationRefinerPort;
 import com.toonlira.translationgateway.domain.GatewayErrorCode;
 import com.toonlira.translationgateway.domain.GatewayException;
 import com.toonlira.translationgateway.domain.JobStatus;
 import com.toonlira.translationgateway.domain.OcrLimits;
+import com.toonlira.translationgateway.domain.translation.ChapterTerm;
+import com.toonlira.translationgateway.domain.translation.ChapterTerms;
+import com.toonlira.translationgateway.domain.translation.FragmentJoiner;
 import com.toonlira.translationgateway.domain.translation.LanguagePair;
+import com.toonlira.translationgateway.domain.translation.TranslationLimits;
 import com.toonlira.translationgateway.domain.translation.TranslationRequest;
 import com.toonlira.translationgateway.domain.translation.TranslationResponse;
 import com.toonlira.translationgateway.domain.translation.TranslationValidationException;
@@ -24,32 +29,53 @@ import java.time.Clock;
 import java.time.Instant;
 import java.util.HexFormat;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ProcessTranslationTaskUseCase {
+    private static final Logger LOG = LoggerFactory.getLogger(ProcessTranslationTaskUseCase.class);
     private final TranslationPersistenceUseCase persistence;
     private final ObjectStoragePort storage;
     private final OcrManifestService ocrManifests;
     private final TranslationManifestService translationManifests;
     private final TranslationPort translation;
+    private final TranslationRefinerPort refiner;
     private final GatewayProperties properties;
     private final Clock clock;
     private final CleanupLifecycleObjectsUseCase lifecycle;
+    private final ChapterMemoryService chapters;
 
     public ProcessTranslationTaskUseCase(TranslationPersistenceUseCase persistence, ObjectStoragePort storage,
                                          OcrManifestService ocrManifests, TranslationManifestService translationManifests,
-                                         TranslationPort translation, GatewayProperties properties, Clock clock,
-                                         CleanupLifecycleObjectsUseCase lifecycle) {
+                                         TranslationPort translation, TranslationRefinerPort refiner,
+                                         GatewayProperties properties, Clock clock, CleanupLifecycleObjectsUseCase lifecycle) {
+        this(persistence, storage, ocrManifests, translationManifests, translation, refiner, properties, clock, lifecycle,
+            null, null);
+    }
+
+    /** {@code memory} and {@code lexicons} enable the chapter memory (pages sent with a context reference). */
+    @org.springframework.beans.factory.annotation.Autowired
+    public ProcessTranslationTaskUseCase(TranslationPersistenceUseCase persistence, ObjectStoragePort storage,
+                                         OcrManifestService ocrManifests, TranslationManifestService translationManifests,
+                                         TranslationPort translation, TranslationRefinerPort refiner,
+                                         GatewayProperties properties, Clock clock, CleanupLifecycleObjectsUseCase lifecycle,
+                                         com.toonlira.translationgateway.application.port.ChapterMemoryRepository memory,
+                                         com.toonlira.translationgateway.application.port.LexiconPort lexicons) {
+        this.chapters = new ChapterMemoryService(memory, lexicons, translation, clock,
+            java.time.Duration.ofSeconds(properties.getDisclosure().getResultRetentionSeconds()));
         this.persistence = persistence;
         this.storage = storage;
         this.ocrManifests = ocrManifests;
         this.translationManifests = translationManifests;
         this.translation = translation;
+        this.refiner = refiner;
         this.properties = properties;
         this.clock = clock;
         this.lifecycle = lifecycle;
@@ -118,8 +144,11 @@ public class ProcessTranslationTaskUseCase {
         if (!job.jobRef().equals(manifest.jobRef()) || !pair.source().equals(manifest.sourceLanguage())) {
             throw new GatewayException(GatewayErrorCode.TRANSLATION_INVALID_REQUEST, 422, false);
         }
+        // The detector's class of each region (balloon, free text, none), when the layout artifact describes this page.
+        var kinds = LayoutHints.read(storage, job.layoutObjectKey(), job.layoutSha256(), job.imageSha256(), job.ocrSha256()).kinds();
         return new TranslationRequest(job.jobRef(), pair, manifest.regions().stream()
-            .map(region -> new TranslationRequest.Region(region.id(), region.readingOrder(), region.sourceText())).toList());
+            .map(region -> new TranslationRequest.Region(region.id(), region.readingOrder(), region.sourceText(),
+                kinds.get(region.id()))).toList());
     }
 
     private void processClaimed(TranslationJobRepository.WorkItem job, TranslationRequest request,
@@ -129,12 +158,15 @@ public class ProcessTranslationTaskUseCase {
         String outputHash = null;
         try {
             requireOriginal(job);
-            var response = request.regions().isEmpty()
-                ? new TranslationResponse(List.of())
-                : translation.translate(request);
+            // A word split one character per balloon (「あ」「ら」) is translated, and reviewed, as one segment.
+            var fragments = FragmentJoiner.of(request);
+            var page = request.regions().isEmpty()
+                ? new PageTranslation(new TranslationResponse(List.of()), List.of())
+                : translatePage(job, fragments.request());
+            var response = request.regions().isEmpty() ? page.response() : fragments.expand(page.response());
             requireOriginal(job);
             var result = validator.validateResponse(request, response);
-            var encoded = translationManifests.encode(result, job.ocrSha256());
+            var encoded = translationManifests.encode(result, job.ocrSha256(), page.terms());
             outputHash = encoded.sha256();
             manifestFile = Files.createTempFile("translation-manifest-", ".json");
             Files.write(manifestFile, encoded.bytes());
@@ -144,6 +176,7 @@ public class ProcessTranslationTaskUseCase {
                 deleteBestEffort(objectKey);
             }
         } catch (RuntimeException | IOException error) {
+            LOG.warn("translation failed: {}", FailureDiagnostics.describe(error));
             var current = findBestEffort(job.jobRef());
             // A later transition can occur before the commit acknowledgement is
             // observed. The persisted key/hash, not the current job status, prove ownership.
@@ -172,6 +205,74 @@ public class ProcessTranslationTaskUseCase {
                 try { Files.deleteIfExists(manifestFile); } catch (IOException ignored) { }
             }
         }
+    }
+
+    /**
+     * The optional language review runs on the joined segments, before the synthetic follower ellipses exist, so it
+     * can neither rewrite them nor split the joined word again. Any failure (timeout, quota, a reply that is not a
+     * review of this page) keeps the machine translation: the layer can improve a page, never fail it.
+     */
+    /**
+     * Machine translation of the page keeping the terms its chapter already decided, then the optional review, which
+     * keeps them too and reports the page's names for the chapter's next pages. Without a chapter: as always.
+     */
+    /** The page's translation and the chapter names it used, which its result hands back to the client. */
+    private record PageTranslation(TranslationResponse response, List<ChapterTerm> terms) { }
+
+    private PageTranslation translatePage(TranslationJobRepository.WorkItem job, TranslationRequest request) {
+        boolean reviewed = job.contextRef() != null && refiner != TranslationRefinerPort.NONE;
+        var decided = chapters.decide(job, request, !reviewed);
+        boolean onPage = decided.keySet().stream().anyMatch(term -> request.regions().stream()
+            .anyMatch(region -> region.sourceText().toUpperCase(java.util.Locale.ROOT).contains(term.toUpperCase(java.util.Locale.ROOT))));
+        var machine = onPage ? translation.translate(request, decided) : translation.translate(request);
+        // Only the chapter's names this page actually holds: the rest says nothing about it.
+        var used = new java.util.TreeMap<String, String>();
+        decided.forEach((source, target) -> {
+            if (request.regions().stream().anyMatch(region -> !ChapterTerms.occurrences(region.sourceText(), Map.of(source, target)).isEmpty())) {
+                used.put(source, target);
+            }
+        });
+        if (job.contextRef() == null) return new PageTranslation(refineOrKeep(request, machine), List.of());
+        if (refiner == TranslationRefinerPort.NONE) return new PageTranslation(machine, ChapterTerm.of(used, ChapterTerm.MAX_PER_PAGE));
+        try {
+            var review = refiner.refine(request, machine, decided);
+            if (review != null && review.response() != null && sameRegions(machine, review.response())) {
+                var names = chapters.reviewNames(request, review.names());
+                chapters.learn(job, request.pair(), names);
+                // A name the chapter decided first keeps that translation; the review's own names follow.
+                names.forEach(used::putIfAbsent);
+                return new PageTranslation(review.response(), ChapterTerm.of(used, ChapterTerm.MAX_PER_PAGE));
+            }
+            LOG.warn("translation refine discarded: regions={} reply did not match the page", request.regions().size());
+        } catch (RuntimeException error) {
+            LOG.warn("translation refine skipped: regions={} cause={}", request.regions().size(), error.getClass().getSimpleName());
+        }
+        return new PageTranslation(machine, ChapterTerm.of(used, ChapterTerm.MAX_PER_PAGE));
+    }
+
+    private TranslationResponse refineOrKeep(TranslationRequest request, TranslationResponse translated) {
+        if (refiner == TranslationRefinerPort.NONE) return translated;
+        try {
+            var refined = refiner.refine(request, translated);
+            if (refined != null && sameRegions(translated, refined)) return refined;
+            LOG.warn("translation refine discarded: regions={} reply did not match the page", request.regions().size());
+        } catch (RuntimeException error) {
+            LOG.warn("translation refine skipped: regions={} cause={}", request.regions().size(), error.getClass().getSimpleName());
+        }
+        return translated;
+    }
+
+    private static boolean sameRegions(TranslationResponse translated, TranslationResponse refined) {
+        if (refined.regions().size() != translated.regions().size()) return false;
+        for (int index = 0; index < translated.regions().size(); index++) {
+            var region = refined.regions().get(index);
+            if (!translated.regions().get(index).id().equals(region.id()) || region.translatedText() == null
+                || region.translatedText().isBlank()
+                || region.translatedText().length() > TranslationLimits.MAX_TRANSLATED_PER_REGION) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private Set<LanguagePair> enabledPairs() {

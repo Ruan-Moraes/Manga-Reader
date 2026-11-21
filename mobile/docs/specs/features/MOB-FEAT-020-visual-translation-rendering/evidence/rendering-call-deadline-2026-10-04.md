@@ -6,7 +6,7 @@ usa credenciais, imagens reais, rede Google ou provider pago.
 
 ## Finding, plano e correção
 
-[Plano antes do código](../../../../../../api/apps/translation-gateway/docs/rendering-call-deadline.md).
+[Plano antes do código](../../../../../../api/apps/translation-gateway/docs/rendering/rendering-call-deadline.md).
 IsolatedRenderAdapter executava launcher/IPC/validação/transferência no chamador:
 launcher ignorando interrupt ficou preso por mais de dois segundos com prazo de
 250 ms. O teste de regressão falhou com TimeoutException no Future externo,
@@ -75,7 +75,7 @@ antes dos testes do artefato atual. JAR desta parcela:
 O teste Boot/Linux exige classes/recursos atuais em BOOT-INF, não apenas nome
 ou existência do JAR. O hash não é promessa de build byte a byte reproduzível.
 
-Node `node --test scripts/*.test.mjs`: exit 0, 85 pass/um opt-in de fonte ignorado.
+Node `node --test scripts/*/*.test.mjs`: exit 0, 85 pass/um opt-in de fonte ignorado.
 Web `pnpm exec tsc -b`: exit 0.
 
 Maven global offline/Docker: `./mvnw -o -q test`, com os pins/macOS e flags

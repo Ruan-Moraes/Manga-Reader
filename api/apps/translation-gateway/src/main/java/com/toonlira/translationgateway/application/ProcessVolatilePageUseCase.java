@@ -49,18 +49,39 @@ public class ProcessVolatilePageUseCase {
     private final TranslationManifestService translationManifests;
     private final RenderManifestService renderManifests;
     private final VolatileSessionPort sessions;
+    private final VolatilePagePipeline pipeline;
+    /** Without page analysis, chapter memory or review (tests): OCR, grouping, translation and render only. */
     public ProcessVolatilePageUseCase(GatewayProperties properties, VolatileAttemptUseCase attempts,
         ObjectProvider<InlineOcrPort> ocr, ObjectProvider<TranslationPort> translation, ObjectProvider<VolatileRenderPort> renderer,
         OcrManifestService ocrManifests, TranslationManifestService translationManifests, RenderManifestService renderManifests,
         VolatileSessionPort sessions) {
+        this(properties, attempts, ocr, translation, renderer, ocrManifests, translationManifests, renderManifests, sessions,
+            VolatilePagePipeline.plain(properties));
+    }
+
+    @org.springframework.beans.factory.annotation.Autowired
+    public ProcessVolatilePageUseCase(GatewayProperties properties, VolatileAttemptUseCase attempts,
+        ObjectProvider<InlineOcrPort> ocr, ObjectProvider<TranslationPort> translation, ObjectProvider<VolatileRenderPort> renderer,
+        OcrManifestService ocrManifests, TranslationManifestService translationManifests, RenderManifestService renderManifests,
+        VolatileSessionPort sessions, VolatilePagePipeline pipeline) {
         this.properties = properties; this.attempts = attempts; this.ocr = ocr; this.translation = translation;
         this.renderer = renderer; this.ocrManifests = ocrManifests; this.translationManifests = translationManifests;
         this.renderManifests = renderManifests;
         this.sessions = sessions;
+        this.pipeline = pipeline;
     }
 
+    /**
+     * {@code contextRef}: optional opaque chapter reference (a random UUID the client draws per chapter, never a
+     * library id). Pages sharing it keep the chapter's names (ChapterMemoryService).
+     */
     public record Command(String mimeType, long byteSize, int widthPx, int heightPx,
-                          String sourceLanguage, String targetLanguage, String disclosureVersion) { }
+                          String sourceLanguage, String targetLanguage, String disclosureVersion, UUID contextRef) {
+        public Command(String mimeType, long byteSize, int widthPx, int heightPx,
+                       String sourceLanguage, String targetLanguage, String disclosureVersion) {
+            this(mimeType, byteSize, widthPx, heightPx, sourceLanguage, targetLanguage, disclosureVersion, null);
+        }
+    }
     @FunctionalInterface public interface Sink {
         void deliver(byte[] manifest, byte[] image, VolatileSessionPort.Fence fence) throws IOException;
         default void cancel() throws IOException { }
@@ -115,37 +136,45 @@ public class ProcessVolatilePageUseCase {
             // Reservation/client resolution may have blocked or swallowed interruption.
             fence.checkActive();
             checkInterrupted();
-            var regions = recognizer.recognize(original, pair.source(), operation, source.widthPx(), source.heightPx());
+            // Decoded once, in memory, for balloon detection and re-reading; null (WebP) skips both.
+            var page = pipeline.decode(original);
+            var reading = pipeline.read(recognizer, original, page, source, pair.source(), operation);
+            var regions = reading.regions();
             fence.checkActive();
             checkInterrupted();
             var ocrDocument = new OcrManifest("1.0", operation, pair.source(), source.widthPx(), source.heightPx(), regions);
             var encodedOcr = ocrManifests.encode(ocrDocument);
-            var request = new TranslationRequest(operation, pair, regions.stream().map(region ->
-                new TranslationRequest.Region(region.id(), region.readingOrder(), region.sourceText())).toList());
+            var hints = pipeline.layout(page, ocrDocument, source.sha256(), encodedOcr.sha256(), reading.detections());
+            page = null;
+            fence.checkActive();
+            checkInterrupted();
+            var request = VolatilePagePipeline.request(operation, pair, regions, hints);
             var validator = new TranslationValidator(Set.of(pair));
             validator.validateRequest(request);
             attempts.requireActive(key);
-            TranslationResponse response;
-            if (regions.isEmpty()) response = new TranslationResponse(List.of());
+            VolatilePagePipeline.PageTranslation translatedPage;
+            if (regions.isEmpty()) translatedPage = new VolatilePagePipeline.PageTranslation(new TranslationResponse(List.of()), List.of());
             else {
                 var translator = translation.getObject();
                 // Validate ownership again after preparation and resolution, immediately before the paid stage.
                 fence.checkActive();
                 checkInterrupted();
-                response = translator.translate(request);
+                translatedPage = pipeline.translate(translator, new ChapterMemoryService.Chapter(installation, command.contextRef()), request);
             }
             fence.checkActive();
             checkInterrupted();
-            var translated = validator.validateResponse(request, response);
-            var encodedTranslation = translationManifests.encode(translated, encodedOcr.sha256());
-            var renderRequest = RenderRequest.create(source, ocrDocument, translated, encodedOcr.sha256(), encodedTranslation.sha256(), policy);
+            var translated = validator.validateResponse(request, translatedPage.response());
+            var terms = translatedPage.terms();
+            var encodedTranslation = translationManifests.encode(translated, encodedOcr.sha256(), terms);
+            var renderRequest = pipeline.renderHints(RenderRequest.create(source, ocrDocument, translated, encodedOcr.sha256(),
+                encodedTranslation.sha256(), policy), hints, pair.source());
             var renderEngine = renderer.getObject();
             fence.checkActive();
             checkInterrupted();
             try (var result = renderEngine.render(original, renderRequest)) {
                 fence.checkActive();
                 checkInterrupted();
-                var encoded = renderManifests.encode(result.manifest(), policy);
+                var encoded = renderManifests.encode(result.manifest(), policy, terms);
                 var manifest = encoded.bytes();
                 try {
                     // Commit uncertainty closes this attempt permanently; it never authorizes provider replay.
@@ -190,6 +219,16 @@ public class ProcessVolatilePageUseCase {
             Math.min(media.getMaxPixels(), initial.maxPixels()), initial.maxOutputBytes(), initial.maxManifestBytes(),
             initial.minimumFontPx(), initial.maximumFontPx(), initial.paddingPx());
     }
+    /** The pair, when this gateway translates it; otherwise unsupported-pair (422). */
+    public LanguagePair requirePair(String sourceLanguage, String targetLanguage) {
+        try {
+            var pair = new LanguagePair(sourceLanguage, targetLanguage);
+            if (!ConfiguredTranslationPairs.parse(properties.getTranslation().getEnabledPairs()).contains(pair))
+                throw new GatewayException(UNSUPPORTED_PAIR, 422, false);
+            return pair;
+        } catch (TranslationValidationException invalid) { throw new GatewayException(UNSUPPORTED_PAIR, 422, false); }
+    }
+
     private LanguagePair validate(Command command) {
         if (command == null || command.byteSize() <= 0 || command.byteSize() > policy().maxOriginalBytes()
             || command.widthPx() <= 0 || command.heightPx() <= 0 || command.widthPx() > policy().maxWidthPx()

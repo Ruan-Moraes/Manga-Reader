@@ -61,7 +61,7 @@ aprovados. A primeira execução parou por três erros de ordenação de
 imports/exports nos arquivos novos; corrigidos pontualmente, sem autofix global.
 Avisos `act` existentes nos testes de UI continuam fora desta parcela.
 
-Tooling Node (`node --test api/apps/translation-gateway/scripts/*.test.mjs`):
+Tooling Node (`node --test api/apps/translation-gateway/scripts/*/*.test.mjs`):
 85 testes aprovados, zero falhas; um teste opcional de renderização tipográfica
 Java foi ignorado por ausência de `OCR_CALIBRATION_FONT` explícito. Isso não
 é evidência de nova calibração nem de OCR/tradução reais. `git diff --check`

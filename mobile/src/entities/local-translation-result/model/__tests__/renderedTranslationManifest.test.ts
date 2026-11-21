@@ -64,3 +64,41 @@ it('rejects self-intersecting stars even when consecutive turns have the same si
         parseRenderedTranslationManifest(bytes({ ...renderedFixture(), regions: [{ ...renderedFixture().regions[0], polygon }] }), expected()),
     ).toThrow('localTranslation.invalidRemoteManifest');
 });
+
+describe('MOB-FEAT-023/024 manifest 1.2 (volatile gateway)', () => {
+    const v12 = () => ({
+        ...renderedFixture(),
+        version: '1.2',
+        policyVersion: 'clean-box-1.2',
+        regions: [{ ...renderedFixture().regions[0], fontSizePx: 9, kept: false }],
+        quality: { status: 'OK', issues: [] },
+        terms: [{ source: 'Coriander', target: 'Coriander' }],
+    });
+    it('accepts kept regions, page quality and the chapter names the page used', () => {
+        const manifest = parseRenderedTranslationManifest(bytes(v12()), expected());
+        expect(manifest.terms).toEqual([{ source: 'Coriander', target: 'Coriander' }]);
+        expect(manifest.quality).toEqual({ status: 'OK', issues: [] });
+        expect(manifest.regions[0]?.kept).toBe(false);
+    });
+    it.each([
+        { terms: undefined },
+        { quality: undefined },
+        { regions: [{ ...renderedFixture().regions[0], fontSizePx: 9 }] },
+        {
+            terms: [
+                { source: 'Coriander', target: 'A' },
+                { source: 'Coriander', target: 'B' },
+            ],
+        },
+        { terms: [{ source: ' Coriander', target: 'Coriander' }] },
+        { quality: { status: 'OK', issues: ['TEXT_TOO_SMALL'] } },
+    ])('rejects an inconsistent 1.2 manifest %j', patch => {
+        expect(() => parseRenderedTranslationManifest(bytes({ ...v12(), ...patch }), expected())).toThrow('localTranslation.invalidRemoteManifest');
+    });
+    it('keeps 1.0 as it was: no 1.2 fields and fonts of at least 12 px', () => {
+        expect(() => parseRenderedTranslationManifest(bytes({ ...renderedFixture(), terms: [] }), expected())).toThrow();
+        expect(() =>
+            parseRenderedTranslationManifest(bytes({ ...renderedFixture(), regions: [{ ...renderedFixture().regions[0], fontSizePx: 9 }] }), expected()),
+        ).toThrow();
+    });
+});

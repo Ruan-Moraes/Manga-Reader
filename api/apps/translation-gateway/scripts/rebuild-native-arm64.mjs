@@ -6,7 +6,7 @@ import {
   checkedFile,
   packageCodec,
   SOURCE_HASH,
-} from "./render-native-package.mjs";
+} from "./native-image/render-native-package.mjs";
 
 // Immutable local toolchain: Ubuntu GCC 13.3.0, CMake 3.28.3, glibc 2.39.
 export const BUILDER =

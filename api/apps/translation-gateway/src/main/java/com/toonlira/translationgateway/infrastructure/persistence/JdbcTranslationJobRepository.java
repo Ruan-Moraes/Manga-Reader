@@ -23,18 +23,23 @@ public class JdbcTranslationJobRepository implements TranslationJobRepository {
     @Override
     public Optional<WorkItem> find(UUID jobRef) {
         return jdbc.sql("""
-                SELECT j.id, j.job_ref, j.status, j.source_language, j.target_language,
+                SELECT j.id, j.job_ref, j.status, j.source_language, j.target_language, j.installation_id, j.context_ref,
+                       j.original_sha256,
                        o.output_object_key AS ocr_key, o.output_sha256 AS ocr_hash,
-                       t.output_object_key AS translation_key, t.output_sha256 AS translation_hash
+                       t.output_object_key AS translation_key, t.output_sha256 AS translation_hash,
+                       l.output_object_key AS layout_key, l.output_sha256 AS layout_hash
                 FROM processing_jobs j
                 LEFT JOIN processing_job_stages o ON o.job_id = j.id AND o.stage = 'OCR' AND o.status = 'SUCCEEDED'
                 LEFT JOIN processing_job_stages t ON t.job_id = j.id AND t.stage = 'TRANSLATING'
+                LEFT JOIN processing_job_layouts l ON l.job_id = j.id AND l.status = 'SUCCEEDED'
                 WHERE j.job_ref = :jobRef
                 """).param("jobRef", jobRef).query((row, ignored) -> new WorkItem(
                     row.getObject("id", UUID.class), row.getObject("job_ref", UUID.class),
                     JobStatus.valueOf(row.getString("status")), row.getString("source_language"),
                     row.getString("target_language"), row.getString("ocr_key"), row.getString("ocr_hash"),
-                    row.getString("translation_key"), row.getString("translation_hash"))).optional();
+                    row.getString("translation_key"), row.getString("translation_hash"),
+                    row.getObject("installation_id", UUID.class), row.getObject("context_ref", UUID.class),
+                    row.getString("original_sha256"), row.getString("layout_key"), row.getString("layout_hash"))).optional();
     }
 
     @Override

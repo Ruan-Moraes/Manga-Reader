@@ -9,7 +9,14 @@ import java.time.Duration;
 /** Persisted metadata snapshot, never a bearer URL or OCR text. */
 public record ReadyResultReference(int widthPx, int heightPx, String imageObjectKey, String imageSha256,
                                    long imageByteSize, String manifestObjectKey, String manifestSha256,
-                                   Instant completedAt, Instant resultExpiresAt) {
+                                   Instant completedAt, Instant resultExpiresAt, RenderTextCounts text) {
+    /** Results rendered before quality was persisted carry no text counts. */
+    public ReadyResultReference(int widthPx, int heightPx, String imageObjectKey, String imageSha256,
+                                long imageByteSize, String manifestObjectKey, String manifestSha256,
+                                Instant completedAt, Instant resultExpiresAt) {
+        this(widthPx, heightPx, imageObjectKey, imageSha256, imageByteSize, manifestObjectKey, manifestSha256,
+            completedAt, resultExpiresAt, null);
+    }
     /** Historical one-hour boundary; persistence must supply the stored deadline explicitly. */
     public ReadyResultReference(int widthPx, int heightPx, String imageObjectKey, String imageSha256,
                                 long imageByteSize, String manifestObjectKey, String manifestSha256, Instant completedAt) {

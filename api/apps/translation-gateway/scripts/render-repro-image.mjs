@@ -3,7 +3,7 @@ import { pathToFileURL } from "node:url";
 import {
   parseImageOptions,
   prepareReproImageContext,
-} from "./render-native-image.mjs";
+} from "./native-image/render-native-image.mjs";
 
 // Only prepares a local snapshot; never starts Docker, downloads or publishes.
 if (

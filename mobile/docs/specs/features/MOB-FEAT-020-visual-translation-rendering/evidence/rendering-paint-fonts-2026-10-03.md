@@ -22,13 +22,13 @@ e licenças transitivas continuam pendentes, portanto TASK-002 fica aberta.
 
 ## Algoritmo e limites
 
-[Plano geométrico](../../../../../../api/apps/translation-gateway/docs/rendering-paint.md):
+[Plano geométrico](../../../../../../api/apps/translation-gateway/docs/rendering/rendering-paint.md):
 spans de centros de pixels, recorte, cores estimadas antes de mutação, mediana
 ARGB do entorno excluindo todas as regiões, sobreposição pela ordem OCR.
 Não expande quadrilátero para bounding box, cria máscara de página inteira
 ou reescreve arquivo do original. Página vazia não altera pixels.
 
-[Compositor](../../../../../../api/apps/translation-gateway/docs/rendering-text.md):
+[Compositor](../../../../../../api/apps/translation-gateway/docs/rendering/rendering-text.md):
 caixa interna segura, fonte 48→12 px na política inicial, quebra por locale,
 centralização, contraste preto/branco, direção horizontal LTR dos sete destinos
 e dados textuais inertes. Nenhum espaço CJK é inserido. Desenho antialias usa

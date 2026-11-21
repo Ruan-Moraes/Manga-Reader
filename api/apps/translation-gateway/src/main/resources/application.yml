@@ -73,10 +73,20 @@ gateway:
   ocr:
     mode: ${GATEWAY_OCR_MODE:disabled}
     project-id: ${GATEWAY_GCP_PROJECT_ID:}
+    # Doubtful paragraphs re-read per page from image variants in one extra OCR call; 0 disables.
+    reread-max-regions: ${GATEWAY_OCR_REREAD_MAX_REGIONS:8}
   translation:
     mode: ${GATEWAY_TRANSLATION_MODE:disabled}
     project-id: ${GATEWAY_TRANSLATION_PROJECT_ID:}
     enabled-pairs: ${GATEWAY_TRANSLATION_ENABLED_PAIRS:}
+    # Optional language layer (Gemini on Vertex AI, same project): reviews OCR readings and the machine translation
+    # with the whole page as context. Text only; the image never reaches the model. Off unless set to "gemini".
+    refine:
+      mode: ${GATEWAY_TRANSLATION_REFINE_MODE:disabled}
+      model: ${GATEWAY_TRANSLATION_REFINE_MODEL:gemini-3.8-flash}
+      location: ${GATEWAY_TRANSLATION_REFINE_LOCATION:us}
+      timeout: ${GATEWAY_TRANSLATION_REFINE_TIMEOUT:PT20S}
+      max-chars: ${GATEWAY_TRANSLATION_REFINE_MAX_CHARS:12000}
   rendering:
     mode: ${GATEWAY_RENDERING_MODE:disabled}
     temporary-directory: ${GATEWAY_RENDERING_TEMP_DIR:}
@@ -89,6 +99,9 @@ gateway:
     native-distribution-sha256: ${GATEWAY_RENDERING_NATIVE_DISTRIBUTION_SHA256:}
     child-heap-mib: ${GATEWAY_RENDERING_CHILD_HEAP_MIB:128}
     process-deadline: ${GATEWAY_RENDERING_PROCESS_DEADLINE:PT90S}
+    # LaMa ONNX (local render mode only); empty = no inpainting, speech over artwork keeps its lettering.
+    inpainting-model-path: ${GATEWAY_RENDERING_INPAINTING_MODEL_PATH:}
+    inpainting-threads: ${GATEWAY_RENDERING_INPAINTING_THREADS:4}
   key: ${GATEWAY_KEY:local-disabled}
   session-ttl: ${GATEWAY_SESSION_TTL:PT15M}
   capabilities-ttl: ${GATEWAY_CAPABILITIES_TTL:PT5M}
@@ -99,6 +112,8 @@ gateway:
     unmetered: ${GATEWAY_TEST_UNMETERED:false}
     max-attempts: ${GATEWAY_TEST_BUDGET_MAX_ATTEMPTS:0}
     deadline: ${GATEWAY_TEST_BUDGET_DEADLINE:}
+  # Always true in deployments; only the local development scripts turn it off (scripts/local/dev-api.sh).
+  quota-enforced: ${GATEWAY_QUOTA_ENFORCED:true}
   media:
     max-bytes: ${GATEWAY_MEDIA_MAX_BYTES:12582912}
     max-width-px: ${GATEWAY_MEDIA_MAX_WIDTH_PX:12000}

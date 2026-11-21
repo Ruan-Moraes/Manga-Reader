@@ -1,6 +1,6 @@
 {
     "title": "Remote processing",
-    "description": "Send only the first page to start the processing proof.",
+    "description": "Send the project pages, in reading order and in small batches, to recognize, translate and build the translated images.",
     "actions": {
         "start": "Start processing",
         "check": "Check submission",
@@ -29,7 +29,7 @@
         "FAILED": "Remote processing failed.",
         "CANCEL_PENDING": "The gateway is still confirming cancellation.",
         "CANCELLED": "The gateway confirmed cancellation.",
-        "RESULT_EXPIRED": "The remote result expired."
+        "RESULT_EXPIRED": "The remote result expired before the download. The page needs to be processed again."
     },
     "errors": {
         "consent-required": "Review and accept the information before submission.",
@@ -49,9 +49,10 @@
         "title": "Allow sending the first page?",
         "description": "Page {{page}} will be sent to recognize text, translate it, and prepare a translated image.",
         "network": "Internet is required. Processing does not happen entirely on this device.",
-        "data": "We send the image bytes, including visible text, MIME type, dimensions, languages and attempt identifiers. Recognized text is used for translation. The app does not add the filename, local path or account to the request; the image itself may contain personal data.",
+        "data": "We send the image bytes, including visible text, MIME type, dimensions, languages and attempt identifiers. Recognized text is used for translation. We also send the names the service already translated in this project (such as character names), to keep them the same across pages; the service keeps those names, without the image, for up to 1 hour after the chapter's last page. The app does not add the filename, local path or account to the request; the image itself may contain personal data.",
         "operator": "Operated by {{operator}} ({{contact}}), using Google Cloud services.",
         "regions": "The gateway operates in {{gateway}}. OCR uses the US region {{ocr}}. Translation uses the {{translation}} endpoint without a guarantee of remaining in a specific region.",
+        "languageModel": "A language layer (Gemini, Google Vertex AI) reviews the recognized text and the translation in the {{location}} region. It receives only the page text, never the image.",
         "retention": "Image, OCR, translation and result pass only through server memory during the session. The app keeps the original and result on this device. We maintain sanitized operational logs and minimal security and idempotency receipts without images or text. The receipt key has an absolute seven-day validity. Physical cleanup depends on key expiry, receipt age and database availability; logs follow a separate policy.",
         "training": "Provider training policy: {{policy}}",
         "cancellation": "Disconnecting does not confirm cancellation of an ongoing external call. If delivery fails, no content is recoverable from the server; a new processing run requires your decision and may consume the services again.",

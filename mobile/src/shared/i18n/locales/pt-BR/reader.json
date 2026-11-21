@@ -227,5 +227,11 @@
         "retryTitle": "Tentar traduzir de novo",
         "retryDescription": "Só as páginas que falharam são enviadas, e só depois do seu aceite.",
         "chapterUnavailable": "Este capítulo não está mais disponível."
+    },
+    "translationProgress": {
+        "title": "Traduzindo…",
+        "description": "{{ready}} de {{total}} páginas prontas",
+        "doneTitle": "Tradução pronta",
+        "doneDescription": "Todas as {{total}} páginas foram traduzidas."
     }
 }

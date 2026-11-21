@@ -5,7 +5,7 @@ chamada paga, imagem nova, download de dependências, deploy ou mudança legal.
 
 ## Plano e implementação
 
-[Plano anterior ao código](../../../../../../api/apps/translation-gateway/docs/result-expiration.md):
+[Plano anterior ao código](../../../../../../api/apps/translation-gateway/docs/architecture/result-expiration.md):
 PostgreSQL e BCNF existentes; reutilizar PK/FK/checks V5/V6. Sem nova migration,
 índice, contador/cache ou conteúdo OCR/tradução no banco. O registro durável da
 V5 representa remoção por ACK **ou TTL**, não aprovação/download do aplicativo.

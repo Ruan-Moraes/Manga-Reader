@@ -8,9 +8,33 @@ import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
+import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.Yaml;
 
 class TranslationGatewayOpenApiTest {
+    /** MOB-FEAT-022/023 over v2: optional opaque chapter reference, bounded glossary, disclosed language model. */
+    @Test
+    void chapterContextGlossaryAndLanguageModelAreInTheVolatileContract() throws IOException {
+        Map<String, Object> contract;
+        try (var reader = Files.newBufferedReader(CONTRACT)) {
+            // Strict: a repeated key would otherwise keep only the last one silently.
+            var options = new org.yaml.snakeyaml.LoaderOptions();
+            options.setAllowDuplicateKeys(false);
+            contract = map(new org.yaml.snakeyaml.Yaml(options).load(reader));
+        }
+        var parameters = map(map(contract.get("components")).get("parameters"));
+        var context = map(parameters.get("ContextRef"));
+        assertThat(context).containsEntry("name", "X-Context-Ref").containsEntry("in", "header").containsEntry("required", false);
+        assertThat(map(context.get("schema"))).containsEntry("format", "uuid");
+        var glossary = map(map(map(contract.get("paths")).get("/v2/page-translations/chapter-contexts/{contextRef}/glossary")).get("put"));
+        assertThat(map(glossary.get("responses"))).containsKeys("204", "400", "409", "413");
+        var schemas = map(map(contract.get("components")).get("schemas"));
+        assertThat(map(schemas.get("ChapterGlossary"))).containsEntry("maxItems", 256);
+        var disclosure = map(schemas.get("LegalDisclosure"));
+        assertThat(list(disclosure.get("required"))).contains("languageModelLocation");
+        assertThat(list(map(map(disclosure.get("properties")).get("languageModelLocation")).get("oneOf"))).hasSize(2);
+    }
+
     private static final Path CONTRACT = Path.of("openapi", "translation-gateway-v2.yaml");
     private static final Path IDENTITY = Path.of("openapi", "translation-gateway-v1.yaml");
 
@@ -18,7 +42,8 @@ class TranslationGatewayOpenApiTest {
         var contract = load(CONTRACT);
         var paths = map(contract.get("paths"));
         assertThat(paths).containsOnlyKeys("/v1/anonymous/installations", "/v1/anonymous/sessions", "/v2/capabilities",
-            "/v2/page-translations", "/v2/page-translations/by-idempotency/{key}");
+            "/v2/page-translations", "/v2/page-translations/by-idempotency/{key}",
+            "/v2/page-translations/chapter-contexts/{contextRef}/glossary");
         var post = map(map(paths.get("/v2/page-translations")).get("post"));
         assertThat(map(map(post.get("requestBody")).get("content")))
             .containsOnlyKeys("image/jpeg", "image/png", "image/webp");

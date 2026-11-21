@@ -1,0 +1,273 @@
+{
+  "page" : "ubunchu-en/ch01/rtl-03-machine.png",
+  "sourceLanguage" : "en",
+  "width" : 1246,
+  "height" : 1635,
+  "regions" : [ {
+    "source" : "AKANE: CLUB PRESIDENT\n",
+    "translation" : "AKANE: PRESIDENTE DO CLUBE",
+    "kind" : "text_free",
+    "polygon" : [ [ 0.18860353130016053, 0.007951070336391437 ], [ 0.3924558587479936, 0.007951070336391437 ], [ 0.3924558587479936, 0.017737003058103974 ], [ 0.18860353130016053, 0.017737003058103974 ] ]
+  }, {
+    "source" : "THE DESKTOP ISN'T REQUIRED FOR LINUX!",
+    "translation" : " O ambiente de desktop não é necessário para o Linux!",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.20947030497592295, 0.27400611620795107 ], [ 0.31942215088282505, 0.27400611620795107 ], [ 0.31942215088282505, 0.3565749235474006 ], [ 0.20947030497592295, 0.3565749235474006 ] ]
+  }, {
+    "source" : "The Command Line Rocks!",
+    "translation" : " A linha de comando é demais!",
+    "kind" : "unknown",
+    "polygon" : [ [ 0.2969502407704655, 0.023853211009174313 ], [ 0.5248796147672552, 0.023853211009174313 ], [ 0.5248796147672552, 0.28073394495412846 ], [ 0.2969502407704655, 0.28073394495412846 ] ]
+  }, {
+    "source" : "AND\nYOUTUBE\nIS A\nWASTE OF\nPROCESSING\nPOWER!",
+    "translation" : " E o YouTube é um desperdício de poder de processamento!",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.08667736757624397, 0.3021406727828746 ], [ 0.20224719101123595, 0.3021406727828746 ], [ 0.20224719101123595, 0.40244648318042814 ], [ 0.08667736757624397, 0.40244648318042814 ] ]
+  }, {
+    "source" : "RISA -",
+    "translation" : " RISA -",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.1587686836719513, 0.4518251121044159 ], [ 0.23030607402324677, 0.4518251121044159 ], [ 0.23030607402324677, 0.4705462157726288 ], [ 0.1587686836719513, 0.4705462157726288 ] ]
+  }, {
+    "source" : "MASATO: CLUB VICE PRESIDENT\n",
+    "translation" : " MASATO: VICE-PRESIDENTE DO CLUBE",
+    "kind" : "text_free",
+    "polygon" : [ [ 0.6147672552166934, 0.00856269113149847 ], [ 0.862760834670947, 0.00856269113149847 ], [ 0.862760834670947, 0.017737003058103974 ], [ 0.6147672552166934, 0.017737003058103974 ] ]
+  }, {
+    "source" : "Inferior\nProduct!\n",
+    "translation" : " Produto de qualidade inferior!",
+    "kind" : "text_free",
+    "polygon" : [ [ 0.5176565008025682, 0.23669724770642203 ], [ 0.6308186195826645, 0.163302752293578 ], [ 0.6837881219903692, 0.21100917431192662 ], [ 0.5706260032102729, 0.28440366972477066 ] ]
+  }, {
+    "source" : "No\nYoutube!\n",
+    "translation" : " No YouTube!",
+    "kind" : "text_free",
+    "polygon" : [ [ 0.8788121990369181, 0.023241590214067277 ], [ 0.9775280898876404, 0.08868501529051988 ], [ 0.9125200642054575, 0.14495412844036698 ], [ 0.8146067415730337, 0.07951070336391437 ] ]
+  }, {
+    "source" : "IT SOUNDS OK AT FIRST,\nBUT IT'S REALLY LINUX!\nYOU CAN'T EVEN WATCH\nONLINE VIDEOS!\n",
+    "translation" : " Parece bom à primeira vista, mas na verdade é Linux! Você não consegue nem assistir a vídeos online!",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.6894060995184591, 0.3039755351681957 ], [ 0.9317817014446228, 0.3039755351681957 ], [ 0.9317817014446228, 0.36819571865443423 ], [ 0.6894060995184591, 0.36819571865443423 ] ]
+  }, {
+    "source" : "AS YOU CAN SEE, IT IS A BIT OF A MESS HERE AT THE SYSTEM ADMINS CLUB.",
+    "translation" : " Como você pode ver, está uma certa bagunça aqui no Clube dos Administradores de Sistemas.",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.10834670947030497, 0.5902140672782875 ], [ 0.21268057784911718, 0.5902140672782875 ], [ 0.21268057784911718, 0.6587155963302752 ], [ 0.10834670947030497, 0.6587155963302752 ] ]
+  }, {
+    "source" : "WINDOWS XP...!!\n",
+    "translation" : " WINDOWS XP...!!",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.48796147672552165, 0.5107033639143731 ], [ 0.6235955056179775, 0.4691131498470948 ], [ 0.630016051364366, 0.4819571865443425 ], [ 0.4943820224719101, 0.5229357798165137 ] ]
+  }, {
+    "source" : "SLACKWARE...!!\n",
+    "translation" : " SLACKWARE...!!",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.5714285714285714, 0.5192660550458715 ], [ 0.7046548956661316, 0.5467889908256881 ], [ 0.7006420545746388, 0.5590214067278287 ], [ 0.5674157303370787, 0.5314984709480123 ] ]
+  }, {
+    "source" : "...IS THE ONLY ACCEPTABLE ANSWER!!",
+    "translation" : " ...É A ÚNICA RESPOSTA ACEITÁVEL!!",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.5321027287319422, 0.5926605504587156 ], [ 0.6476725521669342, 0.5926605504587156 ], [ 0.6476725521669342, 0.6642201834862386 ], [ 0.5321027287319422, 0.6642201834862386 ] ]
+  }, {
+    "source" : "I'll fight you\nfor the OS!",
+    "translation" : " Vou brigar com você pelo sistema operacional!",
+    "kind" : "text_free",
+    "polygon" : [ [ 0.3900481540930979, 0.5926605504587156 ], [ 0.5329052969502408, 0.5926605504587156 ], [ 0.5329052969502408, 0.6587155963302752 ], [ 0.3900481540930979, 0.6587155963302752 ] ]
+  }, {
+    "source" : "WELL WE SPENT ALL OUR MONEY ON THIS AWESOME QUAD CORE COMPUTER.",
+    "translation" : " Bom, gastamos todo o nosso dinheiro neste computador quad-core incrível.",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.7415730337078652, 0.4709480122324159 ], [ 0.9373996789727127, 0.4709480122324159 ], [ 0.9373996789727127, 0.5602446483180428 ], [ 0.7415730337078652, 0.5602446483180428 ] ]
+  }, {
+    "source" : "The\n",
+    "translation" : " O",
+    "kind" : "text_free",
+    "polygon" : [ [ 0.7520064205457464, 0.5981651376146789 ], [ 0.7857142857142857, 0.5877675840978593 ], [ 0.7929373996789727, 0.6018348623853211 ], [ 0.7592295345104334, 0.6122324159021407 ] ]
+  }, {
+    "source" : "Beast\n",
+    "translation" : " Fera",
+    "kind" : "text_free",
+    "polygon" : [ [ 0.7455858747993579, 0.618960244648318 ], [ 0.8154093097913323, 0.5938837920489297 ], [ 0.8258426966292135, 0.6110091743119266 ], [ 0.7568218298555377, 0.636697247706422 ] ]
+  }, {
+    "source" : "Ouch!\n",
+    "translation" : " Ai!",
+    "kind" : "text_free",
+    "polygon" : [ [ 0.1926163723916533, 0.7198776758409786 ], [ 0.28009630818619585, 0.7877675840978593 ], [ 0.2463884430176565, 0.8134556574923547 ], [ 0.15890850722311398, 0.744954128440367 ] ]
+  }, {
+    "source" : "Software Choices",
+    "translation" : " Escolhas de Software",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.3097913322632424, 0.7204892966360856 ], [ 0.38202247191011235, 0.7204892966360856 ], [ 0.38202247191011235, 0.7553516819571865 ], [ 0.3097913322632424, 0.7553516819571865 ] ]
+  }, {
+    "source" : "CLI-based Linux Windows",
+    "translation" : " Linux Windows baseados em CLI",
+    "kind" : "unknown",
+    "polygon" : [ [ 0.41412520064205455, 0.7327217125382263 ], [ 0.5971107544141252, 0.7327217125382263 ], [ 0.5971107544141252, 0.7724770642201835 ], [ 0.41412520064205455, 0.7724770642201835 ] ]
+  }, {
+    "source" : "THE WORLD IS SPLIT INTO THREE SYSTEMS:",
+    "translation" : " O mundo está dividido em três sistemas:",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.6316211878009631, 0.7357798165137615 ], [ 0.7014446227929374, 0.7357798165137615 ], [ 0.7014446227929374, 0.7920489296636085 ], [ 0.6316211878009631, 0.7920489296636085 ] ]
+  }, {
+    "source" : "I HAVE TRIED TO SOLVE THIS SITUA--",
+    "translation" : " Tentei resolver essa situaç--",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.19020866773675763, 0.8623853211009175 ], [ 0.2664526484751204, 0.8623853211009175 ], [ 0.2664526484751204, 0.9076452599388379 ], [ 0.19020866773675763, 0.9076452599388379 ] ]
+  }, {
+    "source" : "WE ARE ALWAYS AT WAR WITH EACH OTHER.",
+    "translation" : " Estamos sempre em guerra uns com os outros.",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.33547351524879615, 0.8923547400611621 ], [ 0.40770465489566615, 0.8923547400611621 ], [ 0.40770465489566615, 0.9516819571865444 ], [ 0.33547351524879615, 0.9516819571865444 ] ]
+  }, {
+    "source" : "Club\nPresident\n",
+    "translation" : " Presidente do clube",
+    "kind" : "text_free",
+    "polygon" : [ [ 0.42776886035313, 0.8470948012232415 ], [ 0.46709470304975925, 0.8470948012232415 ], [ 0.46709470304975925, 0.8636085626911315 ], [ 0.42776886035313, 0.8636085626911315 ] ]
+  }, {
+    "source" : "Club Vice President",
+    "translation" : " Vice-presidente do clube",
+    "kind" : "text_free",
+    "polygon" : [ [ 0.5377207062600321, 0.8489296636085627 ], [ 0.5947030497592295, 0.8489296636085627 ], [ 0.5947030497592295, 0.8654434250764526 ], [ 0.5377207062600321, 0.8654434250764526 ] ]
+  }, {
+    "source" : "Mac",
+    "translation" : " Mac",
+    "kind" : "unknown",
+    "polygon" : [ [ 0.4887640449438202, 0.9290519877675841 ], [ 0.5449438202247191, 0.9290519877675841 ], [ 0.5449438202247191, 0.9504587155963303 ], [ 0.4887640449438202, 0.9504587155963303 ] ]
+  }, {
+    "source" : "SIGH",
+    "translation" : " Suspiro",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.5658105939004815, 0.9259938837920489 ], [ 0.5995184590690209, 0.9259938837920489 ], [ 0.5995184590690209, 0.945565749235474 ], [ 0.5658105939004815, 0.945565749235474 ] ]
+  }, {
+    "source" : "(FORTUNATELY THE CLUB ONLY HAS THREE MEMBERS.)",
+    "translation" : " (Felizmente, o clube tem apenas três membros.)",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.6340288924558587, 0.8617737003058104 ], [ 0.7054574638844302, 0.8617737003058104 ], [ 0.7054574638844302, 0.9021406727828746 ], [ 0.6340288924558587, 0.9021406727828746 ] ]
+  }, {
+    "source" : "WHAT OS WILL IT BE RUNNING?",
+    "translation" : " Qual sistema operacional ele vai rodar?",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.7327447833065811, 0.8385321100917431 ], [ 0.8378812199036918, 0.8385321100917431 ], [ 0.8378812199036918, 0.8917431192660551 ], [ 0.7327447833065811, 0.8917431192660551 ] ]
+  } ],
+  "bubbles" : [ [ 0.07671542465686798, 0.5426819324493408, 0.2512971758842468, 0.6886999607086182 ], [ 0.29323384165763855, 0.8503875732421875, 0.46672534942626953, 0.991300106048584 ], [ 0.1472616344690323, 0.8153230547904968, 0.29014742374420166, 0.9462664127349854 ], [ 0.7210636138916016, 0.7851828932762146, 0.8527442812919617, 0.94572913646698 ], [ 0.07607275247573853, 0.24750009179115295, 0.20876771211624146, 0.4323057532310486 ], [ 0.7206783294677734, 0.44114184379577637, 0.9530320167541504, 0.6076765060424805 ], [ 0.5991184115409851, 0.7004188299179077, 0.7220831513404846, 0.8419119119644165 ], [ 0.6615459322929382, 0.24386268854141235, 0.9527217745780945, 0.4277579188346863 ], [ 0.20278097689151764, 0.2518240511417389, 0.3384268283843994, 0.38970962166786194 ], [ 0.6064370274543762, 0.8360986113548279, 0.7189652323722839, 0.9337658286094666 ], [ 0.5252107977867126, 0.5763458013534546, 0.6613242030143738, 0.6880837678909302 ], [ 0.2993287742137909, 0.7042761445045471, 0.3963213264942169, 0.775473952293396 ], [ 0.5527207851409912, 0.9157371520996094, 0.6142969131469727, 0.9593594074249268 ], [ 0.46745744347572327, 0.4436698257923126, 0.6186047792434692, 0.5862827301025391 ], [ 0.14008541405200958, 0.44664931297302246, 0.24142734706401825, 0.47526389360427856 ], [ 0.5574078559875488, 0.44386962056159973, 0.718505859375, 0.5820075273513794 ], [ 0.46769997477531433, 0.4435544013977051, 0.6259160041809082, 0.5859904289245605 ] ],
+  "expect" : {
+    "maxChangedOutside" : 0,
+    "regions" : [ {
+      "overflow" : false,
+      "font" : 18,
+      "residualInk" : 0
+    }, {
+      "overflow" : false,
+      "font" : 19,
+      "residualInk" : 0
+    }, {
+      "overflow" : false,
+      "font" : 55,
+      "residualInk" : 0
+    }, {
+      "overflow" : false,
+      "font" : 18,
+      "residualInk" : 0
+    }, {
+      "overflow" : true,
+      "font" : 0,
+      "residualInk" : 0
+    }, {
+      "overflow" : false,
+      "font" : 17,
+      "residualInk" : 0
+    }, {
+      "overflow" : false,
+      "font" : 23,
+      "residualInk" : 0
+    }, {
+      "overflow" : true,
+      "font" : 0,
+      "residualInk" : 0
+    }, {
+      "overflow" : false,
+      "font" : 18,
+      "residualInk" : 0
+    }, {
+      "overflow" : false,
+      "font" : 18,
+      "residualInk" : 0
+    }, {
+      "overflow" : true,
+      "font" : 0,
+      "residualInk" : 0
+    }, {
+      "overflow" : true,
+      "font" : 0,
+      "residualInk" : 0
+    }, {
+      "overflow" : false,
+      "font" : 22,
+      "residualInk" : 115
+    }, {
+      "overflow" : false,
+      "font" : 19,
+      "residualInk" : 284
+    }, {
+      "overflow" : false,
+      "font" : 23,
+      "residualInk" : 0
+    }, {
+      "overflow" : false,
+      "font" : 12,
+      "residualInk" : 163
+    }, {
+      "overflow" : false,
+      "font" : 13,
+      "residualInk" : 446
+    }, {
+      "overflow" : true,
+      "font" : 0,
+      "residualInk" : 0
+    }, {
+      "overflow" : false,
+      "font" : 15,
+      "residualInk" : 0
+    }, {
+      "overflow" : false,
+      "font" : 22,
+      "residualInk" : 0
+    }, {
+      "overflow" : false,
+      "font" : 22,
+      "residualInk" : 0
+    }, {
+      "overflow" : false,
+      "font" : 15,
+      "residualInk" : 0
+    }, {
+      "overflow" : false,
+      "font" : 23,
+      "residualInk" : 0
+    }, {
+      "overflow" : false,
+      "font" : 8,
+      "residualInk" : 0
+    }, {
+      "overflow" : true,
+      "font" : 0,
+      "residualInk" : 0
+    }, {
+      "overflow" : true,
+      "font" : 0,
+      "residualInk" : 0
+    }, {
+      "overflow" : false,
+      "font" : 16,
+      "residualInk" : 1
+    }, {
+      "overflow" : false,
+      "font" : 16,
+      "residualInk" : 0
+    }, {
+      "overflow" : false,
+      "font" : 19,
+      "residualInk" : 0
+    } ]
+  }
+}

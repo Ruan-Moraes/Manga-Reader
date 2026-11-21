@@ -27,12 +27,18 @@ class RenderSubprocessProtocolTest {
     void privateProtocolPreservesValidatedRequestWithoutTextNormalization() throws Exception {
         var request = LocalFileRenderAdapterTest.request(new RenderSource("image/png", 42, 320, 220, "a".repeat(64)),
             List.of(new OcrManifest.Region(new UUID(0, 1), 0, "日本語 😀 <b>\n ç", CleanBoxPainterTest.rectangle(.1, .1, .9, .9))),
-            RenderPolicy.initial());
+            RenderPolicy.initial()).withCaptionHints(java.util.Set.of(new UUID(0, 1))).withLetteringHints(java.util.Set.of(new UUID(0, 1))).withDrawnHints(java.util.Set.of(new UUID(0, 1)))
+            .withBubbles(List.of(new com.toonlira.translationgateway.domain.layout.LayoutBox(.05, .05, .95, .95)));
         var file = temporary.resolve("request.bin");
         var original = temporary.resolve("original.png");
         RenderSubprocessProtocol.writeRequest(file, original, settings(), request);
         var decoded = RenderSubprocessProtocol.readRequest(file);
         assertThat(decoded.original()).isEqualTo(original);
+        // The child paints like the in-process renderer: speech hints (inpainting) and detected balloons travel too.
+        assertThat(decoded.request().captionHints()).isEqualTo(request.captionHints());
+        assertThat(decoded.request().letteringHints()).isEqualTo(request.letteringHints());
+        assertThat(decoded.request().drawnHints()).isEqualTo(request.drawnHints());
+        assertThat(decoded.request().bubbles()).isEqualTo(request.bubbles());
         assertThat(decoded.settings()).isEqualTo(settings());
         assertThat(decoded.request().regions()).containsExactlyElementsOf(request.regions());
         assertThat(decoded.request().source()).isEqualTo(request.source());
@@ -96,7 +102,7 @@ class RenderSubprocessProtocolTest {
             RenderPolicy.initial());
         var image = new RenderedImage("image/webp", 30, 32, 22, "d".repeat(64));
         var result = new RenderPort.Output(temporary.resolve("render-fixture.webp"), RenderManifest.create(request, image,
-            List.of(new RenderManifest.Placement(request.regions().getFirst().id(), false, 12))));
+            List.of(new RenderManifest.Placement(request.regions().getFirst().id(), true, 0, true))));
         var file = temporary.resolve("result.bin");
         RenderSubprocessProtocol.writeResult(file, result);
         var bytes = Files.readAllBytes(file);
@@ -104,6 +110,7 @@ class RenderSubprocessProtocolTest {
         var decoded = RenderSubprocessProtocol.readResult(file, temporary, request);
         assertThat(decoded.path()).isEqualTo(result.path());
         assertThat(decoded.manifest().regions()).containsExactlyElementsOf(result.manifest().regions());
+        assertThat(decoded.manifest().regions().getFirst().kept()).isTrue();
         var missing = LocalFileRenderAdapterTest.request(request.source(), List.of(), request.policy());
         assertThatThrownBy(() -> RenderSubprocessProtocol.readResult(file, temporary, missing)).hasMessage("render-unavailable");
         bytes[bytes.length - Integer.BYTES - 1] = 2;

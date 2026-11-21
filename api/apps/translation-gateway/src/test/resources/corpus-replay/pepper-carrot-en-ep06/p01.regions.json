@@ -1,0 +1,28 @@
+[ {
+  "text" : "Oh shoot, I fell asleep\nwith the window open,\nagain...\n",
+  "box" : [ 0.045, 0.2548, 0.2267, 0.3012 ]
+}, {
+  "text" : "...it's so windy...\n",
+  "box" : [ 0.1125, 0.3723, 0.25, 0.3855 ]
+}, {
+  "text" : "... and why can I see\nKomona through\nthe window?\n",
+  "box" : [ 0.1308, 0.4639, 0.3033, 0.5078 ]
+}, {
+  "text" : "KOMONA!\n",
+  "box" : [ 0.3483, 0.6108, 0.42, 0.6241 ]
+}, {
+  "text" : "The Potion\nContest!\n",
+  "box" : [ 0.4792, 0.6024, 0.5667, 0.6289 ]
+}, {
+  "text" : "I must've... must've accidentally fallen asleep!",
+  "box" : [ 0.6345, 0.6002, 0.8115, 0.6515 ]
+}, {
+  "text" : "...but?\n",
+  "box" : [ 0.4855, 0.8039, 0.5526, 0.8223 ]
+}, {
+  "text" : "quack?\n",
+  "box" : [ 0.6042, 0.8518, 0.6533, 0.8807 ]
+}, {
+  "text" : "Where am I?!?",
+  "box" : [ 0.6481, 0.8042, 0.732, 0.8391 ]
+} ]

@@ -10,8 +10,8 @@ não substitui referências humanas independentes nem autoriza novas chamadas.
 Na raiz do repositório, com Node.js 22 (sem instalar dependências):
 
 ```bash
-node api/apps/translation-gateway/scripts/ocr-samples.mjs verify
-node api/apps/translation-gateway/scripts/ocr-samples.mjs gallery
+node api/apps/translation-gateway/scripts/ocr/ocr-samples.mjs verify
+node api/apps/translation-gateway/scripts/ocr/ocr-samples.mjs gallery
 ```
 
 Abra `.local/ocr-samples/index.html` no navegador. A galeria funciona offline,
@@ -25,8 +25,8 @@ não é necessário capturar nem baixar novas páginas a cada rodada.
 Em outro checkout/computador, restaure explicitamente as imagens:
 
 ```bash
-node api/apps/translation-gateway/scripts/ocr-samples.mjs download
-node api/apps/translation-gateway/scripts/ocr-samples.mjs gallery
+node api/apps/translation-gateway/scripts/ocr/ocr-samples.mjs download
+node api/apps/translation-gateway/scripts/ocr/ocr-samples.mjs gallery
 ```
 
 `verify` e `gallery` não fazem chamadas de rede. `download` busca somente arquivos
@@ -169,7 +169,7 @@ incluído nesses comandos. Gateway e worker permanecem desabilitados.
 ## Manutenção e testes do utilitário
 
 ```bash
-node --test api/apps/translation-gateway/scripts/ocr-samples.test.mjs
+node --test api/apps/translation-gateway/scripts/ocr/ocr-samples.test.mjs
 ```
 
 Para ampliar o pacote, conferir fonte/licença e registrar hash/bytes/dimensões,

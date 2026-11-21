@@ -1,0 +1,31 @@
+{
+  "root" : "corpus",
+  "page" : "pepper-carrot-ja-ep06/p00.jpg",
+  "sourceLanguage" : "ja",
+  "width" : 1200,
+  "height" : 287,
+  "regions" : [ {
+    "source" : "ペッパーとキャロット\n",
+    "translation" : "Pepper e Carrot",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.1545751953125, 0.27702352809573716 ], [ 0.8444970703125, 0.27702352809573716 ], [ 0.8444970703125, 0.6637347816174869 ], [ 0.1545751953125, 0.6637347816174869 ] ]
+  }, {
+    "source" : "エピソード 6: 魔法薬コンテスト\n",
+    "translation" : "Episódio 6: Concurso de Poções",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.27166666666666667, 0.7874564459930313 ], [ 0.6891666666666667, 0.7874564459930313 ], [ 0.6891666666666667, 0.89198606271777 ], [ 0.27166666666666667, 0.89198606271777 ] ]
+  } ],
+  "bubbles" : [ [ 0.0012905597686767578, 0.0014905929565429688, 1.0, 0.9995844505389808 ] ],
+  "expect" : {
+    "maxChangedOutside" : 0,
+    "regions" : [ {
+      "overflow" : false,
+      "font" : 48,
+      "residualInk" : 0
+    }, {
+      "overflow" : false,
+      "font" : 46,
+      "residualInk" : 0
+    } ]
+  }
+}

@@ -85,6 +85,12 @@ inline para manter este arquivo curto — **ler o doc relevante antes de mexer n
   — ao retomar trabalho de outro agente, antes de propor arquitetura e antes de
   salvar qualquer coisa na memória; usar junto da skill `ai-memory-toonlira`.
 
+- **Sem correção estática na tradução** → [`api/apps/translation-gateway/docs/principios-de-correcao.md`](api/apps/translation-gateway/docs/principios-de-correcao.md)
+  — **obrigatório antes de corrigir qualquer defeito de OCR/tradução/render.** Nunca trocar um texto
+  específico no código (`if`, tabela, `replace`, lista tirada da obra, exemplo do caso no prompt): cada
+  obra é diferente. Corrigir a **classe** do erro com o melhor custo-benefício e validar em muitos casos;
+  um caso errado é aceitável, resposta mocada no código não é.
+
 Aplicação concreta de i18n (receitas de nova entidade traduzível) →
 [`docs/i18n-guide.md`](docs/i18n-guide.md).
 
@@ -134,3 +140,4 @@ Antes de considerar qualquer tarefa concluída:
 6. Branch names significativos
 7. **[Nova tela]** i18n implementado — sem textos hardcoded, todas as chaves presentes em todos os idiomas suportados
 8. **[Mudança em persistência]** Checklist de ORM aplicado (ver [`docs/orm-persistence.md`](docs/orm-persistence.md))
+9. **[Correção no gateway de tradução]** Nenhuma correção estática (ver [`principios-de-correcao.md`](api/apps/translation-gateway/docs/principios-de-correcao.md))

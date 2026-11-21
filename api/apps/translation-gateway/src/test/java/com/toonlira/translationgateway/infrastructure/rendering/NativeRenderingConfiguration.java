@@ -42,10 +42,14 @@ public class NativeRenderingConfiguration {
                 configuration.getNativeDistributionSha256(), configuration.getNativeTimeout());
             var settings = new BoundedNativeRenderChildSettings(codec, NativeProcessLimits.initial());
             var admission = NativeWorkerParentPreparation.prepare(directory, settings.limits());
-            if (launcher != null) return new IsolatedRenderAdapter(directory.toRealPath(), settings,
-                configuration.getProcessDeadline(), heapMiB, launcher, admission::requireAvailable);
+            // The model runs in this parent process on windows the sandboxed child prepares (InpaintExchange).
+            var model = configuration.getInpaintingModelPath();
+            InpaintModel inpaint = model == null || model.toString().isBlank() ? null
+                : new LamaInpainter(model, configuration.getInpaintingThreads());
+            IsolatedRenderAdapter.ChildLauncher child = launcher != null ? launcher : (staging, heap) ->
+                RenderJvmLauncher.builder(staging, heap, RenderChildMain.class.getName(), settings).start();
             return new IsolatedRenderAdapter(directory.toRealPath(), settings, configuration.getProcessDeadline(),
-                heapMiB, admission::requireAvailable);
+                heapMiB, child, admission::requireAvailable, inpaint);
         } catch (Exception error) { throw new IllegalStateException("Renderer preparation unavailable"); }
     }
 

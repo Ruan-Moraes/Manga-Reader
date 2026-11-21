@@ -124,6 +124,28 @@ class VisionResponseMapperTest {
                 .setWidth(100).setHeight(200).addBlocks(block)))).build();
     }
 
+    @Test
+    void wordSlicesRebuildTheParagraphTextAndKeepTheirOwnBoxes() {
+        var space = com.google.cloud.vision.v1.TextAnnotation.TextProperty.newBuilder().setDetectedBreak(
+            com.google.cloud.vision.v1.TextAnnotation.DetectedBreak.newBuilder()
+                .setType(com.google.cloud.vision.v1.TextAnnotation.DetectedBreak.BreakType.SPACE));
+        var first = Word.newBuilder().setBoundingBox(box(0, 0, 20, 10));
+        "YOU".codePoints().forEach(point -> first.addSymbols(Symbol.newBuilder().setText(new String(Character.toChars(point)))));
+        first.setSymbols(2, first.getSymbols(2).toBuilder().setProperty(space));
+        var second = Word.newBuilder().setBoundingBox(box(30, 0, 60, 10));
+        "clatter".codePoints().forEach(point -> second.addSymbols(Symbol.newBuilder().setText(new String(Character.toChars(point)))));
+        var paragraph = Paragraph.newBuilder().setBoundingBox(box(0, 0, 60, 10)).addWords(first).addWords(second).build();
+        var mapped = new VisionResponseMapper().mapParagraphs(response(paragraph), CONTEXT).getFirst();
+        assertThat(mapped.region().sourceText()).isEqualTo("YOU clatter");
+        assertThat(mapped.words()).extracting(com.toonlira.translationgateway.domain.OcrParagraph.Word::text)
+            .containsExactly("YOU ", "clatter");
+        assertThat(mapped.words().get(1).polygon().getFirst().x()).isEqualTo(0.3);
+        assertThat(mapped.words().get(0).confidence()).isNaN(); // Vision sends 0 when it has no confidence
+        var sure = paragraph.toBuilder().setWords(0, paragraph.getWords(0).toBuilder().setConfidence(.42f)).build();
+        assertThat(new VisionResponseMapper().mapParagraphs(response(sure), CONTEXT).getFirst().words().getFirst().confidence())
+            .isCloseTo(.42, org.assertj.core.data.Offset.offset(1e-6));
+    }
+
     static Paragraph paragraph(String text, BoundingPoly box) {
         var word = Word.newBuilder();
         text.codePoints().forEach(point -> word.addSymbols(Symbol.newBuilder().setText(new String(Character.toChars(point)))));

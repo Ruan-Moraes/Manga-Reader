@@ -29,6 +29,8 @@ export interface ImageReaderItem {
     width: number;
     height: number;
     demoOverlays?: readonly ReaderDemoOverlay[];
+    /** Still being translated: the original shows until the translation arrives and fades in over it. */
+    pending?: boolean;
 }
 
 export interface ImageSequenceDocument {

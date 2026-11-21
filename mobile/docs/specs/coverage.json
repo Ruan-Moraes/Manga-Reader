@@ -1,6 +1,18 @@
 {
     "version": 1,
-    "ignored": ["**/.DS_Store", "**/*.tsbuildinfo", ".idea/**", "node_modules/**", ".expo/**", "coverage/**", "ios/**", "android/**", "modules/translation-background/android/build/**", "docs/ui-captures/**", ".env.local"],
+    "ignored": [
+        "**/.DS_Store",
+        "**/*.tsbuildinfo",
+        ".idea/**",
+        "node_modules/**",
+        ".expo/**",
+        "coverage/**",
+        "ios/**",
+        "android/**",
+        "modules/translation-background/android/build/**",
+        "docs/ui-captures/**",
+        ".env.local"
+    ],
     "patterns": [
         {
             "pattern": ".agents/**",
@@ -842,25 +854,29 @@
             "path": ".gitignore",
             "category": "infrastructure",
             "specs": ["MOB-DEC-001"],
-            "rationale": "Política de arquivos locais e gerados."
+            "rationale": "Política de arquivos locais e gerados.",
+            "observations": []
         },
         {
             "path": ".prettierignore",
             "category": "infrastructure",
             "specs": ["MOB-DEC-001"],
-            "rationale": "Escopo do gate de formatação."
+            "rationale": "Escopo do gate de formatação.",
+            "observations": []
         },
         {
             "path": ".prettierrc",
             "category": "infrastructure",
             "specs": ["MOB-DEC-001"],
-            "rationale": "Configuração do formatador."
+            "rationale": "Configuração do formatador.",
+            "observations": []
         },
         {
             "path": "AGENTS.md",
             "category": "governance",
             "specs": ["MOB-DEC-001"],
-            "rationale": "Guardrails locais do SDD."
+            "rationale": "Guardrails locais do SDD.",
+            "observations": []
         },
         {
             "path": "app.json",
@@ -1065,13 +1081,15 @@
             "path": "eslint.config.js",
             "category": "infrastructure",
             "specs": ["MOB-BASE-001"],
-            "rationale": "Gate de imports e qualidade descrito em MOB-BASE-001/OBS-005."
+            "rationale": "Gate de imports e qualidade descrito em MOB-BASE-001/OBS-005.",
+            "observations": []
         },
         {
             "path": "expo-env.d.ts",
             "category": "infrastructure",
             "specs": ["MOB-BASE-001"],
-            "rationale": "Declarações geradas para typed routes."
+            "rationale": "Declarações geradas para typed routes.",
+            "observations": []
         },
         {
             "path": "global.css",
@@ -1084,13 +1102,15 @@
             "path": "jest.config.js",
             "category": "infrastructure",
             "specs": ["MOB-DEC-002"],
-            "rationale": "Configuração de evidência automatizada."
+            "rationale": "Configuração de evidência automatizada.",
+            "observations": []
         },
         {
             "path": "jest.setup.ts",
             "category": "infrastructure",
             "specs": ["MOB-DEC-002"],
-            "rationale": "Setup e mocks globais de testes."
+            "rationale": "Setup e mocks globais de testes.",
+            "observations": []
         },
         {
             "path": "metro.config.js",
@@ -1103,31 +1123,36 @@
             "path": "nativewind-env.d.ts",
             "category": "infrastructure",
             "specs": ["MOB-BASE-001"],
-            "rationale": "Declarações de tipo do NativeWind."
+            "rationale": "Declarações de tipo do NativeWind.",
+            "observations": []
         },
         {
             "path": "package.json",
             "category": "infrastructure",
             "specs": ["MOB-DEC-001", "MOB-DEC-002", "MOB-FEAT-012", "MOB-FEAT-017", "MOB-FEAT-043"],
-            "rationale": "Dependências e gates do módulo."
+            "rationale": "Dependências e gates do módulo.",
+            "observations": []
         },
         {
             "path": "pnpm-lock.yaml",
             "category": "infrastructure",
             "specs": ["MOB-DEC-002", "MOB-FEAT-012", "MOB-FEAT-017", "MOB-FEAT-043"],
-            "rationale": "Resolução reproduzível de dependências."
+            "rationale": "Resolução reproduzível de dependências.",
+            "observations": []
         },
         {
             "path": "pnpm-workspace.yaml",
             "category": "infrastructure",
             "specs": ["MOB-DEC-002"],
-            "rationale": "Configuração local do gerenciador: somente mobile, store local e checks sem instalação implícita."
+            "rationale": "Configuração local do gerenciador: somente mobile, store local e checks sem instalação implícita.",
+            "observations": []
         },
         {
             "path": "README.md",
             "category": "governance",
             "specs": ["MOB-DEC-001"],
-            "rationale": "Referência técnica do módulo."
+            "rationale": "Referência técnica do módulo.",
+            "observations": []
         },
         {
             "path": "scripts/tests/fsd-boundaries.test.mjs",
@@ -1633,7 +1658,7 @@
         {
             "path": "src/entities/translation-project/api/__tests__/translationProjectRepository.test.ts",
             "category": "evidence",
-            "specs": ["MOB-FEAT-014", "MOB-FEAT-016"],
+            "specs": ["MOB-FEAT-014", "MOB-FEAT-016", "MOB-FEAT-023"],
             "observations": [
                 "MOB-FEAT-014/AC-010",
                 "MOB-FEAT-016/AC-002",
@@ -1641,13 +1666,14 @@
                 "MOB-FEAT-016/AC-006",
                 "MOB-FEAT-016/AC-007",
                 "MOB-FEAT-016/AC-008",
-                "MOB-FEAT-016/AC-009"
+                "MOB-FEAT-016/AC-009",
+                "MOB-FEAT-023/AC-003"
             ]
         },
         {
             "path": "src/entities/translation-project/api/translationProjectRepository.ts",
             "category": "behavior",
-            "specs": ["MOB-FEAT-014", "MOB-FEAT-016"],
+            "specs": ["MOB-FEAT-014", "MOB-FEAT-016", "MOB-FEAT-022", "MOB-FEAT-023"],
             "observations": [
                 "MOB-FEAT-014/AC-010",
                 "MOB-FEAT-016/AC-002",
@@ -1658,20 +1684,31 @@
                 "MOB-FEAT-016/AC-008",
                 "MOB-FEAT-016/AC-009",
                 "MOB-FEAT-016/AC-011",
-                "MOB-FEAT-016/AC-012"
+                "MOB-FEAT-016/AC-012",
+                "MOB-FEAT-022/AC-002",
+                "MOB-FEAT-022/AC-004",
+                "MOB-FEAT-023/AC-002",
+                "MOB-FEAT-023/AC-003"
             ]
         },
         {
             "path": "src/entities/translation-project/index.ts",
             "category": "behavior",
-            "specs": ["MOB-FEAT-016"],
-            "observations": ["MOB-FEAT-016/AC-002", "MOB-FEAT-016/AC-005", "MOB-FEAT-016/AC-009"]
+            "specs": ["MOB-FEAT-016", "MOB-FEAT-023", "MOB-FEAT-024"],
+            "observations": [
+                "MOB-FEAT-016/AC-002",
+                "MOB-FEAT-016/AC-005",
+                "MOB-FEAT-016/AC-009",
+                "MOB-FEAT-023/AC-002",
+                "MOB-FEAT-023/AC-003",
+                "MOB-FEAT-024/AC-003"
+            ]
         },
         {
             "path": "src/entities/translation-project/model/translationProject.ts",
             "category": "behavior",
-            "specs": ["MOB-FEAT-014", "MOB-FEAT-016"],
-            "observations": ["MOB-FEAT-014/AC-010", "MOB-FEAT-016/AC-002", "MOB-FEAT-016/AC-006"]
+            "specs": ["MOB-FEAT-014", "MOB-FEAT-016", "MOB-FEAT-024"],
+            "observations": ["MOB-FEAT-014/AC-010", "MOB-FEAT-016/AC-002", "MOB-FEAT-016/AC-006", "MOB-FEAT-024/AC-003"]
         },
         {
             "path": "src/entities/reading-progress/api/__tests__/readingProgressApi.test.ts",
@@ -2033,7 +2070,7 @@
         {
             "path": "src/features/create-translation-project/ui/__tests__/CreateTranslationProjectPanel.test.tsx",
             "category": "evidence",
-            "specs": ["MOB-FEAT-014", "MOB-FEAT-016", "MOB-FEAT-021"],
+            "specs": ["MOB-FEAT-014", "MOB-FEAT-016", "MOB-FEAT-021", "MOB-FEAT-024"],
             "observations": [
                 "MOB-FEAT-014/AC-009",
                 "MOB-FEAT-016/AC-010",
@@ -2041,13 +2078,14 @@
                 "MOB-FEAT-016/AC-012",
                 "MOB-FEAT-021/AC-001",
                 "MOB-FEAT-021/AC-006",
-                "MOB-FEAT-021/AC-008"
+                "MOB-FEAT-021/AC-008",
+                "MOB-FEAT-024/AC-003"
             ]
         },
         {
             "path": "src/features/create-translation-project/ui/CreateTranslationProjectPanel.tsx",
             "category": "behavior",
-            "specs": ["MOB-FEAT-016", "MOB-FEAT-017", "MOB-FEAT-021", "MOB-FEAT-056"],
+            "specs": ["MOB-FEAT-016", "MOB-FEAT-017", "MOB-FEAT-021", "MOB-FEAT-056", "MOB-FEAT-024"],
             "observations": [
                 "MOB-FEAT-016/AC-001",
                 "MOB-FEAT-016/AC-009",
@@ -2058,7 +2096,8 @@
                 "MOB-FEAT-021/AC-006",
                 "MOB-FEAT-021/AC-008",
                 "MOB-FEAT-056/AC-001",
-                "MOB-FEAT-056/AC-004"
+                "MOB-FEAT-056/AC-004",
+                "MOB-FEAT-024/AC-003"
             ]
         },
         {
@@ -3297,7 +3336,8 @@
                 "MOB-FEAT-050",
                 "MOB-FEAT-021",
                 "MOB-FEAT-055",
-                "MOB-FEAT-056"
+                "MOB-FEAT-056",
+                "MOB-FEAT-024"
             ],
             "observations": [
                 "MOB-FEAT-012/AC-001",
@@ -3333,7 +3373,10 @@
                 "MOB-FEAT-056/AC-004",
                 "MOB-FEAT-056/AC-005",
                 "MOB-FEAT-056/AC-009",
-                "MOB-FEAT-056/AC-012"
+                "MOB-FEAT-056/AC-012",
+                "MOB-FEAT-021/AC-003",
+                "MOB-FEAT-021/AC-004",
+                "MOB-FEAT-024/AC-003"
             ]
         },
         {
@@ -5840,13 +5883,15 @@
             "path": "steiger.config.ts",
             "category": "infrastructure",
             "specs": ["MOB-BASE-001"],
-            "rationale": "Boundary gate descrito em MOB-BASE-001/OBS-005."
+            "rationale": "Boundary gate descrito em MOB-BASE-001/OBS-005.",
+            "observations": []
         },
         {
             "path": "tailwind.config.js",
             "category": "infrastructure",
             "specs": ["MOB-FEAT-002"],
-            "rationale": "Configuração de tokens NativeWind; não é comportamento isolado."
+            "rationale": "Configuração de tokens NativeWind; não é comportamento isolado.",
+            "observations": []
         },
         {
             "path": "tsconfig.json",
@@ -6009,8 +6054,8 @@
         {
             "path": "src/entities/remote-processing-capability/model/remoteProcessingCapability.ts",
             "category": "behavior",
-            "specs": ["MOB-FEAT-017", "MOB-FEAT-019"],
-            "observations": ["MOB-FEAT-017/AC-001", "MOB-FEAT-017/AC-003", "MOB-FEAT-017/AC-004", "MOB-FEAT-019/AC-001"]
+            "specs": ["MOB-FEAT-017", "MOB-FEAT-019", "MOB-FEAT-023"],
+            "observations": ["MOB-FEAT-017/AC-001", "MOB-FEAT-017/AC-003", "MOB-FEAT-017/AC-004", "MOB-FEAT-019/AC-001", "MOB-FEAT-023/AC-004"]
         },
         {
             "path": "src/entities/remote-processing-identity/index.ts",
@@ -6063,7 +6108,7 @@
         {
             "path": "src/features/start-remote-processing/model/__tests__/startRemoteProcessing.test.ts",
             "category": "evidence",
-            "specs": ["MOB-FEAT-017", "MOB-FEAT-019"],
+            "specs": ["MOB-FEAT-017", "MOB-FEAT-019", "MOB-FEAT-022", "MOB-FEAT-023"],
             "observations": [
                 "MOB-FEAT-017/AC-002",
                 "MOB-FEAT-017/AC-003",
@@ -6076,13 +6121,18 @@
                 "MOB-FEAT-019/AC-001",
                 "MOB-FEAT-019/AC-004",
                 "MOB-FEAT-019/AC-005",
-                "MOB-FEAT-019/AC-006"
+                "MOB-FEAT-019/AC-006",
+                "MOB-FEAT-022/AC-001",
+                "MOB-FEAT-022/AC-002",
+                "MOB-FEAT-022/AC-004",
+                "MOB-FEAT-022/AC-005",
+                "MOB-FEAT-023/AC-002"
             ]
         },
         {
             "path": "src/features/start-remote-processing/model/startRemoteProcessing.ts",
             "category": "behavior",
-            "specs": ["MOB-FEAT-017", "MOB-FEAT-019"],
+            "specs": ["MOB-FEAT-017", "MOB-FEAT-019", "MOB-FEAT-021", "MOB-FEAT-022", "MOB-FEAT-023"],
             "observations": [
                 "MOB-FEAT-017/AC-002",
                 "MOB-FEAT-017/AC-003",
@@ -6096,7 +6146,13 @@
                 "MOB-FEAT-017/AC-012",
                 "MOB-FEAT-019/AC-004",
                 "MOB-FEAT-019/AC-005",
-                "MOB-FEAT-019/AC-006"
+                "MOB-FEAT-019/AC-006",
+                "MOB-FEAT-021/AC-001",
+                "MOB-FEAT-022/AC-001",
+                "MOB-FEAT-022/AC-002",
+                "MOB-FEAT-022/AC-004",
+                "MOB-FEAT-022/AC-005",
+                "MOB-FEAT-023/AC-002"
             ]
         },
         {
@@ -6196,14 +6252,33 @@
         {
             "path": "src/widgets/remote-processing/model/chapterBatch.ts",
             "category": "behavior",
-            "specs": ["MOB-FEAT-055", "MOB-FEAT-066"],
-            "observations": ["MOB-FEAT-055/AC-004", "MOB-FEAT-055/AC-005", "MOB-FEAT-055/AC-009", "MOB-FEAT-055/AC-011", "MOB-FEAT-066/AC-006"]
+            "specs": ["MOB-FEAT-055", "MOB-FEAT-066", "MOB-FEAT-022"],
+            "observations": [
+                "MOB-FEAT-055/AC-004",
+                "MOB-FEAT-055/AC-005",
+                "MOB-FEAT-055/AC-009",
+                "MOB-FEAT-055/AC-011",
+                "MOB-FEAT-066/AC-006",
+                "MOB-FEAT-022/AC-001",
+                "MOB-FEAT-022/AC-003",
+                "MOB-FEAT-022/AC-004",
+                "MOB-FEAT-022/AC-005"
+            ]
         },
         {
             "path": "src/widgets/remote-processing/model/__tests__/chapterBatch.test.ts",
             "category": "evidence",
-            "specs": ["MOB-FEAT-055", "MOB-FEAT-066"],
-            "observations": ["MOB-FEAT-055/AC-004", "MOB-FEAT-055/AC-005", "MOB-FEAT-055/AC-009", "MOB-FEAT-066/AC-006"]
+            "specs": ["MOB-FEAT-055", "MOB-FEAT-066", "MOB-FEAT-022"],
+            "observations": [
+                "MOB-FEAT-055/AC-004",
+                "MOB-FEAT-055/AC-005",
+                "MOB-FEAT-055/AC-009",
+                "MOB-FEAT-066/AC-006",
+                "MOB-FEAT-022/AC-001",
+                "MOB-FEAT-022/AC-003",
+                "MOB-FEAT-022/AC-004",
+                "MOB-FEAT-022/AC-005"
+            ]
         },
         {
             "path": "src/widgets/remote-processing/model/useChapterBatch.ts",
@@ -6224,13 +6299,20 @@
         {
             "path": "src/widgets/remote-processing/ui/BatchDisclosureDialog.tsx",
             "category": "behavior",
-            "specs": ["MOB-FEAT-055", "MOB-FEAT-056", "MOB-FEAT-064"],
-            "observations": ["MOB-FEAT-055/AC-004", "MOB-FEAT-055/AC-009", "MOB-FEAT-056/AC-006", "MOB-FEAT-056/AC-011", "MOB-FEAT-064/AC-004"]
+            "specs": ["MOB-FEAT-055", "MOB-FEAT-056", "MOB-FEAT-064", "MOB-FEAT-023"],
+            "observations": [
+                "MOB-FEAT-055/AC-004",
+                "MOB-FEAT-055/AC-009",
+                "MOB-FEAT-056/AC-006",
+                "MOB-FEAT-056/AC-011",
+                "MOB-FEAT-064/AC-004",
+                "MOB-FEAT-023/AC-004"
+            ]
         },
         {
             "path": "src/widgets/remote-processing/ui/ChapterBatchPanel.tsx",
             "category": "behavior",
-            "specs": ["MOB-FEAT-055", "MOB-FEAT-056", "MOB-FEAT-066", "MOB-FEAT-067"],
+            "specs": ["MOB-FEAT-055", "MOB-FEAT-056", "MOB-FEAT-066", "MOB-FEAT-067", "MOB-FEAT-022"],
             "observations": [
                 "MOB-FEAT-055/AC-004",
                 "MOB-FEAT-055/AC-005",
@@ -6242,19 +6324,20 @@
                 "MOB-FEAT-067/AC-002",
                 "MOB-FEAT-067/AC-003",
                 "MOB-FEAT-067/AC-004",
-                "MOB-FEAT-067/AC-005"
+                "MOB-FEAT-067/AC-005",
+                "MOB-FEAT-022/AC-007"
             ]
         },
         {
             "path": "src/widgets/remote-processing/ui/PageRetryIndicator.tsx",
             "category": "behavior",
-            "specs": ["MOB-FEAT-055", "MOB-FEAT-063"],
-            "observations": ["MOB-FEAT-055/AC-005", "MOB-FEAT-055/AC-006", "MOB-FEAT-055/AC-011", "MOB-FEAT-063/AC-010"]
+            "specs": ["MOB-FEAT-055", "MOB-FEAT-063", "MOB-FEAT-022"],
+            "observations": ["MOB-FEAT-055/AC-005", "MOB-FEAT-055/AC-006", "MOB-FEAT-055/AC-011", "MOB-FEAT-063/AC-010", "MOB-FEAT-022/AC-005"]
         },
         {
             "path": "src/widgets/remote-processing/ui/__tests__/ChapterBatchPanel.test.tsx",
             "category": "evidence",
-            "specs": ["MOB-FEAT-055", "MOB-FEAT-066", "MOB-FEAT-067"],
+            "specs": ["MOB-FEAT-055", "MOB-FEAT-066", "MOB-FEAT-067", "MOB-FEAT-022"],
             "observations": [
                 "MOB-FEAT-055/AC-004",
                 "MOB-FEAT-055/AC-005",
@@ -6263,7 +6346,8 @@
                 "MOB-FEAT-067/AC-002",
                 "MOB-FEAT-067/AC-003",
                 "MOB-FEAT-067/AC-004",
-                "MOB-FEAT-067/AC-005"
+                "MOB-FEAT-067/AC-005",
+                "MOB-FEAT-022/AC-007"
             ]
         },
         {
@@ -6275,8 +6359,8 @@
         {
             "path": "src/widgets/remote-processing/ui/__tests__/PageRetryIndicator.test.tsx",
             "category": "evidence",
-            "specs": ["MOB-FEAT-055", "MOB-FEAT-063"],
-            "observations": ["MOB-FEAT-055/AC-005", "MOB-FEAT-055/AC-006", "MOB-FEAT-055/AC-011", "MOB-FEAT-063/AC-010"]
+            "specs": ["MOB-FEAT-055", "MOB-FEAT-063", "MOB-FEAT-022"],
+            "observations": ["MOB-FEAT-055/AC-005", "MOB-FEAT-055/AC-006", "MOB-FEAT-055/AC-011", "MOB-FEAT-063/AC-010", "MOB-FEAT-022/AC-005"]
         },
         {
             "path": "src/widgets/remote-processing/index.ts",
@@ -6287,7 +6371,7 @@
         {
             "path": "src/widgets/remote-processing/ui/__tests__/RemoteProcessingPanel.test.tsx",
             "category": "evidence",
-            "specs": ["MOB-FEAT-017", "MOB-FEAT-021", "MOB-FEAT-055", "MOB-FEAT-064"],
+            "specs": ["MOB-FEAT-017", "MOB-FEAT-021", "MOB-FEAT-055", "MOB-FEAT-064", "MOB-FEAT-022", "MOB-FEAT-023"],
             "observations": [
                 "MOB-FEAT-017/AC-001",
                 "MOB-FEAT-017/AC-002",
@@ -6300,13 +6384,18 @@
                 "MOB-FEAT-021/AC-008",
                 "MOB-FEAT-055/AC-008",
                 "MOB-FEAT-055/AC-009",
-                "MOB-FEAT-064/AC-004"
+                "MOB-FEAT-064/AC-004",
+                "MOB-FEAT-022/AC-004",
+                "MOB-FEAT-022/AC-005",
+                "MOB-FEAT-022/AC-006",
+                "MOB-FEAT-022/AC-007",
+                "MOB-FEAT-023/AC-004"
             ]
         },
         {
             "path": "src/widgets/remote-processing/ui/RemoteProcessingPanel.tsx",
             "category": "behavior",
-            "specs": ["MOB-FEAT-017", "MOB-FEAT-021", "MOB-FEAT-055", "MOB-FEAT-064"],
+            "specs": ["MOB-FEAT-017", "MOB-FEAT-021", "MOB-FEAT-055", "MOB-FEAT-064", "MOB-FEAT-022", "MOB-FEAT-023"],
             "observations": [
                 "MOB-FEAT-017/AC-001",
                 "MOB-FEAT-017/AC-002",
@@ -6321,7 +6410,11 @@
                 "MOB-FEAT-021/AC-004",
                 "MOB-FEAT-055/AC-008",
                 "MOB-FEAT-055/AC-009",
-                "MOB-FEAT-064/AC-004"
+                "MOB-FEAT-064/AC-004",
+                "MOB-FEAT-022/AC-005",
+                "MOB-FEAT-022/AC-006",
+                "MOB-FEAT-022/AC-007",
+                "MOB-FEAT-023/AC-004"
             ]
         },
         {
@@ -6485,8 +6578,8 @@
         {
             "path": "src/entities/translation-project/@x/local-translation-result.ts",
             "category": "behavior",
-            "specs": ["MOB-FEAT-025", "MOB-FEAT-027"],
-            "observations": ["MOB-FEAT-025/AC-001", "MOB-FEAT-027/AC-001"]
+            "specs": ["MOB-FEAT-025", "MOB-FEAT-027", "MOB-FEAT-023"],
+            "observations": ["MOB-FEAT-025/AC-001", "MOB-FEAT-027/AC-001", "MOB-FEAT-023/AC-001"]
         },
         {
             "path": "src/features/local-translation/index.ts",
@@ -6574,7 +6667,7 @@
         {
             "path": "src/pages/offline-translation/ui/LocalTranslationReaderPage.tsx",
             "category": "behavior",
-            "specs": ["MOB-FEAT-026", "MOB-FEAT-052", "MOB-FEAT-054", "MOB-FEAT-021", "MOB-FEAT-055", "MOB-FEAT-063"],
+            "specs": ["MOB-FEAT-026", "MOB-FEAT-052", "MOB-FEAT-054", "MOB-FEAT-021", "MOB-FEAT-055", "MOB-FEAT-063", "MOB-FEAT-022", "MOB-FEAT-024"],
             "observations": [
                 "MOB-FEAT-026/AC-001",
                 "MOB-FEAT-026/AC-004",
@@ -6590,7 +6683,9 @@
                 "MOB-FEAT-063/AC-003",
                 "MOB-FEAT-063/AC-004",
                 "MOB-FEAT-063/AC-005",
-                "MOB-FEAT-063/AC-006"
+                "MOB-FEAT-063/AC-006",
+                "MOB-FEAT-022/AC-006",
+                "MOB-FEAT-024/AC-001"
             ]
         },
         {
@@ -6827,7 +6922,17 @@
         {
             "path": "src/pages/offline-translation/ui/__tests__/LocalTranslationReaderPage.test.tsx",
             "category": "evidence",
-            "specs": ["MOB-FEAT-026", "MOB-FEAT-050", "MOB-FEAT-051", "MOB-FEAT-052", "MOB-FEAT-021", "MOB-FEAT-055", "MOB-FEAT-063"],
+            "specs": [
+                "MOB-FEAT-026",
+                "MOB-FEAT-050",
+                "MOB-FEAT-051",
+                "MOB-FEAT-052",
+                "MOB-FEAT-021",
+                "MOB-FEAT-055",
+                "MOB-FEAT-063",
+                "MOB-FEAT-022",
+                "MOB-FEAT-024"
+            ],
             "observations": [
                 "MOB-FEAT-026/AC-001",
                 "MOB-FEAT-026/AC-002",
@@ -6845,7 +6950,9 @@
                 "MOB-FEAT-063/AC-006",
                 "MOB-FEAT-063/AC-007",
                 "MOB-FEAT-063/AC-009",
-                "MOB-FEAT-063/AC-010"
+                "MOB-FEAT-063/AC-010",
+                "MOB-FEAT-022/AC-006",
+                "MOB-FEAT-024/AC-001"
             ]
         },
         {
@@ -6885,21 +6992,29 @@
         {
             "path": "src/widgets/content-reader/model/contentReader.ts",
             "category": "behavior",
-            "specs": ["MOB-FEAT-005", "MOB-FEAT-026", "MOB-FEAT-051", "MOB-FEAT-052", "MOB-FEAT-053"],
+            "specs": ["MOB-FEAT-005", "MOB-FEAT-026", "MOB-FEAT-051", "MOB-FEAT-052", "MOB-FEAT-053", "MOB-FEAT-024"],
             "observations": [
                 "MOB-FEAT-051/AC-001",
                 "MOB-FEAT-051/AC-002",
                 "MOB-FEAT-051/AC-003",
                 "MOB-FEAT-051/AC-004",
                 "MOB-FEAT-052/AC-004",
-                "MOB-FEAT-053/AC-004"
+                "MOB-FEAT-053/AC-004",
+                "MOB-FEAT-024/AC-001"
             ]
         },
         {
             "path": "src/widgets/content-reader/ui/ImageSurface.tsx",
             "category": "behavior",
-            "specs": ["MOB-FEAT-051", "MOB-FEAT-052", "MOB-FEAT-063"],
-            "observations": ["MOB-FEAT-051/AC-001", "MOB-FEAT-051/AC-003", "MOB-FEAT-052/AC-002", "MOB-FEAT-063/AC-010"]
+            "specs": ["MOB-FEAT-051", "MOB-FEAT-052", "MOB-FEAT-063", "MOB-FEAT-024"],
+            "observations": [
+                "MOB-FEAT-051/AC-001",
+                "MOB-FEAT-051/AC-003",
+                "MOB-FEAT-052/AC-002",
+                "MOB-FEAT-063/AC-010",
+                "MOB-FEAT-024/AC-001",
+                "MOB-FEAT-024/AC-002"
+            ]
         },
         {
             "path": "src/widgets/content-reader/model/zoom.ts",
@@ -7181,26 +7296,26 @@
         {
             "path": "src/entities/local-translation-result/api/__tests__/remoteRenderedResultRepository.test.ts",
             "category": "evidence",
-            "specs": ["MOB-FEAT-021"],
-            "observations": ["MOB-FEAT-021/AC-002", "MOB-FEAT-021/AC-003", "MOB-FEAT-021/AC-006"]
+            "specs": ["MOB-FEAT-021", "MOB-FEAT-023"],
+            "observations": ["MOB-FEAT-021/AC-002", "MOB-FEAT-021/AC-003", "MOB-FEAT-021/AC-006", "MOB-FEAT-023/AC-001"]
         },
         {
             "path": "src/entities/local-translation-result/api/remoteRenderedResultRepository.ts",
             "category": "behavior",
-            "specs": ["MOB-FEAT-021"],
-            "observations": ["MOB-FEAT-021/AC-002", "MOB-FEAT-021/AC-003", "MOB-FEAT-021/AC-006"]
+            "specs": ["MOB-FEAT-021", "MOB-FEAT-023"],
+            "observations": ["MOB-FEAT-021/AC-002", "MOB-FEAT-021/AC-003", "MOB-FEAT-021/AC-006", "MOB-FEAT-023/AC-001"]
         },
         {
             "path": "src/entities/local-translation-result/model/__tests__/renderedTranslationManifest.test.ts",
             "category": "evidence",
-            "specs": ["MOB-FEAT-021"],
-            "observations": ["MOB-FEAT-021/AC-002", "MOB-FEAT-021/AC-006", "MOB-FEAT-021/AC-007"]
+            "specs": ["MOB-FEAT-021", "MOB-FEAT-023"],
+            "observations": ["MOB-FEAT-021/AC-002", "MOB-FEAT-021/AC-006", "MOB-FEAT-021/AC-007", "MOB-FEAT-023/AC-001"]
         },
         {
             "path": "src/entities/local-translation-result/model/renderedTranslationManifest.ts",
             "category": "behavior",
-            "specs": ["MOB-FEAT-021"],
-            "observations": ["MOB-FEAT-021/AC-002", "MOB-FEAT-021/AC-006", "MOB-FEAT-021/AC-007"]
+            "specs": ["MOB-FEAT-021", "MOB-FEAT-023"],
+            "observations": ["MOB-FEAT-021/AC-002", "MOB-FEAT-021/AC-006", "MOB-FEAT-021/AC-007", "MOB-FEAT-023/AC-001"]
         },
         {
             "path": "src/features/acquire-remote-translation-result/api/acquisitionFiles.ts",
@@ -7341,14 +7456,14 @@
         {
             "path": "src/shared/remote-gateway/__tests__/volatileTranslationTransport.test.ts",
             "category": "evidence",
-            "specs": ["MOB-FEAT-017"],
-            "observations": ["MOB-FEAT-017/AC-004", "MOB-FEAT-017/AC-009", "MOB-FEAT-017/AC-010"]
+            "specs": ["MOB-FEAT-017", "MOB-FEAT-022", "MOB-FEAT-023"],
+            "observations": ["MOB-FEAT-017/AC-004", "MOB-FEAT-017/AC-009", "MOB-FEAT-017/AC-010", "MOB-FEAT-022/AC-002", "MOB-FEAT-023/AC-002"]
         },
         {
             "path": "src/shared/remote-gateway/volatileTranslationTransport.ts",
             "category": "behavior",
-            "specs": ["MOB-FEAT-017"],
-            "observations": ["MOB-FEAT-017/AC-004", "MOB-FEAT-017/AC-009", "MOB-FEAT-017/AC-010"]
+            "specs": ["MOB-FEAT-017", "MOB-FEAT-022", "MOB-FEAT-023"],
+            "observations": ["MOB-FEAT-017/AC-004", "MOB-FEAT-017/AC-009", "MOB-FEAT-017/AC-010", "MOB-FEAT-022/AC-002", "MOB-FEAT-023/AC-002"]
         },
         {
             "path": "docs/specs/features/MOB-FEAT-017-remote-processing-consent-gateway/evidence/volatile-contract-review-2026-11-01.md",
@@ -7741,6 +7856,37 @@
             "category": "evidence",
             "specs": ["MOB-FEAT-060", "MOB-FEAT-057"],
             "observations": ["MOB-FEAT-060/AC-004", "MOB-FEAT-057/AC-001"]
+        },
+        {
+            "path": "docs/specs/features/MOB-FEAT-019-contextual-language-pair-translation/tasks.md",
+            "category": "governance",
+            "specs": ["MOB-FEAT-019"],
+            "rationale": "Planejamento autorizado após abertura do gate; não é evidência de implementação de tradução.",
+            "observations": []
+        },
+        {
+            "path": "src/entities/translation-project/api/__tests__/projectTerms.test.ts",
+            "category": "evidence",
+            "specs": ["MOB-FEAT-023"],
+            "observations": ["MOB-FEAT-023/AC-003"]
+        },
+        {
+            "path": "src/widgets/content-reader/ui/__tests__/ImageSurface.test.tsx",
+            "category": "evidence",
+            "specs": ["MOB-FEAT-024"],
+            "observations": ["MOB-FEAT-024/AC-001", "MOB-FEAT-024/AC-002"]
+        },
+        {
+            "path": "src/widgets/remote-processing/ui/BatchStatusStrip.tsx",
+            "category": "behavior",
+            "specs": ["MOB-FEAT-066"],
+            "observations": ["MOB-FEAT-066/AC-001"]
+        },
+        {
+            "path": "src/widgets/remote-processing/ui/__tests__/BatchStatusStrip.test.tsx",
+            "category": "evidence",
+            "specs": ["MOB-FEAT-066"],
+            "observations": ["MOB-FEAT-066/AC-001"]
         }
     ]
 }

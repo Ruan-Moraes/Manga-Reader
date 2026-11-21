@@ -17,9 +17,26 @@ public interface TranslationJobRepository {
     void fail(UUID jobId, GatewayErrorCode code, Instant now);
     int failStale(Instant cutoff, Instant now, int limit);
 
+    /**
+     * {@code installationId} and {@code contextRef} (null without a chapter) select the chapter memory. The layout
+     * artifact ({@code layoutObjectKey}/{@code layoutSha256}, null when layout failed or is off) and the original's
+     * {@code imageSha256} tell the review what kind of text each region is.
+     */
     record WorkItem(UUID id, UUID jobRef, JobStatus status, String sourceLanguage,
                     String targetLanguage, String ocrObjectKey, String ocrSha256,
-                    String translationObjectKey, String translationSha256) {
+                    String translationObjectKey, String translationSha256, UUID installationId, UUID contextRef,
+                    String imageSha256, String layoutObjectKey, String layoutSha256) {
+        public WorkItem(UUID id, UUID jobRef, JobStatus status, String sourceLanguage, String targetLanguage,
+                        String ocrObjectKey, String ocrSha256, String translationObjectKey, String translationSha256,
+                        UUID installationId, UUID contextRef) {
+            this(id, jobRef, status, sourceLanguage, targetLanguage, ocrObjectKey, ocrSha256, translationObjectKey,
+                translationSha256, installationId, contextRef, null, null, null);
+        }
+        public WorkItem(UUID id, UUID jobRef, JobStatus status, String sourceLanguage, String targetLanguage,
+                        String ocrObjectKey, String ocrSha256, String translationObjectKey, String translationSha256) {
+            this(id, jobRef, status, sourceLanguage, targetLanguage, ocrObjectKey, ocrSha256, translationObjectKey,
+                translationSha256, null, null, null, null, null);
+        }
         @Override public String toString() { return "TranslationWorkItem[redacted]"; }
     }
     enum Claim { STARTED, CANCELLED, ALREADY_HANDLED }

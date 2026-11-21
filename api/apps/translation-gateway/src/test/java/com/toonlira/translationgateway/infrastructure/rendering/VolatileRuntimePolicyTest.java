@@ -15,17 +15,24 @@ class VolatileRuntimePolicyTest {
         assertThatThrownBy(() -> VolatileRuntimePolicy.require(properties, true)).isInstanceOf(IllegalStateException.class);
     }
     @ParameterizedTest
-    @ValueSource(strings = {"local", "gcs", "dispatch", "urls", "layout"})
+    @ValueSource(strings = {"local", "gcs", "dispatch", "urls"})
     void rejectsLegacyOverridesEvenWhenTheVolatileProfileIsSelected(String override) {
         var properties = safe();
         switch (override) {
             case "local", "gcs" -> properties.getStorage().setMode(override);
             case "dispatch" -> properties.getDispatch().setMode("cloud-tasks");
             case "urls" -> properties.getResultDownload().setMode(GatewayProperties.ResultDownload.Mode.GCS);
-            case "layout" -> properties.getLayout().setMode(GatewayProperties.Layout.Mode.SHADOW);
             default -> throw new IllegalArgumentException();
         }
         assertThatThrownBy(() -> VolatileRuntimePolicy.require(properties, false)).isInstanceOf(IllegalStateException.class);
+    }
+    /** Layout analyses the page decoded in memory and stores nothing: allowed since the stored pipeline's port. */
+    @ParameterizedTest
+    @org.junit.jupiter.params.provider.EnumSource(GatewayProperties.Layout.Mode.class)
+    void admitsInMemoryLayoutInEveryMode(GatewayProperties.Layout.Mode mode) {
+        var properties = safe();
+        properties.getLayout().setMode(mode);
+        assertThatCode(() -> VolatileRuntimePolicy.require(properties, false)).doesNotThrowAnyException();
     }
     @Test void requiresExplicitBoundedHttpRuntimeAndRejectsOverrides() {
         var environment = new org.springframework.mock.env.MockEnvironment();

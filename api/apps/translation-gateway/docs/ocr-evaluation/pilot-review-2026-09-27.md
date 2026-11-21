@@ -32,7 +32,7 @@ mais recentes, preservando as históricas. Todas permanecem `partial`, com texto
 externo aos balões; nenhuma tem ambiguidade geométrica nesse conjunto. Isso não
 equivale a ordem semântica universalmente correta. OCR `1.0` permanece intacto.
 Na página coreana 2 houve uma supressão auditável de caixa duplicada, validada na
-[regressão local](../layout-dedup-validation-2026-09-27.md); nas outras onze não
+[regressão local](layout-dedup-validation-2026-09-27.md); nas outras onze não
 houve supressão. Balões são caixas envolventes, não máscaras dos rabichos.
 
 As aprovações foram registradas por lote. São aceites exploratórios do custodiante,

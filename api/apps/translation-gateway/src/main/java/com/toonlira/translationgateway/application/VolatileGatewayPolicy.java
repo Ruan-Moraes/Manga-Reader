@@ -7,7 +7,22 @@ import java.net.URI;
 import java.time.Duration;
 
 public final class VolatileGatewayPolicy {
+    /**
+     * Volatile disclosures whose published privacy text names the language layer (Gemini on Vertex AI: text only,
+     * never the image; cache and training policy) and the chapter memory (names kept by the gateway for the chapter's
+     * next pages, up to the disclosed retention). The language layer runs only under one of them.
+     */
+    public static final java.util.Set<String> LANGUAGE_MODEL_DISCLOSURE_VERSIONS = java.util.Set.of("volatile-2026-11-21.v1");
+    private static final java.util.regex.Pattern LANGUAGE_MODEL_LOCATION = java.util.regex.Pattern.compile("^[a-z][a-z0-9-]{0,28}[a-z0-9]$");
     private VolatileGatewayPolicy() { }
+
+    /** Disclosed only while the gateway would actually send text to the model: translation on and the review on. */
+    public static String languageModelLocation(GatewayProperties properties) {
+        var translation = properties.getTranslation();
+        if (translation.getMode() == GatewayProperties.Translation.Mode.DISABLED
+            || translation.getRefine().getMode() == GatewayProperties.Translation.Refine.Mode.DISABLED) return null;
+        return translation.getRefine().getLocation();
+    }
     public static void validate(GatewayProperties properties) {
         var disclosure = properties.getDisclosure();
         var testBudget = properties.getTestBudget();
@@ -22,7 +37,10 @@ public final class VolatileGatewayPolicy {
             && properties.getGlobalDailyQuota() == 100
             && (properties.getInstallationDailyQuota() == 20
                 || (properties.getInstallationDailyQuota() == 0 && testBudget.isEnabled()))
-            && (!testBudget.isUnmetered() || (testBudget.isEnabled() && testBudget.getDeadline() != null));
+            && (!testBudget.isUnmetered() || (testBudget.isEnabled() && testBudget.getDeadline() != null))
+            && (languageModelLocation(properties) == null
+                || LANGUAGE_MODEL_LOCATION.matcher(languageModelLocation(properties)).matches()
+                    && LANGUAGE_MODEL_DISCLOSURE_VERSIONS.contains(disclosure.getVersion()));
         if (!valid) throw new GatewayException(GatewayErrorCode.CAPABILITIES_UNAVAILABLE, 503, false);
     }
     private static boolean https(String value) {

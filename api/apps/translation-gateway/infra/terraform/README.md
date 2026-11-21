@@ -51,7 +51,11 @@ do módulo, inclusive com worker desabilitado. Não é um `check` que apenas avi
 Isso não é controle IAM nem proteção contra editar/remover guards ou usar
 `-target`; não executar nenhum desses caminhos para contornar o gate.
 Default e exemplos mantêm `gateway_enabled=false` e `worker_enabled=false`;
-OCR, tradução, layout, render e download ficam explicitamente `disabled` no worker.
+OCR, tradução, render e download ficam explicitamente `disabled` no worker.
+O layout já vem em `layout_mode = "grouping"` (balões detectados agrupam o OCR e limitam a
+máscara do render; modelo embutido na imagem com SHA-256 conferido no build): só tem efeito quando o
+OCR for ligado e eleva o worker `baseline` para 2 GiB. `layout_mode = "disabled"` volta à
+heurística de proximidade.
 
 `worker_container_image` permite referência independente por digest de registry;
 `null` mantém a referência compartilhada anterior. Não usar o ID do cache Docker
@@ -65,14 +69,14 @@ zero, PIDs até 64, tmpfs limitado/noexec, AS pai/filha, rootfs/capabilities,
 IAM/SQL/storage privados, imagem segura, retenção e isolamento de falhas.
 Selecionar 8 GiB não resolve nem afrouxa esses guards do Java.
 
-Antes de uma prova no alvo, usar o [diagnóstico Java independente](../../docs/worker-isolation-probe.md)
+Antes de uma prova no alvo, usar o [diagnóstico Java independente](../../docs/worker-isolation/worker-isolation-probe.md)
 para preparar a leitura sanitizada dos controles. Não inicia worker ou provider,
 não altera limites e não aprova operação mesmo com observações coincidentes.
 Segunda geração e volume temporário limitado ainda não estão declarados neste
 candidato; valores exatos de cgroup/PIDs/OOM/flags de mount exigem comprovação.
 Não remover as preconditions para executar esse diagnóstico em cloud.
 
-Testes estruturais offline: `node --test scripts/worker-resource-profile.test.mjs`
+Testes estruturais offline: `node --test scripts/isolation/worker-resource-profile.test.mjs`
 no módulo gateway. Eles conferem texto/ligação do HCL e proteção dos defaults;
 não são execução de plano Terraform ou validação Cloud Run. `terraform fmt -check`
 e `terraform validate` são os gates locais. Para conferir os exemplos, usar

@@ -44,7 +44,7 @@ Rede do container desconectada após apk, antes de configurar/build/install.
 | Manifesto do pacote readonly | 9cca2ffb1ac4938682fb640a1f8ddc7bf913c451ba73177b60ecfa13ccbe3c8c                        |
 | Ambiente observado           | Java 23.0.2+7, GCC 14.2.0-r4, CMake 3.31.1-r0, headers musl 1.2.5-r11                   |
 
-Mesmo conjunto de flags da [distribuição anterior](../../../../../../api/apps/translation-gateway/docs/rendering-native-distribution.md):
+Mesmo conjunto de flags da [distribuição anterior](../../../../../../api/apps/translation-gateway/docs/rendering/rendering-native-distribution.md):
 Release/O2, shared, SIMD/thread off, ferramentas/extras off, RUNPATH `$ORIGIN`.
 readelf posterior ao install confirmou ELF64/LE/x86_64, SONAME/RUNPATH e
 dependências exatas. Hash do archive/licenças verificados; assinatura GPG e

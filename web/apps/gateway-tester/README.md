@@ -9,6 +9,7 @@ Frontend web para testar e debugar o Translation Gateway em ambiente de desenvol
 - 📄 Upload e envio de páginas para processamento
 - 📦 Acompanhamento de jobs em tempo real
 - 📋 Histórico de requisições
+- 🧪 Pipeline de validação: traduz um corpus de capítulos livres de direitos e grava tudo em um lote (`corpus/runs/`) — ver [`corpus/README.md`](corpus/README.md)
 - 🎨 UI moderna com Tailwind CSS e temas dark/light
 
 ## Tech Stack

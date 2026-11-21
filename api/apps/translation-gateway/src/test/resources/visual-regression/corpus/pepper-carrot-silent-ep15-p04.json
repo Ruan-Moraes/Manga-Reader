@@ -1,0 +1,31 @@
+{
+  "root" : "corpus",
+  "page" : "pepper-carrot-silent-ep15/p04.jpg",
+  "sourceLanguage" : "ja",
+  "width" : 1200,
+  "height" : 1660,
+  "regions" : [ {
+    "source" : "D3\n",
+    "translation" : "D3",
+    "kind" : "unknown",
+    "polygon" : [ [ 0.52, 0.22710843373493975 ], [ 0.52, 0.25421686746987954 ], [ 0.49666666666666665, 0.25421686746987954 ], [ 0.49666666666666665, 0.22710843373493975 ] ]
+  }, {
+    "source" : "130\n",
+    "translation" : "130\n",
+    "kind" : "unknown",
+    "polygon" : [ [ 0.39666666666666667, 0.41204819277108434 ], [ 0.44416666666666665, 0.405421686746988 ], [ 0.44666666666666666, 0.4150602409638554 ], [ 0.39916666666666667, 0.42168674698795183 ] ]
+  } ],
+  "bubbles" : [ ],
+  "expect" : {
+    "maxChangedOutside" : 0,
+    "regions" : [ {
+      "overflow" : true,
+      "font" : 0,
+      "residualInk" : 0
+    }, {
+      "overflow" : true,
+      "font" : 0,
+      "residualInk" : 0
+    } ]
+  }
+}

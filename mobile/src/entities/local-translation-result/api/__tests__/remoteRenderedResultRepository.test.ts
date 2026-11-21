@@ -196,3 +196,31 @@ it.each(['before', 'vertices'])('rolls back an acquisition interrupted at %s', a
         f.sql.close();
     }
 });
+
+it('MOB-FEAT-023/AC-001: stores the chapter names of a 1.2 result with it; the first decision stays', async () => {
+    const f = fixture();
+    try {
+        // Mirror of the project glossary table (translation-project v13).
+        f.sql.exec(`CREATE TABLE translation_project_terms (project_id TEXT NOT NULL, source_term TEXT NOT NULL, target_term TEXT NOT NULL,
+            created_at INTEGER NOT NULL, PRIMARY KEY (project_id, source_term))`);
+        f.sql.prepare('INSERT INTO translation_project_terms VALUES (?, ?, ?, ?)').run(PROJECT, 'Coriander', 'Coriander', 50);
+        const manifest = {
+            ...f.command.manifest,
+            version: '1.2' as const,
+            policyVersion: 'clean-box-1.2' as const,
+            regions: f.command.manifest.regions.map(region => ({ ...region, kept: false })),
+            quality: { status: 'OK' as const, issues: [] },
+            terms: [
+                { source: 'Coriander', target: 'Coentro' },
+                { source: 'Saffron', target: 'Saffron' },
+            ],
+        };
+        await expect(f.repository.commit({ ...f.command, manifest })).resolves.toBe(true);
+        expect(f.sql.prepare('SELECT source_term, target_term FROM translation_project_terms ORDER BY source_term').all()).toEqual([
+            { source_term: 'Coriander', target_term: 'Coriander' },
+            { source_term: 'Saffron', target_term: 'Saffron' },
+        ]);
+    } finally {
+        f.sql.close();
+    }
+});

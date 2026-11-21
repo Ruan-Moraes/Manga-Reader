@@ -7,7 +7,7 @@ runtime mobile alterado; performance Android não aplicável nem inferida.
 
 ## Hipótese e teste
 
-O [plano anterior ao teste](../../../../../../api/apps/translation-gateway/docs/lifecycle-retention.md)
+O [plano anterior ao teste](../../../../../../api/apps/translation-gateway/docs/architecture/lifecycle-retention.md)
 levantou a hipótese de um scan SKIP LOCKED pular job possuído por outra entrega,
 mas conservar lock da etapa dele. Retorno vazio sozinho não prova o isolamento.
 Inspeção de consultas não foi tratada como bug confirmado nem motivo para fix.
@@ -59,7 +59,7 @@ Checksum mobile de governança separado, sem renovar snapshots históricos.
 Boot JAR permanece
 `9070df558ffef96ed808d7b18c5701e7d4926a581aca49979850fcf83b55e0ec`:
 somente src/test mudou, não foi introduzido harness no artefato de produção.
-Node `node --test scripts/*.test.mjs`: 85 pass/um opt-in não selecionado,
+Node `node --test scripts/*/*.test.mjs`: 85 pass/um opt-in não selecionado,
 zero failures, exit 0. Web `pnpm exec tsc -b`: exit 0.
 Maven global `./mvnw -o -q test`, Docker e opt-ins native/archive/Linux/resources/
 shared/shared.resources: exit 0. XMLs frescos desde `2026-10-05T00:39:19.661Z`

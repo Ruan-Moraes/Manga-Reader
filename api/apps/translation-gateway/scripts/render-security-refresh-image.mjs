@@ -1,4 +1,4 @@
-import { parseImageOptions, prepareSecurityRefreshImageContext } from "./render-native-image.mjs";
+import { parseImageOptions, prepareSecurityRefreshImageContext } from "./native-image/render-native-image.mjs";
 
 // Explicit local snapshot only: no Docker, credentials, download or publication.
 try {

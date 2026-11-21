@@ -69,7 +69,7 @@ public class SubmitPageUseCase {
                 command.targetLanguage(), media.mimeType(), media.byteSize(), media.widthPx(), media.heightPx(),
                 objectKey, media.sha256(), fingerprint, now,
                 now.plusSeconds(properties.getDisclosure().getMetadataRetentionDays() * 86_400L), originalRetention,
-                capabilities.disclosure().resultRetentionSeconds());
+                capabilities.disclosure().resultRetentionSeconds(), command.contextRef());
             try {
                 var result = reservation.execute(candidate);
                 if (!result.created()) deleteBestEffort(objectKey);
@@ -134,7 +134,10 @@ public class SubmitPageUseCase {
     private String fingerprint(Command command, MediaInspectionService.InspectedMedia media) {
         var canonical = Stream.of(media.sha256(), media.mimeType(), Long.toString(media.byteSize()),
                 Integer.toString(media.widthPx()), Integer.toString(media.heightPx()), command.sourceLanguage(),
-                command.targetLanguage(), command.disclosureVersion(), command.attemptRef().toString())
+                command.targetLanguage(), command.disclosureVersion(), command.attemptRef().toString(),
+                // Only present with a chapter, so fingerprints of pages without one are unchanged.
+                command.contextRef() == null ? "" : "context:" + command.contextRef())
+            .filter(value -> !value.isEmpty())
             .map(value -> value.length() + ":" + value)
             .collect(Collectors.joining());
         try {
@@ -144,7 +147,13 @@ public class SubmitPageUseCase {
         }
     }
 
+    /** {@code contextRef}: optional chapter of the page (pages of one chapter share it); null for a page on its own. */
     public record Command(String mimeType, long byteSize, int widthPx, int heightPx, String sourceLanguage,
-                          String targetLanguage, String disclosureVersion, UUID attemptRef) { }
+                          String targetLanguage, String disclosureVersion, UUID attemptRef, UUID contextRef) {
+        public Command(String mimeType, long byteSize, int widthPx, int heightPx, String sourceLanguage,
+                       String targetLanguage, String disclosureVersion, UUID attemptRef) {
+            this(mimeType, byteSize, widthPx, heightPx, sourceLanguage, targetLanguage, disclosureVersion, attemptRef, null);
+        }
+    }
     public record Result(ProcessingJob job, boolean created) { }
 }

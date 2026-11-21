@@ -18,6 +18,11 @@ public class GatewayProperties {
     private int installationDailyQuota = 20;
     private int globalDailyQuota = 100;
     private final TestBudget testBudget = new TestBudget();
+    /**
+     * Whether reservations enforce the daily quotas. Always true in deployments (the quotas stay disclosed in
+     * capabilities as a public contract); the local development scripts turn it off to process test batches.
+     */
+    private boolean quotaEnforced = true;
     private final Media media = new Media();
     private final Disclosure disclosure = new Disclosure();
     private final Storage storage = new Storage();
@@ -41,6 +46,8 @@ public class GatewayProperties {
     public int getGlobalDailyQuota() { return globalDailyQuota; }
     public void setGlobalDailyQuota(int value) { this.globalDailyQuota = value; }
     public TestBudget getTestBudget() { return testBudget; }
+    public boolean isQuotaEnforced() { return quotaEnforced; }
+    public void setQuotaEnforced(boolean value) { this.quotaEnforced = value; }
     public Media getMedia() { return media; }
     public Disclosure getDisclosure() { return disclosure; }
     public Storage getStorage() { return storage; }
@@ -94,6 +101,16 @@ public class GatewayProperties {
         private boolean storageProcessEnabled;
         public boolean isStorageProcessEnabled() { return storageProcessEnabled; }
         public void setStorageProcessEnabled(boolean value) { storageProcessEnabled = value; }
+        /** LaMa ONNX model (fixed SHA-256); empty disables inpainting (text over art keeps its lettering). */
+        private Path inpaintingModelPath;
+        private int inpaintingThreads = 4;
+        public Path getInpaintingModelPath() { return inpaintingModelPath; }
+        public void setInpaintingModelPath(Path value) { inpaintingModelPath = value; }
+        public int getInpaintingThreads() { return inpaintingThreads; }
+        public void setInpaintingThreads(int value) {
+            if (value < 1 || value > 32) throw new IllegalArgumentException("inpainting-threads must be 1..32");
+            inpaintingThreads = value;
+        }
         private Duration processDeadline = Duration.ofSeconds(90);
         public Mode getMode() { return mode; }
         public void setMode(Mode value) { mode = value; }
@@ -130,10 +147,34 @@ public class GatewayProperties {
         public void setProjectId(String value) { projectId = value; }
         public List<String> getEnabledPairs() { return enabledPairs; }
         public void setEnabledPairs(List<String> value) { enabledPairs = value == null ? List.of() : List.copyOf(value); }
+        private final Refine refine = new Refine();
+        public Refine getRefine() { return refine; }
+
+        /** Optional language layer reviewing the machine translation with the page context (text only, never the image). */
+        public static class Refine {
+            public enum Mode { DISABLED, GEMINI }
+            private Mode mode = Mode.DISABLED;
+            private String model = "gemini-3.8-flash";
+            private String location = "us";
+            private Duration timeout = Duration.ofSeconds(20);
+            /** Source plus machine translation of one page, in UTF-16 units; larger pages skip the review. */
+            private int maxChars = 12_000;
+            public Mode getMode() { return mode; }
+            public void setMode(Mode value) { mode = value; }
+            public String getModel() { return model; }
+            public void setModel(String value) { model = value == null ? "" : value; }
+            public String getLocation() { return location; }
+            public void setLocation(String value) { location = value == null ? "" : value; }
+            public Duration getTimeout() { return timeout; }
+            public void setTimeout(Duration value) { timeout = value; }
+            public int getMaxChars() { return maxChars; }
+            public void setMaxChars(int value) { maxChars = value; }
+        }
     }
 
     public static class Layout {
-        public enum Mode { DISABLED, SHADOW }
+        /** SHADOW records layout only; GROUPING also lets detected balloons drive OCR paragraph grouping. */
+        public enum Mode { DISABLED, SHADOW, GROUPING }
         private Mode mode = Mode.DISABLED;
         private Path modelPath;
         private String direction = "";
@@ -154,6 +195,13 @@ public class GatewayProperties {
         public void setMode(Mode value) { this.mode = value; }
         public String getProjectId() { return projectId; }
         public void setProjectId(String value) { this.projectId = value; }
+        /** Max doubtful paragraphs re-read per page, all in one extra OCR call (mosaic); 0 disables re-reading. */
+        private int rereadMaxRegions = 0;
+        public int getRereadMaxRegions() { return rereadMaxRegions; }
+        public void setRereadMaxRegions(int value) {
+            if (value < 0 || value > 16) throw new IllegalArgumentException("reread-max-regions must be 0..16");
+            rereadMaxRegions = value;
+        }
     }
 
     public static class Media {

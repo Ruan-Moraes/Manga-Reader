@@ -50,7 +50,7 @@
 5. **Gateway aprovado:** Cloud Run/Tasks/SQL/Storage em São Paulo, Vision OCR
    regional `us` e Translation LLM pelo endpoint global sem residência fixa
    garantida, conteúdo remoto efêmero, sessão anônima e quota alpha
-   conforme [`docs/translation-gateway-plan.md`](../../../api/apps/translation-gateway/docs/translation-gateway-plan.md).
+   conforme [`docs/translation-gateway-plan.md`](../../../api/apps/translation-gateway/docs/architecture/translation-gateway-plan.md).
 6. **Diferencial P0:** uma página `READY` libera o leitor enquanto as seguintes
    continuam em `PROCESSING`/`QUEUED`.
 7. **Anti-features do MVP:** URL import, browser, catálogo, comunidade, fórum,

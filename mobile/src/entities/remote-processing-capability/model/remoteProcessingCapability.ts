@@ -16,6 +16,11 @@ export const legalDisclosureSchema = z
         gatewayRegion: z.literal('southamerica-east1'),
         ocrRegion: z.literal('us'),
         translationLocation: z.literal('global'),
+        // Vertex AI location of the optional language review (text only, never the image); null while it is off.
+        languageModelLocation: z
+            .string()
+            .regex(/^[a-z][a-z0-9-]{0,28}[a-z0-9]$/)
+            .nullable(),
         contentProcessing: z.literal('in-memory-only'),
         resultStorage: z.literal('user-device'),
         sanitizedOperationalLogs: z.literal(true),

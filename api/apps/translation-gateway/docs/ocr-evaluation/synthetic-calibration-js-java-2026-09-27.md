@@ -22,7 +22,7 @@ credenciais, downloads, banco ou alteração cloud.
 
 TDD: suite JS falhou inicialmente por módulo inexistente, antes da implementação.
 
-- `OCR_CALIBRATION_FONT=<fonte-local> node --test api/apps/translation-gateway/scripts/*.test.mjs`:
+- `OCR_CALIBRATION_FONT=<fonte-local> node --test api/apps/translation-gateway/scripts/*/*.test.mjs`:
   74 testes aprovados, zero falhas/skips, incluindo 12 de calibração.
 - Casos de regressão: substituição, omissão, repetição, ordem, quebras, geometria,
   IoU poligonal, limites, PNG adulterado, fonte inválida/ausente, face inexistente,

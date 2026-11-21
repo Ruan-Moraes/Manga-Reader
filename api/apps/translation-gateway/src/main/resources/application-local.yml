@@ -1,0 +1,21 @@
+# Perfil de desenvolvimento local. Ativado por padrão apenas em `spring-boot:run`
+# (ver pom.xml). Usa o Postgres do docker-compose.yml deste módulo (porta 5433).
+# Sobrescreva via SPRING_DATASOURCE_* se necessário.
+spring:
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5433/manga_translation_gateway}
+    username: ${SPRING_DATASOURCE_USERNAME:manga}
+    password: ${SPRING_DATASOURCE_PASSWORD:manga_secret}
+
+# Swagger UI/OpenAPI sem autenticação, apenas em dev local.
+gateway:
+  docs:
+    public: true
+  # Disclosure fictício: /v1/capabilities valida estes campos e responde 503 se vazios.
+  disclosure:
+    version: local-dev.v1
+    operator-name: Toonlira Local Dev
+    operator-contact: dev@example.com
+    privacy-policy-url: https://example.com/privacy
+    terms-url: https://example.com/terms
+    provider-training-policy: Local development only; no provider is called.

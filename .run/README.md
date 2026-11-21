@@ -17,7 +17,13 @@ documentados nos READMEs de cada módulo.
 - `Gateway`: Configurações dedicadas para testar o Translation Gateway:
   - `Translation Gateway (8084)`: só o backend do gateway (o log de subida mostra a URL do Swagger UI)
   - `Gateway Tester Dev (5175)`: interface web para testar o gateway
-  - `🚀 Full Gateway Stack`: os dois acima juntos
+  - `🚀 Full Gateway Stack`: os dois acima juntos (modo local, sem provedores reais)
+  - `🚀 Gateway real (API + Worker + Dispatcher + Tester)`: a pilha que processa páginas de verdade com
+    OCR/tradução do GCP (custo por página). Usa `~/.config/toonlira/gateway-real.env` (copiar de
+    `api/apps/translation-gateway/scripts/local/gateway-real.env.example`; nunca versionar) e, se existirem em
+    `.local/`, o detector de balões e o LaMa. Partes: `Gateway API real (8084)`, `Gateway Worker real (8085)`,
+    `Gateway Dispatcher dev` (envia os jobs ao worker no lugar do Cloud Tasks) e `Gateway Tester Dev (5175)`.
+    Abrir http://localhost:5175.
 
 Os nomes com `/` representam a hierarquia lógica pedida. O IntelliJ persiste
 somente um nome de pasta por configuração compartilhada, portanto esses grupos

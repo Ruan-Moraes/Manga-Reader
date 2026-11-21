@@ -16,10 +16,24 @@ import org.apache.commons.text.StringEscapeUtils;
 /** One HTML document keeps page context while opaque tags carry region identities. */
 final class TranslationEnvelopeCodec {
     static final int MAX_PROVIDER_CODEPOINTS = 30_000;
-    private static final Pattern REGION = Pattern.compile("<p data-region=\"([0-9a-f-]{36})\">([^<>]*)</p>", Pattern.DOTALL);
+    private static final Pattern REGION = Pattern.compile("<p data-region=\"([0-9a-f-]{36})\">((?:[^<>]++|<span translate=\"no\">[^<>]*+</span>)*+)</p>", Pattern.DOTALL);
+    private static final Pattern SPAN_TAGS = Pattern.compile("<span translate=\"no\">|</span>");
+    /**
+     * The provider treats a protected span as a separate token and pads it with spaces ("Ubuntu !", "( Ubuntu"),
+     * which pt-BR/es/en typography never uses before closing or after opening punctuation.
+     */
+    private static final Pattern SPACE_AFTER_SPAN = Pattern.compile("</span>[ \\u00A0]+(?=[!?.,;:…)\\]}»”’])");
+    private static final Pattern SPACE_BEFORE_SPAN = Pattern.compile("(?<=[(\\[{«“‘])[ \\u00A0]+<span translate=\"no\">");
+    // Straight quotes cannot tell opening from closing: only a protected term quoted on both sides is tightened.
+    private static final Pattern SPACES_INSIDE_QUOTES = Pattern.compile(
+        "(?<=^|[\\s(\\[>])(&quot;|\"|')[ \\u00A0]+(<span translate=\"no\">[^<>]*</span>)[ \\u00A0]+\\1(?=$|[\\s!?.,;:…)\\]<])");
+    private final ProtectedTerms terms = new ProtectedTerms();
     private static final TranslationValidator CONTRACT = new TranslationValidator(Set.copyOf(LanguagePair.all()));
 
-    String encode(TranslationRequest request) {
+    String encode(TranslationRequest request) { return encode(request, java.util.Map.of()); }
+
+    /** {@code decided}: the chapter's decided terms (source -> translation), sent as literals. */
+    String encode(TranslationRequest request, java.util.Map<String, String> decided) {
         try {
             CONTRACT.validateRequest(request);
         } catch (TranslationValidationException error) {
@@ -28,7 +42,7 @@ final class TranslationEnvelopeCodec {
         var html = new StringBuilder("<div>");
         for (var region : request.regions()) {
             html.append("<p data-region=\"").append(region.id()).append("\">")
-                .append(StringEscapeUtils.escapeHtml4(region.sourceText())).append("</p>");
+                .append(terms.wrap(region.sourceText(), request.pair().source(), StringEscapeUtils::escapeHtml4, decided)).append("</p>");
         }
         html.append("</div>");
         String content = html.toString();
@@ -36,6 +50,24 @@ final class TranslationEnvelopeCodec {
             throw new GatewayException(GatewayErrorCode.TRANSLATION_INVALID_REQUEST, 422, false);
         }
         return content;
+    }
+
+    /**
+     * Regions whose protected literals did not survive translation fall back to their source text, so a product name
+     * or URL is never silently altered; the renderer then keeps the original art for text it cannot draw.
+     */
+    boolean isLiteralOnly(String text, String language) { return terms.isLiteralOnly(text, language); }
+
+    TranslationResponse restoreProtected(TranslationRequest request, TranslationResponse translated) {
+        var source = new java.util.HashMap<UUID, String>();
+        for (var region : request.regions()) source.put(region.id(), region.sourceText());
+        var regions = new ArrayList<TranslationResponse.Region>();
+        for (var region : translated.regions()) {
+            String original = source.get(region.id());
+            boolean lost = original != null && terms.find(original, request.pair().source()).stream().anyMatch(term -> !region.translatedText().contains(term));
+            regions.add(lost ? new TranslationResponse.Region(region.id(), original) : region);
+        }
+        return new TranslationResponse(regions);
     }
 
     TranslationResponse decode(String translatedHtml) {
@@ -52,7 +84,10 @@ final class TranslationEnvelopeCodec {
             } catch (IllegalArgumentException error) {
                 throw new GatewayException(GatewayErrorCode.TRANSLATION_INVALID_RESPONSE, 422, false);
             }
-            regions.add(new TranslationResponse.Region(id, StringEscapeUtils.unescapeHtml4(matcher.group(2))));
+            var body = SPACE_AFTER_SPAN.matcher(matcher.group(2)).replaceAll("</span>");
+            body = SPACE_BEFORE_SPAN.matcher(body).replaceAll("<span translate=\"no\">");
+            body = SPACES_INSIDE_QUOTES.matcher(body).replaceAll("$1$2$1");
+            regions.add(new TranslationResponse.Region(id, StringEscapeUtils.unescapeHtml4(SPAN_TAGS.matcher(body).replaceAll(""))));
             offset = matcher.end();
         }
         if (!inner.substring(offset).isBlank()) invalid();

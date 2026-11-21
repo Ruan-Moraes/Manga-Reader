@@ -10,6 +10,7 @@ import com.toonlira.translationgateway.domain.ProcessingJob;
 import com.toonlira.translationgateway.domain.rendering.PrivateDownload;
 import com.toonlira.translationgateway.domain.rendering.PrivateDownloadRequest;
 import java.time.Clock;
+import com.toonlira.translationgateway.domain.rendering.PageQuality;
 import java.time.Instant;
 import java.util.UUID;
 import org.springframework.context.annotation.Profile;
@@ -67,7 +68,8 @@ public class GetJobResultUseCase {
         var now = clock.instant();
         validate(image, PrivateDownloadRequest.Kind.IMAGE, reference.imageSha256(), reference.imageByteSize(), now, deadline);
         validate(manifest, PrivateDownloadRequest.Kind.MANIFEST, reference.manifestSha256(), null, now, deadline);
-        return new Result(current.job(), now, new ReadyResult(reference.widthPx(), reference.heightPx(), deadline, image, manifest));
+        return new Result(current.job(), now, new ReadyResult(reference.widthPx(), reference.heightPx(), deadline, image, manifest,
+            reference.text() == null ? null : reference.text().quality()));
     }
 
     private void validate(PrivateDownload download, PrivateDownloadRequest.Kind kind, String hash, Long bytes,
@@ -79,7 +81,12 @@ public class GetJobResultUseCase {
     private Result result(ProcessingJob job, ReadyResult result) { return new Result(job, clock.instant(), result); }
     private GatewayException unavailable() { return new GatewayException(STORAGE_UNAVAILABLE, 503, true); }
 
-    public record ReadyResult(int widthPx, int heightPx, Instant expiresAt, PrivateDownload image, PrivateDownload manifest) {
+    /** {@code quality} is null for results rendered before it was persisted. */
+    public record ReadyResult(int widthPx, int heightPx, Instant expiresAt, PrivateDownload image, PrivateDownload manifest,
+                              PageQuality quality) {
+        public ReadyResult(int widthPx, int heightPx, Instant expiresAt, PrivateDownload image, PrivateDownload manifest) {
+            this(widthPx, heightPx, expiresAt, image, manifest, null);
+        }
         @Override public String toString() { return "ReadyResult[redacted]"; }
     }
     public record Result(ProcessingJob job, Instant serverTime, ReadyResult result) {

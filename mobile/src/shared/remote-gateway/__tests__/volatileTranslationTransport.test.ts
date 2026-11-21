@@ -136,3 +136,37 @@ it('accepts empty stream chunks while still requiring EOF after the declared fra
     expect(result.image).toEqual(new Uint8Array([1, 2, 3]));
     result.dispose();
 });
+
+it('MOB-FEAT-022/AC-002: sends the chapter reference with the page only when the project has one', async () => {
+    const chapter = '6f1c2a10-1111-4222-8333-444455556666';
+    const fetcher = jest.fn(async () => response([wire()]).response);
+    const transport = createVolatileTranslationTransport(origin, fetcher as typeof fetch);
+    (await transport.process({ ...command, contextRef: chapter })).dispose();
+    (await transport.process(command)).dispose();
+    const headers = (call: number) => (fetcher.mock.calls[call] as unknown as [string, RequestInit])[1].headers as Record<string, string>;
+    expect(headers(0)['X-Context-Ref']).toBe(chapter);
+    expect(headers(1)).not.toHaveProperty('X-Context-Ref');
+    await expect(transport.process({ ...command, contextRef: 'library-id-7' })).rejects.toThrow('invalid-request');
+});
+
+it('MOB-FEAT-023/AC-002: sends the project glossary as JSON to the chapter, and reports a refusal', async () => {
+    const chapter = '6f1c2a10-1111-4222-8333-444455556666';
+    const fetcher = jest.fn(async () => ({ status: 204, body: { cancel: async () => undefined } }) as unknown as Response);
+    const transport = createVolatileTranslationTransport(origin, fetcher as typeof fetch);
+    const glossary = {
+        token: command.token,
+        contextRef: chapter,
+        sourceLanguage: 'en',
+        targetLanguage: 'pt-BR',
+        disclosureVersion: 'volatile-2026-11-21.v1',
+        terms: [{ source: 'Coriander', target: 'Coriander' }],
+    };
+    await transport.seedGlossary(glossary);
+    const [url, init] = fetcher.mock.calls[0] as unknown as [string, RequestInit];
+    expect(url).toBe(`${origin}/v2/page-translations/chapter-contexts/${chapter}/glossary?sourceLanguage=en&targetLanguage=pt-BR`);
+    expect(init).toMatchObject({ method: 'PUT', redirect: 'error', body: '[{"source":"Coriander","target":"Coriander"}]' });
+    expect(init.headers).toMatchObject({ 'X-Disclosure-Version': 'volatile-2026-11-21.v1', 'Content-Type': 'application/json' });
+    fetcher.mockResolvedValueOnce({ status: 409, body: null } as unknown as Response);
+    await expect(transport.seedGlossary(glossary)).rejects.toThrow('ambiguous');
+    await expect(transport.seedGlossary({ ...glossary, terms: [] })).rejects.toThrow('invalid-request');
+});

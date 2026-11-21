@@ -132,7 +132,7 @@
     "privacy": {
         "title": "Política de Privacidad",
         "sub": "Qué recopilamos, por qué, y cómo mantienes el control de lo que es tuyo.",
-        "updated": "01/11/2026",
+        "updated": "15/11/2026",
         "version": "Versión 1.1",
         "toc": {
             "tldr": "01. Resumen rápido",
@@ -213,10 +213,10 @@
                 "lead": "Solo compartimos datos con:",
                 "items": [
                     "<strong>Firebase Hosting</strong> — publicación de las páginas web públicas;",
-                    "<strong>Google Cloud</strong> — infraestructura del gateway y procesamiento mediante Cloud Vision y Cloud Translation;",
+                    "<strong>Google Cloud</strong> — infraestructura del gateway y procesamiento por Cloud Vision, Cloud Translation y, cuando la revisión por modelo de lenguaje esté activa, Gemini en Vertex AI (solo el texto extraído y la traducción automática, nunca la imagen);",
                     "<strong>Autoridades públicas</strong> — cuando lo exija la ley o una orden válida."
                 ],
-                "outro": "Según la documentación oficial de Google Cloud, Google Cloud Vision y Cloud Translation no usan el contenido enviado para entrenar o mejorar sus modelos. Los proveedores procesan los datos para prestar y proteger los servicios contratados."
+                "outro": "Según la documentación oficial de Google Cloud, Google Cloud Vision y Cloud Translation no usan el contenido enviado para entrenar ni mejorar sus modelos. En Gemini en Vertex AI, las entradas y respuestas pueden quedar en una caché aislada del proyecto durante hasta 24 horas, solo para atender las solicitudes, y esa caché no se usa para entrenar modelos. Los proveedores tratan los datos para prestar y proteger los servicios contratados."
             },
             "cookies": {
                 "title": "Cookies",
@@ -252,7 +252,7 @@
             },
             "internacional": {
                 "title": "Transferencias internacionales",
-                "p1": "El gateway está previsto en São Paulo, Brasil. El OCR síncrono usa el endpoint regional us de Cloud Vision. La traducción usa el endpoint global de Cloud Translation, sin garantía de permanecer en una región específica. El consentimiento identifica estos subprocesadores y ubicaciones antes del envío."
+                "p1": "El gateway está previsto en São Paulo, Brasil. El OCR síncrono usa el endpoint regional us de Cloud Vision. La traducción usa el endpoint global de Cloud Translation, sin garantía de permanecer en una región específica. Cuando está activa, la revisión por modelo de lenguaje (Gemini en Vertex AI) recibe solo el texto extraído, nunca la imagen. El consentimiento identifica estos subprocesadores y ubicaciones antes del envío."
             },
             "dpo": {
                 "title": "Contacto de privacidad",

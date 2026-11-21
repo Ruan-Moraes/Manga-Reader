@@ -44,6 +44,8 @@ yarn-error.log*
 /.local/worker-isolation/
 /.local/android-runtime/
 /.local/android-gradle/
+/.local/inpainting/
+/.local/bench/
 
 # =====================================================
 # Yarn

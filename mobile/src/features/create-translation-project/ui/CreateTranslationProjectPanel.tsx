@@ -3,7 +3,7 @@ import { View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { isMediaValidationReady, type LocalMediaImportDraft } from '@/entities/local-media-import';
-import type { TranslationProject } from '@/entities/translation-project';
+import { type TranslationProject, translationProjectStage } from '@/entities/translation-project';
 import { MEDIA_VALIDATION_POLICY_VERSION } from '@/shared/media-inspection';
 import { useTheme } from '@/shared/theme';
 import { AppText, Button, Icon, PrimaryAction } from '@/shared/ui';
@@ -65,9 +65,9 @@ export function CreateTranslationProjectPanel({ draft, onDraftConsumed, controll
                             <Icon name="shield-checkmark" size={metrics.icon.md} color={tokens.success} decorative />
                         </View>
                         <View style={{ flex: 1, gap: spacing.xs, minWidth: 0 }}>
-                            <AppText variant="label">{t('offline.project.preparedTitle')}</AppText>
+                            <AppText variant="label">{t(`offline.project.card.${translationProjectStage(actions.project.status)}.title`)}</AppText>
                             <AppText variant="caption" tone="muted">
-                                {t(actions.project.status === 'DRAFT' ? 'offline.project.preparedDescription' : 'offline.project.preparedRetainedDescription')}
+                                {t(`offline.project.card.${translationProjectStage(actions.project.status)}.description`)}
                             </AppText>
                         </View>
                     </View>

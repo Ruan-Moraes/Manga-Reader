@@ -82,12 +82,12 @@ describe('MOB-FEAT-055/AC-001 cadeia completa de migrações locais', () => {
                 statusUpdatedAt: 20,
                 pages: [page('page-a', 0), page('page-b', 1)],
             });
-            expect(sqlite.prepare('PRAGMA user_version').get()).toMatchObject({ user_version: 6 });
+            expect(sqlite.prepare('PRAGMA user_version').get()).toMatchObject({ user_version: 13 });
 
             await legacy.attempts.initialize();
             await legacy.results.initialize();
             await legacy.works.initialize();
-            expect(sqlite.prepare('PRAGMA user_version').get()).toMatchObject({ user_version: 11 });
+            expect(sqlite.prepare('PRAGMA user_version').get()).toMatchObject({ user_version: 13 });
             expect(sqlite.prepare('PRAGMA foreign_key_check').all()).toEqual([]);
 
             const reopened = repositories(open);
@@ -100,7 +100,7 @@ describe('MOB-FEAT-055/AC-001 cadeia completa de migrações locais', () => {
             await reopened.works.attachChapter({ projectId: 'legacy-project', workId: 'work-1', label: '1', createdAt: 31, updatedAt: 31 }, 30);
             expect(await reopened.works.listUnassignedProjectIds()).toEqual([]);
             expect((await reopened.projects.getById('legacy-project'))?.pages).toHaveLength(2);
-            expect(sqlite.prepare('PRAGMA user_version').get()).toMatchObject({ user_version: 11 });
+            expect(sqlite.prepare('PRAGMA user_version').get()).toMatchObject({ user_version: 13 });
             expect(sqlite.prepare('PRAGMA foreign_key_check').all()).toEqual([]);
         } finally {
             sqlite.close();
@@ -114,7 +114,7 @@ describe('MOB-FEAT-055/AC-001 cadeia completa de migrações locais', () => {
             const schema = sqlite.prepare("SELECT name, sql FROM sqlite_master WHERE type IN ('table','index','trigger') ORDER BY name").all();
             await repositories(open).works.initialize();
             await repositories(open).projects.initialize();
-            expect(sqlite.prepare('PRAGMA user_version').get()).toMatchObject({ user_version: 11 });
+            expect(sqlite.prepare('PRAGMA user_version').get()).toMatchObject({ user_version: 13 });
             expect(sqlite.prepare("SELECT name, sql FROM sqlite_master WHERE type IN ('table','index','trigger') ORDER BY name").all()).toEqual(schema);
         } finally {
             sqlite.close();

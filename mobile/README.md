@@ -29,7 +29,9 @@ Implementado:
   físico;
 - fundação do processamento remoto com tentativas e consentimento versionado
   em SQLite, capabilities validadas e identidade anônima no SecureStore;
-  integração volátil em verificação, desabilitada enquanto o gateway não for admitido;
+  integração volátil (v2: página e resultado na mesma resposta, nada guardado no servidor) em verificação,
+  desabilitada enquanto o gateway não for admitido; cada página do projeto leva o mesmo `contextRef` e o
+  glossário do capítulo (SQLite v13), para os nomes ficarem iguais entre as páginas (MOB-FEAT-022/023);
 - simulador de tradução estritamente de desenvolvimento, com resultados e
   regiões marcados permanentemente como demonstração e sem chamadas remotas;
 - controles do leitor sobrepostos e compactos, toque/deslize configuráveis e navegação lateral opcional nos modos paginado/duplo; controles visíveis em repouso são uma opção acessível e ocultam durante a rolagem;
@@ -194,7 +196,7 @@ O gateway de tradução usa uma origem independente
 (`EXPO_PUBLIC_TRANSLATION_GATEWAY_URL`) sem `/api` da Core. Apenas origens HTTPS
 sem path, credenciais, query ou fragment são aceitas; ausência ou configuração
 inválida fecha o upload e nunca ativa fallback direto para provider. Consulte o
-[plano arquitetural aprovado](../api/apps/translation-gateway/docs/translation-gateway-plan.md).
+[plano arquitetural aprovado](../api/apps/translation-gateway/docs/architecture/translation-gateway-plan.md).
 
 ## Autenticação
 

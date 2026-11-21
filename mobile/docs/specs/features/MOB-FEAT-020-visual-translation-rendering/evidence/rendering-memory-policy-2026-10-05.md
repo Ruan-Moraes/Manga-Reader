@@ -8,7 +8,7 @@ Não há aceite integral, mudança de orçamento cloud ou aprovação linguísti
 
 ## Escopo e prova
 
-O [plano](../../../../../../api/apps/translation-gateway/docs/rendering-memory-policy.md)
+O [plano](../../../../../../api/apps/translation-gateway/docs/rendering/rendering-memory-policy.md)
 precedeu os testes. Acrescentados dois casos parametrizados ao
 [harness](../../../../../../api/apps/translation-gateway/src/test/java/com/toonlira/translationgateway/infrastructure/rendering/NativeRenderResourceTest.java):
 plana e multicolor, 10.000 × 8.000, 80M pixels, cgroup 2 GiB, heap 256 MiB,
@@ -78,7 +78,7 @@ target, .DS_Store, .terraform e lock local ignorado. Fotografia anterior
 Boot JAR permanece
 `9070df558ffef96ed808d7b18c5701e7d4926a581aca49979850fcf83b55e0ec`:
 somente src/test mudou, sem harness no artefato de produção. Package offline
-exit 0. Node `node --test scripts/*.test.mjs`: 85 pass/um opt-in não selecionado,
+exit 0. Node `node --test scripts/*/*.test.mjs`: 85 pass/um opt-in não selecionado,
 zero failures, exit 0. Web `pnpm exec tsc -b`: exit 0.
 
 Maven global offline/Docker e opt-ins native/archive/Linux/resources/shared/

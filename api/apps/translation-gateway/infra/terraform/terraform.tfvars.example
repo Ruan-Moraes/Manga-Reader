@@ -5,6 +5,11 @@ gateway_enabled         = false
 worker_enabled          = false
 worker_resource_profile = "baseline"
 worker_container_image  = null
+# Detector de balões (modelo embutido na imagem pelo Dockerfile): grouping é o padrão
+# (docs/ocr-evaluation/layout-experimental.md) e eleva a memória do worker baseline para 2Gi.
+# "disabled" volta à heurística de proximidade.
+layout_mode      = "grouping"
+layout_direction = "rtl"
 # O ambiente do worker também mantém GATEWAY_OCR_MODE=disabled neste incremento.
 database_tier                     = "db-f1-micro"
 database_disk_size_gb             = 10
@@ -12,7 +17,8 @@ database_disk_autoresize_limit_gb = 20
 
 disclosure = {
   # A versão anterior descreve localização incompatível com tradução global.
-  # Manter vazio até revisão, publicação e aprovação de um novo disclosure.
+  # Manter vazio até revisão, publicação e aprovação de um novo disclosure. Com a camada de linguagem,
+  # a versão aprovada é "2026-11-15.v1" (Política de Privacidade v1.1).
   version          = ""
   operator_name    = "Ruan Moraes"
   operator_contact = "ruanmoraessantosbarbosa@gmail.com"
@@ -21,5 +27,13 @@ disclosure = {
   terms_url          = "https://toonlira-rm.web.app/legal/terms"
   # URL pública complementar (não integra o shape atual do disclosure):
   # https://toonlira-rm.web.app/legal/contact
-  provider_training_policy = "Google Cloud does not use customer content submitted to Cloud Vision or Cloud Translation to train or improve its models."
+  provider_training_policy = "Google Cloud does not use customer content submitted to Cloud Vision or Cloud Translation to train or improve its models. Gemini on Vertex AI receives text only; Google Cloud may cache it for up to 24 hours, isolated to the project, and does not use that cache to train models."
 }
+
+# Camada de linguagem (Gemini na Vertex AI): revisa leitura do OCR e tradução, só texto, nunca a imagem.
+# Exige disclosure.version = "2026-11-15.v1" (Política de Privacidade v1.1, que cita a camada) — publicar a
+# política revisada antes. Habilita aiplatform.googleapis.com e roles/aiplatform.user no worker.
+# Só tem efeito quando OCR e tradução do worker estiverem ligados.
+translation_refine_mode     = "gemini"
+translation_refine_model    = "gemini-3.8-flash"
+translation_refine_location = "us"

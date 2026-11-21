@@ -1,0 +1,22 @@
+{
+  "root" : "corpus",
+  "page" : "pepper-carrot-es-ep24/p00.jpg",
+  "sourceLanguage" : "es",
+  "width" : 1200,
+  "height" : 287,
+  "regions" : [ {
+    "source" : "Pimienta y Zanahoria Episodio 24: El árbol de Unidad",
+    "translation" : "Pimenta e Cenoura Episódio 24: A Árvore da Unidade",
+    "kind" : "text_free",
+    "polygon" : [ [ 0.1475, 0.2926829268292683 ], [ 0.8466666666666667, 0.2926829268292683 ], [ 0.8466666666666667, 0.8850174216027874 ], [ 0.1475, 0.8850174216027874 ] ]
+  } ],
+  "bubbles" : [ [ 0.00268670916557312, 0.0, 0.9983202107747395, 0.9997774449790396 ] ],
+  "expect" : {
+    "maxChangedOutside" : 0,
+    "regions" : [ {
+      "overflow" : false,
+      "font" : 48,
+      "residualInk" : 0
+    } ]
+  }
+}

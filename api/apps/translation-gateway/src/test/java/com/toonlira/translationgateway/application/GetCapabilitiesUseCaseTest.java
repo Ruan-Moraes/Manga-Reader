@@ -79,6 +79,9 @@ class GetCapabilitiesUseCaseTest {
             "dailyGlobalQuota", "disclosure");
         assertThat(json.get("supportedPairs").get(0).toString()).isEqualTo("{\"source\":\"ja\",\"target\":\"en\"}");
         assertThat(json.get("disclosure").has("processingRegions")).isFalse();
+        assertThat(result.disclosure().languageModelLocation()).isNull();
+        assertThat(json.get("disclosure").has("languageModelLocation")).isTrue();
+        assertThat(json.get("disclosure").get("languageModelLocation").isNull()).isTrue();
         assertThat(json.has("etag")).isFalse();
     }
 
@@ -92,6 +95,15 @@ class GetCapabilitiesUseCaseTest {
         assertThat(result.enabled()).isFalse();
         assertThat(result.validUntil()).isAfter(result.generatedAt());
         assertThat(result.etag()).startsWith("W/\"").endsWith("\"");
+    }
+
+    @Test
+    void theEntityTagChangesWithTheValidityWindowSoA304NeverRevivesAnExpiredBody() {
+        var properties = validProperties();
+        var first = new GetCapabilitiesUseCase(properties, Clock.fixed(NOW, ZoneOffset.UTC)).execute();
+        var later = new GetCapabilitiesUseCase(properties, Clock.fixed(NOW.plusSeconds(3600), ZoneOffset.UTC)).execute();
+        assertThat(later.etag()).isNotEqualTo(first.etag());
+        assertThat(later.validUntil()).isAfter(first.validUntil());
     }
 
     @Test
@@ -186,6 +198,44 @@ class GetCapabilitiesUseCaseTest {
 
         properties.getDispatch().setMode("local-ack");
         assertThatCode(useCase::requireEnabled).doesNotThrowAnyException();
+    }
+
+    @Test
+    void shouldDiscloseTheLanguageModelLocationOnlyWhileTheLayerCanReceiveText() {
+        var clock = Clock.fixed(NOW, ZoneOffset.UTC);
+        var properties = validProperties();
+        var off = new GetCapabilitiesUseCase(properties, clock).execute();
+        properties.getTranslation().getRefine().setMode(GatewayProperties.Translation.Refine.Mode.GEMINI);
+        properties.getDisclosure().setVersion("2026-11-15.v1");
+        var on = new GetCapabilitiesUseCase(properties, clock).execute();
+        assertThat(off.disclosure().languageModelLocation()).isNull();
+        assertThat(on.disclosure().languageModelLocation()).isEqualTo("us");
+        assertThat(on.etag()).isNotEqualTo(off.etag());
+
+        properties.getTranslation().setMode(GatewayProperties.Translation.Mode.DISABLED);
+        assertThat(new GetCapabilitiesUseCase(properties, clock).execute().disclosure().languageModelLocation()).isNull();
+    }
+
+    @Test
+    void shouldRefuseTheLanguageLayerUnderADisclosureThatDoesNotNameIt() {
+        var properties = validProperties();
+        properties.getTranslation().getRefine().setMode(GatewayProperties.Translation.Refine.Mode.GEMINI);
+        // validProperties carries a disclosure published before the language layer.
+        assertThatThrownBy(new GetCapabilitiesUseCase(properties, Clock.fixed(NOW, ZoneOffset.UTC))::execute)
+            .isInstanceOfSatisfying(GatewayException.class,
+                error -> assertThat(error.code()).isEqualTo(GatewayErrorCode.CAPABILITIES_UNAVAILABLE));
+        properties.getDisclosure().setVersion("2026-11-15.v1");
+        assertThatCode(new GetCapabilitiesUseCase(properties, Clock.fixed(NOW, ZoneOffset.UTC))::execute).doesNotThrowAnyException();
+    }
+
+    @Test
+    void shouldRefuseCapabilitiesForAnUndisclosableLanguageModelLocation() {
+        var properties = validProperties();
+        properties.getTranslation().getRefine().setMode(GatewayProperties.Translation.Refine.Mode.GEMINI);
+        properties.getTranslation().getRefine().setLocation("US Central");
+        assertThatThrownBy(new GetCapabilitiesUseCase(properties, Clock.fixed(NOW, ZoneOffset.UTC))::execute)
+            .isInstanceOfSatisfying(GatewayException.class,
+                error -> assertThat(error.code()).isEqualTo(GatewayErrorCode.CAPABILITIES_UNAVAILABLE));
     }
 
     static GatewayProperties validProperties() {

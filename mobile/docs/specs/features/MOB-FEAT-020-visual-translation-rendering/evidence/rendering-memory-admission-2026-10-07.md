@@ -5,7 +5,7 @@ TASK-002/005/007/008, AC-001/004/005/006. Runtime do bean nativo alterado;
 cloud intactos; sem schema/migration, dependência nova, credencial, provider
 pago, mídia privada, mobile ou deploy. Performance do aplicativo N/A.
 
-[Política e limites](../../../../../../api/apps/translation-gateway/docs/rendering-memory-admission.md),
+[Política e limites](../../../../../../api/apps/translation-gateway/docs/rendering/rendering-memory-admission.md),
 [admissão](../../../../../../api/apps/translation-gateway/src/main/java/com/toonlira/translationgateway/infrastructure/rendering/LinuxWorkerMemoryAdmission.java),
 [testes puros](../../../../../../api/apps/translation-gateway/src/test/java/com/toonlira/translationgateway/infrastructure/rendering/LinuxWorkerMemoryAdmissionTest.java),
 [prova de recusa](../../../../../../api/apps/translation-gateway/src/test/java/com/toonlira/translationgateway/infrastructure/rendering/NativeWorkerMemoryAdmissionLinuxTest.java).

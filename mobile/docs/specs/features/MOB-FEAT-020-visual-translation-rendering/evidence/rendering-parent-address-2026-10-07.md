@@ -4,7 +4,7 @@ Parcela de TASK-002/005/007/008, AC-001/004/005/006. Somente testes e documenta�
 produção/JAR, contratos, migrations, caps, qualidade e defaults/RAM cloud intactos.
 020 in-progress/open, changes-requested, 021 approved/blocked.
 
-[Protocolo](../../../../../../api/apps/translation-gateway/docs/rendering-parent-address.md),
+[Protocolo](../../../../../../api/apps/translation-gateway/docs/rendering/rendering-parent-address.md),
 [helper](../../../../../../api/apps/translation-gateway/src/test/java/com/toonlira/translationgateway/infrastructure/rendering/OwnedParentAddressProbe.java)
 e [testes puros](../../../../../../api/apps/translation-gateway/src/test/java/com/toonlira/translationgateway/infrastructure/rendering/OwnedParentAddressProbeTest.java).
 Não há nova dependência, download, credencial, provider pago, mídia privada,

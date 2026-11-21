@@ -230,7 +230,7 @@ pendente e não é transferida ao custodiante sem competência no idioma.
 O [executor separado de calibração](calibration-worker.md) liga referência e
 captura por hashes; o modo offline continua sendo simulação, não qualidade real.
 
-O [replay de layout](../layout-experimental.md) analisa uma captura existente sem
+O [replay de layout](layout-experimental.md) analisa uma captura existente sem
 chamar o provider. Não modifica texto, geometria ou ordem do manifesto OCR.
 Artefato separado não substitui a referência humana nem encerra a avaliação OCR.
 

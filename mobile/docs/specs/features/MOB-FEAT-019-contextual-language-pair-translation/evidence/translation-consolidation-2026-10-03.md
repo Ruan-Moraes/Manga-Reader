@@ -48,7 +48,7 @@ Os caminhos Java abaixo são relativos ao [gateway](../../../../../../api/apps/t
   `SKIP LOCKED`, lease antiga recusada e remoção somente das chaves do job.
   A cadeia Flyway V1–V5 é exercitada no PostgreSQL, não apenas em H2.
 - Mobile: parser de bytes/objetos, mapper puro e
-  [escrita de regiões](../../../../../../mobile/src/entities/local-translation-result/api/remoteTranslationRegionsStorage.ts)
+  [escrita de regiões](../../../../../src/entities/local-translation-result/api/remoteTranslationRegionsStorage.ts)
   em transação exclusiva fornecida pelo chamador, com FK ligada, parent/job/par
   corretos, flags explícitas e rejeição de replay/overwrite. Metadados opcionais
   SQLite v9 não duplicam o destino do projeto.
@@ -56,7 +56,7 @@ Os caminhos Java abaixo são relativos ao [gateway](../../../../../../api/apps/t
 Na auditoria, a escolha da primeira página já existia em runtime, mas faltava
 uma regressão com projeto multipágina fora de ordem. Foram acrescentados dois
 testes em
-[startRemoteProcessing.test.ts](../../../../../../mobile/src/features/start-remote-processing/model/__tests__/startRemoteProcessing.test.ts):
+[startRemoteProcessing.test.ts](../../../../../src/features/start-remote-processing/model/__tests__/startRemoteProcessing.test.ts):
 array invertido envia apenas a página de menor posição, sem mutar o array;
 primeira página inválida impede envio, sem fallback para a segunda. O teste
 verifica uma tentativa, um upload e nenhum acesso ao arquivo seguinte. Nenhum
@@ -141,7 +141,7 @@ Comandos executados localmente sem credenciais ou chamadas Google:
 | ------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
 | `cd api && ./mvnw -o -q test` com Docker/loopback autorizados                                                                                     | exit 0; gateway: 352 testes/43 classes, zero falhas, erros ou skips                                                    |
 | Suíte leve do gateway (`-Dtest.excludedGroups=testcontainers`)                                                                                    | fotografia ACK: 305 testes/42 classes aprovados; hash Java reconfirmado igual, sem nova alteração Java nesta auditoria |
-| `node --test api/apps/translation-gateway/scripts/ocr-{samples,evaluation,layout,diagnostic,columns,calibration,calibration-evaluation}.test.mjs` | 85 aprovados, zero falhas, um opt-in de fonte não executado                                                            |
+| `node --test api/apps/translation-gateway/scripts/ocr/ocr-{samples,evaluation,layout,diagnostic,columns,calibration,calibration-evaluation}.test.mjs` | 85 aprovados, zero falhas, um opt-in de fonte não executado                                                            |
 | `cd web/toonlira && ./node_modules/.bin/tsc -b`                                                                                                   | exit 0                                                                                                                 |
 | `cd mobile && pnpm check`                                                                                                                         | antes e depois da transição: cadeia integral aprovada; 116 suítes/859 testes, 30 performance, 24 SDD e seis FSD        |
 | `cd mobile && pnpm specs:check`                                                                                                                   | 67 artefatos normativos; zero arquivos descobertos/caminhos obsoletos/referências inválidas; links aprovados           |

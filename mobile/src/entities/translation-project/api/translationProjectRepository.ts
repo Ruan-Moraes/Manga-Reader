@@ -19,7 +19,7 @@ import {
 import type { NewTranslationProject, TranslationProject } from '../model/translationProject';
 
 export const TRANSLATION_PROJECT_NAMESPACE = 'translation-projects';
-const CURRENT_SCHEMA_VERSION = 6;
+const CURRENT_SCHEMA_VERSION = 13;
 const LANGUAGE_CHECK = "'ja', 'en', 'es', 'ko', 'zh-Hans', 'zh-Hant', 'pt-BR'";
 const STATE_CHECK = "'DRAFT', 'QUEUED', 'PROCESSING', 'READY', 'FAILED', 'CANCELLED'";
 
@@ -113,6 +113,14 @@ export interface TranslationProjectRepository {
         updatedAt: number,
     ): Promise<TranslationProject>;
     getReferencedProjectIds(): Promise<Set<string>>;
+    /**
+     * The project's chapter reference for the gateway: drawn once ({@code candidate}, a random UUID never derived
+     * from a local id) and returned unchanged afterwards, so every page of the project shares it.
+     */
+    ensureContextRef(projectId: string, candidate: string): Promise<string>;
+    /** When the remote queue may send again after the daily quota ran out, or null when it is not paused. */
+    /** The chapter names the gateway decided for this project (MOB-FEAT-023), oldest first, at most 256. */
+    listTerms(projectId: string): Promise<ProjectTerm[]>;
     measureBytes(): Promise<number>;
     clear(): Promise<void>;
 }
@@ -286,6 +294,47 @@ CREATE INDEX idx_translation_projects_latest ON translation_projects(updated_at 
     }
 }
 
+/** One chapter name the gateway decided for a project, as its results report it. */
+export interface ProjectTerm {
+    source: string;
+    target: string;
+}
+
+/** Most names sent back with one page (the gateway's limit). */
+export const MAX_PROJECT_TERMS = 256;
+
+/**
+ * v13 (MOB-FEAT-023): the project's chapter glossary. One row per decided name (the first decision stays), owned by
+ * the project and deleted with it.
+ */
+export const CREATE_PROJECT_TERMS_SCHEMA = `
+CREATE TABLE IF NOT EXISTS translation_project_terms (
+    project_id TEXT NOT NULL,
+    source_term TEXT NOT NULL CHECK (length(source_term) BETWEEN 1 AND 64 AND source_term = trim(source_term) AND instr(source_term, char(10)) = 0),
+    target_term TEXT NOT NULL CHECK (length(target_term) BETWEEN 1 AND 128 AND target_term = trim(target_term) AND instr(target_term, char(10)) = 0),
+    created_at INTEGER NOT NULL CHECK (created_at > 0),
+    CONSTRAINT pk_translation_project_terms PRIMARY KEY (project_id, source_term),
+    CONSTRAINT fk_translation_project_terms_project FOREIGN KEY (project_id) REFERENCES translation_projects(id) ON DELETE CASCADE
+);
+`;
+
+const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
+
+/**
+ * v12 (MOB-FEAT-022/023): the project's opaque chapter reference, sent with each page so the gateway keeps the
+ * chapter's names. Additive; every project and page is kept. (v11 is the local works schema, MOB-FEAT-055.)
+ */
+async function migrateRemoteQueue(database: AppDatabase): Promise<void> {
+    const columns = new Set((await database.getAllAsync<TableColumnRow>('PRAGMA table_info(translation_projects)', [])).map(column => column.name));
+    if (!columns.has('context_ref')) {
+        await database.execAsync(`ALTER TABLE translation_projects ADD COLUMN context_ref TEXT
+            CHECK (context_ref IS NULL OR length(context_ref) = 36);`);
+    }
+    await database.execAsync(
+        'CREATE UNIQUE INDEX IF NOT EXISTS uk_translation_projects_context_ref ON translation_projects(context_ref) WHERE context_ref IS NOT NULL;',
+    );
+}
+
 export function createSqliteTranslationProjectRepository(openDatabase: () => Promise<AppDatabase> = openAppDatabase): TranslationProjectRepository {
     let initialized: Promise<void> | null = null;
     const database = async (): Promise<AppDatabase> => {
@@ -293,6 +342,8 @@ export function createSqliteTranslationProjectRepository(openDatabase: () => Pro
         initialized ??= runAppDatabaseMigration(async () => {
             await db.execAsync(CREATE_SCHEMA);
             await migrateLanguageSchema(db);
+            await migrateRemoteQueue(db);
+            await db.execAsync(CREATE_PROJECT_TERMS_SCHEMA);
             await advanceAppSchemaVersion(db, CURRENT_SCHEMA_VERSION);
         }).catch(error => {
             initialized = null;
@@ -456,6 +507,24 @@ export function createSqliteTranslationProjectRepository(openDatabase: () => Pro
         async getReferencedProjectIds() {
             const rows = await (await database()).getAllAsync<{ id: string }>('SELECT id FROM translation_projects', []);
             return new Set(rows.map(row => row.id));
+        },
+        async ensureContextRef(projectId, candidate) {
+            if (!UUID_PATTERN.test(candidate)) throw new Error('translationProject.invalidContextRef');
+            const db = await database();
+            await db.runAsync('UPDATE translation_projects SET context_ref = ? WHERE id = ? AND context_ref IS NULL', [candidate, projectId]);
+            const row = await db.getFirstAsync<{ context_ref: string | null }>('SELECT context_ref FROM translation_projects WHERE id = ?', [projectId]);
+            if (!row?.context_ref) throw new Error('translationProject.notFound');
+            return row.context_ref;
+        },
+        async listTerms(projectId) {
+            const rows = await (
+                await database()
+            ).getAllAsync<{ source_term: string; target_term: string }>(
+                `SELECT source_term, target_term FROM translation_project_terms WHERE project_id = ?
+                 ORDER BY created_at ASC, source_term ASC LIMIT ${MAX_PROJECT_TERMS}`,
+                [projectId],
+            );
+            return rows.map(row => ({ source: row.source_term, target: row.target_term }));
         },
         async measureBytes() {
             const row = await (

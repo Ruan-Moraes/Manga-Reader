@@ -66,6 +66,8 @@
           "$ref": "#/components/parameters/TargetLanguage"
         -
           "$ref": "#/components/parameters/DisclosureVersion"
+        -
+          "$ref": "#/components/parameters/ContextRef"
       "requestBody":
         "required": true
         "content":
@@ -200,6 +202,86 @@
             "application/problem+json":
               "schema":
                 "$ref": "./translation-gateway-v1.yaml#/components/schemas/GatewayProblem"
+  "/v2/page-translations/chapter-contexts/{contextRef}/glossary":
+    "put":
+      "operationId": "seedChapterGlossary"
+      "security":
+        -
+          "anonymousSession": []
+      "x-log-policy": "sanitized-operational-metadata-no-content"
+      "description": "Glossário do capítulo que o cliente guarda (nomes que o gateway decidiu nas páginas anteriores, vindos dos manifestos 1.2). Reabastece a memória do capítulo, por exemplo depois de uma pausa maior que a retenção; nunca sobrescreve um termo que a memória ainda guarda. É dado para a tradução, nunca instrução. Exige o disclosure vigente, que nomeia esse armazenamento."
+      "parameters":
+        -
+          "name": "contextRef"
+          "in": "path"
+          "required": true
+          "description": "Referência opaca do capítulo; ver ContextRef."
+          "schema":
+            "type": "string"
+            "format": "uuid"
+        -
+          "name": "sourceLanguage"
+          "in": "query"
+          "required": true
+          "schema":
+            "$ref": "#/components/schemas/TranslationLanguage"
+        -
+          "name": "targetLanguage"
+          "in": "query"
+          "required": true
+          "schema":
+            "$ref": "#/components/schemas/TranslationLanguage"
+        -
+          "$ref": "#/components/parameters/DisclosureVersion"
+      "requestBody":
+        "required": true
+        "content":
+          "application/json":
+            "schema":
+              "$ref": "#/components/schemas/ChapterGlossary"
+      "responses":
+        "204":
+          "description": "Glossário aceito (melhor esforço: uma falha ao guardar não aparece aqui)"
+          "headers":
+            "Cache-Control":
+              "schema":
+                "const": "no-store"
+        "400":
+          "description": "Glossário malformado ou acima dos limites"
+          "content":
+            "application/problem+json":
+              "schema":
+                "$ref": "./translation-gateway-v1.yaml#/components/schemas/GatewayProblem"
+        "401":
+          "description": "Falha sanitizada"
+          "content":
+            "application/problem+json":
+              "schema":
+                "$ref": "./translation-gateway-v1.yaml#/components/schemas/GatewayProblem"
+        "409":
+          "description": "Disclosure diferente do vigente (consent-required)"
+          "content":
+            "application/problem+json":
+              "schema":
+                "$ref": "./translation-gateway-v1.yaml#/components/schemas/GatewayProblem"
+        "413":
+          "description": "Corpo acima de 128 KiB"
+          "content":
+            "application/problem+json":
+              "schema":
+                "$ref": "./translation-gateway-v1.yaml#/components/schemas/GatewayProblem"
+        "422":
+          "description": "Par de idiomas não habilitado"
+          "content":
+            "application/problem+json":
+              "schema":
+                "$ref": "./translation-gateway-v1.yaml#/components/schemas/GatewayProblem"
+        "503":
+          "description": "Gateway desabilitado"
+          "content":
+            "application/problem+json":
+              "schema":
+                "$ref": "./translation-gateway-v1.yaml#/components/schemas/GatewayProblem"
 "components":
   "securitySchemes":
     "anonymousSession":
@@ -259,6 +341,14 @@
       "schema":
         "type": "string"
         "pattern": "^volatile-[A-Za-z0-9._-]{1,55}$"
+    "ContextRef":
+      "name": "X-Context-Ref"
+      "in": "header"
+      "required": false
+      "description": "Referência opaca do capítulo: UUID aleatório que o cliente sorteia por projeto, nunca um id da biblioteca. Páginas com a mesma referência mantêm os nomes do capítulo (memória do capítulo, retenção divulgada)."
+      "schema":
+        "type": "string"
+        "format": "uuid"
   "schemas":
     "TranslationLanguage":
       "type": "string"
@@ -340,6 +430,7 @@
         - "gatewayRegion"
         - "ocrRegion"
         - "translationLocation"
+        - "languageModelLocation"
         - "contentProcessing"
         - "resultStorage"
         - "sanitizedOperationalLogs"
@@ -371,6 +462,14 @@
           "const": "us"
         "translationLocation":
           "const": "global"
+        "languageModelLocation":
+          "description": "Região Vertex AI da revisão opcional por modelo de linguagem (Gemini; recebe só texto, nunca a imagem); null enquanto está desligada."
+          "oneOf":
+            -
+              "type": "string"
+              "pattern": "^[a-z][a-z0-9-]{0,28}[a-z0-9]$"
+            -
+              "type": "null"
         "contentProcessing":
           "const": "in-memory-only"
         "resultStorage":
@@ -385,6 +484,23 @@
           "type": "string"
           "minLength": 1
           "maxLength": 500
+    "ChapterGlossary":
+      "type": "array"
+      "maxItems": 256
+      "description": "Até 256 nomes e 32768 caracteres; fonte única por entrada."
+      "items":
+        "type": "object"
+        "additionalProperties": false
+        "required": ["source", "target"]
+        "properties":
+          "source":
+            "type": "string"
+            "minLength": 1
+            "maxLength": 64
+          "target":
+            "type": "string"
+            "minLength": 1
+            "maxLength": 128
     "Capabilities":
       "type": "object"
       "additionalProperties": false

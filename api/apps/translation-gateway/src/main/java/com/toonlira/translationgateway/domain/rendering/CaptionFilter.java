@@ -1,0 +1,235 @@
+package com.toonlira.translationgateway.domain.rendering;
+
+import com.toonlira.translationgateway.domain.ocr.Lexicon;
+import java.util.HashSet;
+import java.util.Locale;
+import java.util.Set;
+import java.util.UUID;
+
+/**
+ * Tells speech and captions apart from sound effects, so only the former are erased from artwork and retyped.
+ * A caption: the translation changes the text, it has at least two different word tokens, and (when a word list
+ * exists for the source language) most of them are words of the language. Repeated tokens ("clatter clatter"),
+ * single words and non-words keep their hand-drawn lettering.
+ */
+public final class CaptionFilter {
+    private static final double MIN_KNOWN = .6;
+
+    private CaptionFilter() { }
+
+    public static Set<UUID> captions(RenderRequest request, Lexicon lexicon) {
+        return captions(request, lexicon, java.util.Map.of());
+    }
+
+    /**
+     * {@code kinds}: detector class per region (layout 1.2), possibly empty. A region the detector does not see as
+     * text at all ({@code unknown}: stylized sound effects such as "FREEK" or "clatter") is never a caption, whatever
+     * the word list says: its hand-drawn lettering stays. Text boxes ({@code text_bubble}, {@code text_free}) and
+     * regions without a class follow the word-list rule.
+     */
+    public static Set<UUID> captions(RenderRequest request, Lexicon lexicon, java.util.Map<UUID, String> kinds) {
+        var result = new HashSet<UUID>();
+        for (var region : request.regions()) {
+            if ("unknown".equals(kinds.get(region.id()))) continue;
+            if (isCaption(region.sourceText(), region.translatedText(), lexicon)) result.add(region.id());
+        }
+        return Set.copyOf(result);
+    }
+
+    /** Hand-drawn lettering of a sentence: letters needed with kanji / words needed in spaced scripts. */
+    static final int MIN_LETTERING_LETTERS = 8;
+    private static final Set<String> UNSPACED_SOURCES = Set.of("ja", "zh-Hans", "zh-Hant");
+
+    /**
+     * Regions the detector does not see as text ({@code unknown}) whose text is nonetheless a sentence: hand-drawn
+     * shouts over the art (「ターミナルがあれば全てが上手くいく」). Sound effects stay out: they are short, few-lettered or
+     * repetitive, and fail the caption rule or the sentence length.
+     */
+    public static Set<UUID> letterings(RenderRequest request, Lexicon lexicon, java.util.Map<UUID, String> kinds) {
+        int width = request.source().widthPx(), height = request.source().heightPx();
+        var glyphs = request.regions().stream().mapToDouble(region -> glyph(region, width, height)).filter(g -> g > 0).sorted().toArray();
+        double median = glyphs.length == 0 ? 0 : glyphs[glyphs.length / 2];
+        var result = new HashSet<UUID>();
+        for (var region : request.regions()) {
+            // Not seen as text by the detector, or drawn much bigger than the page's lettering: a shout.
+            boolean shout = "unknown".equals(kinds.get(region.id()))
+                || median > 0 && glyphs.length >= MIN_REGIONS_FOR_SIZE && glyph(region, width, height) >= SHOUT_SIZE * median;
+            // On a Japanese/Chinese page, text mostly in Latin letters is screen or interface text, not a drawn shout.
+            boolean sourceScript = !UNSPACED_SOURCES.contains(request.pair().source()) || unspaced(region.sourceText());
+            if (shout && sourceScript && isLettering(region.sourceText(), region.translatedText(), lexicon)) result.add(region.id());
+        }
+        // A lettering drawn in pieces (an arc around a face, read as separate lines) is one sentence: a short piece next
+        // to a lettering in reading order, unseen as text and lettered at its size, belongs to it ("Rocks!" after "The
+        // Command Line") and is retyped with it rather than kept as a drawn effect.
+        var ordered = request.regions().stream().sorted(java.util.Comparator.comparingInt(RenderRequest.Region::readingOrder)).toList();
+        boolean grew = true;
+        while (grew) {
+            grew = false;
+            for (int i = 0; i < ordered.size(); i++) {
+                var region = ordered.get(i);
+                if (result.contains(region.id()) || !"unknown".equals(kinds.get(region.id()))
+                    || UnchangedText.unchanged(region.sourceText(), region.translatedText())) continue;
+                double size = glyph(region, width, height);
+                for (int j : new int[]{i - 1, i + 1}) {
+                    if (j < 0 || j >= ordered.size() || !result.contains(ordered.get(j).id())) continue;
+                    double other = glyph(ordered.get(j), width, height);
+                    if (size > 0 && other > 0 && Math.max(size, other) <= PIECE_SIZE_RATIO * Math.min(size, other)) {
+                        result.add(region.id());
+                        grew = true;
+                        break;
+                    }
+                }
+            }
+        }
+        return Set.copyOf(result);
+    }
+
+    /** Pieces of one lettering are drawn at about one size. */
+    static final double PIECE_SIZE_RATIO = 1.6;
+
+    /**
+     * Drawn text that stays as drawn: regions the detector does not see as text ({@code unknown}) whose centre lies
+     * outside every detected balloon and that are not a sentence ({@link #letterings}). Sound effects ("BEEP"), drawn
+     * screens and desktops ("case_Wellcome.pdf", "logos"), signs ("bin"): retyping them only replaces the art. Speech the
+     * detector missed inside a balloon is not affected.
+     */
+    public static Set<UUID> drawn(RenderRequest request, Lexicon lexicon, java.util.Map<UUID, String> kinds) {
+        var letterings = letterings(request, lexicon, kinds);
+        var result = new HashSet<UUID>();
+        for (var region : request.regions()) {
+            var kind = kinds.get(region.id());
+            if (letterings.contains(region.id())) continue;
+            // Free text of one word that is a sound of the language ("shuffle", "Pooof"): a drawn effect too. Single-word
+            // speech outside balloons ("Indeed!", "stop!") is not a sound and is still retyped.
+            boolean sound = "text_free".equals(kind) && stems(region.sourceText()) == 1 && lexicon.isSound(soundCore(region.sourceText()));
+            if (!"unknown".equals(kind) && !sound) continue;
+            double x = 0, y = 0;
+            for (var vertex : region.polygon()) { x += vertex.x() / region.polygon().size(); y += vertex.y() / region.polygon().size(); }
+            double cx = x, cy = y;
+            boolean inBalloon = request.bubbles().stream()
+                .anyMatch(box -> cx >= box.left() && cx <= box.right() && cy >= box.top() && cy <= box.bottom());
+            if (!inBalloon) result.add(region.id());
+        }
+        return Set.copyOf(result);
+    }
+
+    /** The core of the first word of a one-word region (a repeated sound counts as one word). */
+    private static String soundCore(String source) {
+        for (var token : source.split("\\s+")) {
+            var core = Lexicon.core(token).toLowerCase(Locale.ROOT);
+            if (!core.isEmpty()) return core;
+        }
+        return "";
+    }
+
+    /** Distinct words, a word that only extends another counting once ("Ha Haha", "owl OW!"). */
+    private static int stems(String source) {
+        var stems = new java.util.ArrayList<String>();
+        for (var token : source.split("\\s+")) {
+            var core = Lexicon.core(token).toLowerCase(Locale.ROOT);
+            if (core.isEmpty() || core.codePoints().noneMatch(Character::isLetter)) continue;
+            if (stems.stream().noneMatch(stem -> stem.startsWith(core) || core.startsWith(stem))) stems.add(core);
+        }
+        return stems.size();
+    }
+
+    /**
+     * Japanese particles and sentence-final words written in hiragana ({@link Lexicon#PARTICLES}, from
+     * {@code lexicon/ja-particles.txt}): a short kana shout that has one is a phrase
+     * (「やんのかゴラァ」, 「いくぞ」), while sound effects have none (「きゅう」, 「ひゅるる」, 「うずうず」).
+     */
+    static final int MIN_KANA_PHRASE_LETTERS = 5, MIN_KANA_PHRASE_DISTINCT = 4;
+
+    /** Kana only: long and varied enough, and holding a particle; a repeated sound ("がたがた") never is. */
+    private static boolean kanaPhrase(int[] letters, Lexicon lexicon) {
+        var particles = lexicon.list(Lexicon.PARTICLES);
+        if (particles.isEmpty()) return false;
+        if (letters.length < MIN_KANA_PHRASE_LETTERS) return false;
+        if (java.util.Arrays.stream(letters).distinct().count() < MIN_KANA_PHRASE_DISTINCT) return false;
+        var text = new String(letters, 0, letters.length);
+        int half = letters.length / 2;
+        if (letters.length % 2 == 0 && text.substring(0, half).equals(text.substring(half))) return false;
+        return java.util.Arrays.stream(letters).anyMatch(c -> particles.contains(new String(Character.toChars(c))));
+    }
+
+    /** Glyph size from which lettering counts as drawn bigger than the page's speech, and regions needed to judge it. */
+    static final double SHOUT_SIZE = 1.8;
+    static final int MIN_REGIONS_FOR_SIZE = 3;
+
+    /** sqrt(box area / letters) in pixels: comparable between regions of one page, whatever the script. */
+    private static double glyph(RenderRequest.Region region, int width, int height) {
+        long letters = region.sourceText().codePoints().filter(Character::isLetterOrDigit).count();
+        if (letters == 0) return 0;
+        double l = 1, t = 1, r = 0, b = 0;
+        for (var vertex : region.polygon()) { l = Math.min(l, vertex.x()); r = Math.max(r, vertex.x()); t = Math.min(t, vertex.y()); b = Math.max(b, vertex.y()); }
+        return Math.sqrt((r - l) * width * (b - t) * height / letters);
+    }
+
+    static boolean isLettering(String source, String translated, Lexicon lexicon) {
+        if (!isCaption(source, translated, lexicon)) return false;
+        if (unspaced(source)) {
+            int[] letters = source.codePoints().filter(Character::isLetter).filter(c -> c != 'ー' && c != '〜' && c != '～').toArray();
+            boolean kanji = java.util.Arrays.stream(letters).anyMatch(c -> Character.UnicodeScript.of(c) == Character.UnicodeScript.HAN);
+            if (kanji) return letters.length >= MIN_LETTERING_LETTERS;
+            return kanaPhrase(letters, lexicon);
+        }
+        // Spaced scripts: any phrase that reads as a caption (2+ distinct words, mostly of the language) is retyped;
+        // onomatopoeia (one word, repeated, or not words: BEEP, Swish, Clickty-tap-clack-key) keeps its drawing. A word
+        // that only extends another is the same sound drawn twice ("Ha Haha"), or OCR reading one shout twice ("owl OW!").
+        return stems(source) >= 2;
+    }
+
+    public static boolean isCaption(String source, String translated, Lexicon lexicon) {
+        if (source == null || translated == null || UnchangedText.unchanged(source, translated)) return false;
+        if (unspaced(source)) return unspacedCaption(source);
+        var tokens = new java.util.ArrayList<String>();
+        for (var token : source.split("\\s+")) {
+            var core = Lexicon.core(token);
+            if (!core.isEmpty() && core.codePoints().anyMatch(Character::isLetter)) tokens.add(core.toLowerCase(Locale.ROOT));
+        }
+        if (tokens.size() < 2 || new HashSet<>(tokens).size() < 2) return false;
+        if (!lexicon.available()) return true;
+        long known = tokens.stream().filter(lexicon::knows).count();
+        return known >= MIN_KNOWN * tokens.size();
+    }
+
+    /**
+     * Minimum letters of a Japanese/Chinese caption ({@link #unspacedCaption}): with kanji, and in kana only — sound
+     * effects are written in kana and are short (ひゅるる, カタカタ), so kana-only text needs more to read as speech.
+     */
+    static final int MIN_UNSPACED_LETTERS = 4, MIN_KANA_ONLY_LETTERS = 6, MIN_UNSPACED_DISTINCT = 3;
+    /** Share of letters that repeat the letter one period earlier: カタカタカタ, ドキドキ. */
+    private static final double REPETITION = .8;
+
+    /** Mostly Han/Hiragana/Katakana: written without spaces, so word tokens say nothing. */
+    private static boolean unspaced(String text) {
+        long letters = 0, cjk = 0;
+        for (int c : text.codePoints().toArray()) {
+            if (!Character.isLetter(c)) continue;
+            letters++;
+            var script = Character.UnicodeScript.of(c);
+            if (script == Character.UnicodeScript.HAN || script == Character.UnicodeScript.HIRAGANA
+                || script == Character.UnicodeScript.KATAKANA) cjk++;
+        }
+        return letters > 0 && cjk * 2 >= letters;
+    }
+
+    /**
+     * Scripts without spaces: a caption has at least {@link #MIN_UNSPACED_LETTERS} letters (the long-vowel mark and
+     * wave dash aside; {@link #MIN_KANA_ONLY_LETTERS} without any kanji), {@link #MIN_UNSPACED_DISTINCT} different
+     * ones, and is not one short unit repeated — sound effects are short (ガチャ, ひゅるる), few-lettered (ドキドキ) or
+     * repetitive (カタカタカタカタ).
+     */
+    static boolean unspacedCaption(String source) {
+        int[] letters = source.codePoints().filter(Character::isLetter).filter(c -> c != 'ー' && c != '〜' && c != '～').toArray();
+        boolean kanji = java.util.Arrays.stream(letters).anyMatch(c -> Character.UnicodeScript.of(c) == Character.UnicodeScript.HAN);
+        if (letters.length < (kanji ? MIN_UNSPACED_LETTERS : MIN_KANA_ONLY_LETTERS)) return false;
+        if (java.util.Arrays.stream(letters).distinct().count() < MIN_UNSPACED_DISTINCT) return false;
+        for (int period = 1; period <= letters.length / 2; period++) {
+            int same = 0;
+            for (int i = period; i < letters.length; i++) if (letters[i] == letters[i - period]) same++;
+            if (same >= REPETITION * (letters.length - period)) return false;
+        }
+        return true;
+    }
+}

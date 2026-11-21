@@ -10,6 +10,8 @@ import ai.onnxruntime.OrtSession;
 import ai.onnxruntime.TensorInfo;
 import com.toonlira.translationgateway.application.port.BubbleDetectionPort;
 import com.toonlira.translationgateway.domain.layout.Bubble;
+import com.toonlira.translationgateway.domain.layout.Detections;
+import com.toonlira.translationgateway.domain.layout.TextBox;
 import com.toonlira.translationgateway.domain.layout.LayoutBox;
 import com.toonlira.translationgateway.domain.layout.LayoutFailure;
 import com.toonlira.translationgateway.domain.layout.PixelImage;
@@ -77,6 +79,11 @@ public final class OnnxBubbleDetector implements BubbleDetectionPort, AutoClosea
 
     @Override
     public List<Bubble> detect(PixelImage image, Duration remaining) {
+        return detectAll(image, remaining).bubbles();
+    }
+
+    @Override
+    public Detections detectAll(PixelImage image, Duration remaining) {
         if (remaining.isNegative() || remaining.isZero()) throw new LayoutFailure(LayoutFailure.Code.TIMEOUT);
         long deadline = System.nanoTime() + remaining.toNanos();
         var timedOut = new AtomicBoolean();
@@ -98,7 +105,7 @@ public final class OnnxBubbleDetector implements BubbleDetectionPort, AutoClosea
                 var labels = (long[][]) output.get("labels").orElseThrow().getValue();
                 var boxes = (float[][][]) output.get("boxes").orElseThrow().getValue();
                 var scores = (float[][]) output.get("scores").orElseThrow().getValue();
-                return decode(labels, boxes, scores, image.width(), image.height());
+                return decodeAll(labels, boxes, scores, image.width(), image.height());
             } finally {
                 synchronized (active) { active.set(false); cancellation.cancel(false); }
             }
@@ -109,22 +116,36 @@ public final class OnnxBubbleDetector implements BubbleDetectionPort, AutoClosea
     }
 
     static List<Bubble> decode(long[][] labels, float[][][] boxes, float[][] scores, int width, int height) {
+        return decodeAll(labels, boxes, scores, width, height).bubbles();
+    }
+
+    /** Labels: 0=bubble (container), 1=text_bubble, 2=text_free; all share validation, threshold and limits. */
+    static Detections decodeAll(long[][] labels, float[][][] boxes, float[][] scores, int width, int height) {
         if (labels.length != 1 || boxes.length != 1 || scores.length != 1 || labels[0].length != boxes[0].length
             || labels[0].length != scores[0].length || labels[0].length > 10000) throw invalid();
         var result = new ArrayList<Bubble>();
+        var texts = new ArrayList<TextBox>();
         for (int i = 0; i < labels[0].length; i++) {
             float score = scores[0][i];
             if (labels[0][i] < 0 || labels[0][i] > 2 || !Float.isFinite(score) || score < 0 || score > 1
                 || boxes[0][i].length != 4) throw invalid();
             for (float coordinate : boxes[0][i]) if (!Float.isFinite(coordinate)) throw invalid();
-            if (score < CONFIDENCE || labels[0][i] != 0) continue;
+            if (score < CONFIDENCE) continue;
             var b = boxes[0][i];
+            // Box regression may overshoot the page by a fraction of a pixel (499.2 on a 499 px page): rounding, so it
+            // is clamped. A whole pixel or more outside still means a misconfigured model and rejects the response.
+            if (b[0] <= -1 || b[1] <= -1 || b[2] >= width + 1 || b[3] >= height + 1) throw invalid();
+            LayoutBox bounds;
             try {
-                result.add(new Bubble("bubble-" + i, new LayoutBox(b[0] / width, b[1] / height, b[2] / width, b[3] / height), score));
+                bounds = new LayoutBox(Math.clamp(b[0], 0, width) / (double) width, Math.clamp(b[1], 0, height) / (double) height,
+                    Math.clamp(b[2], 0, width) / (double) width, Math.clamp(b[3], 0, height) / (double) height);
             } catch (IllegalArgumentException error) { throw invalid(); }
-            if (result.size() > MAX_BUBBLES) throw new LayoutFailure(LayoutFailure.Code.LIMIT_EXCEEDED);
+            if (labels[0][i] == 0) result.add(new Bubble("bubble-" + i, bounds, score));
+            else texts.add(new TextBox("text-" + i, labels[0][i] == 1 ? TextBox.Kind.text_bubble : TextBox.Kind.text_free,
+                bounds, score));
+            if (result.size() > MAX_BUBBLES || texts.size() > MAX_BUBBLES) throw new LayoutFailure(LayoutFailure.Code.LIMIT_EXCEEDED);
         }
-        return List.copyOf(result);
+        return new Detections(result, texts);
     }
 
     static long[][] targetSizes(PixelImage image) {

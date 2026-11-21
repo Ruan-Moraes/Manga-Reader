@@ -130,7 +130,7 @@ iguais aos da rodada focal, bindings dos manifestos distintos por job.
 
 Suíte leve do módulo (`./mvnw -o -q -pl apps/translation-gateway -am test
 -Dtest.excludedGroups=testcontainers`) exit 0; warnings de gRPC closed stream
-e restrição futura de FFM preservados. Node (`node --test scripts/*.test.mjs`
+e restrição futura de FFM preservados. Node (`node --test scripts/*/*.test.mjs`
 no gateway): 91 pass/um opt-in não selecionado/zero falhas. Web
 (`./node_modules/.bin/tsc -b` no app): exit 0. Links documentais, Prettier
 direcionado e git diff --check aprovados. pnpm check integral e SDD/checksum

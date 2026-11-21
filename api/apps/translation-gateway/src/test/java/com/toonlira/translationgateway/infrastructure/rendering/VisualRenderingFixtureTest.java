@@ -18,7 +18,7 @@ class VisualRenderingFixtureTest {
         var request = VisualRenderingFixture.request(source, language);
         assertThat(request.pair().target()).isEqualTo(language);
         assertThat(request.pair().source()).isNotEqualTo(language);
-        assertThat(request.policy().version()).isEqualTo("clean-box-1.1");
+        assertThat(request.policy().version()).isEqualTo("clean-box-1.2");
         assertThat(request.regions()).hasSize(4);
         assertThat(request.regions().stream().map(region -> region.readingOrder())).containsExactly(0, 1, 2, 3);
         assertThat(request.regions().get(0).translatedText()).isEqualTo(VisualRenderingFixture.text(language));

@@ -53,10 +53,10 @@ Esta entrega não usou credenciais, Vision remoto, uploads, tradução ou deploy
 ## Reprodução
 
 ```bash
-node --test api/apps/translation-gateway/scripts/ocr-samples.test.mjs api/apps/translation-gateway/scripts/ocr-evaluation.test.mjs api/apps/translation-gateway/scripts/ocr-layout.test.mjs
-node api/apps/translation-gateway/scripts/ocr-samples.mjs verify
-node api/apps/translation-gateway/scripts/ocr-samples.mjs gallery
-node api/apps/translation-gateway/scripts/ocr-evaluation.mjs run --sample ja-tokyo-puck-1909-cover --mode offline --run-id NOVO-ID
+node --test api/apps/translation-gateway/scripts/ocr/ocr-samples.test.mjs api/apps/translation-gateway/scripts/ocr/ocr-evaluation.test.mjs api/apps/translation-gateway/scripts/ocr/ocr-layout.test.mjs
+node api/apps/translation-gateway/scripts/ocr/ocr-samples.mjs verify
+node api/apps/translation-gateway/scripts/ocr/ocr-samples.mjs gallery
+node api/apps/translation-gateway/scripts/ocr/ocr-evaluation.mjs run --sample ja-tokyo-puck-1909-cover --mode offline --run-id NOVO-ID
 ```
 
 Usar ID novo em letras minúsculas; o comando do exemplo tem placeholder, não

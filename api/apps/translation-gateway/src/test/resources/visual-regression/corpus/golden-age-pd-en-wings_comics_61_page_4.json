@@ -1,0 +1,166 @@
+{
+  "root" : "corpus",
+  "page" : "golden-age-pd-en/wings_comics_61_page_4.jpg",
+  "sourceLanguage" : "en",
+  "width" : 960,
+  "height" : 1415,
+  "regions" : [ {
+    "source" : "WINGS COMICS\n",
+    "translation" : "WINGS COMICS",
+    "kind" : "text_free",
+    "polygon" : [ [ 0.39895833333333336, 0.005653710247349823 ], [ 0.6104166666666667, 0.005653710247349823 ], [ 0.6104166666666667, 0.019787985865724382 ], [ 0.39895833333333336, 0.019787985865724382 ] ]
+  }, {
+    "source" : "LATER, AT CAPTAIN WINGS SECRET BASE.",
+    "translation" : "Mais tarde, na base secreta do Capitão Wings.",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.04064536094665527, 0.03723630332272802 ], [ 0.4177810033162435, 0.03723630332272802 ], [ 0.4177810033162435, 0.05340125956720682 ], [ 0.04064536094665527, 0.05340125956720682 ] ]
+  }, {
+    "source" : "A CLOSE CALL,\nLIEUTENANT-OUR\nORDERS WERE TO\nMEET YOU AT /630\n-YOU WERE EARLY.\n",
+    "translation" : "Por pouco, Tenente — nossas ordens eram encontrá-lo às 16h30; o senhor chegou adiantado.",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.040474192301432295, 0.05826963283147913 ], [ 0.20720218022664388, 0.05826963283147913 ], [ 0.20720218022664388, 0.11588029086379197 ], [ 0.040474192301432295, 0.11588029086379197 ] ]
+  }, {
+    "source" : "YES, CAPTAIN,\nMY MISTAKE.\nI'M HERE TO\nBRIEF YOU ON\nOPERATION\nV7B. JUMP\nDOWN, EVE\n",
+    "translation" : "Sim, Capitão, falha minha. Estou aqui para passar as instruções sobre a Operação V7B. Desça, Eve.",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.2141225020090739, 0.057882728172275286 ], [ 0.34274056752522786, 0.057882728172275286 ], [ 0.34274056752522786, 0.136689246079947 ], [ 0.2141225020090739, 0.136689246079947 ] ]
+  }, {
+    "source" : "CAPTAIN WINGS,\nMEET MISS EVE\nMARLOW A NEWS\nREEL HOUND. SHE\nKEPT CRANKING\nWHILE I KEPT\nPRAYING!\n",
+    "translation" : "Capitão Wings, conheça a Srta. Eve Marlow, uma repórter de cinejornal. Ela continuou filmando enquanto eu rezava!",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.5010416666666667, 0.039575971731448764 ], [ 0.6614583333333334, 0.040282685512367494 ], [ 0.6604166666666667, 0.11590106007067137 ], [ 0.5, 0.11519434628975266 ] ]
+  }, {
+    "source" : "AND CAPTAIN, YOU\nSHOULD SEE THE\nSHOTS I GOT\nTHEY'RE WONDER\nFUL!\n",
+    "translation" : "E, Capitão, você deveria ver as filmagens que fiz, estão maravilhosas!",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.675, 0.04169611307420495 ], [ 0.8416666666666667, 0.0431095406360424 ], [ 0.840625, 0.09540636042402827 ], [ 0.6739583333333333, 0.0939929328621908 ] ]
+  }, {
+    "source" : "WONDERFUL\nEH PERHAPS\nTHAT KID\nOVER THERE\nWOULD EN-\nJOY A SPECIAL\nPREVIEW.\n",
+    "translation" : "Maravilhosas, é? Talvez aquele garoto ali gostasse de uma prévia especial.",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.8354166666666667, 0.04240282685512368 ], [ 0.9677083333333333, 0.0431095406360424 ], [ 0.9666666666666667, 0.1166077738515901 ], [ 0.834375, 0.11590106007067137 ] ]
+  }, {
+    "source" : "WHY HE'S WOUNDED.",
+    "translation" : "Nossa, ele está ferido.",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.047034351030985515, 0.3461003926954505 ], [ 0.15833333333333333, 0.3461003926954505 ], [ 0.15833333333333333, 0.3724031374227032 ], [ 0.047034351030985515, 0.3724031374227032 ] ]
+  }, {
+    "source" : "YEA-THINK IT OVER, MISS MARLOW. NOW LIEUTENANT, LET'S GET ON WITH THE BUS- INESS.",
+    "translation" : "É... pense bem nisso, Srta. Marlow. Agora, Tenente, vamos aos negócios.",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.1609912077585856, 0.34741653064956934 ], [ 0.3100521723429362, 0.34741653064956934 ], [ 0.3100521723429362, 0.4255436226672924 ], [ 0.1609912077585856, 0.4255436226672924 ] ]
+  }, {
+    "source" : "IT'S AN EXPERI-\nMENTAL RAID\nCAPTAIN. OUR\nCARRIER WILL\nBE READY AT\n0635.\n",
+    "translation" : "É uma incursão experimental, Capitão. Nosso porta-aviões estará pronto às 06h35.",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.3447154680887858, 0.34805757232773854 ], [ 0.4793672561645508, 0.34805757232773854 ], [ 0.4793672561645508, 0.41612164932089224 ], [ 0.3447154680887858, 0.41612164932089224 ] ]
+  }, {
+    "source" : "A RAID-I\nCAN'T MISS\nTHAT! AH-\nTHERE'S SOME\nATMOSPHERE\nMATERIAL",
+    "translation" : "Uma incursão... eu não posso perder isso! Ah, ali tem um bom material de ambientação.",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.5072916666666667, 0.3187279151943463 ], [ 0.6291666666666667, 0.31943462897526503 ], [ 0.6291666666666667, 0.3823321554770318 ], [ 0.5072916666666667, 0.38162544169611307 ] ]
+  }, {
+    "source" : "SMILE NOW BOYS MAYBE YOUR GIRLS WILL SEE YOU IN THE PAPERS.",
+    "translation" : "Sorriam agora, rapazes, talvez suas namoradas vejam vocês nos jornais.",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.667092768351237, 0.3146442103301678 ], [ 0.804580561319987, 0.3146442103301678 ], [ 0.804580561319987, 0.3743999144213781 ], [ 0.667092768351237, 0.3743999144213781 ] ]
+  }, {
+    "source" : "YEAH I'LL\nMAKE A GOOD\nPIN-UP BOY.\n",
+    "translation" : "É, eu daria um bom galã de pôster.",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.8197916666666667, 0.3187279151943463 ], [ 0.953125, 0.31943462897526503 ], [ 0.953125, 0.3498233215547703 ], [ 0.8197916666666667, 0.3491166077738516 ] ]
+  }, {
+    "source" : "THANKS, BOYS, THAT'S\nENOUGH. WHICH PLANE\nBELONGS TO THAT\nSOUR PUSS CAPTAIN?\nI WANT A PIC OF IT.\n",
+    "translation" : "Obrigada, rapazes, já chega. Qual avião pertence àquele capitão rabugento? Quero uma foto dele.",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.042708333333333334, 0.6989399293286219 ], [ 0.259375, 0.6996466431095406 ], [ 0.259375, 0.7526501766784452 ], [ 0.042708333333333334, 0.7519434628975264 ] ]
+  }, {
+    "source" : "SORRY, MISS\nMARLOW BUT\nTHAT'S AGAINST\nORDERS. ANYWAY\nIT WAS DAMAGED IN\nTHE FIGHT AND IT'S\nBEING PREPAIRED.\n",
+    "translation" : "Desculpe, Srta. Marlow, mas isso vai contra as ordens. De qualquer forma, ele foi danificado no combate e está sendo consertado.",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.3177083333333333, 0.657243816254417 ], [ 0.50625, 0.6579505300353357 ], [ 0.50625, 0.7314487632508834 ], [ 0.3177083333333333, 0.7307420494699647 ] ]
+  }, {
+    "source" : "SUCH A BUSINESS—I\nSUPPOSE THE OLD SOUR\nPUSS GAVE ORDERS NOT\nTO LET ME TAKE THE\nPICTURE ANYWAY, I'LL\nFOOL HIM.\n",
+    "translation" : "Que coisa... Imagino que o velho rabugento tenha dado ordens para não me deixarem tirar a foto. De qualquer jeito, vou enganá-lo.",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.55625, 0.6565371024734983 ], [ 0.7864583333333334, 0.657243816254417 ], [ 0.7864583333333334, 0.7215547703180212 ], [ 0.55625, 0.7208480565371025 ] ]
+  }, {
+    "source" : "B\n",
+    "translation" : " B",
+    "kind" : "unknown",
+    "polygon" : [ [ 0.9489583333333333, 0.9639575971731449 ], [ 0.9635416666666666, 0.9639575971731449 ], [ 0.9635416666666666, 0.9752650176678446 ], [ 0.9489583333333333, 0.9752650176678446 ] ]
+  } ],
+  "bubbles" : [ [ 0.5414886474609375, 0.6484464288179108, 0.8058339436848958, 0.7367711151446554 ], [ 0.48967714309692384, 0.03306490085992712, 0.6737802505493165, 0.12852043448404374 ], [ 0.2948953628540039, 0.6484272340161219, 0.521847661336263, 0.749671488515901 ], [ 0.14485325813293456, 0.34242566651253314, 0.3206319491068522, 0.43693416312389577 ], [ 0.3379767100016276, 0.34358315619478796, 0.48978935877482094, 0.42776901191199207 ], [ 0.03150533040364583, 0.6911538275728799, 0.2798550287882487, 0.7681667368319346 ], [ 0.6614643096923828, 0.3092901762298476, 0.8135943094889323, 0.3880195536798807 ], [ 0.49565811157226564, 0.30831646059932644, 0.6402777989705404, 0.40325228957321113 ], [ 0.8041184743245443, 0.3097227278530808, 0.9705102920532227, 0.3659483784921599 ], [ 0.03652273019154866, 0.05301248934580665, 0.21430177688598634, 0.1298450806958094 ], [ 0.8163167317708333, 0.03552105906995362, 0.9741603215535481, 0.12937756865268882 ], [ 0.1993384043375651, 0.052621961398175245, 0.35685447057088215, 0.14847851001752982 ], [ 0.03480076789855957, 0.3408667466665746, 0.16702866554260254, 0.38230903544611305 ], [ 0.6666374206542969, 0.0341225425261912, 0.8547665913899739, 0.10687248310857443 ], [ 0.037146790822347, 0.0315117691093957, 0.4277608871459961, 0.056935443136801565 ] ],
+  "expect" : {
+    "maxChangedOutside" : 0,
+    "regions" : [ {
+      "overflow" : true,
+      "font" : 0,
+      "residualInk" : 0
+    }, {
+      "overflow" : false,
+      "font" : 13,
+      "residualInk" : 102
+    }, {
+      "overflow" : false,
+      "font" : 12,
+      "residualInk" : 46
+    }, {
+      "overflow" : false,
+      "font" : 12,
+      "residualInk" : 0
+    }, {
+      "overflow" : false,
+      "font" : 12,
+      "residualInk" : 536
+    }, {
+      "overflow" : false,
+      "font" : 12,
+      "residualInk" : 26
+    }, {
+      "overflow" : false,
+      "font" : 14,
+      "residualInk" : 0
+    }, {
+      "overflow" : false,
+      "font" : 12,
+      "residualInk" : 21
+    }, {
+      "overflow" : false,
+      "font" : 14,
+      "residualInk" : 362
+    }, {
+      "overflow" : false,
+      "font" : 13,
+      "residualInk" : 0
+    }, {
+      "overflow" : false,
+      "font" : 12,
+      "residualInk" : 0
+    }, {
+      "overflow" : false,
+      "font" : 12,
+      "residualInk" : 35
+    }, {
+      "overflow" : false,
+      "font" : 13,
+      "residualInk" : 6
+    }, {
+      "overflow" : false,
+      "font" : 13,
+      "residualInk" : 11
+    }, {
+      "overflow" : false,
+      "font" : 12,
+      "residualInk" : 0
+    }, {
+      "overflow" : false,
+      "font" : 12,
+      "residualInk" : 116
+    }, {
+      "overflow" : true,
+      "font" : 0,
+      "residualInk" : 0
+    } ]
+  }
+}

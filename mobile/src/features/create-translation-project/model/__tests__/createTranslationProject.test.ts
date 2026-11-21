@@ -69,6 +69,8 @@ function fixture() {
         transitionPage: jest.fn(),
         transitionProject: jest.fn(),
         getReferencedProjectIds: jest.fn(async () => new Set(project ? [project.id] : [])),
+        ensureContextRef: jest.fn(async (_id: string, candidate: string) => candidate),
+        listTerms: jest.fn(async () => []),
         measureBytes: jest.fn(async () => project?.pages.reduce((sum, page) => sum + page.originalByteSize, 0) ?? 0),
         clear: jest.fn(async () => undefined),
     };

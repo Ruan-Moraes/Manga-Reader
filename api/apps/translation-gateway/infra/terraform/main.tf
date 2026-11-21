@@ -11,13 +11,24 @@ locals {
       concurrency = 1
     }
   }
-  worker_resources = local.worker_resource_profiles[var.worker_resource_profile]
-  name             = "translation-gateway"
-  database_name    = "translation_gateway"
-  database_user    = "translation_gateway"
-  dispatch_enabled = var.gateway_enabled && var.worker_enabled
-  worker_url       = var.worker_enabled ? "${google_cloud_run_v2_service.worker[0].uri}/internal/tasks/ocr" : ""
-  required_apis = toset([
+  worker_profile = local.worker_resource_profiles[var.worker_resource_profile]
+  # The layout detector adds ~550 MiB of native memory (measured: load +366, inference +178); 1Gi does not fit it.
+  worker_resources = var.layout_mode == "disabled" || var.worker_resource_profile != "baseline" ? local.worker_profile : merge(
+  local.worker_profile, { memory = "2Gi" })
+  layout_model_path = "/app/models/comic-detector-16e8a622/detector.onnx"
+  name              = "translation-gateway"
+  database_name     = "translation_gateway"
+  database_user     = "translation_gateway"
+  dispatch_enabled  = var.gateway_enabled && var.worker_enabled
+  worker_url        = var.worker_enabled ? "${google_cloud_run_v2_service.worker[0].uri}/internal/tasks/ocr" : ""
+  refine_enabled    = var.translation_refine_mode == "gemini"
+  # Same values on the API (which discloses languageModelLocation) and the worker (which calls the model).
+  refine_env = {
+    GATEWAY_TRANSLATION_REFINE_MODE     = var.translation_refine_mode
+    GATEWAY_TRANSLATION_REFINE_MODEL    = var.translation_refine_model
+    GATEWAY_TRANSLATION_REFINE_LOCATION = var.translation_refine_location
+  }
+  required_apis = setunion(toset([
     "artifactregistry.googleapis.com",
     "cloudresourcemanager.googleapis.com",
     "compute.googleapis.com",
@@ -30,14 +41,14 @@ locals {
     "vision.googleapis.com",
     "cloudscheduler.googleapis.com",
     "monitoring.googleapis.com"
-  ])
+  ]), local.refine_enabled ? toset(["aiplatform.googleapis.com"]) : toset([]))
   database_env = {
     GATEWAY_STORAGE_MODE       = "gcs"
     GATEWAY_STORAGE_BUCKET     = google_storage_bucket.temporary_media.name
     SPRING_DATASOURCE_URL      = "jdbc:postgresql://${google_sql_database_instance.gateway.private_ip_address}:5432/${local.database_name}"
     SPRING_DATASOURCE_USERNAME = local.database_user
   }
-  gateway_env = merge(local.database_env, {
+  gateway_env = merge(local.database_env, local.refine_env, {
     GATEWAY_ENABLED                  = tostring(var.gateway_enabled)
     GATEWAY_KEY                      = var.gateway_key
     GATEWAY_DISCLOSURE_VERSION       = var.disclosure.version
@@ -53,17 +64,28 @@ locals {
     GATEWAY_WORKER_URL               = local.worker_url
     GATEWAY_TASKS_SERVICE_ACCOUNT    = google_service_account.tasks.email
   })
-  worker_env = merge(local.database_env, {
+  worker_env = merge(local.database_env, local.refine_env, {
     SPRING_PROFILES_ACTIVE       = "worker"
     GATEWAY_ENABLED              = "false"
     GATEWAY_DISPATCH_MODE        = "disabled"
     GATEWAY_OCR_MODE             = "disabled"
     GATEWAY_TRANSLATION_MODE     = "disabled"
-    GATEWAY_LAYOUT_MODE          = "disabled"
+    GATEWAY_LAYOUT_MODE          = var.layout_mode
+    GATEWAY_LAYOUT_MODEL_PATH    = var.layout_mode == "disabled" ? "" : local.layout_model_path
+    GATEWAY_LAYOUT_DIRECTION     = var.layout_mode == "disabled" ? "" : var.layout_direction
     GATEWAY_RENDERING_MODE       = "disabled"
     GATEWAY_RESULT_DOWNLOAD_MODE = "disabled"
     GATEWAY_GCP_PROJECT_ID       = var.project_id
   })
+}
+
+# Mirrors GetCapabilitiesUseCase.LANGUAGE_MODEL_DISCLOSURE_VERSIONS: the language layer only under a disclosure whose
+# published privacy text names it (Gemini on Vertex AI, text only, cache and training policy).
+check "language_layer_disclosure" {
+  assert {
+    condition     = !local.refine_enabled || contains(["2026-11-15.v1", "2026-11-20.v1"], var.disclosure.version)
+    error_message = "translation_refine_mode = gemini requires disclosure.version 2026-11-15.v1 or 2026-11-20.v1 (privacy policy v1.1, which names the language layer)."
+  }
 }
 
 check "enabled_configuration" {
@@ -219,6 +241,14 @@ resource "google_service_account" "worker" {
 resource "google_project_iam_member" "worker_vision_usage" {
   project = var.project_id
   role    = "roles/serviceusage.serviceUsageConsumer"
+  member  = "serviceAccount:${google_service_account.worker.email}"
+}
+
+# Gemini on Vertex AI (optional language layer): only the worker calls the model, only while it is enabled.
+resource "google_project_iam_member" "worker_language_model" {
+  count   = local.refine_enabled ? 1 : 0
+  project = var.project_id
+  role    = "roles/aiplatform.user"
   member  = "serviceAccount:${google_service_account.worker.email}"
 }
 

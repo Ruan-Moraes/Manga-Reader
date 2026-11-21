@@ -67,6 +67,8 @@ function projects(): jest.Mocked<TranslationProjectRepository> {
         transitionPage: jest.fn(),
         transitionProject: jest.fn(),
         getReferencedProjectIds: jest.fn(),
+        ensureContextRef: jest.fn(),
+        listTerms: jest.fn(),
         measureBytes: jest.fn(),
         clear: jest.fn(),
     };

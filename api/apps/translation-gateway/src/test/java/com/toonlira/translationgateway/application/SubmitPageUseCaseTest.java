@@ -198,7 +198,7 @@ class SubmitPageUseCaseTest {
     private CapabilitiesView capabilitiesView(int originalRetention, int resultRetention) {
         var disclosure = new CapabilitiesView.LegalDisclosure("privacy-2026-09", "Toonlira",
             "privacy@example.com", "https://example.com/privacy", "https://example.com/terms",
-            "southamerica-east1", "us", "global", originalRetention, resultRetention, 7, "No training");
+            "southamerica-east1", "us", "global", null, originalRetention, resultRetention, 7, "No training");
         return new CapabilitiesView("1.0", "toonlira-alpha", NOW, NOW.plusSeconds(300), true,
             GetCapabilitiesUseCase.LANGUAGES, List.of(new CapabilitiesView.LanguagePair("ja", "pt-BR")),
             new CapabilitiesView.MediaLimits(GetCapabilitiesUseCase.MIME_TYPES, 1000, 100, 100, 10000),

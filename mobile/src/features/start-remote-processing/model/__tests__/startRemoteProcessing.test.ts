@@ -12,6 +12,8 @@ import { type RemoteGatewayTransport, VolatileTranslationTransportError } from '
 import { createStartRemoteProcessingController } from '../startRemoteProcessing';
 
 const NOW = Date.parse('2026-11-01T12:01:00.000Z');
+const CHAPTER = '6f1c2a10-1111-4222-8333-444455556666';
+let TERMS: { source: string; target: string }[] = [];
 const OPERATION = '550e8400-e29b-41d4-a716-446655440003';
 const HASH = 'a'.repeat(64);
 const jpeg = () => new Uint8Array([255, 216, 255, 192, 0, 17, 8, 0, 200, 0, 100, 3, 1, 17, 0, 2, 17, 0, 3, 17, 0, 255, 217]);
@@ -45,6 +47,7 @@ function capabilities(enabled = true) {
             gatewayRegion: 'southamerica-east1',
             ocrRegion: 'us',
             translationLocation: 'global',
+            languageModelLocation: null,
             contentProcessing: 'in-memory-only',
             resultStorage: 'user-device',
             sanitizedOperationalLogs: true,
@@ -107,6 +110,9 @@ function setup(options: { consent?: boolean; enabled?: boolean; exists?: boolean
         initialize: jest.fn(async () => undefined),
         getById: jest.fn(async () => project),
         getLatest: jest.fn(async () => project),
+        // MOB-FEAT-022/023: the project's chapter reference and the names its earlier pages decided.
+        ensureContextRef: jest.fn(async () => CHAPTER),
+        listTerms: jest.fn(async () => TERMS),
     } as unknown as jest.Mocked<TranslationProjectRepository>;
     const attempts = {
         initialize: jest.fn(async () => undefined),
@@ -153,6 +159,7 @@ function setup(options: { consent?: boolean; enabled?: boolean; exists?: boolean
     const manifest = new TextEncoder().encode(JSON.stringify({ jobRef: OPERATION, originalSha256: HASH, sourceLanguage: 'ja', targetLanguage: 'pt-BR' }));
     const dispose = jest.fn();
     const processPage = jest.fn(async () => ({ manifest, image: new Uint8Array([1, 2, 3]), dispose }));
+    const seedGlossary = jest.fn(async () => undefined);
     const readBytes = jest.fn(async () => jpeg());
     const controller = createStartRemoteProcessingController({
         projects,
@@ -160,7 +167,7 @@ function setup(options: { consent?: boolean; enabled?: boolean; exists?: boolean
         identity,
         files,
         createTransport: () => transport,
-        createVolatileTransport: () => ({ process: processPage }),
+        createVolatileTransport: () => ({ process: processPage, seedGlossary }),
         readBytes,
         hashBytes: async () => HASH,
         now: () => NOW,
@@ -168,6 +175,7 @@ function setup(options: { consent?: boolean; enabled?: boolean; exists?: boolean
     });
     return {
         controller,
+        seedGlossary,
         project,
         projects,
         created,
@@ -389,4 +397,37 @@ it('records unknown observation after a failed receipt request without replay or
     expect(result.attempt).toMatchObject({ status: 'UNKNOWN', remoteJobRef: OPERATION, volatileReceiptStatus: null });
     expect(result.error).toBe('submission-unknown');
     expect(d.processPage).not.toHaveBeenCalled();
+});
+
+describe('MOB-FEAT-022/023 over the volatile gateway', () => {
+    afterEach(() => {
+        TERMS = [];
+    });
+
+    it("sends the project's chapter reference with the page, and its glossary first when it has names", async () => {
+        TERMS = [{ source: 'Coriander', target: 'Coriander' }];
+        const d = setup();
+        await d.controller.submit('project');
+        expect(d.processPage).toHaveBeenCalledWith(expect.objectContaining({ contextRef: CHAPTER }), expect.anything());
+        expect(d.seedGlossary).toHaveBeenCalledWith(
+            expect.objectContaining({ contextRef: CHAPTER, sourceLanguage: 'ja', targetLanguage: 'pt-BR', terms: TERMS }),
+            expect.anything(),
+        );
+        expect(d.seedGlossary.mock.invocationCallOrder[0]).toBeLessThan(d.processPage.mock.invocationCallOrder[0]!);
+    });
+
+    it('sends no glossary without names', async () => {
+        const d = setup();
+        await d.controller.submit('project');
+        expect(d.seedGlossary).not.toHaveBeenCalled();
+        expect(d.processPage).toHaveBeenCalledTimes(1);
+    });
+
+    it('a refused glossary never stops the page', async () => {
+        TERMS = [{ source: 'Coriander', target: 'Coriander' }];
+        const d = setup();
+        d.seedGlossary.mockRejectedValueOnce(new Error('ambiguous'));
+        await d.controller.submit('project');
+        expect(d.processPage).toHaveBeenCalledTimes(1);
+    });
 });

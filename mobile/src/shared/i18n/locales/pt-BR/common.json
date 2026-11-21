@@ -293,5 +293,6 @@
             "error": "Não foi possível sincronizar. Sua escolha continua ativa neste dispositivo.",
             "retry": "Tentar novamente"
         }
-    }
+    },
+    "toast": { "dismiss": "Dispensar" }
 }

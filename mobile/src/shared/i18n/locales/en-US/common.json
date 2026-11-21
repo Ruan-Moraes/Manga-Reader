@@ -293,5 +293,6 @@
             "error": "Could not sync. Your choice remains active on this device.",
             "retry": "Try again"
         }
-    }
+    },
+    "toast": { "dismiss": "Dismiss" }
 }

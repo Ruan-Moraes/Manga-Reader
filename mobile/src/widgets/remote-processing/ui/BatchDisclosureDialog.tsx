@@ -109,6 +109,11 @@ export function BatchDisclosureDialog({ visible, capabilities, count, onCancel, 
                                     translation: capabilities.disclosure.translationLocation,
                                 })}
                             </AppText>
+                            {capabilities.disclosure.languageModelLocation ? (
+                                <AppText variant="caption" tone="muted">
+                                    {t('disclosure.languageModel', { location: capabilities.disclosure.languageModelLocation })}
+                                </AppText>
+                            ) : null}
                             <AppText variant="caption" tone="muted">
                                 {t('disclosure.retention')}
                             </AppText>

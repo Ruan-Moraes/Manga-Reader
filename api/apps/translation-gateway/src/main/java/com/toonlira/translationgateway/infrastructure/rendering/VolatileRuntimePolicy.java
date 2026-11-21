@@ -15,11 +15,15 @@ final class VolatileRuntimePolicy {
             || environment.getProperty("spring.threads.virtual.enabled", Boolean.class, false))
             throw new IllegalStateException("Volatile HTTP runtime exceeds its admitted thread and connection budget");
     }
+    /**
+     * Layout (balloon detection) is allowed: it runs on the page already decoded in memory (PNG/JPEG only; WebP is
+     * decoded by the render child alone) and stores nothing. Decision of 2026-11-21, when the stored pipeline's
+     * analysis moved to the volatile one; see docs/architecture/volatile-pipeline-port.md.
+     */
     static void require(GatewayProperties properties, boolean multipartEnabled) {
         if (multipartEnabled || !"disabled".equals(properties.getStorage().getMode())
             || !"disabled".equals(properties.getDispatch().getMode())
-            || properties.getResultDownload().getMode() != GatewayProperties.ResultDownload.Mode.DISABLED
-            || properties.getLayout().getMode() != GatewayProperties.Layout.Mode.DISABLED)
+            || properties.getResultDownload().getMode() != GatewayProperties.ResultDownload.Mode.DISABLED)
             throw new IllegalStateException("Volatile runtime requires content persistence and multipart spooling disabled");
     }
 }

@@ -115,7 +115,7 @@ Lado-código resolvido; resíduo só-infra documentado acima.
 separada do aceite atual de `MOB-FEAT-018`. V3 guarda metadados por job em BCNF,
 com FK composta/cascade e PK suficiente; não cria tabela de texto/regiões nem
 contador. Qualidade geral, geometria irregular, consumo pela tradução e ativação
-operacional permanecem abertos. Ver [contrato e limites](../api/apps/translation-gateway/docs/layout-experimental.md).
+operacional permanecem abertos. Ver [contrato e limites](../api/apps/translation-gateway/docs/ocr-evaluation/layout-experimental.md).
 Layout `1.1` trata duplicatas quase idênticas com auditoria e mantém ambiguidades
 reais; isso não aprova qualidade geral. Avaliação específica de onomatopeias fica
 para escopo futuro, sem remover suas regiões do OCR.
@@ -529,7 +529,7 @@ justificar, pequenos patches produzidos no servidor para regiões complexas.
 Não exigir inpainting no cliente nem presumir que overlay elimina o decode
 da página. Benefício de custo, memória e rede ainda não foi medido.
 
-Fonte detalhada: [alternativas e roteiro de comparação](../api/apps/translation-gateway/docs/hybrid-rendering-options-2026-10-18.md).
+Fonte detalhada: [alternativas e roteiro de comparação](../api/apps/translation-gateway/docs/architecture/hybrid-rendering-options-2026-10-18.md).
 O documento diferencia fatos existentes, alternativas e hipóteses; não reabre
 nem altera a auditoria de performance mobile DT-75.
 
@@ -560,3 +560,44 @@ As prioridades registradas durante cada auditoria permanecem no corpo dos
 itens. O índice no início deste arquivo representa a visão consolidada atual;
 não manter uma segunda tabela de contagens evita que itens resolvidos continuem
 aparecendo como pendentes.
+
+### DT-77: Qualidade visual da tradução — Fase 2 da auditoria Ubunchu! (2026-11-14)
+
+**Estado:** Fase 1 feita (preservar original em overflow, teto de fonte por
+mediana, termos protegidos/`translate="no"`, textos só-literais sem tradução,
+`quality` no manifesto, piso de fonte 0,75× a mediana via expansão para o fundo
+liso do balão, limpeza do halo JPEG em volta do texto, máscara do balão — arte/SFX fora do
+balão intactos —, original preservado para texto sobre arte ou tradução idêntica, sem quebra no
+meio da palavra, `text_free` do ONNX no layout `1.2` em sombra, `quality` no `ReadyResult` com
+V10 e selo "revisar" no `gateway-tester`, releitura do OCR por confiança em mosaico com votação
+apoiada em dicionário, inpainting LaMa de falas sobre arte no render local, piso de fonte pelo glifo de
+origem CJK, recuperação de texto não lido ou lido pela metade pelas caixas do detector, falas CJK
+juntadas pelo mesmo balão, fragmentos de balões vizinhos traduzidos juntos, retícula pelo LaMa, legenda
+em japonês/chinês reconhecida, inpainting nos modos isolado/nativo com o modelo no pai, regressão visual por fala
+(sintética + páginas reais locais), letreiros-frase em Noto Sans Black inclinada).
+Manifesto de render `1.1` (2026-11-15): `kept` separa o original mantido de propósito (texto desenhado) do que
+não coube, e só este conta como `TEXT_NOT_RENDERED`; render isolado também espera a vez do slot exclusivo.
+Limites conhecidos: dois textos no mesmo balão (fala + aparte manuscrito) dividem o espaço e saem
+menores; letra à mão que encosta na borda do balão fica (「がま」, pág. 03 — apagar tinta ligada à borda
+apagaria o contorno); retícula sem página real de validação nas amostras; fim de letreiro que nem OCR nem
+detector leem (「上手くいく」, pág. 03) fica no original. Pendente:
+
+- **Inpainting real** (feito: fringe de 4 px para glifos que vazam do polígono; preenchimento que segue
+  degradê, 2026-11-15; falta fundo texturizado).
+- **Agrupamento por balão ONNX** avaliado (48 páginas en/ja), texto vertical CJK agrupado, classes
+  e balões chegam ao render, modelo provisionado (Dockerfile com SHA fixado + Terraform `layout_mode`,
+  worker 2 GiB), `grouping` padrão no Terraform (validate/fmt verdes).
+- **SFX/texto livre**: texto livre preservado fica no idioma original (falta tipografia
+  estilizada ou inpainting real); letreiros à mão sobre fundo liso viram fonte comum pequena.
+- **Comparação com a edição original** (Ubunchu! ep. 01, Hiroshi Seo) e regressão visual.
+- **Camada de linguagem opcional** (2026-11-15): Gemini no Vertex AI (`us`) revisa leitura do OCR e
+  tradução com o contexto da página, só texto; desligada por padrão (`translation_refine_mode`),
+  fallback para o Google em qualquer erro, aceitação por região, `languageModelLocation` no disclosure.
+  **Validada no Vertex real em 2026-11-15** (12 páginas, `gemini-3.8-flash` em `us`; o `gemini-2.5-flash` não é
+  acessível para projetos novos e deixou de ser o padrão): corrige "IS"→"15" e erros de contexto; onomatopeia deixada
+  como desenho pelo Google não é mais trocada pelo modelo. Disclosure `2026-11-15.v1` + Política de Privacidade
+  v1.1 (cita a camada) preparadas e exigidas pelo gateway/Terraform com o refino ligado; `translation_refine_mode =
+  "gemini"` no exemplo de tfvars. Falta: revisão jurídica e deploy da política v1.1, aprovar a versão no tfvars e
+  ligar OCR/tradução do worker no Terraform — ver `api/apps/translation-gateway/docs/architecture/language-layer.md`.
+
+Fonte: auditoria visual das 12 páginas pt-BR (relatório anexado na conversa de 2026-11-14).

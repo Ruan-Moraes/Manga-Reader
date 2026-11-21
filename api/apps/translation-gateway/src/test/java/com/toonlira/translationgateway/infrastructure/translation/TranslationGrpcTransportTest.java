@@ -138,7 +138,8 @@ class TranslationGrpcTransportTest {
     @Test
     void measuresEscapedHtmlRatherThanOnlyVisibleSourceText() throws Exception {
         try (var server = new FakeTranslationServer(); var adapter = new CloudTranslationAdapter(server.client(DEADLINE), "test-project")) {
-            var regions = IntStream.range(0, 8).mapToObj(index -> new TranslationRequest.Region(UUID.randomUUID(), index, "&".repeat(750))).toList();
+            // One letter per region: a region of symbols only never reaches the provider (it keeps its text).
+            var regions = IntStream.range(0, 8).mapToObj(index -> new TranslationRequest.Region(UUID.randomUUID(), index, "a" + "&".repeat(749))).toList();
             assertThat(regions.stream().mapToInt(region -> region.sourceText().length()).sum()).isEqualTo(6000);
             assertCode(() -> adapter.translate(new TranslationRequest(UUID.randomUUID(), new LanguagePair("en", "pt-BR"), regions)),
                 GatewayErrorCode.TRANSLATION_INVALID_REQUEST);
@@ -149,12 +150,13 @@ class TranslationGrpcTransportTest {
     @Test
     void countsSupplementaryUnicodeAsCodepointsWithoutDiscardingText() throws Exception {
         try (var server = new FakeTranslationServer(); var adapter = new CloudTranslationAdapter(server.client(DEADLINE), "test-project")) {
-            var regions = IntStream.range(0, 8).mapToObj(index -> new TranslationRequest.Region(UUID.randomUUID(), index, "😀".repeat(1900))).toList();
+            // One letter per region: a region of emoji only never reaches the provider (it keeps its text).
+            var regions = IntStream.range(0, 8).mapToObj(index -> new TranslationRequest.Region(UUID.randomUUID(), index, "a" + "😀".repeat(1899))).toList();
             var translated = adapter.translate(new TranslationRequest(UUID.randomUUID(), new LanguagePair("en", "pt-BR"), regions));
             String content = server.lastRequest.getContents(0);
             assertThat(content.length()).isGreaterThan(30_000);
             assertThat(content.codePointCount(0, content.length())).isLessThan(30_000);
-            assertThat(translated.regions()).extracting(region -> region.translatedText()).containsOnly("😀".repeat(1900));
+            assertThat(translated.regions()).extracting(region -> region.translatedText()).containsOnly("a" + "😀".repeat(1899));
             assertThat(server.calls).hasValue(1);
         }
     }

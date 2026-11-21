@@ -18,7 +18,7 @@ Não contém checkout, Docker/Maven config pessoal, ADC ou imagens/capturas.
 O preparador não invoca Docker, instala, baixa ou publica nada; estados
 `prepared-not-built` e `admitted-not-operational` mantêm seus limites explícitos.
 
-[Comandos, limites, recuperação e contrato](../../../../../../api/apps/translation-gateway/docs/rendering-native-image.md).
+[Comandos, limites, recuperação e contrato](../../../../../../api/apps/translation-gateway/docs/rendering/rendering-native-image.md).
 Fonte própria é JS/Java e Dockerfile declarativo, sem Python/source C próprio.
 Bibliotecas/modelos/SDKs, APIs, manifests, migrations e código mobile não mudaram.
 
@@ -161,7 +161,7 @@ SHA-256 `106ea74cb643929b5ca33b1b0fa524545fab0e5aaa8bbfae7752815a1af1efb6`.
 JAR/IDs/Dockerfile.native continuam os mesmos. Somente testes e documentação
 mudaram; sem aquisição, mudança de dependencia/runtime, mídia real ou cloud.
 
-[Reprodução](../../../../../../api/apps/translation-gateway/docs/layout-runtime-resources.md).
+[Reprodução](../../../../../../api/apps/translation-gateway/docs/ocr-evaluation/layout-runtime-resources.md).
 Modelo e JNI do SDK já cacheado foram verificados por hash e montados readonly;
 `onnxruntime.native.path` explícito preserva temporário `noexec`. JNI/modelo
 são suporte externo da fixture, **não** arquivos entregues pela imagem candidata.
@@ -215,7 +215,7 @@ inalterado; checksum mobile permanece separado do código/config Java/Terraform.
 
 [Configuração e recuperação](../../../../../../api/apps/translation-gateway/infra/terraform/README.md#perfil-candidato-nativo--somente-arquivos-locais),
 [exemplo complementar](../../../../../../api/apps/translation-gateway/infra/terraform/native-worker-candidate.tfvars.example)
-e [testes estruturais](../../../../../../api/apps/translation-gateway/scripts/worker-resource-profile.test.mjs).
+e [testes estruturais](../../../../../../api/apps/translation-gateway/scripts/isolation/worker-resource-profile.test.mjs).
 Baseline mantém 1 CPU/1 GiB e concorrência padrão. Candidato propõe 2 CPUs/8 GiB,
 concorrência 1, escala 0–1: a tabela oficial admite até 8 GiB com 2 vCPUs,
 não com 1 vCPU. [Cloud Run](https://docs.cloud.google.com/run/docs/configuring/services/memory-limits).
@@ -254,8 +254,8 @@ Type-check web exit 0. Fechamento Node/mobile/SDD registrado na review/drift.
 Parcela de suporte para AC-006, não runtime de produto ou aprovação cloud.
 [Código](../../../../../../api/apps/translation-gateway/scripts/isolation/WorkerIsolationProbe.java),
 [fixtures Java](../../../../../../api/apps/translation-gateway/scripts/isolation/WorkerIsolationProbeChecks.java),
-[testes Node/CLI](../../../../../../api/apps/translation-gateway/scripts/worker-isolation-probe.test.mjs)
-e [comandos/limitações](../../../../../../api/apps/translation-gateway/docs/worker-isolation-probe.md).
+[testes Node/CLI](../../../../../../api/apps/translation-gateway/scripts/isolation/worker-isolation-probe.test.mjs)
+e [comandos/limitações](../../../../../../api/apps/translation-gateway/docs/worker-isolation/worker-isolation-probe.md).
 Fonte/testes/config: 390 arquivos,
 SHA-256 `a820f8de4820041d4e1462fa65daaabbb0b16404fbe056e05a49a7d31858abdc`.
 JAR 40f03530…fb906 intacto. Arquivos Java ficam em scripts, sem bean, endpoint,

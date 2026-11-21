@@ -1,0 +1,101 @@
+# Prova de isolamento do worker (Cloud Run / VM)
+
+Evidências de isolamento do worker, quase todas de out/2026. São registros históricos: não editar o conteúdo; ordem alfabética por fase (`n1`, `n2`, `prepull`, `import`, `spot`, `vm`, ...).
+
+Índice do gateway: [`docs/README.md`](../README.md).
+
+## Documentos
+
+- [worker-isolation-account-pricing-2026-10-17.md](worker-isolation-account-pricing-2026-10-17.md) — Preços da conta e cenário em BRL — 2026-10-17
+- [worker-isolation-admission-review-2026-10-17.md](worker-isolation-admission-review-2026-10-17.md) — Revisão de admissão: tempo de vida e acesso à imagem COS
+- [worker-isolation-admission-status-2026-10-18.md](worker-isolation-admission-status-2026-10-18.md) — Decisão de admissão operacional — 2026-10-18
+- [worker-isolation-api-operator-native-2026-10-22.md](worker-isolation-api-operator-native-2026-10-22.md) — Operador API e sexta prova restrita — 2026-10-22 UTC
+- [worker-isolation-api-pricing-2026-10-22.md](worker-isolation-api-pricing-2026-10-22.md) — Cotação N1 por API: contrato e leitura real — 2026-10-22 UTC
+- [worker-isolation-budget100-2026-10-18.md](worker-isolation-budget100-2026-10-18.md) — Orçamento total de US$ 100 e preflight real somente leitura
+- [worker-isolation-cloud-plan.md](worker-isolation-cloud-plan.md) — Plano de prova de isolamento no Cloud Run
+- [worker-isolation-compatible-profile-plan-2026-10-19.md](worker-isolation-compatible-profile-plan-2026-10-19.md) — Próximo perfil de prova restrita — plano, 2026-10-19
+- [worker-isolation-composition-2026-10-18.md](worker-isolation-composition-2026-10-18.md) — Composição concreta do operador de montagem
+- [worker-isolation-cos-revision-2026-10-21.md](worker-isolation-cos-revision-2026-10-21.md) — Revisão explícita COS73916 — 2026-10-21
+- [worker-isolation-cos7608-offline-2026-10-23.md](worker-isolation-cos7608-offline-2026-10-23.md) — COS 7608: revisão explícita offline — 2026-10-23 UTC
+- [worker-isolation-cos7608-operator-2026-10-23.md](worker-isolation-cos7608-operator-2026-10-23.md) — Operador COS7608 — 2026-10-23 UTC
+- [worker-isolation-cost-supplement-2026-10-17.md](worker-isolation-cost-supplement-2026-10-17.md) — Suplemento de custo e revisão da prova mínima — 2026-10-17
+- [worker-isolation-crash-recovery-2026-10-15.md](worker-isolation-crash-recovery-2026-10-15.md) — Recuperação após interrupção e staging parcial — 2026-10-15
+- [worker-isolation-create-http-2026-10-15.md](worker-isolation-create-http-2026-10-15.md) — Transporte de criação vinculado ao journal — 2026-10-15
+- [worker-isolation-crm-quota-native-2026-10-23.md](worker-isolation-crm-quota-native-2026-10-23.md) — Projeto de cota no transporte nativo — 23/10/2026
+- [worker-isolation-cycle-2026-10-16.md](worker-isolation-cycle-2026-10-16.md) — Ensaio integrado do ciclo mínimo — 2026-10-16
+- [worker-isolation-dispatch-freshness-2026-10-21.md](worker-isolation-dispatch-freshness-2026-10-21.md) — Ticket de dispatch: correção local e janelas preservadas — 2026-10-21
+- [worker-isolation-financial-readiness-2026-10-22.md](worker-isolation-financial-readiness-2026-10-22.md) — Reconferência financeira e pré-requisitos N1 — 2026-10-22 UTC
+- [worker-isolation-fixed-operator-2026-10-22.md](worker-isolation-fixed-operator-2026-10-22.md) — Operador com dispatch corrigido — preparação offline de 2026-10-22
+- [worker-isolation-fourth-native-attempt-2026-10-19.md](worker-isolation-fourth-native-attempt-2026-10-19.md) — Quarta prova restrita e recuperação — 2026-10-19
+- [worker-isolation-guarded-driver-2026-10-15.md](worker-isolation-guarded-driver-2026-10-15.md) — Driver de criação com barreira da rota — 2026-10-15
+- [worker-isolation-http-readers-2026-10-17.md](worker-isolation-http-readers-2026-10-17.md) — Leitores HTTP ligados ao ciclo mínimo — 2026-10-17
+- [worker-isolation-http400-protocol-2026-10-19.md](worker-isolation-http400-protocol-2026-10-19.md) — Rejeição HTTP 400 e retirada conservadora — 2026-10-19
+- [worker-isolation-image-import-preparation-2026-10-14.md](worker-isolation-image-import-preparation-2026-10-14.md) — Importação de imagem de dados: preparação local — 2026-10-14
+- [worker-isolation-image-import-real-2026-10-14.md](worker-isolation-image-import-real-2026-10-14.md) — Importação direta de imagem de dados — 2026-10-14
+- [worker-isolation-import-execution-offline-2026-10-14.md](worker-isolation-import-execution-offline-2026-10-14.md) — Importação: transporte e reserva durável offline — 2026-10-14
+- [worker-isolation-import-iam-2026-10-14.md](worker-isolation-import-iam-2026-10-14.md) — IAM e APIs da entrega privada — 2026-10-14
+- [worker-isolation-import-preflight-2026-10-14.md](worker-isolation-import-preflight-2026-10-14.md) — Importação privada do runtime — pré-flight documental, 2026-10-14
+- [worker-isolation-import-recipe-2026-10-14.md](worker-isolation-import-recipe-2026-10-14.md) — Entrega privada: cotação e receita — 2026-10-14
+- [worker-isolation-mount-binding-2026-10-15.md](worker-isolation-mount-binding-2026-10-15.md) — Binding e pré-flight da prova mínima — 2026-10-15
+- [worker-isolation-mount-lifecycle-2026-10-15.md](worker-isolation-mount-lifecycle-2026-10-15.md) — Retirada integrada de Compute e staging — 2026-10-15
+- [worker-isolation-mount-only-preparation-2026-10-14.md](worker-isolation-mount-only-preparation-2026-10-14.md) — Prova mínima de montagem/conteúdo — preparação em 2026-10-14
+- [worker-isolation-mount-transport-2026-10-15.md](worker-isolation-mount-transport-2026-10-15.md) — Coleta HTTP e recuperação da retirada mínima — 2026-10-15
+- [worker-isolation-n1-contract-2026-10-20.md](worker-isolation-n1-contract-2026-10-20.md) — Contrato N1 e admissão offline — 2026-10-20
+- [worker-isolation-n1-first-execution-2026-10-21.md](worker-isolation-n1-first-execution-2026-10-21.md) — Primeira rodada N1/COS73916: retirada sem prova de montagem — 2026-10-21
+- [worker-isolation-n1-investigation-2026-10-20.md](worker-isolation-n1-investigation-2026-10-20.md) — Alternativa N1: metadados e preços — 2026-10-20
+- [worker-isolation-n1-operator-2026-10-21.md](worker-isolation-n1-operator-2026-10-21.md) — Operador COS73916: preparação offline — 2026-10-21
+- [worker-isolation-n1-preflight-2026-10-20.md](worker-isolation-n1-preflight-2026-10-20.md) — Preflight N1: bloqueio real da imagem COS — 2026-10-20
+- [worker-isolation-n2-coordinator-2026-10-24.md](worker-isolation-n2-coordinator-2026-10-24.md) — Leitores e coordenador N2 — 24/10/2026
+- [worker-isolation-n2-preparation-2026-10-24.md](worker-isolation-n2-preparation-2026-10-24.md) — Preparação offline do host N2 — 24/10/2026
+- [worker-isolation-native-attempt-2026-10-18.md](worker-isolation-native-attempt-2026-10-18.md) — Primeira execução nativa e recuperação — 2026-10-18
+- [worker-isolation-native-io-2026-10-18.md](worker-isolation-native-io-2026-10-18.md) — Identidade e transporte nativos do operador
+- [worker-isolation-native-journals-2026-10-18.md](worker-isolation-native-journals-2026-10-18.md) — Composição nativa dos journals do operador
+- [worker-isolation-operation-polling-2026-10-18.md](worker-isolation-operation-polling-2026-10-18.md) — Correção do acompanhamento Compute — 2026-10-18
+- [worker-isolation-operator-preparation-2026-10-17.md](worker-isolation-operator-preparation-2026-10-17.md) — Preparação do operador e moeda observada
+- [worker-isolation-prepull-delivery-2026-10-13.md](worker-isolation-prepull-delivery-2026-10-13.md) — Entrega privada anterior ao pull — 2026-10-13
+- [worker-isolation-prepull-guard-2026-10-13.md](worker-isolation-prepull-guard-2026-10-13.md) — Verificador Java antes do pull — 2026-10-13
+- [worker-isolation-prepull-mount-2026-10-13.md](worker-isolation-prepull-mount-2026-10-13.md) — Montagem e inventário anteriores ao Java — 2026-10-13
+- [worker-isolation-prepull-runtime-2026-10-13.md](worker-isolation-prepull-runtime-2026-10-13.md) — Runtime dedicado do pré-pull preparado localmente — 2026-10-13
+- [worker-isolation-prevm-preflight-2026-10-19.md](worker-isolation-prevm-preflight-2026-10-19.md) — Diagnóstico e candidato para o gate pré-VM — 2026-10-19
+- [worker-isolation-private-pull-2026-10-13.md](worker-isolation-private-pull-2026-10-13.md) — Pull privado: alternativa LTS e mitigação proposta — 2026-10-13
+- [worker-isolation-private-staging-2026-10-14.md](worker-isolation-private-staging-2026-10-14.md) — Prova de staging privado do runtime — 2026-10-14
+- [worker-isolation-probe.md](worker-isolation-probe.md) — Diagnóstico independente de isolamento
+- [worker-isolation-progressive-recovery-2026-10-15.md](worker-isolation-progressive-recovery-2026-10-15.md) — Registro progressivo e recuperação parcial — 2026-10-15
+- [worker-isolation-quota-operator-2026-10-24.md](worker-isolation-quota-operator-2026-10-24.md) — Operador com cota explícita — 24/10/2026
+- [worker-isolation-read-preflight-2026-10-17.md](worker-isolation-read-preflight-2026-10-17.md) — Pré-flight de leitura da prova mínima — 2026-10-17
+- [worker-isolation-rejected-create-2026-10-17.md](worker-isolation-rejected-create-2026-10-17.md) — Criação recusada: reprodução e fundação do journal
+- [worker-isolation-rejection-integration-2026-10-17.md](worker-isolation-rejection-integration-2026-10-17.md) — Integração de recusa HTTP e retirada delimitada
+- [worker-isolation-request-review-2026-10-15.md](worker-isolation-request-review-2026-10-15.md) — Requests da rodada mínima e barreira de rotas — 2026-10-15
+- [worker-isolation-route-barrier-offline-2026-10-23.md](worker-isolation-route-barrier-offline-2026-10-23.md) — Barreira de rotas: redução de latência offline — 2026-10-22/23 UTC
+- [worker-isolation-route-journal-2026-10-15.md](worker-isolation-route-journal-2026-10-15.md) — Retirada da rota própria com journal durável — 2026-10-15
+- [worker-isolation-route-operator-native-2026-10-23.md](worker-isolation-route-operator-native-2026-10-23.md) — Operador com barreira pareada — 2026-10-23 UTC
+- [worker-isolation-schema-reconciliation-2026-10-17.md](worker-isolation-schema-reconciliation-2026-10-17.md) — Reconciliação do schema observado — 2026-10-17
+- [worker-isolation-second-native-attempt-2026-10-18.md](worker-isolation-second-native-attempt-2026-10-18.md) — Segunda execução nativa e retirada explícita — 2026-10-18
+- [worker-isolation-serial-reservation-2026-10-22.md](worker-isolation-serial-reservation-2026-10-22.md) — Verificação serial de reserva — 2026-10-22 UTC
+- [worker-isolation-source-echo-budget-2026-10-14.md](worker-isolation-source-echo-budget-2026-10-14.md) — Origem não observável no GET da imagem e orçamento — 2026-10-14
+- [worker-isolation-spot-admission-offline-2026-10-20.md](worker-isolation-spot-admission-offline-2026-10-20.md) — Admissão Spot e integração CAS5 offline — 2026-10-20
+- [worker-isolation-spot-admission-preparation-2026-10-20.md](worker-isolation-spot-admission-preparation-2026-10-20.md) — Preparação da admissão Spot — 2026-10-20
+- [worker-isolation-spot-contract-2026-10-19.md](worker-isolation-spot-contract-2026-10-19.md) — Contrato Spot offline — 2026-10-19
+- [worker-isolation-staging-handoff-plan-2026-10-17.md](worker-isolation-staging-handoff-plan-2026-10-17.md) — Plano da ligação de staging ao ciclo — 2026-10-17
+- [worker-isolation-staging-recovery-2026-10-17.md](worker-isolation-staging-recovery-2026-10-17.md) — Recuperação de staging parcial — plano e execução local
+- [worker-isolation-staging-transport-2026-10-17.md](worker-isolation-staging-transport-2026-10-17.md) — Produtor de staging e transferência exclusiva — 2026-10-17
+- [worker-isolation-supervisor-2026-10-17.md](worker-isolation-supervisor-2026-10-17.md) — Supervisor local da prova mínima
+- [worker-isolation-systemd-verification-2026-10-15.md](worker-isolation-systemd-verification-2026-10-15.md) — Verificação local systemd da prova mínima — 2026-10-15
+- [worker-isolation-target-options-2026-10-12.md](worker-isolation-target-options-2026-10-12.md) — Próximo ambiente de isolamento — 2026-10-12
+- [worker-isolation-teardown-2026-10-15.md](worker-isolation-teardown-2026-10-15.md) — Retirada integrada de rota, Compute e origem — 2026-10-15
+- [worker-isolation-tenth-retirement-2026-10-23.md](worker-isolation-tenth-retirement-2026-10-23.md) — Guarda da décima retirada — 23/10/2026
+- [worker-isolation-third-native-attempt-2026-10-19.md](worker-isolation-third-native-attempt-2026-10-19.md) — Terceira prova nativa e retirada automática — 2026-10-19
+- [worker-isolation-unsent-journal-2026-10-18.md](worker-isolation-unsent-journal-2026-10-18.md) — Protocolo local de criação não enviada — 2026-10-18
+- [worker-isolation-v4-executor-2026-10-18.md](worker-isolation-v4-executor-2026-10-18.md) — Ligação do executor restrito ao v4 — 2026-10-18
+- [worker-isolation-v4-preparation-2026-10-18.md](worker-isolation-v4-preparation-2026-10-18.md) — Preparo local do operador v4 — 2026-10-18
+- [worker-isolation-verified-source-cleanup-2026-10-17.md](worker-isolation-verified-source-cleanup-2026-10-17.md) — Fonte verificada: saída de limpeza sem iniciar Compute
+- [worker-isolation-vm-boundary-trace-2026-10-23.md](worker-isolation-vm-boundary-trace-2026-10-23.md) — Diagnóstico passivo da fronteira VM — 2026-10-23 UTC
+- [worker-isolation-vm-preparation-2026-10-12.md](worker-isolation-vm-preparation-2026-10-12.md) — Preparação local do launcher VM — 2026-10-12
+- [worker-isolation-vm-reader-2026-10-12.md](worker-isolation-vm-reader-2026-10-12.md) — Adapter de coleta VM e identificação do COS — 2026-10-12
+- [worker-isolation-vm-recipe-2026-10-12.md](worker-isolation-vm-recipe-2026-10-12.md) — Receita candidata de diagnóstico em VM — 2026-10-12
+- [worker-isolation-vm-scope-graph-2026-10-23.md](worker-isolation-vm-scope-graph-2026-10-23.md) — Grafo offline de escopo VM pareado — 2026-10-23 UTC
+- [worker-isolation-vm-security-2026-10-13.md](worker-isolation-vm-security-2026-10-13.md) — Revisão parcial de segurança da candidata VM — 2026-10-13
+- [worker-isolation-vm-send-diagnosis-2026-10-23.md](worker-isolation-vm-send-diagnosis-2026-10-23.md) — Diagnóstico local do envio da VM — 2026-10-23 UTC
+- [worker-isolation-vm-trace-operator-2026-10-23.md](worker-isolation-vm-trace-operator-2026-10-23.md) — Operador VM com trace e recusa de capacidade — 2026-10-23 UTC
+- [worker-isolation-zoneb-graph-2026-10-23.md](worker-isolation-zoneb-graph-2026-10-23.md) — Grafo candidato na zona B — 2026-10-23 UTC
+- [worker-isolation-zoneb-operator-2026-10-23.md](worker-isolation-zoneb-operator-2026-10-23.md) — Operador B: execução e diagnóstico CRM — 2026-10-23 UTC

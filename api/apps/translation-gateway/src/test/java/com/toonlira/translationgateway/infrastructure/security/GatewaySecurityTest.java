@@ -30,6 +30,8 @@ class GatewaySecurityTest {
     @MockitoBean AuthenticateSessionUseCase authenticate;
     @MockitoBean ProcessVolatilePageUseCase processor;
     @MockitoBean VolatileAttemptUseCase attempts;
+    @MockitoBean com.toonlira.translationgateway.application.SeedChapterGlossaryUseCase glossaries;
+    @MockitoBean com.toonlira.translationgateway.application.config.GatewayProperties properties;
 
     @Test void anonymousUploadAndReceiptQueryAreRejectedBeforeReadingContent() throws Exception {
         mvc.perform(post("/v2/page-translations").contentType("image/png").content(new byte[]{1,2,3})).andExpect(status().isUnauthorized());

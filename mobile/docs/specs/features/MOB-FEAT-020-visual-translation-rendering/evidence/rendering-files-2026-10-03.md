@@ -6,7 +6,7 @@ TASK-002/005/006/007/008 permanecem abertas e a 021 continua bloqueada.
 
 ## Implementação e propriedade
 
-[Plano anterior ao código](../../../../../../api/apps/translation-gateway/docs/rendering-files.md):
+[Plano anterior ao código](../../../../../../api/apps/translation-gateway/docs/rendering/rendering-files.md):
 nenhuma tabela, migration, índice ou cache novo; PostgreSQL continua dono dos
 estados. O adapter produz arquivo temporário privado local, sem acessar bucket,
 credenciais, provider, rede Google ou pipeline ativo.

@@ -63,7 +63,7 @@ class VolatileStageDeadlineTest {
         }).when(ocrManifests).encode(any());
         if (stage.equals("translation-preparation")) doAnswer(call -> {
             var encoded = call.callRealMethod(); pause(entered, release); return encoded;
-        }).when(translationManifests).encode(any(), anyString());
+        }).when(translationManifests).encode(any(), anyString(), any());
         var useCase = new ProcessVolatilePageUseCase(properties, attempts, provider(ocr), provider(translation), provider(renderer),
             ocrManifests, translationManifests, new RenderManifestService(mapper), sessions);
         var bytes = new ByteArrayOutputStream();

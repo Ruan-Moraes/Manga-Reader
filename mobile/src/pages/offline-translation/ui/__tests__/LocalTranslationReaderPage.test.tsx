@@ -5,6 +5,7 @@ import type { LocalTranslationReaderSnapshot, OpenLocalTranslationResultControll
 import { useDeveloperMode } from '@/shared/config';
 import i18n from '@/shared/i18n';
 import { ThemeProvider } from '@/shared/theme';
+import { useToastStore } from '@/shared/ui';
 
 import { LocalTranslationReaderPage } from '../LocalTranslationReaderPage';
 
@@ -307,4 +308,62 @@ it('enquanto abre, mostra o carregamento do leitor com saída visível em vez do
     expect(screen.getByTestId('local-reader-loading-dots')).toBeOnTheScreen();
     expect(screen.getByRole('button', { name: 'Sair do leitor' })).toBeOnTheScreen();
     await act(async () => undefined);
+});
+
+describe('MOB-FEAT-024/AC-001 the app toast says a project is still being translated', () => {
+    const partialOpen = (load: jest.Mock): OpenLocalTranslationResultController => ({
+        load,
+        validate: jest.fn(async () => true),
+        validateOriginal: jest.fn(async () => true),
+        resultUri: (_, result) => `file:///${result.renderedFilename}`,
+        originalUri: (_, position) => `file:///original-${position}.jpg`,
+    });
+    // Translations from the gateway: demo results stay hidden while developer mode is off.
+    const remote = (results: LocalTranslationReaderSnapshot['results']) =>
+        new Map([...results].map(([id, result]) => [id, { ...result, sourceKind: 'REMOTE' as const, attemptId: 'attempt' }]));
+    const complete = (): LocalTranslationReaderSnapshot => ({ ...snapshot, results: remote(snapshot.results) });
+    const partial = (): LocalTranslationReaderSnapshot => ({
+        ...snapshot,
+        project: { ...snapshot.project, status: 'PROCESSING' },
+        results: remote(new Map([['page-0', snapshot.results.get('page-0')!]])),
+    });
+    const mount = (open: OpenLocalTranslationResultController) =>
+        render(
+            <SafeAreaProvider initialMetrics={{ frame: { x: 0, y: 0, width: 390, height: 844 }, insets: { top: 0, left: 0, right: 0, bottom: 0 } }}>
+                <ThemeProvider waitForPlatform={false}>
+                    <LocalTranslationReaderPage
+                        projectId="project-1"
+                        openController={open}
+                        progressController={{ load: jest.fn(), save: jest.fn(async () => undefined) }}
+                    />
+                </ThemeProvider>
+            </SafeAreaProvider>,
+        );
+
+    beforeEach(() => useToastStore.getState().dismiss());
+
+    it.each([
+        ['pt-BR', 'Traduzindo…', '1 de 2 páginas prontas'],
+        ['en-US', 'Translating…', '1 of 2 pages ready'],
+        ['es-ES', 'Traduciendo…', '1 de 2 páginas listas'],
+    ])('opens a partial project with the progress toast in %s', async (locale, title, description) => {
+        await i18n.changeLanguage(locale);
+        const rendered = mount(partialOpen(jest.fn().mockResolvedValue(partial())));
+        await waitFor(() => expect(useToastStore.getState().current).toMatchObject({ tone: 'info', title, description }));
+        rendered.unmount();
+        await i18n.changeLanguage('pt-BR');
+    });
+
+    it('says the translation is ready when the last page arrives, and nothing for a project opened complete', async () => {
+        const rendered = mount(partialOpen(jest.fn().mockResolvedValueOnce(partial()).mockResolvedValue(complete())));
+        await waitFor(() => expect(useToastStore.getState().current?.description).toBe('1 de 2 páginas prontas'));
+        await waitFor(() => expect(useToastStore.getState().current).toMatchObject({ tone: 'success', title: 'Tradução pronta' }), { timeout: 7000 });
+        rendered.unmount();
+
+        useToastStore.getState().dismiss();
+        const opened = mount(partialOpen(jest.fn().mockResolvedValue(complete())));
+        await screen.findByTestId('reader-vertical');
+        expect(useToastStore.getState().current).toBeNull();
+        opened.unmount();
+    }, 15000);
 });

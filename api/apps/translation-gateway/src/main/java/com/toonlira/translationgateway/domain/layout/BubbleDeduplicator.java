@@ -48,7 +48,10 @@ public final class BubbleDeduplicator {
     }
 
     public static void validateAudit(LayoutManifest manifest) {
-        if (!"1.1".equals(manifest.layoutVersion())) return;
+        if (!"1.1".equals(manifest.layoutVersion()) && !"1.2".equals(manifest.layoutVersion())) return;
+        if ("1.2".equals(manifest.layoutVersion()) && (manifest.textBoxes() == null || manifest.regionKinds() == null
+            || manifest.regionKinds().size() != manifest.associations().size()))
+            throw new LayoutFailure(LayoutFailure.Code.INVALID_RESPONSE);
         if (manifest.suppressedBubbles() == null || manifest.bubbles() == null)
             throw new LayoutFailure(LayoutFailure.Code.INVALID_RESPONSE);
         var original = new ArrayList<>(manifest.bubbles());

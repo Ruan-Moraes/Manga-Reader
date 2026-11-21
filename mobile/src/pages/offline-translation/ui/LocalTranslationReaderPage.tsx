@@ -16,10 +16,13 @@ import { useSettingsStore } from '@/features/manage-settings';
 import { useDeveloperModeEnabled } from '@/shared/config';
 import { navigateBackOrReplace, ROUTES } from '@/shared/navigation';
 import { useTheme } from '@/shared/theme';
-import { AppText, Button, EmptyState, Icon, LoadingBlock, NavigationHeader, PageContainer, StatusMessage } from '@/shared/ui';
+import { AppText, Button, EmptyState, Icon, LoadingBlock, NavigationHeader, PageContainer, showToast, StatusMessage } from '@/shared/ui';
 import { ContentReader, type ImageSequenceDocument, type ReaderLocation } from '@/widgets/content-reader';
 import { type LibraryOverview, loadLibraryOverview } from '@/widgets/local-translation-library';
 import { BatchRetrySheet, PageRetryIndicator } from '@/widgets/remote-processing';
+
+/** How often a partially translated project looks for newly saved pages. */
+const PARTIAL_REFRESH_MS = 4000;
 
 interface Props {
     projectId: string;
@@ -122,6 +125,32 @@ export function LocalTranslationReaderPage({
         };
     }, [openController, projectId, reloadToken]);
 
+    // A project still being translated (MOB-FEAT-022) opens with its ready pages; the others show their original and
+    // switch to the translation as soon as it is saved. Only the results are refreshed: the reading position stays.
+    const translating = snapshot ? snapshot.project.pages.some(page => !snapshot.results.has(page.id)) : false;
+    useTranslationProgressToast(snapshot?.results.size ?? 0, snapshot?.project.pages.length ?? 0);
+    useEffect(() => {
+        if (!translating) return undefined;
+        let active = true;
+        const timer = setInterval(() => {
+            void openController
+                .load(projectId)
+                .then(result => {
+                    if (active && result)
+                        setSnapshot(current =>
+                            current && result.results.size !== current.results.size
+                                ? { ...current, project: result.project, results: result.results }
+                                : current,
+                        );
+                })
+                .catch(() => undefined);
+        }, PARTIAL_REFRESH_MS);
+        return () => {
+            active = false;
+            clearInterval(timer);
+        };
+    }, [openController, projectId, translating]);
+
     const flush = useCallback(() => {
         if (!snapshot) return;
         if (saveTimer.current) {
@@ -187,6 +216,7 @@ export function LocalTranslationReaderPage({
                 return {
                     id: page.id,
                     primaryUri: result ? openController.resultUri(snapshot.project.id, result) : (originalUri ?? ''),
+                    pending: !result,
                     originalUri,
                     width: result?.widthPx ?? page.widthPx,
                     height: result?.heightPx ?? page.heightPx,
@@ -346,4 +376,25 @@ export function LocalTranslationReaderPage({
             />
         </View>
     );
+}
+
+/**
+ * While a project is still being translated, the app's toast (docked at the top right, MOB-FEAT-024) says so with the
+ * count of ready pages: when the reader opens and each time a page arrives. When the last page arrives it says the
+ * translation is ready. Like every toast of the app it leaves by itself, on tap or when swiped away.
+ */
+function useTranslationProgressToast(ready: number, total: number) {
+    const { t } = useTranslation('reader');
+    const last = useRef<number | null>(null);
+    useEffect(() => {
+        if (total === 0) return;
+        const previous = last.current;
+        last.current = ready;
+        if (ready < total) {
+            if (previous !== ready)
+                showToast({ tone: 'info', title: t('translationProgress.title'), description: t('translationProgress.description', { ready, total }) });
+        } else if (previous !== null && previous < total) {
+            showToast({ tone: 'success', title: t('translationProgress.doneTitle'), description: t('translationProgress.doneDescription', { total }) });
+        }
+    }, [ready, t, total]);
 }

@@ -6,7 +6,7 @@ credencial, deploy ou ativação de uploads. Não comprova qualidade linguístic
 
 ## Plano e implementação inspecionada
 
-[Plano anterior](../../../../../../api/apps/translation-gateway/docs/result-query-delivery.md):
+[Plano anterior](../../../../../../api/apps/translation-gateway/docs/architecture/result-query-delivery.md):
 projeção BCNF estreita owner-scoped, PK/UNIQUE existentes, V1–V6 preservadas.
 Nenhuma migration, índice/cache novo, texto ou URL no banco. Snapshot bloqueia
 somente o job correspondente e não mantém transação durante assinatura.

@@ -6,7 +6,7 @@ Não é ativação de um novo modo operacional nem conclusão de AC-006.
 
 ## Escopo e implementação
 
-[Plano anterior ao código](../../../../../../api/apps/translation-gateway/docs/rendering-isolation.md).
+[Plano anterior ao código](../../../../../../api/apps/translation-gateway/docs/rendering/rendering-isolation.md).
 Fontes novos sob `api/apps/translation-gateway/src/main/java/`:
 `infrastructure/rendering/RenderChildSettings`, `RenderSubprocessProtocol`,
 `RenderJvmLauncher`, `RenderChildMain` e `IsolatedRenderAdapter`; erro TIMEOUT
@@ -89,7 +89,7 @@ novos estão incluídos; não inferidos de relatórios antigos.
 
 Suíte leve `./mvnw -o -q -pl apps/translation-gateway -am test
 -Dtest.excludedGroups=testcontainers`: exit 0; testes de processo requerem
-permissão local de enumeração no macOS. Node `node --test scripts/*.test.mjs`:
+permissão local de enumeração no macOS. Node `node --test scripts/*/*.test.mjs`:
 exit 0, 85 pass e um opt-in de fonte não selecionado. Web `pnpm exec tsc -b`:
 exit 0. Mobile `pnpm check` integral: exit 0, 116 suítes/892 testes, além de
 30 testes performance, 24 SDD e seis FSD; typecheck/lint/FSD/formato/links verdes.

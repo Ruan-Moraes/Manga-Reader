@@ -264,8 +264,16 @@
             "validCount": "{{valid}} de {{total}} válidas",
             "invalidCount": "{{count}} com problema",
             "pageStatus": "Página {{page}}: {{status}}",
-            "status": { "PENDING": "aguardando", "VALID": "válida", "INVALID": "inválida" },
-            "badges": { "PENDING": "Validando", "VALID": "Pronta", "INVALID": "Ação necessária" },
+            "status": {
+                "PENDING": "aguardando",
+                "VALID": "válida",
+                "INVALID": "inválida"
+            },
+            "badges": {
+                "PENDING": "Validando",
+                "VALID": "Pronta",
+                "INVALID": "Ação necessária"
+            },
             "summaryReady": "{{valid}} de {{total}} prontas",
             "summaryIssues": "{{valid}} prontas · {{invalid}} com problema",
             "issueSummaryTitle": "Páginas com problema",
@@ -295,7 +303,10 @@
             "close": "Fechar",
             "previewUnavailable": "Prévia indisponível",
             "previewLabel": "Prévia da página {{page}}",
-            "issueOrigin": { "local": "Origem: arquivo enviado · verificação feita neste aparelho", "processing": "Origem: retorno do processamento" },
+            "issueOrigin": {
+                "local": "Origem: arquivo enviado · verificação feita neste aparelho",
+                "processing": "Origem: retorno do processamento"
+            },
             "issueMessages": {
                 "MISSING_FILE": "O arquivo desta página não está mais disponível.",
                 "EMPTY_FILE": "O arquivo está vazio e não pode ser processado.",
@@ -337,8 +348,6 @@
         "project": {
             "loading": "Carregando o projeto local…",
             "action": "Preparar projeto",
-            "preparedTitle": "Projeto preparado no aparelho",
-            "preparedDescription": "As páginas estão protegidas localmente. O processamento ainda não começou.",
             "summary_one": "{{count}} página · {{source}} → {{target}} · {{status}}",
             "summary_other": "{{count}} páginas · {{source}} → {{target}} · {{status}}",
             "status": {
@@ -357,7 +366,29 @@
                 "project-conflict": "Já existe um projeto diferente com esta identidade. Seus dados foram preservados."
             },
             "preparedRetainedDescription": "As páginas e os idiomas estão salvos neste aparelho.",
-            "chapterLinkFailed": "Projeto preparado, mas não foi possível vinculá-lo ao capítulo. Vincule-o pela biblioteca."
+            "chapterLinkFailed": "Projeto preparado, mas não foi possível vinculá-lo ao capítulo. Vincule-o pela biblioteca.",
+            "card": {
+                "DRAFT": {
+                    "title": "Projeto preparado no aparelho",
+                    "description": "As páginas estão protegidas localmente. O processamento ainda não começou."
+                },
+                "inProgress": {
+                    "title": "Tradução em andamento",
+                    "description": "As páginas estão protegidas localmente. As prontas já podem ser lidas."
+                },
+                "READY": {
+                    "title": "Tradução pronta",
+                    "description": "Todas as páginas foram traduzidas e podem ser lidas sem internet."
+                },
+                "FAILED": {
+                    "title": "A tradução falhou em alguma página",
+                    "description": "As páginas prontas continuam disponíveis. Tente de novo as que falharam."
+                },
+                "CANCELLED": {
+                    "title": "Tradução cancelada",
+                    "description": "As páginas prontas continuam disponíveis no aparelho."
+                }
+            }
         }
     },
     "navigation": {

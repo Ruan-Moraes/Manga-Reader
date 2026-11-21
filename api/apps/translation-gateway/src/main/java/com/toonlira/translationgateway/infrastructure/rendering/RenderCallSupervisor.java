@@ -22,15 +22,37 @@ final class RenderCallSupervisor {
     private final Semaphore capacity = new Semaphore(1);
     private final Consumer<Thread> cancellationSignal;
     private final ThreadFactory workers;
+    /**
+     * How long a page waits for the one render slot while another page (or an abandoned call still cleaning up) holds
+     * it. Failing at once lost pages submitted together (render-busy); the slot itself stays exclusive.
+     */
+    static final Duration DEFAULT_CAPACITY_WAIT = Duration.ofMinutes(2);
+    private volatile Duration capacityWait;
 
     RenderCallSupervisor() { this(Thread::interrupt); }
     RenderCallSupervisor(Consumer<Thread> cancellationSignal) {
         this(cancellationSignal, Thread.ofVirtual().name("render-call-supervisor").inheritInheritableThreadLocals(false).factory());
     }
     RenderCallSupervisor(Consumer<Thread> cancellationSignal, ThreadFactory workers) {
-        if (cancellationSignal == null || workers == null) throw new RenderFileException(CONFIGURATION);
+        this(cancellationSignal, workers, DEFAULT_CAPACITY_WAIT);
+    }
+    RenderCallSupervisor(Consumer<Thread> cancellationSignal, Duration capacityWait) {
+        this(cancellationSignal, Thread.ofVirtual().name("render-call-supervisor").inheritInheritableThreadLocals(false).factory(),
+            capacityWait);
+    }
+    RenderCallSupervisor(Consumer<Thread> cancellationSignal, ThreadFactory workers, Duration capacityWait) {
+        if (cancellationSignal == null || workers == null || capacityWait == null || capacityWait.isNegative())
+            throw new RenderFileException(CONFIGURATION);
         this.cancellationSignal = cancellationSignal;
         this.workers = workers;
+        this.capacityWait = capacityWait;
+    }
+
+    /** Tests only: how long callers wait for the slot; returns a handle that restores the previous wait. */
+    AutoCloseable waitForCapacityAtMost(Duration wait) {
+        var previous = capacityWait;
+        capacityWait = wait;
+        return () -> capacityWait = previous;
     }
 
     <T> T execute(Duration deadline, LongFunction<T> operation, Consumer<T> discard) {
@@ -46,7 +68,12 @@ final class RenderCallSupervisor {
         if (deadline == null || deadline.isZero() || deadline.isNegative() || deadline.compareTo(MAX_DEADLINE) > 0
             || operation == null || discard == null || cancellation == null) throw new RenderFileException(CONFIGURATION);
         if (Thread.currentThread().isInterrupted()) throw new RenderFileException(CANCELLED);
-        if (!capacity.tryAcquire()) throw new RenderFileException(BUSY);
+        try {
+            if (!capacity.tryAcquire(capacityWait.toNanos(), TimeUnit.NANOSECONDS)) throw new RenderFileException(BUSY);
+        } catch (InterruptedException error) {
+            Thread.currentThread().interrupt();
+            throw new RenderFileException(CANCELLED);
+        }
         var call = new Call<T>(deadline.toNanos(), cancellation, abandonment);
         try {
             call.worker = workers.newThread(() -> call.run(operation, discard));

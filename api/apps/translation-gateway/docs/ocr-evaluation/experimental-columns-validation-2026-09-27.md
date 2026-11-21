@@ -38,7 +38,7 @@ mudança de origem durante execução, falha sanitizada, regeneração determin�
 sem agrupamento, contabilidade e escape de HTML.
 
 ```bash
-node --test api/apps/translation-gateway/scripts/*.test.mjs
+node --test api/apps/translation-gateway/scripts/*/*.test.mjs
 cd api
 ./mvnw -o -B test
 cd ../web/toonlira

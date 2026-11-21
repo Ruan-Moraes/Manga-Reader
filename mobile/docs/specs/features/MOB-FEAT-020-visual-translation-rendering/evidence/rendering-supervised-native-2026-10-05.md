@@ -92,7 +92,7 @@ IsolatedNativeRenderLinuxTest passaram (67,777 s); primitivas de supervisão e
 deadlines/cancelamento continuam cobertas pelos testes anteriores.
 
 Suíte leve gateway/reactor com `-Dtest.excludedGroups=testcontainers`: exit 0,
-sem misturar seus XMLs com o global. Node `node --test scripts/*.test.mjs`:
+sem misturar seus XMLs com o global. Node `node --test scripts/*/*.test.mjs`:
 85 pass/um opt-in não selecionado, zero failures, exit 0. Web `pnpm exec tsc -b`:
 exit 0. Mobile `pnpm check` integral: exit 0, 116 suítes/892 testes. Performance
 tooling, SDD/links, type-check/lint/FSD e formatação passaram. Warnings existentes

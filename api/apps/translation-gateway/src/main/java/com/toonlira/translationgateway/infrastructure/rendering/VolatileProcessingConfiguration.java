@@ -32,10 +32,13 @@ public class VolatileProcessingConfiguration {
             rendering.getNativeDistributionSha256(), rendering.getNativeTimeout());
         var limits = NativeProcessLimits.initial();
         var admission = NativeWorkerParentPreparation.prepare(rendering.getTemporaryDirectory(), limits);
-        return new IsolatedMemoryRenderAdapter(rendering.getTemporaryDirectory(),
+        // The LaMa model runs in this process on windows the sandboxed child prepares (InpaintExchange), never on the page.
+        var model = rendering.getInpaintingModelPath();
+        InpaintModel inpaint = model == null || model.toString().isBlank() ? null : new LamaInpainter(model, rendering.getInpaintingThreads());
+        return IsolatedMemoryRenderAdapter.withInpainting(rendering.getTemporaryDirectory(),
             new BoundedNativeRenderChildSettings(codec, limits), rendering.getProcessDeadline(), () -> {
                 VolatileProcessAdmission.require(); admission.requireAvailable();
-            });
+            }, inpaint);
     }
 
     @Bean(destroyMethod = "close")

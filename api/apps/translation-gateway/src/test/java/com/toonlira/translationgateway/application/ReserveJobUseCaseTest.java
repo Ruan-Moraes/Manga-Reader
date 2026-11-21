@@ -86,6 +86,20 @@ class ReserveJobUseCaseTest {
             error -> assertThat(error.code()).isEqualTo(GatewayErrorCode.QUOTA_EXCEEDED));
     }
 
+    @Test
+    void localDevelopmentWithoutQuotaEnforcementReservesPastTheDailyLimit() {
+        var properties = new GatewayProperties();
+        properties.setQuotaEnforced(false);
+        var local = new ReserveJobUseCase(repository, properties);
+        when(repository.findByIdempotency(installationId, candidate.idempotencyKey())).thenReturn(Optional.empty());
+        var inserted = job(candidate.requestFingerprint());
+        when(repository.insertJob(candidate)).thenReturn(inserted);
+
+        assertThat(local.execute(candidate).created()).isTrue();
+        verify(repository, org.mockito.Mockito.never()).countGlobalJobs(any(), any());
+        assertThat(new GatewayProperties().isQuotaEnforced()).isTrue(); // deployments enforce by default
+    }
+
     private ProcessingJob job(String fingerprint) {
         return new ProcessingJob(candidate.id(), candidate.jobRef(), installationId, candidate.idempotencyKey(), candidate.attemptRef(), fingerprint,
             JobStatus.QUEUED, DispatchStatus.PENDING, null, candidate.now());

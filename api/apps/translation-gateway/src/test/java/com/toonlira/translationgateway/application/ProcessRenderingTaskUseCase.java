@@ -14,8 +14,10 @@ import com.toonlira.translationgateway.domain.OriginalObjectKey;
 import com.toonlira.translationgateway.domain.rendering.RenderPolicy;
 import com.toonlira.translationgateway.domain.rendering.RenderRequest;
 import com.toonlira.translationgateway.domain.rendering.RenderSource;
+import com.toonlira.translationgateway.domain.rendering.RenderTextCounts;
 import com.toonlira.translationgateway.domain.rendering.RenderedImage;
 import com.toonlira.translationgateway.domain.rendering.ResultObjectKey;
+import com.toonlira.translationgateway.domain.translation.ChapterTerm;
 import com.toonlira.translationgateway.domain.translation.LanguagePair;
 import com.toonlira.translationgateway.domain.translation.TranslationRequest;
 import java.io.FilterInputStream;
@@ -31,6 +33,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.HexFormat;
+import java.util.List;
 import java.util.UUID;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.stereotype.Service;
@@ -42,6 +45,7 @@ import org.springframework.transaction.annotation.Transactional;
 /** Coordinates bounded private files. Only the persistence wrapper opens database transactions. */
 @Service
 public class ProcessRenderingTaskUseCase {
+    private static final org.slf4j.Logger LOG = org.slf4j.LoggerFactory.getLogger(ProcessRenderingTaskUseCase.class);
     private static final Duration ORIGINAL_TTL = Duration.ofHours(1);
     private static final int MAX_TRANSLATION_MANIFEST_BYTES = 4 * 1024 * 1024;
     private final RenderingPersistenceUseCase persistence;
@@ -54,12 +58,25 @@ public class ProcessRenderingTaskUseCase {
     private final GatewayProperties properties;
     private final Clock clock;
     private final CleanupLifecycleObjectsUseCase lifecycle;
+    private final com.toonlira.translationgateway.application.port.LexiconPort lexicons;
 
     public ProcessRenderingTaskUseCase(RenderingPersistenceUseCase persistence, ObjectStoragePort storage,
                                        MediaInspectionService inspector, OcrManifestService ocrManifests,
                                        TranslationManifestService translationManifests, RenderManifestService renderManifests,
                                        ObjectProvider<RenderPort> renderer, GatewayProperties properties, Clock clock,
                                        CleanupLifecycleObjectsUseCase lifecycle) {
+        this(persistence, storage, inspector, ocrManifests, translationManifests, renderManifests, renderer, properties,
+            clock, lifecycle, null);
+    }
+
+    @org.springframework.beans.factory.annotation.Autowired
+    public ProcessRenderingTaskUseCase(RenderingPersistenceUseCase persistence, ObjectStoragePort storage,
+                                       MediaInspectionService inspector, OcrManifestService ocrManifests,
+                                       TranslationManifestService translationManifests, RenderManifestService renderManifests,
+                                       ObjectProvider<RenderPort> renderer, GatewayProperties properties, Clock clock,
+                                       CleanupLifecycleObjectsUseCase lifecycle,
+                                       com.toonlira.translationgateway.application.port.LexiconPort lexicons) {
+        this.lexicons = lexicons;
         this.persistence = persistence;
         this.storage = storage;
         this.inspector = inspector;
@@ -110,6 +127,7 @@ public class ProcessRenderingTaskUseCase {
         MediaInspectionService.InspectedMedia original = null;
         try {
             RenderRequest request;
+            List<ChapterTerm> terms;
             try {
                 if (!jobRef.equals(job.jobRef())) invalid();
                 checkRetention(job);
@@ -118,7 +136,9 @@ public class ProcessRenderingTaskUseCase {
                 if (!beforeRead.isBefore(deadline)) invalid();
                 var readDeadline = OriginalReadDeadline.start(Duration.between(beforeRead, deadline));
                 try (readDeadline) {
-                    request = readRequest(job, readDeadline);
+                    var prepared = readRequest(job, readDeadline);
+                    request = prepared.request();
+                    terms = prepared.terms();
                     checkRetention(job);
                     if (!now().isBefore(deadline)) invalid();
                     try (var input = deadlineBound(readDeadline.guard(storage.open(job.originalObjectKey())), deadline)) {
@@ -129,6 +149,7 @@ public class ProcessRenderingTaskUseCase {
                 if (!source(original).equals(job.source())) invalid();
                 checkRetention(job);
             } catch (RuntimeException | IOException error) {
+                LOG.warn("render preparation failed: {}", FailureDiagnostics.describe(error));
                 persistence.failUnclaimed(job.id(), INTERNAL_ERROR, now());
                 deleteOriginalIfTerminal(job);
                 return;
@@ -136,14 +157,17 @@ public class ProcessRenderingTaskUseCase {
             var claim = persistence.claim(jobRef, now());
             if (claim == RenderingJobRepository.Claim.CANCELLED) deleteBestEffort(job.originalObjectKey());
             if (claim != RenderingJobRepository.Claim.STARTED) return;
-            processClaimed(job, original.path(), request);
+            processClaimed(job, original.path(), request, terms);
         } finally {
             if (original != null) inspector.deleteQuietly(original.path());
             inspector.requireCleanupHealthy();
         }
     }
 
-    private RenderRequest readRequest(RenderingJobRepository.WorkItem job, OriginalReadDeadline deadline) throws IOException {
+    /** What the renderer draws, and the chapter names the page used, which the result reports to the client. */
+    private record Prepared(RenderRequest request, List<ChapterTerm> terms) { }
+
+    private Prepared readRequest(RenderingJobRepository.WorkItem job, OriginalReadDeadline deadline) throws IOException {
         var policy = policy();
         var ocrBytes = readVerified(job.ocrObjectKey(), job.ocrSha256(), OcrLimits.MAX_MANIFEST_BYTES, deadline);
         var ocr = ocrManifests.decode(ocrBytes);
@@ -152,8 +176,20 @@ public class ProcessRenderingTaskUseCase {
         var translationRequest = new TranslationRequest(job.jobRef(), pair, ocr.regions().stream()
             .map(region -> new TranslationRequest.Region(region.id(), region.readingOrder(), region.sourceText())).toList());
         var translationBytes = readVerified(job.translationObjectKey(), job.translationSha256(), MAX_TRANSLATION_MANIFEST_BYTES, deadline);
-        var translation = translationManifests.decode(translationBytes, job.translationSha256(), translationRequest, job.ocrSha256());
-        return RenderRequest.create(job.source(), ocr, translation, job.ocrSha256(), job.translationSha256(), policy);
+        var decoded = translationManifests.decodeWithTerms(translationBytes, job.translationSha256(), translationRequest, job.ocrSha256());
+        var request = RenderRequest.create(job.source(), ocr, decoded.result(), job.ocrSha256(), job.translationSha256(), policy);
+        // Hints only when the layout artifact describes this very image and OCR manifest.
+        var hints = LayoutHints.read(storage, job.layoutObjectKey(), job.layoutSha256(), job.source().sha256(), job.ocrSha256());
+        request = request.withBubbles(hints.bubbles());
+        // Which regions read as speech/captions (vs sound effects): a renderer that can inpaint may retype them
+        // over reconstructed artwork; the others keep their lettering.
+        if (lexicons == null) return new Prepared(request, decoded.terms());
+        var lexicon = lexicons.forLanguage(job.sourceLanguage());
+        // Hand-drawn shouts the detector does not see as text, but that read as a sentence, may be retyped too.
+        return new Prepared(request.withCaptionHints(com.toonlira.translationgateway.domain.rendering.CaptionFilter.captions(
+            request, lexicon, hints.kinds())).withLetteringHints(com.toonlira.translationgateway.domain.rendering.CaptionFilter
+            .letterings(request, lexicon, hints.kinds())).withDrawnHints(com.toonlira.translationgateway.domain.rendering.CaptionFilter
+            .drawn(request, lexicon, hints.kinds())), decoded.terms());
     }
 
     private RenderPolicy policy() {
@@ -173,7 +209,7 @@ public class ProcessRenderingTaskUseCase {
         return bytes;
     }
 
-    private void processClaimed(RenderingJobRepository.WorkItem job, Path original, RenderRequest request) {
+    private void processClaimed(RenderingJobRepository.WorkItem job, Path original, RenderRequest request, List<ChapterTerm> terms) {
         Path outputFile = null, manifestFile = null, inspectedOutput = null;
         String imageKey = null, manifestKey = null;
         RenderingJobRepository.Artifacts artifacts = null;
@@ -188,15 +224,16 @@ public class ProcessRenderingTaskUseCase {
             }
             inspectedOutput = checked.path();
             var image = new RenderedImage(checked.mimeType(), checked.byteSize(), checked.widthPx(), checked.heightPx(), checked.sha256());
-            var encoded = renderManifests.encode(output.manifest(), request.policy());
-            renderManifests.decode(encoded.bytes(), encoded.sha256(), request, image);
+            var encoded = renderManifests.encode(output.manifest(), request.policy(), terms);
+            renderManifests.decode(encoded.bytes(), encoded.sha256(), request, image, terms);
             checkRetention(job);
             manifestFile = Files.createTempFile("translation-render-manifest-", ".json");
             Files.write(manifestFile, encoded.bytes());
             var resultDeadline = now().truncatedTo(ChronoUnit.MICROS).plusSeconds(job.resultRetentionSeconds());
             imageKey = ResultObjectKey.create(resultDeadline, "webp");
             manifestKey = ResultObjectKey.create(resultDeadline, "json");
-            artifacts = new RenderingJobRepository.Artifacts(imageKey, image, manifestKey, encoded.sha256());
+            artifacts = new RenderingJobRepository.Artifacts(imageKey, image, manifestKey, encoded.sha256(),
+                RenderTextCounts.of(output.manifest().regions(), output.manifest().image().widthPx(), output.manifest().image().heightPx()));
             // Upload the checked compressed snapshot, not a path that a renderer could modify after verification.
             storage.store(imageKey, inspectedOutput, image.mimeType(), image.sha256(), now());
             storage.store(manifestKey, manifestFile, "application/json", encoded.sha256(), now());
@@ -208,6 +245,7 @@ public class ProcessRenderingTaskUseCase {
                 deleteOriginalIfTerminal(job);
             }
         } catch (RuntimeException | IOException error) {
+            LOG.warn("render failed: {}", FailureDiagnostics.describe(error));
             var current = findBestEffort(job.jobRef());
             // Exact references survive READY -> RESULT_EXPIRED; uncertain DB state must not delete an accepted result.
             boolean committed = artifacts != null && current != null && artifacts.equals(current.artifacts());

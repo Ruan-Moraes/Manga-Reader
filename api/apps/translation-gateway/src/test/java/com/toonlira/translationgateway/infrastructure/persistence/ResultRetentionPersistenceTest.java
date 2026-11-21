@@ -251,13 +251,14 @@ class ResultRetentionPersistenceTest {
         copyLegacy(legacy, schema, "processing_job_dispatches", "job_id", job.id());
         var migration = Flyway.configure().dataSource(POSTGRES.getJdbcUrl(), POSTGRES.getUsername(), POSTGRES.getPassword())
             .schemas(schema).defaultSchema(schema).load().migrate();
-        assertThat(migration.migrationsExecuted).isEqualTo(3);
+        assertThat(migration.migrationsExecuted).isEqualTo(6); // V9 retention, V10/V11 volatile, V12 text quality, V13 small text, V14 chapter memory
         assertThat(legacy.sql("SELECT result_retention_seconds FROM processing_jobs WHERE id=:id").param("id", job.id()).query(Integer.class).single()).isEqualTo(3600);
         var boundary = new JdbcResultDownloadRepository(legacy);
         var legacyTx = new TransactionTemplate(new DataSourceTransactionManager(dataSource));
         var projected = legacyTx.execute(status -> boundary.findReady(job.installationId(), job.jobRef()).orElseThrow());
         assertThat(projected.completedAt()).isEqualTo(now);
         assertThat(projected.resultExpiresAt()).isEqualTo(now.plusSeconds(3600));
+        assertThat(projected.text()).isNull(); // rendered before V12: no quality, nothing to backfill
     }
 
     private void copyLegacy(JdbcClient legacy, String schema, String table, String idColumn, UUID id) {

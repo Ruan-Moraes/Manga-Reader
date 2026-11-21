@@ -8,7 +8,7 @@ mobile alterado; performance Android não aplicável nem inferida dessa mediçã
 
 ## Implementação, TDD e isolamento
 
-[Plano anterior aos testes](../../../../../../api/apps/translation-gateway/docs/rendering-native-codec.md),
+[Plano anterior aos testes](../../../../../../api/apps/translation-gateway/docs/rendering/rendering-native-codec.md),
 [teste](../../../../../../api/apps/translation-gateway/src/test/java/com/toonlira/translationgateway/infrastructure/rendering/NativeRenderResourceTest.java),
 [probe](../../../../../../api/apps/translation-gateway/src/test/java/com/toonlira/translationgateway/infrastructure/rendering/NativeRenderResourceProbe.java)
 e [métricas comuns](../../../../../../api/apps/translation-gateway/src/test/java/com/toonlira/translationgateway/infrastructure/rendering/RenderResourceMetrics.java).
@@ -127,7 +127,7 @@ CLI foi reexecutado separadamente: plana 4 GiB exact, pico 1872420864 bytes/
 8,763 s, e OOM com 1 GiB; budgets heap/scratch diferem, sem comparação percentual.
 Nenhum container rendering permaneceu após conclusão.
 
-Node `node --test scripts/*.test.mjs`: 85 pass/um opt-in de fonte não selecionado,
+Node `node --test scripts/*/*.test.mjs`: 85 pass/um opt-in de fonte não selecionado,
 exit 0. Web `pnpm exec tsc -b`: exit 0. Mobile `pnpm check` completo: exit 0,
 116 suítes/892 testes, incluindo SDD/links/typecheck/lint/FSD/formato/performance
 tooling. Warnings act/SQLite anteriores preservados, sem correção alheia,

@@ -6,7 +6,7 @@ produzida pelo pipeline completo, qualidade ou operação cloud.
 
 ## Plano e implementação
 
-O [plano de banco anterior ao código](../../../../../../api/apps/translation-gateway/docs/rendering-persistence.md)
+O [plano de banco anterior ao código](../../../../../../api/apps/translation-gateway/docs/rendering/rendering-persistence.md)
 seguiu database-design: PostgreSQL para estados/metadados, storage privado para
 conteúdo. BCNF preservada por `(job_id, stage)`; V6 aditiva reutiliza a etapa,
 com chave/hash/bytes da imagem WebP e referência existente para manifesto.

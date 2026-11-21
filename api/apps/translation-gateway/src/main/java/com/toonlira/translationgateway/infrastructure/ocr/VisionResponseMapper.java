@@ -13,6 +13,7 @@ import com.toonlira.translationgateway.domain.GatewayErrorCode;
 import com.toonlira.translationgateway.domain.GatewayException;
 import com.toonlira.translationgateway.domain.OcrGeometry;
 import com.toonlira.translationgateway.domain.OcrManifest;
+import com.toonlira.translationgateway.domain.OcrParagraph;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -21,6 +22,10 @@ import java.util.UUID;
 
 public final class VisionResponseMapper {
     public List<OcrManifest.Region> map(BatchAnnotateImagesResponse batch, Context command) {
+        return mapParagraphs(batch, command).stream().map(OcrParagraph::region).toList();
+    }
+
+    public List<OcrParagraph> mapParagraphs(BatchAnnotateImagesResponse batch, Context command) {
         if (batch == null || batch.getSerializedSize() > MAX_RESPONSE_BYTES || batch.getResponsesCount() != 1) invalid();
         var response = batch.getResponses(0);
         if (response.hasError() && response.getError().getCode() != 0) {
@@ -34,7 +39,7 @@ public final class VisionResponseMapper {
         }
         var page = annotation.getPages(0);
         if (page.getWidth() != command.widthPx() || page.getHeight() != command.heightPx()) invalid();
-        var regions = new ArrayList<OcrManifest.Region>();
+        var regions = new ArrayList<OcrParagraph>();
         var seen = new HashSet<RegionContent>();
         int paragraphCount = 0;
         int totalText = 0;
@@ -44,7 +49,8 @@ public final class VisionResponseMapper {
             for (int paragraphIndex = 0; paragraphIndex < block.getParagraphsCount(); paragraphIndex++) {
                 if (++paragraphCount > MAX_REGIONS) invalid();
                 var paragraph = block.getParagraphs(paragraphIndex);
-                var text = text(paragraph);
+                var words = new ArrayList<OcrParagraph.Word>();
+                var text = text(paragraph, words, command);
                 totalText += text.length();
                 if (totalText > MAX_TEXT_TOTAL) invalid();
                 hasText |= !text.isBlank();
@@ -54,16 +60,18 @@ public final class VisionResponseMapper {
                 // Structural position (not the text) gives stable opaque IDs within the job.
                 var identity = command.operationRef() + ":vision:0:" + blockIndex + ":" + paragraphIndex;
                 var id = UUID.nameUUIDFromBytes(identity.getBytes(StandardCharsets.UTF_8));
-                regions.add(new OcrManifest.Region(id, regions.size(), text, polygon));
+                regions.add(new OcrParagraph(new OcrManifest.Region(id, regions.size(), text, polygon), words));
             }
         }
         if (hasText && regions.isEmpty()) invalid();
         return List.copyOf(regions);
     }
 
-    private String text(Paragraph paragraph) {
+    /** Paragraph text; {@code words} receives each word's slice of it (slices concatenate to the full text). */
+    private String text(Paragraph paragraph, List<OcrParagraph.Word> words, Context command) {
         var text = new StringBuilder();
         for (var word : paragraph.getWordsList()) {
+            int start = text.length();
             var wordBreak = word.getProperty().getDetectedBreak();
             if (wordBreak.getIsPrefix() && (word.getSymbolsCount() == 0
                 || !word.getSymbols(0).getProperty().hasDetectedBreak()
@@ -81,6 +89,9 @@ public final class VisionResponseMapper {
                 appendBreak(text, wordBreak);
             }
             if (text.length() > MAX_TEXT_PER_REGION) invalid();
+            // Vision reports 0 when it has no confidence for a word; keep that as "unknown", not as "certainly wrong".
+            double confidence = word.getConfidence() > 0 ? word.getConfidence() : Double.NaN;
+            words.add(new OcrParagraph.Word(text.substring(start), polygon(word.getBoundingBox(), command), confidence));
         }
         return text.toString();
     }

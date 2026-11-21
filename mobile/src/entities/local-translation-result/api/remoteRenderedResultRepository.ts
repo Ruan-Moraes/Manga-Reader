@@ -115,6 +115,15 @@ export function createRemoteRenderedResultRepository(
                             await tx.runAsync('INSERT INTO text_region_vertices(region_id,vertex_index,x,y) VALUES (?,?,?,?)', [r.id, index, v.x, v.y]);
                         }
                     }
+                    // MOB-FEAT-023: the chapter names this page used join the project's glossary; a name the project
+                    // already decided keeps its first translation.
+                    for (const term of m.terms ?? []) {
+                        active();
+                        await tx.runAsync(
+                            'INSERT INTO translation_project_terms(project_id,source_term,target_term,created_at) VALUES (?,?,?,?) ON CONFLICT DO NOTHING',
+                            [input.projectId, term.source, term.target, input.readyAt],
+                        );
+                    }
                     active();
                     await tx.runAsync("UPDATE translation_pages SET status='READY',updated_at=?,status_updated_at=? WHERE id=?", [
                         input.readyAt,

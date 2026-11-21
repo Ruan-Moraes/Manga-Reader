@@ -7,7 +7,7 @@ de TASK-002/007/008 e AC-006, não correção entregue de cópias nativas.
 
 ## Execução e provenance
 
-[Plano anterior](../../../../../../api/apps/translation-gateway/docs/rendering-native-build.md).
+[Plano anterior](../../../../../../api/apps/translation-gateway/docs/rendering/rendering-native-build.md).
 Source libwebp 1.6.0 reutilizado, SHA-256
 `e4ab7009bf0629fd11982d4c2aa83964cf244cffba7347ecd39019a9e38c4564`.
 Imagem reutilizada

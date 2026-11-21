@@ -7,7 +7,7 @@ infra mudou. 020 `in-progress/open`, verdict `changes-requested`; 021
 
 ## Protocolo e implementação
 
-[Plano anterior à implementação do cenário](../../../../../../api/apps/translation-gateway/docs/worker-sdk-resources.md).
+[Plano anterior à implementação do cenário](../../../../../../api/apps/translation-gateway/docs/rendering/worker-sdk-resources.md).
 `LoopbackWorkerProviders` fornece adapters/clients oficiais Vision/Translation,
 com NoCredentialsProvider e servidores gRPC limitados ao loopback. São respostas
 artificiais, não OCR ou tradução real. Clients permanecem residentes durante
@@ -72,7 +72,7 @@ Não reatribuir matrizes anteriores ou checksum mobile ao código Java.
 ## Reprodução e limites
 
 Reactor `api`, comando/pins do
-[protocolo de distribuição](../../../../../../api/apps/translation-gateway/docs/rendering-native-distribution.md),
+[protocolo de distribuição](../../../../../../api/apps/translation-gateway/docs/rendering/rendering-native-distribution.md),
 selecionando os métodos `officialLoopbackSdksCompleteMaximumMediaAndOutputInTheBoundedWorker`
 e `officialLoopbackSdksCompleteMaximumMediaAndOutputInTheBoundedAmd64Worker`,
 mais `LoopbackWorkerProvidersTest`. Opt-ins/diretórios já preparados permanecem

@@ -32,7 +32,15 @@ public class GetCapabilitiesUseCase {
     private static final String GATEWAY_REGION = "southamerica-east1";
     private static final String OCR_REGION = "us";
     private static final String TRANSLATION_LOCATION = "global";
+    private static final Pattern LANGUAGE_MODEL_LOCATION = Pattern.compile("^[a-z][a-z0-9-]{0,28}[a-z0-9]$");
     private static final Set<String> SUPERSEDED_DISCLOSURE_VERSIONS = Set.of("2026-09-07.v1");
+    /**
+     * Disclosure versions whose published privacy text names the language layer (Gemini on Vertex AI, text only, its
+     * cache and training policy). With the layer on, any other version is refused: the app would show a disclosure that
+     * does not mention where the text goes.
+     */
+    // 2026-11-20.v1: also names the chapter glossary the app sends back (MOB-FEAT-023).
+    static final Set<String> LANGUAGE_MODEL_DISCLOSURE_VERSIONS = Set.of("2026-11-15.v1", "2026-11-20.v1");
 
     private final GatewayProperties properties;
     private final Clock clock;
@@ -48,8 +56,12 @@ public class GetCapabilitiesUseCase {
         var disclosure = properties.getDisclosure();
         var pairs = operationalPairs();
         var media = properties.getMedia();
+        var languageModelLocation = languageModelLocation();
+        var validUntil = now.plus(properties.getCapabilitiesTtl());
+        // The validity window is part of the representation: a 304 keeps the client's cached body, so an ETag without
+        // it let an iOS client reuse a body whose validUntil had long passed (found on the simulator, 2026-11-20).
         var canonical = Stream.of(
-            "1.0", properties.getKey(), Boolean.toString(properties.isEnabled()),
+            "1.0", now.toString(), validUntil.toString(), properties.getKey(), Boolean.toString(properties.isEnabled()),
             String.join(",", LANGUAGES), String.join(",", MIME_TYPES),
             pairs.stream().map(pair -> pair.source() + ":" + pair.target()).collect(Collectors.joining(",")),
             properties.getCapabilitiesTtl().toString(),
@@ -58,19 +70,20 @@ public class GetCapabilitiesUseCase {
             Integer.toString(properties.getInstallationDailyQuota()), Integer.toString(properties.getGlobalDailyQuota()),
             disclosure.getVersion(), disclosure.getOperatorName(), disclosure.getOperatorContact(),
             disclosure.getPrivacyPolicyUrl(), disclosure.getTermsUrl(), disclosure.getProviderTrainingPolicy(),
-            GATEWAY_REGION, OCR_REGION, TRANSLATION_LOCATION,
+            GATEWAY_REGION, OCR_REGION, TRANSLATION_LOCATION, languageModelLocation == null ? "" : languageModelLocation,
             Integer.toString(disclosure.getOriginalRetentionSeconds()),
             Integer.toString(disclosure.getResultRetentionSeconds()),
             Integer.toString(disclosure.getMetadataRetentionDays()))
             .map(value -> value.length() + ":" + value)
             .collect(Collectors.joining());
         return new CapabilitiesView(
-            "1.0", properties.getKey(), now, now.plus(properties.getCapabilitiesTtl()), properties.isEnabled(), LANGUAGES, pairs,
+            "1.0", properties.getKey(), now, validUntil, properties.isEnabled(), LANGUAGES, pairs,
             new CapabilitiesView.MediaLimits(MIME_TYPES, properties.getMedia().getMaxBytes(), properties.getMedia().getMaxWidthPx(),
                 properties.getMedia().getMaxHeightPx(), properties.getMedia().getMaxPixels()),
             properties.getInstallationDailyQuota(), properties.getGlobalDailyQuota(),
             new CapabilitiesView.LegalDisclosure(disclosure.getVersion(), disclosure.getOperatorName(), disclosure.getOperatorContact(),
                 disclosure.getPrivacyPolicyUrl(), disclosure.getTermsUrl(), GATEWAY_REGION, OCR_REGION, TRANSLATION_LOCATION,
+                languageModelLocation,
                 disclosure.getOriginalRetentionSeconds(), disclosure.getResultRetentionSeconds(), disclosure.getMetadataRetentionDays(),
                 disclosure.getProviderTrainingPolicy()),
             "W/\"" + sha256(canonical) + '"'
@@ -113,8 +126,18 @@ public class GetCapabilitiesUseCase {
             && disclosure.getOriginalRetentionSeconds() > 0 && disclosure.getOriginalRetentionSeconds() <= 3600
             && disclosure.getResultRetentionSeconds() > 0 && disclosure.getResultRetentionSeconds() <= 3600
             && disclosure.getMetadataRetentionDays() > 0 && disclosure.getMetadataRetentionDays() <= 7
+            && (languageModelLocation() == null || LANGUAGE_MODEL_LOCATION.matcher(languageModelLocation()).matches()
+                && LANGUAGE_MODEL_DISCLOSURE_VERSIONS.contains(disclosure.getVersion()))
             && (!properties.isEnabled() || (validOperationalConfiguration() && !operationalPairs().isEmpty()));
         if (!valid) throw new GatewayException(CAPABILITIES_UNAVAILABLE, 503, true);
+    }
+
+    /** Disclosed only while the worker would actually send text to the model: translation on and refine on. */
+    private String languageModelLocation() {
+        var translation = properties.getTranslation();
+        if (translation.getMode() == GatewayProperties.Translation.Mode.DISABLED
+            || translation.getRefine().getMode() == GatewayProperties.Translation.Refine.Mode.DISABLED) return null;
+        return translation.getRefine().getLocation();
     }
 
     private List<CapabilitiesView.LanguagePair> operationalPairs() {

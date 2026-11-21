@@ -24,6 +24,25 @@ public final class RenderRequest {
     private final String translationSha256;
     private final RenderPolicy policy;
     private final List<Region> regions;
+    private final Set<UUID> captionHints;
+    private final Set<UUID> letteringHints;
+    private final Set<UUID> drawnHints;
+    private final List<com.toonlira.translationgateway.domain.layout.LayoutBox> bubbles;
+
+    private RenderRequest(RenderRequest base, Set<UUID> captionHints, Set<UUID> letteringHints, Set<UUID> drawnHints,
+                          List<com.toonlira.translationgateway.domain.layout.LayoutBox> bubbles) {
+        this.jobRef = base.jobRef;
+        this.source = base.source;
+        this.pair = base.pair;
+        this.ocrSha256 = base.ocrSha256;
+        this.translationSha256 = base.translationSha256;
+        this.policy = base.policy;
+        this.regions = base.regions;
+        this.captionHints = Set.copyOf(captionHints);
+        this.letteringHints = Set.copyOf(letteringHints);
+        this.drawnHints = Set.copyOf(drawnHints);
+        this.bubbles = List.copyOf(bubbles);
+    }
 
     private RenderRequest(RenderSource source, OcrManifest ocr, TranslationResult translation,
                           String ocrSha256, String translationSha256, RenderPolicy policy) {
@@ -36,7 +55,60 @@ public final class RenderRequest {
         this.regions = ocr.regions().stream().map(region -> new Region(region.id(), region.readingOrder(),
             region.sourceText(), translation.regions().get(region.readingOrder()).translatedText(),
             List.copyOf(region.polygon()))).toList();
+        this.captionHints = Set.of();
+        this.letteringHints = Set.of();
+        this.drawnHints = Set.of();
+        this.bubbles = List.of();
     }
+
+    /**
+     * Regions that read as speech or captions (not sound effects). Only a hint: a renderer that can inpaint may
+     * redraw such a region over reconstructed artwork when its lettering sits on art; others ignore it.
+     */
+    public RenderRequest withCaptionHints(Set<UUID> hints) {
+        var ids = regions.stream().map(Region::id).collect(java.util.stream.Collectors.toSet());
+        if (hints == null || !ids.containsAll(hints)) invalid();
+        return new RenderRequest(this, hints, letteringHints, drawnHints, bubbles);
+    }
+
+    public Set<UUID> captionHints() { return captionHints; }
+
+    /**
+     * Regions that are hand-drawn lettering of a sentence (a shout drawn over the art, which the detector does not
+     * see as a text box). Only a hint: a renderer that can inpaint may redraw it in a heavy face, slanted like the
+     * original; others keep the drawing.
+     */
+    public RenderRequest withLetteringHints(Set<UUID> hints) {
+        var ids = regions.stream().map(Region::id).collect(java.util.stream.Collectors.toSet());
+        if (hints == null || !ids.containsAll(hints)) invalid();
+        return new RenderRequest(this, captionHints, hints, drawnHints, bubbles);
+    }
+
+    public Set<UUID> letteringHints() { return letteringHints; }
+
+    /**
+     * Drawn text that is not speech: regions the detector does not see as text, outside every balloon, that do not
+     * read as a sentence (sound effects, screens, signs, file names on a drawn desktop). A renderer keeps them as drawn.
+     */
+    public RenderRequest withDrawnHints(Set<UUID> hints) {
+        var ids = regions.stream().map(Region::id).collect(java.util.stream.Collectors.toSet());
+        if (hints == null || !ids.containsAll(hints)) invalid();
+        return new RenderRequest(this, captionHints, letteringHints, hints, bubbles);
+    }
+
+    public Set<UUID> drawnHints() { return drawnHints; }
+
+    /**
+     * Speech balloons detected on this page (normalized boxes, from the layout artifact of the same image and OCR
+     * manifest). A hint that bounds where a region's balloon mask and layout may extend; empty when unknown.
+     */
+    public RenderRequest withBubbles(List<com.toonlira.translationgateway.domain.layout.LayoutBox> detected) {
+        // stream check: List.of(...).contains(null) itself throws on immutable lists.
+        if (detected == null || detected.size() > 256 || detected.stream().anyMatch(java.util.Objects::isNull)) invalid();
+        return new RenderRequest(this, captionHints, letteringHints, drawnHints, detected);
+    }
+
+    public List<com.toonlira.translationgateway.domain.layout.LayoutBox> bubbles() { return bubbles; }
 
     public static RenderRequest create(RenderSource source, OcrManifest ocr, TranslationResult translation,
                                        String ocrSha256, String translationSha256, RenderPolicy policy) {
