@@ -1,0 +1,163 @@
+import { useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { Eye, EyeOff } from 'lucide-react';
+
+import { useResetPassword, AuthShell, AuthField, AuthSubmit } from '@features/auth';
+import { withWebBasePath } from '@shared/constant/WEB_BASE_URL';
+import { ROUTES } from '@shared/constant/ROUTES';
+import { EmptyState } from '@ui/EmptyState';
+import { Button } from '@ui/Button';
+
+const STRENGTHS = [
+    { level: 1, labelKey: 'passwordStrength.weak', color: 'var(--ui-danger)' },
+    { level: 2, labelKey: 'passwordStrength.medium', color: 'var(--ui-accent)' },
+    { level: 3, labelKey: 'passwordStrength.strong', color: 'var(--ui-success)' },
+    { level: 4, labelKey: 'passwordStrength.great', color: 'var(--ui-success)' },
+] as const;
+
+function calcStrength(pw: string) {
+    if (!pw) return { level: 0 as const, labelKey: null, color: 'var(--ui-border)' };
+    let s = 0;
+    if (pw.length >= 8) s++;
+    if (/[A-Z]/.test(pw)) s++;
+    if (/[0-9]/.test(pw)) s++;
+    if (/[^A-Za-z0-9]/.test(pw)) s++;
+    return STRENGTHS[Math.max(0, s - 1)] ?? STRENGTHS[0];
+}
+
+const ResetPassword = () => {
+    const navigate = useNavigate();
+    const { t } = useTranslation('auth');
+    const [showPw, setShowPw] = useState(false);
+    const [showConfirm, setShowConfirm] = useState(false);
+
+    const { token, password, confirmPassword, isLoading, errors, handlePasswordChange, handleConfirmPasswordChange, handleSubmit } = useResetPassword();
+
+    const strength = useMemo(() => calcStrength(password), [password]);
+
+    const go = (path: string) => (e: React.MouseEvent) => {
+        e.preventDefault();
+        navigate(path);
+    };
+
+    if (!token) {
+        return (
+            <AuthShell
+                eyebrow={t('resetPassword.eyebrow')}
+                title={t('resetPassword.invalidLinkTitle')}
+                subtitle={t('resetPassword.invalidLinkSubtitle')}
+                footer={
+                    <>
+                        {t('resetPassword.invalidLinkFooter')}{' '}
+                        <a
+                            href={withWebBasePath(ROUTES.LOGIN)}
+                            onClick={go(withWebBasePath(ROUTES.LOGIN))}
+                            className="font-ui-bold text-ui-accent-fg tracking-mr no-underline"
+                        >
+                            {t('resetPassword.invalidLinkBack')}
+                        </a>
+                    </>
+                }
+            >
+                <EmptyState
+                    illustration="triste"
+                    title=""
+                    description=""
+                    action={
+                        <Button variant="primary" onClick={() => navigate(withWebBasePath(ROUTES.FORGOT_PASSWORD))} className="w-full">
+                            {t('resetPassword.requestNewLink')}
+                        </Button>
+                    }
+                />
+            </AuthShell>
+        );
+    }
+
+    return (
+        <AuthShell
+            eyebrow={t('resetPassword.eyebrow')}
+            title={t('resetPassword.validTitle')}
+            subtitle={t('resetPassword.validSubtitle')}
+            footer={
+                <>
+                    {t('resetPassword.footer')}{' '}
+                    <a
+                        href={withWebBasePath(ROUTES.LOGIN)}
+                        onClick={go(withWebBasePath(ROUTES.LOGIN))}
+                        className="font-ui-bold text-ui-accent-fg tracking-mr no-underline"
+                    >
+                        {t('resetPassword.backToLoginLink')}
+                    </a>
+                </>
+            }
+        >
+            <form onSubmit={handleSubmit} noValidate aria-label={t('resetPassword.formAria')}>
+                <AuthField
+                    label={t('resetPassword.newPasswordLabel')}
+                    type={showPw ? 'text' : 'password'}
+                    autoComplete="new-password"
+                    value={password}
+                    onChange={handlePasswordChange}
+                    placeholder={t('resetPassword.newPasswordPlaceholder')}
+                    error={errors.password}
+                    rightSlot={
+                        <button
+                            type="button"
+                            onClick={() => setShowPw(v => !v)}
+                            aria-label={showPw ? t('resetPassword.hidePassword') : t('resetPassword.showPassword')}
+                            className="text-ui-tiny text-ui-fg-subtle hover:text-ui-fg"
+                        >
+                            {showPw ? <EyeOff size={14} /> : <Eye size={14} />}
+                        </button>
+                    }
+                />
+
+                {password && (
+                    <div className="-mt-2 mb-3.5 flex items-center gap-2">
+                        <div className="flex flex-1 gap-1" aria-hidden>
+                            {[1, 2, 3, 4].map(i => (
+                                <div
+                                    key={i}
+                                    className="h-[3px] flex-1 rounded-[1px] transition-colors duration-150"
+                                    style={{
+                                        background: i <= strength.level ? strength.color : 'var(--ui-surface-elevated)',
+                                    }}
+                                />
+                            ))}
+                        </div>
+                        {strength.labelKey && (
+                            <span className="shrink-0 text-ui-tiny font-ui-bold tracking-mr" style={{ color: strength.color }}>
+                                {t(strength.labelKey)}
+                            </span>
+                        )}
+                    </div>
+                )}
+
+                <AuthField
+                    label={t('resetPassword.confirmPasswordLabel')}
+                    type={showConfirm ? 'text' : 'password'}
+                    autoComplete="new-password"
+                    value={confirmPassword}
+                    onChange={handleConfirmPasswordChange}
+                    placeholder={t('resetPassword.confirmPasswordPlaceholder')}
+                    error={errors.confirmPassword}
+                    rightSlot={
+                        <button
+                            type="button"
+                            onClick={() => setShowConfirm(v => !v)}
+                            aria-label={showConfirm ? t('resetPassword.hidePassword') : t('resetPassword.showPassword')}
+                            className="text-ui-tiny text-ui-fg-subtle hover:text-ui-fg"
+                        >
+                            {showConfirm ? <EyeOff size={14} /> : <Eye size={14} />}
+                        </button>
+                    }
+                />
+
+                <AuthSubmit loading={isLoading}>{t('resetPassword.submitAction')}</AuthSubmit>
+            </form>
+        </AuthShell>
+    );
+};
+
+export default ResetPassword;

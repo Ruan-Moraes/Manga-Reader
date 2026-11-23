@@ -1,0 +1,12 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Gateway Tester Dev (5175)" type="js.build_tools.npm" folderName="Frontend">
+    <package-json value="$PROJECT_DIR$/web/apps/gateway-tester/package.json" />
+    <command value="run" />
+    <scripts>
+      <script value="dev" />
+    </scripts>
+    <node-interpreter value="project" />
+    <envs />
+    <method v="2" />
+  </configuration>
+</component>

@@ -1,0 +1,4 @@
+interface:
+    display_name: 'SDD Auditor'
+    short_description: 'Audita paridade e prontidão do workflow SDD'
+    default_prompt: 'Use $sdd-auditor para auditar a paridade entre código e specs do mobile.'

@@ -1,3 +1,4 @@
 export { api } from './apiClient';
-export { subscribeAuthExpired } from './authExpired';
+export { notifyAuthExpired, subscribeAuthExpired } from './authExpired';
+export { createFileDownloadAdapter } from './fileDownloadAdapter';
 export { tokenStorage } from './tokenStorage';

@@ -1,6 +1,12 @@
 node_modules
+.expo
+/ios/
+/android/
 dist
 build
 .coverage
+design
 *.log
 *.lock
+# Canonical cross-project output; validate with node ../scripts/brand/brand.mjs generate --check.
+src/shared/config/brand.generated.ts

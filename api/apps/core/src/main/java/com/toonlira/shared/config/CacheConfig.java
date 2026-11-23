@@ -1,0 +1,68 @@
+package com.toonlira.shared.config;
+
+import java.util.Map;
+
+import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
+import org.springframework.data.redis.cache.RedisCacheConfiguration;
+import org.springframework.data.redis.cache.RedisCacheManager;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.RedisSerializationContext;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.toonlira.shared.constant.CacheNames;
+
+/**
+ * Configuração do Redis como provedor de cache.
+ * <p>
+ * Define TTLs individuais por cache para equilibrar freshness e performance.
+ * Desabilitado no profile "test" (usa {@code spring.cache.type=none}).
+ */
+@Configuration
+@EnableCaching
+@Profile("!test")
+public class CacheConfig {
+    @Bean
+    public RedisCacheManager cacheManager(RedisConnectionFactory connectionFactory, CacheProperties properties) {
+        var jsonSerializer = RedisSerializationContext.SerializationPair
+                .fromSerializer(redisJsonSerializer());
+
+        RedisCacheConfiguration defaultConfig = RedisCacheConfiguration.defaultCacheConfig()
+                .serializeKeysWith(RedisSerializationContext.SerializationPair
+                        .fromSerializer(new StringRedisSerializer()))
+                .serializeValuesWith(jsonSerializer)
+                .disableCachingNullValues()
+                .entryTtl(properties.defaultTtl());
+
+        Map<String, RedisCacheConfiguration> perCacheTtl = Map.of(
+                CacheNames.TITLE,               defaultConfig.entryTtl(properties.titleTtl()),
+                CacheNames.TAG,                 defaultConfig.entryTtl(properties.tagTtl()),
+                CacheNames.RATING_AVERAGE,      defaultConfig.entryTtl(properties.ratingAverageTtl()),
+                CacheNames.PUBLIC_STATS,        defaultConfig.entryTtl(properties.publicStatsTtl()),
+                CacheNames.SUBSCRIPTION_PLANS,  defaultConfig.entryTtl(properties.subscriptionPlansTtl())
+        );
+
+        return RedisCacheManager.builder(connectionFactory)
+                .cacheDefaults(defaultConfig)
+                .withInitialCacheConfigurations(perCacheTtl)
+                .transactionAware()
+                .build();
+    }
+
+    static GenericJackson2JsonRedisSerializer redisJsonSerializer() {
+        var mapper = new ObjectMapper()
+                .registerModule(new JavaTimeModule())
+                .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
+        return GenericJackson2JsonRedisSerializer.builder()
+                .objectMapper(mapper)
+                .defaultTyping(true)
+                .build();
+    }
+}

@@ -1,0 +1,39 @@
+package com.toonlira.translationgateway.application;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.time.Instant;
+import java.util.List;
+
+public record CapabilitiesView(
+    String contractVersion,
+    String gatewayKey,
+    Instant generatedAt,
+    Instant validUntil,
+    boolean enabled,
+    List<String> supportedLanguages,
+    List<LanguagePair> supportedPairs,
+    MediaLimits mediaLimits,
+    int dailyInstallationQuota,
+    int dailyGlobalQuota,
+    LegalDisclosure disclosure,
+    @JsonIgnore String etag
+) {
+    public record LanguagePair(String source, String target) { }
+    public record MediaLimits(List<String> mimeTypes, long maxBytes, int maxWidthPx, int maxHeightPx, long maxPixels) { }
+    public record LegalDisclosure(
+        String version,
+        String operatorName,
+        String operatorContact,
+        String privacyPolicyUrl,
+        String termsUrl,
+        String gatewayRegion,
+        String ocrRegion,
+        String translationLocation,
+        /** Where the optional language model reviews translated text; null while that layer is off. */
+        String languageModelLocation,
+        int originalRetentionSeconds,
+        int resultRetentionSeconds,
+        int metadataRetentionDays,
+        String providerTrainingPolicy
+    ) { }
+}

@@ -1,0 +1,411 @@
+openapi: 3.1.0
+info:
+  title: Toonlira — identidade anônima e retirada do transporte v1
+  version: 1.1.0
+  description: Identidade preservada; processamento atual no contrato v2.
+paths:
+  /v1/anonymous/installations:
+    post:
+      tags: [Anonymous identity]
+      operationId: createAnonymousInstallation
+      summary: Cria uma identidade anônima e entrega a credencial longa uma única vez
+      security: []
+      x-log-policy: metadata-only
+      responses:
+        "201":
+          description: Instalação criada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AnonymousInstallationCreated"
+        "429":
+          $ref: "#/components/responses/RateLimited"
+        "503":
+          $ref: "#/components/responses/ServiceUnavailable"
+
+  /v1/anonymous/sessions:
+    post:
+      tags: [Anonymous identity]
+      operationId: createAnonymousSession
+      summary: Troca a credencial longa por um bearer curto e revogável
+      security:
+        - installationCredential: []
+      x-log-policy: never-log-authorization
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AnonymousSessionRequest"
+      responses:
+        "201":
+          description: Sessão curta criada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AnonymousSessionCreated"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "429":
+          $ref: "#/components/responses/RateLimited"
+        "503":
+          $ref: "#/components/responses/ServiceUnavailable"
+
+  "/v1/capabilities":
+    "get":
+      "deprecated": true
+      "summary": "Rota de conteúdo retirada"
+      "security": []
+      "responses":
+        "410":
+          "description": "Transporte de conteúdo retirado; rejeitado antes de ler o corpo"
+          "headers":
+            "Cache-Control":
+              "schema":
+                "const": "no-store"
+          "content":
+            "application/problem+json":
+              "schema":
+                "type": "object"
+                "additionalProperties": false
+                "required":
+                  - "contractVersion"
+                  - "code"
+                  - "retryable"
+                "properties":
+                  "contractVersion":
+                    "const": "2.0"
+                  "code":
+                    "const": "content-route-retired"
+                  "retryable":
+                    "const": false
+  "/v1/page-jobs":
+    "post":
+      "deprecated": true
+      "summary": "Rota de conteúdo retirada"
+      "security": []
+      "responses":
+        "410":
+          "description": "Transporte de conteúdo retirado; rejeitado antes de ler o corpo"
+          "headers":
+            "Cache-Control":
+              "schema":
+                "const": "no-store"
+          "content":
+            "application/problem+json":
+              "schema":
+                "type": "object"
+                "additionalProperties": false
+                "required":
+                  - "contractVersion"
+                  - "code"
+                  - "retryable"
+                "properties":
+                  "contractVersion":
+                    "const": "2.0"
+                  "code":
+                    "const": "content-route-retired"
+                  "retryable":
+                    "const": false
+  "/v1/page-jobs/by-idempotency/{idempotencyKey}":
+    "get":
+      "deprecated": true
+      "summary": "Rota de conteúdo retirada"
+      "security": []
+      "responses":
+        "410":
+          "description": "Transporte de conteúdo retirado; rejeitado antes de ler o corpo"
+          "headers":
+            "Cache-Control":
+              "schema":
+                "const": "no-store"
+          "content":
+            "application/problem+json":
+              "schema":
+                "type": "object"
+                "additionalProperties": false
+                "required":
+                  - "contractVersion"
+                  - "code"
+                  - "retryable"
+                "properties":
+                  "contractVersion":
+                    "const": "2.0"
+                  "code":
+                    "const": "content-route-retired"
+                  "retryable":
+                    "const": false
+    "parameters":
+      -
+        "name": "idempotencyKey"
+        "in": "path"
+        "required": true
+        "schema":
+          "type": "string"
+  "/v1/page-jobs/{jobRef}":
+    "get":
+      "deprecated": true
+      "summary": "Rota de conteúdo retirada"
+      "security": []
+      "responses":
+        "410":
+          "description": "Transporte de conteúdo retirado; rejeitado antes de ler o corpo"
+          "headers":
+            "Cache-Control":
+              "schema":
+                "const": "no-store"
+          "content":
+            "application/problem+json":
+              "schema":
+                "type": "object"
+                "additionalProperties": false
+                "required":
+                  - "contractVersion"
+                  - "code"
+                  - "retryable"
+                "properties":
+                  "contractVersion":
+                    "const": "2.0"
+                  "code":
+                    "const": "content-route-retired"
+                  "retryable":
+                    "const": false
+    "parameters":
+      -
+        "name": "jobRef"
+        "in": "path"
+        "required": true
+        "schema":
+          "type": "string"
+  "/v1/page-jobs/{jobRef}/cancel":
+    "post":
+      "deprecated": true
+      "summary": "Rota de conteúdo retirada"
+      "security": []
+      "responses":
+        "410":
+          "description": "Transporte de conteúdo retirado; rejeitado antes de ler o corpo"
+          "headers":
+            "Cache-Control":
+              "schema":
+                "const": "no-store"
+          "content":
+            "application/problem+json":
+              "schema":
+                "type": "object"
+                "additionalProperties": false
+                "required":
+                  - "contractVersion"
+                  - "code"
+                  - "retryable"
+                "properties":
+                  "contractVersion":
+                    "const": "2.0"
+                  "code":
+                    "const": "content-route-retired"
+                  "retryable":
+                    "const": false
+    "parameters":
+      -
+        "name": "jobRef"
+        "in": "path"
+        "required": true
+        "schema":
+          "type": "string"
+  "/v1/page-jobs/{jobRef}/ack":
+    "post":
+      "deprecated": true
+      "summary": "Rota de conteúdo retirada"
+      "security": []
+      "responses":
+        "410":
+          "description": "Transporte de conteúdo retirado; rejeitado antes de ler o corpo"
+          "headers":
+            "Cache-Control":
+              "schema":
+                "const": "no-store"
+          "content":
+            "application/problem+json":
+              "schema":
+                "type": "object"
+                "additionalProperties": false
+                "required":
+                  - "contractVersion"
+                  - "code"
+                  - "retryable"
+                "properties":
+                  "contractVersion":
+                    "const": "2.0"
+                  "code":
+                    "const": "content-route-retired"
+                  "retryable":
+                    "const": false
+    "parameters":
+      -
+        "name": "jobRef"
+        "in": "path"
+        "required": true
+        "schema":
+          "type": "string"
+  "/internal/tasks/ocr":
+    "post":
+      "deprecated": true
+      "summary": "Rota de conteúdo retirada"
+      "security": []
+      "responses":
+        "410":
+          "description": "Transporte de conteúdo retirado; rejeitado antes de ler o corpo"
+          "headers":
+            "Cache-Control":
+              "schema":
+                "const": "no-store"
+          "content":
+            "application/problem+json":
+              "schema":
+                "type": "object"
+                "additionalProperties": false
+                "required":
+                  - "contractVersion"
+                  - "code"
+                  - "retryable"
+                "properties":
+                  "contractVersion":
+                    "const": "2.0"
+                  "code":
+                    "const": "content-route-retired"
+                  "retryable":
+                    "const": false
+components:
+  responses:
+    Unauthorized:
+      description: Credencial ausente, inválida ou expirada
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/GatewayProblem"
+    Forbidden:
+      description: Instalação revogada ou job não pertence à instalação
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/GatewayProblem"
+    RateLimited:
+      description: Quota por instalação, global ou rate limit atingido
+      headers:
+        Retry-After:
+          schema:
+            type: integer
+            minimum: 1
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/GatewayProblem"
+    ServiceUnavailable:
+      description: Kill switch ativo, configuração inválida ou dependência indisponível
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/GatewayProblem"
+
+  schemas:
+    AnonymousInstallationCreated:
+      type: object
+      additionalProperties: false
+      required: [contractVersion, installationRef, credential, createdAt]
+      properties:
+        contractVersion:
+          type: string
+          const: "1.0"
+        installationRef:
+          type: string
+          format: uuid
+        credential:
+          type: string
+          minLength: 32
+          maxLength: 512
+          readOnly: true
+        createdAt:
+          type: string
+          format: date-time
+
+    AnonymousSessionRequest:
+      type: object
+      additionalProperties: false
+      required: [installationRef]
+      properties:
+        installationRef:
+          type: string
+          format: uuid
+
+    AnonymousSessionCreated:
+      type: object
+      additionalProperties: false
+      required: [contractVersion, accessToken, expiresAt]
+      properties:
+        contractVersion:
+          type: string
+          const: "1.0"
+        accessToken:
+          type: string
+          minLength: 32
+          maxLength: 4096
+          readOnly: true
+        expiresAt:
+          type: string
+          format: date-time
+
+    GatewayErrorCode:
+      type: string
+      enum:
+        - invalid-request
+        - invalid-contract-version
+        - consent-required
+        - unsupported-pair
+        - unsupported-media-type
+        - payload-too-large
+        - capabilities-unavailable
+        - gateway-disabled
+        - unauthorized
+        - installation-revoked
+        - quota-exceeded
+        - job-not-found
+        - job-state-conflict
+        - cancellation-unavailable
+        - storage-unavailable
+        - dispatch-unavailable
+        - ocr-invalid-media
+        - ocr-invalid-response
+        - ocr-unavailable
+        - translation-invalid-request
+        - translation-invalid-response
+        - translation-unavailable
+        - internal-error
+
+    GatewayProblem:
+      type: object
+      additionalProperties: false
+      required: [type, title, status, code, contractVersion, correlationRef]
+      properties:
+        type:
+          type: string
+          format: uri
+        title:
+          type: string
+          maxLength: 160
+        status:
+          type: integer
+          minimum: 400
+          maximum: 599
+        code:
+          $ref: "#/components/schemas/GatewayErrorCode"
+        contractVersion:
+          type: string
+          const: "1.0"
+        correlationRef:
+          type: string
+          format: uuid
+        retryable:
+          type: boolean
+          default: false

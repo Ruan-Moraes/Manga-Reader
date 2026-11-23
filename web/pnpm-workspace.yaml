@@ -1,7 +1,5 @@
 packages:
-  - "manga-reader"
-  - "landing-page"
-  - "packages/*"
+  - "apps/*"
 allowBuilds:
   '@swc/core': false
   electron: false

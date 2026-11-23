@@ -6,4 +6,11 @@ export default defineConfig([
     {
         ignores: ['./src/application/**', '**/__tests__/**'],
     },
+    {
+        files: ['./src/**'],
+        rules: {
+            // Heurística de volume não é boundary; slices pequenos continuam válidos quando coesos.
+            'fsd/insignificant-slice': 'off',
+        },
+    },
 ]);

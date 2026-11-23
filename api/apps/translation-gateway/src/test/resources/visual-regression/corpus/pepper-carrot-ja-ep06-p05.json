@@ -1,0 +1,166 @@
+{
+  "root" : "corpus",
+  "page" : "pepper-carrot-ja-ep06/p05.jpg",
+  "sourceLanguage" : "ja",
+  "width" : 1200,
+  "height" : 1660,
+  "regions" : [ {
+    "source" : "素晴らしい! びっくりです!\n",
+    "translation" : "Maravilhoso! Estou impressionado!",
+    "kind" : "unknown",
+    "polygon" : [ [ 0.051666666666666666, 0.7939759036144578 ], [ 0.2808333333333333, 0.7939759036144578 ], [ 0.2808333333333333, 0.8066265060240964 ], [ 0.051666666666666666, 0.8066265060240964 ] ]
+  }, {
+    "source" : "この薬はコモナ全体を裕福に出来るでしょう!",
+    "translation" : "Este remédio poderá tornar toda Komona rica!",
+    "kind" : "unknown",
+    "polygon" : [ [ 0.04083333333333333, 0.8186746987951807 ], [ 0.245, 0.8186746987951807 ], [ 0.245, 0.8493975903614458 ], [ 0.04083333333333333, 0.8493975903614458 ] ]
+  }, {
+    "source" : "素晴らしい!\n",
+    "translation" : "Maravilhoso!",
+    "kind" : "unknown",
+    "polygon" : [ [ 0.095, 0.01325301204819277 ], [ 0.18, 0.01325301204819277 ], [ 0.18, 0.03132530120481928 ], [ 0.095, 0.03132530120481928 ] ]
+  }, {
+    "source" : "パチパチパチパチパチパチ",
+    "translation" : "Clap clap clap clap clap clap",
+    "kind" : "unknown",
+    "polygon" : [ [ 0.03833333333333333, 0.05120481927710843 ], [ 0.1925, 0.05120481927710843 ], [ 0.1925, 0.1427710843373494 ], [ 0.03833333333333333, 0.1427710843373494 ] ]
+  }, {
+    "source" : "コリアンダーはこの奇跡の魔法薬で死を否定しました!",
+    "translation" : "Coriander desafiou a morte com esta poção mágica milagrosa!",
+    "kind" : "unknown",
+    "polygon" : [ [ 0.17666666666666667, 0.03132530120481928 ], [ 0.34833333333333333, 0.03132530120481928 ], [ 0.34833333333333333, 0.0783132530120482 ], [ 0.17666666666666667, 0.0783132530120482 ] ]
+  }, {
+    "source" : "パチパチパチパチ",
+    "translation" : "Clap clap clap clap",
+    "kind" : "unknown",
+    "polygon" : [ [ 0.2975, 0.08313253012048193 ], [ 0.43083333333333335, 0.08313253012048193 ], [ 0.43083333333333335, 0.1493975903614458 ], [ 0.2975, 0.1493975903614458 ] ]
+  }, {
+    "source" : "コモナの街の皆様\n拍手をするのを\nお待ちくださいな!\n",
+    "translation" : "Cidadãos de Komona, por favor, contenham os aplausos!",
+    "kind" : "unknown",
+    "polygon" : [ [ 0.11, 0.17349397590361446 ], [ 0.2841666666666667, 0.17349397590361446 ], [ 0.2841666666666667, 0.21987951807228914 ], [ 0.11, 0.21987951807228914 ] ]
+  }, {
+    "source" : "ここにあるのは私の魔法薬",
+    "translation" : "O que temos aqui é a minha poção mágica.",
+    "kind" : "unknown",
+    "polygon" : [ [ 0.26416666666666666, 0.22710843373493975 ], [ 0.3983333333333333, 0.22710843373493975 ], [ 0.3983333333333333, 0.2572289156626506 ], [ 0.26416666666666666, 0.2572289156626506 ] ]
+  }, {
+    "source" : "バチパチパチパチ",
+    "translation" : "Clap clap clap clap",
+    "kind" : "unknown",
+    "polygon" : [ [ 0.5625, 0.08975903614457831 ], [ 0.6783333333333333, 0.08975903614457831 ], [ 0.6783333333333333, 0.14397590361445783 ], [ 0.5625, 0.14397590361445783 ] ]
+  }, {
+    "source" : "皆様が待っていたのはこの魔法薬ですわ隣人達はあなたの変貌にビックリ仰天して.......皆があなたをうらやむのです!",
+    "translation" : "Esta é a poção mágica que todos estavam esperando! Seus vizinhos ficarão boquiabertos com a sua transformação... e todos vão invejar você!",
+    "kind" : "unknown",
+    "polygon" : [ [ 0.7075, 0.2608433734939759 ], [ 0.945, 0.2608433734939759 ], [ 0.945, 0.3674698795180723 ], [ 0.7075, 0.3674698795180723 ] ]
+  }, {
+    "source" : "... ただ一滴垂らすだけでそれが可能になるそう、これが私の魔法薬 ...",
+    "translation" : "...Basta pingar uma única gota para tornar isso possível! Sim, esta é a minha poção mágica...",
+    "kind" : "unknown",
+    "polygon" : [ [ 0.23666666666666666, 0.4090361445783133 ], [ 0.4716666666666667, 0.4090361445783133 ], [ 0.4716666666666667, 0.45602409638554214 ], [ 0.23666666666666666, 0.45602409638554214 ] ]
+  }, {
+    "source" : "ゴージャスの魔法薬!\n",
+    "translation" : "A Poção Mágica Deslumbrante!",
+    "kind" : "unknown",
+    "polygon" : [ [ 0.6683333333333333, 0.405421686746988 ], [ 0.8391666666666666, 0.4072289156626506 ], [ 0.8383333333333334, 0.42891566265060244 ], [ 0.6675, 0.4271084337349398 ] ]
+  }, {
+    "source" : "m\n",
+    "translation" : " m",
+    "kind" : "unknown",
+    "polygon" : [ [ 0.4083333333333333, 0.8632530120481928 ], [ 0.4275, 0.8602409638554217 ], [ 0.43, 0.8662650602409638 ], [ 0.41, 0.8698795180722891 ] ]
+  }, {
+    "source" : "皆様の拍手ももっともですねコリアンダーの負けは既に確定です",
+    "translation" : "Os aplausos de todos são mais do que justificados; a derrota de Coriander já é certa.",
+    "kind" : "unknown",
+    "polygon" : [ [ 0.3283333333333333, 0.9006024096385542 ], [ 0.5183333333333333, 0.9006024096385542 ], [ 0.5183333333333333, 0.9650602409638555 ], [ 0.3283333333333333, 0.9650602409638555 ] ]
+  }, {
+    "source" : "山手\n",
+    "translation" : " Yamate",
+    "kind" : "unknown",
+    "polygon" : [ [ 0.5, 0.9716867469879518 ], [ 0.5583333333333333, 0.9343373493975904 ], [ 0.5791666666666667, 0.9518072289156626 ], [ 0.5208333333333334, 0.9885542168674699 ] ]
+  }, {
+    "source" : "パチパチRENERERET",
+    "translation" : " Pachi-pachi RENERERET",
+    "kind" : "unknown",
+    "polygon" : [ [ 0.5341666666666667, 0.6668674698795181 ], [ 0.6816666666666666, 0.6668674698795181 ], [ 0.6816666666666666, 0.7795180722891566 ], [ 0.5341666666666667, 0.7795180722891566 ] ]
+  }, {
+    "source" : "パチ\n",
+    "translation" : "Clap",
+    "kind" : "unknown",
+    "polygon" : [ [ 0.8875, 0.6783132530120481 ], [ 0.9333333333333333, 0.6590361445783133 ], [ 0.95, 0.6801204819277108 ], [ 0.9041666666666667, 0.6993975903614458 ] ]
+  } ],
+  "bubbles" : [ ],
+  "expect" : {
+    "maxChangedOutside" : 2694,
+    "regions" : [ {
+      "overflow" : false,
+      "font" : 22,
+      "residualInk" : 0
+    }, {
+      "overflow" : false,
+      "font" : 20,
+      "residualInk" : 0
+    }, {
+      "overflow" : false,
+      "font" : 22,
+      "residualInk" : 0
+    }, {
+      "overflow" : true,
+      "font" : 0,
+      "residualInk" : 0
+    }, {
+      "overflow" : false,
+      "font" : 17,
+      "residualInk" : 2
+    }, {
+      "overflow" : true,
+      "font" : 0,
+      "residualInk" : 0
+    }, {
+      "overflow" : false,
+      "font" : 22,
+      "residualInk" : 0
+    }, {
+      "overflow" : false,
+      "font" : 14,
+      "residualInk" : 0
+    }, {
+      "overflow" : false,
+      "font" : 27,
+      "residualInk" : 0
+    }, {
+      "overflow" : false,
+      "font" : 21,
+      "residualInk" : 0
+    }, {
+      "overflow" : false,
+      "font" : 21,
+      "residualInk" : 0
+    }, {
+      "overflow" : false,
+      "font" : 22,
+      "residualInk" : 0
+    }, {
+      "overflow" : true,
+      "font" : 0,
+      "residualInk" : 0
+    }, {
+      "overflow" : false,
+      "font" : 18,
+      "residualInk" : 0
+    }, {
+      "overflow" : true,
+      "font" : 0,
+      "residualInk" : 0
+    }, {
+      "overflow" : true,
+      "font" : 0,
+      "residualInk" : 0
+    }, {
+      "overflow" : true,
+      "font" : 0,
+      "residualInk" : 0
+    } ]
+  }
+}

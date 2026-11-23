@@ -1,15 +1,13 @@
-import { Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { SafeAreaView } from 'react-native-safe-area-context';
+
+import { navigateBackOrReplace, ROUTES } from '@/shared/navigation';
+import { EmptyState, ScreenScaffold } from '@/shared/ui';
 
 export function ForumPage() {
     const { t } = useTranslation('common');
     return (
-        <SafeAreaView className="flex-1 bg-mr-bg">
-            <View className="flex-1 items-center justify-center">
-                <Text className="text-2xl font-bold text-mr-text">{t('nav.forum')}</Text>
-                <Text className="mt-2 text-mr-muted">{t('forum.comingSoon')}</Text>
-            </View>
-        </SafeAreaView>
+        <ScreenScaffold compact backLabel={t('navigation.back')} onBack={() => navigateBackOrReplace(ROUTES.ROOT)} title={t('nav.forum')}>
+            <EmptyState title={t('nav.forum')} description={t('forum.comingSoon')} />
+        </ScreenScaffold>
     );
 }

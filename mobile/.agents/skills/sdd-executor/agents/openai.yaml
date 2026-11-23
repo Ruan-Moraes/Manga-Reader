@@ -1,0 +1,4 @@
+interface:
+    display_name: 'SDD Executor'
+    short_description: 'Implementa somente specs aprovadas e testáveis'
+    default_prompt: 'Use $sdd-executor para implementar uma Target Spec mobile aprovada, desbloqueada e com tasks.'

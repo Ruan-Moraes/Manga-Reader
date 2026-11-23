@@ -1,0 +1,237 @@
+{
+    "actions": {
+        "resetZoom": "Restaurar tamaño original",
+        "controlsHint": "Abre o cierra los controles y preferencias del lector",
+        "exit": "Salir del lector",
+        "hideControls": "Ocultar controles",
+        "nextPage": "Página siguiente",
+        "previousPage": "Página anterior",
+        "retry": "Intentar de nuevo",
+        "retryImage": "Intentar cargar la página {{page}} de nuevo",
+        "retryProgress": "Intentar sincronizar el progreso de nuevo",
+        "retryProgressHydration": "Intentar cargar el progreso de nuevo",
+        "overflow": "Ver texto completo",
+        "showOriginal": "Ver original",
+        "showResult": "Ver resultado",
+        "settings": "Configuración del lector",
+        "showControls": "Mostrar controles"
+    },
+    "demo": {
+        "badge": "DEMOSTRACIÓN"
+    },
+    "controls": {
+        "decrease": "Disminuir {{label}}",
+        "increase": "Aumentar {{label}}"
+    },
+    "errors": {
+        "image": "No se pudo cargar esta página.",
+        "progress": "El progreso está pendiente. Toca para intentarlo de nuevo.",
+        "progressHydration": "No se pudo cargar tu progreso. La lectura sigue disponible."
+    },
+    "shortOptions": {
+        "LTR": "Izq → Der",
+        "RTL": "Der → Izq"
+    },
+    "options": {
+        "BLACK": "Negro",
+        "DARK": "Oscuro",
+        "DOUBLE": "Doble",
+        "HEIGHT": "Altura",
+        "LIGHT": "Claro",
+        "LTR": "Izquierda a derecha",
+        "ORIGINAL": "Original",
+        "PAGED": "Paginado",
+        "PAPER": "Papel",
+        "RTL": "Derecha a izquierda",
+        "VERTICAL": "Vertical",
+        "WEBTOON": "Webtoon",
+        "WHITE": "Blanco",
+        "WIDTH": "Ancho"
+    },
+    "resume": {
+        "continue": "Continuar lectura",
+        "description": "Tu progreso más reciente está en el capítulo {{chapter}}, página {{page}}.",
+        "requested": "Abrir capítulo solicitado",
+        "title": "¿Continuar donde lo dejaste?"
+    },
+    "settings": {
+        "autoMarkRead": "Marcar automáticamente como leído",
+        "background": "Fondo",
+        "closeSelection": "Cerrar selección",
+        "descriptions": {
+            "autoMarkRead": "Actualiza el progreso al completar la página.",
+            "gap": "Espacio visual entre páginas en el flujo vertical.",
+            "mode": {
+                "DOUBLE": "Dos páginas lado a lado.",
+                "PAGED": "Una página a la vez.",
+                "VERTICAL": "Flujo continuo para lectura por desplazamiento."
+            },
+            "preload": "Cantidad de páginas preparadas alrededor de la actual.",
+            "saturation": "Ajusta la intensidad de color de las páginas."
+        },
+        "direction": "Dirección",
+        "fit": "Ajuste",
+        "gap": "Espaciado",
+        "mode": "Modo",
+        "modeLong": "Modo de lectura",
+        "preload": "Precarga",
+        "saturation": "Saturación",
+        "sections": {
+            "behavior": {
+                "description": "Espaciado, precarga y actualización del progreso.",
+                "title": "Comportamiento"
+            },
+            "image": {
+                "description": "Fondo y tratamiento visual de las páginas.",
+                "title": "Imagen"
+            },
+            "navigation": {
+                "description": "Cómo avanzan las páginas y ocupan la pantalla.",
+                "title": "Navegación"
+            }
+        },
+        "values": {
+            "pages": "{{value}} páginas",
+            "percent": "{{value}}%",
+            "pixels": "{{value}} px"
+        }
+    },
+    "states": {
+        "error": "No se pudo cargar el capítulo.",
+        "loading": "Cargando capítulo…",
+        "safeExit": "Puedes intentarlo de nuevo o volver con seguridad.",
+        "unavailable": "Este capítulo no tiene páginas disponibles."
+    },
+    "novelPreview": {
+        "title": "Vista previa de novela",
+        "heading": "Capítulo 1 — La ciudad bajo la lluvia",
+        "paragraphOne": "La lluvia dibujaba caminos plateados en las ventanas cuando Lira encontró la carta que nadie debía enviar.",
+        "speaker": "Lira",
+        "dialogue": "Si este mensaje llegó hasta mí, la historia todavía puede cambiar.",
+        "paragraphTwo": "Dobló el papel, respiró hondo y cruzó la puerta. La ciudad seguía igual; el destino, no.",
+        "illustration": "Ilustración de demostración del capítulo"
+    },
+    "viewport": {
+        "page": "Página {{page}} de {{total}}",
+        "item": "Fragmento {{page}} de {{total}}",
+        "originalPage": "Página original",
+        "resultPage": "Página traducida",
+        "chapter": "Capítulo {{chapter}}",
+        "progress": "Progreso de lectura"
+    },
+    "gestures": {
+        "title": "Gestos del lector",
+        "description": "Elige cómo acceder a los controles. Estas preferencias se guardan en este dispositivo.",
+        "controls": "Mostrar controles",
+        "options": {
+            "TAP": "Tocar la pantalla",
+            "SWIPE": "Deslizar desde abajo",
+            "TAP_OR_SWIPE": "Tocar o deslizar",
+            "VISIBLE": "Mantener controles visibles"
+        },
+        "descriptions": {
+            "TAP": "Toca el centro de la obra para mostrar u ocultar. El desplazamiento oculta los controles.",
+            "SWIPE": "Desliza brevemente hacia arriba en el centro inferior para mostrar. Toca la obra para ocultar.",
+            "TAP_OR_SWIPE": "Toca el centro o desliza hacia arriba en el centro inferior para mostrar. Toca la obra para ocultar.",
+            "VISIBLE": "Muestra los controles en reposo, los oculta al desplazarse y vuelve a mostrarlos al terminar la desaceleración."
+        },
+        "sideTap": "Áreas laterales de toque",
+        "sideDescription": "Toca los laterales para avanzar o retroceder páginas según la dirección de lectura.",
+        "sideUnavailable": "Disponible solo en los modos paginado y doble, sin dirección Webtoon.",
+        "saveError": "No se pudieron guardar los gestos en este dispositivo. Tu elección sigue activa en esta sesión.",
+        "retry": "Volver a guardar"
+    },
+    "text": {
+        "title": "Texto y apariencia",
+        "description": "Personaliza solo la lectura de texto. El tamaño también respeta la ampliación del sistema.",
+        "font": "Fuente",
+        "fonts": {
+            "APP": "De la aplicación",
+            "SERIF": "Con serifas"
+        },
+        "size": "Tamaño del texto",
+        "decrease": "Reducir texto",
+        "increase": "Aumentar texto",
+        "sizeValue": "{{size}} pt",
+        "spacing": "Interlineado",
+        "lineSpacing": {
+            "COMPACT": "Compacto",
+            "COMFORTABLE": "Cómodo",
+            "WIDE": "Amplio"
+        },
+        "margin": "Márgenes laterales",
+        "margins": {
+            "NARROW": "Estrechos",
+            "MEDIUM": "Medios",
+            "WIDE": "Anchos"
+        },
+        "background": "Fondo del lector",
+        "backgrounds": {
+            "APP": "Seguir aplicación",
+            "LIGHT": "Claro",
+            "PAPER": "Papel",
+            "DARK": "Oscuro"
+        },
+        "reset": "Restaurar ajustes del texto",
+        "saveError": "No se pudieron guardar los ajustes del texto.",
+        "retry": "Reintentar",
+        "progress": "{{percent}}% leído"
+    },
+    "panel": {
+        "expand": "Expandir panel",
+        "collapse": "Contraer panel",
+        "help": "Sobre {{label}}",
+        "tabs": {
+            "reading": "Lectura",
+            "appearance": "Apariencia",
+            "gestures": "Gestos"
+        }
+    },
+    "kit": {
+        "settingsTitle": "Ajustes del lector",
+        "settingsDescription": "Los cambios se aplican al momento y se guardan en tus ajustes.",
+        "allSettings": "Todos los ajustes del lector",
+        "close": "Cerrar",
+        "chapterList": "Lista de capítulos",
+        "chapterListTitle": "Capítulos",
+        "chapterSearch": "Buscar capítulo por nombre",
+        "chapterSort": "Ordenar por",
+        "chapterSortOptions": {
+            "numeric": "Numérico",
+            "alphabetic": "Alfabético"
+        },
+        "chapterSearchEmpty": "No se encontraron capítulos.",
+        "currentChapter": "Capítulo actual",
+        "previousChapter": "Capítulo anterior",
+        "nextChapter": "Capítulo siguiente",
+        "previous": "Anterior",
+        "next": "Siguiente",
+        "version": "Versión de las páginas",
+        "translated": "Traducido",
+        "original": "Original",
+        "pageOfTotal": "{{page}} / {{total}}",
+        "endEyebrow": "Fin del capítulo",
+        "nextTitle": "Siguiente: {{name}}",
+        "upToDate": "Estás al día con {{name}}",
+        "upToDateUntitled": "Llegaste al final de este capítulo",
+        "readNext": "Leer el siguiente capítulo",
+        "backToWork": "Volver a la obra",
+        "back": "Volver",
+        "processingTitle": "Traducción en curso",
+        "processingText_one": "La página aparece aquí en cuanto esté lista. Mientras tanto puedes leer el original.",
+        "processingText_other": "Las {{count}} páginas aparecen aquí en cuanto estén listas. Mientras tanto puedes leer el original.",
+        "failedTitle": "No se pudo traducir",
+        "failedText": "La traducción se detuvo antes de terminar. No se volvió a enviar ninguna página.",
+        "retry": "Intentar de nuevo",
+        "readOriginal": "Leer original",
+        "retryTitle": "Intentar traducir de nuevo",
+        "retryDescription": "Solo se envían las páginas que fallaron, y solo después de que aceptes.",
+        "chapterUnavailable": "Este capítulo ya no está disponible."
+    },
+    "translationProgress": {
+        "title": "Traduciendo…",
+        "description": "{{ready}} de {{total}} páginas listas",
+        "doneTitle": "Traducción lista",
+        "doneDescription": "Las {{total}} páginas se tradujeron."
+    }
+}

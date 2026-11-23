@@ -1,0 +1,14 @@
+{
+    "tagSelect": {
+        "loading": "Loading...",
+        "searchPlaceholder": "Search...",
+        "noResults": "No options found"
+    },
+    "filters": {
+        "title": "Filter Titles",
+        "sort": {
+            "random": "Random",
+            "alphabetical": "Alphabetical"
+        }
+    }
+}

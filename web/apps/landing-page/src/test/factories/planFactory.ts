@@ -1,0 +1,18 @@
+import type { SubscriptionPlan } from '@/shared/type';
+
+let idCounter = 0;
+
+export function buildPlan(
+    overrides: Partial<SubscriptionPlan> = {},
+): SubscriptionPlan {
+    idCounter += 1;
+    return {
+        id: `plan-${idCounter}`,
+        period: 'MONTHLY',
+        priceInCents: 1990,
+        description: 'Test plan description',
+        features: ['Feature A', 'Feature B'],
+        active: true,
+        ...overrides,
+    };
+}

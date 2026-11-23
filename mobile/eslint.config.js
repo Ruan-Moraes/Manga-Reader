@@ -6,7 +6,7 @@ const tseslint = require('typescript-eslint');
 
 module.exports = tseslint.config(
     {
-        ignores: ['.expo/**', 'node_modules/**', 'docs/auth-design-reference/**'],
+        ignores: ['.expo/**', 'node_modules/**', 'ios/**', 'android/**', 'docs/auth-design-reference/**'],
     },
     js.configs.recommended,
     ...tseslint.configs.recommended,

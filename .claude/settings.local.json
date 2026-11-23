@@ -24,7 +24,7 @@
       "Bash(cat *)",
       "Bash(make build-app-fresh *)",
       "Bash(make package *)",
-      "Bash(pnpm --filter manga-reader lint:fsd)",
+      "Bash(pnpm --filter toonlira lint:fsd)",
       "Bash(sed -n '344,350p' pages/chapter/ui/reader.css)",
       "Bash(sed -n '414,420p' pages/chapter/ui/reader.css)",
       "Bash(git stash *)",

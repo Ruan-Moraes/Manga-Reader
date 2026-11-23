@@ -1,0 +1,6 @@
+FROM eclipse-temurin@sha256:78498f30dd330b06755c1b134039dcbf8324bedb385136819dd519b842a3816a
+WORKDIR /probe
+COPY classes/ /probe/
+LABEL org.toonlira.diagnostic.version="1.0" org.toonlira.diagnostic.source-sha256="PROBE_SOURCE_SHA256"
+USER 1000:1000
+ENTRYPOINT ["java", "-Xmx64m", "-XX:ActiveProcessorCount=2", "-XX:+UseSerialGC", "-Djava.io.tmpdir=/work", "-cp", "/probe", "WorkerIsolationProbe", "--scratch", "/work"]

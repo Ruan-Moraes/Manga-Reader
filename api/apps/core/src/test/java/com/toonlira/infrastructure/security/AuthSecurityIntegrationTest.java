@@ -1,0 +1,562 @@
+package com.toonlira.infrastructure.security;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.http.MediaType;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.toonlira.application.auth.port.TokenPort;
+import com.toonlira.application.user.port.UserRepositoryPort;
+import com.toonlira.domain.user.entity.User;
+import com.toonlira.domain.user.valueobject.UserRole;
+import com.toonlira.infrastructure.persistence.mongo.MongoTestContainerConfig;
+
+/**
+ * Teste de integração E2E do fluxo de autenticação.
+ * <p>
+ * Sobe o contexto completo do Spring Boot com H2 (JPA) e TestContainers (MongoDB).
+ */
+@SpringBootTest
+@AutoConfigureMockMvc
+@ActiveProfiles("test")
+@Import(MongoTestContainerConfig.class)
+@DisplayName("Auth Security — Integração E2E")
+@Tag("testcontainers")
+class AuthSecurityIntegrationTest {
+    @Autowired
+    private MockMvc mockMvc;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    @Autowired
+    private TokenPort tokenPort;
+
+    @Autowired
+    private UserRepositoryPort userRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    private static final String SIGN_UP_URL = "/api/auth/sign-up";
+    private static final String SIGN_IN_URL = "/api/auth/sign-in";
+    private static final String REFRESH_URL = "/api/auth/refresh";
+    private static final String ME_URL = "/api/auth/me";
+
+    private String signUpJson(String name, String email, String password) throws Exception {
+        return objectMapper.writeValueAsString(
+                java.util.Map.of("name", name, "email", email, "password", password)
+        );
+    }
+
+    private String signInJson(String email, String password) throws Exception {
+        return objectMapper.writeValueAsString(
+                java.util.Map.of("email", email, "password", password)
+        );
+    }
+
+    private String refreshJson(String refreshToken) throws Exception {
+        return objectMapper.writeValueAsString(
+                java.util.Map.of("refreshToken", refreshToken)
+        );
+    }
+
+    private JsonNode extractData(MvcResult result) throws Exception {
+        JsonNode root = objectMapper.readTree(result.getResponse().getContentAsString());
+        return root.get("data");
+    }
+
+    @Nested
+    @DisplayName("Acesso ao feed de atividades")
+    class ActivityFeedAccessTests {
+
+        @Test
+        @DisplayName("GET público deve aceitar visitante anônimo")
+        void publicActivityFeedShouldAllowAnonymousVisitor() throws Exception {
+            MvcResult signUpResult = mockMvc.perform(post(SIGN_UP_URL)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(signUpJson("Activity User", "activity-public@test.com", "senha123")))
+                    .andReturn();
+            String userId = extractData(signUpResult).get("userId").asText();
+
+            mockMvc.perform(get("/api/users/{id}/activity-feed", userId))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.success").value(true));
+        }
+
+        @Test
+        @DisplayName("DELETE deve exigir autenticação")
+        void hideActivityShouldRequireAuthentication() throws Exception {
+            mockMvc.perform(delete("/api/users/me/activity-feed/{eventId}", "event-1"))
+                    .andExpect(status().isUnauthorized());
+        }
+    }
+
+    @Nested
+    @DisplayName("Fronteira de segurança do feed de lançamentos")
+    class ReleaseFeedAccessTests {
+
+        @Test
+        @DisplayName("GET público deve aceitar visitante anônimo")
+        void publicReleaseFeedShouldAllowAnonymousVisitor() throws Exception {
+            mockMvc.perform(get("/api/releases"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.success").value(true));
+        }
+
+        @Test
+        @DisplayName("Filtro de biblioteca deve exigir autenticação")
+        void libraryReleaseFeedShouldRequireAuthentication() throws Exception {
+            mockMvc.perform(get("/api/releases").param("libraryOnly", "true"))
+                    .andExpect(status().isUnauthorized());
+        }
+
+        @Test
+        @DisplayName("Marcações por capítulo e por dia devem rejeitar anônimos")
+        void releaseSeenWritesShouldRequireAuthentication() throws Exception {
+            mockMvc.perform(put("/api/releases/{chapterId}/seen", "chapter-1"))
+                    .andExpect(status().isUnauthorized());
+            mockMvc.perform(put("/api/releases/days/{date}/seen", "2026-08-01"))
+                    .andExpect(status().isUnauthorized());
+        }
+
+        @Test
+        @DisplayName("Marcação autenticada deve atravessar o filtro de segurança")
+        void authenticatedReleaseSeenShouldReachApplicationBoundary() throws Exception {
+            MvcResult signUpResult = mockMvc.perform(post(SIGN_UP_URL)
+                            .header("X-Refresh-Token-Transport", "body")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(signUpJson("Release User", "release-seen@test.com", "senha123")))
+                    .andReturn();
+            String accessToken = extractData(signUpResult).get("accessToken").asText();
+
+            mockMvc.perform(put("/api/releases/{chapterId}/seen", "missing-chapter")
+                            .header("Authorization", "Bearer " + accessToken))
+                    .andExpect(status().isNotFound());
+        }
+    }
+
+    @Nested
+    @DisplayName("Fluxo Completo (Happy Path)")
+    @TestMethodOrder(OrderAnnotation.class)
+    class HappyPathTests {
+        @Test
+        @Order(1)
+        @DisplayName("Sign-up deve retornar 201 com tokens e dados do usuario")
+        void signUpShouldReturn201WithTokens() throws Exception {
+            MvcResult result = mockMvc.perform(post(SIGN_UP_URL)
+                            .header("X-Refresh-Token-Transport", "body")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(signUpJson("Ruan Test", "ruan@happypath.com", "senha123")))
+                    .andExpect(status().isCreated())
+                    .andExpect(jsonPath("$.success").value(true))
+                    .andExpect(jsonPath("$.data.accessToken", notNullValue()))
+                    .andExpect(jsonPath("$.data.refreshToken", notNullValue()))
+                    .andExpect(jsonPath("$.data.userId", notNullValue()))
+                    .andExpect(jsonPath("$.data.name").value("Ruan Test"))
+                    .andExpect(jsonPath("$.data.email").value("ruan@happypath.com"))
+                    .andExpect(jsonPath("$.data.role").value("MEMBER"))
+                    .andReturn();
+
+            JsonNode data = extractData(result);
+
+            assertThat(tokenPort.isTokenValid(data.get("accessToken").asText())).isTrue();
+            assertThat(tokenPort.isTokenValid(data.get("refreshToken").asText())).isTrue();
+        }
+
+        @Test
+        @Order(2)
+        @DisplayName("Usuario deve estar persistido com role MEMBER e senha criptografada")
+        void userShouldBePersistedCorrectly() throws Exception {
+            // Primeiro, cadastra
+            mockMvc.perform(post(SIGN_UP_URL)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(signUpJson("Persisted User", "persisted@test.com", "senha456")));
+
+            User user = userRepository.findByEmail("persisted@test.com").orElse(null);
+
+            assertThat(user).isNotNull();
+            assertThat(user.getName()).isEqualTo("Persisted User");
+            assertThat(user.getEmail()).isEqualTo("persisted@test.com");
+            assertThat(user.getRole()).isEqualTo(UserRole.MEMBER);
+            assertThat(passwordEncoder.matches("senha456", user.getPasswordHash())).isTrue();
+            assertThat(user.getPasswordHash()).isNotEqualTo("senha456");
+        }
+
+        @Test
+        @Order(3)
+        @DisplayName("Sign-in com credenciais corretas deve retornar 200 com tokens")
+        void signInShouldReturn200WithTokens() throws Exception {
+            // Cadastra primeiro
+            mockMvc.perform(post(SIGN_UP_URL)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(signUpJson("Login User", "login@test.com", "senha789")));
+
+            MvcResult result = mockMvc.perform(post(SIGN_IN_URL)
+                            .header("X-Refresh-Token-Transport", "body")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(signInJson("login@test.com", "senha789")))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.success").value(true))
+                    .andExpect(jsonPath("$.data.accessToken", notNullValue()))
+                    .andExpect(jsonPath("$.data.refreshToken", notNullValue()))
+                    .andExpect(jsonPath("$.data.name").value("Login User"))
+                    .andExpect(jsonPath("$.data.email").value("login@test.com"))
+                    .andExpect(jsonPath("$.data.role").value("MEMBER"))
+                    .andReturn();
+
+            JsonNode data = extractData(result);
+
+            assertThat(tokenPort.isTokenValid(data.get("accessToken").asText())).isTrue();
+        }
+
+        @Test
+        @Order(4)
+        @DisplayName("GET /me com access token deve retornar dados do usuario")
+        void meShouldReturnUserDataWithValidToken() throws Exception {
+            // Cadastra e pega o token
+            MvcResult signUpResult = mockMvc.perform(post(SIGN_UP_URL)
+                            .header("X-Refresh-Token-Transport", "body")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(signUpJson("Me User", "me@test.com", "senha000")))
+                    .andReturn();
+
+            String accessToken = extractData(signUpResult).get("accessToken").asText();
+
+            mockMvc.perform(get(ME_URL)
+                            .header("Authorization", "Bearer " + accessToken))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.success").value(true))
+                    .andExpect(jsonPath("$.data.name").value("Me User"))
+                    .andExpect(jsonPath("$.data.email").value("me@test.com"))
+                    .andExpect(jsonPath("$.data.role").value("MEMBER"));
+        }
+
+        @Test
+        @Order(5)
+        @DisplayName("Refresh token deve retornar novos tokens")
+        void refreshShouldReturnNewTokens() throws Exception {
+            // Cadastra e pega o refresh token
+            MvcResult signUpResult = mockMvc.perform(post(SIGN_UP_URL)
+                            .header("X-Refresh-Token-Transport", "body")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(signUpJson("Refresh User", "refresh@test.com", "senhaRefresh")))
+                    .andReturn();
+
+            String refreshToken = extractData(signUpResult).get("refreshToken").asText();
+
+            MvcResult refreshResult = mockMvc.perform(post(REFRESH_URL)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(refreshJson(refreshToken)))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.success").value(true))
+                    .andExpect(jsonPath("$.data.accessToken", notNullValue()))
+                    .andExpect(jsonPath("$.data.refreshToken", notNullValue()))
+                    .andReturn();
+
+            JsonNode data = extractData(refreshResult);
+
+            assertThat(tokenPort.isTokenValid(data.get("accessToken").asText())).isTrue();
+            assertThat(tokenPort.isTokenValid(data.get("refreshToken").asText())).isTrue();
+        }
+
+        @Test
+        @Order(6)
+        @DisplayName("Novo access token do refresh deve funcionar no /me")
+        void newAccessTokenFromRefreshShouldWorkOnMe() throws Exception {
+            MvcResult signUpResult = mockMvc.perform(post(SIGN_UP_URL)
+                            .header("X-Refresh-Token-Transport", "body")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(signUpJson("Refresh Me User", "refreshme@test.com", "senhaRM")))
+                    .andReturn();
+
+            String refreshToken = extractData(signUpResult).get("refreshToken").asText();
+
+            MvcResult refreshResult = mockMvc.perform(post(REFRESH_URL)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(refreshJson(refreshToken)))
+                    .andReturn();
+
+            String newAccessToken = extractData(refreshResult).get("accessToken").asText();
+
+            mockMvc.perform(get(ME_URL)
+                            .header("Authorization", "Bearer " + newAccessToken))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.data.name").value("Refresh Me User"))
+                    .andExpect(jsonPath("$.data.email").value("refreshme@test.com"));
+        }
+    }
+
+    @Nested
+    @DisplayName("Rotacao, Reuso e Logout")
+    class RotationAndLogoutTests {
+        private static final String LOGOUT_URL = "/api/auth/logout";
+
+        private String signUpAndGetRefresh(String email) throws Exception {
+            MvcResult result = mockMvc.perform(post(SIGN_UP_URL)
+                            .header("X-Refresh-Token-Transport", "body")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(signUpJson("Rotation User", email, "senhaRot")))
+                    .andReturn();
+
+            return extractData(result).get("refreshToken").asText();
+        }
+
+        @Test
+        @DisplayName("Refresh deve rotacionar: o token usado deixa de valer")
+        void refreshShouldRotateAndInvalidateOldToken() throws Exception {
+            String refreshToken = signUpAndGetRefresh("rotate@test.com");
+
+            mockMvc.perform(post(REFRESH_URL)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(refreshJson(refreshToken)))
+                    .andExpect(status().isOk());
+
+            // O token já rotacionado não pode ser reutilizado
+            mockMvc.perform(post(REFRESH_URL)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(refreshJson(refreshToken)))
+                    .andExpect(status().isUnauthorized())
+                    .andExpect(jsonPath("$.code").value("AUTH_REFRESH_TOKEN_EXPIRED"));
+        }
+
+        @Test
+        @DisplayName("Reuso de token rotacionado deve derrubar a familia inteira")
+        void reuseShouldRevokeWholeFamily() throws Exception {
+            String original = signUpAndGetRefresh("family@test.com");
+
+            MvcResult rotated = mockMvc.perform(post(REFRESH_URL)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(refreshJson(original)))
+                    .andExpect(status().isOk())
+                    .andReturn();
+
+            String newRefresh = extractData(rotated).get("refreshToken").asText();
+
+            // Reuso do original (revogado) → 401 e revoga a família
+            mockMvc.perform(post(REFRESH_URL)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(refreshJson(original)))
+                    .andExpect(status().isUnauthorized());
+
+            // O token novo, da mesma família, também morreu
+            mockMvc.perform(post(REFRESH_URL)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(refreshJson(newRefresh)))
+                    .andExpect(status().isUnauthorized());
+        }
+
+        @Test
+        @DisplayName("Access token nao deve servir como refresh")
+        void accessTokenShouldNotWorkAsRefresh() throws Exception {
+            MvcResult result = mockMvc.perform(post(SIGN_UP_URL)
+                            .header("X-Refresh-Token-Transport", "body")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(signUpJson("Access As Refresh", "accessrefresh@test.com", "senhaAR")))
+                    .andReturn();
+
+            String accessToken = extractData(result).get("accessToken").asText();
+
+            mockMvc.perform(post(REFRESH_URL)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(refreshJson(accessToken)))
+                    .andExpect(status().isUnauthorized());
+        }
+
+        @Test
+        @DisplayName("Sign-in deve setar cookie httpOnly e o refresh deve funcionar so com o cookie")
+        void cookieFlowShouldWork() throws Exception {
+            mockMvc.perform(post(SIGN_UP_URL)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(signUpJson("Cookie User", "cookie@test.com", "senhaCookie")));
+
+            MvcResult signIn = mockMvc.perform(post(SIGN_IN_URL)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(signInJson("cookie@test.com", "senhaCookie")))
+                    .andExpect(status().isOk())
+                    .andReturn();
+
+            // MockMvc não propaga Set-Cookie entre requests — repassar manualmente
+            jakarta.servlet.http.Cookie cookie = signIn.getResponse().getCookie("refresh_token");
+
+            assertThat(cookie).isNotNull();
+            assertThat(cookie.isHttpOnly()).isTrue();
+            assertThat(cookie.getPath()).isEqualTo("/api/auth");
+
+            mockMvc.perform(post(REFRESH_URL).cookie(cookie))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.data.accessToken", notNullValue()));
+        }
+
+        @Test
+        @DisplayName("Logout deve revogar a sessao: refresh subsequente retorna 401")
+        void logoutShouldRevokeSession() throws Exception {
+            String refreshToken = signUpAndGetRefresh("logout@test.com");
+
+            mockMvc.perform(post(LOGOUT_URL)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(refreshJson(refreshToken)))
+                    .andExpect(status().isOk());
+
+            mockMvc.perform(post(REFRESH_URL)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(refreshJson(refreshToken)))
+                    .andExpect(status().isUnauthorized());
+        }
+    }
+
+    @Nested
+    @DisplayName("Erros de Autenticacao")
+    class AuthErrorTests {
+        @Test
+        @DisplayName("Sign-up com email duplicado deve retornar 409")
+        void signUpDuplicateEmailShouldReturn409() throws Exception {
+            mockMvc.perform(post(SIGN_UP_URL)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(signUpJson("User Dup", "duplicate@test.com", "senha111")));
+
+            mockMvc.perform(post(SIGN_UP_URL)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(signUpJson("User Dup 2", "duplicate@test.com", "senha222")))
+                    .andExpect(status().isConflict());
+        }
+
+        @Test
+        @DisplayName("Sign-in com senha errada deve retornar 401")
+        void signInWrongPasswordShouldReturn401() throws Exception {
+            mockMvc.perform(post(SIGN_UP_URL)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(signUpJson("Wrong Pass", "wrongpass@test.com", "senhaCorreta")));
+
+            mockMvc.perform(post(SIGN_IN_URL)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(signInJson("wrongpass@test.com", "senhaErrada")))
+                    .andExpect(status().isUnauthorized());
+        }
+
+        @Test
+        @DisplayName("Sign-in com email inexistente deve retornar 401")
+        void signInNonExistentEmailShouldReturn401() throws Exception {
+            mockMvc.perform(post(SIGN_IN_URL)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(signInJson("naoexiste@test.com", "qualquerSenha")))
+                    .andExpect(status().isUnauthorized());
+        }
+
+        @Test
+        @DisplayName("Refresh com token invalido deve retornar 401")
+        void refreshInvalidTokenShouldReturn401() throws Exception {
+            mockMvc.perform(post(REFRESH_URL)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(refreshJson("token.invalido.aqui")))
+                    .andExpect(status().isUnauthorized());
+        }
+
+        @Test
+        @DisplayName("GET /me sem token deve retornar 401")
+        void meWithoutTokenShouldFail() throws Exception {
+            // /api/auth/me matches /api/auth/** (permitAll), mas o controller
+            // recebe null Authentication → SecurityExceptionHandler retorna 401.
+            mockMvc.perform(get(ME_URL))
+                    .andExpect(status().isUnauthorized());
+        }
+
+        @Test
+        @DisplayName("GET /me com token malformado deve retornar 401")
+        void meWithMalformedTokenShouldFail() throws Exception {
+            // Token malformado é ignorado pelo JwtAuthenticationFilter → sem auth context.
+            // SecurityExceptionHandler retorna 401.
+            mockMvc.perform(get(ME_URL)
+                            .header("Authorization", "Bearer token.malformado.xyz"))
+                    .andExpect(status().isUnauthorized());
+        }
+    }
+
+    @Nested
+    @DisplayName("Validacao de Claims JWT")
+    class JwtClaimsTests {
+        @Test
+        @DisplayName("Access token deve conter userId, email, role e type=access")
+        void accessTokenShouldHaveCorrectClaims() throws Exception {
+            MvcResult result = mockMvc.perform(post(SIGN_UP_URL)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(signUpJson("Claims User", "claims@test.com", "senhaClaims")))
+                    .andReturn();
+
+            JsonNode data = extractData(result);
+
+            String accessToken = data.get("accessToken").asText();
+            String userId = data.get("userId").asText();
+
+            assertThat(tokenPort.extractUserId(accessToken)).isEqualTo(java.util.UUID.fromString(userId));
+            assertThat(tokenPort.extractEmail(accessToken)).isEqualTo("claims@test.com");
+            assertThat(tokenPort.extractRole(accessToken)).isEqualTo("MEMBER");
+            assertThat(tokenPort.extractType(accessToken)).isEqualTo("access");
+        }
+
+        @Test
+        @DisplayName("Refresh token deve conter userId e type=refresh")
+        void refreshTokenShouldHaveCorrectClaims() throws Exception {
+            MvcResult result = mockMvc.perform(post(SIGN_UP_URL)
+                            .header("X-Refresh-Token-Transport", "body")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(signUpJson("Refresh Claims", "refreshclaims@test.com", "senhaRC")))
+                    .andReturn();
+
+            JsonNode data = extractData(result);
+
+            String refreshToken = data.get("refreshToken").asText();
+            String userId = data.get("userId").asText();
+
+            assertThat(tokenPort.extractUserId(refreshToken)).isEqualTo(java.util.UUID.fromString(userId));
+            assertThat(tokenPort.extractType(refreshToken)).isEqualTo("refresh");
+            assertThatCode(() -> java.util.UUID.fromString(tokenPort.extractTokenId(refreshToken)))
+                    .doesNotThrowAnyException();
+        }
+    }
+
+    @Nested
+    @DisplayName("Endpoints Publicos vs Protegidos")
+    class PublicVsProtectedTests {
+        @Test
+        @DisplayName("GET /api/titles sem token deve retornar 200 (publico)")
+        void publicEndpointShouldBeAccessibleWithoutToken() throws Exception {
+            mockMvc.perform(get("/api/titles"))
+                    .andExpect(status().isOk());
+        }
+
+        @Test
+        @DisplayName("POST /api/reviews sem token deve retornar 401 (protegido)")
+        void protectedEndpointShouldRequireToken() throws Exception {
+            mockMvc.perform(post("/api/reviews")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content("{}"))
+                    .andExpect(status().isUnauthorized());
+        }
+    }
+}

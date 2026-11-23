@@ -1,0 +1,504 @@
+{
+  "version": 1,
+  "description": "Corpus de validacao do translation-gateway: capitulos livres de direitos (CC BY, CC BY-NC-SA e dominio publico) cobrindo cenarios de texto. Imagens nao versionadas: rode node scripts/fetch-corpus.mjs dentro de web/apps/gateway-tester.",
+  "scenarioCatalog": {
+    "balloon": "fala dentro de balao",
+    "shout-balloon": "balao de grito (contorno serrilhado, letras grandes)",
+    "caption-box": "legenda/narracao em caixa retangular",
+    "sfx-in-art": "onomatopeia desenhada sobre a arte",
+    "text-in-art": "texto diegetico na arte (placas, telas, livros, rotulos)",
+    "text-over-border": "texto cruzando a borda do balao ou do quadro (acima do balao)",
+    "title-lettering": "titulo/logotipo estilizado",
+    "splash-title": "pagina de abertura com titulo grande desenhado",
+    "vertical-text": "texto CJK vertical, leitura da direita para a esquerda",
+    "outside-panel-note": "nota/rodape fora do quadro",
+    "dense-text": "muito texto em pouco espaco",
+    "small-text": "letra pequena em relacao a pagina",
+    "hand-lettered-caps": "letreiramento manual em caixa alta",
+    "colored-background": "texto sobre arte colorida ou gradiente",
+    "symbols-in-text": "simbolos misturados ao texto (notas musicais, reticencias)",
+    "monochrome": "pagina em preto e branco com retícula",
+    "no-text": "pagina sem texto: o resultado deve ser identico ao original"
+  },
+  "chapters": [
+    {
+      "id": "pepper-carrot-en-ep06",
+      "work": "Pepper&Carrot",
+      "chapter": "ep06_The-Potion-Contest",
+      "format": "webcomic",
+      "sourceLanguage": "en",
+      "targetLanguage": "pt-BR",
+      "license": {
+        "name": "CC BY 4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/",
+        "attribution": "David Revoy, www.peppercarrot.com (translation by the Pepper&Carrot community)"
+      },
+      "origin": "https://www.peppercarrot.com/0_sources/ep06_The-Potion-Contest/",
+      "scenarios": [
+        "balloon",
+        "shout-balloon",
+        "sfx-in-art",
+        "text-over-border",
+        "title-lettering",
+        "colored-background"
+      ],
+      "notes": "Ingles; faixas e placas desenhadas na arte",
+      "pages": [
+        {
+          "file": "p00.jpg",
+          "url": "https://www.peppercarrot.com/0_sources/ep06_The-Potion-Contest/low-res/en_Pepper-and-Carrot_by-David-Revoy_E06P00.jpg",
+          "scenarios": [
+            "title-lettering"
+          ]
+        },
+        {
+          "file": "p01.jpg",
+          "url": "https://www.peppercarrot.com/0_sources/ep06_The-Potion-Contest/low-res/en_Pepper-and-Carrot_by-David-Revoy_E06P01.jpg"
+        },
+        {
+          "file": "p02.jpg",
+          "url": "https://www.peppercarrot.com/0_sources/ep06_The-Potion-Contest/low-res/en_Pepper-and-Carrot_by-David-Revoy_E06P02.jpg"
+        },
+        {
+          "file": "p03.jpg",
+          "url": "https://www.peppercarrot.com/0_sources/ep06_The-Potion-Contest/low-res/en_Pepper-and-Carrot_by-David-Revoy_E06P03.jpg",
+          "scenarios": [
+            "shout-balloon"
+          ]
+        },
+        {
+          "file": "p04.jpg",
+          "url": "https://www.peppercarrot.com/0_sources/ep06_The-Potion-Contest/low-res/en_Pepper-and-Carrot_by-David-Revoy_E06P04.jpg"
+        },
+        {
+          "file": "p05.jpg",
+          "url": "https://www.peppercarrot.com/0_sources/ep06_The-Potion-Contest/low-res/en_Pepper-and-Carrot_by-David-Revoy_E06P05.jpg",
+          "scenarios": [
+            "sfx-in-art",
+            "text-over-border"
+          ]
+        },
+        {
+          "file": "p06.jpg",
+          "url": "https://www.peppercarrot.com/0_sources/ep06_The-Potion-Contest/low-res/en_Pepper-and-Carrot_by-David-Revoy_E06P06.jpg",
+          "scenarios": [
+            "sfx-in-art"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pepper-carrot-ja-ep06",
+      "work": "Pepper&Carrot",
+      "chapter": "ep06_The-Potion-Contest",
+      "format": "webcomic",
+      "sourceLanguage": "ja",
+      "targetLanguage": "pt-BR",
+      "license": {
+        "name": "CC BY 4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/",
+        "attribution": "David Revoy, www.peppercarrot.com (translation by the Pepper&Carrot community)"
+      },
+      "origin": "https://www.peppercarrot.com/0_sources/ep06_The-Potion-Contest/",
+      "scenarios": [
+        "balloon",
+        "shout-balloon",
+        "sfx-in-art",
+        "text-over-border",
+        "title-lettering",
+        "colored-background"
+      ],
+      "notes": "Mesmo episodio do capitulo en-ep06 em japones horizontal: compara a mesma arte em dois idiomas",
+      "pages": [
+        {
+          "file": "p00.jpg",
+          "url": "https://www.peppercarrot.com/0_sources/ep06_The-Potion-Contest/low-res/ja_Pepper-and-Carrot_by-David-Revoy_E06P00.jpg",
+          "scenarios": [
+            "title-lettering"
+          ]
+        },
+        {
+          "file": "p01.jpg",
+          "url": "https://www.peppercarrot.com/0_sources/ep06_The-Potion-Contest/low-res/ja_Pepper-and-Carrot_by-David-Revoy_E06P01.jpg"
+        },
+        {
+          "file": "p02.jpg",
+          "url": "https://www.peppercarrot.com/0_sources/ep06_The-Potion-Contest/low-res/ja_Pepper-and-Carrot_by-David-Revoy_E06P02.jpg"
+        },
+        {
+          "file": "p03.jpg",
+          "url": "https://www.peppercarrot.com/0_sources/ep06_The-Potion-Contest/low-res/ja_Pepper-and-Carrot_by-David-Revoy_E06P03.jpg"
+        },
+        {
+          "file": "p04.jpg",
+          "url": "https://www.peppercarrot.com/0_sources/ep06_The-Potion-Contest/low-res/ja_Pepper-and-Carrot_by-David-Revoy_E06P04.jpg"
+        },
+        {
+          "file": "p05.jpg",
+          "url": "https://www.peppercarrot.com/0_sources/ep06_The-Potion-Contest/low-res/ja_Pepper-and-Carrot_by-David-Revoy_E06P05.jpg",
+          "scenarios": [
+            "sfx-in-art",
+            "text-over-border"
+          ]
+        },
+        {
+          "file": "p06.jpg",
+          "url": "https://www.peppercarrot.com/0_sources/ep06_The-Potion-Contest/low-res/ja_Pepper-and-Carrot_by-David-Revoy_E06P06.jpg"
+        }
+      ]
+    },
+    {
+      "id": "pepper-carrot-ko-ep11",
+      "work": "Pepper&Carrot",
+      "chapter": "ep11_The-Witches-of-Chaosah",
+      "format": "webcomic",
+      "sourceLanguage": "ko",
+      "targetLanguage": "pt-BR",
+      "license": {
+        "name": "CC BY 4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/",
+        "attribution": "David Revoy, www.peppercarrot.com (translation by the Pepper&Carrot community)"
+      },
+      "origin": "https://www.peppercarrot.com/0_sources/ep11_The-Witches-of-Chaosah/",
+      "scenarios": [
+        "balloon",
+        "sfx-in-art",
+        "title-lettering",
+        "colored-background",
+        "small-text"
+      ],
+      "notes": "Coreano (estilo manhwa colorido)",
+      "pages": [
+        {
+          "file": "p00.jpg",
+          "url": "https://www.peppercarrot.com/0_sources/ep11_The-Witches-of-Chaosah/low-res/kr_Pepper-and-Carrot_by-David-Revoy_E11P00.jpg",
+          "scenarios": [
+            "title-lettering"
+          ]
+        },
+        {
+          "file": "p01.jpg",
+          "url": "https://www.peppercarrot.com/0_sources/ep11_The-Witches-of-Chaosah/low-res/kr_Pepper-and-Carrot_by-David-Revoy_E11P01.jpg",
+          "scenarios": [
+            "small-text"
+          ]
+        },
+        {
+          "file": "p02.jpg",
+          "url": "https://www.peppercarrot.com/0_sources/ep11_The-Witches-of-Chaosah/low-res/kr_Pepper-and-Carrot_by-David-Revoy_E11P02.jpg"
+        },
+        {
+          "file": "p03.jpg",
+          "url": "https://www.peppercarrot.com/0_sources/ep11_The-Witches-of-Chaosah/low-res/kr_Pepper-and-Carrot_by-David-Revoy_E11P03.jpg"
+        },
+        {
+          "file": "p04.jpg",
+          "url": "https://www.peppercarrot.com/0_sources/ep11_The-Witches-of-Chaosah/low-res/kr_Pepper-and-Carrot_by-David-Revoy_E11P04.jpg"
+        },
+        {
+          "file": "p05.jpg",
+          "url": "https://www.peppercarrot.com/0_sources/ep11_The-Witches-of-Chaosah/low-res/kr_Pepper-and-Carrot_by-David-Revoy_E11P05.jpg"
+        }
+      ]
+    },
+    {
+      "id": "pepper-carrot-zh-ep19",
+      "work": "Pepper&Carrot",
+      "chapter": "ep19_Pollution",
+      "format": "webcomic",
+      "sourceLanguage": "zh-Hans",
+      "targetLanguage": "pt-BR",
+      "license": {
+        "name": "CC BY 4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/",
+        "attribution": "David Revoy, www.peppercarrot.com (translation by the Pepper&Carrot community)"
+      },
+      "origin": "https://www.peppercarrot.com/0_sources/ep19_Pollution/",
+      "scenarios": [
+        "balloon",
+        "title-lettering",
+        "colored-background",
+        "symbols-in-text"
+      ],
+      "notes": "Chines simplificado (estilo manhua colorido)",
+      "pages": [
+        {
+          "file": "p00.jpg",
+          "url": "https://www.peppercarrot.com/0_sources/ep19_Pollution/low-res/cn_Pepper-and-Carrot_by-David-Revoy_E19P00.jpg",
+          "scenarios": [
+            "title-lettering"
+          ]
+        },
+        {
+          "file": "p01.jpg",
+          "url": "https://www.peppercarrot.com/0_sources/ep19_Pollution/low-res/cn_Pepper-and-Carrot_by-David-Revoy_E19P01.jpg"
+        },
+        {
+          "file": "p02.jpg",
+          "url": "https://www.peppercarrot.com/0_sources/ep19_Pollution/low-res/cn_Pepper-and-Carrot_by-David-Revoy_E19P02.jpg"
+        },
+        {
+          "file": "p03.jpg",
+          "url": "https://www.peppercarrot.com/0_sources/ep19_Pollution/low-res/cn_Pepper-and-Carrot_by-David-Revoy_E19P03.jpg"
+        },
+        {
+          "file": "p04.jpg",
+          "url": "https://www.peppercarrot.com/0_sources/ep19_Pollution/low-res/cn_Pepper-and-Carrot_by-David-Revoy_E19P04.jpg",
+          "scenarios": [
+            "symbols-in-text"
+          ]
+        },
+        {
+          "file": "p05.jpg",
+          "url": "https://www.peppercarrot.com/0_sources/ep19_Pollution/low-res/cn_Pepper-and-Carrot_by-David-Revoy_E19P05.jpg"
+        }
+      ]
+    },
+    {
+      "id": "pepper-carrot-es-ep24",
+      "work": "Pepper&Carrot",
+      "chapter": "ep24_The-Unity-Tree",
+      "format": "webcomic",
+      "sourceLanguage": "es",
+      "targetLanguage": "pt-BR",
+      "license": {
+        "name": "CC BY 4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/",
+        "attribution": "David Revoy, www.peppercarrot.com (translation by the Pepper&Carrot community)"
+      },
+      "origin": "https://www.peppercarrot.com/0_sources/ep24_The-Unity-Tree/",
+      "scenarios": [
+        "balloon",
+        "sfx-in-art",
+        "text-in-art",
+        "text-over-border",
+        "dense-text",
+        "title-lettering"
+      ],
+      "notes": "Espanhol",
+      "pages": [
+        {
+          "file": "p00.jpg",
+          "url": "https://www.peppercarrot.com/0_sources/ep24_The-Unity-Tree/low-res/es_Pepper-and-Carrot_by-David-Revoy_E24P00.jpg",
+          "scenarios": [
+            "title-lettering"
+          ]
+        },
+        {
+          "file": "p01.jpg",
+          "url": "https://www.peppercarrot.com/0_sources/ep24_The-Unity-Tree/low-res/es_Pepper-and-Carrot_by-David-Revoy_E24P01.jpg"
+        },
+        {
+          "file": "p02.jpg",
+          "url": "https://www.peppercarrot.com/0_sources/ep24_The-Unity-Tree/low-res/es_Pepper-and-Carrot_by-David-Revoy_E24P02.jpg"
+        },
+        {
+          "file": "p03.jpg",
+          "url": "https://www.peppercarrot.com/0_sources/ep24_The-Unity-Tree/low-res/es_Pepper-and-Carrot_by-David-Revoy_E24P03.jpg",
+          "scenarios": [
+            "text-in-art",
+            "dense-text"
+          ]
+        },
+        {
+          "file": "p04.jpg",
+          "url": "https://www.peppercarrot.com/0_sources/ep24_The-Unity-Tree/low-res/es_Pepper-and-Carrot_by-David-Revoy_E24P04.jpg",
+          "scenarios": [
+            "sfx-in-art"
+          ]
+        },
+        {
+          "file": "p05.jpg",
+          "url": "https://www.peppercarrot.com/0_sources/ep24_The-Unity-Tree/low-res/es_Pepper-and-Carrot_by-David-Revoy_E24P05.jpg",
+          "scenarios": [
+            "sfx-in-art",
+            "text-over-border"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "golden-age-pd-en",
+      "work": "Fiction House (Jungle/Planet/Fight/Wings Comics)",
+      "chapter": "paginas internas 1940-1950",
+      "format": "comic",
+      "sourceLanguage": "en",
+      "targetLanguage": "pt-BR",
+      "license": {
+        "name": "Public domain (PD US not renewed)",
+        "url": "https://commons.wikimedia.org/wiki/Category:Jungle_Comics",
+        "attribution": "Fiction House, via Wikimedia Commons"
+      },
+      "origin": "https://commons.wikimedia.org/",
+      "scenarios": [
+        "caption-box",
+        "balloon",
+        "hand-lettered-caps",
+        "splash-title",
+        "sfx-in-art",
+        "dense-text",
+        "text-in-art"
+      ],
+      "notes": "Letreiramento manual em caixa alta, legendas em caixa no topo do quadro, onomatopeias",
+      "pages": [
+        {
+          "file": "jungle_comics_2_page_19.jpg",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Jungle_Comics_2_page_19.jpg/960px-Jungle_Comics_2_page_19.jpg",
+          "scenarios": [
+            "caption-box",
+            "dense-text"
+          ]
+        },
+        {
+          "file": "jungle_comics_73_page_34.jpg",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Jungle_comics_73_page_34.jpg/960px-Jungle_comics_73_page_34.jpg"
+        },
+        {
+          "file": "jungle_comics_117_page_44.jpg",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Jungle_Comics_117_page_44.jpg/960px-Jungle_Comics_117_page_44.jpg"
+        },
+        {
+          "file": "planet_comics_37_page_12.jpg",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/16/Planet_Comics_37_page_12.jpg/960px-Planet_Comics_37_page_12.jpg",
+          "scenarios": [
+            "splash-title",
+            "caption-box"
+          ]
+        },
+        {
+          "file": "planet_comics_73_page_1.jpg",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fe/Planet_Comics_73_page_1.jpg/960px-Planet_Comics_73_page_1.jpg",
+          "scenarios": [
+            "splash-title",
+            "sfx-in-art"
+          ]
+        },
+        {
+          "file": "fight_comics_40_page_6.jpg",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/ba/Fight_Comics_40_page_6.jpg/960px-Fight_Comics_40_page_6.jpg"
+        },
+        {
+          "file": "fight_comics_41_page_2.jpg",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/Fight_Comics_41_page_2.jpg/960px-Fight_Comics_41_page_2.jpg"
+        },
+        {
+          "file": "wings_comics_61_page_4.jpg",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Wings_Comics_61_page_4.jpg/960px-Wings_Comics_61_page_4.jpg"
+        },
+        {
+          "file": "wingscomics45_wingtips.jpg",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/32/WingsComics45_WingTips.jpg/960px-WingsComics45_WingTips.jpg",
+          "scenarios": [
+            "splash-title",
+            "text-in-art",
+            "caption-box"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ubunchu-ja-ch01",
+      "work": "Ubunchu!",
+      "chapter": "01",
+      "format": "manga",
+      "sourceLanguage": "ja",
+      "targetLanguage": "pt-BR",
+      "license": {
+        "name": "CC BY-NC-SA 4.0",
+        "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+        "attribution": "Hiroshi Seo (archive.org/details/ubuntu-ja-png)"
+      },
+      "origin": "https://archive.org/details/ubuntu-ja-png",
+      "scenarios": [
+        "vertical-text",
+        "balloon",
+        "sfx-in-art",
+        "text-in-art",
+        "text-over-border",
+        "outside-panel-note",
+        "title-lettering",
+        "monochrome"
+      ],
+      "notes": "Manga P&B com texto vertical, leitura da direita para a esquerda. Nao comercial: so teste local.",
+      "pages": [
+        {
+          "file": "p01.png",
+          "url": "https://archive.org/download/ubuntu-ja-png/ubuntu-ja-png.zip/ubunchu01_ja%2Fubunchu01_01.png",
+          "scenarios": [
+            "title-lettering",
+            "text-in-art"
+          ]
+        },
+        {
+          "file": "p02.png",
+          "url": "https://archive.org/download/ubuntu-ja-png/ubuntu-ja-png.zip/ubunchu01_ja%2Fubunchu01_02.png",
+          "scenarios": [
+            "sfx-in-art",
+            "outside-panel-note"
+          ]
+        },
+        {
+          "file": "p03.png",
+          "url": "https://archive.org/download/ubuntu-ja-png/ubuntu-ja-png.zip/ubunchu01_ja%2Fubunchu01_03.png"
+        },
+        {
+          "file": "p04.png",
+          "url": "https://archive.org/download/ubuntu-ja-png/ubuntu-ja-png.zip/ubunchu01_ja%2Fubunchu01_04.png",
+          "scenarios": [
+            "text-in-art",
+            "outside-panel-note",
+            "sfx-in-art"
+          ]
+        },
+        {
+          "file": "p05.png",
+          "url": "https://archive.org/download/ubuntu-ja-png/ubuntu-ja-png.zip/ubunchu01_ja%2Fubunchu01_05.png",
+          "scenarios": [
+            "text-in-art",
+            "sfx-in-art"
+          ]
+        },
+        {
+          "file": "p06.png",
+          "url": "https://archive.org/download/ubuntu-ja-png/ubuntu-ja-png.zip/ubunchu01_ja%2Fubunchu01_06.png",
+          "scenarios": [
+            "text-in-art",
+            "sfx-in-art"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pepper-carrot-silent-ep15",
+      "work": "Pepper&Carrot",
+      "chapter": "ep15_The-Crystal-Ball (paginas mudas)",
+      "format": "webcomic",
+      "sourceLanguage": "ja",
+      "targetLanguage": "pt-BR",
+      "license": {
+        "name": "CC BY 4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/",
+        "attribution": "David Revoy, www.peppercarrot.com (translation by the Pepper&Carrot community)"
+      },
+      "origin": "https://www.peppercarrot.com/0_sources/ep15_The-Crystal-Ball/",
+      "scenarios": [
+        "no-text"
+      ],
+      "notes": "Controle negativo: paginas sem nenhum texto. O resultado deve ser identico ao original (nenhuma regiao apagada ou desenhada).",
+      "pages": [
+        {
+          "file": "p01.jpg",
+          "url": "https://www.peppercarrot.com/0_sources/ep15_The-Crystal-Ball/low-res/ja_Pepper-and-Carrot_by-David-Revoy_E15P01.jpg"
+        },
+        {
+          "file": "p02.jpg",
+          "url": "https://www.peppercarrot.com/0_sources/ep15_The-Crystal-Ball/low-res/ja_Pepper-and-Carrot_by-David-Revoy_E15P02.jpg"
+        },
+        {
+          "file": "p04.jpg",
+          "url": "https://www.peppercarrot.com/0_sources/ep15_The-Crystal-Ball/low-res/ja_Pepper-and-Carrot_by-David-Revoy_E15P04.jpg"
+        }
+      ]
+    }
+  ]
+}

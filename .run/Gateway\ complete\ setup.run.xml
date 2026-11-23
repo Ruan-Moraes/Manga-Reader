@@ -1,0 +1,7 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="🚀 Full Gateway Stack" type="CompoundRunConfigurationType">
+    <toRun name="Translation Gateway (8084)" type="MavenRunConfiguration" />
+    <toRun name="Gateway Tester Dev (5175)" type="js.build_tools.npm" />
+    <method v="2" />
+  </configuration>
+</component>

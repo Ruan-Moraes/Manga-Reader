@@ -2,26 +2,30 @@ import { ReactNode } from 'react';
 import { KeyboardAvoidingView, Platform, ScrollView, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { useTheme } from '@/src/shared/theme';
+import { useTheme } from '@/shared/theme';
 
 interface Props {
     children: ReactNode;
     scroll?: boolean;
     padded?: boolean;
+    /** Rendered below the content area; it owns the bottom safe area, e.g. `StickyActionBar`. */
+    stickyFooter?: ReactNode;
 }
 
-export function PageContainer({ children, scroll = false, padded = true }: Props) {
-    const { tokens } = useTheme();
+export function PageContainer({ children, scroll = false, padded = true, stickyFooter }: Props) {
+    const { layout, tokens } = useTheme();
     const insets = useSafeAreaInsets();
 
     const inner = (
         <View
+            testID={scroll ? 'page-container-scroll-content' : undefined}
             style={{
-                flex: 1,
+                flex: scroll ? undefined : 1,
+                flexGrow: scroll ? 1 : undefined,
                 backgroundColor: tokens.bg,
-                paddingTop: insets.top,
-                paddingBottom: insets.bottom,
-                paddingHorizontal: padded ? tokens.screenPadding : 0,
+                paddingTop: scroll ? 0 : insets.top,
+                paddingBottom: scroll || stickyFooter ? 0 : insets.bottom,
+                paddingHorizontal: padded ? layout.screenGutter : 0,
             }}
         >
             {children}
@@ -30,16 +34,39 @@ export function PageContainer({ children, scroll = false, padded = true }: Props
 
     if (scroll) {
         return (
-            <KeyboardAvoidingView style={{ flex: 1, backgroundColor: tokens.bg }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-                <ScrollView
-                    style={{ flex: 1 }}
-                    contentContainerStyle={{ flexGrow: 1 }}
-                    showsVerticalScrollIndicator={false}
-                    keyboardShouldPersistTaps="handled"
-                >
-                    {inner}
-                </ScrollView>
-            </KeyboardAvoidingView>
+            <View
+                testID="page-container-safe-frame"
+                style={{ flex: 1, backgroundColor: tokens.bg, paddingBottom: stickyFooter ? 0 : insets.bottom, paddingTop: insets.top }}
+            >
+                <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+                    <ScrollView
+                        showsHorizontalScrollIndicator={false}
+                        automaticallyAdjustKeyboardInsets
+                        style={{ flex: 1 }}
+                        contentContainerStyle={{ flexGrow: 1 }}
+                        showsVerticalScrollIndicator={false}
+                        keyboardShouldPersistTaps="handled"
+                    >
+                        {inner}
+                    </ScrollView>
+                    {stickyFooter ? (
+                        <View testID="page-container-sticky-footer">
+                            {stickyFooter}
+                        </View>
+                    ) : null}
+                </KeyboardAvoidingView>
+            </View>
+        );
+    }
+
+    if (stickyFooter) {
+        return (
+            <View testID="page-container-fixed-frame" style={{ flex: 1, backgroundColor: tokens.bg }}>
+                {inner}
+                <View testID="page-container-sticky-footer">
+                    {stickyFooter}
+                </View>
+            </View>
         );
     }
 

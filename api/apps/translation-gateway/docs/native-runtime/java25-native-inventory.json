@@ -1,0 +1,58 @@
+{
+  "inventoryVersion": "1.0",
+  "observedOn": "2026-10-10",
+  "method": "readonly container, no network, fixed official image, sha256sum and shipped legal notices",
+  "javaVersion": "25.0.4.1+1-LTS",
+  "declaredLibraries": {
+    "freetype": "2.14.3",
+    "libpng": "1.6.58",
+    "zlib": "1.3.2"
+  },
+  "securityApproved": false,
+  "targets": [
+    {
+      "platform": "linux-x86_64-glibc",
+      "image": "eclipse-temurin@sha256:78498f30dd330b06755c1b134039dcbf8324bedb385136819dd519b842a3816a",
+      "files": {
+        "lib/libfreetype.so": "169f4e7e4e811549c263818dfe90af822bfe168932287f3c448e46268ab6d0e5",
+        "lib/libfontmanager.so": "4a7be6d7139b00e8b1cdf703071ed92763efe6dd9e1555137d56a82a5f528ab5",
+        "lib/libzip.so": "9a3f692fa775419fd42d54bd27ffac6d12ff7f323a81b2ec9ac95ae38d06095b",
+        "lib/libjava.so": "4b31a8942a1a7eebdfa1505875ce8827dae4e8fa6dd99427bbb65653ed9febc2",
+        "lib/libawt.so": "24543cd49e2de4dc52b18b0efdb6120198d885083792cb20dd881a0dfd79da46"
+      }
+    },
+    {
+      "platform": "linux-aarch64-glibc",
+      "image": "eclipse-temurin@sha256:c31e783e090e5bcf4ddee2bfbce5bf78b5d832daae66767cb9a2315b8d4802b5",
+      "files": {
+        "lib/libfreetype.so": "1013ee875408a025c669fcb65760385c9af70dbeeeae56d569ee069e8555d0a7",
+        "lib/libfontmanager.so": "d5880fddfb0080f8825b6aae7c0e5b5b36f88432749398ada55f975819f16524",
+        "lib/libzip.so": "e6c0623ce8596699fb68ed647751a4e140f91c90bed3e2181b922a43e41157f8",
+        "lib/libjava.so": "a7907c097997a70bd34ef6a99b6024139e4adcd6017bcd0481f3616620708a3f",
+        "lib/libawt.so": "58914301f224d8594e970935dddb18108d207139cc1d81f05a41d790ad3af9aa"
+      }
+    },
+    {
+      "platform": "linux-aarch64-musl",
+      "image": "eclipse-temurin@sha256:f1286b7530a3ae2f9a9bad98a08fb99e2b4524afe508384fbb892bc8e37c86c1",
+      "files": {
+        "lib/libfreetype.so": "7522bc81b56af336edb3a62d51d61f90d0dbd0e8522c279889c8e6d97d061e4d",
+        "lib/libfontmanager.so": "08d7aa419e7f1b985910f8cab6d8706b81b2b7e93efd6f2b0de845d22dbb03e3",
+        "lib/libzip.so": "39e0a791c2850330f06c240f30afd0d8f24f0b206090297ab7922e63ac23d91c",
+        "lib/libjava.so": "63ee81c4a2bf73e621f5f8638131f84997c5d31ca92de1fa5607a03b0bceb81b",
+        "lib/libawt.so": "b1f21d61f1c02e486b524893276a7c3ccef7a34d6f451b311bfbe3e7447bc304"
+      }
+    },
+    {
+      "platform": "linux-x86_64-musl",
+      "image": "eclipse-temurin@sha256:2f9d7b671dd5f7acc9ced625afb7f90916c81668b905c9d03f52d3c8544c7db3",
+      "files": {
+        "lib/libfreetype.so": "98ae05546b257c3ffab9e5e5588b45e68c3153423c2944faa3601f4bf95ee720",
+        "lib/libfontmanager.so": "77f8ab2a7945fb6db1c96a05fa2a92c3dad9fb2d58ba9b081657ce96d22ca204",
+        "lib/libzip.so": "b30af51b4b3b86531f8bb606b757d3f9624043a9beb3cfd13dacece1625e03cc",
+        "lib/libjava.so": "ea2d880f7bfd8fdd54cef11f6a7a46e4351c8b7cff5e1fffe0a3d92348df6b87",
+        "lib/libawt.so": "f87b9b8981fd1426e13cd45bfe8f773ef7d5a9438314633db4536675d0f41ac0"
+      }
+    }
+  ]
+}

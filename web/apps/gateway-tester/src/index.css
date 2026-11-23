@@ -1,0 +1,11 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  @apply transition-colors duration-200;
+}
+
+body {
+  @apply bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-50;
+}

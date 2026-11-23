@@ -1,0 +1,34 @@
+[ {
+  "text" : "That last demonstration would now seem difficult to beat for Shichimi!",
+  "box" : [ 0.1197, 0.0055, 0.3412, 0.0779 ]
+}, {
+  "text" : "...come on Shichimi, everyone's waiting for you.",
+  "box" : [ 0.4325, 0.0192, 0.5734, 0.0901 ]
+}, {
+  "text" : "It seems, Ladies & Gentlemen that Shichimi forfeits...",
+  "box" : [ 0.726, 0.0119, 0.9362, 0.0677 ]
+}, {
+  "text" : "I... I did not know we had to give a demonstration.",
+  "box" : [ 0.0502, 0.2229, 0.1824, 0.2862 ]
+}, {
+  "text" : "NO!\n",
+  "box" : [ 0.4317, 0.2263, 0.4819, 0.2466 ]
+}, {
+  "text" : "I cannot, it is too dangerous SORRY!",
+  "box" : [ 0.402, 0.2506, 0.577, 0.3184 ]
+}, {
+  "text" : "Give me\nthat!\nM\n",
+  "box" : [ 0.1075, 0.4012, 0.185, 0.4542 ]
+}, {
+  "text" : "...and stop\npretending to be shy,\nyou're spoiling\nthe show.\n",
+  "box" : [ 0.2958, 0.3825, 0.4792, 0.4476 ]
+}, {
+  "text" : "Everyone already knows\nthat I've won the contest\nno matter what your\npotion does...\n",
+  "box" : [ 0.2992, 0.5494, 0.5175, 0.6175 ]
+}, {
+  "text" : "!!!\n",
+  "box" : [ 0.8942, 0.3813, 0.9283, 0.3976 ]
+}, {
+  "text" : "CAREFUL!!! It's a potion for GIANT MONSTERS!",
+  "box" : [ 0.7484, 0.6746, 0.9518, 0.7432 ]
+} ]

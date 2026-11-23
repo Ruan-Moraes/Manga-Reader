@@ -1,0 +1,174 @@
+{
+  "page" : "ubunchu-en/ch01/rtl-01b-instructions.png",
+  "sourceLanguage" : "en",
+  "width" : 1246,
+  "height" : 1635,
+  "regions" : [ {
+    "source" : "stop!\n",
+    "translation" : "Pare!",
+    "kind" : "text_free",
+    "polygon" : [ [ 0.42536115569823435, 0.09847094801223241 ], [ 0.7455858747993579, 0.09602446483180428 ], [ 0.7463884430176565, 0.18776758409785932 ], [ 0.4261637239165329, 0.19021406727828746 ] ]
+  }, {
+    "source" : "This comic is presented in its original Japanese right-to-left format, in order to preserve as much of the detail and orientation of the original artwork as possible. Readers unaccustomed to this \"manga-style\" order are welcome to download the Standard Edition of this comic. But if you prefer authenticity or simply wish to have fun trying something new, all you need to do is start from the top-right panel of each page and work your way towards its lower left-hand corner. Please use the guide below to see an example of the reading order you will encounter:",
+    "translation" : " Esta HQ é apresentada no formato original japonês de leitura da direita para a esquerda, a fim de preservar ao máximo os detalhes e a orientação da arte original. Leitores não habituados a essa ordem de leitura estilo \"mangá\" podem optar por baixar a Edição Padrão desta HQ. No entanto, se você prefere a autenticidade ou simplesmente quer se divertir experimentando algo novo, basta começar pelo quadro no canto superior direito de cada página e seguir em direção ao canto inferior esquerdo. Consulte o guia abaixo para ver um exemplo da ordem de leitura que você encontrará:",
+    "kind" : "unknown",
+    "polygon" : [ [ 0.08507223113964688, 0.26666666666666666 ], [ 0.6364365971107544, 0.26666666666666666 ], [ 0.6364365971107544, 0.44464831804281346 ], [ 0.08507223113964688, 0.44464831804281346 ] ]
+  }, {
+    "source" : "-\n",
+    "translation" : "-\n",
+    "kind" : "text_free",
+    "polygon" : [ [ 0.8515248796147673, 0.3443425076452599 ], [ 0.8812199036918138, 0.3504587155963303 ], [ 0.8731942215088283, 0.3706422018348624 ], [ 0.8443017656500803, 0.36452599388379203 ] ]
+  }, {
+    "source" : "Options\n",
+    "translation" : " Opções",
+    "kind" : "text_free",
+    "polygon" : [ [ 0.0666131621187801, 0.9700305810397554 ], [ 0.16693418940609953, 0.9700305810397554 ], [ 0.16693418940609953, 0.9865443425076452 ], [ 0.0666131621187801, 0.9865443425076452 ] ]
+  }, {
+    "source" : "3\n",
+    "translation" : "3\n",
+    "kind" : "unknown",
+    "polygon" : [ [ 0.25120385232744785, 0.5779816513761468 ], [ 0.27608346709470305, 0.5779816513761468 ], [ 0.27608346709470305, 0.5981651376146789 ], [ 0.25120385232744785, 0.5981651376146789 ] ]
+  }, {
+    "source" : "800\n",
+    "translation" : "800\n",
+    "kind" : "unknown",
+    "polygon" : [ [ 0.20626003210272872, 0.689908256880734 ], [ 0.3073836276083467, 0.690519877675841 ], [ 0.3073836276083467, 0.7247706422018348 ], [ 0.20626003210272872, 0.7241590214067278 ] ]
+  }, {
+    "source" : "Linux\n",
+    "translation" : "Linux\n",
+    "kind" : "unknown",
+    "polygon" : [ [ 0.3274478330658106, 0.7602446483180428 ], [ 0.35152487961476725, 0.7602446483180428 ], [ 0.35152487961476725, 0.7663608562691131 ], [ 0.3274478330658106, 0.7663608562691131 ] ]
+  }, {
+    "source" : "Windows\n",
+    "translation" : "Windows\n",
+    "kind" : "unknown",
+    "polygon" : [ [ 0.3635634028892456, 0.7571865443425077 ], [ 0.3972712680577849, 0.7571865443425077 ], [ 0.3972712680577849, 0.763914373088685 ], [ 0.3635634028892456, 0.763914373088685 ] ]
+  }, {
+    "source" : "Se\n",
+    "translation" : " Se",
+    "kind" : "unknown",
+    "polygon" : [ [ 0.37479935794542535, 0.7993883792048929 ], [ 0.3972712680577849, 0.7987767584097859 ], [ 0.3972712680577849, 0.8061162079510703 ], [ 0.3756019261637239, 0.8067278287461773 ] ]
+  }, {
+    "source" : "9\n",
+    "translation" : "9\n",
+    "kind" : "unknown",
+    "polygon" : [ [ 0.4085072231139647, 0.7559633027522936 ], [ 0.4390048154093098, 0.7541284403669725 ], [ 0.44141252006420545, 0.7785932721712538 ], [ 0.41091492776886035, 0.7804281345565749 ] ]
+  }, {
+    "source" : "11\n",
+    "translation" : "11\n",
+    "kind" : "unknown",
+    "polygon" : [ [ 0.23113964686998395, 0.8042813455657493 ], [ 0.26886035313001605, 0.8042813455657493 ], [ 0.26886035313001605, 0.8201834862385321 ], [ 0.23113964686998395, 0.8201834862385321 ] ]
+  }, {
+    "source" : "10\n",
+    "translation" : "10\n",
+    "kind" : "unknown",
+    "polygon" : [ [ 0.2897271268057785, 0.818348623853211 ], [ 0.32985553772070625, 0.818348623853211 ], [ 0.32985553772070625, 0.8342507645259939 ], [ 0.2897271268057785, 0.8342507645259939 ] ]
+  }, {
+    "source" : "Mac\n",
+    "translation" : " Mac",
+    "kind" : "unknown",
+    "polygon" : [ [ 0.35553772070626005, 0.8324159021406727 ], [ 0.37720706260032105, 0.8324159021406727 ], [ 0.37720706260032105, 0.8391437308868501 ], [ 0.35553772070626005, 0.8391437308868501 ] ]
+  }, {
+    "source" : "1\n",
+    "translation" : "1\n",
+    "kind" : "unknown",
+    "polygon" : [ [ 0.5008025682182986, 0.5792048929663609 ], [ 0.521669341894061, 0.5792048929663609 ], [ 0.521669341894061, 0.5981651376146789 ], [ 0.5008025682182986, 0.5981651376146789 ] ]
+  }, {
+    "source" : "2\n",
+    "translation" : "2\n",
+    "kind" : "unknown",
+    "polygon" : [ [ 0.44703049759229535, 0.5938837920489297 ], [ 0.46869983948635635, 0.5938837920489297 ], [ 0.46869983948635635, 0.6140672782874618 ], [ 0.44703049759229535, 0.6140672782874618 ] ]
+  }, {
+    "source" : "5\n",
+    "translation" : "5\n",
+    "kind" : "unknown",
+    "polygon" : [ [ 0.4799357945425361, 0.653211009174312 ], [ 0.507223113964687, 0.653211009174312 ], [ 0.507223113964687, 0.6801223241590214 ], [ 0.4799357945425361, 0.6801223241590214 ] ]
+  }, {
+    "source" : "6\n",
+    "translation" : "6\n",
+    "kind" : "unknown",
+    "polygon" : [ [ 0.4582664526484751, 0.7969418960244649 ], [ 0.48154093097913325, 0.7969418960244649 ], [ 0.48154093097913325, 0.8171253822629969 ], [ 0.4582664526484751, 0.8171253822629969 ] ]
+  }, {
+    "source" : "-desktop // 522, 8:47 +\n",
+    "translation" : " -desktop // 522, 8:47 +",
+    "kind" : "text_free",
+    "polygon" : [ [ 0.5192616372391653, 0.9694189602446484 ], [ 0.9622792937399679, 0.9694189602446484 ], [ 0.9622792937399679, 0.9865443425076452 ], [ 0.5192616372391653, 0.9865443425076452 ] ]
+  } ],
+  "bubbles" : [ ],
+  "expect" : {
+    "maxChangedOutside" : 0,
+    "regions" : [ {
+      "overflow" : false,
+      "font" : 48,
+      "residualInk" : 0
+    }, {
+      "overflow" : false,
+      "font" : 20,
+      "residualInk" : 0
+    }, {
+      "overflow" : true,
+      "font" : 0,
+      "residualInk" : 0
+    }, {
+      "overflow" : true,
+      "font" : 0,
+      "residualInk" : 0
+    }, {
+      "overflow" : true,
+      "font" : 0,
+      "residualInk" : 0
+    }, {
+      "overflow" : true,
+      "font" : 0,
+      "residualInk" : 0
+    }, {
+      "overflow" : true,
+      "font" : 0,
+      "residualInk" : 0
+    }, {
+      "overflow" : true,
+      "font" : 0,
+      "residualInk" : 0
+    }, {
+      "overflow" : true,
+      "font" : 0,
+      "residualInk" : 0
+    }, {
+      "overflow" : true,
+      "font" : 0,
+      "residualInk" : 0
+    }, {
+      "overflow" : true,
+      "font" : 0,
+      "residualInk" : 0
+    }, {
+      "overflow" : true,
+      "font" : 0,
+      "residualInk" : 0
+    }, {
+      "overflow" : true,
+      "font" : 0,
+      "residualInk" : 0
+    }, {
+      "overflow" : true,
+      "font" : 0,
+      "residualInk" : 0
+    }, {
+      "overflow" : true,
+      "font" : 0,
+      "residualInk" : 0
+    }, {
+      "overflow" : true,
+      "font" : 0,
+      "residualInk" : 0
+    }, {
+      "overflow" : true,
+      "font" : 0,
+      "residualInk" : 0
+    }, {
+      "overflow" : true,
+      "font" : 0,
+      "residualInk" : 0
+    } ]
+  }
+}

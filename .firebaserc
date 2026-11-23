@@ -1,0 +1,17 @@
+{
+  "projects": {
+    "default": "toonlira-rm"
+  },
+  "targets": {
+    "toonlira-rm": {
+      "hosting": {
+        "app": [
+          "toonlira-rm"
+        ],
+        "landing": [
+          "toonlira-rm-landing"
+        ]
+      }
+    }
+  }
+}

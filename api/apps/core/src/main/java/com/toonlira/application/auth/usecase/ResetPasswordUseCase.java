@@ -1,0 +1,58 @@
+package com.toonlira.application.auth.usecase;
+
+import java.util.UUID;
+
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.toonlira.application.auth.port.RefreshTokenRepositoryPort;
+import com.toonlira.application.auth.port.TokenPort;
+import com.toonlira.application.user.port.UserRepositoryPort;
+import com.toonlira.domain.user.entity.User;
+import com.toonlira.shared.exception.BusinessRuleException;
+import com.toonlira.shared.exception.ResourceNotFoundException;
+
+import lombok.RequiredArgsConstructor;
+
+/**
+ * Processa a redefinição de senha usando um token de reset.
+ * <p>
+ * Valida o token JWT (tipo=password_reset), extrai o userId
+ * e atualiza o hash da nova senha.
+ */
+@Service
+@Transactional
+@RequiredArgsConstructor
+public class ResetPasswordUseCase {
+    private final TokenPort tokenPort;
+    private final UserRepositoryPort userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final RefreshTokenRepositoryPort refreshTokens;
+
+    public void execute(String token, String newPassword) {
+        if (!tokenPort.isTokenValid(token)) {
+            throw new BusinessRuleException("Token de redefinição inválido ou expirado", 400);
+        }
+
+        String type = tokenPort.extractType(token);
+
+        if (!"password_reset".equals(type)) {
+            throw new BusinessRuleException("Token não é do tipo password_reset", 400);
+        }
+
+        UUID userId = tokenPort.extractUserId(token);
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
+
+        if (!tokenPort.matchesPasswordState(token, user.getPasswordHash())) {
+            throw new BusinessRuleException("Token de redefinição já utilizado ou obsoleto", 400);
+        }
+
+        user.setPasswordHash(passwordEncoder.encode(newPassword));
+
+        userRepository.save(user);
+        refreshTokens.revokeAllForUser(userId);
+    }
+}

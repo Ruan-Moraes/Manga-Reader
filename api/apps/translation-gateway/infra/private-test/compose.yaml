@@ -1,0 +1,132 @@
+name: toonlira-translation-test
+services:
+  postgres:
+    image: ${POSTGRES_IMAGE:?pinned image required}
+    restart: 'no'
+    read_only: true
+    user: '70:70'
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    mem_limit: 256m
+    memswap_limit: 256m
+    pids_limit: 64
+    environment:
+      POSTGRES_DB: gateway
+      POSTGRES_USER: gateway
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?required}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,nodev,size=64m,mode=1777
+      - /var/run/postgresql:rw,nosuid,nodev,size=4m,mode=1777
+    networks: [private]
+    healthcheck:
+      test: [CMD, pg_isready, -q, -U, gateway, -d, gateway]
+      interval: 5s
+      timeout: 3s
+      retries: 24
+  gateway:
+    image: ${GATEWAY_IMAGE:?pinned image required}
+    restart: 'no'
+    depends_on:
+      postgres:
+        condition: service_healthy
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    cpus: 2
+    mem_limit: 8g
+    memswap_limit: 8g
+    pids_limit: 64
+    ulimits:
+      core: 0
+      as:
+        soft: 3221225472
+        hard: 3221225472
+    tmpfs:
+      - /work:rw,noexec,nosuid,nodev,size=512m,mode=1777
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/gateway
+      SPRING_DATASOURCE_USERNAME: gateway
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:?required}
+      GATEWAY_KEY: ${GATEWAY_KEY:?required}
+      GATEWAY_ENABLED: 'true'
+      GATEWAY_VOLATILE_PROCESSING_ENABLED: 'true'
+      GATEWAY_OCR_MODE: vision
+      GATEWAY_GCP_PROJECT_ID: ${PROJECT_ID:?required}
+      GATEWAY_TRANSLATION_MODE: google
+      GATEWAY_TRANSLATION_PROJECT_ID: ${PROJECT_NUMBER:?required}
+      GATEWAY_TRANSLATION_ENABLED_PAIRS: ${TRANSLATION_PAIRS:?required}
+      GATEWAY_RENDERING_MODE: supervised-native
+      GATEWAY_INSTALLATION_DAILY_QUOTA: '0'
+      GATEWAY_TEST_BUDGET_ENABLED: 'true'
+      GATEWAY_TEST_UNMETERED: 'true'
+      GATEWAY_TEST_BUDGET_MAX_ATTEMPTS: ${MAX_ATTEMPTS:?required}
+      GATEWAY_TEST_BUDGET_DEADLINE: ${DEADLINE:?required}
+      GATEWAY_DISCLOSURE_VERSION: ${DISCLOSURE_VERSION:?required}
+      GATEWAY_OPERATOR_NAME: ${OPERATOR_NAME:?required}
+      GATEWAY_OPERATOR_CONTACT: ${OPERATOR_CONTACT:?required}
+      GATEWAY_PRIVACY_POLICY_URL: https://toonlira-rm.web.app/legal/privacy
+      GATEWAY_TERMS_URL: https://toonlira-rm.web.app/legal/terms
+      GATEWAY_PROVIDER_TRAINING_POLICY: ${TRAINING_POLICY:?required}
+    networks:
+      private:
+        ipv4_address: 172.30.242.3
+      provider_egress: {}
+  rate:
+    image: ${RATE_IMAGE:?pinned image required}
+    restart: 'no'
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    mem_limit: 128m
+    memswap_limit: 128m
+    pids_limit: 32
+    networks: [private]
+  proxy:
+    image: ${PROXY_IMAGE:?pinned image required}
+    restart: 'no'
+    read_only: true
+    cap_drop: [ALL]
+    cap_add: [NET_BIND_SERVICE]
+    security_opt: [no-new-privileges:true]
+    mem_limit: 256m
+    memswap_limit: 256m
+    pids_limit: 64
+    environment:
+      PUBLIC_HOST: ${PUBLIC_HOST:?required}
+      GATEWAY_UPSTREAM: rate:8085
+    ports:
+      - '80:80'
+      - '443:443'
+    volumes:
+      - caddydata:/data
+    tmpfs:
+      - /config:rw,noexec,nosuid,nodev,size=16m,mode=0700
+      - /tmp:rw,noexec,nosuid,nodev,size=16m,mode=1777
+    networks:
+      private:
+        ipv4_address: 172.30.242.2
+      proxy_egress:
+        ipv4_address: 172.30.243.2
+networks:
+  private:
+    internal: true
+    enable_ipv6: false
+    ipam:
+      config:
+        - subnet: 172.30.242.0/24
+          ip_range: 172.30.242.128/25
+  proxy_egress:
+    enable_ipv6: false
+    ipam:
+      config:
+        - subnet: 172.30.243.0/24
+  provider_egress:
+    enable_ipv6: false
+    ipam:
+      config:
+        - subnet: 172.30.244.0/24
+volumes:
+  pgdata: {}
+  caddydata: {}

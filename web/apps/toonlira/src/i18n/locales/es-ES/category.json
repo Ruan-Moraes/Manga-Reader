@@ -1,0 +1,14 @@
+{
+    "tagSelect": {
+        "loading": "Cargando...",
+        "searchPlaceholder": "Buscar...",
+        "noResults": "No se encontraron opciones"
+    },
+    "filters": {
+        "title": "Filtrar Obras",
+        "sort": {
+            "random": "Aleatorio",
+            "alphabetical": "Alfabético"
+        }
+    }
+}

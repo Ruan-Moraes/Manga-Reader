@@ -1,0 +1,53 @@
+package com.toonlira.application.group.usecase.admin;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.when;
+
+import java.util.Optional;
+import java.util.UUID;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import com.toonlira.application.group.port.GroupRepositoryPort;
+import com.toonlira.domain.group.entity.Group;
+import com.toonlira.shared.exception.ResourceNotFoundException;
+
+@ExtendWith(MockitoExtension.class)
+@DisplayName("AdminGetGroupDetailsUseCase")
+class AdminGetGroupDetailsUseCaseTest {
+
+    @Mock
+    private GroupRepositoryPort groupRepository;
+
+    @InjectMocks
+    private AdminGetGroupDetailsUseCase useCase;
+
+    private final UUID GROUP_ID = UUID.randomUUID();
+
+    @Test
+    @DisplayName("Deve retornar grupo com detalhes")
+    void deveRetornarGrupoComDetalhes() {
+        Group group = Group.builder().id(GROUP_ID).name(com.toonlira.shared.domain.i18n.LocalizedString.ofDefault("Test Group")).username("test").build();
+        when(groupRepository.findByIdWithUsers(GROUP_ID)).thenReturn(Optional.of(group));
+
+        Group result = useCase.execute(GROUP_ID);
+
+        assertThat(result.getName().resolve(java.util.Locale.forLanguageTag("pt-BR"))).isEqualTo("Test Group");
+    }
+
+    @Test
+    @DisplayName("Deve lançar exceção quando grupo não existe")
+    void deveLancarExcecaoQuandoNaoExiste() {
+        when(groupRepository.findByIdWithUsers(GROUP_ID)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> useCase.execute(GROUP_ID))
+                .isInstanceOf(ResourceNotFoundException.class)
+                .hasMessageContaining("Group");
+    }
+}

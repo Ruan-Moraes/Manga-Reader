@@ -1,0 +1,9 @@
+# Perfil complementar offline. Não é terraform.tfvars nem arquivo auto-carregado.
+# Nenhum recurso foi criado; este perfil bloqueia implantação do módulo inteiro.
+worker_resource_profile = "native-candidate-8g"
+worker_container_image  = null # Ainda não há imagem publicada/assinada aprovada.
+gateway_enabled         = false
+worker_enabled          = false
+# Candidato: 2 vCPU / 8 GiB, concorrência 1, min 0 / max 1 instância.
+# JNI/modelo, tmpfs/noexec, PID/cgroup/swap/AS e compatibilidade Cloud Run pendentes.
+# OCR/tradução/layout/render/download continuam disabled no ambiente do worker.

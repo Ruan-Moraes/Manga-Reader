@@ -1,5 +1,5 @@
 # ==============================================================================
-# Manga Reader — Docker Compose Production
+# Toonlira — Docker Compose Production
 # ==============================================================================
 # Uso: docker compose -f docker-compose.prod.yml up -d
 #
@@ -13,17 +13,17 @@
 services:
   app:
     build:
-      context: ./core
-      dockerfile: Dockerfile
-    container_name: mangareader-app
+      context: .
+      dockerfile: apps/core/Dockerfile
+    container_name: toonlira-app
     ports:
       - "8080:8080"
     environment:
       SPRING_PROFILES_ACTIVE: prod
-      DATABASE_URL: jdbc:postgresql://postgres:5432/mangareader
+      DATABASE_URL: jdbc:postgresql://postgres:5432/toonlira
       DATABASE_USERNAME: manga
       DATABASE_PASSWORD: ${DATABASE_PASSWORD}
-      MONGODB_URI: mongodb://mongodb:27017/mangareader
+      MONGODB_URI: mongodb://mongodb:27017/toonlira?replicaSet=rs0
       REDIS_HOST: redis
       REDIS_PORT: 6379
       REDIS_PASSWORD: ${REDIS_PASSWORD:-}
@@ -35,13 +35,37 @@ services:
       NEO4J_USERNAME: neo4j
       NEO4J_PASSWORD: ${NEO4J_PASSWORD}
       JWT_SECRET: ${JWT_SECRET}
+      JWT_ACCESS_TOKEN_EXPIRATION: ${JWT_ACCESS_TOKEN_EXPIRATION:-900000}
+      JWT_REFRESH_TOKEN_EXPIRATION: ${JWT_REFRESH_TOKEN_EXPIRATION:-604800000}
+      JWT_PASSWORD_RESET_EXPIRATION: ${JWT_PASSWORD_RESET_EXPIRATION:-900000}
+      REFRESH_TOKEN_REVOKED_RETENTION_DAYS: ${REFRESH_TOKEN_REVOKED_RETENTION_DAYS:-1}
+      AUTH_COOKIE_SECURE: ${AUTH_COOKIE_SECURE:-true}
+      RATE_LIMIT_GENERAL_CAPACITY: ${RATE_LIMIT_GENERAL_CAPACITY:-120}
+      RATE_LIMIT_GENERAL_WINDOW: ${RATE_LIMIT_GENERAL_WINDOW:-1m}
+      RATE_LIMIT_AUTH_CAPACITY: ${RATE_LIMIT_AUTH_CAPACITY:-15}
+      RATE_LIMIT_AUTH_WINDOW: ${RATE_LIMIT_AUTH_WINDOW:-1m}
+      RATE_LIMIT_TRUSTED_PROXY_IPV4: ${RATE_LIMIT_TRUSTED_PROXY_IPV4:-127.0.0.1}
+      RATE_LIMIT_TRUSTED_PROXY_IPV6: ${RATE_LIMIT_TRUSTED_PROXY_IPV6:-::1}
+      REFRESH_TOKEN_CLEANUP_CRON: ${REFRESH_TOKEN_CLEANUP_CRON:-0 0 4 * * *}
+      BEHAVIOR_ANALYTICS_RETENTION_DAYS: ${BEHAVIOR_ANALYTICS_RETENTION_DAYS:-180}
+      BEHAVIOR_ANALYTICS_TITLE_VIEW_SECONDS: ${BEHAVIOR_ANALYTICS_TITLE_VIEW_SECONDS:-15}
+      BEHAVIOR_ANALYTICS_BOUNCE_MIN_SECONDS: ${BEHAVIOR_ANALYTICS_BOUNCE_MIN_SECONDS:-2}
+      BEHAVIOR_ANALYTICS_CHAPTER_START_SECONDS: ${BEHAVIOR_ANALYTICS_CHAPTER_START_SECONDS:-10}
+      BEHAVIOR_ANALYTICS_CHAPTER_COMPLETION_PERCENT: ${BEHAVIOR_ANALYTICS_CHAPTER_COMPLETION_PERCENT:-90}
+      BEHAVIOR_ANALYTICS_MAX_BATCH_SIZE: ${BEHAVIOR_ANALYTICS_MAX_BATCH_SIZE:-100}
+      CACHE_DEFAULT_TTL: ${CACHE_DEFAULT_TTL:-5m}
+      CACHE_TITLE_TTL: ${CACHE_TITLE_TTL:-10m}
+      CACHE_TAG_TTL: ${CACHE_TAG_TTL:-30m}
+      CACHE_RATING_AVERAGE_TTL: ${CACHE_RATING_AVERAGE_TTL:-2m}
+      CACHE_PUBLIC_STATS_TTL: ${CACHE_PUBLIC_STATS_TTL:-30m}
+      CACHE_SUBSCRIPTION_PLANS_TTL: ${CACHE_SUBSCRIPTION_PLANS_TTL:-1h}
       CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:-http://localhost:5173}
       MAIL_HOST: ${MAIL_HOST:-smtp.gmail.com}
       MAIL_PORT: ${MAIL_PORT:-587}
       MAIL_USERNAME: ${MAIL_USERNAME:-}
       MAIL_PASSWORD: ${MAIL_PASSWORD:-}
-      MAIL_FROM: ${MAIL_FROM:-noreply@mangareader.com}
-      APP_BASE_URL: ${APP_BASE_URL:-https://mangareader.com}
+      MAIL_FROM: ${MAIL_FROM:-noreply@toonlira.com}
+      APP_BASE_URL: ${APP_BASE_URL:-https://toonlira.com}
       JAVA_OPTS: >-
         -Xms256m -Xmx512m
         -XX:+UseG1GC
@@ -58,7 +82,7 @@ services:
       neo4j:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "wget", "-qO-", "http://localhost:8080/actuator/health"]
+      test: ["CMD", "wget", "-qO-", "http://localhost:8080/actuator/health/readiness"]
       interval: 30s
       timeout: 5s
       retries: 5
@@ -71,19 +95,20 @@ services:
           cpus: "1.0"
   rating-aggregator:
     build:
-      context: ./jobs/rating-aggregator
-      dockerfile: Dockerfile
-    container_name: mangareader-rating-aggregator
+      context: .
+      dockerfile: apps/jobs/rating-aggregator/Dockerfile
+    container_name: toonlira-rating-aggregator
     ports:
       - "8081:8081"
     environment:
       # Spring relaxed binding: SPRING_DATA_MONGODB_URI -> spring.data.mongodb.uri etc.
-      SPRING_DATA_MONGODB_URI: mongodb://mongodb:27017/mangareader
+      SPRING_DATA_MONGODB_URI: mongodb://mongodb:27017/toonlira?replicaSet=rs0
       SPRING_RABBITMQ_HOST: rabbitmq
       SPRING_RABBITMQ_PORT: 5672
       SPRING_RABBITMQ_USERNAME: manga
       SPRING_RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}
       AGGREGATOR_ADMIN_TOKEN: ${AGGREGATOR_ADMIN_TOKEN}
+      AGGREGATOR_RECONCILIATION_CRON: ${AGGREGATOR_RECONCILIATION_CRON:-0 0 3 * * *}
       JAVA_OPTS: >-
         -Xms128m -Xmx256m
         -XX:+UseG1GC
@@ -107,18 +132,20 @@ services:
           cpus: "0.5"
   orphan-cleaner:
     build:
-      context: ./jobs/orphan-cleaner
-      dockerfile: Dockerfile
-    container_name: mangareader-orphan-cleaner
+      context: .
+      dockerfile: apps/jobs/orphan-cleaner/Dockerfile
+    container_name: toonlira-orphan-cleaner
     ports:
       - "8082:8082"
     environment:
       # Spring relaxed binding: SPRING_DATASOURCE_URL -> spring.datasource.url etc.
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/mangareader
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/toonlira
       SPRING_DATASOURCE_USERNAME: manga
       SPRING_DATASOURCE_PASSWORD: ${DATABASE_PASSWORD}
-      SPRING_DATA_MONGODB_URI: mongodb://mongodb:27017/mangareader
+      SPRING_DATA_MONGODB_URI: mongodb://mongodb:27017/toonlira?replicaSet=rs0
       RECONCILER_ADMIN_TOKEN: ${RECONCILER_ADMIN_TOKEN}
+      RECONCILER_RECONCILIATION_CRON: ${RECONCILER_RECONCILIATION_CRON:-0 0 * * * *}
+      RECONCILER_ORPHAN_CRON: ${RECONCILER_ORPHAN_CRON:-0 30 3 * * *}
       JAVA_OPTS: >-
         -Xms128m -Xmx256m
         -XX:+UseG1GC
@@ -140,19 +167,59 @@ services:
         limits:
           memory: 384M
           cpus: "0.5"
+  trending-aggregator:
+    build:
+      context: .
+      dockerfile: apps/jobs/trending-aggregator/Dockerfile
+    container_name: toonlira-trending-aggregator
+    ports:
+      - "8083:8083"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/toonlira
+      SPRING_DATASOURCE_USERNAME: manga
+      SPRING_DATASOURCE_PASSWORD: ${DATABASE_PASSWORD}
+      SPRING_DATA_MONGODB_URI: mongodb://mongodb:27017/toonlira?replicaSet=rs0
+      TRENDING_ADMIN_TOKEN: ${TRENDING_ADMIN_TOKEN}
+      TRENDING_SEED_ENABLED: "false"
+      TRENDING_RETENTION_DAYS: ${TRENDING_RETENTION_DAYS:-90}
+      TRENDING_SCHEDULE_CRON: ${TRENDING_SCHEDULE_CRON:-0 15 3 * * *}
+      TRENDING_ZONE: ${TRENDING_ZONE:-America/Sao_Paulo}
+      TRENDING_WEIGHTS_READS: ${TRENDING_WEIGHTS_READS:-0.45}
+      TRENDING_WEIGHTS_LIBRARY_ADDS: ${TRENDING_WEIGHTS_LIBRARY_ADDS:-0.25}
+      TRENDING_WEIGHTS_REVIEWS: ${TRENDING_WEIGHTS_REVIEWS:-0.15}
+      TRENDING_WEIGHTS_COMMENTS: ${TRENDING_WEIGHTS_COMMENTS:-0.10}
+      TRENDING_WEIGHTS_RELEASES: ${TRENDING_WEIGHTS_RELEASES:-0.05}
+      JAVA_TOOL_OPTIONS: -Duser.timezone=UTC -Xms96m -Xmx192m -XX:+UseG1GC -XX:+ExitOnOutOfMemoryError
+    depends_on:
+      postgres:
+        condition: service_healthy
+      mongodb:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8083/actuator/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 40s
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: "0.35"
   postgres:
     image: postgres:17-alpine
-    container_name: mangareader-postgres
+    container_name: toonlira-postgres
     ports:
       - "5432:5432"
     environment:
-      POSTGRES_DB: mangareader
+      POSTGRES_DB: toonlira
       POSTGRES_USER: manga
       POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U manga -d mangareader"]
+      test: ["CMD-SHELL", "pg_isready -U manga -d toonlira"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -163,20 +230,32 @@ services:
           memory: 512M
           cpus: "1.0"
   mongodb:
-    image: mongo:8.0
-    container_name: mangareader-mongodb
+    image: mongo:8.0.26
+    container_name: toonlira-mongodb
     ports:
       - "27017:27017"
     environment:
-      MONGO_INITDB_DATABASE: mangareader
-    command: mongod --wiredTigerCacheSizeGB 0.25
+      MONGO_INITDB_DATABASE: toonlira
+      # Workaround para SERVER-121912: TCMalloc do Mongo 8.x colide com o
+      # suporte a RSEQ do kernel Linux 6.19+, causando crash no boot. Sem
+      # patch oficial ainda; força o caminho compatível de RSEQ do glibc.
+      GLIBC_TUNABLES: glibc.pthread.rseq=1
+    command: mongod --replSet rs0 --bind_ip_all --wiredTigerCacheSizeGB 0.25
     volumes:
       - mongo_data:/data/db
     healthcheck:
-      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+      test:
+        [
+          "CMD",
+          "mongosh",
+          "--quiet",
+          "--eval",
+          "try { rs.status().ok } catch (e) { rs.initiate({ _id: 'rs0', members: [{ _id: 0, host: 'mongodb:27017' }] }) }",
+        ]
+      interval: 5s
+      timeout: 10s
+      retries: 15
+      start_period: 40s
     restart: unless-stopped
     deploy:
       resources:
@@ -185,7 +264,7 @@ services:
           cpus: "1.0"
   rabbitmq:
     image: rabbitmq:4-management-alpine
-    container_name: mangareader-rabbitmq
+    container_name: toonlira-rabbitmq
     ports:
       - "5672:5672"
       - "15672:15672"
@@ -207,7 +286,7 @@ services:
           cpus: "0.5"
   neo4j:
     image: neo4j:5.26-community
-    container_name: mangareader-neo4j
+    container_name: toonlira-neo4j
     ports:
       - "7687:7687"
     environment:
@@ -231,7 +310,7 @@ services:
           cpus: "1.0"
   redis:
     image: redis:7-alpine
-    container_name: mangareader-redis
+    container_name: toonlira-redis
     ports:
       - "6379:6379"
     command: >

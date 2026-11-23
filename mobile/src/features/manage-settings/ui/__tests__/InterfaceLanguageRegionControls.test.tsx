@@ -1,0 +1,63 @@
+import * as SecureStore from 'expo-secure-store';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react-native';
+
+import { DEFAULT_USER_SETTINGS } from '@/entities/user-setting';
+import i18n, { DEFAULT_LANGUAGE } from '@/shared/i18n';
+import { ThemeProvider } from '@/shared/theme';
+
+import { resetSettingsRuntimeForTests, useSettingsStore } from '../../model/settingsStore';
+import { InterfaceLanguageRegionControls } from '../InterfaceLanguageRegionControls';
+
+describe('MOB-FEAT-003 interface language controls', () => {
+    beforeEach(async () => {
+        resetSettingsRuntimeForTests();
+        useSettingsStore.setState({
+            settings: DEFAULT_USER_SETTINGS,
+            guestSettings: DEFAULT_USER_SETTINGS,
+            language: DEFAULT_LANGUAGE,
+            isHydrated: true,
+            activeIdentityEpoch: null,
+            pendingVersion: null,
+            syncStatus: 'local',
+            localError: null,
+            syncError: null,
+            themeOverride: null,
+        });
+        jest.mocked(SecureStore.setItemAsync).mockResolvedValue(undefined);
+        await i18n.changeLanguage(DEFAULT_LANGUAGE);
+    });
+
+    it('MOB-FEAT-062 AC-004 troca o idioma pela folha, atualiza os textos e persiste', async () => {
+        render(
+            <ThemeProvider waitForPlatform={false}>
+                <InterfaceLanguageRegionControls />
+            </ThemeProvider>,
+        );
+        expect(screen.getByRole('header', { name: 'Idioma e região' })).toBeOnTheScreen();
+
+        fireEvent.press(screen.getByRole('button', { name: 'Idioma da interface: Português (Brasil)' }));
+        fireEvent.press(screen.getByRole('radio', { name: 'English (US)' }));
+        await waitFor(() => expect(screen.getByRole('header', { name: 'Language and region' })).toBeOnTheScreen());
+        expect(useSettingsStore.getState().language).toBe('en-US');
+        expect(SecureStore.setItemAsync).toHaveBeenCalled();
+    });
+
+    it('MOB-FEAT-062 AC-004 persiste formato de data e fuso escolhidos em folhas', async () => {
+        render(
+            <ThemeProvider waitForPlatform={false}>
+                <InterfaceLanguageRegionControls />
+            </ThemeProvider>,
+        );
+
+        fireEvent.press(screen.getByRole('button', { name: 'Formato de data: Dia, mês' }));
+        expect(screen.getAllByText(/Exemplo: /)).toHaveLength(3);
+        fireEvent.press(screen.getByRole('radio', { name: 'Mês, dia' }));
+        fireEvent.press(screen.getByRole('button', { name: 'Fuso horário: São Paulo' }));
+        fireEvent.press(screen.getByRole('radio', { name: 'Tóquio' }));
+
+        await waitFor(() => {
+            expect(useSettingsStore.getState().settings.locale).toEqual({ dateFormat: 'MON_D', timezone: 'Asia/Tokyo' });
+        });
+        expect(SecureStore.setItemAsync).toHaveBeenCalled();
+    });
+});

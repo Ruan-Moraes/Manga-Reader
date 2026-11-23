@@ -1,0 +1,69 @@
+package com.toonlira.application.manga.port;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+import java.util.Map;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
+import com.toonlira.domain.manga.entity.Title;
+
+/**
+ * Port de saída — acesso a dados de Titles (MongoDB).
+ */
+public interface TitleRepositoryPort {
+    List<Title> findAll();
+
+    Optional<Title> findById(String id);
+
+    List<Title> findByIds(Collection<String> ids);
+
+    List<String> findVisibleIds(Collection<String> ids, boolean excludeAdult);
+
+    Page<Title> findVisibleByIds(
+            Collection<String> ids, boolean excludeAdult, Pageable pageable);
+
+    List<Title> searchByName(String query);
+
+    List<Title> findByGenresContainingAll(List<String> genres);
+
+    List<Title> findByFilters(List<String> genres, String status, Boolean adult);
+
+    /**
+     * Como {@link #findByFilters(List, String, Boolean)}, mas restringe o resultado
+     * aos {@code restrictIds} ({@code _id $in}). {@code null} = sem restrição.
+     */
+    List<Title> findByFilters(List<String> genres, String status, Boolean adult,
+                              Collection<String> restrictIds);
+
+    Title save(Title title);
+
+    void deleteById(String id);
+
+    Page<Title> findAll(Pageable pageable);
+
+    Page<Title> findAllExcludingAdult(Pageable pageable);
+
+    Page<Title> findByGenresContaining(String genre, Pageable pageable);
+
+    Page<Title> findByGenreExcludingAdult(String genre, Pageable pageable);
+
+    Page<Title> searchByName(String query, Pageable pageable);
+
+    Page<Title> searchByNameExcludingAdult(String query, Pageable pageable);
+
+    Page<TitleSearchHit> searchGlobal(
+            String normalizedQuery,
+            List<String> contentLanguageTags,
+            Map<String, TitleReferenceMatch> relationalMatches,
+            boolean excludeAdult,
+            Pageable pageable);
+
+    Page<Title> findByGenresContainingAll(List<String> genres, Pageable pageable);
+
+    long count();
+
+    long countByStatus(String status);
+}

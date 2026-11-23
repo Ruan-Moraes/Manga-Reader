@@ -1,0 +1,76 @@
+{
+  "root" : "corpus",
+  "page" : "golden-age-pd-en/jungle_comics_117_page_44.jpg",
+  "sourceLanguage" : "en",
+  "width" : 960,
+  "height" : 1371,
+  "regions" : [ {
+    "source" : "Tabu\n",
+    "translation" : "Tabu",
+    "kind" : "text_free",
+    "polygon" : [ [ 0.04895833333333333, 0.04449307075127644 ], [ 0.6614583333333334, 0.04449307075127644 ], [ 0.6614583333333334, 0.1765134938001459 ], [ 0.04895833333333333, 0.1765134938001459 ] ]
+  }, {
+    "source" : "ABU SHALL NEVER RETURN ME TO THE JUDGMENT OF ZAN, THE OLD MYSTIC!\" THIS HAD BEEN THE UNSPOKEN DEFIANCE OF BLACK LANGA, EVIL SORCERESS OF THE TEMPLE OF APES AND NOW, AS THE JUNGLE WIZARD POLES A NATIVE DUGOUT TOWARD THE CLIFF-TOP CAVE OF MAGICAL ZAN...",
+    "translation" : "\"Tabu jamais me levará de volta ao julgamento de Zan, o velho místico!\" Esse fora o desafio não dito de Black Langa, a feiticeira maligna do Templo dos Macacos. E agora, enquanto o mago da selva empurra uma canoa nativa em direção à caverna no topo do penhasco do mágico Zan...",
+    "kind" : "text_free",
+    "polygon" : [ [ 0.062479408582051595, 0.5050111599511078 ], [ 0.4542164484659831, 0.5050111599511078 ], [ 0.4542164484659831, 0.6214013743104941 ], [ 0.062479408582051595, 0.6214013743104941 ] ]
+  }, {
+    "source" : "by MACK\n",
+    "translation" : "por MACK",
+    "kind" : "text_free",
+    "polygon" : [ [ 0.6697916666666667, 0.09555069292487235 ], [ 0.7479166666666667, 0.09700948212983224 ], [ 0.7479166666666667, 0.10867979576951131 ], [ 0.6697916666666667, 0.10722100656455143 ] ]
+  }, {
+    "source" : "...LANGA'S LIPS CURVE INTO A\nCRUEL SMILE-FOR SHE KNOWS\nTHAT HER FRIENDS, THE SHUNNED\nTRIBE OF N'KAO, WORSHIPERS AT\nTHE DARK IDOL OF MU,HAVE NOT\nBEEN IDLE...\n",
+    "translation" : "...Os lábios de Langa se curvam em um sorriso cruel — pois ela sabe que seus amigos, a tribo excluída de N'Kao, adoradores do ídolo sombrio de Mu, não ficaram ociosos...",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.628125, 0.2910284463894967 ], [ 0.9302083333333333, 0.2924872355944566 ], [ 0.9291666666666667, 0.3508388037928519 ], [ 0.6270833333333333, 0.34938001458789203 ] ]
+  }, {
+    "source" : "THE NEXT CURVE OF\nTHE RIVER SHALL SEE\nTHE FINISH OF TABU...\nFOR MY THOUGHT\nSENSES TELL ME\nTHAT THE N'KAO\nWAIT THERE TO\nFREE ME!\n",
+    "translation" : "A próxima curva do rio verá o fim de Tabu... pois meus sentidos telepáticos me dizem que os N'Kao esperam ali para me libertar!",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.6770833333333334, 0.36177972283005105 ], [ 0.8864583333333333, 0.362509117432531 ], [ 0.8854166666666666, 0.44784828592268416 ], [ 0.6760416666666667, 0.4471188913202042 ] ]
+  }, {
+    "source" : "WHAT DO YOU SMILE AT\nEVIL WITCH... THINK YOU TO\nESCAPE ZAN'S JUSTICE?WAH\nHAD I NOT SWORN TO DELIVER\nYOU UNHARMED, I WOULD... BUT,\nNO-MY TEMPER SWAYS ME!\nTHE VENGEANCE IS ZANS!\n",
+    "translation" : "Do que você está sorrindo, bruxa má... Pensa em escapar da justiça de Zan? Wah! Se eu não tivesse jurado entregá-la ilesa, eu... mas não — meu temperamento me desvia! A vingança é de Zan!",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.06330827077229818, 0.6534509749242113 ], [ 0.377996285756429, 0.6534509749242113 ], [ 0.377996285756429, 0.7337567686252051 ], [ 0.06330827077229818, 0.7337567686252051 ] ]
+  }, {
+    "source" : "NO, JUNGLE WIZARD-\nJUNGLE FOOL! THE\nVENGEANCE SHALL BE\nMINE, FOR YOUR\nINSOLENCE AND SOON...\nFOR WE ROUND THE\nBEND-AND I SENSE\nTHAT THE NIKAO\nARE VERY NEAR!\n",
+    "translation" : "Não, feiticeiro da selva — tolo da selva! A vingança será minha, pela sua insolência, e em breve... pois dobramos a curva — e sinto que os N'Kao estão muito perto!",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.5332344055175782, 0.6547433086592815 ], [ 0.7541666666666667, 0.6547433086592815 ], [ 0.7541666666666667, 0.7542510029175784 ], [ 0.5332344055175782, 0.7542510029175784 ] ]
+  } ],
+  "bubbles" : [ [ 0.059140920639038086, 0.6483263812910285, 0.40222787857055664, 0.7551200082056893 ], [ 0.5297607103983561, 0.6495034115580552, 0.7654584884643555, 0.7724857789421499 ], [ 0.6494242986043294, 0.3543304732731013, 0.9028486887613932, 0.4636145438007157 ], [ 0.6157747268676758, 0.28192813130384986, 0.9465707778930664, 0.35546558917133936 ], [ 0.0561939795811971, 0.5006689381895059, 0.4581925710042318, 0.6270788458470095 ] ],
+  "expect" : {
+    "maxChangedOutside" : 0,
+    "regions" : [ {
+      "overflow" : true,
+      "font" : 0,
+      "residualInk" : 0
+    }, {
+      "overflow" : false,
+      "font" : 14,
+      "residualInk" : 0
+    }, {
+      "overflow" : false,
+      "font" : 17,
+      "residualInk" : 0
+    }, {
+      "overflow" : false,
+      "font" : 13,
+      "residualInk" : 158
+    }, {
+      "overflow" : false,
+      "font" : 13,
+      "residualInk" : 0
+    }, {
+      "overflow" : false,
+      "font" : 13,
+      "residualInk" : 0
+    }, {
+      "overflow" : false,
+      "font" : 12,
+      "residualInk" : 606
+    } ]
+  }
+}

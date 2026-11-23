@@ -1,0 +1,58 @@
+{
+  "root" : "corpus",
+  "page" : "pepper-carrot-en-ep06/p02.jpg",
+  "sourceLanguage" : "en",
+  "width" : 1200,
+  "height" : 1660,
+  "regions" : [ {
+    "source" : "!!!\n",
+    "translation" : "!!!\n",
+    "kind" : "text_free",
+    "polygon" : [ [ 0.2675, 0.1753012048192771 ], [ 0.31, 0.17590361445783131 ], [ 0.31, 0.19457831325301206 ], [ 0.2675, 0.19397590361445782 ] ]
+  }, {
+    "source" : "Carrot! You're so cute to have thought of bringing me to the Contest!",
+    "translation" : "Cenoura! Que fofo da sua parte ter pensado em me trazer para o Concurso!",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.2701495869954427, 0.49890099950583583 ], [ 0.4958178202311198, 0.49890099950583583 ], [ 0.4958178202311198, 0.5685919704207455 ], [ 0.2701495869954427, 0.5685919704207455 ] ]
+  }, {
+    "source" : "Fan-tas-tic!\n",
+    "translation" : "Fan-tás-ti-co!",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.6422288004557292, 0.7046737487057605 ], [ 0.7731521606445313, 0.7046737487057605 ], [ 0.7731521606445313, 0.72636329007436 ], [ 0.6422288004557292, 0.72636329007436 ] ]
+  }, {
+    "source" : "You even thought of\nbringing a potion, my\nclothes, and my hat...\n",
+    "translation" : "Você até pensou em trazer uma poção, minhas roupas e meu chapéu...",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.7208333333333333, 0.7710843373493976 ], [ 0.91, 0.772289156626506 ], [ 0.9091666666666667, 0.8210843373493976 ], [ 0.72, 0.8198795180722892 ] ]
+  }, {
+    "source" : "...let's see which\npotion you brought...\n",
+    "translation" : "...vamos ver qual poção você trouxe...",
+    "kind" : "text_bubble",
+    "polygon" : [ [ 0.7375, 0.8813253012048192 ], [ 0.9175, 0.880722891566265 ], [ 0.9175, 0.9132530120481928 ], [ 0.7375, 0.9138554216867469 ] ]
+  } ],
+  "bubbles" : [ [ 0.689276123046875, 0.750415921498494, 0.9405323282877605, 0.8433251070689006 ], [ 0.7185101318359375, 0.8597937894154744, 0.9352777099609375, 0.932964646672628 ], [ 0.602452138264974, 0.6901845909026731, 0.8091143290201823, 0.7404504982821912 ], [ 0.261463877360026, 0.4973337196442018, 0.506687978108724, 0.577418315841491 ] ],
+  "expect" : {
+    "maxChangedOutside" : 0,
+    "regions" : [ {
+      "overflow" : true,
+      "font" : 0,
+      "residualInk" : 0
+    }, {
+      "overflow" : false,
+      "font" : 19,
+      "residualInk" : 460
+    }, {
+      "overflow" : false,
+      "font" : 23,
+      "residualInk" : 0
+    }, {
+      "overflow" : false,
+      "font" : 17,
+      "residualInk" : 1
+    }, {
+      "overflow" : false,
+      "font" : 18,
+      "residualInk" : 0
+    } ]
+  }
+}

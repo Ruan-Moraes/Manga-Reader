@@ -1,0 +1,18 @@
+# Palavras que abrem uma oração em inglês (classe gramatical fechada). Escrita para este projeto (CC0).
+then
+so
+but
+and
+because
+now
+well
+if
+when
+maybe
+actually
+also
+oh
+ah
+yeah
+ok
+okay
